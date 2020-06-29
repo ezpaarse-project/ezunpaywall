@@ -1,0 +1,9 @@
+node_modules
+mongo-volume
+.vscode
+.directory
+package-lock.json
+extract.json
+dataUPW/
+logs/result.log
+db/

@@ -1,0 +1,5 @@
+{ 
+  "POSTGRES_DB": "example",
+  "POSTGRES_USER": "postgres",
+  "POSTGRES_PASSWORD": "postgres"
+}

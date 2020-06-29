@@ -1,0 +1,53 @@
+version: "3"
+
+networks: 
+  test.net:
+    driver: bridge
+
+services:
+  api:
+    image: node
+    container_name: APIUPW
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    user: "node"
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: "npm run test"
+    ports:
+      - "8080:8080"
+    networks: 
+      - 'test.net'
+    links: 
+      - database:mongodb
+      
+  database:
+    image: postgres
+    restart: always
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    container_name: postgres
+    environment:
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '5432:5432'
+    networks: 
+      - 'test.net'
+
+  dbmanager:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@postgres.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    ports:  
+      - "8081:80"
+    depends_on: 
+      - database
+    networks:
+      - test.net
