@@ -1,6 +1,5 @@
 const graphql = require('graphql');
 
-
 const {
   GraphQLObjectType,
   GraphQLString,
@@ -11,7 +10,7 @@ const {
 } = graphql;
 
 module.exports = new GraphQLObjectType({
-  name: 'Unpaywall',
+  name: 'UnPayWall',
   fields: () => {
     // eslint-disable-next-line global-require
     const OaLocationType = require('../oa_location/type');

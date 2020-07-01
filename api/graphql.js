@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 
-const { UnpaywallMutations, UnpaywallQueries } = require('./unpaywall');
+const { UnPayWallQueries } = require('./unpaywall');
 
 const {
   GraphQLSchema,
@@ -10,18 +10,10 @@ const {
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
-    ...UnpaywallQueries,
-  }),
-});
-
-const Mutation = new GraphQLObjectType({
-  name: 'Mutation',
-  fields: () => ({
-    ...UnpaywallMutations,
+    ...UnPayWallQueries,
   }),
 });
 
 module.exports = new GraphQLSchema({
   query: RootQuery,
-  mutation: Mutation,
 });

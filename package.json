@@ -6,8 +6,9 @@
   "scripts": {
     "start": "ENV=prod node app.js",
     "dev": "ENV=dev nodemon app.js",
-    "test": "mocha",
-    "lint": "eslint --ext .js --ignore-path .gitignore ."
+    "test": "mocha --watch",
+    "lint": "eslint --ext .js --ignore-path .gitignore .",
+    "test:dev": "nodemon -w test/ -e .js --exec 'mocha'"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

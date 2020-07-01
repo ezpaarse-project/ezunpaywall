@@ -22,9 +22,9 @@ module.exports = async function initTableUPW() {
       updated character varying COLLATE pg_catalog."default",
       year character varying COLLATE pg_catalog."default",
       z_authors json[],
+      journal_issn_l character varying COLLATE pg_catalog."default",
       "createdAt" date,
       "updatedAt" date,
-      journal_issn_l character varying COLLATE pg_catalog."default",
       CONSTRAINT upw_pkey PRIMARY KEY (doi)
   )
   TABLESPACE pg_default;

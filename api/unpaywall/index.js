@@ -1,4 +1,3 @@
-exports.UnpaywallType = require('./type');
-exports.UnpaywallModel = require('./model');
-exports.UnpaywallMutations = require('./mutations');
-exports.UnpaywallQueries = require('./queries');
+exports.UnPayWallType = require('./type');
+exports.UnPayWallModel = require('./model');
+exports.UnPayWallQueries = require('./queries');

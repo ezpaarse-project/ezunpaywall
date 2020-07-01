@@ -1,5 +1,5 @@
 const graphql = require('graphql');
-const { UnpaywallType, UnpaywallModel } = require('./index');
+const { UnPayWallType, UnPayWallModel } = require('./index');
 
 const {
   GraphQLList,
@@ -7,23 +7,16 @@ const {
 } = graphql;
 
 module.exports = {
-  unpaywall: {
-    type: UnpaywallType,
-    args: {
-      doi: { type: GraphQLID },
-    },
-    resolve: (parent, args) => UnpaywallModel.findByPk(args.doi),
-  },
   unpaywalls: {
-    type: new GraphQLList(UnpaywallType),
-    resolve: () => UnpaywallModel.findAll(),
+    type: new GraphQLList(UnPayWallType),
+    resolve: () => UnPayWallModel.findAll(),
   },
-  unpaywallByLot: {
-    type: new GraphQLList(UnpaywallType),
+  getDatasUPW: {
+    type: new GraphQLList(UnPayWallType),
     args: {
       dois: { type: new GraphQLList(GraphQLID) },
     },
-    resolve: (parent, args) => UnpaywallModel.findAll({
+    resolve: (parent, args) => UnPayWallModel.findAll({
       where: {
         doi: args.dois,
       },

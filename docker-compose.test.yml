@@ -16,7 +16,7 @@ services:
     working_dir: /app
     volumes:
       - ./:/app
-    command: "npm run test"
+    command: "npm run test:dev"
     ports:
       - "8080:8080"
     networks: 
