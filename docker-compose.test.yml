@@ -18,7 +18,7 @@ services:
       - ./:/app
     command: "npm run test:dev"
     ports:
-      - "8080:8080"
+      - "${API_PORT}:8080"
     networks: 
       - 'test.net'
     links: 
@@ -35,7 +35,7 @@ services:
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         - POSTGRES_DB=${POSTGRES_DB}
     ports:
-      - '5432:5432'
+      - '${POSTGRES_PORT}:5432'
     networks: 
       - 'test.net'
 

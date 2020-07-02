@@ -7,3 +7,4 @@ extract.json
 dataUPW/
 logs/result.log
 db/
+unpaywall.local.env.sh
