@@ -1,10 +1,10 @@
 const fs = require('fs');
 const readline = require('readline');
 const zlib = require('zlib');
-
-const file = './dataUPW/unpaywall_snapshot.jsonl.gz';
 const unpaywallModel = require('./api/unpaywall/model');
 const logger = require('./logs/logger');
+
+const file = './dataUPW/unpaywall_snapshot.jsonl.gz';
 
 let counterLimit = 10000;
 const nbtraitement = counterLimit;

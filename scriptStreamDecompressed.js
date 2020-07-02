@@ -1,9 +1,9 @@
 const fs = require('fs');
 const readline = require('readline');
-
-const file = './dataUPW/extract.jsonl';
 const UnpaywallModel = require('./api/unpaywall/model');
 const logger = require('./logs/logger');
+
+const file = './dataUPW/extract.jsonl';
 
 let counterLimit = 10000;
 let counterError = 0;

@@ -1,8 +1,10 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
-
-// graphql
 const schema = require('./api/graphql');
+
+// routers
+const RouterManageDatabase = require('./routers/routerManageDatabase');
+
 // postgresql
 const db = require('./database/database');
 // init database
@@ -10,59 +12,40 @@ const initTableUPW = require('./database/initTableUPW');
 
 // test connexion with sequelize
 db.authenticate()
-  .then(() => console.log('Database connected...'))
+  .then(() => console.log('Database connected'))
   .catch((err) => console.log(`Error: ${err}`));
 
 // create if not exists table
 initTableUPW();
 
-// server
+// start server
 const app = express();
+
 app.get('/', (req, res) => {
   res.json({
     graphiql: 'http://localhost:8080/graphql',
-    archive: 'http://localhost:8080/insertWithArchive',
-    JSONL: 'http://localhost:8080/insertWithJSONL',
-    status: 'http://localhost:8080/status',
-    update: 'http://localhost:8080/updateViaSnapShot',
+    archive: 'http://localhost:8080/firstInitializationWithFileCompressed',
+    update: 'http://localhost:8080/updateDatabase',
+    status: 'http://localhost:8080/databaseStatus',
   });
 });
 
-// root
+app.use(RouterManageDatabase);
+
+// start graphql
 app.use('/graphql', graphqlHTTP({
   schema,
   graphiql: true,
 }));
 
-const insertArchive = require('./scriptStreamCompressed');
+/* Errors and unknown routes */
+app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
 
-app.get('/insertWithArchive', (req, res) => {
-  insertArchive();
-  res.json({ name: 'insert with Bulk ...' });
+app.use((error, req, res, next) => {
+  console.log(error);
+  return res.status(500).json({ type: 'error', code: 500, message: error.message });
 });
 
-const insertJSONL = require('./scriptStreamDecompressed');
-
-app.get('/insertWithJSONL', (req, res) => {
-  insertJSONL();
-  res.json({ name: 'insert with Bulk ...' });
-});
-
-const update = require('./scriptUpdate');
-
-app.get('/updateViaSnapShot', (req, res) => {
-  update();
-  res.json({ name: 'update with Bulk...' });
-});
-
-const status = require('./scriptDatabaseStatus');
-
-app.get('/status', (req, res) => {
-  status().then((result) => {
-    res.json({ result });
-  });
-});
-
-app.listen(8080, () => console.log('now listennig for requests on port 8080'));
+app.listen(8080, () => console.log('Graphql server up !'));
 
 module.exports = app;

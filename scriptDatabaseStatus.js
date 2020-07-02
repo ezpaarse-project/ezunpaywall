@@ -4,19 +4,16 @@ const logger = require('./logs/logger');
 module.exports = async function status() {
   const res = {};
 
-  // doi
   res.doi = await UnpaywallModel.count({
     distinct: true,
   });
 
-  // is_oa
   res.is_oa = await UnpaywallModel.count({
     where: {
       is_oa: true,
     },
   });
 
-  // journal_issnl
   res.journal_issn_l = await UnpaywallModel.count({
     col: 'journal_issn_l',
     distinct: true,
