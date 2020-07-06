@@ -1,14 +1,12 @@
 version: "3"
 
-networks: 
-  test.net:
-    driver: bridge
-
 services:
   api:
-    image: node
+    build:
+      context: .
     container_name: APIUPW
     environment:
+      - POSTGRES_HOST=postgredb
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
@@ -19,13 +17,9 @@ services:
     command: "npm run dev"
     ports:
       - "${API_PORT}:8080"
-    networks: 
-      - 'test.net'
-    links: 
-      - database:mongodb
       
-  database:
-    image: postgres
+  postgredb:
+    image: postgres:12.3
     restart: always
     volumes:
       - ./db:/var/lib/postgresql/data
@@ -36,18 +30,3 @@ services:
         - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - '${POSTGRES_PORT}:5432'
-    networks: 
-      - 'test.net'
-
-  dbmanager:
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: postgres@postgres.com
-      PGADMIN_DEFAULT_PASSWORD: postgres
-    ports:  
-      - "8081:80"
-    depends_on: 
-      - database
-    networks:
-      - test.net

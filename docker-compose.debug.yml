@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api:
-    image: node
+    image: node:14.5.0
     container_name: APIUPW
     environment:
       - POSTGRES_HOST=postgredb
@@ -13,12 +13,12 @@ services:
     working_dir: /app
     volumes:
       - ./:/app
-    command: "npm run test:dev"
+    command: "npm run dev"
     ports:
       - "${API_PORT}:8080"
       
   postgredb:
-    image: postgres
+    image: postgres:12.3
     restart: always
     volumes:
       - ./db:/var/lib/postgresql/data
