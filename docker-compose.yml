@@ -4,8 +4,13 @@ services:
   api:
     build:
       context: .
+      args:
+        - http_proxy
+        - https_proxy
     container_name: APIUPW
     environment:
+      - http_proxy
+      - https_proxy
       - POSTGRES_HOST=postgredb
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}

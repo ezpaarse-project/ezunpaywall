@@ -1,0 +1,10 @@
+node_modules
+mongo-volume
+.vscode
+.directory
+package-lock.json
+extract.json
+dataUPW/
+logs/result.log
+db/
+unpaywall.local.env.sh

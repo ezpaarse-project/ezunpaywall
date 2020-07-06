@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const db = require('../../database/database');
+const db = require('../../../database/database');
 
 const UnPayWallModel = db.define('upw', {
   best_oa_location: {

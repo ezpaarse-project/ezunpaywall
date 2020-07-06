@@ -2,11 +2,11 @@ const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
 const config = require('config');
-const schema = require('./api/graphql');
+const schema = require('./api/graphql/graphql');
 
 const port = config.get('API_PORT');
 // routers
-const RouterManageDatabase = require('./routers/routerManageDatabase');
+const RouterManageDatabase = require('./api/routers/manageDatabase');
 
 // postgresql
 const db = require('./database/database');
@@ -30,7 +30,7 @@ app.use(cors());
 app.get('/', (req, res) => {
   res.json({
     graphiql: `http://localhost:${port}/graphql`,
-    archive: `http://localhost:${port}/firstInitializationWithFileCompressed`,
+    archive: `http://localhost:${port}/firstInitialization`,
     update: `http://localhost:${port}/updateDatabase`,
     status: `http://localhost:${port}/databaseStatus`,
   });

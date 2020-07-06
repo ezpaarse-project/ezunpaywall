@@ -15,15 +15,15 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "mocha": "^7.2.0",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
     "config": "^3.3.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",

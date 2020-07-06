@@ -16,14 +16,12 @@ ez-unpaywall is an API and database that queries the UnPayWall database containi
 ## Prerequisites ##
 
 The tools you need to let ez-unpaywall run are :
-* nvm
 * docker
 * docker-compose
 
 ## Installation quickstart ##
 
 If you are a Linux user
-- execute ```npm i``` at the root of the project
 - modify the environment variables present in the /config/env.sh file, they allow to use the identifiers of the database as well as the ports to use
 - now you can execute ```docker-compose up``` where is the docker-compose file
 
@@ -33,19 +31,36 @@ After installation, you can test if the API is working properly. for that, execu
 
 ## Test route ##
 
-get "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"
-return array()
+GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"
+return an array
 
 
 | Name | Type | Description |
 | --- | --- | --- |
-| dois | Array of String | Array of doi separeted by comma |
+| dois | Array of String | Array of comma separeted doi  |
 | fields | String | Array of attributes of UnPayWall object |
 
 ### example ###
 
-"/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location { url } }}"
-return array
+GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"
+
+Response:
+
+```json
+{
+    "data": {
+        "getDatasUPW": [
+            {
+                "doi": "10.1038/2211089b0",
+                "is_oa": true,
+                "best_oa_location": {
+                    "url": "http://www.nature.com/articles/2211089b0.pdf"
+                }
+            }
+        ]
+    }
+}
+```
 
 ### Object structure ###
 
@@ -67,11 +82,11 @@ return array
 | journal_name | String | The name of the journal publishing this resource. |
 | oa_locations | List | List of all the OA Location objects associated with this resource. |
 | oa_status | String | The OA status, or color, of this resource. |
-| published_date | String|Null | The date this resource was published. |
+| published_date | String/Null | The date this resource was published. |
 | publisher | String | The name of this resource's publisher. |
 | title | String | The title of this resource. |
 | updated | String | Time when the data for this resource was last updated. |
-| year | Integer|Null | The year this resource was published. |
+| year | Integer/Null | The year this resource was published. |
 | z_authors | List of Crossref | List of Crossref |
 
 #### oa_location & best_oa_location object ####
@@ -81,12 +96,12 @@ return array
 | evidence | String | How we found this OA location. |
 | host_type | String | The type of host that serves this OA location. |
 | is_best | Boolean | Is this location the best_oa_location for its resource.	 |
-| license | String|Null | The license under which this copy is published. |
-| pmh_id | String|Null | OAI-PMH endpoint where we found this location. |
+| license | String/Null | The license under which this copy is published. |
+| pmh_id | String/Null | OAI-PMH endpoint where we found this location. |
 | updated | String | Time when the data for this location was last updated. |
 | url | String | The url_for_pdf if there is one; otherwise landing page URL. |
 | url_for_landing_page | String | The URL for a landing page describing this OA copy. |
-| url_for_pdf | String|Null | The URL with a PDF version of this OA copy. |
+| url_for_pdf | String/Null | The URL with a PDF version of this OA copy. |
 | version | String | The content version accessible at this location. |
 
 #### z_author ####
