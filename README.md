@@ -44,7 +44,20 @@ return an array
 
 GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"
 
-Response:
+or
+
+POST "/graphql"
+
+Body :
+
+```json
+{
+    "query": "{getDatasUPW(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
+}
+```
+
+Response: 
+Status : 200
 
 ```json
 {
@@ -61,6 +74,7 @@ Response:
     }
 }
 ```
+
 
 ### Object structure ###
 
