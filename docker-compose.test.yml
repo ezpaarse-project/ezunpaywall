@@ -2,9 +2,11 @@ version: "3"
 
 services:
   api:
-    image: node
+    image: node:14.5.0
     container_name: APIUPW
     environment:
+      - http_proxy
+      - https_proxy
       - POSTGRES_HOST=postgredb
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -18,7 +20,7 @@ services:
       - "${API_PORT}:8080"
       
   postgredb:
-    image: postgres
+    image: postgres:12.3
     restart: always
     volumes:
       - ./db:/var/lib/postgresql/data
