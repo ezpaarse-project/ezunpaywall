@@ -42,9 +42,11 @@ return an array
 
 ### example ###
 
+## GET ##
+
 GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"
 
-or
+## POST ##
 
 POST "/graphql"
 
@@ -53,6 +55,20 @@ Body :
 ```json
 {
     "query": "{getDatasUPW(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
+}
+```
+
+or 
+
+
+POST "/graphql"
+
+```json
+{
+    "query": "query ($dois: [ID!]!){ getDatasUPW(dois: $dois){is_oa} }",
+    "variables": { 
+        "dois" : ["10.1038/2211089b0","10.1038/nature12373"]
+    }
 }
 ```
 
