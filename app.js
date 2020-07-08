@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
 const config = require('config');
@@ -24,25 +25,30 @@ initTableUPW();
 // start server
 const app = express();
 
-// middlewares
-app.use(cors());
+const corsOptions = {
+  origin: '*',
+  methods: 'GET, POST',
+  allowedHeaders: ['Content-Type'],
+};
+
+// start graphql
+app.use('/graphql', cors(corsOptions), bodyParser.json(), graphqlHTTP({
+  schema,
+  graphiql: true,
+}));
+
+// routers
+app.use(RouterManageDatabase);
 
 app.get('/', (req, res) => {
   res.json({
     graphiql: `http://localhost:${port}/graphql`,
-    archive: `http://localhost:${port}/firstInitialization`,
+    archive: `http://localhost:${port}/firstInitialization?offset=100&limit=1000`,
     update: `http://localhost:${port}/updateDatabase`,
     status: `http://localhost:${port}/databaseStatus`,
   });
 });
 
-app.use(RouterManageDatabase);
-
-// start graphql
-app.use('/graphql', graphqlHTTP({
-  schema,
-  graphiql: true,
-}));
 
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));

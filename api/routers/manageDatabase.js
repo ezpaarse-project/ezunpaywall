@@ -5,7 +5,14 @@ const zlib = require('zlib');
 const UnPayWallModel = require('../graphql/unpaywall/model');
 const logger = require('../../logs/logger');
 
-function saveDataOrUpdate(file, offset, limit) {
+
+async function getTotalLine() {
+  return UnPayWallModel.count({
+    distinct: true,
+  });
+}
+
+function saveDataOrUpdate(file, offset, limit, lineInitial) {
   let counterLine = 0;
   // UnPayWall attributes
   const metadata = [
@@ -70,11 +77,14 @@ function saveDataOrUpdate(file, offset, limit) {
     if (countBulk > 0) {
       await updateUPW(tab);
     }
-
+    const lineFinal = await getTotalLine();
+    logger.info(`lineFinal: ${lineFinal}`);
     const total = (new Date() - start) / 1000;
     logger.info('============= FINISH =============');
     logger.info(`${total} seconds`);
     logger.info(`Number of treated lines : ${countBulk}`);
+    logger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
+    logger.info(`Number of update lines : ${counterLine - (lineFinal - lineInitial)}`);
     logger.info(`Number of errors : ${counterLine - (countBulk + offset)}`);
   }
   processLineByLineUpdate();
@@ -109,12 +119,13 @@ router.get('/firstInitialization', async (req, res) => {
  * @apiParam (QUERY) {Number} [limit=0] last line insertion by default, we have no limit
  *
  */
-router.get('/updateDatabase', (req, res) => {
+router.get('/updateDatabase', async (req, res) => {
   let { offset, limit } = req.query;
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
   const file = './dataUPW/update.gz';
-  saveDataOrUpdate(file, Number(offset), Number(limit));
+  const lineInitial = await getTotalLine();
+  saveDataOrUpdate(file, Number(offset), Number(limit), lineInitial);
   res.json({ name: 'update database ...' });
 });
 
