@@ -2,7 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
+const axios = require('axios');
 const config = require('config');
+const CronJob = require('cron');
+
 const schema = require('./api/graphql/graphql');
 
 const port = config.get('API_PORT');
@@ -49,6 +52,16 @@ app.get('/', (req, res) => {
     dowloadUpdate: `http://localhost:${port}/dowloadUpdate`,
   });
 });
+
+// TODO CRON
+// const update = new CronJob('* * * * * Wen', () => {
+//   axios({
+//     method: 'get',
+//     url: `http://localhost:${port}/dowloadUpdate`,
+//   });
+// });
+
+// update.start();
 
 
 /* Errors and unknown routes */
