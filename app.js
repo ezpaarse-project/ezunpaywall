@@ -46,6 +46,7 @@ app.get('/', (req, res) => {
     archive: `http://localhost:${port}/firstInitialization?offset=100&limit=1000`,
     update: `http://localhost:${port}/updateDatabase`,
     status: `http://localhost:${port}/databaseStatus`,
+    dowloadUpdate: `http://localhost:${port}/dowloadUpdate`,
   });
 });
 

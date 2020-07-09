@@ -4,7 +4,7 @@ mongo-volume
 .directory
 package-lock.json
 extract.json
-dataUPW/
+download/
 logs/result.log
 db/
 unpaywall.local.env.sh

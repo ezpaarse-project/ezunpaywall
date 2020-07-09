@@ -4,5 +4,6 @@
   "POSTGRES_PASSWORD": "postgres",
   "POSTGRES_PORT": 5432,
   "POSTGRES_HOST": "localhost",
-  "API_PORT": 8080
+  "API_PORT": 8080,
+  "API_KEY_UPW": "api_key"
 }

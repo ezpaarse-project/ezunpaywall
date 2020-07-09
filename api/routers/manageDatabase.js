@@ -2,14 +2,14 @@ const router = require('express').Router();
 const fs = require('fs');
 const readline = require('readline');
 const zlib = require('zlib');
+const axios = require('axios');
+const config = require('config');
 const UnPayWallModel = require('../graphql/unpaywall/model');
 const logger = require('../../logs/logger');
 
 
 async function getTotalLine() {
-  return UnPayWallModel.count({
-    distinct: true,
-  });
+  return UnPayWallModel.count({});
 }
 
 function saveDataOrUpdate(file, offset, limit, lineInitial) {
@@ -78,13 +78,12 @@ function saveDataOrUpdate(file, offset, limit, lineInitial) {
       await updateUPW(tab);
     }
     const lineFinal = await getTotalLine();
-    logger.info(`lineFinal: ${lineFinal}`);
     const total = (new Date() - start) / 1000;
     logger.info('============= FINISH =============');
     logger.info(`${total} seconds`);
     logger.info(`Number of treated lines : ${countBulk}`);
     logger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
-    logger.info(`Number of update lines : ${counterLine - (lineFinal - lineInitial)}`);
+    logger.info(`Number of update lines : ${counterLine - (lineFinal - lineInitial + offset)}`);
     logger.info(`Number of errors : ${counterLine - (countBulk + offset)}`);
   }
   processLineByLineUpdate();
@@ -102,8 +101,9 @@ router.get('/firstInitialization', async (req, res) => {
   let { offset, limit } = req.query;
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  const file = './dataUPW/unpaywall_snapshot.jsonl.gz';
-  saveDataOrUpdate(file, Number(offset), Number(limit));
+  const file = './download/unpaywall_snapshot.jsonl.gz';
+  const lineInitial = await getTotalLine();
+  saveDataOrUpdate(file, Number(offset), Number(limit), lineInitial);
   res.json({ name: 'first initialization with file compressed' });
 });
 
@@ -121,9 +121,9 @@ router.get('/firstInitialization', async (req, res) => {
  */
 router.get('/updateDatabase', async (req, res) => {
   let { offset, limit } = req.query;
+  const { file } = req.query;
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  const file = './dataUPW/update.gz';
   const lineInitial = await getTotalLine();
   saveDataOrUpdate(file, Number(offset), Number(limit), lineInitial);
   res.json({ name: 'update database ...' });
@@ -137,9 +137,7 @@ router.get('/updateDatabase', async (req, res) => {
 router.get('/databaseStatus', (req, res) => {
   const status = {};
   async function databaseStatus() {
-    status.doi = await UnPayWallModel.count({
-      distinct: true,
-    });
+    status.doi = await UnPayWallModel.count({});
     status.is_oa = await UnPayWallModel.count({
       where: {
         is_oa: true,
@@ -179,7 +177,7 @@ router.get('/databaseStatus', (req, res) => {
       },
     });
     logger.info(`Databse status - doi:${status.doi}, is_oa ${status.is_oa}, journal_issn_l: ${status.journal_issn_l}, publisher: ${status.publisher}, gold: ${status.gold}, hybrid: ${status.hybrid}, bronze: ${status.bronze}, green: ${status.green}, closed: ${status.closed}`);
-    res.json({
+    res.status(200).json({
       doi: status.doi,
       is_oa: status.is_oa,
       journal_issn_l: status.journal_issn_l,
@@ -192,6 +190,49 @@ router.get('/databaseStatus', (req, res) => {
     });
   }
   databaseStatus();
+});
+
+/**
+ * @api {get} /databaseStatus get informations of content database
+ * @apiName GetDatabaseStatus
+ * @apiGroup ManageDatabase
+ */
+router.get('/dowloadUpdate', async (req, res) => {
+  let response;
+  try {
+    response = await axios({
+      method: 'get',
+      url: `https://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+  if (response && response.data) {
+    try {
+      const compressedFile = await axios({
+        method: 'get',
+        url: response.data.list[4].url,
+        responseType: 'stream',
+        headers: { 'Content-Type': 'application/octet-stream' },
+      });
+      if (compressedFile && compressedFile.data) {
+        const writeStream = compressedFile.data.pipe(fs.createWriteStream(`./download/${response.data.list[4].filename}`));
+        writeStream.on('finish', () => {
+          axios({
+            method: 'get',
+            url: `http://localhost:${config.get('API_PORT')}/updateDatabase?file=./download/${response.data.list[4].filename}`,
+          });
+          res.status(200).json({ type: 'succes', status: 200, msg: 'dowload update snapshot finish' });
+        });
+        writeStream.on('error', (error) => {
+          res.status(500).json(error);
+        });
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
 });
 
 module.exports = router;
