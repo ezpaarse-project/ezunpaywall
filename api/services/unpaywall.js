@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 const readline = require('readline');
 const zlib = require('zlib');
 const axios = require('axios');
@@ -9,8 +9,10 @@ const UnPayWallModel = require('../graphql/unpaywall/model');
 const logger = require('../../logs/logger');
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'download');
-// UnPayWall attributes
+fs.ensureDir(downloadDir);
 
+
+// UnPayWall attributes
 const raw = [
   'best_oa_location',
   'data_standard',
