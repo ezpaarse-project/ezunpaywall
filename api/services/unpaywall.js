@@ -38,12 +38,16 @@ let metadata = {};
 let lineRead = 0;
 
 const status = {
+  inProcess: false,
   status: '',
   currentFile: 'unpaywall_snapshot.jsonl.gz',
   download: '',
+  percentDownload: '',
   lineRead: '',
+  pourcentRead: '',
   lineProcessed: 0,
-  inProcess: false,
+  createdAt: '',
+  endAt: '',
 };
 
 const upsertUPW = (data) => {
@@ -87,7 +91,8 @@ const saveDataOrUpdate = async (options) => {
     }
     lineRead += 1;
     const percent = (lineRead / metadata.lines) * 100;
-    status.lineRead = `${lineRead} lines / ${metadata.lines - opts.offset} lines ${percent.toFixed(2)}%`;
+    status.lineRead = `${lineRead} lines / ${metadata.lines - opts.offset} lines`;
+    status.percentRead = percent.toFixed(2);
     if ((status.lineProcessed % 1000) === 0 && status.lineProcessed !== 0) {
       await upsertUPW(tab);
       tab = [];
@@ -106,6 +111,7 @@ const saveDataOrUpdate = async (options) => {
   logger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
   logger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial + opts.offset)}`);
   logger.info(`Number of errors : ${lineRead - (status.lineProcessed + opts.offset)}`);
+  setStatus('endAt', new Date());
   setStatus('inProcess', false);
   opts = { offset: 0, limit: -1 };
 };
@@ -124,7 +130,8 @@ const downloadUpdateSnapshot = async () => {
       headers: { 'Content-Type': 'application/octet-stream' },
     });
     if (compressedFile && compressedFile.data) {
-      const writeStream = compressedFile.data.pipe(fs.createWriteStream(`./download/${metadata.filename}`));
+      const writeStream = compressedFile.data
+        .pipe(fs.createWriteStream(path.resolve(__dirname, downloadDir, metadata.filename)));
       logger.info(`Download update snapshot : ${metadata.filename}`);
       logger.info(`filetype : ${metadata.filetype}`);
       logger.info(`lines : ${metadata.lines}`);
@@ -140,7 +147,8 @@ const downloadUpdateSnapshot = async () => {
         fs.stat(`./download/${metadata.filename}`, (err, stats) => {
           if (err) throw err;
           percent = (stats.size / metadata.size) * 100;
-          status.download = `${prettyBytes(stats.size)} / ${prettyBytes(metadata.size)} ${percent.toFixed(2)}%`;
+          status.download = `${prettyBytes(stats.size)} / ${prettyBytes(metadata.size)}`;
+          status.percentDownload = percent.toFixed(2);
         });
         if (Number.parseInt(percent, 10) < 100) {
           setTimeout(stat, 1000);
@@ -167,6 +175,7 @@ module.exports = {
   getUpdateSnapshotMetadatas: async () => {
     let response;
     try {
+      setStatus('createdAt', new Date());
       setStatus('inProcess', true);
       setStatus('status', 'ask UPW to get metadatas');
       response = await axios({

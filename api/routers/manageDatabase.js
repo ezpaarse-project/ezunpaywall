@@ -49,7 +49,7 @@ router.get('/action/:action(update|init)', async (req, res) => {
 
 /**
  * @api {get} /update/download get informations of content database
- * @apiName downloadUpdate
+ * @apiName DownloadUpdate
  * @apiGroup ManageDatabase
  */
 router.get('/update/download', async (req, res) => {
