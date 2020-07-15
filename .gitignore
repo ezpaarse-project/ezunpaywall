@@ -5,6 +5,6 @@ mongo-volume
 package-lock.json
 extract.json
 download/
-logs/result.log
+*.log
 db/
 unpaywall.local.env.sh

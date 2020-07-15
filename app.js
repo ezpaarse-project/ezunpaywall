@@ -8,7 +8,6 @@ const CronJob = require('cron');
 
 const schema = require('./api/graphql/graphql');
 
-const port = config.get('API_PORT');
 // routers
 const RouterManageDatabase = require('./api/routers/manageDatabase');
 
@@ -40,24 +39,25 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), graphqlHTTP({
   graphiql: true,
 }));
 
-// routers
-app.use(RouterManageDatabase);
-
 app.get('/', (req, res) => {
   res.json({
-    graphiql: `http://localhost:${port}/graphql`,
-    archive: `http://localhost:${port}/firstInitialization?offset=100&limit=1000`,
-    update: `http://localhost:${port}/updateDatabase`,
-    status: `http://localhost:${port}/databaseStatus`,
-    dowloadUpdate: `http://localhost:${port}/dowloadUpdate`,
+    graphiql: `http://localhost:${config.get('API_PORT')}/graphql`,
+    archive: `http://localhost:${config.get('API_PORT')}/action/init?offset=100&limit=1000`,
+    update: `http://localhost:${config.get('API_PORT')}/action/update`,
+    status: `http://localhost:${config.get('API_PORT')}/database/status`,
+    downloadUpdate: `http://localhost:${config.get('API_PORT')}/update/download`,
+    processStatus: `http://localhost:${config.get('API_PORT')}/process/status`,
   });
 });
+
+// routers
+app.use(RouterManageDatabase);
 
 // TODO CRON
 // const update = new CronJob('* * * * * Wen', () => {
 //   axios({
 //     method: 'get',
-//     url: `http://localhost:${port}/dowloadUpdate`,
+//     url: `http://localhost:${config.get('API_PORT')}/downloadUpdate`,
 //   });
 // });
 
@@ -69,6 +69,6 @@ app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, mess
 
 app.use((error, req, res, next) => res.status(500).json({ type: 'error', code: 500, message: error.message }));
 
-app.listen(port, () => console.log('Graphql server up !'));
+app.listen(config.get('API_PORT'), () => console.log('Graphql server up !'));
 
 module.exports = app;

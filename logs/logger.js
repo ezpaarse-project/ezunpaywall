@@ -4,14 +4,20 @@ const {
   format,
 } = require('winston');
 
+require('winston-daily-rotate-file');
+
+const path = require('path');
+
 const { combine, timestamp, printf } = format;
 
-const myFormat = printf(({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`);
+const myFormat = printf(({ level, message, timestamp: currentTime }) => `${currentTime} ${level}: ${message}`);
 
 // logger configuration
 const logConfiguration = [
-  new transports.File({
-    filename: './logs/result.log',
+  new transports.DailyRotateFile({
+    name: 'file',
+    filename: path.resolve(__dirname, '%DATE%.log'),
+    datePattern: 'yyyy-MM-DD',
     level: 'info',
   }),
 ];

@@ -8,6 +8,7 @@ const password = config.get('POSTGRES_PASSWORD');
 const host = config.get('POSTGRES_HOST');
 
 module.exports = new Sequelize(db, user, password, {
+  logging: false, // cancel the log in console
   host,
   dialect: 'postgres',
   operatorsAliases: false,
