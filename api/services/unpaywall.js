@@ -37,17 +37,30 @@ const raw = [
 let metadata = {};
 let lineRead = 0;
 
+// this object is visible at /process/status
 const status = {
   inProcess: false,
-  status: '',
-  currentFile: 'unpaywall_snapshot.jsonl.gz',
-  download: '',
-  percentDownload: '',
-  lineRead: '',
-  pourcentRead: '',
-  lineProcessed: 0,
+  route: 'init',
+  currentStatus: '',
+  currentFile: '',
+  askAPI: {
+    success: '',
+    time: '',
+  },
+  download: {
+    size: '',
+    percent: '',
+    time: '',
+  },
+  upsert: {
+    lineRead: '',
+    percent: '',
+    lineProcessed: 0,
+    time: '',
+  },
   createdAt: '',
   endAt: '',
+  time: '',
 };
 
 const upsertUPW = (data) => {
@@ -58,17 +71,20 @@ const upsertUPW = (data) => {
     });
 };
 
-const setStatus = (key, value) => { status[key] = value; };
 const getTotalLine = async () => UnPayWallModel.count({});
 
 /**
  * stream compressed snapshot file and do insert
  */
 const saveDataOrUpdate = async (options) => {
+  if (status.createdAt === '') {
+    status.createdAt = new Date();
+    status.currentFile = 'unpaywall_snapshot.jsonl.gz';
+  }
   const lineInitial = await getTotalLine();
   let opts = options || { offset: 0, limit: -1 };
   // stream initialization
-  setStatus('status', 'upsert');
+  status.currentStatus = 'upsert';
   const readStream = fs.createReadStream(path.resolve(__dirname, downloadDir, status.currentFile))
     .pipe(zlib.createGunzip());
   const start = new Date();
@@ -85,15 +101,19 @@ const saveDataOrUpdate = async (options) => {
     }
     // test offset
     if (lineRead >= opts.offset) {
-      status.lineProcessed += 1;
+      status.upsert.lineProcessed += 1;
       const data = JSON.parse(line);
       tab.push(data);
     }
     lineRead += 1;
-    const percent = (lineRead / metadata.lines) * 100;
-    status.lineRead = `${lineRead} lines / ${metadata.lines - opts.offset} lines`;
-    status.percentRead = percent.toFixed(2);
-    if ((status.lineProcessed % 1000) === 0 && status.lineProcessed !== 0) {
+    if (status.route === 'update') {
+      const percent = (lineRead / metadata.lines) * 100;
+      status.upsert.lineRead = `${lineRead} lines / ${metadata.lines - opts.offset} lines`;
+      status.upsert.percent = percent.toFixed(2);
+    } else {
+      status.upsert.lineRead = `${lineRead} lines`;
+    }
+    if ((status.upsert.lineProcessed % 1000) === 0 && status.upsert.lineProcessed !== 0) {
       await upsertUPW(tab);
       tab = [];
     }
@@ -102,18 +122,22 @@ const saveDataOrUpdate = async (options) => {
   if (Math.max(status.lineProcessed, 1, 1000)) {
     await upsertUPW(tab);
   }
+  opts = { offset: 0, limit: -1 };
   const lineFinal = await getTotalLine();
   const total = (new Date() - start) / 1000;
   logger.info('============= FINISH =============');
   logger.info(`${total} seconds`);
-  logger.info(`Number of lines read : ${lineRead} / ${metadata.lines} (from UPW)`);
+  logger.info(`Number of lines read : ${lineRead}`);
+  if (status.route === 'update') {
+    logger.info(`Number of lines announced : ${metadata.lines}`);
+  }
   logger.info(`Number of treated lines : ${status.lineProcessed}`);
   logger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
   logger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial + opts.offset)}`);
   logger.info(`Number of errors : ${lineRead - (status.lineProcessed + opts.offset)}`);
-  setStatus('endAt', new Date());
-  setStatus('inProcess', false);
-  opts = { offset: 0, limit: -1 };
+  status.endAt = new Date();
+  status.time = (status.createdAt - status.endAt) / 1000;
+  status.inProcess = false;
 };
 
 /**
@@ -121,8 +145,9 @@ const saveDataOrUpdate = async (options) => {
  */
 const downloadUpdateSnapshot = async () => {
   try {
-    setStatus('currentFile', metadata.filename);
-    setStatus('status', 'download snapshot');
+    const start = new Date();
+    status.currentFile = metadata.filename;
+    status.currentStatus = 'download snapshot';
     const compressedFile = await axios({
       method: 'get',
       url: metadata.url,
@@ -139,6 +164,7 @@ const downloadUpdateSnapshot = async () => {
       logger.info(`to_date : ${metadata.to_date}`);
       writeStream.on('finish', () => {
         logger.info('download finish, start insert');
+        status.download.time = (new Date() - start) / 1000;
         saveDataOrUpdate();
       });
 
@@ -147,19 +173,19 @@ const downloadUpdateSnapshot = async () => {
         fs.stat(`./download/${metadata.filename}`, (err, stats) => {
           if (err) throw err;
           percent = (stats.size / metadata.size) * 100;
-          status.download = `${prettyBytes(stats.size)} / ${prettyBytes(metadata.size)}`;
-          status.percentDownload = percent.toFixed(2);
+          status.download.size = `${prettyBytes(stats.size)} / ${prettyBytes(metadata.size)}`;
+          status.download.percent = percent.toFixed(2);
         });
         if (Number.parseInt(percent, 10) < 100) {
           setTimeout(stat, 1000);
         }
       }());
       writeStream.on('error', () => {
-        setStatus('inProcess', false);
+        status.inProcess = false;
       });
     }
   } catch (error) {
-    setStatus('inProcess', false);
+    status.inProcess = false;
   }
 };
 
@@ -167,7 +193,6 @@ module.exports = {
   getStatus: () => status,
   getTotalLine,
   saveDataOrUpdate,
-
   /**
    * ask UPW to get the latest update snapshot
    * @returns snapshot metadatas
@@ -175,9 +200,11 @@ module.exports = {
   getUpdateSnapshotMetadatas: async () => {
     let response;
     try {
-      setStatus('createdAt', new Date());
-      setStatus('inProcess', true);
-      setStatus('status', 'ask UPW to get metadatas');
+      const start = new Date();
+      status.createdAt = new Date();
+      status.route = 'update';
+      status.inProcess = true;
+      status.currentStatus = 'ask UPW to get metadatas';
       response = await axios({
         method: 'get',
         url: `https://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`,
@@ -186,10 +213,12 @@ module.exports = {
       // TODO refaire à la yannick
       if (response.data.list.length) {
         metadata = response.data.list[4];
+        status.askAPI.success = true;
+        status.askAPI.time = (new Date() - start) / 1000;
         downloadUpdateSnapshot();
       }
     } catch (error) {
-      setStatus('inProcess', false);
+      status.inProcess = false;
     }
   },
 

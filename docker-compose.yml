@@ -20,7 +20,7 @@ services:
     working_dir: /app
     volumes:
       - ./:/app
-    command: "npm run dev"
+    command: "npm start"
     ports:
       - "${API_PORT}:8080"
       
