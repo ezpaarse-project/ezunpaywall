@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
 const axios = require('axios');
+const fs = require('fs-extra');
+const path = require('path');
 const config = require('config');
 const CronJob = require('cron');
 
@@ -15,6 +17,13 @@ const RouterManageDatabase = require('./api/routers/manageDatabase');
 const db = require('./database/database');
 // init database
 const initTableUPW = require('./database/initTableUPW');
+
+const downloadDir = path.resolve(__dirname, 'download');
+fs.ensureDir(downloadDir);
+const initialSnapShotUnpaywall = path.resolve(__dirname, 'download', 'unpaywall_snapshot.jsonl.gz');
+fs.ensureFile(initialSnapShotUnpaywall, (err) => {
+  if (err) { console.log('the initial snapshot of Unpaywall is not installed, check: https://www.google.com/url?q=https://unpaywall-data-snapshots.s3-us-west-2.amazonaws.com/unpaywall_snapshot_2020-04-27T153236.jsonl.gz&sa=D&ust=1592233250776000&usg=AFQjCNHGTZDSmFXIkZW0Fw6y3R7-zPr5bAto install it'); }
+});
 
 // test connexion with sequelize
 db.authenticate()

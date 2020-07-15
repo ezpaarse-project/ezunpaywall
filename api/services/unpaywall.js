@@ -9,8 +9,6 @@ const UnPayWallModel = require('../graphql/unpaywall/model');
 const logger = require('../../logs/logger');
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'download');
-fs.ensureDir(downloadDir);
-
 
 // UnPayWall attributes
 const raw = [
@@ -40,7 +38,7 @@ let metadata = {};
 let lineRead = 0;
 
 // this object is visible at /process/status
-const status = {
+let status = {
   inProcess: false,
   route: 'init',
   currentStatus: '',
@@ -63,6 +61,33 @@ const status = {
   createdAt: '',
   endAt: '',
   time: '',
+};
+
+const resetStatus = () => {
+  status = {
+    inProcess: false,
+    route: 'init',
+    currentStatus: '',
+    currentFile: '',
+    askAPI: {
+      success: '',
+      time: '',
+    },
+    download: {
+      size: '',
+      percent: '',
+      time: '',
+    },
+    upsert: {
+      lineRead: '',
+      percent: '',
+      lineProcessed: 0,
+      time: '',
+    },
+    createdAt: '',
+    endAt: '',
+    time: '',
+  };
 };
 
 const upsertUPW = (data) => {
@@ -138,8 +163,8 @@ const saveDataOrUpdate = async (options) => {
   logger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial + opts.offset)}`);
   logger.info(`Number of errors : ${lineRead - (status.lineProcessed + opts.offset)}`);
   status.endAt = new Date();
-  status.time = (status.createdAt - status.endAt) / 1000;
-  status.inProcess = false;
+  status.time = (status.endAt - status.createdAt) / 1000;
+  resetStatus();
 };
 
 /**
@@ -183,11 +208,11 @@ const downloadUpdateSnapshot = async () => {
         }
       }());
       writeStream.on('error', () => {
-        status.inProcess = false;
+        resetStatus();
       });
     }
   } catch (error) {
-    status.inProcess = false;
+    resetStatus();
   }
 };
 
@@ -220,7 +245,7 @@ module.exports = {
         downloadUpdateSnapshot();
       }
     } catch (error) {
-      status.inProcess = false;
+      resetStatus();
     }
   },
 

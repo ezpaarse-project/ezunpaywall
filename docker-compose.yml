@@ -16,10 +16,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       - API_KEY_UPW=${API_KEY_UPW}
-    user: "node"
-    working_dir: /app
     volumes:
-      - ./:/app
+      - ./download:/usr/src/app/download
     command: "npm start"
     ports:
       - "${API_PORT}:8080"
