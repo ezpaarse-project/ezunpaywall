@@ -6,6 +6,7 @@ const {
   getUpdateSnapshotMetadatas,
   getStatus,
   saveDataOrUpdate,
+  resetStatus,
 } = require('../services/unpaywall');
 
 /**
@@ -35,6 +36,7 @@ router.use((req, res, next) => {
  * @apiParam (PARAMS) {String} name of request (update or init)
  */
 router.get('/action/:action(update|init)', async (req, res) => {
+  resetStatus();
   let { offset, limit } = req.query;
   const { action } = req.params;
   if (!offset) { offset = 0; }
@@ -53,6 +55,7 @@ router.get('/action/:action(update|init)', async (req, res) => {
  * @apiGroup ManageDatabase
  */
 router.get('/update/download', async (req, res) => {
+  resetStatus();
   getUpdateSnapshotMetadatas();
   return res.status(200).json({
     type: 'success', code: 200, message: 'process start', url: `http://localhost:${config.get('API_PORT')}/process/status`,

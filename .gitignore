@@ -8,3 +8,4 @@ download/
 *.log
 db/
 unpaywall.local.env.sh
+reports/

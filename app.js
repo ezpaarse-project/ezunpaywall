@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
 app.use(RouterManageDatabase);
 
 // TODO CRON
-// const update = new CronJob('* * * * * Wen', () => {
+// const update = new CronJob('* * * * * Wed', () => {
 //   axios({
 //     method: 'get',
 //     url: `http://localhost:${config.get('API_PORT')}/downloadUpdate`,

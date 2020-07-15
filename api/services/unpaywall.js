@@ -9,6 +9,7 @@ const UnPayWallModel = require('../graphql/unpaywall/model');
 const logger = require('../../logs/logger');
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'download');
+const reportDir = path.resolve(__dirname, '..', '..', 'reports');
 
 // UnPayWall attributes
 const raw = [
@@ -40,7 +41,7 @@ let lineRead = 0;
 // this object is visible at /process/status
 let status = {
   inProcess: false,
-  route: 'init',
+  route: '',
   currentStatus: '',
   currentFile: '',
   askAPI: {
@@ -66,7 +67,7 @@ let status = {
 const resetStatus = () => {
   status = {
     inProcess: false,
-    route: 'init',
+    route: '',
     currentStatus: '',
     currentFile: '',
     askAPI: {
@@ -90,6 +91,14 @@ const resetStatus = () => {
   };
 };
 
+const createReport = () => {
+  try {
+    fs.writeFileSync(`${reportDir}/${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(status, null, 2));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const upsertUPW = (data) => {
   logger.info(`${lineRead}th Lines processed`);
   UnPayWallModel.bulkCreate(data, { updateOnDuplicate: raw })
@@ -104,12 +113,14 @@ const getTotalLine = async () => UnPayWallModel.count({});
  * stream compressed snapshot file and do insert
  */
 const saveDataOrUpdate = async (options) => {
+  let opts = options || { offset: 0, limit: -1 };
   if (status.createdAt === '') {
+    status.inProcess = true;
     status.createdAt = new Date();
     status.currentFile = 'unpaywall_snapshot.jsonl.gz';
+    status.route = `init?offset=${opts.offset}&limit=${opts.limit}`;
   }
   const lineInitial = await getTotalLine();
-  let opts = options || { offset: 0, limit: -1 };
   // stream initialization
   status.currentStatus = 'upsert';
   const readStream = fs.createReadStream(path.resolve(__dirname, downloadDir, status.currentFile))
@@ -163,8 +174,10 @@ const saveDataOrUpdate = async (options) => {
   logger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial + opts.offset)}`);
   logger.info(`Number of errors : ${lineRead - (status.lineProcessed + opts.offset)}`);
   status.endAt = new Date();
+  status.currentStatus = 'done';
   status.time = (status.endAt - status.createdAt) / 1000;
-  resetStatus();
+  status.inProcess = false;
+  createReport();
 };
 
 /**
@@ -208,11 +221,13 @@ const downloadUpdateSnapshot = async () => {
         }
       }());
       writeStream.on('error', () => {
-        resetStatus();
+        status.inProcess = false;
+        createReport();
       });
     }
   } catch (error) {
-    resetStatus();
+    status.inProcess = false;
+    createReport();
   }
 };
 
@@ -220,6 +235,7 @@ module.exports = {
   getStatus: () => status,
   getTotalLine,
   saveDataOrUpdate,
+  resetStatus,
   /**
    * ask UPW to get the latest update snapshot
    * @returns snapshot metadatas
@@ -245,7 +261,8 @@ module.exports = {
         downloadUpdateSnapshot();
       }
     } catch (error) {
-      resetStatus();
+      status.inProcess = false;
+      createReport();
     }
   },
 
