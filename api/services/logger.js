@@ -38,11 +38,11 @@ const apiConfiguration = [
 
 // create the logger
 module.exports = {
-  process: createLogger({
-    format: combine(timestamp(), myFormat),
+  processLogger: createLogger({
+    format: combine(colorize(), timestamp(), myFormat),
     transports: processConfiguration,
   }),
-  api: createLogger({
+  apiLogger: createLogger({
     level: 'info',
     format: combine(colorize(), timestamp(), myFormat),
     transports: apiConfiguration,

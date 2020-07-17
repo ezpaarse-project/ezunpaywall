@@ -1,4 +1,5 @@
 const pool = require('./pool');
+const { apiLogger } = require('../api/services/logger');
 
 module.exports = async function initTableUPW() {
   await pool.query(`CREATE TABLE IF NOT EXISTS  public.upws
@@ -31,8 +32,8 @@ module.exports = async function initTableUPW() {
 
   ALTER TABLE public.upws
       OWNER to postgres;`)
-    .then(() => console.log('Table upws exists'))
-    .catch((err) => console.log(err));
+    .then(() => apiLogger.info('Table upws exists'))
+    .catch((err) => apiLogger.error(err));
 
   pool.end();
 };

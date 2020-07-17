@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const config = require('config');
 const UnPayWallModel = require('../graphql/unpaywall/model');
-const logger = require('../services/logger');
+const { apiLogger } = require('../services/logger');
 const {
   getUpdateSnapshotMetadatas,
   getStatus,
@@ -106,7 +106,7 @@ router.get('/database/status', (req, res) => {
         oa_status: 'closed',
       },
     });
-    logger.info(`Databse status - doi:${status.doi}, is_oa ${status.is_oa}, journal_issn_l: ${status.journal_issn_l}, publisher: ${status.publisher}, gold: ${status.gold}, hybrid: ${status.hybrid}, bronze: ${status.bronze}, green: ${status.green}, closed: ${status.closed}`);
+    apiLogger.info(`Database status - doi:${status.doi}, is_oa ${status.is_oa}, journal_issn_l: ${status.journal_issn_l}, publisher: ${status.publisher}, gold: ${status.gold}, hybrid: ${status.hybrid}, bronze: ${status.bronze}, green: ${status.green}, closed: ${status.closed}`);
     res.status(200).json({
       doi: status.doi,
       is_oa: status.is_oa,

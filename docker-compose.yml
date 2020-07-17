@@ -9,6 +9,7 @@ services:
         - https_proxy
     container_name: APIUPW
     environment:
+      - NODE_ENV=production
       - http_proxy
       - https_proxy
       - POSTGRES_HOST=postgredb
