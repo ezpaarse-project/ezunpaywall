@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "ENV=prod node app.js",
-    "dev": "ENV=dev nodemon -e .js app.js",
+    "start": "NODE_ENV=production node app.js",
+    "dev": "NODE_ENV=development nodemon -e .js app.js",
     "test": "mocha --watch",
     "lint": "eslint --ext .js --ignore-path .gitignore .",
     "test:dev": "nodemon -w test/ -e .js --exec 'mocha'"
