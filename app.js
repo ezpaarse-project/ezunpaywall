@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
+const morgan = require('morgan');
 const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
@@ -17,6 +18,7 @@ const RouterManageDatabase = require('./api/routers/manageDatabase');
 const db = require('./database/database');
 // init database
 const initTableUPW = require('./database/initTableUPW');
+const { apiLogger } = require('./api/services/logger');
 
 const downloadDir = path.resolve(__dirname, 'download');
 fs.ensureDir(downloadDir);
@@ -25,16 +27,23 @@ fs.ensureDir(reportsDir);
 
 const initialSnapShotUnpaywall = path.resolve(__dirname, 'download', 'unpaywall_snapshot.jsonl.gz');
 fs.ensureFile(initialSnapShotUnpaywall, (err) => {
-  if (err) { console.log('the initial snapshot of Unpaywall is not installed, check: https://unpaywall-data-snapshots.s3-us-west-2.amazonaws.com/unpaywall_snapshot_2020-04-27T153236.jsonl.gz&sa=D&ust=1592233250776000&usg=AFQjCNHGTZDSmFXIkZW0Fw6y3R7-zPr5bAto install it'); }
+  if (err) { apiLogger.info('the initial snapshot of Unpaywall is not installed, check: https://unpaywall-data-snapshots.s3-us-west-2.amazonaws.com/unpaywall_snapshot_2020-04-27T153236.jsonl.gz&sa=D&ust=1592233250776000&usg=AFQjCNHGTZDSmFXIkZW0Fw6y3R7-zPr5bAto install it'); }
 });
-
-const connexionDatabase = async () => {
-  // test connexion with sequelize
-  return db.authenticate();
-};
 
 // start server
 const app = express();
+
+// middleware
+const isDev = process.env.NODE_ENV === 'development';
+if (isDev) app.use(morgan('dev'));
+if (!isDev) {
+  app.use(morgan('combined', {
+    stream: fs.createWriteStream(path.resolve(__dirname, 'logs', 'access.log'), { flags: 'a+' }),
+  }));
+}
+
+// routers
+app.use(RouterManageDatabase);
 
 const corsOptions = {
   origin: '*',
@@ -43,10 +52,14 @@ const corsOptions = {
 };
 
 // start graphql
-app.use('/graphql', cors(corsOptions), bodyParser.json(), graphqlHTTP({
-  schema,
-  graphiql: true,
-}));
+// TODO do a middleware to get time of request
+app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
+  const graphqlQuery = graphqlHTTP({
+    schema,
+    graphiql: true,
+  });
+  return graphqlQuery(req, res);
+});
 
 app.get('/', (req, res) => {
   res.json({
@@ -58,9 +71,6 @@ app.get('/', (req, res) => {
     processStatus: `http://localhost:${config.get('API_PORT')}/process/status`,
   });
 });
-
-// routers
-app.use(RouterManageDatabase);
 
 // TODO CRON
 // const update = new CronJob('* * * * * Wed', () => {
@@ -77,12 +87,12 @@ app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, mess
 
 app.use((error, req, res, next) => res.status(500).json({ type: 'error', code: 500, message: error.message }));
 
-connexionDatabase()
+db.authenticate()
   .then(async () => {
-    console.log('Database connected');
+    apiLogger.info('Database connected');
     await initTableUPW();
-    app.listen(config.get('API_PORT'), () => console.log(`Server listening on http://localhost:${config.get('API_PORT')}`));
+    app.listen(config.get('API_PORT'), () => apiLogger.info(`Server listening on http://localhost:${config.get('API_PORT')}`));
   })
-  .catch((err) => console.log(`Error: ${err}`));
+  .catch((err) => apiLogger.error(`Error: ${err}`));
 
 module.exports = app;
