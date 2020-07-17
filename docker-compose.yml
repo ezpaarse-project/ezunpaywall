@@ -18,6 +18,8 @@ services:
       - API_KEY_UPW=${API_KEY_UPW}
     volumes:
       - ./download:/usr/src/app/download
+      - ./logs:/usr/src/app/logs
+      - ./reports:/usr/src/app/reports
     command: "npm start"
     ports:
       - "${API_PORT}:8080"
