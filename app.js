@@ -28,13 +28,10 @@ fs.ensureFile(initialSnapShotUnpaywall, (err) => {
   if (err) { console.log('the initial snapshot of Unpaywall is not installed, check: https://unpaywall-data-snapshots.s3-us-west-2.amazonaws.com/unpaywall_snapshot_2020-04-27T153236.jsonl.gz&sa=D&ust=1592233250776000&usg=AFQjCNHGTZDSmFXIkZW0Fw6y3R7-zPr5bAto install it'); }
 });
 
-// test connexion with sequelize
-db.authenticate()
-  .then(() => console.log('Database connected'))
-  .catch((err) => console.log(`Error: ${err}`));
-
-// create if not exists table
-initTableUPW();
+const connexionDatabase = async () => {
+  // test connexion with sequelize
+  return db.authenticate();
+};
 
 // start server
 const app = express();
@@ -75,12 +72,17 @@ app.use(RouterManageDatabase);
 
 // update.start();
 
-
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
 
 app.use((error, req, res, next) => res.status(500).json({ type: 'error', code: 500, message: error.message }));
 
-app.listen(config.get('API_PORT'), () => console.log('Graphql server up !'));
+connexionDatabase()
+  .then(async () => {
+    console.log('Database connected');
+    await initTableUPW();
+    app.listen(config.get('API_PORT'), () => console.log(`Server listening on http://localhost:${config.get('API_PORT')}`));
+  })
+  .catch((err) => console.log(`Error: ${err}`));
 
 module.exports = app;
