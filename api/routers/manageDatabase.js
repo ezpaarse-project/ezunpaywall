@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const config = require('config');
 const UnPayWallModel = require('../graphql/unpaywall/model');
-const logger = require('../../logs/logger');
+const logger = require('../services/logger');
 const {
   getUpdateSnapshotMetadatas,
   getStatus,
@@ -43,11 +43,12 @@ router.get('/action/:action(update|init)', async (req, res) => {
   if (!limit) { limit = -1; }
   if (action === 'update' || action === 'init') {
     saveDataOrUpdate({ offset: Number(offset), limit: Number(limit) });
-    return res.status(200).json({ type: 'success', code: 200, message: `start ${action}` });
+    return res.status(200).json({
+      type: 'success', code: 200, message: `start ${action}`, url: `http://localhost:${config.get('API_PORT')}/process/status`,
+    });
   }
   return res.status(404).json({ type: 'error', code: 404, message: 'bad request' });
 });
-
 
 /**
  * @api {get} /update/download get informations of content database

@@ -6,7 +6,7 @@ const axios = require('axios');
 const config = require('config');
 const prettyBytes = require('pretty-bytes');
 const UnPayWallModel = require('../graphql/unpaywall/model');
-const logger = require('../../logs/logger');
+const logger = require('./logger');
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'download');
 const reportDir = path.resolve(__dirname, '..', '..', 'reports');
@@ -46,22 +46,22 @@ let status = {
   currentFile: '',
   askAPI: {
     success: '',
-    time: '',
+    took: '',
   },
   download: {
     size: '',
     percent: '',
-    time: '',
+    took: '',
   },
   upsert: {
     lineRead: '',
     percent: '',
     lineProcessed: 0,
-    time: '',
+    took: '',
   },
   createdAt: '',
   endAt: '',
-  time: '',
+  took: '',
 };
 
 const resetStatus = () => {
@@ -72,22 +72,22 @@ const resetStatus = () => {
     currentFile: '',
     askAPI: {
       success: '',
-      time: '',
+      took: '',
     },
     download: {
       size: '',
       percent: '',
-      time: '',
+      took: '',
     },
     upsert: {
       lineRead: '',
       percent: '',
       lineProcessed: 0,
-      time: '',
+      took: '',
     },
     createdAt: '',
     endAt: '',
-    time: '',
+    took: '',
   };
 };
 
@@ -100,7 +100,6 @@ const createReport = () => {
 };
 
 const upsertUPW = (data) => {
-  logger.info(`${lineRead}th Lines processed`);
   UnPayWallModel.bulkCreate(data, { updateOnDuplicate: raw })
     .catch((error) => {
       logger.error(`ERROR IN UPSERT : ${error}`);
@@ -149,11 +148,14 @@ const saveDataOrUpdate = async (options) => {
       status.upsert.lineRead = `${lineRead} lines / ${metadata.lines - opts.offset} lines`;
       status.upsert.percent = percent.toFixed(2);
     } else {
-      status.upsert.lineRead = `${lineRead} lines`;
+      status.upsert.lineRead = `${lineRead}`;
     }
     if ((status.upsert.lineProcessed % 1000) === 0 && status.upsert.lineProcessed !== 0) {
       await upsertUPW(tab);
       tab = [];
+    }
+    if (lineRead % 100000 === 0) {
+      logger.info(`${lineRead}th Lines processed`);
     }
   }
   // if have stays data to insert
@@ -175,7 +177,7 @@ const saveDataOrUpdate = async (options) => {
   logger.info(`Number of errors : ${lineRead - (status.lineProcessed + opts.offset)}`);
   status.endAt = new Date();
   status.currentStatus = 'done';
-  status.time = (status.endAt - status.createdAt) / 1000;
+  status.took = (status.endAt - status.createdAt) / 1000;
   status.inProcess = false;
   createReport();
 };
@@ -204,13 +206,13 @@ const downloadUpdateSnapshot = async () => {
       logger.info(`to_date : ${metadata.to_date}`);
       writeStream.on('finish', () => {
         logger.info('download finish, start insert');
-        status.download.time = (new Date() - start) / 1000;
+        status.download.took = (new Date() - start) / 1000;
         saveDataOrUpdate();
       });
 
       (function stat() {
         let percent = 0;
-        fs.stat(`./download/${metadata.filename}`, (err, stats) => {
+        fs.stat(path.resolve(downloadDir, metadata.filename), (err, stats) => {
           if (err) throw err;
           percent = (stats.size / metadata.size) * 100;
           status.download.size = `${prettyBytes(stats.size)} / ${prettyBytes(metadata.size)}`;
@@ -221,11 +223,13 @@ const downloadUpdateSnapshot = async () => {
         }
       }());
       writeStream.on('error', () => {
+        status.currentStatus = 'error';
         status.inProcess = false;
         createReport();
       });
     }
   } catch (error) {
+    status.currentStatus = 'error';
     status.inProcess = false;
     createReport();
   }
@@ -250,17 +254,17 @@ module.exports = {
       status.currentStatus = 'ask UPW to get metadatas';
       response = await axios({
         method: 'get',
-        url: `https://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`,
+        url: `http://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`,
         headers: { 'Content-Type': 'application/json' },
       });
-      // TODO refaire à la yannick
-      if (response.data.list.length) {
-        metadata = response.data.list[4];
+      if (response?.data?.list?.length) {
+        [metadata] = response.data.list;
         status.askAPI.success = true;
-        status.askAPI.time = (new Date() - start) / 1000;
+        status.askAPI.took = (new Date() - start) / 1000;
         downloadUpdateSnapshot();
       }
     } catch (error) {
+      status.currentStatus = 'error';
       status.inProcess = false;
       createReport();
     }
