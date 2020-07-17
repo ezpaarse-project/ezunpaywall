@@ -11,7 +11,6 @@ module.exports = new Sequelize(db, user, password, {
   logging: false, // cancel the log in console
   host,
   dialect: 'postgres',
-  operatorsAliases: false,
   pool: {
     max: 5,
     min: 0,

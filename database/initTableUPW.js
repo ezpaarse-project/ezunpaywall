@@ -31,7 +31,7 @@ module.exports = async function initTableUPW() {
 
   ALTER TABLE public.upws
       OWNER to postgres;`)
-    .then(() => console.log('create table success'))
+    .then(() => console.log('Table upws exists'))
     .catch((err) => console.log(err));
 
   pool.end();
