@@ -1,0 +1,28 @@
+{
+  "doi": "doi-test2",
+  "year": 2013,
+  "genre": "component",
+  "is_oa": false,
+  "title": "Global trade in ICT goods and top ten exporters, 2000 and 2011",
+  "doi_url": "https://doi.org/10.1787/sti_scoreboard-2013-graph205-en",
+  "updated": "2020-03-19T20:54:49.500840",
+  "oa_status": "closed",
+  "publisher": "Organisation for Economic Co-Operation and Development (OECD)",
+  "z_authors": [
+    {
+      "name": "OECD",
+      "sequence": "first"
+    }
+  ],
+  "is_paratext": false,
+  "journal_name": null,
+  "oa_locations": [],
+  "data_standard": 2,
+  "journal_is_oa": false,
+  "journal_issns": null,
+  "journal_issn_l": null,
+  "published_date": "2013-10-23",
+  "best_oa_location": null,
+  "journal_is_in_doaj": false,
+  "has_repository_copy": false
+}
