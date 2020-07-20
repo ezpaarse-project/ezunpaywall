@@ -134,7 +134,7 @@ const saveDataOrUpdate = async (options) => {
       tab = [];
     }
     if (lineRead % 100000 === 0) {
-      processLogger.info(`${lineRead}th Lines processed`);
+      processLogger.info(`${lineRead}th Lines reads`);
     }
   }
   // if have stays data to insert
