@@ -63,12 +63,12 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
 
 app.get('/', (req, res) => {
   res.json({
-    graphiql: `http://localhost:${config.get('API_PORT')}/graphql`,
-    archive: `http://localhost:${config.get('API_PORT')}/action/init?offset=100&limit=1000`,
-    update: `http://localhost:${config.get('API_PORT')}/action/update`,
-    status: `http://localhost:${config.get('API_PORT')}/database/status`,
-    downloadUpdate: `http://localhost:${config.get('API_PORT')}/update/download`,
-    processStatus: `http://localhost:${config.get('API_PORT')}/process/status`,
+    graphiql: '/graphql',
+    archive: '/action/init?offset=100&limit=1000',
+    update: '/action/update',
+    status: '/database/status',
+    downloadUpdate: '/update/download',
+    processStatus: '/process/status',
   });
 });
 
@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
 // const update = new CronJob('* * * * * Wed', () => {
 //   axios({
 //     method: 'get',
-//     url: `http://localhost:${config.get('API_PORT')}/downloadUpdate`,
+//     url: '/downloadUpdate',
 //   });
 // });
 
@@ -91,7 +91,7 @@ db.authenticate()
   .then(async () => {
     apiLogger.info('Database connected');
     await initTableUPW();
-    app.listen(config.get('API_PORT'), () => apiLogger.info(`Server listening on http://localhost:${config.get('API_PORT')}`));
+    app.listen(config.get('API_PORT'), () => apiLogger.info(`Server listening on ${config.get('API_PORT')}`));
   })
   .catch((err) => apiLogger.error(`Error: ${err}`));
 
