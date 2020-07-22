@@ -6,6 +6,7 @@ const {
   getStatus,
   saveDataOrUpdate,
   resetStatus,
+  databaseStatus,
 } = require('../services/unpaywall');
 
 /**
@@ -68,58 +69,21 @@ router.get('/update/download', async (req, res) => {
  * @apiName GetDatabaseStatus
  * @apiGroup ManageDatabase
  */
-router.get('/database/status', (req, res) => {
-  const status = {};
-  async function databaseStatus() {
-    status.doi = await UnPayWallModel.count({});
-    status.is_oa = await UnPayWallModel.count({});
-    status.journal_issn_l = await UnPayWallModel.count({
-      col: 'journal_issn_l',
-      distinct: true,
-    });
-    status.publisher = await UnPayWallModel.count({
-      col: 'publisher',
-      distinct: true,
-    });
-    status.gold = await UnPayWallModel.count({
-      where: {
-        oa_status: 'gold',
-      },
-    });
-    status.hybrid = await UnPayWallModel.count({
-      where: {
-        oa_status: 'hybrid',
-      },
-    });
-    status.bronze = await UnPayWallModel.count({
-      where: {
-        oa_status: 'bronze',
-      },
-    });
-    status.green = await UnPayWallModel.count({
-      where: {
-        oa_status: 'green',
-      },
-    });
-    status.closed = await UnPayWallModel.count({
-      where: {
-        oa_status: 'closed',
-      },
-    });
-    apiLogger.info(`Database status - doi:${status.doi}, is_oa ${status.is_oa}, journal_issn_l: ${status.journal_issn_l}, publisher: ${status.publisher}, gold: ${status.gold}, hybrid: ${status.hybrid}, bronze: ${status.bronze}, green: ${status.green}, closed: ${status.closed}`);
-    res.status(200).json({
-      doi: status.doi,
-      is_oa: status.is_oa,
-      journal_issn_l: status.journal_issn_l,
-      publisher: status.publisher,
-      gold: status.gold,
-      hybrid: status.hybrid,
-      bronze: status.bronze,
-      green: status.green,
-      closed: status.closed,
-    });
-  }
-  databaseStatus();
+router.get('/database/status', async (req, res) => {
+  const status = await databaseStatus();
+  apiLogger.info(`Database status - doi:${status.doi}, is_oa ${status.is_oa}, journal_issn_l: ${status.journal_issn_l}, publisher: ${status.publisher}, gold: ${status.gold}, hybrid: ${status.hybrid}, bronze: ${status.bronze}, green: ${status.green}, closed: ${status.closed}`);
+  res.status(200).json({
+    doi: status.doi,
+    is_oa: status.is_oa,
+    journal_issn_l: status.journal_issn_l,
+    publisher: status.publisher,
+    gold: status.gold,
+    hybrid: status.hybrid,
+    bronze: status.bronze,
+    green: status.green,
+    closed: status.closed,
+  });
+
 });
 
 module.exports = router;

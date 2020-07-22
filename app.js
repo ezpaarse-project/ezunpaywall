@@ -25,7 +25,6 @@ const downloadDir = path.resolve(__dirname, 'download');
 fs.ensureDir(downloadDir);
 const reportsDir = path.resolve(__dirname, 'reports');
 fs.ensureDir(reportsDir);
-
 const initialSnapShotUnpaywall = path.resolve(__dirname, 'download', 'unpaywall_snapshot.jsonl.gz');
 fs.ensureFile(initialSnapShotUnpaywall, (err) => {
   if (err) { apiLogger.info('the initial snapshot of Unpaywall is not installed, check: https://unpaywall-data-snapshots.s3-us-west-2.amazonaws.com/unpaywall_snapshot_2020-04-27T153236.jsonl.gz&sa=D&ust=1592233250776000&usg=AFQjCNHGTZDSmFXIkZW0Fw6y3R7-zPr5bAto install it'); }
@@ -44,16 +43,14 @@ if (!isDev) {
 }
 
 // routers
-app.use(RouterManageDatabase);
-app.use(RouterHomePage);
-app.use('/reports', express.static(`${__dirname}/reports`));
-
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve('homepage', 'index.html'));
+});
 const corsOptions = {
   origin: '*',
   methods: 'GET, POST',
   allowedHeaders: ['Content-Type'],
 };
-
 // start graphql
 // TODO do a middleware to get time of request
 app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
@@ -63,10 +60,10 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   });
   return graphqlQuery(req, res);
 });
-
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve('homepage', 'index.html'));
-});
+app.use(RouterHomePage);
+app.use('/reports', express.static(`${__dirname}/reports`));
+app.use('/status', express.static(`${__dirname}/status`));
+app.use(RouterManageDatabase);
 
 // TODO CRON
 // const update = new CronJob('* * * * * Wed', () => {
