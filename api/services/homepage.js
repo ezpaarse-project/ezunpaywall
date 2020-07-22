@@ -16,9 +16,13 @@ const getNamesOfFilesInDir = (dir, latest) => {
     }
   });
   if (latest) {
-    return filelist.map((file) => file.split('.')[0])
-      .sort((a, b) => new Date(b) - new Date(a))
-      .map((date) => `${date}.json`)[0];
+    return filelist.map((file) => {
+      const match = /^(\w*)-([0-9-T:]+)\.json$/i.exec(file);
+      if (match) return { type: match[1], date: match[2] };
+      return file;
+    })
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .map((file) => `${file.type}-${file.date}.json`)[0];
   }
   return filelist;
 };

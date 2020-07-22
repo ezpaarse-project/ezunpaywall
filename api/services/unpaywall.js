@@ -10,6 +10,7 @@ const { processLogger } = require('./logger');
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'download');
 const reportDir = path.resolve(__dirname, '..', '..', 'reports');
+const statusDir = path.resolve(__dirname, '..', '..', 'status');
 
 // UnPayWall attributes
 const raw = [
@@ -72,10 +73,55 @@ const resetStatus = () => {
 
 const createReport = () => {
   try {
-    fs.writeFileSync(`${reportDir}/${new Date().toString().slice(0, 16)}.json`, JSON.stringify(currentStatus, null, 2));
+    fs.writeFileSync(`${reportDir}/${this.status.route}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(currentStatus, null, 2));
   } catch (error) {
     processLogger.error(error);
   }
+};
+
+const databaseStatus = async () => {
+  const statusDB = {};
+  statusDB.doi = await UnPayWallModel.count({});
+  statusDB.is_oa = await UnPayWallModel.count({});
+  statusDB.journal_issn_l = await UnPayWallModel.count({
+    col: 'journal_issn_l',
+    distinct: true,
+  });
+  statusDB.publisher = await UnPayWallModel.count({
+    col: 'publisher',
+    distinct: true,
+  });
+  statusDB.gold = await UnPayWallModel.count({
+    where: {
+      oa_status: 'gold',
+    },
+  });
+  statusDB.hybrid = await UnPayWallModel.count({
+    where: {
+      oa_status: 'hybrid',
+    },
+  });
+  statusDB.bronze = await UnPayWallModel.count({
+    where: {
+      oa_status: 'bronze',
+    },
+  });
+  statusDB.green = await UnPayWallModel.count({
+    where: {
+      oa_status: 'green',
+    },
+  });
+  statusDB.closed = await UnPayWallModel.count({
+    where: {
+      oa_status: 'closed',
+    },
+  });
+  return statusDB;
+};
+
+const createStatus = async () => {
+  const dbStatus = await databaseStatus();
+  fs.writeFileSync(`${statusDir}/status-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(dbStatus, null, 2));
 };
 
 const upsertUPW = (data) => {
@@ -103,7 +149,8 @@ const saveDataOrUpdate = async (options) => {
   const lineInitial = await getTotalLine();
   // stream initialization
   currentStatus.currentStatus = 'upsert';
-  const readStream = fs.createReadStream(path.resolve(__dirname, downloadDir, currentStatus.currentFile))
+  const readStream = fs
+    .createReadStream(path.resolve(__dirname, downloadDir, currentStatus.currentFile))
     .pipe(zlib.createGunzip());
   const start = new Date();
   let tab = [];
@@ -129,7 +176,8 @@ const saveDataOrUpdate = async (options) => {
       currentStatus.upsert.percent = Math.ceil(percent, 2);
     }
     currentStatus.upsert.read = lineRead;
-    if ((currentStatus.upsert.lineProcessed % 1000) === 0 && currentStatus.upsert.lineProcessed !== 0) {
+    if ((currentStatus.upsert.lineProcessed % 1000) === 0
+      && currentStatus.upsert.lineProcessed !== 0) {
       await upsertUPW(tab);
       tab = [];
     }
@@ -157,7 +205,8 @@ const saveDataOrUpdate = async (options) => {
   currentStatus.currentStatus = 'done';
   currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
   currentStatus.inProcess = false;
-  createReport();
+  await createReport();
+  await createStatus();
 };
 
 /**
@@ -188,7 +237,7 @@ const downloadUpdateSnapshot = async () => {
         saveDataOrUpdate();
       });
 
-      (function stat() {
+      (function reloadStatus() {
         let percent = 0;
         fs.stat(path.resolve(downloadDir, metadata.filename), (err, stats) => {
           if (err) throw err;
@@ -197,7 +246,7 @@ const downloadUpdateSnapshot = async () => {
           currentStatus.download.percent = Math.ceil(percent, 2);
         });
         if (Number.parseInt(percent, 10) < 100) {
-          setTimeout(stat, 1000);
+          setTimeout(reloadStatus, 1000);
         }
       }());
       writeStream.on('error', () => {
@@ -218,6 +267,7 @@ module.exports = {
   getTotalLine,
   saveDataOrUpdate,
   resetStatus,
+  databaseStatus,
   /**
    * ask UPW to get the latest update snapshot
    * @returns snapshot metadatas

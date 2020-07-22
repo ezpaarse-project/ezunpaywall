@@ -8,6 +8,7 @@
   <title>Document</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.5/css/uikit.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
 </head>
 
 <body>
@@ -30,6 +31,14 @@
 
     <hr class="uk-divider-icon">
 
+    <!-- Status de base de données -->
+    <div class="uk-container">
+      <h3>Status de la base de données : {{ nameOfLatestDatabaseStatus }}</h3>
+      <pre class="uk-width-1-1@l">{{ latestDatabaseStatus }}</pre>
+    </div>
+
+    <hr class="uk-divider-icon">
+
     <!-- Recherche de DOI -->
     <div class="uk-container">
       <div class="uk-grid">
@@ -45,7 +54,7 @@
       <div class="uk-grid">
         <div class="uk-width uk-text-center">
           <a class="uk-button uk-button-default"
-            href="/graphql?=%7B%0A%20%20getDatasUPW%28dois%3A%5B%0A%20%20%20%20%2210.1002%2Fesp.3617%22%2C%2210.1503%2Fcmaj.100793%22%2C%0A%20%20%20%20%2210.14217%2F45f0ea46-en%22%2C%2210.1016%2Fj.cej.2012.09.010%22%0A%20%20%5D%29%20%0A%20%20%7B%0A%20%20%20%20doi%2C%20is_oa%0A%20%20%7D%0A%7D">Accèder
+            href='/graphql?=\"%7B%0A%20%20getDatasUPW%28dois%3A%5B%0A%20%20%20%20%2210.1002%2Fesp.3617%22%2C%2210.1503%2Fcmaj.100793%22%2C%0A%20%20%20%20%2210.14217%2F45f0ea46-en%22%2C%2210.1016%2Fj.cej.2012.09.010%22%0A%20%20%5D%29%20%0A%20%20%7B%0A%20%20%20%20doi%2C%20is_oa%0A%20%20%7D%0A%7D\"'>Accèder
             au terminal graphql</a>
         </div>
       </div>
@@ -53,18 +62,19 @@
 
     <hr class="uk-divider-icon">
 
-    <!-- Dernier rapport -->
+    <!-- Status des requêtes en co -->
     <div class="uk-container">
-      <h3>Dernier rapport de mise à jour de la base de données</h3>
-      <pre class="uk-width-1-1@l">{resultat}</pre>
+      <h3>Requêtes en cours</h3>
+      <pre class="uk-width-1-1@l" v-if="this.inProcess == false"> Aucun traitement en cours</pre>
+      <pre class="uk-width-1-1@l" v-if="this.inProcess == true"> {{ processStatus }}</pre>
     </div>
 
     <hr class="uk-divider-icon">
 
-    <!-- Status de base de données -->
+    <!-- Dernier rapport -->
     <div class="uk-container">
-      <h3>Status de la base de données</h3>
-      <pre class="uk-width-1-1@l">{resultat}</pre>
+      <h3>Dernier rapport de mise à jour de la base de données : {{ nameOfLatestReport }}</h3>
+      <pre class="uk-width-1-1@l">{{ latestReport }}</pre>
     </div>
 
     <hr class="uk-divider-icon">
@@ -73,8 +83,7 @@
     <div class="uk-container">
       <h3>Liste des snapshots d'Unpaywall</h3>
       <ul>
-        <li>fichier 1</li>
-        <li>fichier 1</li>
+        <li v-for="snapshot in snapshots" :key="snapshot.id"> {{ snapshot }}</li>
       </ul>
     </div>
   </div>
@@ -85,40 +94,109 @@
       data() {
         return {
           doi: '10.1002/esp.3617',
-          resultUPW: ''
+          resultUPW: '',
+          nameOfLatestReport: '',
+          latestReport: '',
+          nameOfLatestDatabaseStatus: '',
+          latestDatabaseStatus: '',
+          snapshots: '',
+          inProcess: true,
+          processStatus: '',
+          test: 1,
         };
       },
       methods: {
         getDataUPW(doi) {
           axios({
-            method: 'get',
-            url: `/graphql?query={getDatasUPW(dois:"${this.doi}"){doi, is_oa, best_oa_location{ url }}}`,
+            method: 'post',
+            url: `/graphql`,
+            data: {
+              query: `{getDatasUPW(dois:"${this.doi}"){doi, is_oa, best_oa_location{ url }}}`
+            }
           }).then((response) => {
             if(response.status === 200) { 
               this.resultUPW = JSON.stringify(response.data.data.getDatasUPW, null, 2);
             }
           });
         },
-        async getLatestReport() {
-          console.log('salut')
-          axios({
+        async getNameOfLatestReport() {
+          await axios({
             method: 'get',
             url: `/reports?latest=true`,
           }).then((response) => {
             if(response.status === 200) {
-              console.log(response);
+              this.nameOfLatestReport = response.data.data;
             }
           });
-        }
+        },
+        async getLatestReport() {
+          await axios({
+            method: 'get',
+            url: `/reports/${this.nameOfLatestReport}`,
+          }).then((response) => {
+            if(response.status === 200) {
+              this.latestReport = JSON.stringify(response.data, null, 2);
+            }
+          });
+        },
+        async getSnapshotList() {
+          await axios({
+            method: 'get',
+            url: `/download`,
+          }).then((response) => {
+            if(response.status === 200) {
+              this.snapshots = response.data.data;
+            }
+          });
+        },
+        getStatusInProgress() {
+          setTimeout(() => {
+            axios({
+            method: 'get',
+            url: `/process/status`,
+          }).then((response) => {
+            if(response.status === 200) {
+              this.inProcess = response.data.message.inProcess;
+              this.processStatus = response.data.message;
+              if(this.inProcess) {
+                this.getStatusInProgress()
+              }
+            }
+          });
+          }, 1000);
+        },
+        async getNameOfLatestDatabaseStatus() {
+          await axios({
+            method: 'get',
+            url: `/status?latest=true`,
+          }).then((response) => {
+            if(response.status === 200) {
+              this.nameOfLatestDatabaseStatus = response.data.data;
+            }
+          });
+        },
+        async getLatestDatabaseStatus() {
+          await axios({
+            method: 'get',
+            url: `/status/${this.nameOfLatestDatabaseStatus}`,
+          }).then((response) => {
+            if(response.status === 200) {
+              this.latestDatabaseStatus = JSON.stringify(response.data, null, 2);
+            }
+          });
+        },
       },
       async mounted() {
-        console.log('salut2')
-        this.getLatestReport();
+        await this.getNameOfLatestDatabaseStatus();
+        await this.getLatestDatabaseStatus();
+        await this.getNameOfLatestReport();
+        await this.getLatestReport();
+        await this.getSnapshotList();
+        this.getStatusInProgress();
       }
     });
   </script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
   <!-- css -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.5/js/uikit.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.5/js/uikit-icons.min.js"></script>
