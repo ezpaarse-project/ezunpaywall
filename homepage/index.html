@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <title>serveur ez-unpaywall</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.5/css/uikit.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+</head>
+
+<body>
+  <nav class="uk-navbar-container" uk-navbar>
+    <div class="uk-navbar-center">
+      <h1 class="uk-active">Serveur ez-unpaywall</h1>
+    </div>
+  </nav>
+
+  <div id="base">
+    <hr class="uk-divider-icon">
+
+    <!-- Description -->
+    <div class="uk-container">
+      Le serveur ez-unpaywall est une API en graphql qui intérroge une base de données ouverte de plus de 26 000 000 articles scientifiques disponible
+      en open-acess.
+      Ce projet découle d'un besoin pour le projet ezPAARSE, il permet entre autre de faire des requêtes par lot de DOI.
+       Cette base de données est mise à jour hedbomadairement tous les Mercredis pour les fichiers de mise à jour fournit par unpaywall.
+    </div>
+
+    <hr class="uk-divider-icon">
+
+    <!-- Recherche de DOI -->
+    <div class="uk-container">
+      <div class="uk-grid">
+        <form class="uk-search uk-search-default uk-width-5-6@l">
+          <input class="uk-search-input" type="search" placeholder="DOI" v-model=doi>
+        </form>
+        <button id="buttonDoi" class="uk-button uk-button-default uk-width-1-6@l"
+          v-on:click="getDataUPW">Entrer</button>
+      </div>
+
+      <pre class="uk-width-1-1@l"> {{ resultUPW }} </pre>
+
+      <div class="uk-grid">
+        <div class="uk-width uk-text-center">
+          <a class="uk-button uk-button-default"
+            href="/graphql?=%7B%0A%20%20getDatasUPW%28dois%3A%5B%0A%20%20%20%20%2210.1002%2Fesp.3617%22%2C%2210.1503%2Fcmaj.100793%22%2C%0A%20%20%20%20%2210.14217%2F45f0ea46-en%22%2C%2210.1016%2Fj.cej.2012.09.010%22%0A%20%20%5D%29%20%0A%20%20%7B%0A%20%20%20%20doi%2C%20is_oa%0A%20%20%7D%0A%7D">Accèder
+            au terminal graphql</a>
+        </div>
+      </div>
+    </div>
+
+    <hr class="uk-divider-icon">
+
+    <!-- Dernier rapport -->
+    <div class="uk-container">
+      <h3>Dernier rapport de mise à jour de la base de données</h3>
+      <pre class="uk-width-1-1@l">{resultat}</pre>
+    </div>
+
+    <hr class="uk-divider-icon">
+
+    <!-- Status de base de données -->
+    <div class="uk-container">
+      <h3>Status de la base de données</h3>
+      <pre class="uk-width-1-1@l">{resultat}</pre>
+    </div>
+
+    <hr class="uk-divider-icon">
+
+    <!-- Fichier télécharger -->
+    <div class="uk-container">
+      <h3>Liste des snapshots d'Unpaywall</h3>
+      <ul>
+        <li>fichier 1</li>
+        <li>fichier 1</li>
+      </ul>
+    </div>
+  </div>
+
+  <script language="JavaScript">
+    const app = new Vue({
+      el: '#base',
+      data() {
+        return {
+          doi: '10.1002/esp.3617',
+          resultUPW: ''
+        };
+      },
+      methods: {
+        getDataUPW(doi) {
+          axios({
+            method: 'get',
+            url: `/graphql?query={getDatasUPW(dois:"${this.doi}"){doi, is_oa, best_oa_location{ url }}}`,
+          }).then((response) => {
+            if(response.status === 200) { 
+              this.resultUPW = JSON.stringify(response.data.data.getDatasUPW, null, 2);
+            }
+          });
+        },
+        async getLatestReport() {
+          console.log('salut')
+          axios({
+            method: 'get',
+            url: `/reports?latest=true`,
+          }).then((response) => {
+            if(response.status === 200) {
+              console.log(response);
+            }
+          });
+        }
+      },
+      async mounted() {
+        console.log('salut2')
+        this.getLatestReport();
+      }
+    });
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+  <!-- css -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.5/js/uikit.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.5/js/uikit-icons.min.js"></script>
+</body>
+
+</html>

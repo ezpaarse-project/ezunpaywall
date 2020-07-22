@@ -13,6 +13,7 @@ const schema = require('./api/graphql/graphql');
 
 // routers
 const RouterManageDatabase = require('./api/routers/manageDatabase');
+const RouterHomePage = require('./api/routers/homepage');
 
 // postgresql
 const db = require('./database/database');
@@ -44,6 +45,8 @@ if (!isDev) {
 
 // routers
 app.use(RouterManageDatabase);
+app.use(RouterHomePage);
+app.use('/reports', express.static(`${__dirname}/reports`));
 
 const corsOptions = {
   origin: '*',
@@ -62,14 +65,7 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.json({
-    graphiql: '/graphql',
-    archive: '/action/init?offset=100&limit=1000',
-    update: '/action/update',
-    status: '/database/status',
-    downloadUpdate: '/update/download',
-    processStatus: '/process/status',
-  });
+  res.sendFile(path.resolve('homepage', 'index.html'));
 });
 
 // TODO CRON
@@ -83,9 +79,9 @@ app.get('/', (req, res) => {
 // update.start();
 
 /* Errors and unknown routes */
-app.all('*', (req, res) => res.status(400).json({ type: 'error', code: 400, message: 'bad request' }));
+app.all('*', (req, res) => res.status(400).json({ type: 'error', message: 'bad request' }));
 
-app.use((error, req, res, next) => res.status(500).json({ type: 'error', code: 500, message: error.message }));
+app.use((error, req, res, next) => res.status(500).json({ type: 'error', message: error.message }));
 
 db.authenticate()
   .then(async () => {

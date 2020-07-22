@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const config = require('config');
 const UnPayWallModel = require('../graphql/unpaywall/model');
 const { apiLogger } = require('../services/logger');
 const {
@@ -14,7 +13,6 @@ const {
  */
 router.get('/process/status', (req, res) => res.status(200).json({
   type: 'success',
-  code: 200,
   message: getStatus(),
 }));
 
@@ -22,7 +20,7 @@ router.get('/process/status', (req, res) => res.status(200).json({
 router.use((req, res, next) => {
   if (getStatus().inProcess) {
     return res.status(409).json({
-      type: 'error', code: 409, message: 'process in progress', url: '/process/status',
+      type: 'error', message: 'process in progress', url: '/process/status',
     });
   }
   return next();
@@ -46,10 +44,10 @@ router.get('/action/:action(update|init)', async (req, res) => {
   if (action === 'update' || action === 'init') {
     saveDataOrUpdate({ offset: Number(offset), limit: Number(limit) });
     return res.status(200).json({
-      type: 'success', code: 200, message: `start ${action}`, url: '/process/status',
+      type: 'success', message: `start ${action}`, url: '/process/status',
     });
   }
-  return res.status(404).json({ type: 'error', code: 404, message: 'bad request' });
+  return res.status(404).json({ type: 'error', message: 'bad request' });
 });
 
 /**
@@ -61,7 +59,7 @@ router.get('/update/download', async (req, res) => {
   resetStatus();
   getUpdateSnapshotMetadatas();
   return res.status(200).json({
-    type: 'success', code: 200, message: 'process start', url: '/process/status',
+    type: 'success', message: 'process start', url: '/process/status',
   });
 });
 

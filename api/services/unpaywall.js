@@ -72,7 +72,7 @@ const resetStatus = () => {
 
 const createReport = () => {
   try {
-    fs.writeFileSync(`${reportDir}/${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(currentStatus, null, 2));
+    fs.writeFileSync(`${reportDir}/${new Date().toString().slice(0, 16)}.json`, JSON.stringify(currentStatus, null, 2));
   } catch (error) {
     processLogger.error(error);
   }
@@ -91,7 +91,7 @@ const getTotalLine = async () => UnPayWallModel.count({});
  * stream compressed snapshot file and do insert
  */
 const saveDataOrUpdate = async (options) => {
-  let opts = options || { offset: 0, limit: -1 };
+  const opts = options || { offset: 0, limit: -1 };
   if (currentStatus.createdAt === '') {
     currentStatus.inProcess = true;
     currentStatus.createdAt = new Date();
