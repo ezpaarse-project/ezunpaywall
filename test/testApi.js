@@ -2,8 +2,8 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const server = require('../app');
-const database = require('../database/database');
-const UnPayWallModel = require('../api/graphql/unpaywall/model');
+const database = require('../databaseManagement/settings/sequelize');
+const UnPayWallModel = require('../apiGraphql/unpaywall/model');
 
 chai.should();
 chai.use(chaiHttp);

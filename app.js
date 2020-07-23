@@ -3,29 +3,34 @@ const bodyParser = require('body-parser');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
 const morgan = require('morgan');
-const axios = require('axios');
+// const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
-const CronJob = require('cron');
+// const CronJob = require('cron');
 
-const schema = require('./api/graphql/graphql');
+const schema = require('./apiGraphql/graphql');
 
 // routers
-const RouterManageDatabase = require('./api/routers/manageDatabase');
-const RouterHomePage = require('./api/routers/homepage');
+const RouterManageDatabase = require('./databaseManagement/routers/databaseInteraction');
+const RouterHomePage = require('./databaseManagement/routers/accesToOutFiles');
 
 // postgresql
-const db = require('./database/database');
+const db = require('./databaseManagement/settings/sequelize');
 // init database
-const initTableUPW = require('./database/initTableUPW');
-const { apiLogger } = require('./api/services/logger');
+const initTableUPW = require('./databaseManagement/settings/initTableUPW');
+const { apiLogger } = require('./logger/logger');
 
-const downloadDir = path.resolve(__dirname, 'download');
+const outDir = path.resolve(__dirname, 'out');
+const downloadDir = path.resolve(__dirname, 'out', 'download');
+const reportsDir = path.resolve(__dirname, 'out', 'reports');
+const statusDir = path.resolve(__dirname, 'out', 'status');
+
+fs.ensureDir(outDir);
 fs.ensureDir(downloadDir);
-const reportsDir = path.resolve(__dirname, 'reports');
 fs.ensureDir(reportsDir);
-const initialSnapShotUnpaywall = path.resolve(__dirname, 'download', 'unpaywall_snapshot.jsonl.gz');
+fs.ensureDir(statusDir);
+const initialSnapShotUnpaywall = path.resolve(downloadDir, 'unpaywall_snapshot.jsonl.gz');
 fs.ensureFile(initialSnapShotUnpaywall, (err) => {
   if (err) { apiLogger.info('the initial snapshot of Unpaywall is not installed, check: https://unpaywall-data-snapshots.s3-us-west-2.amazonaws.com/unpaywall_snapshot_2020-04-27T153236.jsonl.gz&sa=D&ust=1592233250776000&usg=AFQjCNHGTZDSmFXIkZW0Fw6y3R7-zPr5bAto install it'); }
 });
@@ -38,7 +43,7 @@ const isDev = process.env.NODE_ENV === 'development';
 if (isDev) app.use(morgan('dev'));
 if (!isDev) {
   app.use(morgan('combined', {
-    stream: fs.createWriteStream(path.resolve(__dirname, 'logs', 'access.log'), { flags: 'a+' }),
+    stream: fs.createWriteStream(path.resolve(__dirname, 'out', 'logs', 'access.log'), { flags: 'a+' }),
   }));
 }
 
@@ -51,8 +56,9 @@ const corsOptions = {
   methods: 'GET, POST',
   allowedHeaders: ['Content-Type'],
 };
-// start graphql
+
 // TODO do a middleware to get time of request
+// initialize API graphql
 app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   const graphqlQuery = graphqlHTTP({
     schema,
@@ -60,16 +66,18 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   });
   return graphqlQuery(req, res);
 });
+// access to file in out
+app.use('/reports', express.static(`${__dirname}/out/reports`));
+app.use('/status', express.static(`${__dirname}/out/status`));
+app.use('/logs', express.static(`${__dirname}/out/logs`));
 app.use(RouterHomePage);
-app.use('/reports', express.static(`${__dirname}/reports`));
-app.use('/status', express.static(`${__dirname}/status`));
 app.use(RouterManageDatabase);
 
 // TODO CRON
 // const update = new CronJob('* * * * * Wed', () => {
 //   axios({
 //     method: 'get',
-//     url: '/downloadUpdate',
+//     url: '/weeklyUpdate',
 //   });
 // });
 
@@ -78,7 +86,7 @@ app.use(RouterManageDatabase);
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', message: 'bad request' }));
 
-app.use((error, req, res, next) => res.status(500).json({ type: 'error', message: error.message }));
+app.use((error, req, res) => res.status(500).json({ type: 'error', message: error.message }));
 
 db.authenticate()
   .then(async () => {

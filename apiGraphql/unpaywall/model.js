@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const db = require('../../../database/database');
+const db = require('../../databaseManagement/settings/sequelize');
 
 const UnPayWallModel = db.define('upw', {
   best_oa_location: {
@@ -64,6 +64,5 @@ const UnPayWallModel = db.define('upw', {
     type: Sequelize.ARRAY(Sequelize.JSON),
   },
 });
-
 
 module.exports = UnPayWallModel;
