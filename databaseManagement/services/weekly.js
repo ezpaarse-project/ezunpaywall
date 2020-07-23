@@ -5,75 +5,22 @@ const zlib = require('zlib');
 const axios = require('axios');
 const config = require('config');
 const prettyBytes = require('pretty-bytes');
-const UnPayWallModel = require('../graphql/unpaywall/model');
-const { processLogger } = require('./logger');
+const UnPayWallModel = require('../../apiGraphql/unpaywall/model');
+const { processLogger } = require('../../logger/logger');
+const { upsertUPW, getTotalLine, statusWeekly } = require('./unpaywall');
 
-const downloadDir = path.resolve(__dirname, '..', '..', 'download');
-const reportDir = path.resolve(__dirname, '..', '..', 'reports');
-const statusDir = path.resolve(__dirname, '..', '..', 'status');
+const currentStatus = statusWeekly;
 
-// UnPayWall attributes
-const raw = [
-  'best_oa_location',
-  'data_standard',
-  'doi_url',
-  'genre',
-  'is_paratext',
-  'is_oa',
-  'journal_is_in_doaj',
-  'journal_is_oa',
-  'journal_issns',
-  'journal_issn_l',
-  'journal_name',
-  'oa_locations',
-  'oa_status',
-  'published_date',
-  'publisher',
-  'title',
-  'updated',
-  'year',
-  'z_authors',
-  'createdAt',
-];
+const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
+const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
+const statusDir = path.resolve(__dirname, '..', '..', 'out', 'status');
 
 let metadata = {};
 let lineRead = 0;
 
-// this object is visible at /process/status
-const status = {
-  inProcess: false,
-  route: '',
-  currentStatus: '',
-  currentFile: '',
-  askAPI: {
-    success: '',
-    took: '',
-  },
-  download: {
-    size: '',
-    percent: '',
-    took: '',
-  },
-  upsert: {
-    read: 0,
-    total: 0,
-    percent: 0,
-    lineProcessed: 0,
-    took: '',
-  },
-  createdAt: '',
-  endAt: '',
-  took: '',
-};
-
-let currentStatus = {};
-const resetStatus = () => {
-  currentStatus = Object.assign(status, {});
-};
-
-const createReport = () => {
+const createReport = (route) => {
   try {
-    fs.writeFileSync(`${reportDir}/${this.status.route}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(currentStatus, null, 2));
+    fs.writeFileSync(`${reportDir}/${route}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(currentStatus, null, 2));
   } catch (error) {
     processLogger.error(error);
   }
@@ -82,7 +29,11 @@ const createReport = () => {
 const databaseStatus = async () => {
   const statusDB = {};
   statusDB.doi = await UnPayWallModel.count({});
-  statusDB.is_oa = await UnPayWallModel.count({});
+  statusDB.is_oa = await UnPayWallModel.count({
+    where: {
+      is_oa: 'true',
+    },
+  });
   statusDB.journal_issn_l = await UnPayWallModel.count({
     col: 'journal_issn_l',
     distinct: true,
@@ -124,31 +75,40 @@ const createStatus = async () => {
   fs.writeFileSync(`${statusDir}/status-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(dbStatus, null, 2));
 };
 
-const upsertUPW = (data) => {
-  UnPayWallModel.bulkCreate(data, { updateOnDuplicate: raw })
-    .catch((error) => {
-      processLogger.error(`ERROR IN UPSERT : ${error}`);
-    });
+const endLogWeekly = async (took, lineInitial) => {
+  currentStatus.status = 'Count lines for logs';
+  const lineFinal = await getTotalLine();
+  processLogger.info(`took ${took} seconds`);
+  processLogger.info(`Number of lines read : ${lineRead}`);
+  processLogger.info(`Number of lines announced : ${metadata.lines}`);
+  processLogger.info(`Number of treated lines : ${currentStatus.upsert.lineProcessed}`);
+  processLogger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
+  processLogger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial)}`);
+  processLogger.info(`Number of errors : ${lineRead - currentStatus.upsert.lineProcessed}`);
+  currentStatus.endAt = new Date();
+  currentStatus.status = 'done';
+  currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
+  currentStatus.inProcess = false;
+  currentStatus.status = 'done';
+  await createReport('weekly');
+  await createStatus();
 };
 
-const getTotalLine = async () => UnPayWallModel.count({});
+const startLogWeekly = () => {
+  currentStatus.inProcess = true;
+  currentStatus.createdAt = new Date();
+  currentStatus.upsert.total = metadata.lines;
+  currentStatus.status = 'upsert';
+};
 
 /**
- * stream compressed snapshot file and do insert
+ * stream compressed snapshot file and do upsert weekly
+ * @param {*} options limit and offset
  */
-const saveDataOrUpdate = async (options) => {
-  const opts = options || { offset: 0, limit: -1 };
-  if (currentStatus.createdAt === '') {
-    currentStatus.inProcess = true;
-    currentStatus.createdAt = new Date();
-    currentStatus.currentFile = 'unpaywall_snapshot.jsonl.gz';
-    currentStatus.route = `init?offset=${opts.offset}&limit=${opts.limit}`;
-  } else {
-    currentStatus.upsert.total = metadata.lines - opts.offset;
-  }
+const readSnapshotFileWeekly = async () => {
+  startLogWeekly();
   const lineInitial = await getTotalLine();
   // stream initialization
-  currentStatus.currentStatus = 'upsert';
   const readStream = fs
     .createReadStream(path.resolve(__dirname, downloadDir, currentStatus.currentFile))
     .pipe(zlib.createGunzip());
@@ -160,21 +120,12 @@ const saveDataOrUpdate = async (options) => {
   });
   // eslint-disable-next-line no-restricted-syntax
   for await (const line of rl) {
-    // test limit
-    if (lineRead === opts.limit) {
-      break;
-    }
-    // test offset
-    if (lineRead >= opts.offset) {
-      currentStatus.upsert.lineProcessed += 1;
-      const data = JSON.parse(line);
-      tab.push(data);
-    }
+    currentStatus.upsert.lineProcessed += 1;
+    const data = JSON.parse(line);
+    tab.push(data);
     lineRead += 1;
-    if (currentStatus.route === 'update') {
-      const percent = (lineRead / metadata.lines) * 100;
-      currentStatus.upsert.percent = Math.ceil(percent, 2);
-    }
+    const percent = (lineRead / metadata.lines) * 100;
+    currentStatus.upsert.percent = Math.ceil(percent, 2);
     currentStatus.upsert.read = lineRead;
     if ((currentStatus.upsert.lineProcessed % 1000) === 0
       && currentStatus.upsert.lineProcessed !== 0) {
@@ -189,24 +140,8 @@ const saveDataOrUpdate = async (options) => {
   if (Math.max(currentStatus.lineProcessed, 1, 1000)) {
     await upsertUPW(tab);
   }
-  const lineFinal = await getTotalLine();
-  const total = (new Date() - start) / 1000;
-  processLogger.info('============= FINISH =============');
-  processLogger.info(`${total} seconds`);
-  processLogger.info(`Number of lines read : ${lineRead}`);
-  if (currentStatus.route === 'update') {
-    processLogger.info(`Number of lines announced : ${metadata.lines}`);
-  }
-  processLogger.info(`Number of treated lines : ${currentStatus.upsert.lineProcessed}`);
-  processLogger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
-  processLogger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial + opts.offset)}`);
-  processLogger.info(`Number of errors : ${lineRead - opts.offset - currentStatus.upsert.lineProcessed}`);
-  currentStatus.endAt = new Date();
-  currentStatus.currentStatus = 'done';
-  currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
-  currentStatus.inProcess = false;
-  await createReport();
-  await createStatus();
+  const took = (new Date() - start) / 1000;
+  endLogWeekly(took, lineInitial);
 };
 
 /**
@@ -216,7 +151,7 @@ const downloadUpdateSnapshot = async () => {
   try {
     const start = new Date();
     currentStatus.currentFile = metadata.filename;
-    currentStatus.currentStatus = 'download snapshot';
+    currentStatus.status = 'download snapshot';
     const compressedFile = await axios({
       method: 'get',
       url: metadata.url,
@@ -234,7 +169,7 @@ const downloadUpdateSnapshot = async () => {
       writeStream.on('finish', () => {
         processLogger.info('download finish, start insert');
         currentStatus.download.took = (new Date() - start) / 1000;
-        saveDataOrUpdate();
+        readSnapshotFileWeekly();
       });
 
       (function reloadStatus() {
@@ -250,24 +185,19 @@ const downloadUpdateSnapshot = async () => {
         }
       }());
       writeStream.on('error', () => {
-        currentStatus.currentStatus = 'error';
+        currentStatus.status = 'error';
         currentStatus.inProcess = false;
         createReport();
       });
     }
   } catch (error) {
-    currentStatus.currentStatus = 'error';
+    currentStatus.status = 'error';
     currentStatus.inProcess = false;
     createReport();
   }
 };
 
 module.exports = {
-  getStatus: () => status,
-  getTotalLine,
-  saveDataOrUpdate,
-  resetStatus,
-  databaseStatus,
   /**
    * ask UPW to get the latest update snapshot
    * @returns snapshot metadatas
@@ -277,9 +207,9 @@ module.exports = {
     try {
       const start = new Date();
       currentStatus.createdAt = new Date();
-      currentStatus.route = 'update';
+      currentStatus.route = 'weeklyUpdate';
       currentStatus.inProcess = true;
-      currentStatus.currentStatus = 'ask UPW to get metadatas';
+      currentStatus.status = 'ask UPW to get metadatas';
       response = await axios({
         method: 'get',
         url: `http://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`,
@@ -292,7 +222,7 @@ module.exports = {
         downloadUpdateSnapshot();
       }
     } catch (error) {
-      currentStatus.currentStatus = 'error';
+      currentStatus.status = 'error';
       currentStatus.inProcess = false;
       createReport();
     }

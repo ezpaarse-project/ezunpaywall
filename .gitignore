@@ -1,11 +1,7 @@
 node_modules
-mongo-volume
 .vscode
 .directory
 package-lock.json
-extract.json
-download/
-*.log
 db/
+out/
 unpaywall.local.env.sh
-reports/

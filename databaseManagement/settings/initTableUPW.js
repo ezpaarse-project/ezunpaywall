@@ -1,5 +1,5 @@
 const pool = require('./pool');
-const { apiLogger } = require('../api/services/logger');
+const { apiLogger } = require('../../logger/logger');
 
 module.exports = async function initTableUPW() {
   await pool.query(`CREATE TABLE IF NOT EXISTS  public.upws

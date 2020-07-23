@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 
 /**
- * @param dir path.resolve("nameFolder")
+ * @param dir path to folder
  * @return array(String)
  */
 const getNamesOfFilesInDir = (dir, latest) => {
