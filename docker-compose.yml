@@ -18,9 +18,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - API_KEY_UPW=${API_KEY_UPW}
     volumes:
-      - ./out/download:/usr/src/app/out/download
-      - ./out/logs:/usr/src/app/out/logs
-      - ./out/reports:/usr/src/app/out/reports
+      - ./out:/usr/src/app/out/
     command: "npm start"
     ports:
       - "${API_PORT}:8080"

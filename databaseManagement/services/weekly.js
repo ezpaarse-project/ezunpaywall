@@ -17,6 +17,7 @@ const statusDir = path.resolve(__dirname, '..', '..', 'out', 'status');
 
 let metadata = {};
 let lineRead = 0;
+let error = 0;
 
 const createReport = (route) => {
   try {
@@ -84,7 +85,7 @@ const endLogWeekly = async (took, lineInitial) => {
   processLogger.info(`Number of treated lines : ${currentStatus.upsert.lineProcessed}`);
   processLogger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
   processLogger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial)}`);
-  processLogger.info(`Number of errors : ${lineRead - currentStatus.upsert.lineProcessed}`);
+  processLogger.info(`Number of errors : ${error}`);
   currentStatus.endAt = new Date();
   currentStatus.status = 'done';
   currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
@@ -138,7 +139,10 @@ const readSnapshotFileWeekly = async () => {
   }
   // if have stays data to insert
   if (Math.max(currentStatus.lineProcessed, 1, 1000)) {
-    await upsertUPW(tab);
+    const res = await upsertUPW(tab);
+    if (!res) {
+      error += 1;
+    }
   }
   const took = (new Date() - start) / 1000;
   endLogWeekly(took, lineInitial);

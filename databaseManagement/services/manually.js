@@ -17,6 +17,7 @@ const currentStatus = statusManually;
 const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
 
 let lineRead = 0;
+let error = 0;
 
 const startLogManually = (opts, name) => {
   currentStatus.inProcess = true;
@@ -74,7 +75,10 @@ const readSnapshotFileManually = async (name, options) => {
     currentStatus.upsert.read = lineRead;
     if ((currentStatus.upsert.lineProcessed % 1000) === 0
       && currentStatus.upsert.lineProcessed !== 0) {
-      await upsertUPW(tab);
+      const res = await upsertUPW(tab);
+      if (!res) {
+        error += 1;
+      }
       tab = [];
     }
     if (lineRead % 100000 === 0) {

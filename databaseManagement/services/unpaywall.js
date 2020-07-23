@@ -126,7 +126,7 @@ const createReport = (route) => {
  * bulk upsert one database
  * @param {*} data array of unpaywall datas
  */
-const upsertUPW = (data) => {
+const upsertUPW = async (data) => {
   const raw = [
     'best_oa_location',
     'data_standard',
@@ -149,10 +149,13 @@ const upsertUPW = (data) => {
     'z_authors',
     'createdAt',
   ];
-  UnPayWallModel.bulkCreate(data, { updateOnDuplicate: raw })
-    .catch((error) => {
-      processLogger.error(`ERROR IN UPSERT : ${error}`);
-    });
+  try {
+    await UnPayWallModel.bulkCreate(data, { updateOnDuplicate: raw });
+    return true;
+  } catch (error) {
+    processLogger.error(`ERROR IN UPSERT : ${error}`);
+    return false;
+  }
 };
 
 const getTotalLine = async () => {
