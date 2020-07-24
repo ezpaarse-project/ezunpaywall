@@ -70,6 +70,8 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
 app.use('/reports', express.static(`${__dirname}/out/reports`));
 app.use('/status', express.static(`${__dirname}/out/status`));
 app.use('/logs', express.static(`${__dirname}/out/logs`));
+
+// routers
 app.use(RouterHomePage);
 app.use(RouterManageDatabase);
 

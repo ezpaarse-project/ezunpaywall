@@ -53,4 +53,19 @@ router.get('/status', async (req, res) => {
   });
 });
 
+/**
+ * @api {get} /logs get all logs
+ * @apiName getLogs
+ * @apiGroup Homepage
+ *
+ * @apiParam (PARAMS) {String} latest
+ */
+router.get('/logs', async (req, res) => {
+  const logsDir = path.resolve(__dirname, '..', '..', 'out', 'logs');
+  const files = await getNamesOfFilesInDir(logsDir, false);
+  return res.status(200).json({
+    type: 'success', data: files,
+  });
+});
+
 module.exports = router;

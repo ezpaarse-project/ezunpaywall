@@ -36,8 +36,8 @@ function insertDataTest(data) {
   });
 }
 
-function deleteDataTest(doi) {
-  UnPayWallModel.destroy({
+async function deleteDataTest(doi) {
+  await UnPayWallModel.destroy({
     where: {
       doi,
     },

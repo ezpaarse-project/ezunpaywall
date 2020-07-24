@@ -136,6 +136,8 @@
           }).then((response) => {
             if(response.status === 200) {
               this.latestReport = JSON.stringify(response.data, null, 2);
+            } else {
+              this.latestReport = 'Aucun rapport n\'est disponible pour le moment'
             }
           });
         },
@@ -182,6 +184,8 @@
           }).then((response) => {
             if(response.status === 200) {
               this.latestDatabaseStatus = JSON.stringify(response.data, null, 2);
+            } else {
+              this.nameOfLatestDatabaseStatus = 'Aucun status n\'est disponible pour me moment'
             }
           });
         },
