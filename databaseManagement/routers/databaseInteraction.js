@@ -2,8 +2,6 @@ const router = require('express').Router();
 const path = require('path');
 const {
   getStatus,
-  resetStatusWeekly,
-  resetStatusManually,
 } = require('../services/unpaywall');
 const {
   getUpdateSnapshotMetadatas,
@@ -40,9 +38,7 @@ router.use((req, res, next) => {
  * @apiParam (QUERY) {Number} [limit=0] last line insertion by default, we have no limit
  * @apiParam (PARAMS) {String} name of file
  */
-router.get('/action/:name', async (req, res) => {
-  resetStatusManually();
-  resetStatusWeekly();
+router.get('/action/:name', (req, res) => {
   const { name } = req.params;
   if (!name) {
     return res.status(401).json({ type: 'error', message: 'name of snapshot file expected' });
@@ -65,9 +61,7 @@ router.get('/action/:name', async (req, res) => {
  * @apiName DownloadUpdate
  * @apiGroup ManageDatabase
  */
-router.get('/weeklyUpdate', async (req, res) => {
-  resetStatusManually();
-  resetStatusWeekly();
+router.get('/weeklyUpdate', (req, res) => {
   getUpdateSnapshotMetadatas();
   return res.status(200).json({
     type: 'success', message: 'process start', url: '/process/status',
