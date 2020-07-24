@@ -7,7 +7,7 @@ const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
 const statusDir = path.resolve(__dirname, '..', '..', 'out', 'status');
 
 // this object is visible at /process/status
-const statusWeekly = {
+let statusWeekly = {
   inProcess: false,
   route: '',
   status: '',
@@ -34,7 +34,7 @@ const statusWeekly = {
 };
 
 // this object is visible at /process/status
-const statusManually = {
+let statusManually = {
   inProcess: false,
   route: '',
   status: '',
@@ -99,13 +99,47 @@ const getStatus = () => {
   return false;
 };
 
-let currentStatus = {};
-const resetStatusWeekly = () => {
-  currentStatus = Object.assign(statusWeekly, {});
-};
-
-const resetStatusManually = () => {
-  currentStatus = Object.assign(statusManually, {});
+const resetStatus = () => {
+  statusWeekly = Object.assign(statusWeekly, {
+    inProcess: false,
+    route: '',
+    status: '',
+    currentFile: '',
+    askAPI: {
+      success: '',
+      took: '',
+    },
+    download: {
+      size: '',
+      percent: '',
+      took: '',
+    },
+    upsert: {
+      read: 0,
+      total: 0,
+      percent: 0,
+      lineProcessed: 0,
+      took: '',
+    },
+    createdAt: '',
+    endAt: '',
+    took: '',
+  });
+  statusManually = Object.assign(statusManually, {
+    inProcess: false,
+    route: '',
+    status: '',
+    currentFile: '',
+    upsert: {
+      read: 0,
+      percent: 0,
+      lineProcessed: 0,
+    },
+    createdAt: '',
+    endAt: '',
+    took: '',
+  });
+  console.log(statusManually);
 };
 
 const createStatus = async () => {
@@ -113,9 +147,9 @@ const createStatus = async () => {
   fs.writeFileSync(`${statusDir}/status-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(dbStatus, null, 2));
 };
 
-const createReport = (route) => {
+const createReport = async (status, route) => {
   try {
-    fs.writeFileSync(`${reportDir}/${route}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(currentStatus, null, 2));
+    await fs.writeFileSync(`${reportDir}/${route}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(status, null, 2));
   } catch (error) {
     processLogger.error(error);
   }
@@ -166,8 +200,7 @@ module.exports = {
   upsertUPW,
   getTotalLine,
   createReport,
-  resetStatusWeekly,
-  resetStatusManually,
+  resetStatus,
   getStatus,
   createStatus,
   statusWeekly,

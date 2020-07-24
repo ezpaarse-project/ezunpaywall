@@ -9,10 +9,11 @@ const {
   getTotalLine,
   createReport,
   createStatus,
+  resetStatus,
   statusManually,
 } = require('./unpaywall');
 
-const currentStatus = statusManually;
+let currentStatus = {};
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
 
@@ -27,7 +28,6 @@ const startLogManually = (opts, name) => {
 };
 
 const endLogManually = async (took, lineInitial, opts) => {
-
   currentStatus.status = 'Count lines for logs';
   const lineFinal = await getTotalLine();
   processLogger.info(`took ${took} seconds`);
@@ -38,18 +38,20 @@ const endLogManually = async (took, lineInitial, opts) => {
   processLogger.info(`Number of errors : ${error}`);
   currentStatus.endAt = new Date();
   currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
-  currentStatus.inProcess = false;
   currentStatus.status = 'done';
-  await createReport('manually');
+  await createReport(currentStatus, 'manually');
   await createStatus();
+  await resetStatus();
+  lineRead = 0;
+  error = 0;
 };
 
 const readSnapshotFileManually = async (name, options) => {
+  currentStatus = statusManually;
   const opts = options || { offset: 0, limit: -1 };
   await startLogManually(opts, name);
   currentStatus.status = 'Count lines for logs';
   const lineInitial = await getTotalLine();
-  console.log(lineInitial);
   currentStatus.status = 'Upsert';
   // stream initialization
   const readStream = fs
@@ -93,6 +95,7 @@ const readSnapshotFileManually = async (name, options) => {
   }
   const took = (new Date() - start) / 1000;
   await endLogManually(took, lineInitial, opts);
+  currentStatus.inProcess = false;
 };
 
 module.exports = {

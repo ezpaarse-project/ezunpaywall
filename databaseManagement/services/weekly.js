@@ -10,8 +10,9 @@ const { processLogger } = require('../../logger/logger');
 const {
   upsertUPW,
   getTotalLine,
-  statusWeekly,
   createReport,
+  resetStatus,
+  statusWeekly,
 } = require('./unpaywall');
 
 const currentStatus = statusWeekly;
@@ -85,10 +86,12 @@ const endLogWeekly = async (took, lineInitial) => {
   currentStatus.endAt = new Date();
   currentStatus.status = 'done';
   currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
-  currentStatus.inProcess = false;
-  currentStatus.status = 'done';
   await createReport('weekly');
   await createStatus();
+  await resetStatus();
+  metadata = {};
+  lineRead = 0;
+  error = 0;
 };
 
 const startLogWeekly = () => {
@@ -142,6 +145,7 @@ const readSnapshotFileWeekly = async () => {
   }
   const took = (new Date() - start) / 1000;
   endLogWeekly(took, lineInitial);
+  currentStatus.inProcess = false;
 };
 
 /**
