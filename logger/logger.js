@@ -14,7 +14,6 @@ const {
 require('winston-daily-rotate-file');
 
 const path = require('path');
-const { createReport } = require('../databaseManagement/services/unpaywall');
 
 const myFormat = printf(({ level, message, timestamp: currentTime }) => `${currentTime} ${level}: ${message}`);
 
