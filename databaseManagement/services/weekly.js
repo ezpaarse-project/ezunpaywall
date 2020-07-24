@@ -7,25 +7,21 @@ const config = require('config');
 const prettyBytes = require('pretty-bytes');
 const UnPayWallModel = require('../../apiGraphql/unpaywall/model');
 const { processLogger } = require('../../logger/logger');
-const { upsertUPW, getTotalLine, statusWeekly } = require('./unpaywall');
+const {
+  upsertUPW,
+  getTotalLine,
+  statusWeekly,
+  createReport,
+} = require('./unpaywall');
 
 const currentStatus = statusWeekly;
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
-const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
 const statusDir = path.resolve(__dirname, '..', '..', 'out', 'status');
 
 let metadata = {};
 let lineRead = 0;
 let error = 0;
-
-const createReport = (route) => {
-  try {
-    fs.writeFileSync(`${reportDir}/${route}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(currentStatus, null, 2));
-  } catch (error) {
-    processLogger.error(error);
-  }
-};
 
 const databaseStatus = async () => {
   const statusDB = {};
@@ -191,13 +187,14 @@ const downloadUpdateSnapshot = async () => {
       writeStream.on('error', () => {
         currentStatus.status = 'error';
         currentStatus.inProcess = false;
-        createReport();
+        createReport('weekly-error');
       });
     }
   } catch (error) {
     currentStatus.status = 'error';
     currentStatus.inProcess = false;
-    createReport();
+    processLogger.error(error);
+    createReport('weekly-error');
   }
 };
 
@@ -228,7 +225,8 @@ module.exports = {
     } catch (error) {
       currentStatus.status = 'error';
       currentStatus.inProcess = false;
-      createReport();
+      processLogger.error(error);
+      createReport('weekly-error');
     }
   },
 };

@@ -94,10 +94,9 @@ const databaseStatus = async () => {
 };
 
 const getStatus = () => {
-  if (statusManually.inProcess) {
-    return statusManually;
-  }
-  return statusWeekly;
+  if (statusManually.inProcess) return statusManually;
+  if (statusWeekly.inProcess) return statusWeekly;
+  return false;
 };
 
 let currentStatus = {};
@@ -159,7 +158,8 @@ const upsertUPW = async (data) => {
 };
 
 const getTotalLine = async () => {
-  await UnPayWallModel.count({});
+  const res = await UnPayWallModel.count({});
+  return res;
 };
 
 module.exports = {

@@ -27,6 +27,7 @@ const startLogManually = (opts, name) => {
 };
 
 const endLogManually = async (took, lineInitial, opts) => {
+
   currentStatus.status = 'Count lines for logs';
   const lineFinal = await getTotalLine();
   processLogger.info(`took ${took} seconds`);
@@ -34,7 +35,7 @@ const endLogManually = async (took, lineInitial, opts) => {
   processLogger.info(`Number of treated lines : ${currentStatus.upsert.lineProcessed}`);
   processLogger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
   processLogger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial + opts.offset)}`);
-  processLogger.info(`Number of errors : ${lineRead - opts.offset - currentStatus.upsert.lineProcessed}`);
+  processLogger.info(`Number of errors : ${error}`);
   currentStatus.endAt = new Date();
   currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
   currentStatus.inProcess = false;
@@ -48,6 +49,7 @@ const readSnapshotFileManually = async (name, options) => {
   await startLogManually(opts, name);
   currentStatus.status = 'Count lines for logs';
   const lineInitial = await getTotalLine();
+  console.log(lineInitial);
   currentStatus.status = 'Upsert';
   // stream initialization
   const readStream = fs

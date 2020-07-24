@@ -162,9 +162,11 @@
               url: `/process/status`,
             }).then((response) => {
               if (response.status === 200) {
-                this.inProcess = response.data.message.inProcess;
-                this.processStatus = response.data.message;
-                if (this.inProcess) {
+                if(!response.data.message) {
+                  this.inProcess = false;
+                } else {
+                  this.inProcess = response.data.message.inProcess;
+                  this.processStatus = response.data.message;
                   this.getStatusInProgress()
                 }
               }
