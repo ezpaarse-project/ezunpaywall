@@ -23,10 +23,12 @@
 
     <!-- Description -->
     <div class="uk-container">
-      Le serveur ez-unpaywall est une API en graphql qui intérroge une base de données ouverte de plus de 26 000 000 articles scientifiques disponible
+      Le serveur ez-unpaywall est une API en graphql qui intérroge une base de données ouverte de plus de 26 000 000
+      articles scientifiques disponible
       en open-acess.
       Ce projet découle d'un besoin pour le projet ezPAARSE, il permet entre autre de faire des requêtes par lot de DOI.
-       Cette base de données est mise à jour hedbomadairement tous les Mercredis pour les fichiers de mise à jour fournit par unpaywall.
+      Cette base de données est mise à jour hedbomadairement tous les Mercredis pour les fichiers de mise à jour fournit
+      par unpaywall.
     </div>
 
     <hr class="uk-divider-icon">
@@ -114,7 +116,7 @@
               query: `{getDatasUPW(dois:"${this.doi}"){doi, is_oa, best_oa_location{ url }}}`
             }
           }).then((response) => {
-            if(response.status === 200) { 
+            if (response.status === 200) {
               this.resultUPW = JSON.stringify(response.data.data.getDatasUPW, null, 2);
             }
           });
@@ -124,29 +126,31 @@
             method: 'get',
             url: `/reports?latest=true`,
           }).then((response) => {
-            if(response.status === 200) {
+            if (response.status === 200) {
               this.nameOfLatestReport = response.data.data;
             }
           });
         },
         async getLatestReport() {
-          await axios({
-            method: 'get',
-            url: `/reports/${this.nameOfLatestReport}`,
-          }).then((response) => {
-            if(response.status === 200) {
-              this.latestReport = JSON.stringify(response.data, null, 2);
-            } else {
-              this.latestReport = 'Aucun rapport n\'est disponible pour le moment'
-            }
-          });
+          if (this.nameOfLatestReport) {
+            await axios({
+              method: 'get',
+              url: `/reports/${this.nameOfLatestReport}`,
+            }).then((response) => {
+              if (response.status === 200) {
+                this.latestReport = JSON.stringify(response.data, null, 2);
+              }
+            });
+          } else {
+            this.latestReport = 'Aucun rapport n\'est disponible pour le moment'
+          }
         },
         async getSnapshotList() {
           await axios({
             method: 'get',
             url: `/download`,
           }).then((response) => {
-            if(response.status === 200) {
+            if (response.status === 200) {
               this.snapshots = response.data.data;
             }
           });
@@ -154,17 +158,17 @@
         getStatusInProgress() {
           setTimeout(() => {
             axios({
-            method: 'get',
-            url: `/process/status`,
-          }).then((response) => {
-            if(response.status === 200) {
-              this.inProcess = response.data.message.inProcess;
-              this.processStatus = response.data.message;
-              if(this.inProcess) {
-                this.getStatusInProgress()
+              method: 'get',
+              url: `/process/status`,
+            }).then((response) => {
+              if (response.status === 200) {
+                this.inProcess = response.data.message.inProcess;
+                this.processStatus = response.data.message;
+                if (this.inProcess) {
+                  this.getStatusInProgress()
+                }
               }
-            }
-          });
+            });
           }, 1000);
         },
         async getNameOfLatestDatabaseStatus() {
@@ -172,22 +176,24 @@
             method: 'get',
             url: `/status?latest=true`,
           }).then((response) => {
-            if(response.status === 200) {
+            if (response.status === 200) {
               this.nameOfLatestDatabaseStatus = response.data.data;
             }
           });
         },
         async getLatestDatabaseStatus() {
-          await axios({
-            method: 'get',
-            url: `/status/${this.nameOfLatestDatabaseStatus}`,
-          }).then((response) => {
-            if(response.status === 200) {
-              this.latestDatabaseStatus = JSON.stringify(response.data, null, 2);
-            } else {
-              this.nameOfLatestDatabaseStatus = 'Aucun status n\'est disponible pour me moment'
-            }
-          });
+          if (this.nameOfLatestDatabaseStatus) {
+            await axios({
+              method: 'get',
+              url: `/status/${this.nameOfLatestDatabaseStatus}`,
+            }).then((response) => {
+              if (response.status === 200) {
+                this.latestDatabaseStatus = JSON.stringify(response.data, null, 2);
+              }
+            });
+          } else {
+            this.latestDatabaseStatus = 'Aucun status n\'est disponible pour le moment'
+          }
         },
       },
       async mounted() {
