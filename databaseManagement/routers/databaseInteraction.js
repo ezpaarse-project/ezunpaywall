@@ -4,7 +4,8 @@ const {
   getStatus,
 } = require('../services/unpaywall');
 const {
-  getUpdateSnapshotMetadatas,
+  insertSnapshotBetweenDate,
+  weeklyUpdate,
 } = require('../services/weekly');
 
 const {
@@ -30,18 +31,25 @@ router.use((req, res, next) => {
 });
 
 /**
- * @api {get} /action/:action initialize or update database
- * @apiName InitiateDatabaseWithCompressedFile
+ * @api {get} /updates/:name initialize or update database
+ * @apiName InsertWithCustomFile
  * @apiGroup ManageDatabase
  *
  * @apiParam (QUERY) {Number} [offset=0] first line insertion, by default, we start with the first
  * @apiParam (QUERY) {Number} [limit=0] last line insertion by default, we have no limit
  * @apiParam (PARAMS) {String} name of file
  */
-router.get('/action/:name', (req, res) => {
+router.get('/updates/:name', (req, res) => {
   const { name } = req.params;
   if (!name) {
     return res.status(401).json({ type: 'error', message: 'name of snapshot file expected' });
+  }
+  if (name === 'weekly') {
+    console.log(name);
+    weeklyUpdate();
+    return res.status(200).json({
+      type: 'success', message: 'process start', url: '/process/status',
+    });
   }
   // TODO filtrer le nom du fichier
   if (!path.resolve(__dirname, '..', '..', 'out', 'download', name)) {
@@ -57,12 +65,23 @@ router.get('/action/:name', (req, res) => {
 });
 
 /**
- * @api {get} /weeklyUpdate do weekly a update on database with data from unpaywall
- * @apiName DownloadUpdate
- * @apiGroup ManageDatabase
+ * @api
+ * @apiName
+ * @apiGroup
+ *
+ * @apiParam (QUERY) {String} startDate
+ * @apiParam (QUERY) {String} endDate
  */
-router.get('/weeklyUpdate', (req, res) => {
-  getUpdateSnapshotMetadatas();
+router.get('/download/date/:startDate/:endDate', (req, res) => {
+  const { startDate, endDate } = req.params;
+  if (!startDate || !endDate) {
+    return res.status(401).json({ type: 'error', message: 'startDate and endDate expected' });
+  }
+  const match = /^([0-9]*-[0-9]{2}-[0-9]{2}$)/;
+  if (!match.exec(startDate) || !match.exec(endDate)) {
+    return res.status(401).json({ type: 'error', message: 'startDate and endDate are in bad format' });
+  }
+  insertSnapshotBetweenDate(startDate, endDate);
   return res.status(200).json({
     type: 'success', message: 'process start', url: '/process/status',
   });

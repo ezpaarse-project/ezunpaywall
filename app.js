@@ -78,8 +78,8 @@ app.use(RouterManageDatabase);
 // TODO CRON
 // const update = new CronJob('* * * * * Wed', () => {
 //   axios({
-//     method: 'get',
-//     url: '/weeklyUpdate',
+//     method: 'post',
+//     url: '/updates/weekly',
 //   });
 // });
 

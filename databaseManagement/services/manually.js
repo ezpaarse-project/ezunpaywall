@@ -24,7 +24,7 @@ const startLogManually = (opts, name) => {
   currentStatus.inProcess = true;
   currentStatus.createdAt = new Date();
   currentStatus.currentFile = name;
-  currentStatus.route = `/action/${name}?offset=${opts.offset}&limit=${opts.limit}`;
+  currentStatus.route = `/updates/${name}?offset=${opts.offset}&limit=${opts.limit}`;
 };
 
 const endLogManually = async (took, lineInitial, opts) => {
