@@ -6,7 +6,6 @@ const { processLogger } = require('../../logger/logger');
 const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
 const statusDir = path.resolve(__dirname, '..', '..', 'out', 'status');
 
-// this object is visible at /process/status
 let statusWeekly = {
   inProcess: false,
   route: '',
@@ -33,7 +32,6 @@ let statusWeekly = {
   took: '',
 };
 
-// this object is visible at /process/status
 let statusManually = {
   inProcess: false,
   route: '',
@@ -47,6 +45,87 @@ let statusManually = {
   createdAt: '',
   endAt: '',
   took: '',
+};
+
+let statusByDate = {
+  inProcess: false,
+  route: '',
+  status: '',
+  currentFile: '',
+  download: {
+    size: '',
+    percent: '',
+    took: '',
+  },
+  upsert: {
+    read: 0,
+    percent: 0,
+    lineProcessed: 0,
+  },
+  createdAt: '',
+  endAt: '',
+  took: '',
+};
+
+const resetStatus = () => {
+  statusWeekly = Object.assign(statusWeekly, {
+    inProcess: false,
+    route: '',
+    status: '',
+    currentFile: '',
+    askAPI: {
+      success: '',
+      took: '',
+    },
+    download: {
+      size: '',
+      percent: '',
+      took: '',
+    },
+    upsert: {
+      read: 0,
+      total: 0,
+      percent: 0,
+      lineProcessed: 0,
+      took: '',
+    },
+    createdAt: '',
+    endAt: '',
+    took: '',
+  });
+  statusManually = Object.assign(statusManually, {
+    inProcess: false,
+    route: '',
+    status: '',
+    currentFile: '',
+    upsert: {
+      read: 0,
+      percent: 0,
+      lineProcessed: 0,
+    },
+    createdAt: '',
+    endAt: '',
+    took: '',
+  });
+  statusByDate = Object.assign(statusByDate, {
+    inProcess: false,
+    route: '',
+    status: '',
+    currentFile: '',
+    download: {
+      size: '',
+      percent: '',
+      took: '',
+    },
+    upsert: {
+      read: 0,
+      percent: 0,
+      lineProcessed: 0,
+    },
+    createdAt: '',
+    endAt: '',
+    took: '',
+  });
 };
 
 const databaseStatus = async () => {
@@ -96,50 +175,8 @@ const databaseStatus = async () => {
 const getStatus = () => {
   if (statusManually.inProcess) return statusManually;
   if (statusWeekly.inProcess) return statusWeekly;
+  if (statusByDate.inProcess) return statusByDate;
   return false;
-};
-
-const resetStatus = () => {
-  statusWeekly = Object.assign(statusWeekly, {
-    inProcess: false,
-    route: '',
-    status: '',
-    currentFile: '',
-    askAPI: {
-      success: '',
-      took: '',
-    },
-    download: {
-      size: '',
-      percent: '',
-      took: '',
-    },
-    upsert: {
-      read: 0,
-      total: 0,
-      percent: 0,
-      lineProcessed: 0,
-      took: '',
-    },
-    createdAt: '',
-    endAt: '',
-    took: '',
-  });
-  statusManually = Object.assign(statusManually, {
-    inProcess: false,
-    route: '',
-    status: '',
-    currentFile: '',
-    upsert: {
-      read: 0,
-      percent: 0,
-      lineProcessed: 0,
-    },
-    createdAt: '',
-    endAt: '',
-    took: '',
-  });
-  console.log(statusManually);
 };
 
 const createStatus = async () => {
@@ -205,4 +242,5 @@ module.exports = {
   createStatus,
   statusWeekly,
   statusManually,
+  statusByDate,
 };
