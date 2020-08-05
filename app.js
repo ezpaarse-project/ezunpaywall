@@ -7,7 +7,7 @@ const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
-const CronJob = require('cron');
+const { CronJob } = require('cron');
 
 const schema = require('./apiGraphql/graphql');
 
