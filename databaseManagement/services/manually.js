@@ -50,8 +50,6 @@ const readSnapshotFileManually = async (name, options) => {
   currentStatus = statusManually;
   const opts = options || { offset: 0, limit: -1 };
   await startLogManually(opts, name);
-  currentStatus.status = 'Count lines for logs';
-  const lineInitial = await getTotalLine();
   currentStatus.status = 'Upsert';
   // stream initialization
   const readStream = fs
