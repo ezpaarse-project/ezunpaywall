@@ -45,7 +45,6 @@ router.get('/updates/:name', (req, res) => {
     return res.status(401).json({ type: 'error', message: 'name of snapshot file expected' });
   }
   if (name === 'weekly') {
-    console.log(name);
     weeklyUpdate();
     return res.status(200).json({
       type: 'success', message: 'process start', url: '/process/status',
@@ -77,8 +76,8 @@ router.get('/download/date/:startDate/:endDate', (req, res) => {
   if (!startDate || !endDate) {
     return res.status(401).json({ type: 'error', message: 'startDate and endDate expected' });
   }
-  const match = /^([0-9]*-[0-9]{2}-[0-9]{2}$)/;
-  if (!match.exec(startDate) || !match.exec(endDate)) {
+  const pattern = /^([0-9]*-[0-9]{2}-[0-9]{2}$)/;
+  if (!pattern.test(startDate) || !pattern.test(endDate)) {
     return res.status(401).json({ type: 'error', message: 'startDate and endDate are in bad format' });
   }
   insertSnapshotBetweenDate(startDate, endDate);

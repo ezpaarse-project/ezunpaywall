@@ -3,11 +3,11 @@ const bodyParser = require('body-parser');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
 const morgan = require('morgan');
-// const axios = require('axios');
+const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
-// const CronJob = require('cron');
+const CronJob = require('cron');
 
 const schema = require('./apiGraphql/graphql');
 
@@ -75,13 +75,12 @@ app.use('/logs', express.static(`${__dirname}/out/logs`));
 app.use(RouterHomePage);
 app.use(RouterManageDatabase);
 
-// TODO CRON
-// const update = new CronJob('* * * * * Wed', () => {
-//   axios({
-//     method: 'post',
-//     url: '/updates/weekly',
-//   });
-// });
+const update = new CronJob('* * * * * THU', () => {
+  axios({
+    method: 'post',
+    url: '/updates/weekly',
+  });
+});
 
 // update.start();
 
