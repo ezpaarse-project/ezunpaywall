@@ -41,7 +41,7 @@ const endLogWeekly = async (took, lineInitial, data) => {
   await createReport(currentStatus, 'weekly');
   await createStatus();
   await resetStatus();
-  metadata = {};
+  metadata = [];
   lineRead = 0;
   error = 0;
 };
