@@ -6,9 +6,7 @@ const zlib = require('zlib');
 const { processLogger } = require('../../logger/logger');
 const {
   upsertUPW,
-  getTotalLine,
   createReport,
-  createStatus,
   resetStatus,
   statusManually,
 } = require('./unpaywall');
@@ -27,20 +25,16 @@ const startLogManually = (opts, name) => {
   currentStatus.route = `/updates/${name}?offset=${opts.offset}&limit=${opts.limit}`;
 };
 
-const endLogManually = async (took, lineInitial, opts) => {
+const endLogManually = async (took) => {
   currentStatus.status = 'Count lines for logs';
-  const lineFinal = await getTotalLine();
   processLogger.info(`took ${took} seconds`);
   processLogger.info(`Number of lines read : ${lineRead}`);
   processLogger.info(`Number of treated lines : ${currentStatus.upsert.lineProcessed}`);
-  processLogger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
-  processLogger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial + opts.offset)}`);
   processLogger.info(`Number of errors : ${error}`);
   currentStatus.endAt = new Date();
   currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
   currentStatus.status = 'done';
   await createReport(currentStatus, 'manually');
-  await createStatus();
   await resetStatus();
   lineRead = 0;
   error = 0;
@@ -49,7 +43,7 @@ const endLogManually = async (took, lineInitial, opts) => {
 const readSnapshotFileManually = async (name, options) => {
   currentStatus = statusManually;
   const opts = options || { offset: 0, limit: -1 };
-  await startLogManually(opts, name);
+  const lineInitial = await startLogManually(opts, name);
   currentStatus.status = 'Upsert';
   // stream initialization
   const readStream = fs
@@ -77,10 +71,7 @@ const readSnapshotFileManually = async (name, options) => {
     currentStatus.upsert.read = lineRead;
     if ((currentStatus.upsert.lineProcessed % 1000) === 0
       && currentStatus.upsert.lineProcessed !== 0) {
-      const res = await upsertUPW(tab);
-      if (!res) {
-        error += 1;
-      }
+      await upsertUPW(tab);
       tab = [];
     }
     if (lineRead % 100000 === 0) {

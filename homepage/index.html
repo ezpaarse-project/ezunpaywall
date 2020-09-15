@@ -33,14 +33,6 @@
 
     <hr class="uk-divider-icon">
 
-    <!-- Status de base de données -->
-    <div class="uk-container">
-      <h3>Status de la base de données : {{ nameOfLatestDatabaseStatus }}</h3>
-      <pre class="uk-width-1-1@l">{{ latestDatabaseStatus }}</pre>
-    </div>
-
-    <hr class="uk-divider-icon">
-
     <!-- Recherche de DOI -->
     <div class="uk-container">
       <div class="uk-grid">
@@ -99,8 +91,6 @@
           resultUPW: '',
           nameOfLatestReport: '',
           latestReport: '',
-          nameOfLatestDatabaseStatus: '',
-          latestDatabaseStatus: '',
           snapshots: '',
           inProcess: true,
           processStatus: '',
@@ -173,34 +163,8 @@
             });
           }, 1000);
         },
-        async getNameOfLatestDatabaseStatus() {
-          await axios({
-            method: 'get',
-            url: `/status?latest=true`,
-          }).then((response) => {
-            if (response.status === 200) {
-              this.nameOfLatestDatabaseStatus = response.data.data;
-            }
-          });
-        },
-        async getLatestDatabaseStatus() {
-          if (this.nameOfLatestDatabaseStatus) {
-            await axios({
-              method: 'get',
-              url: `/status/${this.nameOfLatestDatabaseStatus}`,
-            }).then((response) => {
-              if (response.status === 200) {
-                this.latestDatabaseStatus = JSON.stringify(response.data, null, 2);
-              }
-            });
-          } else {
-            this.latestDatabaseStatus = 'Aucun status n\'est disponible pour le moment'
-          }
-        },
       },
       async mounted() {
-        await this.getNameOfLatestDatabaseStatus();
-        await this.getLatestDatabaseStatus();
         await this.getNameOfLatestReport();
         await this.getLatestReport();
         await this.getSnapshotList();

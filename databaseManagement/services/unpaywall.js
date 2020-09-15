@@ -1,10 +1,9 @@
 const path = require('path');
 const fs = require('fs-extra');
-const UnPayWallModel = require('../../apiGraphql/unpaywall/model');
+const client = require('../../client/client');
 const { processLogger } = require('../../logger/logger');
 
 const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
-const statusDir = path.resolve(__dirname, '..', '..', 'out', 'status');
 
 let statusWeekly = {
   inProcess: false,
@@ -39,7 +38,6 @@ let statusManually = {
   currentFile: '',
   upsert: {
     read: 0,
-    percent: 0,
     lineProcessed: 0,
   },
   createdAt: '',
@@ -128,60 +126,11 @@ const resetStatus = () => {
   });
 };
 
-const databaseStatus = async () => {
-  const statusDB = {};
-  statusDB.doi = await UnPayWallModel.count({});
-  statusDB.is_oa = await UnPayWallModel.count({
-    where: {
-      is_oa: 'true',
-    },
-  });
-  statusDB.journal_issn_l = await UnPayWallModel.count({
-    col: 'journal_issn_l',
-    distinct: true,
-  });
-  statusDB.publisher = await UnPayWallModel.count({
-    col: 'publisher',
-    distinct: true,
-  });
-  statusDB.gold = await UnPayWallModel.count({
-    where: {
-      oa_status: 'gold',
-    },
-  });
-  statusDB.hybrid = await UnPayWallModel.count({
-    where: {
-      oa_status: 'hybrid',
-    },
-  });
-  statusDB.bronze = await UnPayWallModel.count({
-    where: {
-      oa_status: 'bronze',
-    },
-  });
-  statusDB.green = await UnPayWallModel.count({
-    where: {
-      oa_status: 'green',
-    },
-  });
-  statusDB.closed = await UnPayWallModel.count({
-    where: {
-      oa_status: 'closed',
-    },
-  });
-  return statusDB;
-};
-
 const getStatus = () => {
   if (statusManually.inProcess) return statusManually;
   if (statusWeekly.inProcess) return statusWeekly;
   if (statusByDate.inProcess) return statusByDate;
   return false;
-};
-
-const createStatus = async () => {
-  const dbStatus = await databaseStatus();
-  fs.writeFileSync(`${statusDir}/status-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(dbStatus, null, 2));
 };
 
 const createReport = async (status, route) => {
@@ -193,53 +142,34 @@ const createReport = async (status, route) => {
 };
 
 /**
- * bulk upsert one database
  * @param {*} data array of unpaywall datas
  */
 const upsertUPW = async (data) => {
-  const raw = [
-    'best_oa_location',
-    'data_standard',
-    'doi_url',
-    'genre',
-    'is_paratext',
-    'is_oa',
-    'journal_is_in_doaj',
-    'journal_is_oa',
-    'journal_issns',
-    'journal_issn_l',
-    'journal_name',
-    'oa_locations',
-    'oa_status',
-    'published_date',
-    'publisher',
-    'title',
-    'updated',
-    'year',
-    'z_authors',
-    'createdAt',
-  ];
-  try {
-    await UnPayWallModel.bulkCreate(data, { updateOnDuplicate: raw });
-    return true;
-  } catch (error) {
-    processLogger.error(`ERROR IN UPSERT : ${error}`);
-    return false;
-  }
-};
+  const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall' } }, doc]);
+  const { body: bulkResponse } = await client.bulk({ refresh: true, body });
 
-const getTotalLine = async () => {
-  const res = await UnPayWallModel.count({});
-  return res;
+  if (bulkResponse.errors) {
+    const erroredDocuments = [];
+    bulkResponse.items.forEach((action, i) => {
+      const operation = Object.keys(action)[0];
+      if (action[operation].error) {
+        erroredDocuments.push({
+          status: action[operation].status,
+          error: action[operation].error,
+          operation: body[i * 2],
+          document: body[i * 2 + 1],
+        });
+      }
+    });
+    console.log(erroredDocuments);
+  }
 };
 
 module.exports = {
   upsertUPW,
-  getTotalLine,
   createReport,
   resetStatus,
   getStatus,
-  createStatus,
   statusWeekly,
   statusManually,
   statusByDate,

@@ -8,9 +8,7 @@ const prettyBytes = require('pretty-bytes');
 const { processLogger, apiLogger } = require('../../logger/logger');
 const {
   upsertUPW,
-  getTotalLine,
   createReport,
-  createStatus,
   resetStatus,
   statusWeekly,
   statusByDate,
@@ -27,19 +25,15 @@ let error = 0;
 const endLogWeekly = async (took, lineInitial, data) => {
   currentStatus.download.took = took;
   currentStatus.status = 'Count lines for logs';
-  const lineFinal = await getTotalLine();
   processLogger.info(`took ${took} seconds`);
   processLogger.info(`Number of lines read : ${lineRead}`);
   processLogger.info(`Number of lines announced : ${data.lines}`);
   processLogger.info(`Number of treated lines : ${currentStatus.upsert.lineProcessed}`);
-  processLogger.info(`Number of insert lines : ${lineFinal - lineInitial}`);
-  processLogger.info(`Number of update lines : ${lineRead - (lineFinal - lineInitial)}`);
   processLogger.info(`Number of errors : ${error}`);
   currentStatus.endAt = new Date();
   currentStatus.status = 'done';
   currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
   await createReport(currentStatus, 'weekly');
-  await createStatus();
   await resetStatus();
   metadata = [];
   lineRead = 0;
@@ -52,8 +46,6 @@ const startLogWeekly = async (data) => {
   currentStatus.upsert.total = data.lines;
   currentStatus.status = 'Count lines for log';
   processLogger.info('Count for logs');
-  const total = await getTotalLine();
-  return total;
 };
 
 /**
@@ -86,12 +78,6 @@ const readSnapshotFileWeekly = (data) => new Promise((resolve, reject) => {
 
     // eslint-disable-next-line no-restricted-syntax
     for await (const line of rl) {
-      // if (lineRead === 3000) {
-      //   const took = (new Date() - start) / 1000;
-      //   await endLogWeekly(took, lineInitial, data);
-      //   currentStatus.inProcess = false;
-      //   return resolve();
-      // }
       currentStatus.upsert.lineProcessed += 1;
       const dataupw = JSON.parse(line);
       tab.push(dataupw);

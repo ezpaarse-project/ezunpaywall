@@ -6,30 +6,25 @@ const morgan = require('morgan');
 const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
-const config = require('config');
 const { CronJob } = require('cron');
 
+const { Client } = require('@elastic/elasticsearch');
 const schema = require('./apiGraphql/graphql');
 
 // routers
 const RouterManageDatabase = require('./databaseManagement/routers/databaseInteraction');
 const RouterHomePage = require('./databaseManagement/routers/accesToOutFiles');
 
-// postgresql
-const db = require('./databaseManagement/settings/sequelize');
-// init database
-const initTableUPW = require('./databaseManagement/settings/initTableUPW');
 const { apiLogger } = require('./logger/logger');
 
 const outDir = path.resolve(__dirname, 'out');
 const downloadDir = path.resolve(__dirname, 'out', 'download');
 const reportsDir = path.resolve(__dirname, 'out', 'reports');
-const statusDir = path.resolve(__dirname, 'out', 'status');
 
 fs.ensureDir(outDir);
 fs.ensureDir(downloadDir);
 fs.ensureDir(reportsDir);
-fs.ensureDir(statusDir);
+
 const initialSnapShotUnpaywall = path.resolve(downloadDir, 'unpaywall_snapshot.jsonl.gz');
 fs.ensureFile(initialSnapShotUnpaywall, (err) => {
   if (err) { apiLogger.info('the initial snapshot of Unpaywall is not installed, check: https://unpaywall-data-snapshots.s3-us-west-2.amazonaws.com/unpaywall_snapshot_2020-04-27T153236.jsonl.gz&sa=D&ust=1592233250776000&usg=AFQjCNHGTZDSmFXIkZW0Fw6y3R7-zPr5bAto install it'); }
@@ -68,7 +63,6 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
 });
 // access to file in out
 app.use('/reports', express.static(`${__dirname}/out/reports`));
-app.use('/status', express.static(`${__dirname}/out/status`));
 app.use('/logs', express.static(`${__dirname}/out/logs`));
 
 // routers
@@ -89,12 +83,6 @@ app.all('*', (req, res) => res.status(400).json({ type: 'error', message: 'bad r
 
 app.use((error, req, res) => res.status(500).json({ type: 'error', message: error.message }));
 
-db.authenticate()
-  .then(async () => {
-    apiLogger.info('Database connected');
-    await initTableUPW();
-    app.listen(config.get('API_PORT'), () => apiLogger.info(`Server listening on ${config.get('API_PORT')}`));
-  })
-  .catch((err) => apiLogger.error(`Error: ${err}`));
+app.listen('8080', () => apiLogger.info('Server listening on 8080'));
 
 module.exports = app;
