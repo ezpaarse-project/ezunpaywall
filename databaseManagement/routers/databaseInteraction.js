@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const path = require('path');
 const {
-  getStatus,
+  postStatus,
 } = require('../services/unpaywall');
 const {
   insertSnapshotBetweenDate,
@@ -17,12 +17,12 @@ const {
  */
 router.get('/process/status', (req, res) => res.status(200).json({
   type: 'success',
-  message: getStatus(),
+  message: postStatus(),
 }));
 
 // middleware
 router.use((req, res, next) => {
-  if (getStatus().inProcess) {
+  if (postStatus().inProcess) {
     return res.status(409).json({
       type: 'error', message: 'process in progress', url: '/process/status',
     });
@@ -31,7 +31,7 @@ router.use((req, res, next) => {
 });
 
 /**
- * @api {get} /updates/:name initialize or update database
+ * @api {post} /insert/:name initialize or update database
  * @apiName InsertWithCustomFile
  * @apiGroup ManageDatabase
  *
@@ -39,7 +39,7 @@ router.use((req, res, next) => {
  * @apiParam (QUERY) {Number} [limit=0] last line insertion by default, we have no limit
  * @apiParam (PARAMS) {String} name of file
  */
-router.get('/updates/:name', (req, res) => {
+router.post('/insert/:name', (req, res) => {
   const { name } = req.params;
   if (!name) {
     return res.status(401).json({ type: 'error', message: 'name of snapshot file expected' });
@@ -71,7 +71,7 @@ router.get('/updates/:name', (req, res) => {
  * @apiParam (QUERY) {String} startDate
  * @apiParam (QUERY) {String} endDate
  */
-router.get('/download/date/:startDate/:endDate', (req, res) => {
+router.post('/insert/date/:startDate/:endDate', (req, res) => {
   const { startDate, endDate } = req.params;
   if (!startDate || !endDate) {
     return res.status(401).json({ type: 'error', message: 'startDate and endDate expected' });
