@@ -1,5 +1,6 @@
 const graphql = require('graphql');
-const { UnPayWallType, UnPayWallModel } = require('./index');
+const { UnPayWallType } = require('./index');
+const client = require('../../client/client');
 
 const {
   GraphQLList,
@@ -12,6 +13,25 @@ module.exports = {
     args: {
       dois: { type: new GraphQLList(GraphQLID) },
     },
-    resolve: (parent, args) => UnPayWallModel.findAll({ where: { doi: args.dois } }),
+    resolve: async (parent, args) => {
+      const res = await client.search({
+        index: 'unpaywall',
+        size: 2,
+        body: {
+          query: {
+            bool: {
+              filter: [
+                {
+                  terms: {
+                    'doi.keyword': args.dois,
+                  },
+                },
+              ],
+            },
+          },
+        },
+      });
+      return res.body.hits.hits.map((hit) => hit._source);
+    },
   },
 };
