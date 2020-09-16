@@ -3,43 +3,51 @@ version: "3"
 services:
   api:
     image: node:14.5.0
-    container_name: APIUPW
     environment:
       - NODE_ENV=development
       - http_proxy
       - https_proxy
-      - POSTGRES_HOST=postgredb
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
       - API_KEY_UPW=${API_KEY_UPW}
     working_dir: /app
     volumes:
       - ./:/app
-    command: "npm run test:dev"
+    command: "npm run test"
     ports:
       - "8080:8080"
       
-  postgredb:
-    image: postgres:12.3
-    restart: always
-    volumes:
-      - ./db:/var/lib/postgresql/data
-    container_name: postgres
-    environment:
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        - POSTGRES_DB=${POSTGRES_DB}
-    ports:
-      - '${POSTGRES_PORT}:5432'
+  es01:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+      environment:
+        - node.name=es01
+        - cluster.name=es-docker-cluster
+        - discovery.type=single-node
+  #      - discovery.seed_hosts=es02,es03
+  #- cluster.initial_master_nodes=es01,es02,es03
+      # - cluster.initial_master_nodes=es01
+        - bootstrap.memory_lock=true
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+      volumes:
+        - data01:/usr/share/elasticsearch/data
+      ports:
+        - 9200:9200
 
-  dbmanager:
-    image: dpage/pgadmin4
-    restart: always
+  kib01:
+    image: docker.elastic.co/kibana/kibana:7.9.1
+    ports:
+      - 5601:5601
     environment:
-      PGADMIN_DEFAULT_EMAIL: postgres@postgres.com
-      PGADMIN_DEFAULT_PASSWORD: postgres
-    ports:  
-      - "8081:80"
-    depends_on: 
-      - postgredb
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: http://es01:9200
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local
+     
