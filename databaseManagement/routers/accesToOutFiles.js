@@ -3,7 +3,7 @@ const path = require('path');
 
 const {
   getNamesOfFilesInDir,
-} = require('../services/getNameOfFileInDir');
+} = require('../services/accesToOutFiles');
 /**
  * @api {get} /reports get all reports
  * @apiName getReports

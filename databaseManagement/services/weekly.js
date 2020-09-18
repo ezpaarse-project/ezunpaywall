@@ -4,69 +4,47 @@ const readline = require('readline');
 const zlib = require('zlib');
 const axios = require('axios');
 const config = require('config');
-const prettyBytes = require('pretty-bytes');
 const { processLogger, apiLogger } = require('../../logger/logger');
 const {
-  upsertUPW,
-  createReport,
-  resetStatus,
-  statusWeekly,
-  statusByDate,
-} = require('./unpaywall');
+  tasks,
+  metadatas,
+  createStatus,
+  getIteratorTask,
+  getIteratorFile,
+  createStepFetchUnpaywall,
+  createStepDownload,
+  createStepInsert,
+  fail,
+} = require('./status');
 
-let currentStatus;
+const {
+  insertUPW,
+  createReport,
+} = require('./unpaywall');
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
 
-let metadata = [];
-let lineRead = 0;
-let error = 0;
-
-const endLogWeekly = async (took, lineInitial, data) => {
-  currentStatus.download.took = took;
-  currentStatus.status = 'Count lines for logs';
-  processLogger.info(`took ${took} seconds`);
-  processLogger.info(`Number of lines read : ${lineRead}`);
-  processLogger.info(`Number of lines announced : ${data.lines}`);
-  processLogger.info(`Number of treated lines : ${currentStatus.upsert.lineProcessed}`);
-  processLogger.info(`Number of errors : ${error}`);
-  currentStatus.endAt = new Date();
-  currentStatus.status = 'done';
-  currentStatus.took = (currentStatus.endAt - currentStatus.createdAt) / 1000;
-  await createReport(currentStatus, 'weekly');
-  await resetStatus();
-  metadata = [];
-  lineRead = 0;
-  error = 0;
-};
-
-const startLogWeekly = async (data) => {
-  currentStatus.inProcess = true;
-  currentStatus.createdAt = new Date();
-  currentStatus.upsert.total = data.lines;
-  currentStatus.status = 'Count lines for log';
-  processLogger.info('Count for logs');
-};
-
 /**
- * stream compressed snapshot file and do upsert weekly
+ * insert unpaywall datas with a compressed file and stream
  * @param {*} options limit and offset
  */
-const readSnapshotFileWeekly = (data) => new Promise((resolve, reject) => {
+const insertDatasUnpaywall = () => new Promise((resolve, reject) => {
+  console.log('insert');
+  const start = createStepInsert();
   (async function insertion() {
-    const lineInitial = await startLogWeekly(data);
-    currentStatus.status = 'upsert';
     let readStream;
-    // stream initialization
+    // read file with stream
     try {
       readStream = fs
-        .createReadStream(path.resolve(__dirname, downloadDir, currentStatus.currentFile))
+        .createReadStream(path.resolve(
+          __dirname, downloadDir, metadatas[getIteratorFile()].filename,
+        ))
         .pipe(zlib.createGunzip());
     } catch (err) {
+      fail(start);
       reject(err);
     }
 
-    const start = new Date();
     let tab = [];
 
     const rl = readline.createInterface({
@@ -76,132 +54,112 @@ const readSnapshotFileWeekly = (data) => new Promise((resolve, reject) => {
 
     processLogger.info('Start insertion');
 
+    // read line by line and sort by pack of 1000
     // eslint-disable-next-line no-restricted-syntax
     for await (const line of rl) {
-      currentStatus.upsert.lineProcessed += 1;
+      tasks.steps[getIteratorTask()].result.lineRead += 1;
       const dataupw = JSON.parse(line);
       tab.push(dataupw);
-      lineRead += 1;
-      const percent = (lineRead / data.lines) * 100;
-      currentStatus.upsert.percent = Math.ceil(percent, 2);
-      currentStatus.upsert.read = lineRead;
 
-      if ((currentStatus.upsert.lineProcessed % 1000) === 0
-        && currentStatus.upsert.lineProcessed !== 0) {
-        await upsertUPW(tab);
+      if ((tasks.steps[getIteratorTask()].result.lineRead % 1000) === 0
+        && tasks.steps[getIteratorTask()].result.lineRead !== 0) {
+        await insertUPW(tab);
         tab = [];
       }
-      if (lineRead % 100000 === 0) {
-        processLogger.info(`${lineRead}th Lines reads`);
+      if (tasks.steps[getIteratorTask()].lineRead % 100000 === 0) {
+        processLogger.info(`${tasks.steps[getIteratorTask()].result.lineRead}th Lines reads`);
       }
     }
 
     // if have stays data to insert
-    if (Math.max(currentStatus.lineProcessed, 1, 1000)) {
-      const res = await upsertUPW(tab);
-      if (!res) {
-        error += 1;
-      }
+    if (Math.max(tasks.steps[getIteratorTask()].result.lineRead, 1, 1000)) {
+      await insertUPW(tab);
+      tab = [];
     }
-
-    const took = (new Date() - start) / 1000;
-    await endLogWeekly(took, lineInitial, data);
-    currentStatus.inProcess = false;
+    tasks.endAt = (new Date() - tasks.createdAt) / 1000;
     return resolve();
   }());
 });
 
 /**
- * ask UPW to get compressed update snaphot
+ * download the snapshot
  */
-const downloadUpdateSnapshot = (data) => new Promise((resolve, reject) => {
-  const start = new Date();
-  currentStatus.currentFile = data.filename;
-  currentStatus.status = 'download snapshot';
+const downloadUpdateSnapshot = async () => new Promise((resolve, reject) => {
+  console.log('download');
+  // create step download
+  const start = createStepDownload(metadatas[getIteratorFile()].filename);
   let compressedFile;
-
+  // TODO see for a other syntax
   (async function downloadFile() {
+    // Get unpaywall file
     try {
       compressedFile = await axios({
         method: 'get',
-        url: data.url,
+        url: metadatas[getIteratorFile()].url,
         responseType: 'stream',
         headers: { 'Content-Type': 'application/octet-stream' },
       });
     } catch (err) {
-      currentStatus.status = 'error';
-      currentStatus.inProcess = false;
+      fail();
       processLogger.error(err);
       createReport('weekly-error');
       reject(err);
     }
     if (compressedFile && compressedFile.data) {
+      // download unpaywall file with stream
       const writeStream = compressedFile.data
-        .pipe(fs.createWriteStream(path.resolve(__dirname, downloadDir, data.filename)));
+        .pipe(fs.createWriteStream(path.resolve(
+          __dirname, downloadDir, metadatas[getIteratorFile()].filename,
+        )));
 
-      processLogger.info(`Download update snapshot : ${data.filename}`);
-      processLogger.info(`filetype : ${data.filetype}`);
-      processLogger.info(`lines : ${data.lines}`);
-      processLogger.info(`size : ${data.size}`);
-      processLogger.info(`to_date : ${data.to_date}`);
+      processLogger.info(`Download update snapshot : ${metadatas[getIteratorFile()].filename}`);
+      processLogger.info(`filetype : ${metadatas[getIteratorFile()].filetype}`);
+      processLogger.info(`lines : ${metadatas[getIteratorFile()].lines}`);
+      processLogger.info(`size : ${metadatas[getIteratorFile()].size}`);
+      processLogger.info(`to_date : ${metadatas[getIteratorFile()].to_date}`);
 
       writeStream.on('finish', () => {
+        tasks.steps[getIteratorTask()].result.status = 'success';
+        tasks.steps[getIteratorTask()].result.took = (new Date() - start) / 1000;
         processLogger.info('download finish');
-        currentStatus.download.took = (new Date() - start) / 1000;
         return resolve();
       });
 
+      // writeStream.on('data', (chunk) => {});
+
       writeStream.on('error', (err) => {
-        currentStatus.status = 'error';
-        currentStatus.inProcess = false;
+        fail();
         createReport('weekly-error');
         return reject(err);
       });
-
-      let timeout;
-      (function reloadStatus() {
-        let percent = 0;
-        const stats = fs.statSync(path.resolve(downloadDir, data.filename));
-        if (stats) {
-          percent = (stats.size / data.size) * 100;
-          currentStatus.download.size = `${prettyBytes(stats.size)} / ${prettyBytes(data.size)}`;
-          currentStatus.download.percent = Math.ceil(percent, 2);
-          if (Number.parseInt(percent, 10) < 100) {
-            timeout = setTimeout(reloadStatus, 1000);
-          } else {
-            clearTimeout(timeout);
-          }
-        }
-      }());
     }
   }());
 });
 
-const getUpdateSnapshotMetadatas = () => new Promise((resolve, reject) => {
-  currentStatus = statusWeekly;
-  const start = new Date();
-  currentStatus.createdAt = new Date();
-  currentStatus.route = '/updates/weekly';
-  currentStatus.inProcess = true;
-  currentStatus.status = 'ask UPW to get metadatas';
-
+/**
+ * ask unpaywall to get metadatas on unpaywall snapshot
+ */
+const fetchUnpaywall = () => new Promise((resolve, reject) => {
+  console.log('fetch');
+  // create step fetchUnpaywall
+  tasks.createdAt = createStepFetchUnpaywall();
   axios({
     method: 'get',
     url: `http://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`,
     headers: { 'Content-Type': 'application/json' },
   }).then((response) => {
     if (response?.data?.list?.length) {
-      [metadata] = response.data.list;
-      currentStatus.askAPI.success = true;
-      currentStatus.askAPI.took = (new Date() - start) / 1000;
-      return resolve(metadata);
+      tasks.steps[getIteratorTask()].result.status = 'success';
+      tasks.steps[getIteratorTask()].result.took = (new Date() - tasks.createdAt) / 1000;
+      // get the first element
+      metadatas.push(response.data.list[0]);
+      return resolve(metadatas);
     }
     return reject();
   }).catch((err) => {
-    currentStatus.status = 'error';
-    currentStatus.inProcess = false;
-    processLogger.error(err);
+    fail(tasks.createdAt);
     createReport('weekly-error');
+    processLogger.error(err);
     return reject(err);
   });
 });
@@ -215,22 +173,22 @@ const insertSnapshotBetweenDate = (startDate, endDate) => new Promise((resolve, 
     response.data.list.reverse();
     response.data.list.forEach((file) => {
       if (new Date(file.to_date).getTime() >= new Date(startDate).getTime()
-          && new Date(file.to_date).getTime() <= new Date(endDate).getTime()
-          && file.filetype === 'jsonl') {
-        metadata.push(file);
+        && new Date(file.to_date).getTime() <= new Date(endDate).getTime()
+        && file.filetype === 'jsonl') {
+        metadatas.push(file);
       }
     });
-    for (meta of metadata) {
-      currentStatus = statusByDate;
-      currentStatus.createdAt = new Date();
-      currentStatus.inProcess = true;
+    for (meta of metadatas) {
+      // currentStatus = statusByDate;
+      // currentStatus.createdAt = new Date();
+      // currentStatus.inProcess = true;
       try {
         await downloadUpdateSnapshot(meta);
       } catch (err) {
         apiLogger.error(err);
       }
       try {
-        await readSnapshotFileWeekly(meta);
+        await insertDatasUnpaywall(meta);
       } catch (err) {
         apiLogger.error(err);
       }
@@ -244,21 +202,26 @@ const insertSnapshotBetweenDate = (startDate, endDate) => new Promise((resolve, 
 });
 
 const weeklyUpdate = async () => {
+  // initialize informations on task
+  tasks.done = false;
+  tasks.createdAt = new Date();
+  createStatus();
   try {
-    await getUpdateSnapshotMetadatas();
+    await fetchUnpaywall();
   } catch (err) {
     apiLogger.error(err);
   }
   try {
-    await downloadUpdateSnapshot(metadata);
+    await downloadUpdateSnapshot();
   } catch (err) {
     apiLogger.error(err);
   }
   try {
-    await readSnapshotFileWeekly(metadata);
+    await insertDatasUnpaywall();
   } catch (err) {
     apiLogger.error(err);
   }
+  tasks.done = true;
 };
 
 module.exports = {
@@ -266,7 +229,7 @@ module.exports = {
    * ask UPW to get the latest update snapshot
    * @returns snapshot metadatas
    */
-  getUpdateSnapshotMetadatas,
+  fetchUnpaywall,
   weeklyUpdate,
   insertSnapshotBetweenDate,
 };

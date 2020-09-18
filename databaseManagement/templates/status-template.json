@@ -1,0 +1,8 @@
+{
+  "done":  { "type": "boolean" },
+  "currentTask": { "type": "keyword" },
+  "steps": { "type": "object" },
+  "createdAt": { "type": "date" },
+  "endAt": { "type": "date" },
+  "took": { "type": "long" }
+}

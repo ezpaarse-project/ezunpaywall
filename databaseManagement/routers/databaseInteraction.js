@@ -1,8 +1,6 @@
 const router = require('express').Router();
 const path = require('path');
-const {
-  postStatus,
-} = require('../services/unpaywall');
+
 const {
   insertSnapshotBetweenDate,
   weeklyUpdate,
@@ -12,23 +10,15 @@ const {
   readSnapshotFileManually,
 } = require('../services/manually');
 
-/**
- * @api {get} /process/status get informations of content database
- */
-router.get('/process/status', (req, res) => res.status(200).json({
-  type: 'success',
-  message: postStatus(),
-}));
-
 // middleware
-router.use((req, res, next) => {
-  if (postStatus().inProcess) {
-    return res.status(409).json({
-      type: 'error', message: 'process in progress', url: '/process/status',
-    });
-  }
-  return next();
-});
+// router.use((req, res, next) => {
+//   if (postStatus().inProcess) {
+//     return res.status(409).json({
+//       message: 'process in progress, check /insert/status',
+//     });
+//   }
+//   return next();
+// });
 
 /**
  * @api {post} /insert/:name initialize or update database
@@ -42,24 +32,25 @@ router.use((req, res, next) => {
 router.post('/insert/:name', (req, res) => {
   const { name } = req.params;
   if (!name) {
-    return res.status(401).json({ type: 'error', message: 'name of snapshot file expected' });
-  }
-  if (name === 'weekly') {
-    weeklyUpdate();
-    return res.status(200).json({
-      type: 'success', message: 'process start', url: '/process/status',
-    });
+    return res.status(401).json({ message: 'name of snapshot file expected' });
   }
   // TODO filtrer le nom du fichier
   if (!path.resolve(__dirname, '..', '..', 'out', 'download', name)) {
-    return res.status(404).json({ type: 'error', message: 'file doesn\'t exist' });
+    return res.status(404).json({ message: 'file doesn\'t exist' });
   }
   let { offset, limit } = req.query;
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
   readSnapshotFileManually(name, { offset: Number(offset), limit: Number(limit) });
   return res.status(200).json({
-    type: 'success', message: `start upsert with ${name}`, url: '/process/status',
+    message: `start upsert with ${name}`,
+  });
+});
+
+router.get('/insertWeekly', (req, res) => {
+  weeklyUpdate();
+  return res.status(200).json({
+    message: 'process start check /insert/status',
   });
 });
 
@@ -74,15 +65,15 @@ router.post('/insert/:name', (req, res) => {
 router.post('/insert/date/:startDate/:endDate', (req, res) => {
   const { startDate, endDate } = req.params;
   if (!startDate || !endDate) {
-    return res.status(401).json({ type: 'error', message: 'startDate and endDate expected' });
+    return res.status(401).json({ message: 'startDate and endDate expected' });
   }
   const pattern = /^([0-9]*-[0-9]{2}-[0-9]{2}$)/;
   if (!pattern.test(startDate) || !pattern.test(endDate)) {
-    return res.status(401).json({ type: 'error', message: 'startDate and endDate are in bad format' });
+    return res.status(401).json({ message: 'startDate and endDate are in bad format' });
   }
   insertSnapshotBetweenDate(startDate, endDate);
   return res.status(200).json({
-    type: 'success', message: 'process start', url: '/process/status',
+    message: 'process start check /insert/status',
   });
 });
 

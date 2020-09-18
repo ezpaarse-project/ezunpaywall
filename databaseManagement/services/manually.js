@@ -9,7 +9,7 @@ const {
   createReport,
   resetStatus,
   statusManually,
-} = require('./unpaywall');
+} = require('./status');
 
 let currentStatus = {};
 
