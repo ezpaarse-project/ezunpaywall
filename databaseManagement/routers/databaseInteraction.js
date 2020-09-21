@@ -2,23 +2,24 @@ const router = require('express').Router();
 const path = require('path');
 
 const {
-  insertSnapshotBetweenDate,
+  insertion,
   weeklyUpdate,
-} = require('../services/weekly');
+  insertSnapshotBetweenDate,
+} = require('../services/unpaywall');
 
 const {
-  readSnapshotFileManually,
-} = require('../services/manually');
+  tasks,
+} = require('../services/status');
 
 // middleware
-// router.use((req, res, next) => {
-//   if (postStatus().inProcess) {
-//     return res.status(409).json({
-//       message: 'process in progress, check /insert/status',
-//     });
-//   }
-//   return next();
-// });
+router.use((req, res, next) => {
+  if (tasks.currentTask !== '') {
+    return res.status(409).json({
+      message: 'process in progress, check /insert/status',
+    });
+  }
+  return next();
+});
 
 /**
  * @api {post} /insert/:name initialize or update database
@@ -31,49 +32,57 @@ const {
  */
 router.post('/insert/:name', (req, res) => {
   const { name } = req.params;
+  let { offset, limit } = req.query;
   if (!name) {
     return res.status(401).json({ message: 'name of snapshot file expected' });
   }
-  // TODO filtrer le nom du fichier
+  const pattern = /[a-zA-Z0-9_.-]+/;
+  if (!pattern.test(name)) {
+    return res.status(401).json({ message: 'name of file is in bad format (accepted [a-zA-Z0-9_.-] patern)' });
+  }
   if (!path.resolve(__dirname, '..', '..', 'out', 'download', name)) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
-  let { offset, limit } = req.query;
+  if (limit < offset) {
+    return res.status(401).json({ message: 'limit can\t be lower than offset or 0' });
+  }
+
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  readSnapshotFileManually(name, { offset: Number(offset), limit: Number(limit) });
+  insertion(name, { offset: Number(offset), limit: Number(limit) });
   return res.status(200).json({
     message: `start upsert with ${name}`,
-  });
-});
-
-router.get('/insertWeekly', (req, res) => {
-  weeklyUpdate();
-  return res.status(200).json({
-    message: 'process start check /insert/status',
   });
 });
 
 /**
  * @api
  * @apiName
- * @apiGroup
+ * @apiGroup ManageDatabase
  *
- * @apiParam (QUERY) {String} startDate
- * @apiParam (QUERY) {String} endDate
+ * @apiParam (QUERY) {String} start at format YYYY-mm-dd
+ * @apiParam (QUERY) {String} end at format YYYY-mm-dd
  */
-router.post('/insert/date/:startDate/:endDate', (req, res) => {
-  const { startDate, endDate } = req.params;
-  if (!startDate || !endDate) {
-    return res.status(401).json({ message: 'startDate and endDate expected' });
+router.post('/insert', (req, res) => {
+  const { start } = req.query;
+  let { end } = req.query;
+  if (!start && !end) {
+    weeklyUpdate();
+    return res.status(200).json({
+      message: 'weekly update has begun, list of tasks has been created on elastic',
+    });
   }
+  if (start && !end) {
+    [end] = new Date().toISOString().split('T');
+  }
+
   const pattern = /^([0-9]*-[0-9]{2}-[0-9]{2}$)/;
-  if (!pattern.test(startDate) || !pattern.test(endDate)) {
-    return res.status(401).json({ message: 'startDate and endDate are in bad format' });
+  if (!pattern.test(start) || !pattern.test(end)) {
+    return res.status(401).json({ message: 'start or end are in bad format, dates in format YYYY-mm-dd' });
   }
-  insertSnapshotBetweenDate(startDate, endDate);
+  insertSnapshotBetweenDate(start, end);
   return res.status(200).json({
-    message: 'process start check /insert/status',
+    message: `insert snapshot beetween ${start} and ${end} has begun, list of tasks has been created on elastic'`,
   });
 });
 

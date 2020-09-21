@@ -3,12 +3,9 @@ const bodyParser = require('body-parser');
 const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
 const morgan = require('morgan');
-const axios = require('axios');
 const fs = require('fs-extra');
 const path = require('path');
-const { CronJob } = require('cron');
 
-const { Client } = require('@elastic/elasticsearch');
 const schema = require('./apiGraphql/graphql');
 
 // routers
@@ -52,7 +49,6 @@ const corsOptions = {
   allowedHeaders: ['Content-Type'],
 };
 
-// TODO do a middleware to get time of request
 // initialize API graphql
 app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   const graphqlQuery = graphqlHTTP({
@@ -68,15 +64,6 @@ app.use('/logs', express.static(`${__dirname}/out/logs`));
 // routers
 app.use(RouterHomePage);
 app.use(RouterManageDatabase);
-
-const update = new CronJob('* * * * * THU', () => {
-  axios({
-    method: 'post',
-    url: '/updates/weekly',
-  });
-});
-
-// update.start();
 
 /* Errors and unknown routes */
 app.all('*', (req, res) => res.status(400).json({ type: 'error', message: 'bad request' }));

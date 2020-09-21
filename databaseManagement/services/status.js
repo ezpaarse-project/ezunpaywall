@@ -1,34 +1,43 @@
+const path = require('path');
+const fs = require('fs-extra');
+
+const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
+
 const client = require('../../client/client');
+const { processLogger } = require('../../logger/logger');
 
 let iteratorTask = -1;
-const iteratorFile = 0;
+let iteratorFile = 0;
 const metadatas = [];
+let timeout;
 
 const getIteratorTask = () => iteratorTask;
 const getIteratorFile = () => iteratorFile;
 
-let tasks = {
+let idTask;
+
+const tasks = {
   done: false,
   currentTask: '',
   steps: [],
-  createdAt: '',
-  endAt: '',
+  createdAt: null,
+  endAt: null,
   took: '',
 };
 
-const resetTask = () => {
+const resetTasks = () => {
   iteratorTask = -1;
-  tasks = {
-    done: false,
-    currentTask: '',
-    steps: [],
-    createdAt: '',
-    endAt: '',
-    took: '',
-  };
+  iteratorFile = 0;
+  tasks.done = false;
+  tasks.currentTask = '';
+  tasks.steps = [];
+  tasks.createdAt = null;
+  tasks.endAt = null;
+  tasks.took = '';
 };
 
 const createStepFetchUnpaywall = () => {
+  processLogger.info('step - fetch unpaywall');
   iteratorTask += 1;
   tasks.currentTask = 'fetchUnpaywall';
   tasks.steps.push(
@@ -44,6 +53,7 @@ const createStepFetchUnpaywall = () => {
 };
 
 const createStepDownload = (file) => {
+  processLogger.info('step - start download file');
   iteratorTask += 1;
   tasks.currentTask = 'download';
   tasks.steps.push(
@@ -61,6 +71,7 @@ const createStepDownload = (file) => {
 };
 
 const createStepInsert = (file) => {
+  processLogger.info('step - start insertion');
   iteratorTask += 1;
   tasks.currentTask = 'insert';
   tasks.steps.push(
@@ -78,43 +89,63 @@ const createStepInsert = (file) => {
 };
 
 const createStatus = async () => {
-  const doc = await client.index({
-    index: 'tasks',
-    body: {
-      tasks,
-    },
-  });
-  console.log(doc.body._id);
-  let timeout;
+  try {
+    const doc = await client.index({
+      index: 'tasks',
+      refresh: true,
+      body: tasks,
+    });
+    idTask = doc.body._id;
+  } catch (err) {
+    processLogger.error(err);
+  }
   (async function actualizeStatus() {
-    console.log(tasks);
     if (tasks.done) {
       clearTimeout(timeout);
       return;
     }
     try {
-      // TODO j'en était à la
       await client.index({
-        id: doc.body._id,
-        index: 'unpaywall',
+        id: idTask,
+        index: 'tasks',
         refresh: true,
-        body: {
-          doc: {
-            tasks,
-          },
-        },
+        body: tasks,
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
-      console.log(err);
+      processLogger.error(err);
     }
   }());
+};
+
+const endStatus = async () => {
+  try {
+    clearTimeout(timeout);
+    await client.index({
+      id: idTask,
+      index: 'tasks',
+      refresh: true,
+      body: tasks,
+    });
+  } catch (err) {
+    processLogger.error(err);
+  }
+};
+
+const createReport = async (success) => {
+  try {
+    await fs.writeFileSync(`${reportDir}/${success}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(tasks, null, 2));
+  } catch (error) {
+    processLogger.error(error);
+  }
 };
 
 const fail = (startDate) => {
   tasks.steps[iteratorTask].result.status = 'error';
   tasks.steps[iteratorTask].result.took = (startDate - new Date()) / 1000;
-  resetTask();
+  tasks.endAt = (tasks.createdAt - new Date()) / 1000;
+  createReport('error');
+  resetTasks();
 };
 
 module.exports = {
@@ -126,5 +157,8 @@ module.exports = {
   createStepDownload,
   createStepInsert,
   createStatus,
+  endStatus,
+  resetTasks,
   fail,
+  createReport,
 };
