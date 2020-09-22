@@ -37,23 +37,6 @@ router.get('/download', async (req, res) => {
 });
 
 /**
- * @api {get} /status get all status
- * @apiName getStatus
- * @apiGroup Homepage
- *
- * @apiParam (PARAMS) {String} latest
- */
-router.get('/status', async (req, res) => {
-  let { latest } = req.query;
-  if (!latest) latest = false;
-  const statusDir = path.resolve(__dirname, '..', '..', 'out', 'status');
-  const files = await getNamesOfFilesInDir(statusDir, latest);
-  return res.status(200).json({
-    type: 'success', data: files,
-  });
-});
-
-/**
  * @api {get} /logs get all logs
  * @apiName getLogs
  * @apiGroup Homepage

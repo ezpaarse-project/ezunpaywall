@@ -5,3 +5,5 @@ package-lock.json
 db/
 out/
 unpaywall.local.env.sh
+doc/
+apidoc.json
