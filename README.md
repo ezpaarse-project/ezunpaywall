@@ -27,7 +27,7 @@ The tools you need to let ez-unpaywall run are :
 ## Installation quickstart ##
 
 If you are a Linux user
-- put the API_KEY in /config/env.sh file,
+- put the API_KEY in /config/env.sh file, API_KEY is necessary to update the unpaywall data
 - install the initial snapshot and put it on download folder
 - now you can execute ```docker-compose up``` where is the docker-compose file
 

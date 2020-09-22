@@ -66,9 +66,9 @@ app.use(RouterHomePage);
 app.use(RouterManageDatabase);
 
 /* Errors and unknown routes */
-app.all('*', (req, res) => res.status(400).json({ type: 'error', message: 'bad request' }));
+app.all('*', (req, res) => res.status(400).json({ message: 'bad request' }));
 
-app.use((error, req, res) => res.status(500).json({ type: 'error', message: error.message }));
+app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
 app.listen('8080', () => apiLogger.info('Server listening on 8080'));
 
