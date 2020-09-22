@@ -1,0 +1,24 @@
+cluster.name: ${CLUSTER_NAME}
+network.host: 0.0.0.0
+xpack.security.enabled: true
+# xpack.security.transport.ssl.enabled: true
+# xpack.security.transport.ssl.verification_mode: certificate
+# xpack.security.transport.ssl.certificate_authorities: /usr/share/elasticsearch/config/x-pack/certificates/ca/ca.crt
+# xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/x-pack/certificates/${EZUNPAYWALL_NODE_NAME}/${EZUNPAYWALL_NODE_NAME}.crt
+# xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/x-pack/certificates/${EZUNPAYWALL_NODE_NAME}/${EZUNPAYWALL_NODE_NAME}.key
+
+network.publish_host: ${EZUNPAYWALL_ES_PUBLISH}
+node.name: ${EZUNPAYWALL_ES_NODE_NAME}
+discovery.type: ${EZUNPAYWALL_ES_DISCOVERY_TYPE}
+discovery.seed_hosts: ${EZUNPAYWALL_ES_DISCOVERY}
+# initial_master_nodes must be set the very first time the cluster is started
+cluster.initial_master_nodes: ${EZUNPAYWALL_ES_INITIAL_MASTER_NODES}
+node.master: ${EZUNPAYWALL_ES_NODE_MASTER}
+node.data: ${EZUNPAYWALL_ES_NODE_DATA}
+node.ingest: ${EZUNPAYWALL_ES_NODE_INGEST}
+cluster.remote.connect: ${EZUNPAYWALL_ES_NODE_SEARCH_REMOTE}
+#bootstrap.memory_lock: true
+path.logs: /usr/share/elasticsearch/logs
+
+# Disallow searches with too many agregations
+search.max_buckets: 10000
