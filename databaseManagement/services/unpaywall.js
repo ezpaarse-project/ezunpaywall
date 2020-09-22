@@ -1,7 +1,7 @@
 const { apiLogger } = require('../../logger/logger');
 const {
   tasks,
-  metadatas,
+  getMetadatas,
   createStatus,
   createReport,
   endStatus,
@@ -27,7 +27,7 @@ const startTask = () => {
 };
 
 const insertion = async (name) => {
-  metadatas.push({ filename: name });
+  getMetadatas().push({ filename: name });
   await startTask();
   await createStatus();
   try {
@@ -39,7 +39,6 @@ const insertion = async (name) => {
   await endStatus();
   await createReport('success');
   await resetTasks();
-  console.log(tasks);
 };
 
 const weeklyUpdate = async () => {

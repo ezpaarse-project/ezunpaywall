@@ -11,7 +11,7 @@ const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
 
 const {
   tasks,
-  metadatas,
+  getMetadatas,
   getIteratorTask,
   getIteratorFile,
   createStepInsert,
@@ -32,14 +32,14 @@ const insertUPW = async (data) => {
  * @param {*} options limit and offset
  */
 const insertDatasUnpaywall = () => new Promise((resolve, reject) => {
-  const start = createStepInsert();
+  const start = createStepInsert(getMetadatas()[getIteratorFile()].filename);
   (async function insertion() {
     let readStream;
     // read file with stream
     try {
       readStream = fs
         .createReadStream(path.resolve(
-          __dirname, downloadDir, metadatas[getIteratorFile()].filename,
+          __dirname, downloadDir, getMetadatas()[getIteratorFile()].filename,
         ))
         .pipe(zlib.createGunzip());
     } catch (err) {
@@ -88,15 +88,16 @@ const insertDatasUnpaywall = () => new Promise((resolve, reject) => {
  */
 const downloadUpdateSnapshot = async () => new Promise((resolve, reject) => {
   // create step download
-  const start = createStepDownload(metadatas[getIteratorFile()].filename);
+  const start = createStepDownload(getMetadatas()[getIteratorFile()].filename);
   let compressedFile;
   // TODO see for a other syntax
   (async function downloadFile() {
     // Get unpaywall file
+    console.log(getMetadatas());
     try {
       compressedFile = await axios({
         method: 'get',
-        url: metadatas[getIteratorFile()].url,
+        url: getMetadatas()[getIteratorFile()].url,
         responseType: 'stream',
         headers: { 'Content-Type': 'application/octet-stream' },
       });
@@ -109,14 +110,14 @@ const downloadUpdateSnapshot = async () => new Promise((resolve, reject) => {
       // download unpaywall file with stream
       const writeStream = compressedFile.data
         .pipe(fs.createWriteStream(path.resolve(
-          __dirname, downloadDir, metadatas[getIteratorFile()].filename,
+          __dirname, downloadDir, getMetadatas()[getIteratorFile()].filename,
         )));
 
-      processLogger.info(`Download update snapshot : ${metadatas[getIteratorFile()].filename}`);
-      processLogger.info(`filetype : ${metadatas[getIteratorFile()].filetype}`);
-      processLogger.info(`lines : ${metadatas[getIteratorFile()].lines}`);
-      processLogger.info(`size : ${metadatas[getIteratorFile()].size}`);
-      processLogger.info(`to_date : ${metadatas[getIteratorFile()].to_date}`);
+      processLogger.info(`Download update snapshot : ${getMetadatas()[getIteratorFile()].filename}`);
+      processLogger.info(`filetype : ${getMetadatas()[getIteratorFile()].filetype}`);
+      processLogger.info(`lines : ${getMetadatas()[getIteratorFile()].lines}`);
+      processLogger.info(`size : ${getMetadatas()[getIteratorFile()].size}`);
+      processLogger.info(`to_date : ${getMetadatas()[getIteratorFile()].to_date}`);
 
       writeStream.on('finish', () => {
         tasks.steps[getIteratorTask()].result.status = 'success';
@@ -138,7 +139,7 @@ const downloadUpdateSnapshot = async () => new Promise((resolve, reject) => {
 });
 
 /**
- * ask unpaywall to get metadatas on unpaywall snapshot
+ * ask unpaywall to get getMetadatas() on unpaywall snapshot
  */
 const fetchUnpaywall = (startDate, endDate) => new Promise((resolve, reject) => {
   // create step fetchUnpaywall
@@ -157,13 +158,13 @@ const fetchUnpaywall = (startDate, endDate) => new Promise((resolve, reject) => 
         if (new Date(file.to_date).getTime() >= new Date(startDate).getTime()
           && new Date(file.to_date).getTime() <= new Date(endDate).getTime()
           && file.filetype === 'jsonl') {
-          metadatas.push(file);
+          getMetadatas().push(file);
         }
       });
       tasks.steps[getIteratorTask()].result.status = 'success';
       tasks.steps[getIteratorTask()].result.took = (new Date() - start) / 1000;
       processLogger.info('step - end fetch unpaywall ');
-      return resolve(metadatas);
+      return resolve(getMetadatas());
     }
     return reject();
   }).catch((err) => {

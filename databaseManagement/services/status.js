@@ -8,11 +8,12 @@ const { processLogger } = require('../../logger/logger');
 
 let iteratorTask = -1;
 let iteratorFile = 0;
-const metadatas = [];
+let metadatas = [];
 let timeout;
 
 const getIteratorTask = () => iteratorTask;
 const getIteratorFile = () => iteratorFile;
+const getMetadatas = () => metadatas;
 
 let idTask;
 
@@ -28,6 +29,7 @@ const tasks = {
 const resetTasks = () => {
   iteratorTask = -1;
   iteratorFile = 0;
+  metadatas = [];
   tasks.done = false;
   tasks.currentTask = '';
   tasks.steps = [];
@@ -150,7 +152,7 @@ const fail = (startDate) => {
 
 module.exports = {
   tasks,
-  metadatas,
+  getMetadatas,
   getIteratorTask,
   getIteratorFile,
   createStepFetchUnpaywall,

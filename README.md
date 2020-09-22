@@ -3,15 +3,20 @@
 ez-unpaywall is an API and database that queries the UnPayWall database containing free scholarly articles
 
 **Table of content**
+- [Installation](#Installation)
 - [Recommended system requirements](#recommended-system-requirements)
 - [Prerequisites](#prerequisites)
 - [Installation quickstart](#installation-quickstart)
 - [Test the installation](#test-the-installation)
 
+## Installation ##
+
+``` git clone https://github.com/ezpaarse-project/ez-unpaywall```
+
 ## Recommended system requirements ##
 
 - a linux box or VM (eg: Ubuntu)
-- ??Gb disk space (depends on the size of the database)
+- unpaywall data measured about 150Gb it is necessary to provide the necessary place on the hard drive
 
 ## Prerequisites ##
 
@@ -22,7 +27,7 @@ The tools you need to let ez-unpaywall run are :
 ## Installation quickstart ##
 
 If you are a Linux user
-- modify the environment variables present in the /config/env.sh file, they allow to use the identifiers of the database as well as the ports to use
+- put the API_KEY in /config/env.sh file,
 - install the initial snapshot and put it on download folder
 - now you can execute ```docker-compose up``` where is the docker-compose file
 
