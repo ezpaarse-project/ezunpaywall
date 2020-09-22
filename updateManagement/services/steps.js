@@ -149,6 +149,7 @@ const fetchUnpaywall = (startDate, endDate) => new Promise((resolve, reject) => 
     url: `http://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`,
     headers: { 'Content-Type': 'application/json' },
   }).then((response) => {
+    // TODO if response = 403, break
     if (response?.data?.list?.length) {
       tasks.steps[getIteratorTask()].result.status = 'success';
       tasks.steps[getIteratorTask()].result.took = (new Date() - tasks.createdAt) / 1000;

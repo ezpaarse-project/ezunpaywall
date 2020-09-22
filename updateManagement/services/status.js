@@ -38,6 +38,18 @@ const resetTasks = () => {
   tasks.took = '';
 };
 
+const endTask = () => {
+  tasks.endAt = new Date();
+  tasks.took = (tasks.endAt - tasks.createdAt) / 1000;
+  tasks.done = true;
+  tasks.currentTask = 'end';
+};
+
+const startTask = () => {
+  tasks.done = false;
+  tasks.createdAt = new Date();
+};
+
 const createStepFetchUnpaywall = () => {
   processLogger.info('step - fetch unpaywall');
   iteratorTask += 1;
@@ -161,6 +173,8 @@ module.exports = {
   createStatus,
   endStatus,
   resetTasks,
+  endTask,
+  startTask,
   fail,
   createReport,
 };

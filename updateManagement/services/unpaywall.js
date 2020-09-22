@@ -1,10 +1,11 @@
 const { apiLogger } = require('../../logger/logger');
 const {
-  tasks,
   getMetadatas,
   createStatus,
   createReport,
   endStatus,
+  startTask,
+  endTask,
   resetTasks,
 } = require('./status');
 
@@ -13,18 +14,6 @@ const {
   downloadUpdateSnapshot,
   insertDatasUnpaywall,
 } = require('./steps');
-
-const endTask = () => {
-  tasks.endAt = new Date();
-  tasks.took = (tasks.endAt - tasks.createdAt) / 1000;
-  tasks.done = true;
-  tasks.currentTask = 'end';
-};
-
-const startTask = () => {
-  tasks.done = false;
-  tasks.createdAt = new Date();
-};
 
 const insertion = async (name) => {
   getMetadatas().push({ filename: name });

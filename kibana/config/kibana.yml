@@ -1,0 +1,5 @@
+xpack.security.enabled: true
+# elasticsearch.hosts: ${ELASTICSEARCH_HOSTS}
+elasticsearch.username: ${EZUNPAYWALL_ELASTIC_USER}
+elasticsearch.password: ${EZUNPAYWALL_ELASTIC_PASSWORD}
+kibana.defaultAppId: "dashboard/homepage"
