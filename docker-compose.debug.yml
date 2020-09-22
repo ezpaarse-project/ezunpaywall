@@ -10,43 +10,55 @@ services:
       - API_KEY_UPW=${API_KEY_UPW}
     working_dir: /app
     volumes:
-      - ./:/app
+      - ./api:/app
     command: "npm run dev"
     ports:
       - "8080:8080"
-      
-  es01:
-      image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
-      environment:
-        - node.name=es01
-        - cluster.name=es-docker-cluster
-        - discovery.type=single-node
-  #      - discovery.seed_hosts=es02,es03
-  #- cluster.initial_master_nodes=es01,es02,es03
-      # - cluster.initial_master_nodes=es01
-        - bootstrap.memory_lock=true
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      ulimits:
-        memlock:
-          soft: -1
-          hard: -1
-      volumes:
-        - data01:/usr/share/elasticsearch/data
-        - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      ports:
-        - 9200:9200
+    
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    environment:
+      - http_proxy
+      - https_proxy
+      - CLUSTER_NAME=ezunpaywall
+      - EZUNPAYWALL_ES_PUBLISH
+      - EZUNPAYWALL_ES_NODE_NAME
+      - EZUNPAYWALL_ES_DISCOVERY
+      - EZUNPAYWALL_ES_DISCOVERY_TYPE
+      - EZUNPAYWALL_ES_NODE_MASTER
+      - EZUNPAYWALL_ES_NODE_DATA
+      - EZUNPAYWALL_ES_NODE_INGEST
+      - EZUNPAYWALL_ES_NODE_SEARCH_REMOTE
+      - EZUNPAYWALL_ES_INITIAL_MASTER_NODES
+      - EZUNPAYWALL_SMTP_HOST
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+      - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+    ports:
+      - 9200:9200
 
-  kib01:
+  kibana:
     image: docker.elastic.co/kibana/kibana:7.9.1
     ports:
       - 5601:5601
     environment:
-      - EZUNPAYWALL_ELASTIC_USER
-      - EZUNPAYWALL_ELASTIC_PASSWORD
-      - ELASTICSEARCH_URL="http://es01:9200"
-      - ELASTICSEARCH_HOSTS="http://es01:9200"
+      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME
+      - SERVER_HOST
+      - SERVER_PORT
+      - THIS_HOST
+      - ELASTICSEARCH_HOSTS="http://elastic:9200"
+      - KIBANA_DEFAULTAPPID
     volumes:
-     - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"
+
 volumes:
   data01:
     driver: local
