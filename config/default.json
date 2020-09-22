@@ -1,3 +1,9 @@
 { 
-  "API_KEY_UPW": "api_key"
+  "API_KEY_UPW": "api_key",
+  "elasticsearch": {
+    "port": 9200,
+    "host": "elastic",
+    "user": "elastic",
+    "password": "changeme"
+  }
 }
