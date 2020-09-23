@@ -34,9 +34,9 @@ const insertUPW = async (data) => {
  * insert unpaywall datas with a compressed file and stream
  * @param {*} options limit and offset
  */
-const insertDatasUnpaywall = () => new Promise((resolve, reject) => {
+const insertDatasUnpaywall = async () => {
   const start = createStepInsert(getMetadatas()[getIteratorFile()]?.filename);
-  (async function insertion() {
+  const insertion = async () => {
     let readStream;
     // read file with stream
     try {
@@ -47,7 +47,7 @@ const insertDatasUnpaywall = () => new Promise((resolve, reject) => {
         .pipe(zlib.createGunzip());
     } catch (err) {
       fail(start);
-      reject(err);
+      return null;
     }
 
     let tab = [];
@@ -64,51 +64,56 @@ const insertDatasUnpaywall = () => new Promise((resolve, reject) => {
       const dataupw = JSON.parse(line);
       tab.push(dataupw);
 
-      if ((tasks.steps[tasks.steps.length - 1]?.lineRead % 1000) === 0
-        && tasks.steps[tasks.steps.length - 1]?.lineRead !== 0) {
+      if ((tasks.steps[tasks.steps.length - 1].lineRead % 1000) === 0
+        && tasks.steps[tasks.steps.length - 1].lineRead !== 0) {
         await insertUPW(tab);
         tab = [];
       }
       if (tasks.steps[tasks.steps.length - 1]?.lineRead % 100000 === 0) {
-        processLogger.info(`${tasks.steps[tasks.steps.length - 1]?.lineRead}th Lines reads`);
+        processLogger.info(`${tasks.steps[tasks.steps.length - 1].lineRead}th Lines reads`);
       }
     }
 
     // if have stays data to insert
-    if (Math.max(tasks.steps[tasks.steps.length - 1]?.lineRead, 1, 1000)) {
+    if (Math.max(tasks.steps[tasks.steps.length - 1].lineRead, 1, 1000)) {
       await insertUPW(tab);
       tab = [];
     }
     processLogger.info('step - end insertion');
     tasks.steps[tasks.steps.length - 1].status = 'success';
     tasks.steps[tasks.steps.length - 1].took = (new Date() - start) / 1000;
-    return resolve();
-  }());
-});
+    return true;
+  };
+  await insertion();
+  return true;
+};
 
 /**
  * download the snapshot
  */
-const downloadUpdateSnapshot = async () => new Promise((resolve, reject) => {
+const downloadUpdateSnapshot = async () => {
+  // if snapshot already exist, past
+  if (fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', getMetadatas()[getIteratorFile()].filename))) {
+    return true;
+  }
   // create step download
   const start = createStepDownload(getMetadatas()[getIteratorFile()].filename);
   let compressedFile;
+  try {
+    compressedFile = await axios({
+      method: 'get',
+      url: getMetadatas()[getIteratorFile()].url,
+      responseType: 'stream',
+      headers: { 'Content-Type': 'application/octet-stream' },
+    });
+  } catch (err) {
+    fail();
+    processLogger.error(err);
+    return null;
+  }
   // TODO see for a other syntax
-  (async function downloadFile() {
+  const downloadFile = () => new Promise((resolve, reject) => {
     // Get unpaywall file
-    console.log(getMetadatas());
-    try {
-      compressedFile = await axios({
-        method: 'get',
-        url: getMetadatas()[getIteratorFile()].url,
-        responseType: 'stream',
-        headers: { 'Content-Type': 'application/octet-stream' },
-      });
-    } catch (err) {
-      fail();
-      processLogger.error(err);
-      reject(err);
-    }
     if (compressedFile && compressedFile.data) {
       // download unpaywall file with stream
       const writeStream = compressedFile.data
@@ -138,45 +143,50 @@ const downloadUpdateSnapshot = async () => new Promise((resolve, reject) => {
         return reject(err);
       });
     }
-  }());
-});
+  });
+  await downloadFile();
+  return true;
+};
 
 /**
  * ask unpaywall to get getMetadatas() on unpaywall snapshot
  */
-const fetchUnpaywall = (startDate, endDate) => new Promise((resolve, reject) => {
+const fetchUnpaywall = async (startDate, endDate) => {
   // create step fetchUnpaywall
   const start = createStepFetchUnpaywall();
-  axios({
+  const response = await axios({
     method: 'get',
     url: `http://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`,
     headers: { 'Content-Type': 'application/json' },
-  }).then((response) => {
-    // TODO if response = 403, break
-    if (response?.data?.list?.length) {
-      tasks.steps[tasks.steps.length - 1].status = 'success';
-      tasks.steps[tasks.steps.length - 1].took = (new Date() - tasks.createdAt) / 1000;
-      // get the first element
-      response.data.list.reverse();
-      response.data.list.forEach((file) => {
-        if (new Date(file.to_date).getTime() >= new Date(startDate).getTime()
-          && new Date(file.to_date).getTime() <= new Date(endDate).getTime()
-          && file.filetype === 'jsonl') {
-          getMetadatas().push(file);
-        }
-      });
-      tasks.steps[tasks.steps.length - 1].status = 'success';
-      tasks.steps[tasks.steps.length - 1].took = (new Date() - start) / 1000;
-      processLogger.info('step - end fetch unpaywall ');
-      return resolve(getMetadatas());
-    }
-    return reject();
-  }).catch((err) => {
-    fail(tasks.createdAt);
-    processLogger.error(err);
-    return reject(err);
   });
-});
+  if (!response) {
+    fail(tasks.createdAt);
+    processLogger.error();
+    return null;
+  }
+  if (response.status !== 200) {
+    fail(tasks.createdAt);
+    processLogger.error();
+    return null;
+  }
+  if (response?.data?.list?.length) {
+    tasks.steps[tasks.steps.length - 1].status = 'success';
+    tasks.steps[tasks.steps.length - 1].took = (new Date() - tasks.createdAt) / 1000;
+    response.data.list.reverse();
+    response.data.list.forEach((file) => {
+      if (new Date(file.to_date).getTime() >= new Date(startDate).getTime()
+        && new Date(file.to_date).getTime() <= new Date(endDate).getTime()
+        && file.filetype === 'jsonl') {
+        getMetadatas().push(file);
+      }
+    });
+    tasks.steps[tasks.steps.length - 1].status = 'success';
+    tasks.steps[tasks.steps.length - 1].took = (new Date() - start) / 1000;
+    processLogger.info('step - end fetch unpaywall ');
+    return true;
+  }
+  return true;
+};
 
 module.exports = {
   insertDatasUnpaywall,

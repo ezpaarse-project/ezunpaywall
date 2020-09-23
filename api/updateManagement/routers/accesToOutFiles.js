@@ -33,7 +33,6 @@ router.get('/reports', async (req, res) => {
 router.get('/download', async (req, res) => {
   const downloadDir = path.resolve(outDir, 'download');
   const files = await getNamesOfFilesInDir(downloadDir, false);
-  console.log(downloadDir);
   return res.status(200).json({
     type: 'success', data: files,
   });

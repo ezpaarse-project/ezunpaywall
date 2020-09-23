@@ -56,10 +56,8 @@ const createStepFetchUnpaywall = () => {
   tasks.steps.push(
     {
       task: 'fetchUnpaywall',
-      result: {
-        took: 0,
-        status: 'inProgress',
-      },
+      took: 0,
+      status: 'inProgress',
     },
   );
   return new Date();
@@ -72,12 +70,10 @@ const createStepDownload = (file) => {
   tasks.steps.push(
     {
       task: 'download',
-      result: {
-        file,
-        percent: 0,
-        took: 0,
-        status: 'inProgress',
-      },
+      file,
+      percent: 0,
+      took: 0,
+      status: 'inProgress',
     },
   );
   return new Date();
@@ -90,12 +86,10 @@ const createStepInsert = (file) => {
   tasks.steps.push(
     {
       task: 'insert',
-      result: {
-        file,
-        lineRead: 0,
-        took: 0,
-        status: 'inProgress',
-      },
+      file,
+      lineRead: 0,
+      took: 0,
+      status: 'inProgress',
     },
   );
   return new Date();

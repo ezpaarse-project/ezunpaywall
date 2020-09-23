@@ -14,7 +14,6 @@ const RouterHomePage = require('./updateManagement/routers/accesToOutFiles');
 
 const { apiLogger } = require('./lib/logger');
 
-
 const outDir = path.resolve(__dirname, 'out');
 const downloadDir = path.resolve(outDir, 'download');
 const reportsDir = path.resolve(outDir, 'reports');

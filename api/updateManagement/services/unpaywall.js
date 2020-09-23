@@ -1,4 +1,3 @@
-const { apiLogger } = require('../../lib/logger');
 const {
   getMetadatas,
   createStatus,
@@ -18,71 +17,61 @@ const {
 const insertion = async (name) => {
   getMetadatas().push({ filename: name });
   await startTask();
-  await createStatus();
-  try {
-    await insertDatasUnpaywall();
-  } catch (err) {
-    apiLogger.error(err);
+  const res1 = await createStatus();
+  if (!res1) {
+    return null;
   }
+  await insertDatasUnpaywall();
   await endTask();
   await endStatus();
   await createReport('success');
   await resetTasks();
+  return true;
 };
 
 const weeklyUpdate = async () => {
   // initialize informations on task
   startTask();
   createStatus();
-  try {
-    // TODO check for a other syntax
-    // create a date with format YYYY-mm-dd and possible to use fonction getTime
-    const endDate = new Date(new Date().toISOString().split('T')[0]);
-    // current date - one week
-    const startDate = endDate.getTime() - 604800000;
-    await fetchUnpaywall(startDate, endDate);
-  } catch (err) {
-    apiLogger.error(err);
+  // TODO check for a other syntax
+  // create a date with format YYYY-mm-dd and possible to use fonction getTime
+  const endDate = new Date(new Date().toISOString().split('T')[0]);
+  // current date - one week
+  const startDate = endDate.getTime() - 604800000;
+  const res1 = await fetchUnpaywall(startDate, endDate);
+  if (!res1) {
+    return null;
   }
-  try {
-    await downloadUpdateSnapshot();
-  } catch (err) {
-    apiLogger.error(err);
+  const res2 = await downloadUpdateSnapshot();
+  if (!res2) {
+    return null;
   }
-  try {
-    await insertDatasUnpaywall();
-  } catch (err) {
-    apiLogger.error(err);
-  }
+  await insertDatasUnpaywall();
   await endTask();
   await endStatus();
   await createReport('success');
   await resetTasks();
+  return true;
 };
 
 const insertSnapshotBetweenDate = async (startDate, endDate) => {
   // initialize informations on task
   startTask();
   createStatus();
-  try {
-    await fetchUnpaywall(startDate, endDate);
-  } catch (err) {
-    apiLogger.error(err);
+  const res1 = await fetchUnpaywall(startDate, endDate);
+  if (!res1) {
+    return null;
   }
-  try {
-    await downloadUpdateSnapshot();
-  } catch (err) {
-    apiLogger.error(err);
+  const res2 = await downloadUpdateSnapshot();
+  if (!res2) {
+    return null;
   }
-  try {
-    await insertDatasUnpaywall();
-  } catch (err) {
-    apiLogger.error(err);
-  }
+  await insertDatasUnpaywall();
   endTask();
   endStatus();
   createReport('success');
   resetTasks();
+  return true;
 };
 
 module.exports = {
