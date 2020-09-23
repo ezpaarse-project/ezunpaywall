@@ -1,58 +1,79 @@
-# ez-unpaywall #
+# ez-unpaywall
 
 ez-unpaywall is an API and database that queries the UnPayWall database containing free scholarly articles
 
 **Table of content**
+- [Prerequisites](#prerequisites)
 - [Installation](#Installation)
 - [Recommended system requirements](#recommended-system-requirements)
-- [Prerequisites](#prerequisites)
 - [Installation quickstart](#installation-quickstart)
 - [Test the installation](#test-the-installation)
 
-## Installation ##
-
-``` git clone https://github.com/ezpaarse-project/ez-unpaywall```
-
-## Recommended system requirements ##
-
-- a linux box or VM (eg: Ubuntu)
-- unpaywall data measured about 150Gb it is necessary to provide the necessary place on the hard drive
-
-## Prerequisites ##
+## Prerequisites
 
 The tools you need to let ez-unpaywall run are :
 * docker
 * docker-compose
+* a linux box or VM (eg: Ubuntu)
+* unpaywall data measured about 150Gb it is necessary to provide the necessary place on the hard drive
 
-## Installation quickstart ##
+## Installation
 
-If you are a Linux user
-- put the API_KEY in /config/env.sh file, API_KEY is necessary to update the unpaywall data
-- install the initial snapshot and put it on download folder
-- now you can execute ```docker-compose up``` where is the docker-compose file
+``` git clone https://github.com/ezpaarse-project/ez-unpaywall```
 
-## Test the installation ##
+## Configuration
 
-After installation, you can test if the API is working properly. for that, execute ```docker-compose -f docker-compose.test.yml``` and see if the tests went well without error
+### Setup Elastic certificates
 
-## Test route ##
+For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
+
+  - Open the `certs` directory.
+  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file.
+  - Run `docker-compose -f create-certs.yml up`.
+  - A `certificates` directory should be created, you can just put it in both `elasticsearch/config/` and `kibana/config/`. (**NB**: you may need to `chown` it)
+
+
+### Setup environment
+
+Create an environment file named `ezunpaywall.env.local.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh` , which contains a set of predefined variables and is overriden by `ezunpaywall.env.local.sh`.
+
+### Adjust system configuration for Elasticsearch
+
+Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
+
+To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
+
+```ini
+# configuration needed for elastic search
+vm.max_map_count=262144
+```
+
+## Test route
 
 GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"
 return an array
 
+POST "/graphql"
+Body: 
+```json
+{
+    "query": "{getDatasUPW(dois:<dois...>){<fields...>}}"
+}
+```
+return an array
 
 | Name | Type | Description |
 | --- | --- | --- |
 | dois | Array of String | Array of comma separeted doi  |
 | fields | String | Array of attributes of UnPayWall object |
 
-### example ###
+### Example
 
-## GET ##
+## GET
 
 GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"
 
-## POST ##
+## POST
 
 POST "/graphql"
 
@@ -98,9 +119,9 @@ Status : 200
 ```
 
 
-### Object structure ###
+### Object structure
 
-#### UnPayWall object ####
+#### UnPayWall object
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -125,7 +146,7 @@ Status : 200
 | year | Integer/Null | The year this resource was published. |
 | z_authors | List of Crossref | List of Crossref |
 
-#### oa_location & best_oa_location object ####
+#### oa_location & best_oa_location object
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -140,7 +161,7 @@ Status : 200
 | url_for_pdf | String/Null | The URL with a PDF version of this OA copy. |
 | version | String | The content version accessible at this location. |
 
-#### z_author ####
+#### z_author
 | Name | Type | Description |
 | --- | --- | --- |
 | family | String | |
