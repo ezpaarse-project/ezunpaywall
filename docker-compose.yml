@@ -45,6 +45,7 @@ services:
     volumes:
       - data01:/usr/share/elasticsearch/data
       - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+      - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
       - 9200:9200
 

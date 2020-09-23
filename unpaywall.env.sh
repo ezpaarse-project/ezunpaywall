@@ -12,7 +12,7 @@ export EZUNPAYWALL_AUTH_SECRET="d7a8c699c63836b837af086cfb3441cbcfcf1a02"
 export EZUNPAYWALL_SMTP_HOST="127.0.0.1"
 export ELASTICSEARCH_USERNAME="elastic"
 export ELASTICSEARCH_PASSWORD="changeme"
-export ELASTICSEARCH_HOSTS="http://es01:9200"
+export ELASTICSEARCH_HOSTS="http://elastic:9200"
 export SERVER_HOST="0.0.0.0"
 export SERVER_PORT="5601"
 export KIBANA_DEFAULTAPPID="dashboard/homepage"
@@ -33,8 +33,8 @@ export EZUNPAYWALL_ES_NODE_SEARCH_REMOTE="true"
 export ES_JAVA_OPTS="-Xms2g -Xmx2g"
 export EZUNPAYWALL_ES_MEM_LIMIT="4g"
 
-if [[ -f EZUNPAYWALL.local.env.sh ]] ; then
-  source EZUNPAYWALL.local.env.sh
+if [[ -f unpaywall.local.env.sh ]] ; then
+  source unpaywall.local.env.sh
 fi
 
 # set local EZUNPAYWALL_ES_DISCOVERY variable

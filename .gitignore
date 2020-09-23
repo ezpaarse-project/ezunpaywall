@@ -7,3 +7,7 @@ out/
 unpaywall.local.env.sh
 doc/
 apidoc.json
+certificates/
+certs/instances.yml
+kibana/config/certificates
+elasticsearch/config/certificates

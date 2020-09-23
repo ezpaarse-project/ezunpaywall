@@ -6,11 +6,8 @@ module.exports = new Client({
   node: {
     url: new URL(`http://${elasticsearch.host}:${elasticsearch.port}`),
     auth: {
-      username: elasticsearch.username,
+      username: elasticsearch.user,
       password: elasticsearch.password,
     },
   },
-  maxRetries: 5,
-  requestTimeout: 60000,
-  sniffOnStart: true,
 });
