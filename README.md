@@ -5,9 +5,10 @@ ez-unpaywall is an API and database that queries the UnPayWall database containi
 **Table of content**
 - [Prerequisites](#prerequisites)
 - [Installation](#Installation)
-- [Recommended system requirements](#recommended-system-requirements)
-- [Installation quickstart](#installation-quickstart)
-- [Test the installation](#test-the-installation)
+- [Configuration](#Configuration)
+- [Deploiement](#Start / Stop / Status)
+- [Developement](# Development Start / Stop / Status)
+- [API route](#API route)
 
 ## Prerequisites
 
@@ -63,7 +64,7 @@ docker-compose stop
 docker-compose ps
 ```
 
-## Development 
+## Development Start / Stop / Status
 
 It's the same thing but use ```docker-compose.debug.yml```
 
@@ -78,7 +79,7 @@ docker-compose -f docker-compose.debug.yml stop
 docker-compose -f docker-compose.debug.yml ps
 ```
 
-## Test route
+## API route
 
 GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"
 return an array

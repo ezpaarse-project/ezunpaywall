@@ -12,7 +12,6 @@ const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
 const {
   tasks,
   getMetadatas,
-  getIteratorTask,
   getIteratorFile,
   createStepInsert,
   createStepFetchUnpaywall,
@@ -36,14 +35,14 @@ const insertUPW = async (data) => {
  * @param {*} options limit and offset
  */
 const insertDatasUnpaywall = () => new Promise((resolve, reject) => {
-  const start = createStepInsert(getMetadatas()[getIteratorFile()].filename);
+  const start = createStepInsert(getMetadatas()[getIteratorFile()]?.filename);
   (async function insertion() {
     let readStream;
     // read file with stream
     try {
       readStream = fs
         .createReadStream(path.resolve(
-          __dirname, downloadDir, getMetadatas()[getIteratorFile()].filename,
+          __dirname, downloadDir, getMetadatas()[getIteratorFile()]?.filename,
         ))
         .pipe(zlib.createGunzip());
     } catch (err) {
@@ -61,28 +60,28 @@ const insertDatasUnpaywall = () => new Promise((resolve, reject) => {
     // read line by line and sort by pack of 1000
     // eslint-disable-next-line no-restricted-syntax
     for await (const line of rl) {
-      tasks.steps[getIteratorTask()].result.lineRead += 1;
+      tasks.steps[tasks.steps.length - 1].lineRead += 1;
       const dataupw = JSON.parse(line);
       tab.push(dataupw);
 
-      if ((tasks.steps[getIteratorTask()].result.lineRead % 1000) === 0
-        && tasks.steps[getIteratorTask()].result.lineRead !== 0) {
+      if ((tasks.steps[tasks.steps.length - 1]?.lineRead % 1000) === 0
+        && tasks.steps[tasks.steps.length - 1]?.lineRead !== 0) {
         await insertUPW(tab);
         tab = [];
       }
-      if (tasks.steps[getIteratorTask()].lineRead % 100000 === 0) {
-        processLogger.info(`${tasks.steps[getIteratorTask()].result.lineRead}th Lines reads`);
+      if (tasks.steps[tasks.steps.length - 1]?.lineRead % 100000 === 0) {
+        processLogger.info(`${tasks.steps[tasks.steps.length - 1]?.lineRead}th Lines reads`);
       }
     }
 
     // if have stays data to insert
-    if (Math.max(tasks.steps[getIteratorTask()].result.lineRead, 1, 1000)) {
+    if (Math.max(tasks.steps[tasks.steps.length - 1]?.lineRead, 1, 1000)) {
       await insertUPW(tab);
       tab = [];
     }
     processLogger.info('step - end insertion');
-    tasks.steps[getIteratorTask()].result.status = 'success';
-    tasks.steps[getIteratorTask()].result.took = (new Date() - start) / 1000;
+    tasks.steps[tasks.steps.length - 1].status = 'success';
+    tasks.steps[tasks.steps.length - 1].took = (new Date() - start) / 1000;
     return resolve();
   }());
 });
@@ -124,8 +123,8 @@ const downloadUpdateSnapshot = async () => new Promise((resolve, reject) => {
       processLogger.info(`to_date : ${getMetadatas()[getIteratorFile()].to_date}`);
 
       writeStream.on('finish', () => {
-        tasks.steps[getIteratorTask()].result.status = 'success';
-        tasks.steps[getIteratorTask()].result.took = (new Date() - start) / 1000;
+        tasks.steps[tasks.steps.length - 1].status = 'success';
+        tasks.steps[tasks.steps.length - 1].took = (new Date() - start) / 1000;
         processLogger.info('step - end download');
         return resolve();
       });
@@ -155,8 +154,8 @@ const fetchUnpaywall = (startDate, endDate) => new Promise((resolve, reject) => 
   }).then((response) => {
     // TODO if response = 403, break
     if (response?.data?.list?.length) {
-      tasks.steps[getIteratorTask()].result.status = 'success';
-      tasks.steps[getIteratorTask()].result.took = (new Date() - tasks.createdAt) / 1000;
+      tasks.steps[tasks.steps.length - 1].status = 'success';
+      tasks.steps[tasks.steps.length - 1].took = (new Date() - tasks.createdAt) / 1000;
       // get the first element
       response.data.list.reverse();
       response.data.list.forEach((file) => {
@@ -166,8 +165,8 @@ const fetchUnpaywall = (startDate, endDate) => new Promise((resolve, reject) => 
           getMetadatas().push(file);
         }
       });
-      tasks.steps[getIteratorTask()].result.status = 'success';
-      tasks.steps[getIteratorTask()].result.took = (new Date() - start) / 1000;
+      tasks.steps[tasks.steps.length - 1].status = 'success';
+      tasks.steps[tasks.steps.length - 1].took = (new Date() - start) / 1000;
       processLogger.info('step - end fetch unpaywall ');
       return resolve(getMetadatas());
     }

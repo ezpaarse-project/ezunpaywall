@@ -11,7 +11,6 @@ let iteratorFile = 0;
 let metadatas = [];
 let timeout;
 
-const getIteratorTask = () => iteratorTask;
 const getIteratorFile = () => iteratorFile;
 const getMetadatas = () => metadatas;
 
@@ -155,8 +154,8 @@ const createReport = async (success) => {
 };
 
 const fail = (startDate) => {
-  tasks.steps[iteratorTask].result.status = 'error';
-  tasks.steps[iteratorTask].result.took = (startDate - new Date()) / 1000;
+  tasks.steps[iteratorTask].status = 'error';
+  tasks.steps[iteratorTask].took = (startDate - new Date()) / 1000;
   tasks.endAt = (tasks.createdAt - new Date()) / 1000;
   createReport('error');
   resetTasks();
@@ -165,7 +164,6 @@ const fail = (startDate) => {
 module.exports = {
   tasks,
   getMetadatas,
-  getIteratorTask,
   getIteratorFile,
   createStepFetchUnpaywall,
   createStepDownload,
