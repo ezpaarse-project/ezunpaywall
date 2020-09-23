@@ -4,6 +4,6 @@ node_modules
 package-lock.json
 db/
 out/
-unpaywall.local.env.sh
+ezunpaywall.env.local.sh
 doc/
 apidoc.json

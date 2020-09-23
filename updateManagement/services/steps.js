@@ -25,7 +25,11 @@ const {
  */
 const insertUPW = async (data) => {
   const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall' } }, doc]);
-  await client.bulk({ refresh: true, body });
+  try {
+    await client.bulk({ refresh: true, body });
+  } catch (err) {
+    console.log(err);
+  }
 };
 /**
  * insert unpaywall datas with a compressed file and stream

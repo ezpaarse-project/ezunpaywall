@@ -111,7 +111,7 @@ const createStatus = async () => {
     });
     idTask = doc.body._id;
   } catch (err) {
-    processLogger.error(err);
+    console.log(err);
   }
   (async function actualizeStatus() {
     if (tasks.done) {
@@ -127,7 +127,7 @@ const createStatus = async () => {
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
-      processLogger.error(err);
+      console.log(err);
     }
   }());
 };
