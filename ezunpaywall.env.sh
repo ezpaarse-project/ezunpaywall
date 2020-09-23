@@ -24,7 +24,7 @@ export EZUNPAYWALL_ES_NODE_NAME="${EZUNPAYWALL_NODE_NAME}"
 export EZUNPAYWALL_ES_PUBLISH="${THIS_HOST}"
 export EZUNPAYWALL_ES_INITIAL_MASTER_NODES=""
 
-# these values are overwriten by unpaywall.local.env.sh values
+# these values are overwriten by ezunpaywall.env.local.sh values
 export NODE_ENV="dev"
 export EZUNPAYWALL_ES_NODE_MASTER="true"
 export EZUNPAYWALL_ES_NODE_DATA="true"
@@ -33,8 +33,8 @@ export EZUNPAYWALL_ES_NODE_SEARCH_REMOTE="true"
 export ES_JAVA_OPTS="-Xms2g -Xmx2g"
 export EZUNPAYWALL_ES_MEM_LIMIT="4g"
 
-if [[ -f unpaywall.local.env.sh ]] ; then
-  source unpaywall.local.env.sh
+if [[ -f ezunpaywall.local.env.sh ]] ; then
+  source ezunpaywall.local.env.sh
 fi
 
 # set local EZUNPAYWALL_ES_DISCOVERY variable
