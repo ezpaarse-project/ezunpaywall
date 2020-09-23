@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 const { UnPayWallType } = require('./index');
-const client = require('../../client/client');
+const client = require('../../lib/client');
 
 const {
   GraphQLList,

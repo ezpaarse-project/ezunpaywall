@@ -6,17 +6,19 @@ const morgan = require('morgan');
 const fs = require('fs-extra');
 const path = require('path');
 
-const schema = require('./apiGraphql/graphql');
+const schema = require('./graphql/graphql');
 
 // routers
 const RouterManageDatabase = require('./updateManagement/routers/databaseInteraction');
 const RouterHomePage = require('./updateManagement/routers/accesToOutFiles');
 
-const { apiLogger } = require('./logger/logger');
+const { apiLogger } = require('./lib/logger');
+
 
 const outDir = path.resolve(__dirname, 'out');
-const downloadDir = path.resolve(__dirname, 'out', 'download');
-const reportsDir = path.resolve(__dirname, 'out', 'reports');
+const downloadDir = path.resolve(outDir, 'download');
+const reportsDir = path.resolve(outDir, 'reports');
+const logsDir = path.resolve(outDir, 'logs');
 
 fs.ensureDir(outDir);
 fs.ensureDir(downloadDir);
@@ -35,13 +37,13 @@ const isDev = process.env.NODE_ENV === 'development';
 if (isDev) app.use(morgan('dev'));
 if (!isDev) {
   app.use(morgan('combined', {
-    stream: fs.createWriteStream(path.resolve(__dirname, 'out', 'logs', 'access.log'), { flags: 'a+' }),
+    stream: fs.createWriteStream(path.resolve(outDir, 'logs', 'access.log'), { flags: 'a+' }),
   }));
 }
 
 // routers
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve('homepage', 'index.html'));
+  res.sendFile(path.resolve('homepage.html'));
 });
 const corsOptions = {
   origin: '*',
@@ -58,8 +60,8 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   return graphqlQuery(req, res);
 });
 // access to file in out
-app.use('/reports', express.static(`${__dirname}/out/reports`));
-app.use('/logs', express.static(`${__dirname}/out/logs`));
+app.use('/reports', express.static(reportsDir));
+app.use('/logs', express.static(logsDir));
 
 // routers
 app.use(RouterHomePage);

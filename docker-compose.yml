@@ -3,7 +3,7 @@ version: "3"
 services:
   api:
     build:
-      context: .
+      context: ./api
       args:
         - http_proxy
         - https_proxy
@@ -14,7 +14,7 @@ services:
       - https_proxy
       - API_KEY_UPW=${API_KEY_UPW}
     volumes:
-      - ./out:/usr/src/app/out/
+      - ../out:/usr/src/app/out/
     command: "npm start"
     ports:
       - "8080:8080"

@@ -3,8 +3,8 @@ const fs = require('fs-extra');
 
 const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
 
-const client = require('../../client/client');
-const { processLogger } = require('../../logger/logger');
+const client = require('../../lib/client');
+const { processLogger } = require('../../lib/logger');
 
 let iteratorTask = -1;
 let iteratorFile = 0;

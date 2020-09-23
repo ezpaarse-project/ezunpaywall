@@ -21,7 +21,7 @@ const myFormat = printf(({ level, message, timestamp: currentTime }) => `${curre
 const processConfiguration = [
   new transports.DailyRotateFile({
     name: 'file',
-    filename: path.resolve(__dirname, '..', 'out', 'logs', '%DATE%.log'),
+    filename: path.resolve(__dirname, '..', '..', 'out', 'logs', '%DATE%.log'),
     datePattern: 'yyyy-MM-DD',
     level: 'info',
   }),
@@ -30,9 +30,9 @@ const processConfiguration = [
 
 const apiConfiguration = [
   new transports.File({
-    filename: path.resolve(__dirname, '..', 'out', 'logs', 'combined.log'),
+    filename: path.resolve(__dirname, '..', '..', 'out', 'logs', 'combined.log'),
   }),
-  new transports.File({ filename: path.resolve(__dirname, '..', 'out', 'logs', 'errors.log'), level: 'error' }),
+  new transports.File({ filename: path.resolve(__dirname, '..', '..', 'out', 'logs', 'errors.log'), level: 'error' }),
   new (transports.Console)(),
 ];
 

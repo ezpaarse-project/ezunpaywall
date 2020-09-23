@@ -1,4 +1,4 @@
-const { apiLogger } = require('../../logger/logger');
+const { apiLogger } = require('../../lib/logger');
 const {
   getMetadatas,
   createStatus,

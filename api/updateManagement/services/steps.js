@@ -4,8 +4,8 @@ const readline = require('readline');
 const axios = require('axios');
 const config = require('config');
 const zlib = require('zlib');
-const client = require('../../client/client');
-const { processLogger } = require('../../logger/logger');
+const client = require('../../lib/client');
+const { processLogger } = require('../../lib/logger');
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
 
