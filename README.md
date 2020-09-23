@@ -48,6 +48,36 @@ To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sys
 vm.max_map_count=262144
 ```
 
+## Deploiement Start / Stop / Status
+
+Before you start ez-unpaywall, make sure all necessary environment variables are set.
+
+```bash
+# Start ez-unpaywall as daemon
+docker-compose up -d
+
+# Stop ez-unpaywall
+docker-compose stop
+
+# Get the status of ez-unpaywall services
+docker-compose ps
+```
+
+## Development 
+
+It's the same thing but use ```docker-compose.debug.yml```
+
+```bash
+# Start ez-unpaywall as daemon
+docker-compose -f docker-compose.debug.yml up -d
+
+# Stop ez-unpaywall
+docker-compose -f docker-compose.debug.yml stop
+
+# Get the status of ez-unpaywall services
+docker-compose -f docker-compose.debug.yml ps
+```
+
 ## Test route
 
 GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"
