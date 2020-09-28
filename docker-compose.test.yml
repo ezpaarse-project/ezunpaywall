@@ -39,7 +39,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - data01:/usr/share/elasticsearch/data
+      - "data:/usr/share/elasticsearch/data"
       - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
       - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
@@ -59,12 +59,3 @@ services:
       - KIBANA_DEFAULTAPPID
     volumes:
       - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"
-
-volumes:
-  data01:
-    driver: local
-  data02:
-    driver: local
-  data03:
-    driver: local
-     
