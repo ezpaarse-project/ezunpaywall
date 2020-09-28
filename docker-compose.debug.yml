@@ -39,7 +39,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - "data:/usr/share/elasticsearch/data"
+      - "./data:/usr/share/elasticsearch
       - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
       - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
