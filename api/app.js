@@ -23,11 +23,6 @@ fs.ensureDir(outDir);
 fs.ensureDir(downloadDir);
 fs.ensureDir(reportsDir);
 
-const initialSnapShotUnpaywall = path.resolve(downloadDir, 'unpaywall_snapshot.jsonl.gz');
-fs.ensureFile(initialSnapShotUnpaywall, (err) => {
-  if (err) { apiLogger.info('the initial snapshot of Unpaywall is not installed, check: https://unpaywall-data-snapshots.s3-us-west-2.amazonaws.com/unpaywall_snapshot_2020-04-27T153236.jsonl.gz&sa=D&ust=1592233250776000&usg=AFQjCNHGTZDSmFXIkZW0Fw6y3R7-zPr5bAto install it'); }
-});
-
 // start server
 const app = express();
 

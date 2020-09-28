@@ -5,7 +5,7 @@ const fs = require('fs-extra');
  * @param dir path to folder
  * @return array(String)
  */
-const getNamesOfFilesInDir = (dir, latest) => {
+const getNamesOfFilesInDir = (dir, latest, status) => {
   const files = fs.readdirSync(dir);
   let filelist = [];
   files.forEach((file) => {
@@ -15,14 +15,23 @@ const getNamesOfFilesInDir = (dir, latest) => {
       filelist.push(file);
     }
   });
+  if (status) {
+    return filelist.map((file) => {
+      const match = /^(\w*)-([0-9-T:]+)\.json$/i.exec(file);
+      if (match) return { status: match[1], date: match[2] };
+      return file;
+    })
+      .filter((a) => a.status === status)
+      .map((file) => `${file.status}-${file.date}.json`)[0];
+  }
   if (latest) {
     return filelist.map((file) => {
       const match = /^(\w*)-([0-9-T:]+)\.json$/i.exec(file);
-      if (match) return { type: match[1], date: match[2] };
+      if (match) return { status: match[1], date: match[2] };
       return file;
     })
       .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .map((file) => `${file.type}-${file.date}.json`)[0];
+      .map((file) => `${file.status}-${file.date}.json`)[0];
   }
   return filelist;
 };

@@ -44,17 +44,17 @@ router.use((req, res, next) => {
  * @apiError 404 file doesn\'t exist
  *
  */
-router.post('/update/:name', async (req, res) => {
-  const { name } = req.params;
+router.post('/update/:file', async (req, res) => {
+  const { file } = req.params;
   let { offset, limit } = req.query;
-  if (!name) {
+  if (!file) {
     return res.status(400).json({ message: 'name of snapshot file expected' });
   }
   const pattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
-  if (!pattern.test(name)) {
+  if (!pattern.test(file)) {
     return res.status(400).json({ message: 'name of file is in bad format (accepted [a-zA-Z0-9_.-] patern)' });
   }
-  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', name));
+  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', file));
   if (!ifFileExist) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
@@ -64,9 +64,9 @@ router.post('/update/:name', async (req, res) => {
 
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  insertion(name, { offset: Number(offset), limit: Number(limit) });
+  insertion(file, { offset: Number(offset), limit: Number(limit) });
   return res.status(200).json({
-    message: `start upsert with ${name}`,
+    message: `start upsert with ${file}`,
   });
 });
 
@@ -86,8 +86,8 @@ router.post('/update/:name', async (req, res) => {
  * @apiName Fetch-Download-Update
  * @apiGroup updateManagement
  *
- * @apiParam (QUERY) {DATE} [start] period start date at format YYYY-mm-dd
- * @apiParam (QUERY) {DATE} [end] period end date at format YYYY-mm-dd
+ * @apiParam (QUERY) {DATE} [startDate] period start date at format YYYY-mm-dd
+ * @apiParam (QUERY) {DATE} [endDate] period end date at format YYYY-mm-dd
  *
  * @apiSuccess {String} message informing the start of the process
  *
@@ -95,29 +95,39 @@ router.post('/update/:name', async (req, res) => {
  * start date or end are date in bad format, dates in format YYYY-mm-dd
  */
 router.post('/update', (req, res) => {
-  const { start } = req.query;
-  let { end } = req.query;
-  if (!start && !end) {
+  const { startDate } = req.query;
+  let { endDate } = req.query;
+  if (!startDate && !endDate) {
     weeklyUpdate();
     return res.status(200).json({
       message: 'weekly update has begun, list of tasks has been created on elastic',
     });
   }
-  if (start && !end) {
-    [end] = new Date().toISOString().split('T');
+  if (endDate && !startDate) {
+    return res.status(400).json({
+      message: 'start date is missing',
+    });
   }
-  if (start && end) {
-    if (end.getTime() < start.getTime()) {
+  if (startDate && endDate) {
+    if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
       return res.status(400).json({ message: 'end date is lower than start date' });
     }
   }
   const pattern = /^[0-9]*-[0-9]{2}-[0-9]{2}$/;
-  if (!pattern.test(start) || !pattern.test(end)) {
+  // TODO date avaible, like 2020-99-99 impossible
+  if (startDate && !pattern.test(startDate)) {
     return res.status(400).json({ message: 'start date or end date are in bad format, dates in format YYYY-mm-dd' });
   }
-  insertSnapshotBetweenDate(start, end);
+  if (endDate && !pattern.test(endDate)) {
+    return res.status(400).json({ message: 'start date or end date are in bad format, dates in format YYYY-mm-dd' });
+  }
+  if (startDate && !endDate) {
+    [endDate] = new Date().toISOString().split('T');
+  }
+  console.log(endDate);
+  insertSnapshotBetweenDate(startDate, endDate);
   return res.status(200).json({
-    message: `insert snapshot beetween ${start} and ${end} has begun, list of tasks has been created on elastic'`,
+    message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of tasks has been created on elastic'`,
   });
 });
 

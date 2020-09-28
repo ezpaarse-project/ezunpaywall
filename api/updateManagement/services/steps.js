@@ -18,6 +18,7 @@ const {
   createStepDownload,
   fail,
 } = require('./status');
+const logger = require('../../lib/logger');
 
 /**
  * @param {*} data array of unpaywall datas
@@ -27,6 +28,7 @@ const insertUPW = async (data) => {
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
+    processLogger.error(err);
     console.log(err);
   }
 };
@@ -93,7 +95,8 @@ const insertDatasUnpaywall = async () => {
  */
 const downloadUpdateSnapshot = async () => {
   // if snapshot already exist, past
-  if (fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', getMetadatas()[getIteratorFile()].filename))) {
+  const alreadyInstalled = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', getMetadatas()[getIteratorFile()].filename));
+  if (alreadyInstalled) {
     return true;
   }
   // create step download

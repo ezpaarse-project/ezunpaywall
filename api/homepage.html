@@ -125,7 +125,7 @@
           if (this.nameOfLatestReport) {
             await axios({
               method: 'get',
-              url: `/reports/${this.nameOfLatestReport}`,
+              url: `/reports${this.nameOfLatestReport}`,
             }).then((response) => {
               if (response.status === 200) {
                 this.latestReport = JSON.stringify(response.data, null, 2);
@@ -141,7 +141,7 @@
             url: `/download`,
           }).then((response) => {
             if (response.status === 200) {
-              this.snapshots = response.data.data;
+              this.snapshots = response.data.files;
             }
           });
         },
