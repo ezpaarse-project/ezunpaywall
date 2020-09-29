@@ -17,10 +17,7 @@ const {
 const insertion = async (name) => {
   getMetadatas().push({ filename: name });
   await startTask();
-  const res1 = await createStatus();
-  if (!res1) {
-    return null;
-  }
+  await createStatus();
   await insertDatasUnpaywall();
   await endTask();
   await endStatus();
