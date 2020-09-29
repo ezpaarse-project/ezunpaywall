@@ -15,13 +15,13 @@ const RouterHomePage = require('./updateManagement/routers/accesToOutFiles');
 const { apiLogger } = require('./lib/logger');
 
 const outDir = path.resolve(__dirname, 'out');
+fs.ensureDir(path.resolve(outDir, 'logs'));
+fs.ensureDir(path.resolve(outDir, 'download'));
+fs.ensureDir(path.resolve(outDir, 'reports'));
+
 const downloadDir = path.resolve(outDir, 'download');
 const reportsDir = path.resolve(outDir, 'reports');
 const logsDir = path.resolve(outDir, 'logs');
-
-fs.ensureDir(outDir);
-fs.ensureDir(downloadDir);
-fs.ensureDir(reportsDir);
 
 // start server
 const app = express();

@@ -9,8 +9,6 @@ services:
       - https_proxy
       - API_KEY_UPW=${API_KEY_UPW}
     working_dir: /app
-    volumes:
-      - ./api:/app
     command: "npm run test"
     ports:
       - "8080:8080"
@@ -39,7 +37,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - "./data:/usr/share/elasticsearch
+      - "./data:/usr/share/elasticsearch/data"
       - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
       - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:

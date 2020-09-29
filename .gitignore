@@ -2,7 +2,7 @@ node_modules
 .vscode
 .directory
 package-lock.json
-db/
+data/
 out/
 ezunpaywall.env.local.sh
 doc/

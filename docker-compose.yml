@@ -7,14 +7,13 @@ services:
       args:
         - http_proxy
         - https_proxy
-    container_name: APIUPW
     environment:
       - NODE_ENV=production
       - http_proxy
       - https_proxy
       - API_KEY_UPW=${API_KEY_UPW}
     volumes:
-      - ../out:/usr/src/app/out/
+      - ./api/out:/usr/src/app/out/
     command: "npm start"
     ports:
       - "8080:8080"
