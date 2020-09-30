@@ -13,6 +13,9 @@ let timeout;
 
 const getIteratorFile = () => iteratorFile;
 const getMetadatas = () => metadatas;
+const setIteratorFile = (val) => {
+  iteratorFile += val;
+};
 
 let idTask;
 
@@ -159,6 +162,7 @@ module.exports = {
   tasks,
   getMetadatas,
   getIteratorFile,
+  setIteratorFile,
   createStepFetchUnpaywall,
   createStepDownload,
   createStepInsert,

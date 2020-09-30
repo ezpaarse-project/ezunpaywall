@@ -24,6 +24,7 @@ const logger = require('../../lib/logger');
  * @param {*} data array of unpaywall datas
  */
 const insertUPW = async (data) => {
+  console.log('insertion');
   const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall' } }, doc]);
   try {
     await client.bulk({ refresh: true, body });
@@ -32,11 +33,8 @@ const insertUPW = async (data) => {
     console.log(err);
   }
 };
-/**
- * insert unpaywall datas with a compressed file and stream
- * @param {*} options limit and offset
- */
-const insertDatasUnpaywall = async () => {
+
+const insertDatasUnpaywall = async (options) => {
   const start = createStepInsert(getMetadatas()[getIteratorFile()]?.filename);
   const insertion = async () => {
     let readStream;
@@ -63,11 +61,24 @@ const insertDatasUnpaywall = async () => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const line of rl) {
       tasks.steps[tasks.steps.length - 1].lineRead += 1;
-      const dataupw = JSON.parse(line);
-      tab.push(dataupw);
-
-      if ((tasks.steps[tasks.steps.length - 1].lineRead % 1000) === 0
-        && tasks.steps[tasks.steps.length - 1].lineRead !== 0) {
+      if (tasks.steps[tasks.steps.length - 1].lineRead === 2000) {
+        processLogger.info('step - end insertion');
+        tasks.steps[tasks.steps.length - 1].status = 'success';
+        tasks.steps[tasks.steps.length - 1].took = (new Date() - start) / 1000;
+        return true;
+      }
+      // limit
+      if (tasks.steps[tasks.steps.length - 1].lineRead <= options.limit) {
+        break;
+      }
+      // offset
+      if (tasks.steps[tasks.steps.length - 1].lineRead >= options.offset) {
+        // fill the table
+        const dataupw = JSON.parse(line);
+        tab.push(dataupw);
+      }
+      // bulk insertion
+      if (tab.length === 1000) {
         await insertUPW(tab);
         tab = [];
       }
@@ -75,9 +86,8 @@ const insertDatasUnpaywall = async () => {
         processLogger.info(`${tasks.steps[tasks.steps.length - 1].lineRead}th Lines reads`);
       }
     }
-
     // if have stays data to insert
-    if (Math.max(tasks.steps[tasks.steps.length - 1].lineRead, 1, 1000)) {
+    if (tab.length !== 0) {
       await insertUPW(tab);
       tab = [];
     }

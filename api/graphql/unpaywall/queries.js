@@ -16,14 +16,13 @@ module.exports = {
     resolve: async (parent, args) => {
       const res = await client.search({
         index: 'unpaywall',
-        size: 2,
         body: {
           query: {
             bool: {
               filter: [
                 {
                   terms: {
-                    'doi.keyword': args.dois,
+                    doi: args.dois,
                   },
                 },
               ],

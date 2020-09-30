@@ -1,5 +1,6 @@
 const {
   getMetadatas,
+  setIteratorFile,
   createStatus,
   createReport,
   endStatus,
@@ -14,11 +15,14 @@ const {
   insertDatasUnpaywall,
 } = require('./steps');
 
-const insertion = async (name) => {
+const insertion = async (name, options) => {
   getMetadatas().push({ filename: name });
   await startTask();
   await createStatus();
-  await insertDatasUnpaywall();
+  const res1 = await insertDatasUnpaywall(options);
+  if (!res1) {
+    return null;
+  }
   await endTask();
   await endStatus();
   await createReport('success');
@@ -43,7 +47,10 @@ const weeklyUpdate = async () => {
   if (!res2) {
     return null;
   }
-  await insertDatasUnpaywall();
+  const res3 = await insertDatasUnpaywall({ offset: -1, limit: -1 });
+  if (!res3) {
+    return null;
+  }
   await endTask();
   await endStatus();
   await createReport('success');
@@ -59,11 +66,18 @@ const insertSnapshotBetweenDate = async (startDate, endDate) => {
   if (!res1) {
     return null;
   }
-  const res2 = await downloadUpdateSnapshot();
-  if (!res2) {
-    return null;
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const metadata of getMetadatas()) {
+    const res2 = await downloadUpdateSnapshot();
+    if (!res2) {
+      return null;
+    }
+    const res3 = await insertDatasUnpaywall({ offset: -1, limit: -1 });
+    if (!res3) {
+      return null;
+    }
+    setIteratorFile(1);
   }
-  await insertDatasUnpaywall();
   endTask();
   endStatus();
   createReport('success');
