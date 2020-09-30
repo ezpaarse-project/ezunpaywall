@@ -24,7 +24,6 @@ const logger = require('../../lib/logger');
  * @param {*} data array of unpaywall datas
  */
 const insertUPW = async (data) => {
-  console.log('insertion');
   const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall' } }, doc]);
   try {
     await client.bulk({ refresh: true, body });
