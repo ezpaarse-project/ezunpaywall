@@ -24,7 +24,6 @@ const logger = require('../../lib/logger');
  * @param {*} data array of unpaywall datas
  */
 const insertUPW = async (data) => {
-  console.log('insertion');
   const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall' } }, doc]);
   try {
     await client.bulk({ refresh: true, body });
@@ -61,12 +60,6 @@ const insertDatasUnpaywall = async (options) => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const line of rl) {
       tasks.steps[tasks.steps.length - 1].lineRead += 1;
-      if (tasks.steps[tasks.steps.length - 1].lineRead === 2000) {
-        processLogger.info('step - end insertion');
-        tasks.steps[tasks.steps.length - 1].status = 'success';
-        tasks.steps[tasks.steps.length - 1].took = (new Date() - start) / 1000;
-        return true;
-      }
       // limit
       if (tasks.steps[tasks.steps.length - 1].lineRead <= options.limit) {
         break;
