@@ -7,6 +7,14 @@
       "@timestamp": {
         "type": "date"
       },
+      "dynamic_templates": [{
+        "strings_as_keywords": {
+          "match_mapping_type": "string",
+          "mapping": {
+            "type": "keyword"
+          }
+        }
+      }],
       "best_oa_location": {
         "properties": {
           "evidence": { "type": "keyword" },

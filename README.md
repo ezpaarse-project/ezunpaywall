@@ -6,9 +6,9 @@ ez-unpaywall is an API and database that queries the UnPayWall database containi
 - [Prerequisites](#prerequisites)
 - [Installation](#Installation)
 - [Configuration](#Configuration)
-- [Deploiement](#Start / Stop / Status)
-- [Developement](# Development Start / Stop / Status)
-- [API route](#API route)
+- [Deploiement](#Start/Stop/Status)
+- [Developement](#DevelopmentStart/Stop/Status)
+- [API](#API)
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ The tools you need to let ez-unpaywall run are :
 * docker
 * docker-compose
 * a linux box or VM (eg: Ubuntu)
-* unpaywall data measured about 150Gb it is necessary to provide the necessary place on the hard drive
+* unpaywall data measured about 160Gb it is necessary to provide the necessary place on the hard drive
 
 ## Installation
 
@@ -49,7 +49,7 @@ To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sys
 vm.max_map_count=262144
 ```
 
-## Deploiement Start / Stop / Status
+## Deploiement Start/Stop/Status
 
 Before you start ez-unpaywall, make sure all necessary environment variables are set.
 
@@ -64,7 +64,7 @@ docker-compose stop
 docker-compose ps
 ```
 
-## Development Start / Stop / Status
+## Development Start/Stop/Status
 
 It's the same thing but use ```docker-compose.debug.yml```
 
@@ -79,7 +79,7 @@ docker-compose -f docker-compose.debug.yml stop
 docker-compose -f docker-compose.debug.yml ps
 ```
 
-## API route
+## API
 
 GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"
 return an array
