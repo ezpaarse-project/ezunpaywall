@@ -18,13 +18,12 @@ const {
   createStepDownload,
   fail,
 } = require('./status');
-const logger = require('../../lib/logger');
 
 /**
  * @param {*} data array of unpaywall datas
  */
 const insertUPW = async (data) => {
-  const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall' } }, doc]);
+  const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall', _id: doc.doi } }, doc]);
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
