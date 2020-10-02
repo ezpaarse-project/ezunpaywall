@@ -96,9 +96,12 @@ const insertDatasUnpaywall = async (options) => {
  * download the snapshot
  */
 const downloadUpdateSnapshot = async () => {
-  // if snapshot already exist, past
-  const alreadyInstalled = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', getMetadatas()[getIteratorFile()].filename));
-  if (alreadyInstalled) {
+  const file = path.resolve(__dirname, '..', '..', 'out', 'download', getMetadatas()[getIteratorFile()].filename)
+
+  const alreadyInstalled = await fs.pathExists(file);
+    // if snapshot already exist and download completely, past
+  if (alreadyInstalled && fs.stats(file).size === getMetadatas()[getIteratorFile()].size) {
+    processLogger.info('file already installed');
     return true;
   }
   // create step download

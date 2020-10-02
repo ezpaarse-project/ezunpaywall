@@ -44,14 +44,14 @@ router.use((req, res, next) => {
  * @apiError 404 file doesn\'t exist
  *
  */
-router.post('/update/:file', async (req, res) => {
-  const { file } = req.params;
+router.post('/update/:name', async (req, res) => {
+  const { name } = req.params;
   let { offset, limit } = req.query;
-  if (!file) {
+  if (!name) {
     return res.status(400).json({ message: 'name of snapshot file expected' });
   }
   const pattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
-  if (!pattern.test(file)) {
+  if (!pattern.test(name)) {
     return res.status(400).json({ message: 'name of file is in bad format (accepted [a-zA-Z0-9_.-] patern)' });
   }
   const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', file));
@@ -64,9 +64,9 @@ router.post('/update/:file', async (req, res) => {
 
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  insertion(file, { offset: Number(offset), limit: Number(limit) });
+  insertion(name, { offset: Number(offset), limit: Number(limit) });
   return res.status(200).json({
-    message: `start upsert with ${file}`,
+    message: `start upsert with ${name}`,
   });
 });
 
