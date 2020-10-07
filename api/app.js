@@ -10,18 +10,16 @@ const schema = require('./graphql/graphql');
 
 // routers
 const RouterManageDatabase = require('./updateManagement/routers/databaseInteraction');
-const RouterHomePage = require('./updateManagement/routers/accesToOutFiles');
+const RouterHomePage = require('./updateManagement/routers/outFiles');
+const RouterTasks = require('./updateManagement/routers/status');
 
 const { apiLogger } = require('./lib/logger');
 
 const outDir = path.resolve(__dirname, 'out');
+// initiates all out dir
 fs.ensureDir(path.resolve(outDir, 'logs'));
 fs.ensureDir(path.resolve(outDir, 'download'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
-
-const downloadDir = path.resolve(outDir, 'download');
-const reportsDir = path.resolve(outDir, 'reports');
-const logsDir = path.resolve(outDir, 'logs');
 
 // start server
 const app = express();
@@ -53,12 +51,10 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   });
   return graphqlQuery(req, res);
 });
-// access to file in out
-app.use('/reports', express.static(reportsDir));
-app.use('/logs', express.static(logsDir));
 
 // routers
 app.use(RouterHomePage);
+app.use(RouterTasks);
 app.use(RouterManageDatabase);
 
 /* Errors and unknown routes */

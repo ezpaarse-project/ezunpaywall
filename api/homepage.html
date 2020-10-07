@@ -150,7 +150,7 @@
           setTimeout(() => {
             axios({
               method: 'get',
-              url: `/process/status`,
+              url: `/tasks`,
             }).then((response) => {
               if (response.status === 200) {
                 if(!response.data.message) {
