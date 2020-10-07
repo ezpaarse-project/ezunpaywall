@@ -2,17 +2,13 @@ const router = require('express').Router();
 const path = require('path');
 const fs = require('fs-extra');
 
-const {
-  getNamesOfFilesInDir,
-} = require('../services/accesToOutFiles');
-
 const outDir = path.resolve(__dirname, '..', '..', 'out');
-
+const { getNamesOfFilesInDir } = require('../services/accessToOutFiles');
 /**
  * @api {get} /report get all reports
  * @apiName getNameOfAllReports
  * @apiGroup OutFiles
- * 
+ *
  * @apiSuccess {Array<String>} array of name of reports file
  */
 router.get('/reports', async (req, res) => {
@@ -21,6 +17,13 @@ router.get('/reports', async (req, res) => {
   if (!status) status = '';
   const reportDir = path.resolve(outDir, 'reports');
   const files = await getNamesOfFilesInDir(reportDir, latest, status);
+  if (latest) {
+    const contentFile = await fs.readFile(path.resolve(reportDir, files), 'utf-8');
+    const contentFileParsed = JSON.parse(contentFile);
+    return res.status(200).json({
+      ...contentFileParsed,
+    });
+  }
   return res.status(200).json({
     files,
   });
@@ -34,7 +37,7 @@ router.get('/reports', async (req, res) => {
  * @apiParam (PARAMS) {String} name name of file
  *
  * @apiSuccess {String} Content of report file
- * 
+ *
  * @apiError 400 name of snapshot file expected
  * @apiError 404 file doesn't exist
  */
@@ -44,7 +47,7 @@ router.get('/reports/:name', async (req, res) => {
     return res.status(400).json({ message: 'name of report file expected' });
   }
   const file = path.resolve(outDir, 'reports', name);
-  const ifFileExist =  await fs.pathExists(path.resolve(file));
+  const ifFileExist = await fs.pathExists(path.resolve(file));
   if (!ifFileExist) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
@@ -59,7 +62,7 @@ router.get('/reports/:name', async (req, res) => {
  * @api {get} /download get all download
  * @apiName getNameOfDownload
  * @apiGroup OutFiles
- * 
+ *
  * @apiSuccess {Array<String>} array of name of downloaded file
  *
  */
@@ -71,12 +74,11 @@ router.get('/download', async (req, res) => {
   });
 });
 
-
 /**
  * @api {get} /logs get all logs
  * @apiName getAllNameOfLogs
  * @apiGroup OutFiles
- * 
+ *
  * @apiSuccess {Array<String>} array of name of logs file
  *
  */
@@ -94,9 +96,9 @@ router.get('/logs', async (req, res) => {
  * @apiGroup OutFiles
  *
  * @apiParam (PARAMS) {String} name name of file
- * 
+ *
  * @apiSuccess {String} Content of logs file
- * 
+ *
  * @apiError 400 name of snapshot file expected
  * @apiError 404 file doesn't exist
  */
@@ -106,7 +108,7 @@ router.get('/logs/:name', async (req, res) => {
     return res.status(400).json({ message: 'name of log file expected' });
   }
   const file = path.resolve(outDir, 'logs', name);
-  const ifFileExist =  await fs.pathExists(path.resolve(file));
+  const ifFileExist = await fs.pathExists(path.resolve(file));
   if (!ifFileExist) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }

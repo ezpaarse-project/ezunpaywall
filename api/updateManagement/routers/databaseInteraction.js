@@ -41,7 +41,7 @@ router.use((req, res, next) => {
  * @apiError 400 name of snapshot file expected /
  * name of file is in bad format (accepted [a-zA-Z0-9_.-] patern) /
  * limit can't be lower than offset or 0
- * @apiError 404 file doesn\'t exist
+ * @apiError 404 file doesn't exist
  *
  */
 router.post('/update/:name', async (req, res) => {
@@ -113,8 +113,8 @@ router.post('/update', (req, res) => {
       return res.status(400).json({ message: 'end date is lower than start date' });
     }
   }
+    // TODO date avaible, like 2020-99-99 impossible
   const pattern = /^[0-9]*-[0-9]{2}-[0-9]{2}$/;
-  // TODO date avaible, like 2020-99-99 impossible
   if (startDate && !pattern.test(startDate)) {
     return res.status(400).json({ message: 'start date or end date are in bad format, dates in format YYYY-mm-dd' });
   }

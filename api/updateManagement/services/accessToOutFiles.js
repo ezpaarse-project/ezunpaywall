@@ -19,10 +19,11 @@ const getNamesOfFilesInDir = (dir, latest, status) => {
     return filelist.map((file) => {
       const match = /^(\w*)-([0-9-T:]+)\.json$/i.exec(file);
       if (match) return { status: match[1], date: match[2] };
+      console.log(file);
       return file;
     })
       .filter((a) => a.status === status)
-      .map((file) => `${file.status}-${file.date}.json`)[0];
+      .map((file) => `${file.status}-${file.date}.json`);
   }
   if (latest) {
     return filelist.map((file) => {

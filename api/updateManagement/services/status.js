@@ -28,6 +28,8 @@ const tasks = {
   took: '',
 };
 
+const getTasks = () => tasks;
+
 const resetTasks = () => {
   iteratorTask = -1;
   iteratorFile = 0;
@@ -167,6 +169,7 @@ module.exports = {
   createStepDownload,
   createStepInsert,
   createStatus,
+  getTasks,
   endStatus,
   resetTasks,
   endTask,
