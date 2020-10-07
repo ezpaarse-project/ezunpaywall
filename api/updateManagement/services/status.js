@@ -85,7 +85,7 @@ const createStepDownload = (file) => {
 };
 
 const createStepInsert = (file) => {
-  processLogger.info('step - start insertion');
+  processLogger.info(`step - start insertion with ${file}`);
   iteratorTask += 1;
   tasks.currentTask = 'insert';
   tasks.steps.push(

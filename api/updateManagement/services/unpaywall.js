@@ -66,6 +66,7 @@ const insertSnapshotBetweenDate = async (startDate, endDate) => {
   if (!res1) {
     return null;
   }
+
   // eslint-disable-next-line no-restricted-syntax
   for await (const metadata of getMetadatas()) {
     const res2 = await downloadUpdateSnapshot();

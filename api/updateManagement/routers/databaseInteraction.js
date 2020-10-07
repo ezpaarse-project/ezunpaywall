@@ -113,7 +113,7 @@ router.post('/update', (req, res) => {
       return res.status(400).json({ message: 'end date is lower than start date' });
     }
   }
-    // TODO date avaible, like 2020-99-99 impossible
+  // TODO date avaible, like 2020-99-99 impossible
   const pattern = /^[0-9]*-[0-9]{2}-[0-9]{2}$/;
   if (startDate && !pattern.test(startDate)) {
     return res.status(400).json({ message: 'start date or end date are in bad format, dates in format YYYY-mm-dd' });
@@ -124,7 +124,6 @@ router.post('/update', (req, res) => {
   if (startDate && !endDate) {
     [endDate] = new Date().toISOString().split('T');
   }
-  console.log(endDate);
   insertSnapshotBetweenDate(startDate, endDate);
   return res.status(200).json({
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of tasks has been created on elastic'`,
