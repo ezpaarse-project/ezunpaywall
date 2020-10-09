@@ -16,6 +16,7 @@ module.exports = {
     resolve: async (parent, args) => {
       const res = await client.search({
         index: 'unpaywall',
+        size: args.dois.length || 1000,
         body: {
           query: {
             bool: {
