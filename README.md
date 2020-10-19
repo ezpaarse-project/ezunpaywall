@@ -6,9 +6,10 @@ ez-unpaywall is an API and database that queries the UnPayWall database containi
 - [Prerequisites](#prerequisites)
 - [Installation](#Installation)
 - [Configuration](#Configuration)
-- [Deploiement](#Start/Stop/Status)
-- [Developement](#DevelopmentStart/Stop/Status)
-- [API](#API)
+- [Deploiement](#Deploiement-Start/Stop/Status)
+- [Developement](#Development-Start/Stop/Status)
+- [Data update](#Data-update)
+- [API Graphql](#API-graphql)
 
 ## Prerequisites
 
@@ -16,7 +17,7 @@ The tools you need to let ez-unpaywall run are :
 * docker
 * docker-compose
 * a linux box or VM (eg: Ubuntu)
-* unpaywall data measured about 160Gb it is necessary to provide the necessary place on the hard drive
+* unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
 
 ## Installation
 
@@ -79,12 +80,42 @@ docker-compose -f docker-compose.debug.yml stop
 docker-compose -f docker-compose.debug.yml ps
 ```
 
-## API
+## Data update 
 
-GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"
+You can update your data via update snapshots provided by unpaywall on a weekly basis (if you have API key).
+You can directly use the update routes or use the [ezunpaywall command](https://github.com/ezpaarse-project/node-ezunpaywall)
+
+### Data update API
+
+`POST "/update/:name`
+
+| Name | Type | Description |
+| --- | --- | --- |
+| name | PARAMS | name of file that the server has already downloaded |
+| offset | QUERY (optionnal) | first line insertion, by default, we start with the first |
+| limit | QUERY (optionnal)| last line insertion by default, we have no limit |
+
+Insert the content of files that the server has already downloaded (file in .gz format). offset and limit are the variables to designate from which line to insert and from which line to stop.
+
+`POST "/update`
+
+| Name | Type | Description |
+| --- | --- | --- |
+| startDate | QUERY (optionnal) | period start date at format YYYY-mm-dd |
+| endDate | QUERY (optionnal)| period end date at format YYYY-mm-dd |
+
+- If there are no `start` and` end` attributes, It will execute
+the download and the insertion of the most recent update file.
+- If there are the `start` and` end` attributes, It will execute the download and the insertion of the update files between the given period.
+- If there is the `start` attribute, It will execute the download and
+the insertion of the update files between the` start` date and the current date.
+
+## API Graphql
+
+`GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"`
 return an array
 
-POST "/graphql"
+`POST "/graphql"`
 Body: 
 ```json
 {
@@ -98,15 +129,15 @@ return an array
 | dois | Array of String | Array of comma separeted doi  |
 | fields | String | Array of attributes of UnPayWall object |
 
-### Example
+## Examples
 
-## GET
+### GET
 
-GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"
+`GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
 
-## POST
+### POST
 
-POST "/graphql"
+`POST "/graphql"`
 
 Body :
 
@@ -119,7 +150,7 @@ Body :
 or 
 
 
-POST "/graphql"
+`POST "/graphql"`
 
 ```json
 {
@@ -130,8 +161,8 @@ POST "/graphql"
 }
 ```
 
-Response: 
-Status : 200
+Response 
+Status: 200
 
 ```json
 {
