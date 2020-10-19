@@ -111,27 +111,17 @@
             }
           });
         },
-        async getNameOfLatestReport() {
-          await axios({
-            method: 'get',
-            url: `/reports?latest=true`,
-          }).then((response) => {
-            if (response.status === 200) {
-              this.nameOfLatestReport = response.data.data;
-            }
-          });
-        },
         async getLatestReport() {
-          if (this.nameOfLatestReport) {
+          try {
             await axios({
               method: 'get',
-              url: `/reports${this.nameOfLatestReport}`,
+              url: `/reports?latest=true`,
             }).then((response) => {
               if (response.status === 200) {
                 this.latestReport = JSON.stringify(response.data, null, 2);
               }
             });
-          } else {
+          } catch (err) {
             this.latestReport = 'Aucun rapport n\'est disponible pour le moment'
           }
         },
@@ -152,21 +142,18 @@
               method: 'get',
               url: `/tasks`,
             }).then((response) => {
-              if (response.status === 200) {
-                if(!response.data.message) {
-                  this.inProcess = false;
-                } else {
-                  this.inProcess = response.data.message.inProcess;
-                  this.processStatus = response.data.message;
-                  this.getStatusInProgress()
-                }
+              if (!response.data.inProgress) {
+                this.inProcess = false;
+              } else {
+                this.inProcess = true;
+                this.processStatus = response.data.tasks;
+                this.getStatusInProgress()
               }
             });
-          }, 1000);
+          }, 3000);
         },
       },
       async mounted() {
-        await this.getNameOfLatestReport();
         await this.getLatestReport();
         await this.getSnapshotList();
         this.getStatusInProgress();
