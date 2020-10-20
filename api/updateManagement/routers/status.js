@@ -12,7 +12,6 @@ const { getTasks } = require('../services/status');
  */
 router.get('/tasks', async (req, res) => {
   const tasks = getTasks();
-  console.log(tasks);
   if (tasks.currentTask === '') {
     return res.status(200).json({
       inProgress: false,

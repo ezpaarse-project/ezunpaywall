@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
+const config = require('config');
+
+const url = `http://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`;
 
 const {
   insertion,
@@ -54,7 +57,7 @@ router.post('/update/:name', async (req, res) => {
   if (!pattern.test(name)) {
     return res.status(400).json({ message: 'name of file is in bad format (accepted [a-zA-Z0-9_.-] patern)' });
   }
-  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', file));
+  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', name));
   if (!ifFileExist) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
@@ -91,14 +94,14 @@ router.post('/update/:name', async (req, res) => {
  *
  * @apiSuccess {String} message informing the start of the process
  *
- * @apiError 400 end date is lower than start date /
+ * @apiError 400 start date is missing / end date is lower than start date /
  * start date or end are date in bad format, dates in format YYYY-mm-dd
  */
 router.post('/update', (req, res) => {
   const { startDate } = req.query;
   let { endDate } = req.query;
   if (!startDate && !endDate) {
-    weeklyUpdate();
+    weeklyUpdate(url);
     return res.status(200).json({
       message: 'weekly update has begun, list of tasks has been created on elastic',
     });
@@ -113,8 +116,7 @@ router.post('/update', (req, res) => {
       return res.status(400).json({ message: 'end date is lower than start date' });
     }
   }
-  // TODO date avaible, like 2020-99-99 impossible
-  const pattern = /^[0-9]*-[0-9]{2}-[0-9]{2}$/;
+  const pattern = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
   if (startDate && !pattern.test(startDate)) {
     return res.status(400).json({ message: 'start date or end date are in bad format, dates in format YYYY-mm-dd' });
   }
@@ -124,7 +126,7 @@ router.post('/update', (req, res) => {
   if (startDate && !endDate) {
     [endDate] = new Date().toISOString().split('T');
   }
-  insertSnapshotBetweenDate(startDate, endDate);
+  insertSnapshotBetweenDate(url, startDate, endDate);
   return res.status(200).json({
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of tasks has been created on elastic'`,
   });

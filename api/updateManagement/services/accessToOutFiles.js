@@ -19,7 +19,6 @@ const getNamesOfFilesInDir = (dir, latest, status) => {
     return filelist.map((file) => {
       const match = /^(\w*)-([0-9-T:]+)\.json$/i.exec(file);
       if (match) return { status: match[1], date: match[2] };
-      console.log(file);
       return file;
     })
       .filter((a) => a.status === status)

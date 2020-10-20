@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const {
   getMetadatas,
   setIteratorFile,
@@ -30,7 +31,7 @@ const insertion = async (name, options) => {
   return true;
 };
 
-const weeklyUpdate = async () => {
+const weeklyUpdate = async (url) => {
   // initialize informations on task
   startTask();
   createStatus();
@@ -39,7 +40,7 @@ const weeklyUpdate = async () => {
   const endDate = new Date(new Date().toISOString().split('T')[0]);
   // current date - one week
   const startDate = endDate.getTime() - 604800000;
-  const res1 = await fetchUnpaywall(startDate, endDate);
+  const res1 = await fetchUnpaywall(url, startDate, endDate);
   if (!res1) {
     return null;
   }
@@ -58,15 +59,16 @@ const weeklyUpdate = async () => {
   return true;
 };
 
-const insertSnapshotBetweenDate = async (startDate, endDate) => {
+const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
   // initialize informations on task
   startTask();
   createStatus();
-  const res1 = await fetchUnpaywall(startDate, endDate);
+  const res1 = await fetchUnpaywall(url, startDate, endDate);
   if (!res1) {
     return null;
   }
 
+  // TODO check for a other syntax
   // eslint-disable-next-line no-restricted-syntax
   for await (const metadata of getMetadatas()) {
     const res2 = await downloadUpdateSnapshot();

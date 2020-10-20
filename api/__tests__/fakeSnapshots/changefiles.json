@@ -1,0 +1,64 @@
+{
+  "list": [
+    {
+      "filename": "fake1.jsonl.gz",
+      "filetype": "jsonl",
+      "from_date": "2010-01-07",
+      "last_modified": "2010-01-15T12:00:00",
+      "lines": 700,
+      "size": 8000,
+      "to_date": "2010-01-15",
+      "url": "fakeURL-file.jsonl.gz?api_key=YOUR_API_KEY"
+    },
+    {
+      "filename": "fake1.csv.gz",
+      "filetype": "csv",
+      "from_date": "2010-01-07",
+      "last_modified": "2010-01-15T12:00:00",
+      "lines": 700,
+      "size": 8000,
+      "to_date": "2010-01-15",
+      "url": "fakeURL-file.csv.gz?api_key=YOUR_API_KEY"
+    },
+    {
+      "filename": "fake2.jsonl.gz",
+      "filetype": "jsonl",
+      "from_date": "2009-12-31",
+      "last_modified": "2010-01-08T12:00:00",
+      "lines": 250,
+      "size": 2000,
+      "to_date": "2010-01-08",
+      "url": "fakeURL-file.jsonl.gz?api_key=YOUR_API_KEY"
+    },
+    {
+      "filename": "fake2.csv.gz",
+      "filetype": "csv",
+      "from_date": "2009-12-31",
+      "last_modified": "2010-01-08T12:00:00",
+      "lines": 250,
+      "size": 2000,
+      "to_date": "2010-01-08",
+      "url": "fakeURL-file.csv.gz?api_key=YOUR_API_KEY"
+    },
+    {
+      "filename": "fake3.jsonl.gz",
+      "filetype": "jsonl",
+      "from_date": "2009-12-25",
+      "last_modified": "2009-12-25T12:00:00",
+      "lines": 1111,
+      "size": 10000,
+      "to_date": "2010-01-01",
+      "url": "fakeURL-file.jsonl.gz?api_key=YOUR_API_KEY"
+    },
+    {
+      "filename": "fake3.csv.gz",
+      "filetype": "csv",
+      "from_date": "2009-12-25",
+      "last_modified": "2009-12-25T12:00:00",
+      "lines": 1111,
+      "size": 10000,
+      "to_date": "2010-01-01",
+      "url": "fakeURL-file.csv.gz?api_key=YOUR_API_KEY"
+    }
+  ]
+}

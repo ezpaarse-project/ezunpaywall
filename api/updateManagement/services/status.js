@@ -92,6 +92,7 @@ const createStepInsert = (file) => {
     {
       task: 'insert',
       file,
+      percent: 0,
       lineRead: 0,
       took: 0,
       status: 'inProgress',
@@ -109,7 +110,7 @@ const createStatus = async () => {
     });
     idTask = doc.body._id;
   } catch (err) {
-    console.log(err);
+    processLogger(err);
   }
   (async function actualizeStatus() {
     if (tasks.done) {
@@ -125,7 +126,7 @@ const createStatus = async () => {
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
-      console.log(err);
+      processLogger(err);
     }
   }());
 };
