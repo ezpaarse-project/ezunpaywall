@@ -200,6 +200,7 @@ Status: 200
 | journal_issn_l | String | A single ISSN for the journal publishing this resource. |
 | journal_name | String | The name of the journal publishing this resource. |
 | oa_locations | List | List of all the OA Location objects associated with this resource. |
+| first_oa_location | Object | The first OA Location Object we could find for this DOI. |
 | oa_status | String | The OA status, or color, of this resource. |
 | published_date | String/Null | The date this resource was published. |
 | publisher | String | The name of this resource's publisher. |
