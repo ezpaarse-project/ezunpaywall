@@ -7,7 +7,7 @@ const client = require('../../lib/client');
 const { processLogger } = require('../../lib/logger');
 
 let iteratorTask = -1;
-let iteratorFile = 0;
+let iteratorFile = -1;
 let metadatas = [];
 let timeout;
 
@@ -19,7 +19,7 @@ const setIteratorFile = (val) => {
 
 let idTask;
 
-const tasks = {
+const task = {
   done: false,
   currentTask: '',
   steps: [],
@@ -28,37 +28,37 @@ const tasks = {
   took: '',
 };
 
-const getTasks = () => tasks;
+const getTask = () => task;
 
-const resetTasks = () => {
+const resetTask = () => {
   iteratorTask = -1;
-  iteratorFile = 0;
+  iteratorFile = -1;
   metadatas = [];
-  tasks.done = false;
-  tasks.currentTask = '';
-  tasks.steps = [];
-  tasks.createdAt = null;
-  tasks.endAt = null;
-  tasks.took = '';
+  task.done = false;
+  task.currentTask = '';
+  task.steps = [];
+  task.createdAt = null;
+  task.endAt = null;
+  task.took = '';
 };
 
 const endTask = () => {
-  tasks.endAt = new Date();
-  tasks.took = (tasks.endAt - tasks.createdAt) / 1000;
-  tasks.done = true;
-  tasks.currentTask = 'end';
+  task.endAt = new Date();
+  task.took = (task.endAt - task.createdAt) / 1000;
+  task.done = true;
+  task.currentTask = 'end';
 };
 
 const startTask = () => {
-  tasks.done = false;
-  tasks.createdAt = new Date();
+  task.done = false;
+  task.createdAt = new Date();
 };
 
 const createStepFetchUnpaywall = () => {
   processLogger.info('step - fetch unpaywall');
   iteratorTask += 1;
-  tasks.currentTask = 'fetchUnpaywall';
-  tasks.steps.push(
+  task.currentTask = 'fetchUnpaywall';
+  task.steps.push(
     {
       task: 'fetchUnpaywall',
       took: 0,
@@ -71,8 +71,8 @@ const createStepFetchUnpaywall = () => {
 const createStepDownload = (file) => {
   processLogger.info('step - start download file');
   iteratorTask += 1;
-  tasks.currentTask = 'download';
-  tasks.steps.push(
+  task.currentTask = 'download';
+  task.steps.push(
     {
       task: 'download',
       file,
@@ -87,8 +87,8 @@ const createStepDownload = (file) => {
 const createStepInsert = (file) => {
   processLogger.info(`step - start insertion with ${file}`);
   iteratorTask += 1;
-  tasks.currentTask = 'insert';
-  tasks.steps.push(
+  task.currentTask = 'insert';
+  task.steps.push(
     {
       task: 'insert',
       file,
@@ -104,25 +104,25 @@ const createStepInsert = (file) => {
 const createStatus = async () => {
   try {
     const doc = await client.index({
-      index: 'tasks',
+      index: 'task',
       refresh: true,
-      body: tasks,
+      body: task,
     });
     idTask = doc.body._id;
   } catch (err) {
     processLogger(err);
   }
   (async function actualizeStatus() {
-    if (tasks.done) {
+    if (task.done) {
       clearTimeout(timeout);
       return;
     }
     try {
       await client.index({
         id: idTask,
-        index: 'tasks',
+        index: 'task',
         refresh: true,
-        body: tasks,
+        body: task,
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
@@ -136,9 +136,9 @@ const endStatus = async () => {
     clearTimeout(timeout);
     await client.index({
       id: idTask,
-      index: 'tasks',
+      index: 'task',
       refresh: true,
-      body: tasks,
+      body: task,
     });
   } catch (err) {
     processLogger.error(err);
@@ -147,22 +147,22 @@ const endStatus = async () => {
 
 const createReport = async (success) => {
   try {
-    await fs.writeFileSync(`${reportDir}/${success}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(tasks, null, 2));
+    await fs.writeFileSync(`${reportDir}/${success}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(task, null, 2));
   } catch (error) {
     processLogger.error(error);
   }
 };
 
 const fail = (startDate) => {
-  tasks.steps[iteratorTask].status = 'error';
-  tasks.steps[iteratorTask].took = (startDate - new Date()) / 1000;
-  tasks.endAt = (tasks.createdAt - new Date()) / 1000;
+  task.steps[iteratorTask].status = 'error';
+  task.steps[iteratorTask].took = (startDate - new Date()) / 1000;
+  task.endAt = (task.createdAt - new Date()) / 1000;
   createReport('error');
-  resetTasks();
+  resetTask();
 };
 
 module.exports = {
-  tasks,
+  task,
   getMetadatas,
   getIteratorFile,
   setIteratorFile,
@@ -170,9 +170,9 @@ module.exports = {
   createStepDownload,
   createStepInsert,
   createStatus,
-  getTasks,
+  getTask,
   endStatus,
-  resetTasks,
+  resetTask,
   endTask,
   startTask,
   fail,

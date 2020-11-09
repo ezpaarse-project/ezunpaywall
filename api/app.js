@@ -10,8 +10,8 @@ const schema = require('./graphql/graphql');
 
 // routers
 const RouterManageDatabase = require('./updateManagement/routers/databaseInteraction');
-const RouterHomePage = require('./updateManagement/routers/outFiles');
-const RouterTasks = require('./updateManagement/routers/status');
+const RouterOutFiles = require('./updateManagement/routers/outFiles');
+const RouterTask = require('./updateManagement/routers/status');
 
 const { apiLogger } = require('./lib/logger');
 
@@ -26,23 +26,23 @@ const app = express();
 
 // middleware
 const isDev = process.env.NODE_ENV === 'development';
-if (isDev) app.use(morgan('dev'));
-if (!isDev) {
+if (isDev) {
+  app.use(morgan('dev'));
+} else {
   app.use(morgan('combined', {
     stream: fs.createWriteStream(path.resolve(outDir, 'logs', 'access.log'), { flags: 'a+' }),
   }));
 }
 
-// routers
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve('homepage.html'));
-});
 const corsOptions = {
   origin: '*',
   methods: 'GET, POST',
   allowedHeaders: ['Content-Type'],
 };
-
+// routers
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve('homepage.html'));
+});
 // initialize API graphql
 app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   const graphqlQuery = graphqlHTTP({
@@ -52,13 +52,12 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   return graphqlQuery(req, res);
 });
 
-// routers
-app.use(RouterHomePage);
-app.use(RouterTasks);
+app.use(RouterOutFiles);
+app.use(RouterTask);
 app.use(RouterManageDatabase);
 
 /* Errors and unknown routes */
-app.all('*', (req, res) => res.status(400).json({ message: 'bad request' }));
+app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
 
 app.use((error, req, res) => res.status(500).json({ message: error.message }));
 

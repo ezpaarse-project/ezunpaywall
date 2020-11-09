@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+const { processLogger } = require('../../lib/logger');
 const {
   getMetadatas,
   setIteratorFile,
@@ -7,7 +7,7 @@ const {
   endStatus,
   startTask,
   endTask,
-  resetTasks,
+  resetTask,
 } = require('./status');
 
 const {
@@ -17,75 +17,58 @@ const {
 } = require('./steps');
 
 const insertion = async (name, options) => {
+  setIteratorFile(1);
   getMetadatas().push({ filename: name });
-  await startTask();
-  await createStatus();
-  const res1 = await insertDatasUnpaywall(options);
-  if (!res1) {
-    return null;
-  }
-  await endTask();
-  await endStatus();
-  await createReport('success');
-  await resetTasks();
-  return true;
-};
-
-const weeklyUpdate = async (url) => {
-  // initialize informations on task
   startTask();
-  createStatus();
-  // TODO check for a other syntax
-  // create a date with format YYYY-mm-dd and possible to use fonction getTime
-  const endDate = new Date(new Date().toISOString().split('T')[0]);
-  // current date - one week
-  const startDate = endDate.getTime() - 604800000;
-  const res1 = await fetchUnpaywall(url, startDate, endDate);
-  if (!res1) {
-    return null;
+  await createStatus();
+
+  try {
+    await insertDatasUnpaywall(options);
+  } catch (err) {
+    processLogger.error(err);
   }
-  const res2 = await downloadUpdateSnapshot();
-  if (!res2) {
-    return null;
-  }
-  const res3 = await insertDatasUnpaywall({ offset: -1, limit: -1 });
-  if (!res3) {
-    return null;
-  }
-  await endTask();
+  endTask();
   await endStatus();
   await createReport('success');
-  await resetTasks();
+  resetTask();
   return true;
 };
 
 const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
   // initialize informations on task
   startTask();
-  createStatus();
-  const res1 = await fetchUnpaywall(url, startDate, endDate);
-  if (!res1) {
+  await createStatus();
+
+  const fetch = await fetchUnpaywall(url, startDate, endDate);
+  if (!fetch) {
     return null;
   }
 
-  // TODO check for a other syntax
-  // eslint-disable-next-line no-restricted-syntax
-  for await (const metadata of getMetadatas()) {
-    const res2 = await downloadUpdateSnapshot();
-    if (!res2) {
-      return null;
-    }
-    const res3 = await insertDatasUnpaywall({ offset: -1, limit: -1 });
-    if (!res3) {
-      return null;
-    }
+  for (let i = 0; i < getMetadatas().length; i += 1) {
     setIteratorFile(1);
+    // eslint-disable-next-line no-await-in-loop
+    const snapshot = await downloadUpdateSnapshot();
+    if (!snapshot) {
+      return null;
+    }
+    // eslint-disable-next-line no-await-in-loop
+    const insert = await insertDatasUnpaywall({ offset: -1, limit: -1 });
+    if (!insert) {
+      return null;
+    }
   }
   endTask();
-  endStatus();
-  createReport('success');
-  resetTasks();
+  await endStatus();
+  await createReport('success');
+  resetTask();
   return true;
+};
+
+const weeklyUpdate = async (url) => {
+  const endDate = Date.now();
+  // current date - one week
+  const startDate = endDate - (7 * 24 * 60 * 60 * 1000);
+  await insertSnapshotBetweenDate(url, startDate, endDate);
 };
 
 module.exports = {

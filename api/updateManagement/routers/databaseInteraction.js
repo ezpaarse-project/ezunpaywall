@@ -12,12 +12,12 @@ const {
 } = require('../services/unpaywall');
 
 const {
-  tasks,
+  task,
 } = require('../services/status');
 
 // middleware
 router.use((req, res, next) => {
-  if (tasks.currentTask) {
+  if (task.currentTask) {
     return res.status(409).json({
       message: 'process in progress, check /insert/status',
     });
@@ -103,7 +103,7 @@ router.post('/update', (req, res) => {
   if (!startDate && !endDate) {
     weeklyUpdate(url);
     return res.status(200).json({
-      message: 'weekly update has begun, list of tasks has been created on elastic',
+      message: 'weekly update has begun, list of task has been created on elastic',
     });
   }
   if (endDate && !startDate) {
@@ -128,7 +128,7 @@ router.post('/update', (req, res) => {
   }
   insertSnapshotBetweenDate(url, startDate, endDate);
   return res.status(200).json({
-    message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of tasks has been created on elastic'`,
+    message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic'`,
   });
 });
 

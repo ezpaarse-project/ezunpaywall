@@ -139,13 +139,13 @@
           setTimeout(() => {
             axios({
               method: 'get',
-              url: `/tasks`,
+              url: `/task`,
             }).then((response) => {
               if (!response.data.inProgress) {
                 this.inProcess = false;
               } else {
                 this.inProcess = true;
-                this.processStatus = response.data.tasks;
+                this.processStatus = response.data.task;
                 this.getStatusInProgress()
               }
             });

@@ -1,26 +1,26 @@
 const router = require('express').Router();
 
-const { getTasks } = require('../services/status');
+const { getTask } = require('../services/status');
 
 /**
- * @api {get} /tasks get the status of processus
- * @apiName getTasks
- * @apiGroup Tasks
+ * @api {get} /task get the status of processus
+ * @apiName getTask
+ * @apiGroup Task
  *
  * @apiSuccess {String} task
  *
  */
-router.get('/tasks', async (req, res) => {
-  const tasks = getTasks();
-  if (tasks.currentTask === '') {
+router.get('/task', async (req, res) => {
+  const task = getTask();
+  if (task.currentTask === '') {
     return res.status(200).json({
       inProgress: false,
-      tasks: {},
+      task: {},
     });
   }
   return res.status(200).json({
     inProgress: true,
-    tasks,
+    task,
   });
 });
 
