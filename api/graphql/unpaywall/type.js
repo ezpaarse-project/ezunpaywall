@@ -18,7 +18,7 @@ module.exports = new GraphQLObjectType({
     const ZAuthorsType = require('../z_author/type');
     return {
       best_oa_location: { type: OaLocationType },
-      first_oa_location:  { type: OaLocationType },
+      first_oa_location: { type: OaLocationType },
       data_standard: { type: GraphQLInt },
       doi: { type: GraphQLID },
       doi_url: { type: GraphQLString },
