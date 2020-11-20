@@ -1,19 +1,38 @@
 version: "3"
 
 services:
+  fakeUnpaywall:
+    image: node:14.5.0
+    environment:
+      - NODE_ENV=test
+      - http_proxy
+      - https_proxy
+    working_dir: /fakeUnpaywall
+    volumes:
+      - ./fakeUnpaywall:/fakeUnpaywall
+    command: "npm run dev"
+    ports:
+      - "12000:12000"
+
   api:
     image: node:14.5.0
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=test
       - http_proxy
       - https_proxy
-      - API_KEY_UPW=${API_KEY_UPW}
-    working_dir: /app
+      - UNPAYWALL_URL=http://fakeUnpaywall:12000/snapshots/changefiles.json
+      - EZUNPAYWALL_ELASTIC_HOST=elastic
+      - EZUNPAYWALL_ELASTIC_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+    working_dir: /api
+    volumes:
+      - ./api:/api
     command: "npm run test"
     ports:
       - "8080:8080"
       
- elastic:
+  elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
     environment:
       - http_proxy
@@ -37,23 +56,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - "./data:/usr/share/elasticsearch/data"
       - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
       - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
       - 9200:9200
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.1
-    ports:
-      - 5601:5601
-    environment:
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_USERNAME
-      - SERVER_HOST
-      - SERVER_PORT
-      - THIS_HOST
-      - ELASTICSEARCH_HOSTS="http://elastic:9200"
-      - KIBANA_DEFAULTAPPID
-    volumes:
-      - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"

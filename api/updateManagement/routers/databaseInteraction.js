@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
 
-const url = `http://api.unpaywall.org/feed/changefiles?api_key=${config.get('API_KEY_UPW')}`;
+const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikey')}`;
 
 const {
   insertion,

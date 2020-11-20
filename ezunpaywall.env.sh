@@ -4,6 +4,7 @@ EZUNPAYWALL_NODE_NAME=`hostname`
 THIS_HOST=`hostname -I | cut -d ' ' -f1`
 
 export API_KEY_UPW="api_key"
+export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 export EZUNPAYWALL_ELASTIC_USER="elastic"
 export EZUNPAYWALL_ELASTIC_PASSWORD="changeme"
 

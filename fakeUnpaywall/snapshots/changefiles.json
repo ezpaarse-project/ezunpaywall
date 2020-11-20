@@ -1,0 +1,34 @@
+{
+  "list": [
+    {
+      "filename": "fake1.jsonl.gz",
+      "filetype": "jsonl",
+      "from_date": "2020-11-11",
+      "last_modified": "2010-01-15T12:00:00",
+      "lines": 2000,
+      "size": 877494,
+      "to_date": "2020-11-18",
+      "url": "http://fakeUnpaywall:12000/snapshots/fake1.jsonl.gz"
+    },
+    {
+      "filename": "fake2.jsonl.gz",
+      "filetype": "jsonl",
+      "from_date": "2009-12-31",
+      "last_modified": "2010-01-08T12:00:00",
+      "lines": 100,
+      "size": 44137,
+      "to_date": "2010-01-08",
+      "url": "http://fakeUnpaywall:12000/snapshots/fake2.jsonl.gz"
+    },
+    {
+      "filename": "fake3.jsonl.gz",
+      "filetype": "jsonl",
+      "from_date": "2009-12-25",
+      "last_modified": "2009-12-25T12:00:00",
+      "lines": 50,
+      "size": 19896,
+      "to_date": "2010-01-01",
+      "url": "http://fakeUnpaywall:12000/snapshots/fake3.jsonl.gz"
+    }
+  ]
+}

@@ -7,10 +7,15 @@ services:
       - NODE_ENV=development
       - http_proxy
       - https_proxy
-      - API_KEY_UPW=${API_KEY_UPW}
-    working_dir: /app
+      - API_KEY_UPW
+      - UNPAYWALL_URL
+      - EZUNPAYWALL_ELASTIC_HOST=elastic
+      - EZUNPAYWALL_ELASTIC_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+    working_dir: /api
     volumes:
-      - ./api:/app
+      - ./api:/api
     command: "npm run dev"
     ports:
       - "8080:8080"

@@ -1,8 +1,9 @@
 { 
-  "API_KEY_UPW": "api_key",
+  "apikey": "api_key",
+  "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
   "elasticsearch": {
     "port": 9200,
-    "host": "elastic",
+    "host": "localhost",
     "user": "elastic",
     "password": "changeme"
   }

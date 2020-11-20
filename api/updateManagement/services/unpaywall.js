@@ -44,6 +44,8 @@ const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
     return null;
   }
 
+  processLogger.info(getMetadatas());
+
   for (let i = 0; i < getMetadatas().length; i += 1) {
     setIteratorFile(1);
     // eslint-disable-next-line no-await-in-loop

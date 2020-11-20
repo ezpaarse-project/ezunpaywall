@@ -3,6 +3,7 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const axios = require('axios');
 const zlib = require('zlib');
+const { Readable } = require('stream');
 const client = require('../../lib/client');
 const { processLogger } = require('../../lib/logger');
 
@@ -26,6 +27,7 @@ const insertUPW = async (data) => {
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
+    console.log(err);
     processLogger.error(err);
   }
 };
@@ -147,7 +149,7 @@ const downloadUpdateSnapshot = async () => {
   try {
     alreadyInstalled = await fs.pathExists(file);
   } catch (err) {
-    processLogger(err);
+    processLogger.error(err);
   }
 
   if (alreadyInstalled) stats = fs.statSync(file);
@@ -157,6 +159,7 @@ const downloadUpdateSnapshot = async () => {
     processLogger.info('file already installed');
     return true;
   }
+
   // create step download
   const start = createStepDownload(filename);
   let compressedFile;
@@ -165,17 +168,19 @@ const downloadUpdateSnapshot = async () => {
       method: 'get',
       url,
       responseType: 'stream',
-      headers: { 'Content-Type': 'applicatio-n/octet-stream' },
     });
   } catch (err) {
     fail();
     processLogger.error(err);
     return null;
   }
+
+  processLogger.info(typeof compressedFile?.data);
+
   const downloadFile = async () => new Promise((resolve, reject) => {
     // Get unpaywall file
-    if (!compressedFile || !compressedFile.data) {
-      return resolve();
+    if (!(compressedFile?.data instanceof Readable)) {
+      return Promise.reject();
     }
 
     const filePath = path.resolve(downloadDir, filename);
@@ -229,11 +234,23 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
   // create step fetchUnpaywall
   const start = createStepFetchUnpaywall();
 
-  const response = await axios({
-    method: 'get',
-    url,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  let response;
+
+  try {
+    response = await axios({
+      method: 'get',
+      url,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    processLogger.error(err);
+    fail(start);
+    return null;
+  }
 
   if (response?.status !== 200) {
     fail(start);

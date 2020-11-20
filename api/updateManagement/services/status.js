@@ -110,7 +110,7 @@ const createStatus = async () => {
     });
     idTask = doc.body._id;
   } catch (err) {
-    processLogger(err);
+    processLogger.error(err);
   }
   (async function actualizeStatus() {
     if (task.done) {
@@ -126,7 +126,7 @@ const createStatus = async () => {
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
-      processLogger(err);
+      processLogger.error(err);
     }
   }());
 };
@@ -148,8 +148,8 @@ const endStatus = async () => {
 const createReport = async (success) => {
   try {
     await fs.writeFileSync(`${reportDir}/${success}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(task, null, 2));
-  } catch (error) {
-    processLogger.error(error);
+  } catch (err) {
+    processLogger.error(err);
   }
 };
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const graphqlHTTP = require('express-graphql');
 const cors = require('cors');
+const graphqlHTTP = require('express-graphql');
 const morgan = require('morgan');
 const fs = require('fs-extra');
 const path = require('path');
@@ -39,6 +39,9 @@ const corsOptions = {
   methods: 'GET, POST',
   allowedHeaders: ['Content-Type'],
 };
+
+app.use('/update', cors());
+
 // routers
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('homepage.html'));
@@ -61,6 +64,9 @@ app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${re
 
 app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
-app.listen('8080', () => apiLogger.info('Server listening on 8080'));
+app.listen('8080', () => {
+  apiLogger.info('Server listening on 8080');
+  app.emit('ready');
+});
 
 module.exports = app;

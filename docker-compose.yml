@@ -11,9 +11,14 @@ services:
       - NODE_ENV=production
       - http_proxy
       - https_proxy
-      - API_KEY_UPW=${API_KEY_UPW}
+      - UNPAYWALL_URL
+      - API_KEY_UPW
+      - EZUNPAYWALL_ELASTIC_HOST=elastic
+      - EZUNPAYWALL_ELASTIC_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
     volumes:
-      - ./api/out:/usr/src/app/out/
+      - ./api/out:/usr/src/api/out/
     command: "npm start"
     ports:
       - "8080:8080"
