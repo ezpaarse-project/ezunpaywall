@@ -175,23 +175,10 @@ const downloadUpdateSnapshot = async () => {
     return null;
   }
 
-  processLogger.info(typeof compressedFile?.data);
-
-  const downloadFile = async () => new Promise((resolve, reject) => {
-    // Get unpaywall file
-    if (!(compressedFile?.data instanceof Readable)) {
-      return Promise.reject();
-    }
-
-    const filePath = path.resolve(downloadDir, filename);
-
+  const downloadFileWithStream = async (filePath) => new Promise((resolve, reject) => {
     // download unpaywall file with stream
     const writeStream = compressedFile.data.pipe(fs.createWriteStream(filePath));
-    processLogger.info(`Download update snapshot : ${filename}`);
-    processLogger.info(`filetype : ${filetype}`);
-    processLogger.info(`lines : ${lines}`);
-    processLogger.info(`size : ${size}`);
-    processLogger.info(`to_date : ${toDate}`);
+
     // update percent of download
     let timeout;
     (async function percentDownload() {
@@ -223,7 +210,23 @@ const downloadUpdateSnapshot = async () => {
       return reject(err);
     });
   });
-  await downloadFile();
+
+  const filePath = path.resolve(downloadDir, filename);
+
+  processLogger.info(`Download update snapshot : ${filename}`);
+  processLogger.info(`filetype : ${filetype}`);
+  processLogger.info(`lines : ${lines}`);
+  processLogger.info(`size : ${size}`);
+  processLogger.info(`to_date : ${toDate}`);
+
+  // FIXME with text, axios return a String and not a Readable
+  if (compressedFile?.data instanceof Readable) {
+    await downloadFileWithStream(filePath);
+  } else {
+    const writeStream = fs.createWriteStream(filePath);
+    writeStream.write(compressedFile.data);
+    writeStream.end();
+  }
   return true;
 };
 
@@ -246,7 +249,6 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
       },
     });
   } catch (err) {
-    console.log(err);
     processLogger.error(err);
     fail(start);
     return null;

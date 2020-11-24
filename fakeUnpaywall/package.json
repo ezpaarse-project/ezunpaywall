@@ -4,7 +4,6 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=test jest",
     "dev": "NODE_ENV=development nodemon -e .js app.js"
   },
   "author": "",

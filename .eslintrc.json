@@ -1,13 +1,12 @@
 {
   "env": {
-    "jest/globals": true,
+    "mocha": true,
     "commonjs": true,
     "es6": true,
     "node": true
   },
   "extends": [
     "airbnb-base",
-    "plugin:jest/recommended"
   ],
   "globals": {
     "Atomics": "readonly",
