@@ -14,6 +14,7 @@ const {
 const {
   task,
 } = require('../services/status');
+const { processLogger } = require('../../lib/logger');
 
 // middleware
 router.use((req, res, next) => {
@@ -55,13 +56,14 @@ router.post('/update/:name', async (req, res) => {
   }
   const pattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
   if (!pattern.test(name)) {
-    return res.status(400).json({ message: 'name of file is in bad format (accepted [a-zA-Z0-9_.-] patern)' });
+    return res.status(400).json({ message: 'name of file is in bad format (accepted a .gz file)' });
   }
   const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', name));
   if (!ifFileExist) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
-  if (limit < offset) {
+  if (Number(limit) <= Number(offset)) {
+    processLogger.info('ITS ME')
     return res.status(400).json({ message: 'limit can\t be lower than offset or 0' });
   }
 

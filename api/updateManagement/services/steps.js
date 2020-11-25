@@ -27,7 +27,7 @@ const insertUPW = async (data) => {
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
-    console.log(err);
+    console.log(data)
     processLogger.error(err);
   }
 };
@@ -87,12 +87,11 @@ const insertDatasUnpaywall = async (options) => {
     for await (const line of rl) {
       step.lineRead += 1;
       // limit
-      if (step.lineRead <= options.limit) {
+      if (step.lineRead === options.limit + 1) {
         break;
       }
-
       // offset
-      if (step.lineRead >= options.offset) {
+      if (step.lineRead >= options.offset + 1) {
         // fill the array
         try {
           tab.push(JSON.parse(line));
@@ -102,7 +101,7 @@ const insertDatasUnpaywall = async (options) => {
         }
       }
       // bulk insertion
-      if (tab.length % 1000 === 0) {
+      if (tab.length % 1000 === 0 && tab.length !== 0) {
         await insertUPW(tab);
         step.percent = ((loaded / bytes.size) * 100).toFixed(2);
         tab = [];
