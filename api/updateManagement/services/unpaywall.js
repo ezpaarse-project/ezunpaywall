@@ -21,12 +21,7 @@ const insertion = async (name, options) => {
   getMetadatas().push({ filename: name });
   startTask();
   await createStatus();
-
-  try {
-    await insertDatasUnpaywall(options);
-  } catch (err) {
-    processLogger.error(err);
-  }
+  await insertDatasUnpaywall(options);
   endTask();
   await endStatus();
   await createReport('success');
@@ -43,9 +38,6 @@ const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
   if (!fetch) {
     return null;
   }
-
-  (getMetadatas());
-
   for (let i = 0; i < getMetadatas().length; i += 1) {
     setIteratorFile(1);
     // eslint-disable-next-line no-await-in-loop

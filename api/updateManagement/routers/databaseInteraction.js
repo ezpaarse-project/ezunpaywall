@@ -14,11 +14,10 @@ const {
 const {
   task,
 } = require('../services/status');
-const { processLogger } = require('../../lib/logger');
 
 // middleware
 router.use((req, res, next) => {
-  if (task.currentTask) {
+  if (!task.done) {
     return res.status(409).json({
       message: 'process in progress, check /insert/status',
     });
@@ -63,7 +62,6 @@ router.post('/update/:name', async (req, res) => {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
   if (Number(limit) <= Number(offset)) {
-    processLogger.info('ITS ME')
     return res.status(400).json({ message: 'limit can\t be lower than offset or 0' });
   }
 

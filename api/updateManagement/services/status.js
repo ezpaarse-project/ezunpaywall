@@ -20,12 +20,12 @@ const setIteratorFile = (val) => {
 let idTask;
 
 const task = {
-  done: false,
+  done: true,
   currentTask: '',
   steps: [],
   createdAt: null,
   endAt: null,
-  took: '',
+  took: 0,
 };
 
 const getTask = () => task;
@@ -34,12 +34,12 @@ const resetTask = () => {
   iteratorTask = -1;
   iteratorFile = -1;
   metadatas = [];
-  task.done = false;
+  task.done = true;
   task.currentTask = '';
   task.steps = [];
   task.createdAt = null;
   task.endAt = null;
-  task.took = '';
+  task.took = 0;
 };
 
 const endTask = () => {
@@ -110,7 +110,7 @@ const createStatus = async () => {
     });
     idTask = doc.body._id;
   } catch (err) {
-    processLogger.error(err);
+    processLogger.error(`Error in createStatus: ${err}`);
   }
   (async function actualizeStatus() {
     if (task.done) {
@@ -126,7 +126,7 @@ const createStatus = async () => {
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
-      processLogger.error(err);
+      processLogger.error(`Error in actualizeStatus: ${err}`);
     }
   }());
 };
@@ -141,7 +141,7 @@ const endStatus = async () => {
       body: task,
     });
   } catch (err) {
-    processLogger.error(err);
+    processLogger.error(`Error in endStatus: ${err}`);
   }
 };
 
@@ -149,7 +149,7 @@ const createReport = async (success) => {
   try {
     await fs.writeFileSync(`${reportDir}/${success}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(task, null, 2));
   } catch (err) {
-    processLogger.error(err);
+    processLogger.error(`Error in createReport: ${err}`);
   }
 };
 

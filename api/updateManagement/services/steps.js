@@ -27,8 +27,7 @@ const insertUPW = async (data) => {
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
-    console.log(data)
-    processLogger.error(err);
+    processLogger.error(`Error in insertUPW: ${err}`);
   }
 };
 
@@ -47,7 +46,7 @@ const insertDatasUnpaywall = async (options) => {
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    processLogger.error(err);
+    processLogger.error(`Error in fs.stat in insertDatasUnpaywall: ${err}`);
   }
 
   const insertion = async () => {
@@ -58,7 +57,8 @@ const insertDatasUnpaywall = async (options) => {
     try {
       readStream = fs.createReadStream(filePath);
     } catch (err) {
-      processLogger.error(err);
+      processLogger.error(`Error in fs.createReadStream in insertDatasUnpaywall: ${err}`);
+      fail();
       return null;
     }
 
@@ -71,7 +71,8 @@ const insertDatasUnpaywall = async (options) => {
     try {
       decompressedStream = readStream.pipe(zlib.createGunzip());
     } catch (err) {
-      processLogger.error(err);
+      processLogger.error(`Error in readStream.pipe(zlib.createGunzip()) in insertDatasUnpaywall: ${err}`);
+      fail();
       return null;
     }
 
@@ -85,19 +86,22 @@ const insertDatasUnpaywall = async (options) => {
     // read line by line and sort by pack of 1000
     // eslint-disable-next-line no-restricted-syntax
     for await (const line of rl) {
-      step.lineRead += 1;
       // limit
-      if (step.lineRead === options.limit + 1) {
+      if (step.lineRead === options.limit) {
         break;
       }
+
+      step.lineRead += 1;
+
       // offset
       if (step.lineRead >= options.offset + 1) {
         // fill the array
         try {
           tab.push(JSON.parse(line));
         } catch (err) {
-          processLogger.error(err);
+          processLogger.error(`Error in JSON.parse in insertDatasUnpaywall: ${err}`);
           fail();
+          return null;
         }
       }
       // bulk insertion
@@ -148,7 +152,7 @@ const downloadUpdateSnapshot = async () => {
   try {
     alreadyInstalled = await fs.pathExists(file);
   } catch (err) {
-    processLogger.error(err);
+    processLogger.error(`Error in fs.pathExists in downloadUpdateSnapshot: ${err}`);
   }
 
   if (alreadyInstalled) stats = fs.statSync(file);
@@ -169,8 +173,8 @@ const downloadUpdateSnapshot = async () => {
       responseType: 'stream',
     });
   } catch (err) {
+    processLogger.error(`Error in axios in downloadUpdateSnapshot: ${err}`);
     fail();
-    processLogger.error(err);
     return null;
   }
 
@@ -185,7 +189,7 @@ const downloadUpdateSnapshot = async () => {
       try {
         bytes = await fs.stat(filePath);
       } catch (err) {
-        processLogger.error(err);
+        processLogger.error(`Error in fs.stat in percentDownload: ${err}`);
       }
       if (bytes.size === size) {
         clearTimeout(timeout);
@@ -204,7 +208,7 @@ const downloadUpdateSnapshot = async () => {
     });
 
     writeStream.on('error', (err) => {
-      processLogger.error(err);
+      processLogger.error(`Error in writeStream in percentDownload: ${err}`);
       fail();
       return reject(err);
     });
@@ -248,7 +252,7 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
       },
     });
   } catch (err) {
-    processLogger.error(err);
+    processLogger.error(`Error in axios in fetchUnpaywall: ${err}`);
     fail(start);
     return null;
   }
