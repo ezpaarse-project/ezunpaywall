@@ -168,7 +168,6 @@ const initializeDate = async () => {
   } catch (err) {
     processLogger.error(`Error in fs.writeFile in initializeDate: ${err}`);
   }
-  
 }
 
 const dowloadFile = async (name) => {

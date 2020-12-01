@@ -36,14 +36,18 @@ describe('test weekly update', () => {
       }
     }
     initializeDate();
-    await createIndexUnpaywall();
-    await createIndexTask();
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz')
     await deleteFile('fake3.jsonl.gz')
   });
 
-  describe('/update weekly update', async () => {
+  describe('/update weekly update', () => {
+    before(async () => {
+      await createIndexUnpaywall();
+      await createIndexTask();
+    });
+  
+    // test response
     it('should return the process start', async () => {
       const task = await getTask();
       const server = 'http://localhost:8080';
@@ -52,7 +56,7 @@ describe('test weekly update', () => {
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
 
-      // test responses
+      
       response.should.have.status(200);
       response.body.should.have.property('message');
       response.body.message.should.be.equal('weekly update has begun, list of task has been created on elastic');
@@ -121,7 +125,13 @@ describe('test weekly update', () => {
     });
   });
 
-  describe('/update weekly update with a file already installed', async () => {
+  describe('/update weekly update with a file already installed', () => {
+    before(async () => {
+      await createIndexUnpaywall();
+      await createIndexTask();
+    });
+    
+    // test return message
     it('should return the process start', async () => {
       const task = await getTask();
       const server = 'http://localhost:8080';
@@ -157,6 +167,7 @@ describe('test weekly update', () => {
       task.should.have.property('createdAt');
       task.should.have.property('endAt');
       task.should.have.property('took');
+
       task.steps[0].should.have.property('task');
       task.steps[0].should.have.property('took');
       task.steps[0].should.have.property('status');

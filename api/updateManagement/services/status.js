@@ -132,8 +132,8 @@ const createStatus = async () => {
 };
 
 const endStatus = async () => {
+  clearTimeout(timeout);
   try {
-    clearTimeout(timeout);
     await client.index({
       id: idTask,
       index: 'task',

@@ -24,7 +24,6 @@ chai.use(chaiHttp);
 // TODO date des fichier à jour
 
 describe('test insertion with a file already installed in ez-unpaywall', () => {
-
   before(async () => {
     // wait ezunpaywall
     // await new Promise((resolve) => api.on('ready', resolve));
@@ -40,11 +39,14 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
         processLogger.error(`Error in before: ${err}`);
       }
     }
-    await createIndexUnpaywall();
-    await createIndexTask();
   });
 
-  describe('/update/fake1.jsonl.gz insert a file already installed', async () => {
+  describe('/update/fake1.jsonl.gz insert a file already installed', () => {
+    before(async () => {
+      await createIndexUnpaywall();
+      await createIndexTask();
+    });
+    // test return message
     it('should return the process start', async () => {
       const server = 'http://localhost:8080';
       const response = await chai.request(server)
@@ -103,49 +105,8 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
   });
 
-  describe('/update/fake1.jsonl try to insert a file that is in the wrong format', async () => {
-    it('should return a error message', async () => {
-      const server = 'http://localhost:8080';
-      const response = await chai.request(server)
-        .post('/update/fake1.jsonl')
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-
-      response.should.have.status(400);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('name of file is in bad format (accepted a .gz file)');
-    });
-  });
-
-  describe('/update/fileDoesntExist.jsonl.gz try to insert a file that does not exist', async () => {
-    it('should return a error message', async () => {
-      const server = 'http://localhost:8080';
-      const response = await chai.request(server)
-        .post('/update/fileDoesntExist.jsonl.gz')
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-
-      response.should.have.status(404);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('file doesn\'t exist');
-    });
-  });
-
-  describe('/update/fake1.jsonl.gz?offset=100&limit=50 try to insert a file with limit < offset', async () => {
-    it('should return a error message', async () => {
-      const server = 'http://localhost:8080';
-      const response = await chai.request(server)
-        .post('/update/fake1.jsonl.gz?offset=100&limit=50')
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-
-      response.should.have.status(400);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('limit can\t be lower than offset or 0');
-    });
-  });
-
-  describe('/update/fake1.jsonl.gz?limit=100 insert a file already installed with limit 100', async () => {
+  describe('/update/fake1.jsonl.gz?limit=100 insert a file already installed with limit 100', () => {
+    // test return message
     it('should return the process start', async () => {
       const server = 'http://localhost:8080';
       const response = await chai.request(server)
@@ -205,7 +166,12 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
   });
 
-  describe('/update/fake1.jsonl.gz?offset=1500 insert a file already installed with offset 1500', async () => {
+  describe('/update/fake1.jsonl.gz?offset=1500 insert a file already installed with offset 1500', () => {
+    before(async () => {
+      await createIndexUnpaywall();
+      await createIndexTask();
+    });
+    // test return message
     it('should return the process start', async () => {
       const server = 'http://localhost:8080';
       const response = await chai.request(server)
@@ -265,7 +231,12 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
   });
 
-  describe('/update/fake1.jsonl.gz?offset=50&limit=70 insert a file already installed with limit=50 and offset=70', async () => {
+  describe('/update/fake1.jsonl.gz?offset=50&limit=70 insert a file already installed with limit=50 and offset=70', () => {
+    before(async () => {
+      await createIndexUnpaywall();
+      await createIndexTask();
+    });
+    // test return message
     it('should return the process start', async () => {
       const server = 'http://localhost:8080';
       const response = await chai.request(server)
@@ -321,6 +292,54 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     after(async () => {
       await deleteIndexUnpaywall();
       await deleteIndexTask();
+    });
+  });
+
+  describe('/update/fake1.jsonl try to insert a file that is in the wrong format', () => {
+    // test return message
+    it('should return a error message', async () => {
+      const server = 'http://localhost:8080';
+      const response = await chai.request(server)
+        .post('/update/fake1.jsonl')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json')
+
+      response.should.have.status(400);
+      response.body.should.have.property('message');
+      response.body.message.should.be.equal('name of file is in bad format (accepted a .gz file)');
+    });
+  });
+
+  describe('/update/fileDoesntExist.jsonl.gz try to insert a file that does not exist', () => {
+    // test return message
+    it('should return a error message', async () => {
+      const server = 'http://localhost:8080';
+      const response = await chai.request(server)
+        .post('/update/fileDoesntExist.jsonl.gz')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json')
+
+      response.should.have.status(404);
+      response.body.should.have.property('message');
+      response.body.message.should.be.equal('file doesn\'t exist');
+    });
+  });
+
+  describe('/update/fake1.jsonl.gz?offset=100&limit=50 try to insert a file with limit < offset', () => {
+    // test return message
+    it('should return a error message', async () => {
+      const server = 'http://localhost:8080';
+      const response = await chai.request(server)
+        .post('/update/fake1.jsonl.gz?offset=100&limit=50')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json')
+
+      response.should.have.status(400);
+      response.body.should.have.property('message');
+      response.body.message.should.be.equal('limit can\t be lower than offset or 0');
+    });
+
+    after(async () => {
       await deleteFile('fake1.jsonl.gz')
     });
   });

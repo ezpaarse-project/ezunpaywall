@@ -106,6 +106,10 @@ router.post('/update', (req, res) => {
       message: 'weekly update has begun, list of task has been created on elastic',
     });
   }
+  if(new Date(startDate).getTime() > Date.now()) {
+    return res.status(400).json({ message: 'startDate is in the futur' });
+  }
+  
   if (endDate && !startDate) {
     return res.status(400).json({
       message: 'start date is missing',
@@ -113,22 +117,22 @@ router.post('/update', (req, res) => {
   }
   if (startDate && endDate) {
     if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
-      return res.status(400).json({ message: 'end date is lower than start date' });
+      return res.status(400).json({ message: 'endDate is lower than startDate' });
     }
   }
   const pattern = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
   if (startDate && !pattern.test(startDate)) {
-    return res.status(400).json({ message: 'start date or end date are in bad format, dates in format YYYY-mm-dd' });
+    return res.status(400).json({ message: 'startDate are in bad format, date need to be in format YYYY-mm-dd' });
   }
   if (endDate && !pattern.test(endDate)) {
-    return res.status(400).json({ message: 'start date or end date are in bad format, dates in format YYYY-mm-dd' });
+    return res.status(400).json({ message: 'endDate are in bad format, date need to be in format format YYYY-mm-dd' });
   }
   if (startDate && !endDate) {
     [endDate] = new Date().toISOString().split('T');
   }
   insertSnapshotBetweenDate(url, startDate, endDate);
   return res.status(200).json({
-    message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic'`,
+    message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic`,
   });
 });
 

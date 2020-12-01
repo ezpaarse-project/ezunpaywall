@@ -203,6 +203,7 @@ const downloadUpdateSnapshot = async () => {
       task.steps[task.steps.length - 1].status = 'success';
       task.steps[task.steps.length - 1].took = (new Date() - start) / 1000;
       task.steps[task.steps.length - 1].percent = 100;
+      clearTimeout(timeout);
       processLogger.info('step - end download');
       return resolve();
     });
