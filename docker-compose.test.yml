@@ -27,6 +27,7 @@ services:
       - ELASTICSEARCH_PASSWORD
     working_dir: /api
     volumes:
+      - ./fakeUnpaywall:/fakeUnpaywall
       - ./api:/api
     command: "npm run test"
     ports:

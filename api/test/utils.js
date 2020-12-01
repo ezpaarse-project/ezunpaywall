@@ -6,6 +6,8 @@ const indexUnpawall = require('./index/unpaywall.json');
 const indexTask = require('./index/task.json');
 const { processLogger } = require('../lib/logger');
 
+const changefiles = require('../../fakeUnpaywall/snapshots/changefiles.json');
+
 const isIndexExist = async (name) => {
   let res;
   try {
@@ -135,11 +137,38 @@ const getTask = async () => {
 
 const deleteFile = async (name) => {
   const filePath = path.resolve(__dirname, '..', 'out', 'download', name);
-  try {
-    await fs.unlinkSync(filePath);
-  } catch (err) {
-    processLogger.error(`Error in deleteFile: ${err}`);
+  const fileExist = await fs.pathExists(filePath);
+  if (fileExist) {
+    try {
+      await fs.unlinkSync(filePath);
+    } catch (err) {
+      processLogger.error(`Error in deleteFile: ${err}`);
+    }
   }
+}
+
+const initializeDate = async () => {
+  const changefilesPath = path.resolve(__dirname, '..', '..', 'fakeUnpaywall', 'snapshots', 'changefiles.json')
+  const now = Date.now();
+  const oneDay = (1 * 24 * 60 * 60 * 1000);
+
+  changefiles.list[0].to_date = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
+  changefiles.list[0].last_modified = new Date(now - (1 * oneDay)).toISOString().slice(0, 19);
+  changefiles.list[0].from_date = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
+
+  changefiles.list[1].to_date = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
+  changefiles.list[1].last_modified = new Date(now - (8 * oneDay)).toISOString().slice(0, 19);
+  changefiles.list[1].from_date = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
+
+  changefiles.list[2].to_date = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
+  changefiles.list[2].last_modified = new Date(now - (15 * oneDay)).toISOString().slice(0, 19);
+  changefiles.list[2].from_date = new Date(now - (22 * oneDay)).toISOString().slice(0, 10);
+  try {
+    await fs.writeFile(changefilesPath, JSON.stringify(changefiles, null, 2), 'utf8')
+  } catch (err) {
+    processLogger.error(`Error in fs.writeFile in initializeDate: ${err}`);
+  }
+  
 }
 
 const dowloadFile = async (name) => {
@@ -155,4 +184,5 @@ module.exports = {
   isTaskEnd,
   getTask,
   deleteFile,
+  initializeDate,
 };

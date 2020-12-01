@@ -3,8 +3,10 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const api = require('../app');
-// const fakeUnpaywall = require('../../fakeUnpaywall/app');
+const fakeUnpaywall = require('../../fakeUnpaywall/app');
+
 const client = require('../lib/client');
+
 const {
   createIndexUnpaywall,
   createIndexTask,
@@ -21,7 +23,7 @@ chai.should();
 chai.use(chaiHttp);
 // TODO date des fichier à jour
 
-describe('test /update', () => {
+describe('test insertion with a file already installed in ez-unpaywall', () => {
 
   before(async () => {
     // wait ezunpaywall
@@ -129,7 +131,7 @@ describe('test /update', () => {
     });
   });
 
-  describe('/update/fake1.jsonl.gz?offset=100&limit=50 try to insert a file that does not exist', async () => {
+  describe('/update/fake1.jsonl.gz?offset=100&limit=50 try to insert a file with limit < offset', async () => {
     it('should return a error message', async () => {
       const server = 'http://localhost:8080';
       const response = await chai.request(server)
