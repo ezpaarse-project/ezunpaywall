@@ -142,8 +142,7 @@ describe('test weekly update', () => {
 
       // test responses
       response.should.have.status(200);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('weekly update has begun, list of task has been created on elastic');
+      response.body.should.have.property('message').equal('weekly update has begun, list of task has been created on elastic');
     });
 
     // test insertion
@@ -161,40 +160,25 @@ describe('test weekly update', () => {
     it('should get task with all informations', async () => {
       let task = await getTask();
 
-      task.should.have.property('done');
-      task.should.have.property('currentTask');
+      task.should.have.property('done').equal(true);
+      task.should.have.property('currentTask').equal('end');
       task.should.have.property('steps');
       task.should.have.property('createdAt');
       task.should.have.property('endAt');
       task.should.have.property('took');
 
-      task.steps[0].should.have.property('task');
+      task.steps[0].should.have.property('task').equal('fetchUnpaywall');
       task.steps[0].should.have.property('took');
-      task.steps[0].should.have.property('status');
+      task.steps[0].should.have.property('status').equal('success');
 
-      task.steps[1].should.have.property('task');
-      task.steps[1].should.have.property('file');
-      task.steps[1].should.have.property('percent');
-      task.steps[1].should.have.property('lineRead');
+      task.steps[1].should.have.property('task').equal('insert');
+      task.steps[1].should.have.property('file').equal('fake1.jsonl.gz');
+      task.steps[1].should.have.property('percent').equal(100);
+      task.steps[1].should.have.property('lineRead').equal(2000);
       task.steps[1].should.have.property('took');
-      task.steps[1].should.have.property('status');
-
-      task.done.should.be.equal(true);
-      task.currentTask.should.be.equal('end');
-      task.steps[0].task.should.be.equal('fetchUnpaywall');
-      task.steps[0].status.should.be.equal('success');
-
-      task.steps[1].task.should.be.equal('insert');
-      task.steps[1].file.should.be.equal('fake1.jsonl.gz');
-      task.steps[1].percent.should.be.equal(100);
-      task.steps[1].lineRead.should.be.equal(2000);
-      task.steps[1].status.should.be.equal('success');
+      task.steps[1].should.have.property('status').equal('success');
     });
     // TODO test Report
 
-    after(async () => {
-      await deleteIndexUnpaywall();
-      await deleteIndexTask();
-    });
   });
 });

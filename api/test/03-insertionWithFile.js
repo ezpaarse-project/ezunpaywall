@@ -24,6 +24,9 @@ chai.use(chaiHttp);
 // TODO date des fichier à jour
 
 describe('test insertion with a file already installed in ez-unpaywall', () => {
+
+  const server = 'http://localhost:8080';
+
   before(async () => {
     // wait ezunpaywall
     // await new Promise((resolve) => api.on('ready', resolve));
@@ -48,14 +51,12 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
     // test return message
     it('should return the process start', async () => {
-      const server = 'http://localhost:8080';
       const response = await chai.request(server)
         .post('/update/fake1.jsonl.gz')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
       response.should.have.status(200);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('start upsert with fake1.jsonl.gz');
+      response.body.should.have.property('message').equal('start upsert with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -73,28 +74,20 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     it('should get task with all informations', async () => {
       let task = await getTask();
 
-      task.should.have.property('done');
-      task.should.have.property('currentTask');
+      task.should.have.property('done').equal(true);
+      task.should.have.property('currentTask').equal('end');
       task.should.have.property('steps');
       task.should.have.property('createdAt');
       task.should.have.property('endAt');
       task.should.have.property('took');
 
-      task.steps[0].should.have.property('task');
-      task.steps[0].should.have.property('file');
-      task.steps[0].should.have.property('percent');
-      task.steps[0].should.have.property('lineRead');
+      task.steps[0].should.have.property('task').equal('insert');
+      task.steps[0].should.have.property('file').equal('fake1.jsonl.gz');
+      task.steps[0].should.have.property('percent').equal(100);
+      task.steps[0].should.have.property('lineRead').equal(2000);
       task.steps[0].should.have.property('took');
-      task.steps[0].should.have.property('status');
+      task.steps[0].should.have.property('status').equal('success');
 
-      task.done.should.be.equal(true);
-      task.currentTask.should.be.equal('end');
-
-      task.steps[0].task.should.be.equal('insert');
-      task.steps[0].file.should.be.equal('fake1.jsonl.gz');
-      task.steps[0].percent.should.be.equal(100);
-      task.steps[0].lineRead.should.be.equal(2000);
-      task.steps[0].status.should.be.equal('success');
     });
 
     // TODO test Report
@@ -108,15 +101,13 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
   describe('/update/fake1.jsonl.gz?limit=100 insert a file already installed with limit 100', () => {
     // test return message
     it('should return the process start', async () => {
-      const server = 'http://localhost:8080';
       const response = await chai.request(server)
         .post('/update/fake1.jsonl.gz?limit=100')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
 
       response.should.have.status(200);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('start upsert with fake1.jsonl.gz');
+      response.body.should.have.property('message').equal('start upsert with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -134,28 +125,19 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     it('should get task with all informations', async () => {
       let task = await getTask();
 
-      task.should.have.property('done');
-      task.should.have.property('currentTask');
+      task.should.have.property('done').equal(true)
+      task.should.have.property('currentTask').equal('end');
       task.should.have.property('steps');
       task.should.have.property('createdAt');
       task.should.have.property('endAt');
       task.should.have.property('took');
 
-      task.steps[0].should.have.property('task');
-      task.steps[0].should.have.property('file');
-      task.steps[0].should.have.property('percent');
-      task.steps[0].should.have.property('lineRead');
+      task.steps[0].should.have.property('task').equal('insert');
+      task.steps[0].should.have.property('file').equal('fake1.jsonl.gz');
+      task.steps[0].should.have.property('percent').equal(100);
+      task.steps[0].should.have.property('lineRead').equal(100);
       task.steps[0].should.have.property('took');
-      task.steps[0].should.have.property('status');
-
-      task.done.should.be.equal(true);
-      task.currentTask.should.be.equal('end');
-
-      task.steps[0].task.should.be.equal('insert');
-      task.steps[0].file.should.be.equal('fake1.jsonl.gz');
-      task.steps[0].percent.should.be.equal(100);
-      task.steps[0].lineRead.should.be.equal(100);
-      task.steps[0].status.should.be.equal('success');
+      task.steps[0].should.have.property('status').equal('success');
     });
 
     // TODO test Report
@@ -173,14 +155,12 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
     // test return message
     it('should return the process start', async () => {
-      const server = 'http://localhost:8080';
       const response = await chai.request(server)
         .post('/update/fake1.jsonl.gz?offset=1500')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
       response.should.have.status(200);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('start upsert with fake1.jsonl.gz');
+      response.body.should.have.property('message').equal('start upsert with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -199,28 +179,19 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     it('should get task with all informations', async () => {
       let task = await getTask();
 
-      task.should.have.property('done');
-      task.should.have.property('currentTask');
+      task.should.have.property('done').equal(true);
+      task.should.have.property('currentTask').equal('end');
       task.should.have.property('steps');
       task.should.have.property('createdAt');
       task.should.have.property('endAt');
       task.should.have.property('took');
 
-      task.steps[0].should.have.property('task');
-      task.steps[0].should.have.property('file');
-      task.steps[0].should.have.property('percent');
-      task.steps[0].should.have.property('lineRead');
+      task.steps[0].should.have.property('task').equal('insert');
+      task.steps[0].should.have.property('file').equal('fake1.jsonl.gz');
+      task.steps[0].should.have.property('percent').equal(100);
+      task.steps[0].should.have.property('lineRead').equal(2000);
       task.steps[0].should.have.property('took');
-      task.steps[0].should.have.property('status');
-
-      task.done.should.be.equal(true);
-      task.currentTask.should.be.equal('end');
-
-      task.steps[0].task.should.be.equal('insert');
-      task.steps[0].file.should.be.equal('fake1.jsonl.gz');
-      task.steps[0].percent.should.be.equal(100);
-      task.steps[0].lineRead.should.be.equal(2000);
-      task.steps[0].status.should.be.equal('success');
+      task.steps[0].should.have.property('status').equal('success');
     });
 
     // TODO test Report
@@ -238,14 +209,12 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
     // test return message
     it('should return the process start', async () => {
-      const server = 'http://localhost:8080';
       const response = await chai.request(server)
         .post('/update/fake1.jsonl.gz?offset=50&limit=70')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
       response.should.have.status(200);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('start upsert with fake1.jsonl.gz');
+      response.body.should.have.property('message').equal('start upsert with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -263,28 +232,19 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     it('should get task with all informations', async () => {
       let task = await getTask();
 
-      task.should.have.property('done');
-      task.should.have.property('currentTask');
+      task.should.have.property('done').equal(true);
+      task.should.have.property('currentTask').equal('end');
       task.should.have.property('steps');
       task.should.have.property('createdAt');
       task.should.have.property('endAt');
       task.should.have.property('took');
 
-      task.steps[0].should.have.property('task');
-      task.steps[0].should.have.property('file');
-      task.steps[0].should.have.property('percent');
-      task.steps[0].should.have.property('lineRead');
+      task.steps[0].should.have.property('task').equal('insert');
+      task.steps[0].should.have.property('file').equal('fake1.jsonl.gz');
+      task.steps[0].should.have.property('percent').equal(100);
+      task.steps[0].should.have.property('lineRead').equal(70);
       task.steps[0].should.have.property('took');
-      task.steps[0].should.have.property('status');
-
-      task.done.should.be.equal(true);
-      task.currentTask.should.be.equal('end');
-
-      task.steps[0].task.should.be.equal('insert');
-      task.steps[0].file.should.be.equal('fake1.jsonl.gz');
-      task.steps[0].percent.should.be.equal(100);
-      task.steps[0].lineRead.should.be.equal(70);
-      task.steps[0].status.should.be.equal('success');
+      task.steps[0].should.have.property('status').equal('success');
     });
 
     // TODO test Report
@@ -298,45 +258,39 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
   describe('/update/fake1.jsonl try to insert a file that is in the wrong format', () => {
     // test return message
     it('should return a error message', async () => {
-      const server = 'http://localhost:8080';
       const response = await chai.request(server)
         .post('/update/fake1.jsonl')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
 
       response.should.have.status(400);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('name of file is in bad format (accepted a .gz file)');
+      response.body.should.have.property('message').equal('name of file is in bad format (accepted a .gz file)');
     });
   });
 
   describe('/update/fileDoesntExist.jsonl.gz try to insert a file that does not exist', () => {
     // test return message
     it('should return a error message', async () => {
-      const server = 'http://localhost:8080';
       const response = await chai.request(server)
         .post('/update/fileDoesntExist.jsonl.gz')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
 
       response.should.have.status(404);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('file doesn\'t exist');
+      response.body.should.have.property('message').equal('file doesn\'t exist');
     });
   });
 
   describe('/update/fake1.jsonl.gz?offset=100&limit=50 try to insert a file with limit < offset', () => {
     // test return message
     it('should return a error message', async () => {
-      const server = 'http://localhost:8080';
       const response = await chai.request(server)
         .post('/update/fake1.jsonl.gz?offset=100&limit=50')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
 
       response.should.have.status(400);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('limit can\t be lower than offset or 0');
+      response.body.should.have.property('message').equal('limit can\t be lower than offset or 0');
     });
 
     after(async () => {
