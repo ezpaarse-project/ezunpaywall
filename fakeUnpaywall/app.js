@@ -34,13 +34,16 @@ server.get('/snapshots/fake3.jsonl.gz', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'snapshots', 'fake3.jsonl.gz'));
 });
 
+server.get('/ping', (req, res) => {
+  res.status(200).json({ data: 'pong' });
+});
+
 /* Errors and unknown routes */
 server.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
 server.use((error, req, res) => res.status(500).json({ message: error.message }));
 
 server.listen('12000', () => {
-  console.log('Server listening on 12000');
-  server.emit('ready');
+  console.log('fakeUnpaywall listening on 12000');
 });
 
 module.exports = server;

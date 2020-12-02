@@ -3,7 +3,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const api = require('../app');
-//const fakeUnpaywall = require('../../fakeUnpaywall/app');
+const fakeUnpaywall = require('../../fakeUnpaywall/app');
 
 const client = require('../lib/client');
 const {
@@ -15,26 +15,27 @@ const {
   isTaskEnd,
   getTask,
   deleteFile,
-  initializeDate,
 } = require('./utils');
+
+const { processLogger } = require('../lib/logger');
 
 chai.should();
 chai.use(chaiHttp);
 
 describe('test insertion between a period', () => {
-
-  const server = 'http://localhost:8080';
+  const ezunpaywall = 'http://localhost:8080';
+  const fakeUnpaywall = 'http://localhost:12000';
 
   const now = Date.now();
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
   // create date in a format (YYYY-mm-dd) to be use by ezunpaywall
   const dateNow = new Date(now).toISOString().slice(0, 10);
-  // yersteday
+  // yersterday
   const date1 = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
-  // yersteday - one week
+  // yersterday - one week
   const date2 = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
-  // yersteday - two weeks
+  // yersterday - two weeks
   const date3 = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
   // theses dates are for test between a short period
   const date4 = new Date(now - (4 * oneDay)).toISOString().slice(0, 10);
@@ -42,15 +43,35 @@ describe('test insertion between a period', () => {
   const tomorrow = new Date(now + (1 * oneDay)).toISOString().slice(0, 10);
 
   before(async () => {
+    // wait ezunpaywall
+    // let res1;
+    // while (res1?.body?.data !== 'pong') {
+    //   try {
+    //     res1 = await chai.request(ezunpaywall).get('/ping');
+    //   } catch (err) {
+    //     processLogger.error(`Error in ezunpaywall ping : ${err}`);
+    //   }
+    //   await new Promise((resolve) => setTimeout(resolve(), 1000));
+    // }
+    // wait fakeUnpaywall
+    // let res2;
+    // while (res2?.body?.data !== 'pong') {
+    //   try {
+    //     res2 = await chai.request(fakeUnpaywall).get('/ping');
+    //   } catch (err) {
+    //     processLogger.error(`Error in fakeUnpaywall ping : ${err}`);
+    //   }
+    //   await new Promise((resolve) => setTimeout(resolve(), 1000));
+    // }
     // wait elastic started
-    let response;
-    while (response?.statusCode !== 200) {
+    let res3;
+    while (res3?.statusCode !== 200) {
       try {
-        response = await client.ping();
-      } catch (err) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        processLogger.error(`Error in before: ${err}`);
+        res3 = await client.ping();
+      } catch (error) {
+        processLogger.error(`Error in elastic ping : ${err}`);
       }
+      await new Promise((resolve) => setTimeout(resolve(), 1000));
     }
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz')
@@ -65,7 +86,7 @@ describe('test insertion between a period', () => {
     
     // test return message
     it('should return the process start', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post(`/update?startDate=${date2}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -74,14 +95,14 @@ describe('test insertion between a period', () => {
     });
 
     // test insertion
-    it('should insert 2100 datas', async () => {
+    it('should insert 150 datas', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd()
       }
       count = await countIndexUnpaywall();
-      expect(count).to.equal(2100)
+      expect(count).to.equal(150)
     });
 
     // test task
@@ -121,30 +142,25 @@ describe('test insertion between a period', () => {
       task.steps[4].should.have.property('task').equal('insert');
       task.steps[4].should.have.property('file').equal('fake1.jsonl.gz');
       task.steps[4].should.have.property('percent').equal(100);
-      task.steps[4].should.have.property('lineRead').equal(2000);
+      task.steps[4].should.have.property('lineRead').equal(50);
       task.steps[4].should.have.property('took');
       task.steps[4].should.have.property('status').equal('success');
     });
 
     // TODO test Report
-
-    after(async () => {
-      await deleteIndexUnpaywall();
-      await deleteIndexTask();
-      await deleteFile('fake1.jsonl.gz');
-      await deleteFile('fake2.jsonl.gz')
-    });
   });
 
   describe(`/update?startDate=${date3}&endDate=${date2} download and insert files between a period with startDate and endDate`, () => {
     before(async () => {
+      await deleteFile('fake1.jsonl.gz');
+      await deleteFile('fake2.jsonl.gz')
       await createIndexUnpaywall();
       await createIndexTask();
     });
 
     // test return message
     it('should return the process start', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post(`/update?startDate=${date3}&endDate=${date2}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -153,14 +169,14 @@ describe('test insertion between a period', () => {
     });
 
     // test insertion
-    it('should insert 150 datas', async () => {
+    it('should insert 2100 datas', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd()
       }
       count = await countIndexUnpaywall();
-      expect(count).to.equal(150)
+      expect(count).to.equal(2100)
     });
 
     // test task
@@ -189,7 +205,7 @@ describe('test insertion between a period', () => {
       task.steps[2].should.have.property('task').equal('insert');
       task.steps[2].should.have.property('file').equal('fake3.jsonl.gz');
       task.steps[2].should.have.property('percent').equal(100);
-      task.steps[2].should.have.property('lineRead').equal(50);
+      task.steps[2].should.have.property('lineRead').equal(2000);
       task.steps[2].should.have.property('took');
       task.steps[2].should.have.property('status').equal('success');
       
@@ -211,24 +227,19 @@ describe('test insertion between a period', () => {
     });
 
     // TODO test Report
-
-    after(async () => {
-      await deleteIndexUnpaywall();
-      await deleteIndexTask();
-      await deleteFile('fake2.jsonl.gz');
-      await deleteFile('fake3.jsonl.gz');
-    });
   });
 
   describe(`/update?startDate=${date5}&endDate=${date4} try to download and insert files between a short period with startDate and endDate`, () => {
     before(async () => {
+      await deleteFile('fake2.jsonl.gz');
+      await deleteFile('fake3.jsonl.gz');
       await createIndexUnpaywall();
       await createIndexTask();
     });
 
     // test return message
     it('should return the process start', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post(`/update?startDate=${date5}&endDate=${date4}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -262,17 +273,12 @@ describe('test insertion between a period', () => {
       task.steps[0].should.have.property('took');
       task.steps[0].should.have.property('status').equal('success');
     });
-
-    after(async () => {
-      await deleteIndexUnpaywall();
-      await deleteIndexTask();
-    });
   });
 
   describe(`/update?endDate=${date1} try to download and insert snapshot with only a endDate`, () => {
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post(`/update?endDate=${date1}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -284,7 +290,7 @@ describe('test insertion between a period', () => {
   describe('/update?startDate="WrongDate" try to download and insert snapshot with a date in bad format', () => {
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post('/update?startDate=LookAtMyDab')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -294,7 +300,7 @@ describe('test insertion between a period', () => {
 
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post('/update?startDate=01-01-2000')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -304,7 +310,7 @@ describe('test insertion between a period', () => {
 
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post('/update?startDate=2000-50-50')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -316,7 +322,7 @@ describe('test insertion between a period', () => {
   describe(`/update?startDate=${date2}&endDate=${date3} try to download and insert files between a period with endDate < startDate`, () => {
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post(`/update?startDate=${date2}&endDate=${date3}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -328,12 +334,20 @@ describe('test insertion between a period', () => {
   describe(`/update?startDate=${tomorrow} try to download and insert files with a startDate in the futur`, () => {
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(server)
+      const response = await chai.request(ezunpaywall)
         .post(`/update?startDate=${tomorrow}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
       response.should.have.status(400);
       response.body.should.have.property('message').equal('startDate is in the futur');
     });
+  });
+
+  after(async () => {
+    await deleteIndexUnpaywall();
+    await deleteIndexTask();
+    await deleteFile('fake1.jsonl.gz');
+    await deleteFile('fake2.jsonl.gz');
+    await deleteFile('fake3.jsonl.gz');
   });
 });

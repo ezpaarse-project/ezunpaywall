@@ -59,6 +59,10 @@ app.use(RouterOutFiles);
 app.use(RouterTask);
 app.use(RouterManageDatabase);
 
+app.get('/ping', (req, res) => {
+  res.status(200).json({ data: 'pong' });
+});
+
 /* Errors and unknown routes */
 app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
 

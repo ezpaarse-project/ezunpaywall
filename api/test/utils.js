@@ -147,6 +147,27 @@ const deleteFile = async (name) => {
   }
 }
 
+const downloadFile = (name) => new Promise((resolve, reject) => {
+  const destination = path.resolve(__dirname, '..', 'out', 'download', name);
+  const source = path.resolve(__dirname, '..', '..', 'fakeUnpaywall', 'snapshots', name);
+
+  const readable = fs.createReadStream(source);
+  const writable = fs.createWriteStream(destination)
+
+  // download unpaywall file with stream
+  const writeStream = readable.pipe(writable);
+
+  writeStream.on('finish', () => {
+    processLogger.info(`File ${name} is installed`);
+    return resolve();
+  });
+
+  writeStream.on('error', (err) => {
+    processLogger.error(`Error in downloadFile: ${err}`);
+    return reject(err);
+  });
+});
+
 const initializeDate = async () => {
   const changefilesPath = path.resolve(__dirname, '..', '..', 'fakeUnpaywall', 'snapshots', 'changefiles.json')
   const now = Date.now();
@@ -170,10 +191,6 @@ const initializeDate = async () => {
   }
 }
 
-const dowloadFile = async (name) => {
-
-}
-
 module.exports = {
   createIndexUnpaywall,
   createIndexTask,
@@ -183,5 +200,6 @@ module.exports = {
   isTaskEnd,
   getTask,
   deleteFile,
+  downloadFile,
   initializeDate,
 };
