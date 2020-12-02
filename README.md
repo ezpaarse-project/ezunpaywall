@@ -8,6 +8,7 @@ ez-unpaywall is an API and database that queries the UnPayWall database containi
 - [Configuration](#Configuration)
 - [Deploiement](#Deploiement-Start/Stop/Status)
 - [Developement](#Development-Start/Stop/Status)
+- [Tests](#Tests)
 - [Data update](#Data-update)
 - [API Graphql](#API-graphql)
 
@@ -16,6 +17,7 @@ ez-unpaywall is an API and database that queries the UnPayWall database containi
 The tools you need to let ez-unpaywall run are :
 * docker
 * docker-compose
+* npm (for development)
 * a linux box or VM (eg: Ubuntu)
 * unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
 
@@ -67,7 +69,15 @@ docker-compose ps
 
 ## Development Start/Stop/Status
 
-It's the same thing but use ```docker-compose.debug.yml```
+### Install
+
+```bash
+ez-unpaywall/api$ npm i
+```
+
+### start
+
+Before you start ez-unpaywall, make sure all necessary environment variables are set.
 
 ```bash
 # Start ez-unpaywall as daemon
@@ -78,6 +88,26 @@ docker-compose -f docker-compose.debug.yml stop
 
 # Get the status of ez-unpaywall services
 docker-compose -f docker-compose.debug.yml ps
+```
+
+## Tests
+### Install
+
+```bash
+ez-unpaywall/api$ npm i
+ez-unpaywall/fakeUnpaywall$ npm i
+```
+
+### start
+
+Before you start ez-unpaywall, make sure all necessary environment variables are set.
+
+```bash
+# Start ez-unpaywall as daemon
+docker-compose -f docker-compose.test.yml up -d
+
+# See result of the tests
+docker-compose logs -f api
 ```
 
 ## Data update 
