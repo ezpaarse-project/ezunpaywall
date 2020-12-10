@@ -1,21 +1,23 @@
 {
   "env": {
-      "mocha": true,
-      "commonjs": true,
-      "es6": true,
-      "node": true
+    "mocha": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
   },
   "extends": [
-      "airbnb-base"
+    "airbnb-base",
   ],
   "globals": {
-      "Atomics": "readonly",
-      "SharedArrayBuffer": "readonly"
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
   },
   "parserOptions": {
-      "ecmaVersion": 2020
+    "ecmaVersion": 2020
   },
   "rules": {
-      "no-underscore-dangle": ["off"]
+    "no-underscore-dangle": [
+      "off"
+    ]
   }
 }

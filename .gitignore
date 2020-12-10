@@ -2,6 +2,12 @@ node_modules
 .vscode
 .directory
 package-lock.json
-db/
+data/
 out/
-unpaywall.local.env.sh
+ezunpaywall.env.local.sh
+doc/
+apidoc.json
+certificates/
+certs/instances.yml
+kibana/config/certificates
+elasticsearch/config/certificates

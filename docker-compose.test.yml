@@ -1,45 +1,78 @@
 version: "3"
 
 services:
-  api:
+  fakeUnpaywall:
     image: node:14.5.0
-    container_name: APIUPW
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=test
       - http_proxy
       - https_proxy
-      - POSTGRES_HOST=postgredb
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - API_KEY_UPW=${API_KEY_UPW}
-    working_dir: /app
+    working_dir: /fakeUnpaywall
     volumes:
-      - ./:/app
-    command: "npm run test:dev"
+      - ./fakeUnpaywall:/fakeUnpaywall
+    command: "npm run dev"
     ports:
-      - "${API_PORT}:8080"
-      
-  postgredb:
-    image: postgres:12.3
-    restart: always
-    volumes:
-      - ./db:/var/lib/postgresql/data
-    container_name: postgres
-    environment:
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        - POSTGRES_DB=${POSTGRES_DB}
-    ports:
-      - '${POSTGRES_PORT}:5432'
+      - "12000:12000"
 
-  dbmanager:
-    image: dpage/pgadmin4
-    restart: always
+  api:
+    image: node:14.5.0
     environment:
-      PGADMIN_DEFAULT_EMAIL: postgres@postgres.com
-      PGADMIN_DEFAULT_PASSWORD: postgres
-    ports:  
-      - "8081:80"
-    depends_on: 
-      - postgredb
+      - NODE_ENV=test
+      - http_proxy
+      - https_proxy
+      - UNPAYWALL_URL=http://fakeUnpaywall:12000/snapshots/changefiles.json
+      - EZUNPAYWALL_ELASTIC_HOST=elastic
+      - EZUNPAYWALL_ELASTIC_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+    working_dir: /api
+    volumes:
+      - ./fakeUnpaywall:/fakeUnpaywall
+      - ./api:/api
+    command: "npm run test"
+    ports:
+      - "8080:8080"
+      
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    environment:
+      - http_proxy
+      - https_proxy
+      - CLUSTER_NAME=ezunpaywall
+      - EZUNPAYWALL_ES_PUBLISH
+      - EZUNPAYWALL_ES_NODE_NAME
+      - EZUNPAYWALL_ES_DISCOVERY
+      - EZUNPAYWALL_ES_DISCOVERY_TYPE
+      - EZUNPAYWALL_ES_NODE_MASTER
+      - EZUNPAYWALL_ES_NODE_DATA
+      - EZUNPAYWALL_ES_NODE_INGEST
+      - EZUNPAYWALL_ES_NODE_SEARCH_REMOTE
+      - EZUNPAYWALL_ES_INITIAL_MASTER_NODES
+      - EZUNPAYWALL_SMTP_HOST
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+      - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
+    ports:
+      - 9200:9200
+
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:7.9.1
+  #   ports:
+  #     - 5601:5601
+  #   environment:
+  #     - ELASTICSEARCH_PASSWORD
+  #     - ELASTICSEARCH_USERNAME
+  #     - SERVER_HOST
+  #     - SERVER_PORT
+  #     - THIS_HOST
+  #     - ELASTICSEARCH_HOSTS="http://elastic:9200"
+  #     - KIBANA_DEFAULTAPPID
+  #   volumes:
+  #     - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"      

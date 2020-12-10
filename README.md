@@ -1,55 +1,173 @@
-# ez-unpaywall #
+# ez-unpaywall
 
 ez-unpaywall is an API and database that queries the UnPayWall database containing free scholarly articles
 
 **Table of content**
-- [Recommended system requirements](#recommended-system-requirements)
 - [Prerequisites](#prerequisites)
-- [Installation quickstart](#installation-quickstart)
-- [Test the installation](#test-the-installation)
+- [Installation](#Installation)
+- [Configuration](#Configuration)
+- [Deploiement](#Deploiement-Start/Stop/Status)
+- [Developement](#Development-Start/Stop/Status)
+- [Tests](#Tests)
+- [Data update](#Data-update)
+- [API Graphql](#API-graphql)
 
-## Recommended system requirements ##
-
-- a linux box or VM (eg: Ubuntu)
-- ??Gb disk space (depends on the size of the database)
-
-## Prerequisites ##
+## Prerequisites
 
 The tools you need to let ez-unpaywall run are :
 * docker
 * docker-compose
+* npm (for development)
+* a linux box or VM (eg: Ubuntu)
+* unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
 
-## Installation quickstart ##
+## Installation
 
-If you are a Linux user
-- modify the environment variables present in the /config/env.sh file, they allow to use the identifiers of the database as well as the ports to use
-- install the initial snapshot and put it on download folder
-- now you can execute ```docker-compose up``` where is the docker-compose file
+``` git clone https://github.com/ezpaarse-project/ez-unpaywall```
 
-## Test the installation ##
+## Configuration
 
-After installation, you can test if the API is working properly. for that, execute ```docker-compose -f docker-compose.test.yml``` and see if the tests went well without error
+### Setup Elastic certificates
 
-## Test route ##
+For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
 
-GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"
+  - Open the `certs` directory.
+  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file.
+  - Run `docker-compose -f create-certs.yml up`.
+  - A `certificates` directory should be created, you can just put it in both `elasticsearch/config/` and `kibana/config/`. (**NB**: you may need to `chown` it)
+
+
+### Setup environment
+
+Create an environment file named `ezunpaywall.env.local.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh` , which contains a set of predefined variables and is overriden by `ezunpaywall.env.local.sh`.
+
+### Adjust system configuration for Elasticsearch
+
+Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
+
+To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
+
+```ini
+# configuration needed for elastic search
+vm.max_map_count=262144
+```
+
+## Deploiement Start/Stop/Status
+
+Before you start ez-unpaywall, make sure all necessary environment variables are set.
+
+```bash
+# Start ez-unpaywall as daemon
+docker-compose up -d
+
+# Stop ez-unpaywall
+docker-compose stop
+
+# Get the status of ez-unpaywall services
+docker-compose ps
+```
+
+## Development Start/Stop/Status
+
+### Install
+
+```bash
+ez-unpaywall/api$ npm i
+```
+
+### start
+
+Before you start ez-unpaywall, make sure all necessary environment variables are set.
+
+```bash
+# Start ez-unpaywall as daemon
+docker-compose -f docker-compose.debug.yml up -d
+
+# Stop ez-unpaywall
+docker-compose -f docker-compose.debug.yml stop
+
+# Get the status of ez-unpaywall services
+docker-compose -f docker-compose.debug.yml ps
+```
+
+## Tests
+### Install
+
+```bash
+ez-unpaywall/api$ npm i
+ez-unpaywall/fakeUnpaywall$ npm i
+```
+
+### start
+
+Before you start ez-unpaywall, make sure all necessary environment variables are set.
+
+```bash
+# Start ez-unpaywall as daemon
+docker-compose -f docker-compose.test.yml up -d
+
+# See result of the tests
+docker-compose logs -f api
+```
+
+## Data update 
+
+You can update your data via update snapshots provided by unpaywall on a weekly basis (if you have API key).
+You can directly use the update routes or use the [ezunpaywall command](https://github.com/ezpaarse-project/node-ezunpaywall)
+
+### Data update API
+
+`POST "/update/:name`
+
+| Name | Type | Description |
+| --- | --- | --- |
+| name | PARAMS | name of file that the server has already downloaded |
+| offset | QUERY (optionnal) | first line insertion, by default, we start with the first |
+| limit | QUERY (optionnal)| last line insertion by default, we have no limit |
+
+Insert the content of files that the server has already downloaded (file in .gz format). offset and limit are the variables to designate from which line to insert and from which line to stop.
+
+`POST "/update`
+
+| Name | Type | Description |
+| --- | --- | --- |
+| startDate | QUERY (optionnal) | period start date at format YYYY-mm-dd |
+| endDate | QUERY (optionnal)| period end date at format YYYY-mm-dd |
+Downloads update files offered by unpaywall.
+- If there are no `start` and` end` attributes, It will execute
+the download and the insertion of the most recent update file.
+- If there are the `start` and` end` attributes, It will execute the download and the insertion of the update files between the given period.
+- If there is the `start` attribute, It will execute the download and
+the insertion of the update files between the` start` date and the current date.
+
+## API Graphql
+
+`GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"`
 return an array
 
+`POST "/graphql"`
+Body: 
+```json
+{
+    "query": "{getDatasUPW(dois:<dois...>){<fields...>}}"
+}
+```
+return an array
 
 | Name | Type | Description |
 | --- | --- | --- |
 | dois | Array of String | Array of comma separeted doi  |
 | fields | String | Array of attributes of UnPayWall object |
 
-### example ###
+## Examples
 
-## GET ##
+### GET
 
-GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"
+`GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
 
-## POST ##
+### POST
 
-POST "/graphql"
+`POST "/graphql"`
 
 Body :
 
@@ -62,7 +180,7 @@ Body :
 or 
 
 
-POST "/graphql"
+`POST "/graphql"`
 
 ```json
 {
@@ -73,8 +191,8 @@ POST "/graphql"
 }
 ```
 
-Response: 
-Status : 200
+Response 
+Status: 200
 
 ```json
 {
@@ -93,9 +211,9 @@ Status : 200
 ```
 
 
-### Object structure ###
+### Object structure
 
-#### UnPayWall object ####
+#### UnPayWall object
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -112,6 +230,7 @@ Status : 200
 | journal_issn_l | String | A single ISSN for the journal publishing this resource. |
 | journal_name | String | The name of the journal publishing this resource. |
 | oa_locations | List | List of all the OA Location objects associated with this resource. |
+| first_oa_location | Object | The first OA Location Object we could find for this DOI. |
 | oa_status | String | The OA status, or color, of this resource. |
 | published_date | String/Null | The date this resource was published. |
 | publisher | String | The name of this resource's publisher. |
@@ -120,7 +239,7 @@ Status : 200
 | year | Integer/Null | The year this resource was published. |
 | z_authors | List of Crossref | List of Crossref |
 
-#### oa_location & best_oa_location object ####
+#### oa_location & best_oa_location object
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -135,7 +254,7 @@ Status : 200
 | url_for_pdf | String/Null | The URL with a PDF version of this OA copy. |
 | version | String | The content version accessible at this location. |
 
-#### z_author ####
+#### z_author
 | Name | Type | Description |
 | --- | --- | --- |
 | family | String | |
