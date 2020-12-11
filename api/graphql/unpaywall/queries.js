@@ -38,53 +38,12 @@ module.exports = {
       let res;
       const filter = [{ terms: { doi: args.dois, } }];
       
-      if (args.data_standard) {
-        filter.push({ term: { data_standard: args.data_standard, } });
+      for (const attr in args) {
+        if (args.attr !== undefined) {
+          filter.push({ term: { attr: args.attr, } });
+        }
       }
-      if (args.doi_url) {
-        filter.push({ term: { doi_url: args.doi_url, } });
-      }
-      if (args.genre) {
-        filter.push({ term: { genre: args.genre, } });
-      }
-      // FIXME dosent work
-      if (args.has_repository_copy) {
-        filter.push({ term: { has_repository_copy: args.has_repository_copy, } });
-      }
-      // FIXME dosent work
-      if (args.is_oa) {
-        filter.push({ term: { is_oa: args.is_oa, } });
-      }
-      if (args.is_paratext) {
-        filter.push({ term: { is_paratext: args.is_paratext, } });
-      }
-      if (args.journal_is_in_doaj) {
-        filter.push({ term: { journal_is_in_doaj: args.journal_is_in_doaj, } });
-      }
-      if (args.journal_is_oa) {
-        filter.push({ term: { journal_is_oa: args.journal_is_oa, } });
-      }
-      if (args.journal_issn_l) {
-        filter.push({ term: { journal_issn_l: args.journal_issn_l, } });
-      }
-      if (args.journal_name) {
-        filter.push({ term: { journal_name: args.journal_name, } });
-      }
-      if (args.oa_status) {
-        filter.push({ term: { oa_status: args.oa_status, } });
-      }
-      if (args.published_date) {
-        filter.push({ term: { published_date: args.published_date, } });
-      }
-      if (args.title) {
-        filter.push({ term: { title: args.title, } });
-      }
-      if (args.updated) {
-        filter.push({ term: { updated: args.updated, } });
-      }
-      if (args.year) {
-        filter.push({ term: { year: args.year, } });
-      }
+
       try {
         res = await client.search({
           index: 'unpaywall',
