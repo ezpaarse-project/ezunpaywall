@@ -9,7 +9,7 @@ const path = require('path');
 const schema = require('./graphql/graphql');
 
 // routers
-const RouterManageDatabase = require('./updateManagement/routers/databaseInteraction');
+const RouterManageDatabase = require('./updateManagement/routers/update');
 const RouterOutFiles = require('./updateManagement/routers/outFiles');
 const RouterTask = require('./updateManagement/routers/status');
 

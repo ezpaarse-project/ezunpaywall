@@ -19,7 +19,7 @@ const {
   initializeDate,
 } = require('./utils');
 
-const { processLogger } = require('../lib/logger');
+const { logger } = require('../lib/logger');
 
 chai.should();
 chai.use(chaiHttp);
@@ -38,7 +38,7 @@ describe('test weekly update', () => {
       try {
         res1 = await chai.request(ezunpaywall).get('/ping');
       } catch (err) {
-        processLogger.error(`Error in ezunpaywall ping : ${err}`);
+        logger.error(`Error in ezunpaywall ping : ${err}`);
       }
       await new Promise((resolve) => setTimeout(resolve(), 1000));
     }
@@ -48,7 +48,7 @@ describe('test weekly update', () => {
       try {
         res2 = await chai.request(fakeUnpaywall).get('/ping');
       } catch (err) {
-        processLogger.error(`Error in fakeUnpaywall ping : ${err}`);
+        logger.error(`Error in fakeUnpaywall ping : ${err}`);
       }
       await new Promise((resolve) => setTimeout(resolve(), 1000));
     }
@@ -58,7 +58,7 @@ describe('test weekly update', () => {
       try {
         res3 = await client.ping();
       } catch (error) {
-        processLogger.error(`Error in elastic ping : ${err}`);
+        logger.error(`Error in elastic ping : ${err}`);
       }
       await new Promise((resolve) => setTimeout(resolve(), 1000));
     }

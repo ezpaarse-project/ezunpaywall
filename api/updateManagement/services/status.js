@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
 
 const client = require('../../lib/client');
-const { processLogger } = require('../../lib/logger');
+const { logger } = require('../../lib/logger');
 
 let iteratorTask = -1;
 let iteratorFile = -1;
@@ -55,7 +55,7 @@ const startTask = () => {
 };
 
 const createStepFetchUnpaywall = () => {
-  processLogger.info('step - fetch unpaywall');
+  logger.info('step - fetch unpaywall');
   iteratorTask += 1;
   task.currentTask = 'fetchUnpaywall';
   task.steps.push(
@@ -69,7 +69,7 @@ const createStepFetchUnpaywall = () => {
 };
 
 const createStepDownload = (file) => {
-  processLogger.info('step - start download file');
+  logger.info('step - start download file');
   iteratorTask += 1;
   task.currentTask = 'download';
   task.steps.push(
@@ -85,7 +85,7 @@ const createStepDownload = (file) => {
 };
 
 const createStepInsert = (file) => {
-  processLogger.info(`step - start insertion with ${file}`);
+  logger.info(`step - start insertion with ${file}`);
   iteratorTask += 1;
   task.currentTask = 'insert';
   task.steps.push(
@@ -110,7 +110,7 @@ const createStatus = async () => {
     });
     idTask = doc.body._id;
   } catch (err) {
-    processLogger.error(`Error in createStatus: ${err}`);
+    logger.error(`Error in createStatus: ${err}`);
   }
   (async function actualizeStatus() {
     if (task.done) {
@@ -126,7 +126,7 @@ const createStatus = async () => {
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
-      processLogger.error(`Error in actualizeStatus: ${err}`);
+      logger.error(`Error in actualizeStatus: ${err}`);
     }
   }());
 };
@@ -141,7 +141,7 @@ const endStatus = async () => {
       body: task,
     });
   } catch (err) {
-    processLogger.error(`Error in endStatus: ${err}`);
+    logger.error(`Error in endStatus: ${err}`);
   }
 };
 
@@ -149,7 +149,7 @@ const createReport = async (success) => {
   try {
     await fs.writeFileSync(`${reportDir}/${success}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(task, null, 2));
   } catch (err) {
-    processLogger.error(`Error in createReport: ${err}`);
+    logger.error(`Error in createReport: ${err}`);
   }
 };
 

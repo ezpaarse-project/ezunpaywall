@@ -239,7 +239,7 @@ Status: 200
 | year | Integer/Null | The year this resource was published. |
 | z_authors | List of Crossref | List of Crossref |
 
-#### oa_location & best_oa_location object
+#### oa_location, best_oa_location object first_oa_location object
 
 | Name | Type | Description |
 | --- | --- | --- |
