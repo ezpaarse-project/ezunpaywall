@@ -3,6 +3,7 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const axios = require('axios');
 const zlib = require('zlib');
+const Papa = require('papaparse');
 const { Readable } = require('stream');
 const client = require('../../lib/client');
 const { logger } = require('../../lib/logger');
@@ -18,6 +19,7 @@ const {
   createStepDownload,
   fail,
 } = require('./status');
+const { Console } = require('console');
 
 /**
  * @param {*} data array of unpaywall datas
@@ -30,6 +32,51 @@ const insertUPW = async (data) => {
     logger.error(`Error in insertUPW: ${err}`);
   }
 };
+
+/**
+ * @param {*} data array of unpaywall datas
+ */
+const insertHLM = async (data) => {
+  const body = data.flatMap((doc) => [{ index: { _index: 'etatcollhlm' } }, doc]);
+  try {
+    const res = await client.bulk({ refresh: true, body });
+  } catch (err) {
+    logger.error(`Error in insertHLM: ${err}`);
+  }
+};
+
+const insertDatasHLM = async (filename) => {
+  const filePath = path.resolve(downloadDir, filename);
+  let tab = [];
+  let data;
+  try {
+    readStream = fs.createReadStream(filePath);
+  } catch (err) {
+    logger.error(`Error in readstream in insertDatasHLM: ${err}`);
+  }
+  await new Promise((resolve) => {
+    Papa.parse(readStream, {
+      delimiter: ',',
+      header: true,
+      step: async (results, parser) => {
+        data = results.data;
+        for (const attr in data) {
+          if (data[`${attr}`] === '') {
+            delete data[`${attr}`];
+          }
+        }
+        tab.push(data)
+        if (tab.length === 100) {
+          await parser.pause();
+          await insertHLM(tab);
+          tab = [];
+          await parser.resume();  
+        }
+      },
+      complete: () => resolve(),
+    });
+  });
+}
 
 const insertDatasUnpaywall = async (options) => {
   const metadata = getMetadatas();
@@ -288,6 +335,7 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
 
 module.exports = {
   insertDatasUnpaywall,
+  insertDatasHLM,
   downloadUpdateSnapshot,
   fetchUnpaywall,
 };

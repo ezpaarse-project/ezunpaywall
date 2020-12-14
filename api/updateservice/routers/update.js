@@ -12,6 +12,10 @@ const {
 } = require('../services/unpaywall');
 
 const {
+  insertDatasHLM,
+} = require('../services/steps');
+
+const {
   task,
 } = require('../services/status');
 
@@ -33,7 +37,7 @@ router.use((req, res, next) => {
  *
  * @api {post} /update/:name insert the content of files that the server has already downloaded
  * @apiName Update
- * @apiGroup updateManagement
+ * @apiGroup updateservice
  *
  * @apiParam (QUERY) {Number} [offset] first line insertion, by default, we start with the first
  * @apiParam (QUERY) {Number} [limit] last line insertion by default, we have no limit
@@ -87,7 +91,7 @@ router.post('/update/:name', async (req, res) => {
  *
  * @api {post} /update downloads update files offered by unpaywall.
  * @apiName Fetch-Download-Update
- * @apiGroup updateManagement
+ * @apiGroup updateservice
  *
  * @apiParam (QUERY) {DATE} [startDate] period start date at format YYYY-mm-dd
  * @apiParam (QUERY) {DATE} [endDate] period end date at format YYYY-mm-dd
@@ -133,6 +137,21 @@ router.post('/update', (req, res) => {
   insertSnapshotBetweenDate(url, startDate, endDate);
   return res.status(200).json({
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic`,
+  });
+});
+
+router.post('/hlm/:name', async (req, res) => {
+  const { name } = req.params;
+  if (!name) {
+    return res.status(400).json({ message: 'name of snapshot file expected' });
+  }
+  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', name));
+  if (!ifFileExist) {
+    return res.status(404).json({ message: 'file doesn\'t exist' });
+  }
+  await insertDatasHLM(name);
+  return res.status(200).json({
+    message: `insert ${name}`,
   });
 });
 

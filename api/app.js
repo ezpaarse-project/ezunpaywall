@@ -9,9 +9,9 @@ const path = require('path');
 const schema = require('./graphql/graphql');
 
 // routers
-const RouterManageDatabase = require('./updateManagement/routers/update');
-const RouterOutFiles = require('./updateManagement/routers/outFiles');
-const RouterTask = require('./updateManagement/routers/status');
+const RouterManageDatabase = require('./updateservice/routers/update');
+const RouterOutFiles = require('./updateservice/routers/outFiles');
+const RouterTask = require('./updateservice/routers/status');
 
 const { apiLogger } = require('./lib/logger');
 
