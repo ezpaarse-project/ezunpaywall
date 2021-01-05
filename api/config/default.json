@@ -10,5 +10,9 @@
   "smtp": {
     "host": "localhost",
     "port": 25
+  },
+  "notifications": {
+    "sender": "ez-unpaywall",
+    "receivers": []
   }
 }

@@ -10,5 +10,9 @@
   "smtp": {
     "host": "EZUNPAYWALL_SMTP_HOST",
     "port": "EZUNPAYWALL_SMTP_PORT"
+  },
+  "notifications": {
+    "sender": "EZ_UNPAYWALL_NOTIFICATIONS_SENDER",
+    "receivers": "EZ_UNPAYWALL_NOTIFICATIONS_RECEIVERS"
   }
 }

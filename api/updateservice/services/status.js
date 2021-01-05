@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
+const config = require('config');
 const { sendMail, generateMail } = require('../../lib/mail');
 
 const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
@@ -58,8 +59,8 @@ const startTask = () => {
 const mailUpdate = async (status) => {
   try {
     await sendMail({
-      from: 'ez-unpaywall',
-      to: 'email@outlook.fr',
+      from: config.get('notifications.sender'),
+      to: config.get('notifications.receivers'),
       subject: `ez-unpaywall - Rapport de mise à jour - ${status}`,
       ...generateMail('report', {
         task: JSON.stringify(task, null, 2),
