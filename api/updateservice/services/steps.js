@@ -19,7 +19,6 @@ const {
   createStepDownload,
   fail,
 } = require('./status');
-const { Console } = require('console');
 
 /**
  * @param {*} data array of unpaywall datas
@@ -39,7 +38,7 @@ const insertUPW = async (data) => {
 const insertHLM = async (data) => {
   const body = data.flatMap((doc) => [{ index: { _index: 'etatcollhlm' } }, doc]);
   try {
-    const res = await client.bulk({ refresh: true, body });
+    await client.bulk({ refresh: true, body });
   } catch (err) {
     logger.error(`Error in insertHLM: ${err}`);
   }
@@ -47,6 +46,7 @@ const insertHLM = async (data) => {
 
 const insertDatasHLM = async (filename) => {
   const filePath = path.resolve(downloadDir, filename);
+  let readStream;
   let tab = [];
   let data;
   try {
@@ -65,18 +65,18 @@ const insertDatasHLM = async (filename) => {
             delete data[`${attr}`];
           }
         }
-        tab.push(data)
+        tab.push(data);
         if (tab.length === 100) {
           await parser.pause();
           await insertHLM(tab);
           tab = [];
-          await parser.resume();  
+          await parser.resume();
         }
       },
       complete: () => resolve(),
     });
   });
-}
+};
 
 const insertDatasUnpaywall = async (options) => {
   const metadata = getMetadatas();
@@ -105,7 +105,7 @@ const insertDatasUnpaywall = async (options) => {
       readStream = fs.createReadStream(filePath);
     } catch (err) {
       logger.error(`Error in fs.createReadStream in insertDatasUnpaywall: ${err}`);
-      fail();
+      await fail(start);
       return null;
     }
 
@@ -119,7 +119,7 @@ const insertDatasUnpaywall = async (options) => {
       decompressedStream = readStream.pipe(zlib.createGunzip());
     } catch (err) {
       logger.error(`Error in readStream.pipe(zlib.createGunzip()) in insertDatasUnpaywall: ${err}`);
-      fail();
+      await fail(start);
       return null;
     }
 
@@ -147,7 +147,7 @@ const insertDatasUnpaywall = async (options) => {
           tab.push(JSON.parse(line));
         } catch (err) {
           logger.error(`Error in JSON.parse in insertDatasUnpaywall: ${err}`);
-          fail();
+          await fail(start);
           return null;
         }
       }
@@ -221,7 +221,7 @@ const downloadUpdateSnapshot = async () => {
     });
   } catch (err) {
     logger.error(`Error in axios in downloadUpdateSnapshot: ${err}`);
-    fail();
+    await fail(start);
     return null;
   }
 
@@ -255,9 +255,9 @@ const downloadUpdateSnapshot = async () => {
       return resolve();
     });
 
-    writeStream.on('error', (err) => {
+    writeStream.on('error', async (err) => {
       logger.error(`Error in writeStream in percentDownload: ${err}`);
-      fail();
+      await fail(start);
       return reject(err);
     });
   });
@@ -301,12 +301,12 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
     });
   } catch (err) {
     logger.error(`Error in axios in fetchUnpaywall: ${err}`);
-    fail(start);
+    await fail(start);
     return null;
   }
 
   if (response?.status !== 200) {
-    fail(start);
+    await fail(start);
     return null;
   }
   if (!response?.data?.list?.length) {

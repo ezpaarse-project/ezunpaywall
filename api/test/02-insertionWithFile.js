@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
@@ -25,16 +26,15 @@ chai.use(chaiHttp);
 // TODO date des fichier à jour
 
 describe('test insertion with a file already installed in ez-unpaywall', () => {
-
-  const ezunpaywall = 'http://localhost:8080';
-  const fakeUnpaywall = 'http://localhost:12000';
+  const ezunpaywallURL = 'http://localhost:8080';
+  const fakeUnpaywallURL = 'http://localhost:12000';
 
   before(async () => {
     // wait ezunpaywall
     let res1;
     while (res1?.body?.data !== 'pong') {
       try {
-        res1 = await chai.request(ezunpaywall).get('/ping');
+        res1 = await chai.request(ezunpaywallURL).get('/ping');
       } catch (err) {
         logger.error(`Error in ezunpaywall ping : ${err}`);
       }
@@ -44,7 +44,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     let res2;
     while (res2?.body?.data !== 'pong') {
       try {
-        res2 = await chai.request(fakeUnpaywall).get('/ping');
+        res2 = await chai.request(fakeUnpaywallURL).get('/ping');
       } catch (err) {
         logger.error(`Error in fakeUnpaywall ping : ${err}`);
       }
@@ -55,7 +55,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     while (res3?.statusCode !== 200) {
       try {
         res3 = await client.ping();
-      } catch (error) {
+      } catch (err) {
         logger.error(`Error in elastic ping : ${err}`);
       }
       await new Promise((resolve) => setTimeout(resolve(), 1000));
@@ -71,10 +71,10 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
     // test return message
     it('should return the process start', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
       response.should.have.status(200);
       response.body.should.have.property('message').equal('start upsert with fake1.jsonl.gz');
     });
@@ -84,15 +84,15 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd()
+        taskEnd = await isTaskEnd();
       }
-      count = await countIndexUnpaywall();
-      expect(count).to.equal(50)
+      const count = await countIndexUnpaywall();
+      expect(count).to.equal(50);
     });
 
     // test task
     it('should get task with all informations', async () => {
-      let task = await getTask();
+      const task = await getTask();
 
       task.should.have.property('done').equal(true);
       task.should.have.property('currentTask').equal('end');
@@ -107,7 +107,6 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       task.steps[0].should.have.property('lineRead').equal(50);
       task.steps[0].should.have.property('took');
       task.steps[0].should.have.property('status').equal('success');
-
     });
 
     // TODO test Report
@@ -121,10 +120,10 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
   describe('/update/fake1.jsonl.gz?limit=10 insert a file already installed with limit 10', () => {
     // test return message
     it('should return the process start', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz?limit=10')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
 
       response.should.have.status(200);
       response.body.should.have.property('message').equal('start upsert with fake1.jsonl.gz');
@@ -135,17 +134,17 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd()
+        taskEnd = await isTaskEnd();
       }
-      count = await countIndexUnpaywall();
-      expect(count).to.equal(10)
+      const count = await countIndexUnpaywall();
+      expect(count).to.equal(10);
     });
 
     // test task
     it('should get task with all informations', async () => {
-      let task = await getTask();
+      const task = await getTask();
 
-      task.should.have.property('done').equal(true)
+      task.should.have.property('done').equal(true);
       task.should.have.property('currentTask').equal('end');
       task.should.have.property('steps');
       task.should.have.property('createdAt');
@@ -175,10 +174,10 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
     // test return message
     it('should return the process start', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz?offset=40')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
       response.should.have.status(200);
       response.body.should.have.property('message').equal('start upsert with fake1.jsonl.gz');
     });
@@ -188,16 +187,15 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd()
+        taskEnd = await isTaskEnd();
       }
-      count = await countIndexUnpaywall();
-      expect(count).to.equal(10)
+      const count = await countIndexUnpaywall();
+      expect(count).to.equal(10);
     });
-
 
     // test task
     it('should get task with all informations', async () => {
-      let task = await getTask();
+      const task = await getTask();
 
       task.should.have.property('done').equal(true);
       task.should.have.property('currentTask').equal('end');
@@ -229,10 +227,10 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     });
     // test return message
     it('should return the process start', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz?offset=10&limit=20')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
       response.should.have.status(200);
       response.body.should.have.property('message').equal('start upsert with fake1.jsonl.gz');
     });
@@ -242,15 +240,15 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd()
+        taskEnd = await isTaskEnd();
       }
-      count = await countIndexUnpaywall();
-      expect(count).to.equal(10)
+      const count = await countIndexUnpaywall();
+      expect(count).to.equal(10);
     });
 
     // test task
     it('should get task with all informations', async () => {
-      let task = await getTask();
+      const task = await getTask();
 
       task.should.have.property('done').equal(true);
       task.should.have.property('currentTask').equal('end');
@@ -278,10 +276,10 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
   describe('/update/fake1.jsonl try to insert a file that is in the wrong format', () => {
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
 
       response.should.have.status(400);
       response.body.should.have.property('message').equal('name of file is in bad format (accepted a .gz file)');
@@ -291,10 +289,10 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
   describe('/update/fileDoesntExist.jsonl.gz try to insert a file that does not exist', () => {
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update/fileDoesntExist.jsonl.gz')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
 
       response.should.have.status(404);
       response.body.should.have.property('message').equal('file doesn\'t exist');
@@ -304,10 +302,10 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
   describe('/update/fake1.jsonl.gz?offset=100&limit=50 try to insert a file with limit < offset', () => {
     // test return message
     it('should return a error message', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz?offset=100&limit=50')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
 
       response.should.have.status(400);
       response.body.should.have.property('message').equal('limit can\t be lower than offset or 0');

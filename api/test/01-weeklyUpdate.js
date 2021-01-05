@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
@@ -25,8 +26,8 @@ chai.should();
 chai.use(chaiHttp);
 
 describe('test weekly update', () => {
-  const ezunpaywall = 'http://localhost:8080';
-  const fakeUnpaywall = 'http://localhost:12000';
+  const ezunpaywallURL = 'http://localhost:8080';
+  const fakeUnpaywallURL = 'http://localhost:12000';
 
   const doi1 = '10.1186/s40510-015-0109-6'; // ligne 1 of fake1.jsonl.gz
   const doi2 = '10.14393/ufu.di.2018.728'; // line 35 of fake1.jsonl.gz
@@ -36,7 +37,7 @@ describe('test weekly update', () => {
     let res1;
     while (res1?.status !== 200 && res1?.body?.data !== 'pong') {
       try {
-        res1 = await chai.request(ezunpaywall).get('/ping');
+        res1 = await chai.request(ezunpaywallURL).get('/ping');
       } catch (err) {
         logger.error(`Error in ezunpaywall ping : ${err}`);
       }
@@ -46,7 +47,7 @@ describe('test weekly update', () => {
     let res2;
     while (res2?.body?.data !== 'pong') {
       try {
-        res2 = await chai.request(fakeUnpaywall).get('/ping');
+        res2 = await chai.request(fakeUnpaywallURL).get('/ping');
       } catch (err) {
         logger.error(`Error in fakeUnpaywall ping : ${err}`);
       }
@@ -57,7 +58,7 @@ describe('test weekly update', () => {
     while (res3?.statusCode !== 200) {
       try {
         res3 = await client.ping();
-      } catch (error) {
+      } catch (err) {
         logger.error(`Error in elastic ping : ${err}`);
       }
       await new Promise((resolve) => setTimeout(resolve(), 1000));
@@ -71,17 +72,14 @@ describe('test weekly update', () => {
       await createIndexUnpaywall();
       await createIndexTask();
     });
-  
+
     // test response
     it('should return the process start', async () => {
-      const task = await getTask();
-     
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
 
-      
       response.should.have.status(200);
       response.body.should.have.property('message');
       response.body.message.should.be.equal('weekly update has begun, list of task has been created on elastic');
@@ -92,15 +90,15 @@ describe('test weekly update', () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd()
+        taskEnd = await isTaskEnd();
       }
-      count = await countIndexUnpaywall();
-      expect(count).to.equal(50)
+      const count = await countIndexUnpaywall();
+      expect(count).to.equal(50);
     });
 
     // test task
     it('should get task with all informations', async () => {
-      let task = await getTask();
+      const task = await getTask();
 
       task.should.have.property('done');
       task.should.have.property('currentTask');
@@ -143,7 +141,6 @@ describe('test weekly update', () => {
     });
 
     // TODO test Report
-
   });
 
   describe('/update weekly update with a file already installed', () => {
@@ -151,14 +148,13 @@ describe('test weekly update', () => {
       await createIndexUnpaywall();
       await createIndexTask();
     });
-    
+
     // test return message
     it('should return the process start', async () => {
-      const task = await getTask();
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .post('/update')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json');
 
       // test responses
       response.should.have.status(200);
@@ -170,15 +166,15 @@ describe('test weekly update', () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd()
+        taskEnd = await isTaskEnd();
       }
-      count = await countIndexUnpaywall();
-      expect(count).to.equal(50)
+      const count = await countIndexUnpaywall();
+      expect(count).to.equal(50);
     });
 
     // test task
     it('should get task with all informations', async () => {
-      let task = await getTask();
+      const task = await getTask();
 
       task.should.have.property('done').equal(true);
       task.should.have.property('currentTask').equal('end');
@@ -199,12 +195,11 @@ describe('test weekly update', () => {
       task.steps[1].should.have.property('status').equal('success');
     });
     // TODO test Report
-
   });
 
-  describe(`get unpaywall data with one DOI`, () => {
+  describe('get unpaywall data with one DOI', () => {
     it('should get unpaywall data', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .get(`/graphql?query={getDatasUPW(dois:["${doi1}"]){doi, is_oa, genre, oa_status}}`);
       response.should.have.status(200);
       response.body.data.getDatasUPW.should.be.a('array');
@@ -213,7 +208,7 @@ describe('test weekly update', () => {
     });
 
     it('It should get empty tab because doi not found on database', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .get('/graphql?query={getDatasUPW(dois:["Coin Coin"]){doi, is_oa, genre, oa_status}}');
       response.should.have.status(200);
       response.body.data.getDatasUPW.should.be.an('array');
@@ -223,7 +218,7 @@ describe('test weekly update', () => {
 
   describe('get unpaywall data with two DOI', () => {
     it('should get unpaywall datas', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .get(`/graphql?query={getDatasUPW(dois:["${doi1}","${doi2}"]){doi, is_oa, genre, oa_status}}`);
       response.should.have.status(200);
       response.body.data.getDatasUPW.should.be.a('array');
@@ -232,7 +227,7 @@ describe('test weekly update', () => {
     });
 
     it('should get unpaywall data', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .get(`/graphql?query={getDatasUPW(dois:["${doi1}","Coin Coin"]){doi, is_oa, genre, oa_status}}`);
       response.should.have.status(200);
       response.body.data.getDatasUPW.should.be.a('array');
@@ -240,7 +235,7 @@ describe('test weekly update', () => {
     });
 
     it('It should get empty tab', async () => {
-      const response = await chai.request(ezunpaywall)
+      const response = await chai.request(ezunpaywallURL)
         .get('/graphql?query={getDatasUPW(dois:["Coin Coin","Coin Coin2"]){doi, is_oa, genre, oa_status}}');
       response.should.have.status(200);
       response.body.data.getDatasUPW.should.be.an('array');

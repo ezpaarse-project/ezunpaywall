@@ -6,5 +6,9 @@
     "host": "localhost",
     "user": "elastic",
     "password": "changeme"
+  },
+  "smtp": {
+    "host": "localhost",
+    "port": 25
   }
 }

@@ -4,6 +4,8 @@ services:
   api:
     image: node:14.5.0
     environment:
+      - NODE_CONFIG
+      - EZUNPAYWALL_SMTP_HOST=maildev
       - NODE_ENV=development
       - http_proxy
       - https_proxy
@@ -49,6 +51,7 @@ services:
       - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
       - 9200:9200
+      
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.9.1
@@ -64,3 +67,8 @@ services:
       - KIBANA_DEFAULTAPPID
     volumes:
       - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"
+
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - 1080:80

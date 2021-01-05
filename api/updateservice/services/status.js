@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
+const { sendMail, generateMail } = require('../../lib/mail');
 
 const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
 
@@ -52,6 +53,23 @@ const endTask = () => {
 const startTask = () => {
   task.done = false;
   task.createdAt = new Date();
+};
+
+const mailUpdate = async (status) => {
+  try {
+    await sendMail({
+      from: 'ez-unpaywall',
+      to: 'email@outlook.fr',
+      subject: `ez-unpaywall - Rapport de mise à jour - ${status}`,
+      ...generateMail('report', {
+        task: JSON.stringify(task, null, 2),
+        status,
+        date: new Date().toISOString().slice(0, 10),
+      }),
+    });
+  } catch (err) {
+    logger.error(`Error in mailUpdate : ${err}`);
+  }
 };
 
 const createStepFetchUnpaywall = () => {
@@ -151,9 +169,10 @@ const createReport = async (success) => {
   } catch (err) {
     logger.error(`Error in createReport: ${err}`);
   }
+  await mailUpdate('success');
 };
 
-const fail = (startDate) => {
+const fail = async (startDate) => {
   task.steps[iteratorTask].status = 'error';
   task.steps[iteratorTask].took = (startDate - new Date()) / 1000;
   task.endAt = (task.createdAt - new Date()) / 1000;
