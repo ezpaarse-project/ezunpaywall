@@ -14,7 +14,6 @@ const RouterOutFiles = require('./updateservice/routers/outFiles');
 const RouterTask = require('./updateservice/routers/status');
 
 const { logger } = require('./lib/logger');
-const { sendMail, generateMail } = require('./lib/mail');
 
 const outDir = path.resolve(__dirname, 'out');
 // initiates all out dir
@@ -61,30 +60,6 @@ app.use(RouterTask);
 app.use(RouterManageDatabase);
 
 app.get('/ping', (req, res) => {
-  res.status(200).json({ data: 'pong' });
-});
-
-const task = {
-  example: 'task',
-};
-
-const status = 'success';
-
-app.get('/mail', async (req, res) => {
-  try {
-    await sendMail({
-      from: 'ez-unpaywall',
-      to: 'leofelixoff@outlook.fr',
-      subject: `ez-unpaywall - Rapport de mise à jour - ${status}`,
-      ...generateMail('report', {
-        task: JSON.stringify(task, null, 2),
-        status,
-        date: new Date().toISOString().slice(0, 10),
-      }),
-    });
-  } catch (err) {
-    console.log(err);
-  }
   res.status(200).json({ data: 'pong' });
 });
 
