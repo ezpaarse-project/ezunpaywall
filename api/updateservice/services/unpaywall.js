@@ -1,4 +1,3 @@
-const { processLogger } = require('../../lib/logger');
 const {
   getMetadatas,
   setIteratorFile,

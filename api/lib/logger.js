@@ -36,7 +36,7 @@ const apiConfiguration = [
   new (transports.Console)(),
 ];
 
-const processLogger = createLogger({
+const logger = createLogger({
   format: combine(colorize(), timestamp(), myFormat),
   transports: processConfiguration,
 });
@@ -48,6 +48,6 @@ const apiLogger = createLogger({
 
 // create the logger
 module.exports = {
-  processLogger,
+  logger,
   apiLogger,
 };

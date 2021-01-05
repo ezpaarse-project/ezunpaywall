@@ -3,9 +3,10 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const axios = require('axios');
 const zlib = require('zlib');
+const Papa = require('papaparse');
 const { Readable } = require('stream');
 const client = require('../../lib/client');
-const { processLogger } = require('../../lib/logger');
+const { logger } = require('../../lib/logger');
 
 const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
 
@@ -27,8 +28,54 @@ const insertUPW = async (data) => {
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
-    processLogger.error(`Error in insertUPW: ${err}`);
+    logger.error(`Error in insertUPW: ${err}`);
   }
+};
+
+/**
+ * @param {*} data array of unpaywall datas
+ */
+const insertHLM = async (data) => {
+  const body = data.flatMap((doc) => [{ index: { _index: 'etatcollhlm' } }, doc]);
+  try {
+    await client.bulk({ refresh: true, body });
+  } catch (err) {
+    logger.error(`Error in insertHLM: ${err}`);
+  }
+};
+
+const insertDatasHLM = async (filename) => {
+  const filePath = path.resolve(downloadDir, filename);
+  let readStream;
+  let tab = [];
+  let data;
+  try {
+    readStream = fs.createReadStream(filePath);
+  } catch (err) {
+    logger.error(`Error in readstream in insertDatasHLM: ${err}`);
+  }
+  await new Promise((resolve) => {
+    Papa.parse(readStream, {
+      delimiter: ',',
+      header: true,
+      step: async (results, parser) => {
+        data = results.data;
+        for (const attr in data) {
+          if (data[`${attr}`] === '') {
+            delete data[`${attr}`];
+          }
+        }
+        tab.push(data);
+        if (tab.length === 100) {
+          await parser.pause();
+          await insertHLM(tab);
+          tab = [];
+          await parser.resume();
+        }
+      },
+      complete: () => resolve(),
+    });
+  });
 };
 
 const insertDatasUnpaywall = async (options) => {
@@ -46,7 +93,7 @@ const insertDatasUnpaywall = async (options) => {
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    processLogger.error(`Error in fs.stat in insertDatasUnpaywall: ${err}`);
+    logger.error(`Error in fs.stat in insertDatasUnpaywall: ${err}`);
   }
 
   const insertion = async () => {
@@ -57,8 +104,8 @@ const insertDatasUnpaywall = async (options) => {
     try {
       readStream = fs.createReadStream(filePath);
     } catch (err) {
-      processLogger.error(`Error in fs.createReadStream in insertDatasUnpaywall: ${err}`);
-      fail();
+      logger.error(`Error in fs.createReadStream in insertDatasUnpaywall: ${err}`);
+      await fail(start);
       return null;
     }
 
@@ -71,8 +118,8 @@ const insertDatasUnpaywall = async (options) => {
     try {
       decompressedStream = readStream.pipe(zlib.createGunzip());
     } catch (err) {
-      processLogger.error(`Error in readStream.pipe(zlib.createGunzip()) in insertDatasUnpaywall: ${err}`);
-      fail();
+      logger.error(`Error in readStream.pipe(zlib.createGunzip()) in insertDatasUnpaywall: ${err}`);
+      await fail(start);
       return null;
     }
 
@@ -99,8 +146,8 @@ const insertDatasUnpaywall = async (options) => {
         try {
           tab.push(JSON.parse(line));
         } catch (err) {
-          processLogger.error(`Error in JSON.parse in insertDatasUnpaywall: ${err}`);
-          fail();
+          logger.error(`Error in JSON.parse in insertDatasUnpaywall: ${err}`);
+          await fail(start);
           return null;
         }
       }
@@ -111,7 +158,7 @@ const insertDatasUnpaywall = async (options) => {
         tab = [];
       }
       if (step?.lineRead % 100000 === 0) {
-        processLogger.info(`${step.lineRead}th Lines reads`);
+        logger.info(`${step.lineRead}th Lines reads`);
       }
     }
     // if have stays data to insert
@@ -119,7 +166,7 @@ const insertDatasUnpaywall = async (options) => {
       await insertUPW(tab);
       tab = [];
     }
-    processLogger.info('step - end insertion');
+    logger.info('step - end insertion');
     step.status = 'success';
     step.took = (new Date() - start) / 1000;
     return true;
@@ -152,14 +199,14 @@ const downloadUpdateSnapshot = async () => {
   try {
     alreadyInstalled = await fs.pathExists(file);
   } catch (err) {
-    processLogger.error(`Error in fs.pathExists in downloadUpdateSnapshot: ${err}`);
+    logger.error(`Error in fs.pathExists in downloadUpdateSnapshot: ${err}`);
   }
 
   if (alreadyInstalled) stats = fs.statSync(file);
 
   // if snapshot already exist and download completely, past
   if (alreadyInstalled && stats.size === size) {
-    processLogger.info('file already installed');
+    logger.info('file already installed');
     return true;
   }
 
@@ -173,8 +220,8 @@ const downloadUpdateSnapshot = async () => {
       responseType: 'stream',
     });
   } catch (err) {
-    processLogger.error(`Error in axios in downloadUpdateSnapshot: ${err}`);
-    fail();
+    logger.error(`Error in axios in downloadUpdateSnapshot: ${err}`);
+    await fail(start);
     return null;
   }
 
@@ -189,7 +236,7 @@ const downloadUpdateSnapshot = async () => {
       try {
         bytes = await fs.stat(filePath);
       } catch (err) {
-        processLogger.error(`Error in fs.stat in percentDownload: ${err}`);
+        logger.error(`Error in fs.stat in percentDownload: ${err}`);
       }
       if (bytes.size === size) {
         clearTimeout(timeout);
@@ -204,24 +251,24 @@ const downloadUpdateSnapshot = async () => {
       task.steps[task.steps.length - 1].took = (new Date() - start) / 1000;
       task.steps[task.steps.length - 1].percent = 100;
       clearTimeout(timeout);
-      processLogger.info('step - end download');
+      logger.info('step - end download');
       return resolve();
     });
 
-    writeStream.on('error', (err) => {
-      processLogger.error(`Error in writeStream in percentDownload: ${err}`);
-      fail();
+    writeStream.on('error', async (err) => {
+      logger.error(`Error in writeStream in percentDownload: ${err}`);
+      await fail(start);
       return reject(err);
     });
   });
 
   const filePath = path.resolve(downloadDir, filename);
 
-  processLogger.info(`Download update snapshot : ${filename}`);
-  processLogger.info(`filetype : ${filetype}`);
-  processLogger.info(`lines : ${lines}`);
-  processLogger.info(`size : ${size}`);
-  processLogger.info(`to_date : ${toDate}`);
+  logger.info(`Download update snapshot : ${filename}`);
+  logger.info(`filetype : ${filetype}`);
+  logger.info(`lines : ${lines}`);
+  logger.info(`size : ${size}`);
+  logger.info(`to_date : ${toDate}`);
 
   // FIXME with text, axios return a String and not a Readable
   if (compressedFile?.data instanceof Readable) {
@@ -253,13 +300,13 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
       },
     });
   } catch (err) {
-    processLogger.error(`Error in axios in fetchUnpaywall: ${err}`);
-    fail(start);
+    logger.error(`Error in axios in fetchUnpaywall: ${err}`);
+    await fail(start);
     return null;
   }
 
   if (response?.status !== 200) {
-    fail(start);
+    await fail(start);
     return null;
   }
   if (!response?.data?.list?.length) {
@@ -281,13 +328,14 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
   step.status = 'success';
   step.took = (new Date() - start) / 1000;
 
-  processLogger.info('step - end fetch unpaywall ');
+  logger.info('step - end fetch unpaywall ');
 
   return true;
 };
 
 module.exports = {
   insertDatasUnpaywall,
+  insertDatasHLM,
   downloadUpdateSnapshot,
   fetchUnpaywall,
 };

@@ -9,11 +9,11 @@ const path = require('path');
 const schema = require('./graphql/graphql');
 
 // routers
-const RouterManageDatabase = require('./updateManagement/routers/databaseInteraction');
-const RouterOutFiles = require('./updateManagement/routers/outFiles');
-const RouterTask = require('./updateManagement/routers/status');
+const RouterManageDatabase = require('./updateservice/routers/update');
+const RouterOutFiles = require('./updateservice/routers/outFiles');
+const RouterTask = require('./updateservice/routers/status');
 
-const { apiLogger } = require('./lib/logger');
+const { logger } = require('./lib/logger');
 
 const outDir = path.resolve(__dirname, 'out');
 // initiates all out dir
@@ -69,7 +69,7 @@ app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${re
 app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
 app.listen('8080', () => {
-  apiLogger.info('Server listening on 8080');
+  logger.info('Server listening on 8080');
   app.emit('ready');
 });
 

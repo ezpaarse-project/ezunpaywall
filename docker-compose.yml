@@ -8,6 +8,11 @@ services:
         - http_proxy
         - https_proxy
     environment:
+      - NODE_CONFIG
+      - EZUNPAYWALL_SMTP_HOST
+      - EZUNPAYWALL_SMTP_PORT
+      - EZUNPAYWALL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       - NODE_ENV=production
       - http_proxy
       - https_proxy

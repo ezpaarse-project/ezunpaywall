@@ -1,10 +1,12 @@
 const path = require('path');
 const fs = require('fs-extra');
+const config = require('config');
+const { sendMail, generateMail } = require('../../lib/mail');
 
 const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
 
 const client = require('../../lib/client');
-const { processLogger } = require('../../lib/logger');
+const { logger } = require('../../lib/logger');
 
 let iteratorTask = -1;
 let iteratorFile = -1;
@@ -54,8 +56,25 @@ const startTask = () => {
   task.createdAt = new Date();
 };
 
+const mailUpdate = async (status) => {
+  try {
+    await sendMail({
+      from: config.get('notifications.sender'),
+      to: config.get('notifications.receivers'),
+      subject: `ez-unpaywall - Rapport de mise à jour - ${status}`,
+      ...generateMail('report', {
+        task: JSON.stringify(task, null, 2),
+        status,
+        date: new Date().toISOString().slice(0, 10),
+      }),
+    });
+  } catch (err) {
+    logger.error(`Error in mailUpdate : ${err}`);
+  }
+};
+
 const createStepFetchUnpaywall = () => {
-  processLogger.info('step - fetch unpaywall');
+  logger.info('step - fetch unpaywall');
   iteratorTask += 1;
   task.currentTask = 'fetchUnpaywall';
   task.steps.push(
@@ -69,7 +88,7 @@ const createStepFetchUnpaywall = () => {
 };
 
 const createStepDownload = (file) => {
-  processLogger.info('step - start download file');
+  logger.info('step - start download file');
   iteratorTask += 1;
   task.currentTask = 'download';
   task.steps.push(
@@ -85,7 +104,7 @@ const createStepDownload = (file) => {
 };
 
 const createStepInsert = (file) => {
-  processLogger.info(`step - start insertion with ${file}`);
+  logger.info(`step - start insertion with ${file}`);
   iteratorTask += 1;
   task.currentTask = 'insert';
   task.steps.push(
@@ -110,7 +129,7 @@ const createStatus = async () => {
     });
     idTask = doc.body._id;
   } catch (err) {
-    processLogger.error(`Error in createStatus: ${err}`);
+    logger.error(`Error in createStatus: ${err}`);
   }
   (async function actualizeStatus() {
     if (task.done) {
@@ -126,7 +145,7 @@ const createStatus = async () => {
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
-      processLogger.error(`Error in actualizeStatus: ${err}`);
+      logger.error(`Error in actualizeStatus: ${err}`);
     }
   }());
 };
@@ -141,7 +160,7 @@ const endStatus = async () => {
       body: task,
     });
   } catch (err) {
-    processLogger.error(`Error in endStatus: ${err}`);
+    logger.error(`Error in endStatus: ${err}`);
   }
 };
 
@@ -149,11 +168,12 @@ const createReport = async (success) => {
   try {
     await fs.writeFileSync(`${reportDir}/${success}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(task, null, 2));
   } catch (err) {
-    processLogger.error(`Error in createReport: ${err}`);
+    logger.error(`Error in createReport: ${err}`);
   }
+  await mailUpdate('success');
 };
 
-const fail = (startDate) => {
+const fail = async (startDate) => {
   task.steps[iteratorTask].status = 'error';
   task.steps[iteratorTask].took = (startDate - new Date()) / 1000;
   task.endAt = (task.createdAt - new Date()) / 1000;

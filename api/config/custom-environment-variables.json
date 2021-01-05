@@ -6,5 +6,13 @@
     "host": "EZUNPAYWALL_ELASTIC_HOST",
     "user": "ELASTICSEARCH_USERNAME",
     "password": "ELASTICSEARCH_PASSWORD"
+  },
+  "smtp": {
+    "host": "EZUNPAYWALL_SMTP_HOST",
+    "port": "EZUNPAYWALL_SMTP_PORT"
+  },
+  "notifications": {
+    "sender": "EZUNPAYWALL_NOTIFICATIONS_SENDER",
+    "receivers": "EZUNPAYWALL_NOTIFICATIONS_RECEIVERS"
   }
 }
