@@ -12,7 +12,7 @@
     "port": "EZUNPAYWALL_SMTP_PORT"
   },
   "notifications": {
-    "sender": "EZ_UNPAYWALL_NOTIFICATIONS_SENDER",
-    "receivers": "EZ_UNPAYWALL_NOTIFICATIONS_RECEIVERS"
+    "sender": "EZUNPAYWALL_NOTIFICATIONS_SENDER",
+    "receivers": "EZUNPAYWALL_NOTIFICATIONS_RECEIVERS"
   }
 }

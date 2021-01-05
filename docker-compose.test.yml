@@ -19,6 +19,8 @@ services:
     environment:
       - NODE_CONFIG
       - EZUNPAYWALL_SMTP_HOST=maildev
+      - EZUNPAYWALL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       - NODE_ENV=test
       - http_proxy
       - https_proxy
