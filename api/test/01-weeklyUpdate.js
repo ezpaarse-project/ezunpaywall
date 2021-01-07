@@ -195,6 +195,7 @@ describe('test weekly update', () => {
       task.steps[1].should.have.property('status').equal('success');
     });
     // TODO test Report
+    // TODO test Mail
   });
 
   describe('get unpaywall data with one DOI', () => {

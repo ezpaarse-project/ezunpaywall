@@ -1,6 +1,7 @@
 const graphql = require('graphql');
 const { UnPayWallType } = require('./index');
 const client = require('../../lib/client');
+const oa_location_input = require('../oa_location/inputType');
 
 const {
   GraphQLList,
@@ -8,6 +9,7 @@ const {
   GraphQLString,
   GraphQLInt,
   GraphQLBoolean,
+  GraphQLInputObjectType,
 } = graphql;
 
 module.exports = {
@@ -31,24 +33,28 @@ module.exports = {
       updated: { type: GraphQLString },
       year: { type: GraphQLString },
       published_date: { type: GraphQLString },
-      published_date_lte: { type: GraphQLString },
-      published_date_gte: { type: GraphQLString },
+      published_date_range: {
+        type: new GraphQLInputObjectType({
+          name: 'published_date_range',
+          fields: () => ({
+            lte: { type: GraphQLString },
+            gte: { type: GraphQLString },
+          }),
+        }),
+      },
+      oa_location: {
+        type: oa_location_input,
+      },
+      best_oa_location: {
+        type: oa_location_input,
+      },
     },
     // attr info give informations about graphql request
     resolve: async (parent, args) => {
-      if (args.published_date) {
-        if (args.published_date_lte || args.published_date_gte) {
-          console.log('impossible to request with published_date and published_date_lte or published_date_gte');
-          return null;
-        }
-      }
-      const matchRange = /(lte|gte)/i;
-      const matchlte = /(lte)/i;
-      const matchgte = /(gte)/i;
       const filter = [{ terms: { doi: args.dois } }];
-      const tab = [];
+      const matchRange = /(range)/i;
 
-      console.log(args);
+      const argsPARSE = JSON.parse(JSON.stringify(args, null, 2));
 
       /* eslint-disable no-restricted-syntax */
       /* eslint-disable guard-for-in */
@@ -58,22 +64,27 @@ module.exports = {
           if (args.attr !== undefined) {
             filter.push({ term: { attr: args.attr } });
           }
-        }
-        let val;
-        // if attr lte or gte
-        if (matchlte.exec(attr)) {
-          [val] = attr.split('_lte');
-          console.log(args[`${attr}`]);
-          val.lte = 'nique ta mere';
-          console.log(val);
-          console.log(val.lte);
-          tab.push(val);
-        }
-        if (matchgte.exec(attr)) {
-          [val] = attr.split('_gte');
-          val.gte = args.attr;
-          console.log(val);
-          tab.push(val);
+          if (attr === 'best_oa_location') {
+            const test = JSON.parse(JSON.stringify(argsPARSE.best_oa_location));
+            let val;
+            for (const attr2 in test) {
+              console.log(attr2);
+              val = `{ "terms": { "${attr}.${attr2}": ["${test[attr2]}"] } }`;
+            }
+            filter.push(JSON.parse(val));
+          }
+        // range attr
+        } else {
+          const newAttr = attr.substring(0, attr.length - 6);
+          const gte = (args[attr])?.gte;
+          const lte = (args[attr])?.lte;
+          const dist = {
+            gte,
+            lte,
+          };
+          const range = `{"range": {"${newAttr}": ${JSON.stringify(dist)}}}`;
+
+          filter.push(JSON.parse(range));
         }
       }
 
@@ -83,17 +94,15 @@ module.exports = {
         },
       };
 
+      console.log(JSON.stringify(query, null, 2));
+
       let res;
       try {
         res = await client.search({
           index: 'unpaywall',
           size: args.dois.length || 1000,
           body: {
-            query: {
-              bool: {
-                filter,
-              },
-            },
+            query,
           },
         });
       } catch (err) {
