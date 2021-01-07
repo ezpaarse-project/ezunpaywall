@@ -1,7 +1,7 @@
 const graphql = require('graphql');
 const { UnPayWallType } = require('./index');
 const client = require('../../lib/client');
-const oa_location_input = require('../oa_location/inputType');
+const oaLocationInput = require('../oa_location/inputType');
 
 const {
   GraphQLList,
@@ -13,7 +13,7 @@ const {
 } = graphql;
 
 module.exports = {
-  getDatasUPW: {
+  getDataUPW: {
     type: new GraphQLList(UnPayWallType),
     args: {
       dois: { type: new GraphQLList(GraphQLID) },
@@ -31,8 +31,17 @@ module.exports = {
       oa_status: { type: GraphQLString },
       title: { type: GraphQLString },
       updated: { type: GraphQLString },
-      year: { type: GraphQLString },
+      year: { type: new GraphQLList(GraphQLString) },
       published_date: { type: GraphQLString },
+      oa_location: {
+        type: oaLocationInput,
+      },
+      best_oa_location: {
+        type: oaLocationInput,
+      },
+      first_oa_location: {
+        type: oaLocationInput,
+      },
       published_date_range: {
         type: new GraphQLInputObjectType({
           name: 'published_date_range',
@@ -42,11 +51,14 @@ module.exports = {
           }),
         }),
       },
-      oa_location: {
-        type: oa_location_input,
-      },
-      best_oa_location: {
-        type: oa_location_input,
+      year_range: {
+        type: new GraphQLInputObjectType({
+          name: 'year_range',
+          fields: () => ({
+            lte: { type: GraphQLString },
+            gte: { type: GraphQLString },
+          }),
+        }),
       },
     },
     // attr info give informations about graphql request
@@ -54,37 +66,49 @@ module.exports = {
       const filter = [{ terms: { doi: args.dois } }];
       const matchRange = /(range)/i;
 
-      const argsPARSE = JSON.parse(JSON.stringify(args, null, 2));
-
       /* eslint-disable no-restricted-syntax */
       /* eslint-disable guard-for-in */
       for (const attr in args) {
-        // if not attr lte or gte
-        if (!matchRange.exec(attr)) {
-          if (args.attr !== undefined) {
-            filter.push({ term: { attr: args.attr } });
-          }
-          if (attr === 'best_oa_location') {
-            const test = JSON.parse(JSON.stringify(argsPARSE.best_oa_location));
-            let val;
-            for (const attr2 in test) {
-              console.log(attr2);
-              val = `{ "terms": { "${attr}.${attr2}": ["${test[attr2]}"] } }`;
-            }
-            filter.push(JSON.parse(val));
-          }
-        // range attr
-        } else {
+        if (matchRange.exec(attr)) {
           const newAttr = attr.substring(0, attr.length - 6);
           const gte = (args[attr])?.gte;
           const lte = (args[attr])?.lte;
-          const dist = {
+          let range = {
             gte,
             lte,
           };
-          const range = `{"range": {"${newAttr}": ${JSON.stringify(dist)}}}`;
+          range = `{"range": {"${newAttr}": ${JSON.stringify(range)}}}`;
 
           filter.push(JSON.parse(range));
+        } else {
+          if (attr !== 'dois') {
+            filter.push(JSON.parse(`{ "terms": { "${attr}": [${args[attr]}] } }`));
+          }
+          // TODO factoring this
+          if (attr === 'best_oa_location') {
+            const attrParsed = JSON.parse(JSON.stringify(args.best_oa_location));
+            let val;
+            for (const attr2 in attrParsed) {
+              val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
+            }
+            filter.push(JSON.parse(val));
+          }
+          if (attr === 'oa_location') {
+            const attrParsed = JSON.parse(JSON.stringify(args.oa_location));
+            let val;
+            for (const attr2 in attrParsed) {
+              val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
+            }
+            filter.push(JSON.parse(val));
+          }
+          if (attr === 'first_oa_location') {
+            const attrParsed = JSON.parse(JSON.stringify(args.first_oa_location));
+            let val;
+            for (const attr2 in attrParsed) {
+              val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
+            }
+            filter.push(JSON.parse(val));
+          }
         }
       }
 
@@ -93,8 +117,6 @@ module.exports = {
           filter,
         },
       };
-
-      console.log(JSON.stringify(query, null, 2));
 
       let res;
       try {

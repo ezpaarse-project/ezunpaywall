@@ -48,7 +48,7 @@
       <div class="uk-grid">
         <div class="uk-width uk-text-center">
           <a class="uk-button uk-button-default"
-            href='/graphql?query={getDatasUPW(dois:["10.1002/esp.3617"]) {doi, is_oa}}'>Accèder
+            href='/graphql?query={getDataUPW(dois:["10.1002/esp.3617"]) {doi, is_oa}}'>Accèder
             au terminal graphql</a>
         </div>
       </div>
@@ -103,11 +103,11 @@
             method: 'post',
             url: `/graphql`,
             data: {
-              query: `{getDatasUPW(dois:"${this.doi}"){doi, is_oa, best_oa_location{ url }}}`
+              query: `{getDataUPW(dois:"${this.doi}"){doi, is_oa, best_oa_location{ url }}}`
             }
           }).then((response) => {
             if (response.status === 200) {
-              this.resultUPW = JSON.stringify(response.data.data.getDatasUPW, null, 2);
+              this.resultUPW = JSON.stringify(response.data.data.getDataUPW, null, 2);
             }
           });
         },

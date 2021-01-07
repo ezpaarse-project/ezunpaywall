@@ -201,46 +201,46 @@ describe('test weekly update', () => {
   describe('get unpaywall data with one DOI', () => {
     it('should get unpaywall data', async () => {
       const response = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDatasUPW(dois:["${doi1}"]){doi, is_oa, genre, oa_status}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"]){doi, is_oa, genre, oa_status}}`);
       response.should.have.status(200);
-      response.body.data.getDatasUPW.should.be.a('array');
-      response.body.data.getDatasUPW[0].should.have.property('doi').eq(doi1);
-      response.body.data.getDatasUPW[0].should.have.property('is_oa').eq(true);
+      response.body.data.getDataUPW.should.be.a('array');
+      response.body.data.getDataUPW[0].should.have.property('doi').eq(doi1);
+      response.body.data.getDataUPW[0].should.have.property('is_oa').eq(true);
     });
 
     it('It should get empty tab because doi not found on database', async () => {
       const response = await chai.request(ezunpaywallURL)
-        .get('/graphql?query={getDatasUPW(dois:["Coin Coin"]){doi, is_oa, genre, oa_status}}');
+        .get('/graphql?query={getDataUPW(dois:["Coin Coin"]){doi, is_oa, genre, oa_status}}');
       response.should.have.status(200);
-      response.body.data.getDatasUPW.should.be.an('array');
-      response.body.data.getDatasUPW.should.eql([]);
+      response.body.data.getDataUPW.should.be.an('array');
+      response.body.data.getDataUPW.should.eql([]);
     });
   });
 
   describe('get unpaywall data with two DOI', () => {
     it('should get unpaywall datas', async () => {
       const response = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDatasUPW(dois:["${doi1}","${doi2}"]){doi, is_oa, genre, oa_status}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}","${doi2}"]){doi, is_oa, genre, oa_status}}`);
       response.should.have.status(200);
-      response.body.data.getDatasUPW.should.be.a('array');
-      response.body.data.getDatasUPW[0].should.have.property('is_oa').eq(true);
-      response.body.data.getDatasUPW[1].should.have.property('is_oa').eq(false);
+      response.body.data.getDataUPW.should.be.a('array');
+      response.body.data.getDataUPW[0].should.have.property('is_oa').eq(true);
+      response.body.data.getDataUPW[1].should.have.property('is_oa').eq(false);
     });
 
     it('should get unpaywall data', async () => {
       const response = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDatasUPW(dois:["${doi1}","Coin Coin"]){doi, is_oa, genre, oa_status}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}","Coin Coin"]){doi, is_oa, genre, oa_status}}`);
       response.should.have.status(200);
-      response.body.data.getDatasUPW.should.be.a('array');
-      response.body.data.getDatasUPW[0].should.have.property('is_oa').eq(true);
+      response.body.data.getDataUPW.should.be.a('array');
+      response.body.data.getDataUPW[0].should.have.property('is_oa').eq(true);
     });
 
     it('It should get empty tab', async () => {
       const response = await chai.request(ezunpaywallURL)
-        .get('/graphql?query={getDatasUPW(dois:["Coin Coin","Coin Coin2"]){doi, is_oa, genre, oa_status}}');
+        .get('/graphql?query={getDataUPW(dois:["Coin Coin","Coin Coin2"]){doi, is_oa, genre, oa_status}}');
       response.should.have.status(200);
-      response.body.data.getDatasUPW.should.be.an('array');
-      response.body.data.getDatasUPW.should.eql([]);
+      response.body.data.getDataUPW.should.be.an('array');
+      response.body.data.getDataUPW.should.eql([]);
     });
   });
 

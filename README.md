@@ -142,14 +142,14 @@ the insertion of the update files between the` start` date and the current date.
 
 ## API Graphql
 
-`GET "/graphql?query={getDatasUPW(dois:<dois...>){<fields...>}}"`
+`GET "/graphql?query={getDataUPW(dois:<dois...>){<fields...>}}"`
 return an array
 
 `POST "/graphql"`
 Body: 
 ```json
 {
-    "query": "{getDatasUPW(dois:<dois...>){<fields...>}}"
+    "query": "{getDataUPW(dois:<dois...>){<fields...>}}"
 }
 ```
 return an array
@@ -163,7 +163,7 @@ return an array
 
 ### GET
 
-`GET "/graphql?query={getDatasUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
+`GET "/graphql?query={getDataUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
 
 ### POST
 
@@ -173,7 +173,7 @@ Body :
 
 ```json
 {
-    "query": "{getDatasUPW(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
+    "query": "{getDataUPW(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
 }
 ```
 
@@ -184,7 +184,7 @@ or
 
 ```json
 {
-    "query": "query ($dois: [ID!]!){ getDatasUPW(dois: $dois){is_oa} }",
+    "query": "query ($dois: [ID!]!){ getDataUPW(dois: $dois){is_oa} }",
     "variables": { 
         "dois" : ["10.1038/2211089b0","10.1038/nature12373"]
     }
@@ -197,7 +197,7 @@ Status: 200
 ```json
 {
     "data": {
-        "getDatasUPW": [
+        "getDataUPW": [
             {
                 "doi": "10.1038/2211089b0",
                 "is_oa": true,
