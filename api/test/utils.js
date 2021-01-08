@@ -111,7 +111,6 @@ const isTaskEnd = async () => {
       task = await client.search({
         index: 'task',
       });
-      console.log(task?.body?.hits?.hits[0]?._source);
     } catch (err) {
       logger.error(`Error in isTaskEnd: ${err}`);
     }

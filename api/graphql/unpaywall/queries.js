@@ -2,6 +2,7 @@ const graphql = require('graphql');
 const { UnPayWallType } = require('./index');
 const client = require('../../lib/client');
 const oaLocationInput = require('../oa_location/inputType');
+const zAuthorsInput = require('../z_authors/inputType');
 
 const {
   GraphQLList,
@@ -60,6 +61,9 @@ module.exports = {
           }),
         }),
       },
+      z_authors: {
+        type: zAuthorsInput,
+      },
     },
     // attr info give informations about graphql request
     resolve: async (parent, args) => {
@@ -81,7 +85,7 @@ module.exports = {
 
           filter.push(JSON.parse(range));
         } else {
-          if (attr !== 'dois') {
+          if (attr !== 'dois' && attr !== 'best_oa_location' && attr !== 'oa_location' && attr !== 'first_oa_location') {
             filter.push(JSON.parse(`{ "terms": { "${attr}": [${args[attr]}] } }`));
           }
           // TODO factoring this
@@ -118,6 +122,8 @@ module.exports = {
         },
       };
 
+      console.log(query);
+
       let res;
       try {
         res = await client.search({
@@ -127,6 +133,7 @@ module.exports = {
             query,
           },
         });
+        console.log(res.body.hits);
       } catch (err) {
         console.log(err.meta.body.error);
         return null;
