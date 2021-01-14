@@ -122,8 +122,6 @@ module.exports = {
         },
       };
 
-      console.log(query);
-
       let res;
       try {
         res = await client.search({
@@ -133,7 +131,6 @@ module.exports = {
             query,
           },
         });
-        console.log(res.body.hits);
       } catch (err) {
         console.log(err.meta.body.error);
         return null;

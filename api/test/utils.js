@@ -106,7 +106,7 @@ const countIndexUnpaywall = async () => {
 const isTaskEnd = async () => {
   const exist = await isIndexExist('task');
   let task;
-  if (exist) {
+  if (exist) {const path = require('path');
     try {
       task = await client.search({
         index: 'task',

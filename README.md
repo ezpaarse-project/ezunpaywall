@@ -142,51 +142,37 @@ the insertion of the update files between the` start` date and the current date.
 
 ## API Graphql
 
-`GET "/graphql?query={getDataUPW(dois:<dois...>){<fields...>}}"`
-return an array
+### getDataUPW
+get Unpaywall data with [parameters](#Object-structure). 
+You can also use intervals 
 
-`POST "/graphql"`
-Body: 
-```json
-{
-    "query": "{getDataUPW(dois:<dois...>){<fields...>}}"
-}
-```
-return an array
+### Examples
 
-| Name | Type | Description |
-| --- | --- | --- |
-| dois | Array of String | Array of comma separeted doi  |
-| fields | String | Array of attributes of UnPayWall object |
+#### GET
 
-## Examples
+`GET "/graphql?query={getDataUPW(dois:["10.1038/2211089b0","10.1038/nature12373"], published_date_range: {gte: "2014", lte: "2019"}){doi, is_oa, best_oa_location{ url }}}"`
 
-### GET
-
-`GET "/graphql?query={getDataUPW(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
-
-### POST
+#### POST
 
 `POST "/graphql"`
 
-Body :
-
 ```json
-{
-    "query": "{getDataUPW(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
+body: {
+    "query": "{getDataUPW(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"], published_date_range: {gte: \"2014\", lte: \"2019\"}){doi, is_oa, best_oa_location{ url }}}"
 }
 ```
 
-or 
-
-
 `POST "/graphql"`
 
 ```json
-{
-    "query": "query ($dois: [ID!]!){ getDataUPW(dois: $dois){is_oa} }",
+body: {
+    "query": "query ($dois: [ID!]!){ getDataUPW(dois: $dois, published_date_range: $published_date_range){is_oa} }",
     "variables": { 
-        "dois" : ["10.1038/2211089b0","10.1038/nature12373"]
+        "dois": ["10.1038/2211089b0","10.1038/nature12373"],
+        "published_date_range": {
+          "lte": "2014",
+          "gte": "2019",
+        } 
     }
 }
 ```
@@ -209,10 +195,7 @@ Status: 200
     }
 }
 ```
-
-
 ### Object structure
-
 #### UnPayWall object
 
 | Name | Type | Description |
