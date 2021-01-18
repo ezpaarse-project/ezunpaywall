@@ -110,10 +110,10 @@ router.post('/update', (req, res) => {
       message: 'weekly update has begun, list of task has been created on elastic',
     });
   }
-  if(new Date(startDate).getTime() > Date.now()) {
+  if (new Date(startDate).getTime() > Date.now()) {
     return res.status(400).json({ message: 'startDate is in the futur' });
   }
-  
+
   if (endDate && !startDate) {
     return res.status(400).json({
       message: 'start date is missing',
@@ -145,11 +145,11 @@ router.post('/hlm/:name', async (req, res) => {
   if (!name) {
     return res.status(400).json({ message: 'name of snapshot file expected' });
   }
-  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', name));
+  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'hlm', name));
   if (!ifFileExist) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
-  await insertDatasHLM(name);
+  insertDatasHLM(name);
   return res.status(200).json({
     message: `insert ${name}`,
   });
