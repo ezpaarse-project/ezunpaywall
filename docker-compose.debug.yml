@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api:
-    image: node:14.5.0
+    image: node:14.15.4
     environment:
       - NODE_CONFIG
       - EZUNPAYWALL_SMTP_HOST=maildev
