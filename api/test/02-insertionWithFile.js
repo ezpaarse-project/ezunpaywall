@@ -8,11 +8,12 @@ const fakeUnpaywall = require('../../fakeUnpaywall/app');
 
 const client = require('../lib/client');
 
+const indexUnpawall = require('./index/unpaywall.json');
+const indexTask = require('./index/task.json');
+
 const {
-  createIndexUnpaywall,
-  createIndexTask,
-  deleteIndexUnpaywall,
-  deleteIndexTask,
+  createIndex,
+  deleteIndex,
   countIndexUnpaywall,
   isTaskEnd,
   deleteFile,
@@ -66,8 +67,8 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
 
   describe('/update/fake1.jsonl.gz insert a file already installed', () => {
     before(async () => {
-      await createIndexUnpaywall();
-      await createIndexTask();
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
     });
     // test return message
     it('should return the process start', async () => {
@@ -112,8 +113,8 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     // TODO test Report
 
     after(async () => {
-      await deleteIndexUnpaywall();
-      await deleteIndexTask();
+      await deleteIndex('unpaywall');
+      await deleteIndex('task');
     });
   });
 
@@ -162,15 +163,15 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     // TODO test Report
 
     after(async () => {
-      await deleteIndexUnpaywall();
-      await deleteIndexTask();
+      await deleteIndex('unpaywall');
+      await deleteIndex('task');
     });
   });
 
   describe('/update/fake1.jsonl.gz?offset=40 insert a file already installed with offset 40', () => {
     before(async () => {
-      await createIndexUnpaywall();
-      await createIndexTask();
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
     });
     // test return message
     it('should return the process start', async () => {
@@ -215,15 +216,15 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     // TODO test Report
 
     after(async () => {
-      await deleteIndexUnpaywall();
-      await deleteIndexTask();
+      await deleteIndex('unpaywall');
+      await deleteIndex('task');
     });
   });
 
   describe('/update/fake1.jsonl.gz?offset=10&limit=20 insert a file already installed with limit=10 and offset=20', () => {
     before(async () => {
-      await createIndexUnpaywall();
-      await createIndexTask();
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
     });
     // test return message
     it('should return the process start', async () => {
@@ -268,8 +269,8 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
     // TODO test Report
 
     after(async () => {
-      await deleteIndexUnpaywall();
-      await deleteIndexTask();
+      await deleteIndex('unpaywall');
+      await deleteIndex('task');
     });
   });
 
@@ -313,8 +314,8 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
   });
 
   after(async () => {
-    await deleteIndexUnpaywall();
-    await deleteIndexTask();
+    await deleteIndex('unpaywall');
+    await deleteIndex('task');
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz');
     await deleteFile('fake3.jsonl.gz');

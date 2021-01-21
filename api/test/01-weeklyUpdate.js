@@ -6,13 +6,14 @@ const chaiHttp = require('chai-http');
 const api = require('../app');
 const fakeUnpaywall = require('../../fakeUnpaywall/app');
 
+const indexUnpawall = require('./index/unpaywall.json');
+const indexTask = require('./index/task.json');
+
 const client = require('../lib/client');
 
 const {
-  createIndexUnpaywall,
-  createIndexTask,
-  deleteIndexUnpaywall,
-  deleteIndexTask,
+  createIndex,
+  deleteIndex,
   countIndexUnpaywall,
   isTaskEnd,
   getTask,
@@ -69,8 +70,8 @@ describe('test weekly update', () => {
 
   describe('/update weekly update', () => {
     before(async () => {
-      await createIndexUnpaywall();
-      await createIndexTask();
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
     });
 
     // test response
@@ -145,8 +146,8 @@ describe('test weekly update', () => {
 
   describe('/update weekly update with a file already installed', () => {
     before(async () => {
-      await createIndexUnpaywall();
-      await createIndexTask();
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
     });
 
     // test return message
@@ -375,8 +376,8 @@ describe('test weekly update', () => {
 // {"doi":"10.14393/ufu.di.2018.728","year":null,"genre":"dissertation","is_oa":false,"title":"Qualidade do solo em local de disposição inadequada de resíduos sólidos em um município de pequeno porte","doi_url":"https://doi.org/10.14393/ufu.di.2018.728","updated":"2020-10-29T18:43:15.096282","oa_status":"closed","publisher":"EDUFU - Editora da Universidade Federal de Uberlandia","z_authors":[{"given":"Daniela","family":"Rezende","sequence":"first"}],"is_paratext":false,"journal_name":null,"oa_locations":[],"data_standard":2,"journal_is_oa":false,"journal_issns":null,"journal_issn_l":null,"published_date":null,"best_oa_location":null,"first_oa_location":null,"journal_is_in_doaj":false,"has_repository_copy":false}
 
   after(async () => {
-    await deleteIndexUnpaywall();
-    await deleteIndexTask();
+    await deleteIndex('unpaywall');
+    await deleteIndex('task');
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz');
     await deleteFile('fake3.jsonl.gz');

@@ -20,70 +20,36 @@ const isIndexExist = async (name) => {
   return res.body;
 };
 
-const createIndexUnpaywall = async () => {
-  const exist = await isIndexExist('unpaywall');
+const createIndex = async (name, index) => {
+  const exist = await isIndexExist(name);
   if (exist) {
     try {
       await client.indices.delete({
-        index: 'unpaywall',
+        index: name,
       });
     } catch (err) {
-      logger.error(`Error in indices.delete in createIndexUnpaywall: ${err}`);
+      logger.error(`Error in indices.delete in createIndex: ${err}`);
     }
   }
   try {
     await client.indices.create({
-      index: 'unpaywall',
-      body: indexUnpawall,
+      index: name,
+      body: index,
     });
   } catch (err) {
-    logger.error(`Error in indices.create in createIndexUnpaywall: ${err}`);
+    logger.error(`Error in indices.delete increateIndex: ${err}`);
   }
 };
 
-const createIndexTask = async () => {
-  const exist = await isIndexExist('task');
+const deleteIndex = async (name) => {
+  const exist = await isIndexExist(name);
   if (exist) {
     try {
       await client.indices.delete({
-        index: 'task',
+        index: name,
       });
     } catch (err) {
-      logger.error(`Error in indices.delete in createIndexTask: ${err}`);
-    }
-  }
-  try {
-    await client.indices.create({
-      index: 'task',
-      body: indexTask,
-    });
-  } catch (err) {
-    logger.error(`Error in indices.delete increateIndexTask: ${err}`);
-  }
-};
-
-const deleteIndexUnpaywall = async () => {
-  const exist = await isIndexExist('unpaywall');
-  if (exist) {
-    try {
-      await client.indices.delete({
-        index: 'unpaywall',
-      });
-    } catch (err) {
-      logger.error(`Error in deleteIndexUnpaywall: ${err}`);
-    }
-  }
-};
-
-const deleteIndexTask = async () => {
-  const exist = await isIndexExist('task');
-  if (exist) {
-    try {
-      await client.indices.delete({
-        index: 'task',
-      });
-    } catch (err) {
-      logger.error(`Error in deleteIndexTask: ${err}`);
+      logger.error(`Error in deleteIndex: ${err}`);
     }
   }
 };
@@ -190,10 +156,8 @@ const initializeDate = async () => {
 };
 
 module.exports = {
-  createIndexUnpaywall,
-  createIndexTask,
-  deleteIndexUnpaywall,
-  deleteIndexTask,
+  createIndex,
+  deleteIndex,
   countIndexUnpaywall,
   isTaskEnd,
   getTask,

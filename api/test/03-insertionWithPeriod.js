@@ -7,11 +7,13 @@ const api = require('../app');
 const fakeUnpaywall = require('../../fakeUnpaywall/app');
 
 const client = require('../lib/client');
+
+const indexUnpawall = require('./index/unpaywall.json');
+const indexTask = require('./index/task.json');
+
 const {
-  createIndexUnpaywall,
-  createIndexTask,
-  deleteIndexUnpaywall,
-  deleteIndexTask,
+  createIndex,
+  deleteIndex,
   countIndexUnpaywall,
   isTaskEnd,
   getTask,
@@ -81,8 +83,8 @@ describe('test insertion between a period', () => {
 
   describe(`/update?startDate=${date2} download and insert files between a period with startDate`, async () => {
     before(async () => {
-      await createIndexUnpaywall();
-      await createIndexTask();
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
     });
 
     // test return message
@@ -155,8 +157,8 @@ describe('test insertion between a period', () => {
     before(async () => {
       await deleteFile('fake1.jsonl.gz');
       await deleteFile('fake2.jsonl.gz');
-      await createIndexUnpaywall();
-      await createIndexTask();
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
     });
 
     // test return message
@@ -229,8 +231,8 @@ describe('test insertion between a period', () => {
     before(async () => {
       await deleteFile('fake2.jsonl.gz');
       await deleteFile('fake3.jsonl.gz');
-      await createIndexUnpaywall();
-      await createIndexTask();
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
     });
 
     // test return message
@@ -340,8 +342,8 @@ describe('test insertion between a period', () => {
   });
 
   after(async () => {
-    await deleteIndexUnpaywall();
-    await deleteIndexTask();
+    await deleteIndex('unpaywall');
+    await deleteIndex('task');
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz');
     await deleteFile('fake3.jsonl.gz');
