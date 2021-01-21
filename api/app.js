@@ -14,6 +14,10 @@ const RouterOutFiles = require('./updateservice/routers/outFiles');
 const RouterTask = require('./updateservice/routers/status');
 
 const { logger } = require('./lib/logger');
+const {
+  initalizeIndex,
+} = require('./lib/elastic');
+
 
 const outDir = path.resolve(__dirname, 'out');
 // initiates all out dir
@@ -46,6 +50,7 @@ app.use('/update', cors());
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('homepage.html'));
 });
+
 // initialize API graphql
 app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   const graphqlQuery = graphqlHTTP({
@@ -62,6 +67,9 @@ app.use(RouterManageDatabase);
 app.get('/ping', (req, res) => {
   res.status(200).json({ data: 'pong' });
 });
+
+// elastic index
+initalizeIndex();
 
 /* Errors and unknown routes */
 app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
