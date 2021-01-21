@@ -67,7 +67,6 @@ const insertDatasHLM = async (filename) => {
     header: true,
     transformHeader: (header) => header.trim(),
     step: async (results, parser) => {
-      // TODO KBID is fucked
       data = results.data;
       for (const attr in data) {
         if (attr.trim() !== attr) {
@@ -362,7 +361,6 @@ const downloadUpdateSnapshot = async () => {
   logger.info(`size : ${size}`);
   logger.info(`to_date : ${toDate}`);
 
-  // FIXME with text, axios return a String and not a Readable
   if (compressedFile?.data instanceof Readable) {
     await downloadFileWithStream(filePath);
   } else {
