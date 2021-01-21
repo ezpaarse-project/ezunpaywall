@@ -19,6 +19,7 @@ const {
   createStepDownload,
   fail,
 } = require('./status');
+const { Console } = require('console');
 
 /**
  * @param {*} data array of unpaywall datas
@@ -36,16 +37,23 @@ const insertUPW = async (data) => {
  * @param {*} data array of unpaywall datas
  */
 const insertHLM = async (data) => {
-  const body = data.flatMap((doc) => [{ index: { _index: 'etatcollhlm' } }, doc]);
+  const body = data.flatMap((doc) => [{ index: { _index: 'etatcollhlm', _id: doc.KBID } }, doc]);
   try {
-    await client.bulk({ refresh: true, body });
+    const res = await client.bulk({ refresh: true, body });
+    console.log(res.body.errors)
+    if (res.body.errors) {
+      console.log(res.body.errors)
+    }
+    
   } catch (err) {
     logger.error(`Error in insertHLM: ${err}`);
   }
 };
 
 const insertDatasHLM = async (filename) => {
-  const filePath = path.resolve(downloadDir, filename);
+  const hlmDir = path.resolve(__dirname, '..', '..', 'out', 'hlm');
+
+  const filePath = path.resolve(hlmDir, filename);
   let readStream;
   let tab = [];
   let data;
@@ -54,28 +62,114 @@ const insertDatasHLM = async (filename) => {
   } catch (err) {
     logger.error(`Error in readstream in insertDatasHLM: ${err}`);
   }
-  await new Promise((resolve) => {
-    Papa.parse(readStream, {
-      delimiter: ',',
-      header: true,
-      step: async (results, parser) => {
-        data = results.data;
-        for (const attr in data) {
-          if (data[`${attr}`] === '') {
-            delete data[`${attr}`];
+  Papa.parse(readStream, {
+    delimiter: ',',
+    header: true,
+    transformHeader: (header) => header.trim(),
+    step: async (results, parser) => {
+      // TODO KBID is fucked
+      data = results.data;
+      for (const attr in data) {
+        if (attr.trim() !== attr) {
+          data[attr.trim()] = data[attr];
+          console.log(data[attr]);
+          delete data[attr];
+        }
+
+        // skip empty field
+        if (data[attr] === '') {
+          delete data[attr];
+        }
+
+        // ManagedCoverageBegin
+        if (data.ManagedCoverageBegin) {
+          if (data.ManagedCoverageBegin.includes('|')) {
+            const dates = data.ManagedCoverageBegin.split('|');
+            const newdates = [];
+            dates.forEach((date) => {
+              if (date === 'Present') {
+                newdates.push(null);
+              } else {
+                newdates.push(date)
+              }
+            });
+            data.ManagedCoverageBegin = newdates;
           }
         }
-        tab.push(data);
-        if (tab.length === 100) {
-          await parser.pause();
-          await insertHLM(tab);
-          tab = [];
-          await parser.resume();
+        if (data.ManagedCoverageBegin == 'Present') {
+          data.ManagedCoverageBegin = null;
         }
-      },
-      complete: () => resolve(),
-    });
+
+        // ManagedCoverageEnd
+        if (data.ManagedCoverageEnd) {
+          if (data.ManagedCoverageEnd.includes('|')) {
+            const dates = data.ManagedCoverageEnd.split('|');
+            const newdates = [];
+            dates.forEach((date) => {
+              if (date === 'Present') {
+                newdates.push(null);
+              } else {
+                newdates.push(date)
+              }
+            });
+            data.ManagedCoverageEnd = newdates;
+          }
+        }
+        if (data.ManagedCoverageEnd == 'Present') {
+          data.ManagedCoverageEnd = null;
+        }
+
+        // CustomCoverageBegin
+        if (data.CustomCoverageBegin) {
+          if (data.CustomCoverageBegin.includes('|')) {
+            const dates = data.CustomCoverageBegin.split('|');
+            const newdates = [];
+            dates.forEach((date) => {
+              if (date === 'Present') {
+                newdates.push(null);
+              } else {
+                newdates.push(date)
+              }
+            });
+            data.CustomCoverageBegin = newdates;
+          }
+        }
+        if (data.CustomCoverageBegin == 'Present') {
+          data.CustomCoverageBegin = null;
+        }
+
+        // CustomCoverageEnd
+        if (data.CustomCoverageEnd) {
+          if (data.CustomCoverageEnd.includes('|')) {
+            const dates = data.CustomCoverageEnd.split('|');
+            const newdates = [];
+            dates.forEach((date) => {
+              if (date === 'Present') {
+                newdates.push(null);
+              } else {
+                newdates.push(date)
+              }
+            });
+            data.CustomCoverageEnd = newdates;
+          }
+        }
+        if (data.CustomCoverageEnd == 'Present') {
+          data.CustomCoverageEnd = null;
+        }
+      }
+      tab.push(data);
+      if (tab.length === 1000) {
+        await parser.pause();
+        await insertHLM(tab);
+        tab = [];
+        await parser.resume();
+      }
+    },
   });
+  if (tab.length !== 0) {
+    await insertHLM(tab);
+    tab = [];
+  }
 };
 
 const insertDatasUnpaywall = async (options) => {
@@ -98,9 +192,7 @@ const insertDatasUnpaywall = async (options) => {
 
   const insertion = async () => {
     // read file with stream
-
     let readStream;
-
     try {
       readStream = fs.createReadStream(filePath);
     } catch (err) {
