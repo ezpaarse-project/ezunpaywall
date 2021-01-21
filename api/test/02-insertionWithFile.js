@@ -38,7 +38,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       } catch (err) {
         logger.error(`Error in ezunpaywall ping : ${err}`);
       }
-      await new Promise((resolve) => setTimeout(resolve(), 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     // wait fakeUnpaywall
     let res2;
@@ -48,7 +48,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       } catch (err) {
         logger.error(`Error in fakeUnpaywall ping : ${err}`);
       }
-      await new Promise((resolve) => setTimeout(resolve(), 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     // wait elastic started
     let res3;
@@ -58,7 +58,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       } catch (err) {
         logger.error(`Error in elastic ping : ${err}`);
       }
-      await new Promise((resolve) => setTimeout(resolve(), 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     await deleteFile('fake1.jsonl.gz');
     await downloadFile('fake1.jsonl.gz');

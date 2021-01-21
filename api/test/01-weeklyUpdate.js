@@ -61,7 +61,7 @@ describe('test weekly update', () => {
       } catch (err) {
         logger.error(`Error in elastic ping : ${err}`);
       }
-      await new Promise((resolve) => setTimeout(resolve(), 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     initializeDate();
     await deleteFile('fake1.jsonl.gz');
