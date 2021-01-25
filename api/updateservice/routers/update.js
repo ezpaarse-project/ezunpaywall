@@ -12,10 +12,6 @@ const {
 } = require('../services/unpaywall');
 
 const {
-  insertDatasHLM,
-} = require('../services/steps');
-
-const {
   task,
 } = require('../services/status');
 
@@ -137,21 +133,6 @@ router.post('/update', (req, res) => {
   insertSnapshotBetweenDate(url, startDate, endDate);
   return res.status(200).json({
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic`,
-  });
-});
-
-router.post('/hlm/:name', async (req, res) => {
-  const { name } = req.params;
-  if (!name) {
-    return res.status(400).json({ message: 'name of snapshot file expected' });
-  }
-  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'hlm', name));
-  if (!ifFileExist) {
-    return res.status(404).json({ message: 'file doesn\'t exist' });
-  }
-  insertDatasHLM(name);
-  return res.status(200).json({
-    message: `insert ${name}`,
   });
 });
 

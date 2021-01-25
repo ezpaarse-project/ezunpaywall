@@ -2,8 +2,8 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const client = require('../lib/client');
-const indexUnpawall = require('./index/unpaywall.json');
-const indexTask = require('./index/task.json');
+const indexUnpawall = require('../index/unpaywall.json');
+const indexTask = require('../index/task.json');
 const { logger } = require('../lib/logger');
 
 const changefiles = require('../../fakeUnpaywall/snapshots/changefiles.json');
@@ -21,16 +21,7 @@ const isIndexExist = async (name) => {
 };
 
 const createIndex = async (name, index) => {
-  const exist = await isIndexExist(name);
-  if (exist) {
-    try {
-      await client.indices.delete({
-        index: name,
-      });
-    } catch (err) {
-      logger.error(`Error in indices.delete in createIndex: ${err}`);
-    }
-  }
+  await deleteIndex(name);
   try {
     await client.indices.create({
       index: name,
@@ -54,7 +45,7 @@ const deleteIndex = async (name) => {
   }
 };
 
-const countIndexUnpaywall = async () => {
+const countDocuments = async () => {
   const exist = await isIndexExist('unpaywall');
   let data;
   if (exist) {
@@ -63,7 +54,7 @@ const countIndexUnpaywall = async () => {
         index: 'unpaywall',
       });
     } catch (err) {
-      logger.error(`Error in countIndexUnpaywall: ${err}`);
+      logger.error(`Error in countDocuments: ${err}`);
     }
   }
   return data.body.count ? data.body.count : null;
@@ -158,7 +149,7 @@ const initializeDate = async () => {
 module.exports = {
   createIndex,
   deleteIndex,
-  countIndexUnpaywall,
+  countDocuments,
   isTaskEnd,
   getTask,
   deleteFile,

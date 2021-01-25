@@ -8,13 +8,13 @@ const fakeUnpaywall = require('../../fakeUnpaywall/app');
 
 const client = require('../lib/client');
 
-const indexUnpawall = require('./index/unpaywall.json');
-const indexTask = require('./index/task.json');
+const indexUnpawall = require('../index/unpaywall.json');
+const indexTask = require('../index/task.json');
 
 const {
   createIndex,
   deleteIndex,
-  countIndexUnpaywall,
+  countDocuments,
   isTaskEnd,
   getTask,
   deleteFile,
@@ -104,7 +104,7 @@ describe('test insertion between a period', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(150);
     });
 
@@ -178,7 +178,7 @@ describe('test insertion between a period', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(2100);
     });
 
@@ -252,7 +252,7 @@ describe('test insertion between a period', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(null);
     });
 

@@ -6,15 +6,15 @@ const chaiHttp = require('chai-http');
 const api = require('../app');
 const fakeUnpaywall = require('../../fakeUnpaywall/app');
 
-const indexUnpawall = require('./index/unpaywall.json');
-const indexTask = require('./index/task.json');
+const indexUnpawall = require('../index/unpaywall.json');
+const indexTask = require('../index/task.json');
 
 const client = require('../lib/client');
 
 const {
   createIndex,
   deleteIndex,
-  countIndexUnpaywall,
+  countDocuments,
   isTaskEnd,
   getTask,
   deleteFile,
@@ -93,7 +93,7 @@ describe('test weekly update', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(50);
     });
 
@@ -169,7 +169,7 @@ describe('test weekly update', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(50);
     });
 

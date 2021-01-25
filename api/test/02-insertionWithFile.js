@@ -8,13 +8,13 @@ const fakeUnpaywall = require('../../fakeUnpaywall/app');
 
 const client = require('../lib/client');
 
-const indexUnpawall = require('./index/unpaywall.json');
-const indexTask = require('./index/task.json');
+const indexUnpawall = require('../index/unpaywall.json');
+const indexTask = require('../index/task.json');
 
 const {
   createIndex,
   deleteIndex,
-  countIndexUnpaywall,
+  countDocuments,
   isTaskEnd,
   deleteFile,
   downloadFile,
@@ -24,7 +24,6 @@ const { logger } = require('../lib/logger');
 
 chai.should();
 chai.use(chaiHttp);
-// TODO date des fichier à jour
 
 describe('test insertion with a file already installed in ez-unpaywall', () => {
   const ezunpaywallURL = 'http://localhost:8080';
@@ -87,7 +86,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(50);
     });
 
@@ -137,7 +136,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(10);
     });
 
@@ -190,7 +189,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(10);
     });
 
@@ -243,7 +242,7 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         taskEnd = await isTaskEnd();
       }
-      const count = await countIndexUnpaywall();
+      const count = await countDocuments();
       expect(count).to.equal(10);
     });
 
