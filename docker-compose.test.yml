@@ -25,7 +25,7 @@ services:
       - http_proxy
       - https_proxy
       - UNPAYWALL_URL=http://fakeUnpaywall:12000/snapshots/changefiles.json
-      - EZUNPAYWALL_ELASTIC_HOST=elastic
+      - EZUNPAYWALL_ELASTIC_HOST=http://elastic
       - EZUNPAYWALL_ELASTIC_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD

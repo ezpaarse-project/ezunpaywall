@@ -13,6 +13,15 @@ const {
   GraphQLInputObjectType,
 } = graphql;
 
+const parseTerms = (attr, name, args) => {
+  const attrParsed = JSON.parse(JSON.stringify(args[name]));
+  let val;
+  for (const attr2 in attrParsed) {
+    val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
+  }
+  return JSON.parse(val);
+}
+
 module.exports = {
   getDataUPW: {
     type: new GraphQLList(UnPayWallType),
@@ -88,30 +97,14 @@ module.exports = {
           if (attr !== 'dois' && attr !== 'best_oa_location' && attr !== 'oa_location' && attr !== 'first_oa_location') {
             filter.push(JSON.parse(`{ "terms": { "${attr}": [${args[attr]}] } }`));
           }
-          // TODO factoring this
           if (attr === 'best_oa_location') {
-            const attrParsed = JSON.parse(JSON.stringify(args.best_oa_location));
-            let val;
-            for (const attr2 in attrParsed) {
-              val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
-            }
-            filter.push(JSON.parse(val));
+            filter.push(parseTerms(attr, 'best_oa_location', args));
           }
           if (attr === 'oa_location') {
-            const attrParsed = JSON.parse(JSON.stringify(args.oa_location));
-            let val;
-            for (const attr2 in attrParsed) {
-              val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
-            }
-            filter.push(JSON.parse(val));
+            filter.push(parseTerms(attr, 'oa_location', args));
           }
           if (attr === 'first_oa_location') {
-            const attrParsed = JSON.parse(JSON.stringify(args.first_oa_location));
-            let val;
-            for (const attr2 in attrParsed) {
-              val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
-            }
-            filter.push(JSON.parse(val));
+            filter.push(parseTerms(attr, 'first_oa_location', args));
           }
         }
       }

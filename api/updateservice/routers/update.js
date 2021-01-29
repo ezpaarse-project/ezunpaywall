@@ -57,8 +57,8 @@ router.post('/update/:name', async (req, res) => {
   if (!pattern.test(name)) {
     return res.status(400).json({ message: 'name of file is in bad format (accepted a .gz file)' });
   }
-  const ifFileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', name));
-  if (!ifFileExist) {
+  const fileExist = await fs.pathExists(path.resolve(__dirname, '..', '..', 'out', 'download', name));
+  if (!fileExist) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
   if (Number(limit) <= Number(offset)) {

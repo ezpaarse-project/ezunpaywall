@@ -13,7 +13,7 @@ services:
       - https_proxy
       - API_KEY_UPW
       - UNPAYWALL_URL
-      - EZUNPAYWALL_ELASTIC_HOST=elastic
+      - EZUNPAYWALL_ELASTIC_HOST=http://elastic
       - EZUNPAYWALL_ELASTIC_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD

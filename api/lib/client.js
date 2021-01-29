@@ -4,7 +4,7 @@ const { elasticsearch } = require('config');
 
 module.exports = new Client({
   node: {
-    url: new URL(`http://${elasticsearch.host}:${elasticsearch.port}`),
+    url: new URL(`${elasticsearch.host}:${elasticsearch.port}`),
     auth: {
       username: elasticsearch.user,
       password: elasticsearch.password,
