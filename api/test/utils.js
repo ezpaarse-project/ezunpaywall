@@ -1,12 +1,14 @@
 const fs = require('fs-extra');
 const path = require('path');
+const chai = require('chai');
 
 const client = require('../lib/client');
-const indexUnpawall = require('../index/unpaywall.json');
-const indexTask = require('../index/task.json');
 const { logger } = require('../lib/logger');
 
 const changefiles = require('../../fakeUnpaywall/snapshots/changefiles.json');
+
+const ezunpaywallURL = 'http://localhost:8080';
+const fakeUnpaywallURL = 'http://localhost:12000';
 
 const isIndexExist = async (name) => {
   let res;
@@ -20,18 +22,6 @@ const isIndexExist = async (name) => {
   return res.body;
 };
 
-const createIndex = async (name, index) => {
-  await deleteIndex(name);
-  try {
-    await client.indices.create({
-      index: name,
-      body: index,
-    });
-  } catch (err) {
-    logger.error(`Error in indices.delete increateIndex: ${err}`);
-  }
-};
-
 const deleteIndex = async (name) => {
   const exist = await isIndexExist(name);
   if (exist) {
@@ -42,6 +32,18 @@ const deleteIndex = async (name) => {
     } catch (err) {
       logger.error(`Error in deleteIndex: ${err}`);
     }
+  }
+};
+
+const createIndex = async (name, index) => {
+  await deleteIndex(name);
+  try {
+    await client.indices.create({
+      index: name,
+      body: index,
+    });
+  } catch (err) {
+    logger.error(`Error in indices.delete increateIndex: ${err}`);
   }
 };
 
@@ -63,7 +65,7 @@ const countDocuments = async () => {
 const isTaskEnd = async () => {
   const exist = await isIndexExist('task');
   let task;
-  if (exist) {const path = require('path');
+  if (exist) {
     try {
       task = await client.search({
         index: 'task',
@@ -146,6 +148,17 @@ const initializeDate = async () => {
   }
 };
 
+const getLatestReport = async () => {
+  let report;
+  try {
+    const response = await chai.request(ezunpaywallURL).get('/reports?latest=true');
+    report = response?.body;
+  } catch (err) {
+    logger.error(`Error in ezunpaywall ping : ${err}`);
+  }
+  return report;
+};
+
 module.exports = {
   createIndex,
   deleteIndex,
@@ -155,4 +168,5 @@ module.exports = {
   deleteFile,
   downloadFile,
   initializeDate,
+  getLatestReport,
 };

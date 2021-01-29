@@ -19,6 +19,7 @@ const {
   deleteFile,
   downloadFile,
   getTask,
+  getLatestReport,
 } = require('./utils');
 const { logger } = require('../lib/logger');
 
@@ -109,7 +110,24 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       task.steps[0].should.have.property('status').equal('success');
     });
 
-    // TODO test Report
+    // test Report
+    it('should get report with all informations', async () => {
+      const report = await getLatestReport();
+
+      report.should.have.property('done').equal(true);
+      report.should.have.property('currentTask').equal('end');
+      report.should.have.property('steps');
+      report.should.have.property('createdAt');
+      report.should.have.property('endAt');
+      report.should.have.property('took');
+
+      report.steps[0].should.have.property('task').equal('insert');
+      report.steps[0].should.have.property('file').equal('fake1.jsonl.gz');
+      report.steps[0].should.have.property('percent').equal(100);
+      report.steps[0].should.have.property('lineRead').equal(50);
+      report.steps[0].should.have.property('took');
+      report.steps[0].should.have.property('status').equal('success');
+    });
 
     after(async () => {
       await deleteIndex('unpaywall');
@@ -159,7 +177,24 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       task.steps[0].should.have.property('status').equal('success');
     });
 
-    // TODO test Report
+    // test report
+    it('should get report with all informations', async () => {
+      const report = await getLatestReport();
+
+      report.should.have.property('done').equal(true);
+      report.should.have.property('currentTask').equal('end');
+      report.should.have.property('steps');
+      report.should.have.property('createdAt');
+      report.should.have.property('endAt');
+      report.should.have.property('took');
+
+      report.steps[0].should.have.property('task').equal('insert');
+      report.steps[0].should.have.property('file').equal('fake1.jsonl.gz');
+      report.steps[0].should.have.property('percent').equal(100);
+      report.steps[0].should.have.property('lineRead').equal(10);
+      report.steps[0].should.have.property('took');
+      report.steps[0].should.have.property('status').equal('success');
+    });
 
     after(async () => {
       await deleteIndex('unpaywall');
@@ -212,7 +247,24 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       task.steps[0].should.have.property('status').equal('success');
     });
 
-    // TODO test Report
+    // test report
+    it('should get task with all informations', async () => {
+      const report = await getLatestReport();
+
+      report.should.have.property('done').equal(true);
+      report.should.have.property('currentTask').equal('end');
+      report.should.have.property('steps');
+      report.should.have.property('createdAt');
+      report.should.have.property('endAt');
+      report.should.have.property('took');
+
+      report.steps[0].should.have.property('task').equal('insert');
+      report.steps[0].should.have.property('file').equal('fake1.jsonl.gz');
+      report.steps[0].should.have.property('percent').equal(100);
+      report.steps[0].should.have.property('lineRead').equal(50);
+      report.steps[0].should.have.property('took');
+      report.steps[0].should.have.property('status').equal('success');
+    });
 
     after(async () => {
       await deleteIndex('unpaywall');
@@ -265,7 +317,24 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       task.steps[0].should.have.property('status').equal('success');
     });
 
-    // TODO test Report
+    // test report
+    it('should get report with all informations', async () => {
+      const report = await getLatestReport();
+
+      report.should.have.property('done').equal(true);
+      report.should.have.property('currentTask').equal('end');
+      report.should.have.property('steps');
+      report.should.have.property('createdAt');
+      report.should.have.property('endAt');
+      report.should.have.property('took');
+
+      report.steps[0].should.have.property('task').equal('insert');
+      report.steps[0].should.have.property('file').equal('fake1.jsonl.gz');
+      report.steps[0].should.have.property('percent').equal(100);
+      report.steps[0].should.have.property('lineRead').equal(20);
+      report.steps[0].should.have.property('took');
+      report.steps[0].should.have.property('status').equal('success');
+    });
 
     after(async () => {
       await deleteIndex('unpaywall');

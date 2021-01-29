@@ -18,6 +18,7 @@ const {
   isTaskEnd,
   getTask,
   deleteFile,
+  getLatestReport,
 } = require('./utils');
 
 const { logger } = require('../lib/logger');
@@ -150,7 +151,47 @@ describe('test insertion between a period', () => {
       task.steps[4].should.have.property('status').equal('success');
     });
 
-    // TODO test Report
+    // test report
+    it('should get report with all informations', async () => {
+      const report = await getLatestReport();
+
+      report.should.have.property('done').equal(true);
+      report.should.have.property('currentTask').equal('end');
+      report.should.have.property('steps');
+      report.should.have.property('createdAt');
+      report.should.have.property('endAt');
+      report.should.have.property('took');
+
+      report.steps[0].should.have.property('task').equal('fetchUnpaywall');
+      report.steps[0].should.have.property('took');
+      report.steps[0].should.have.property('status').equal('success');
+
+      report.steps[1].should.have.property('task').equal('download');
+      report.steps[1].should.have.property('file').equal('fake2.jsonl.gz');
+      report.steps[1].should.have.property('percent').equal(100);
+      report.steps[1].should.have.property('took');
+      report.steps[1].should.have.property('status').equal('success');
+
+      report.steps[2].should.have.property('task').equal('insert');
+      report.steps[2].should.have.property('file').equal('fake2.jsonl.gz');
+      report.steps[2].should.have.property('percent').equal(100);
+      report.steps[2].should.have.property('lineRead').equal(100);
+      report.steps[2].should.have.property('took');
+      report.steps[2].should.have.property('status').equal('success');
+
+      report.steps[3].should.have.property('task').equal('download');
+      report.steps[3].should.have.property('file').equal('fake1.jsonl.gz');
+      report.steps[3].should.have.property('percent').equal(100);
+      report.steps[3].should.have.property('took');
+      report.steps[3].should.have.property('status').equal('success');
+
+      report.steps[4].should.have.property('task').equal('insert');
+      report.steps[4].should.have.property('file').equal('fake1.jsonl.gz');
+      report.steps[4].should.have.property('percent').equal(100);
+      report.steps[4].should.have.property('lineRead').equal(50);
+      report.steps[4].should.have.property('took');
+      report.steps[4].should.have.property('status').equal('success');
+    });
   });
 
   describe(`/update?startDate=${date3}&endDate=${date2} download and insert files between a period with startDate and endDate`, () => {
@@ -224,7 +265,47 @@ describe('test insertion between a period', () => {
       task.steps[4].should.have.property('status').equal('success');
     });
 
-    // TODO test Report
+    // test task
+    it('should get report with all informations', async () => {
+      const report = await getLatestReport();
+
+      report.should.have.property('done').equal(true);
+      report.should.have.property('currentTask').equal('end');
+      report.should.have.property('steps');
+      report.should.have.property('createdAt');
+      report.should.have.property('endAt');
+      report.should.have.property('took');
+
+      report.steps[0].should.have.property('task').equal('fetchUnpaywall');
+      report.steps[0].should.have.property('took');
+      report.steps[0].should.have.property('status').equal('success');
+
+      report.steps[1].should.have.property('task').equal('download');
+      report.steps[1].should.have.property('file').equal('fake3.jsonl.gz');
+      report.steps[1].should.have.property('percent').equal(100);
+      report.steps[1].should.have.property('took');
+      report.steps[1].should.have.property('status').equal('success');
+
+      report.steps[2].should.have.property('task').equal('insert');
+      report.steps[2].should.have.property('file').equal('fake3.jsonl.gz');
+      report.steps[2].should.have.property('percent').equal(100);
+      report.steps[2].should.have.property('lineRead').equal(2000);
+      report.steps[2].should.have.property('took');
+      report.steps[2].should.have.property('status').equal('success');
+
+      report.steps[3].should.have.property('task').equal('download');
+      report.steps[3].should.have.property('file').equal('fake2.jsonl.gz');
+      report.steps[3].should.have.property('percent').equal(100);
+      report.steps[3].should.have.property('took');
+      report.steps[3].should.have.property('status').equal('success');
+
+      report.steps[4].should.have.property('task').equal('insert');
+      report.steps[4].should.have.property('file').equal('fake2.jsonl.gz');
+      report.steps[4].should.have.property('percent').equal(100);
+      report.steps[4].should.have.property('lineRead').equal(100);
+      report.steps[4].should.have.property('took');
+      report.steps[4].should.have.property('status').equal('success');
+    });
   });
 
   describe(`/update?startDate=${date5}&endDate=${date4} try to download and insert files between a short period with startDate and endDate`, () => {

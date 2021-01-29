@@ -3,7 +3,6 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const axios = require('axios');
 const zlib = require('zlib');
-const Papa = require('papaparse');
 const { Readable } = require('stream');
 const client = require('../../lib/client');
 const { logger } = require('../../lib/logger');
@@ -19,7 +18,6 @@ const {
   createStepDownload,
   fail,
 } = require('./status');
-const { Console } = require('console');
 
 /**
  * @param {*} data array of unpaywall datas
