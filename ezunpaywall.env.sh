@@ -7,10 +7,6 @@ THIS_HOST=`hostname -I | cut -d ' ' -f1`
 export API_KEY_UPW="api_key"
 export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
-# elastic default
-export EZUNPAYWALL_ELASTIC_USER="elastic"
-export EZUNPAYWALL_ELASTIC_PASSWORD="changeme"
-
 # mail
 export EZUNPAYWALL_SMTP_PORT=25
 export EZUNPAYWALL_NOTIFICATIONS_SENDER='ez-unpaywall <ez-unpaywall@inist.fr>'

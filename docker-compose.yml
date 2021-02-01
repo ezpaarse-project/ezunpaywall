@@ -18,8 +18,8 @@ services:
       - https_proxy
       - UNPAYWALL_URL
       - API_KEY_UPW
-      - EZUNPAYWALL_ELASTIC_HOST=elastic
-      - EZUNPAYWALL_ELASTIC_PORT
+      - ELASTICSEARCH_HOST=elastic
+      - ELASTICSEARCH_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
     volumes:

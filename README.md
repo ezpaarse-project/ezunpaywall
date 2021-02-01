@@ -6,9 +6,8 @@ ez-unpaywall is an API and database that queries the UnPayWall database containi
 - [Prerequisites](#prerequisites)
 - [Installation](#Installation)
 - [Configuration](#Configuration)
-- [Deploiement](#Deploiement-Start/Stop/Status)
-- [Developement](#Development-Start/Stop/Status)
-- [Tests](#Tests)
+- [Deploiement](#Deploiement)
+- [Developement](#Development)
 - [Data update](#Data-update)
 - [API Graphql](#API-graphql)
 
@@ -24,22 +23,30 @@ The tools you need to let ez-unpaywall run are :
 ## Installation
 
 ``` git clone https://github.com/ezpaarse-project/ez-unpaywall```
-
-## Configuration
-
-### Setup Elastic certificates
-
-For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
-
-  - Open the `certs` directory.
-  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file.
-  - Run `docker-compose -f create-certs.yml up`.
-  - A `certificates` directory should be created, you can just put it in both `elasticsearch/config/` and `kibana/config/`. (**NB**: you may need to `chown` it)
-
-
+## Deploiement
 ### Setup environment
 
 Create an environment file named `ezunpaywall.env.local.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh` , which contains a set of predefined variables and is overriden by `ezunpaywall.env.local.sh`.
+
+Unpaywall
+| name | description |
+| --- | --- |
+| API_KEY_UPW | api key to access weekly unpaywall updates |
+
+Mail
+| name | description |
+| --- | --- |
+| EZUNPAYWALL_SMTP_PORT | host of the SMTP server |
+| EZUNPAYWALL_NOTIFICATIONS_SENDER | the sender for emails issued by ez-unpaywall |
+| EZUNPAYWALL_NOTIFICATIONS_RECEIVERS | recipients of the recent activity email |
+
+Elastic
+| name | description |
+| --- | --- |
+| ELASTICSEARCH_PORT | elastic port |
+| ELASTICSEARCH_HOST | elastic url |
+| ELASTICSEARCH_USERNAME | elastic user |
+| ELASTICSEARCH_PASSWORD | elastic user |
 
 ### Adjust system configuration for Elasticsearch
 
@@ -52,8 +59,11 @@ To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sys
 vm.max_map_count=262144
 ```
 
-## Deploiement Start/Stop/Status
-
+Then apply the changes : 
+```bash
+sysctl -p
+```
+## Start/Stop/Status
 Before you start ez-unpaywall, make sure all necessary environment variables are set.
 
 ```bash
@@ -66,13 +76,35 @@ docker-compose stop
 # Get the status of ez-unpaywall services
 docker-compose ps
 ```
+## Development
+### Setup Elastic certificates
 
-## Development Start/Stop/Status
+For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
 
+  - Open the `certs` directory.
+  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file.
+
+```yml
+# example of instancs.yml
+instances:
+  # cat /etc/hostname
+  - name: "NameComputer"  
+    ip:
+      # hostname -I | awk '{print $1}'
+      - "127.0.0.1" 
+    dns:
+      # cat /etc/hostname
+      - "NameComputer"  
+      - "localhost"
+```
+
+  - Run `docker-compose -f create-certs.yml up`.
+  - A `certificates` directory should be created, you can just put it in both `elasticsearch/config/` and `kibana/config/`. (**NB**: you may need to `chown` it)
 ### Install
 
 ```bash
 ez-unpaywall/api$ npm i
+ez-unpaywall/fakeUnpaywall$ npm i
 ```
 
 ### start
@@ -90,31 +122,17 @@ docker-compose -f docker-compose.debug.yml stop
 docker-compose -f docker-compose.debug.yml ps
 ```
 
-## Tests
-### Install
-
 ```bash
-ez-unpaywall/api$ npm i
-ez-unpaywall/fakeUnpaywall$ npm i
-```
-
-### start
-
-Before you start ez-unpaywall, make sure all necessary environment variables are set.
-
-```bash
-# Start ez-unpaywall as daemon
+# Start ez-unpaywall test as daemon
 docker-compose -f docker-compose.test.yml up -d
 
 # See result of the tests
 docker-compose logs -f api
 ```
-
 ## Data update 
 
 You can update your data via update snapshots provided by unpaywall on a weekly basis (if you have API key).
 You can directly use the update routes or use the [ezunpaywall command](https://github.com/ezpaarse-project/node-ezunpaywall)
-
 ### Data update API
 
 `POST "/update/:name`
@@ -139,15 +157,12 @@ the download and the insertion of the most recent update file.
 - If there are the `start` and` end` attributes, It will execute the download and the insertion of the update files between the given period.
 - If there is the `start` attribute, It will execute the download and
 the insertion of the update files between the` start` date and the current date.
-
 ## API Graphql
-
 ### getDataUPW
+
 get Unpaywall data with [parameters](#Object-structure). 
 You can also use intervals 
-
 ### Examples
-
 #### GET
 
 `GET "/graphql?query={getDataUPW(dois:["10.1038/2211089b0","10.1038/nature12373"], published_date_range: {gte: "2014", lte: "2019"}){doi, is_oa, best_oa_location{ url }}}"`
