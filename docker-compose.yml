@@ -8,20 +8,24 @@ services:
         - http_proxy
         - https_proxy
     environment:
+      - NODE_ENV=production
+      # mail
       - NODE_CONFIG
       - EZUNPAYWALL_SMTP_HOST
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - NODE_ENV=production
-      - http_proxy
-      - https_proxy
+      # unpaywall
       - UNPAYWALL_URL
       - API_KEY_UPW
+      # elastic
       - ELASTICSEARCH_HOST=elastic
       - ELASTICSEARCH_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
+      # proxy
+      - http_proxy
+      - https_proxy
     volumes:
       - ./api/out:/usr/src/api/out/
     command: "npm start"

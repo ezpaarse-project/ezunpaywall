@@ -4,19 +4,24 @@ services:
   api:
     image: node:14.15.4
     environment:
+      - NODE_ENV=development
+      # mail
       - NODE_CONFIG
       - EZUNPAYWALL_SMTP_HOST=maildev
+      - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - NODE_ENV=development
-      - http_proxy
-      - https_proxy
+      # unpaywall
       - API_KEY_UPW
       - UNPAYWALL_URL
+      # elastic
       - ELASTICSEARCH_HOST=http://elastic
       - ELASTICSEARCH_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
+      # proxy
+      - http_proxy
+      - https_proxy
     working_dir: /api
     volumes:
       - ./api:/api

@@ -1,11 +1,9 @@
 # ez-unpaywall
 
-ez-unpaywall is an API and database that queries the UnPayWall database containing free scholarly articles
+ez-unpaywall is an API and database that queries the Unpaywall database containing free scholarly articles
 
 **Table of content**
 - [Prerequisites](#prerequisites)
-- [Installation](#Installation)
-- [Configuration](#Configuration)
 - [Deploiement](#Deploiement)
 - [Developement](#Development)
 - [Data update](#Data-update)
@@ -32,11 +30,14 @@ Unpaywall
 | name | description |
 | --- | --- |
 | API_KEY_UPW | api key to access weekly unpaywall updates |
+| UNPAYWALL_URL | url to access unpaywall update |
 
 Mail
 | name | description |
 | --- | --- |
-| EZUNPAYWALL_SMTP_PORT | host of the SMTP server |
+| NODE_CONFIG | make tls and secure of mail (only in developement) |
+| EZUNPAYWALL_SMTP_HOST | host of the SMTP server |
+| EZUNPAYWALL_SMTP_PORT | port of the SMTP server |
 | EZUNPAYWALL_NOTIFICATIONS_SENDER | the sender for emails issued by ez-unpaywall |
 | EZUNPAYWALL_NOTIFICATIONS_RECEIVERS | recipients of the recent activity email |
 
@@ -46,23 +47,8 @@ Elastic
 | ELASTICSEARCH_PORT | elastic port |
 | ELASTICSEARCH_HOST | elastic url |
 | ELASTICSEARCH_USERNAME | elastic user |
-| ELASTICSEARCH_PASSWORD | elastic user |
+| ELASTICSEARCH_PASSWORD | elastic password |
 
-### Adjust system configuration for Elasticsearch
-
-Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
-
-To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
-
-```ini
-# configuration needed for elastic search
-vm.max_map_count=262144
-```
-
-Then apply the changes : 
-```bash
-sysctl -p
-```
 ## Start/Stop/Status
 Before you start ez-unpaywall, make sure all necessary environment variables are set.
 
@@ -77,7 +63,23 @@ docker-compose stop
 docker-compose ps
 ```
 ## Development
-### Setup Elastic certificates
+### Configuration
+#### Adjust system configuration for Elasticsearch
+
+Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
+
+To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
+
+```ini
+# configuration needed for elastic search
+vm.max_map_count=262144
+```
+
+Then apply the changes : 
+```bash
+sysctl -p
+```
+#### Setup Elastic certificates
 
 For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
 
@@ -106,8 +108,7 @@ instances:
 ez-unpaywall/api$ npm i
 ez-unpaywall/fakeUnpaywall$ npm i
 ```
-
-### start
+### Start
 
 Before you start ez-unpaywall, make sure all necessary environment variables are set.
 
