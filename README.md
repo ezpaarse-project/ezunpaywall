@@ -32,11 +32,14 @@ Unpaywall
 | name | description |
 | --- | --- |
 | API_KEY_UPW | api key to access weekly unpaywall updates |
+| UNPAYWALL_URL | url to access unpaywall update |
 
 Mail
 | name | description |
 | --- | --- |
-| EZUNPAYWALL_SMTP_PORT | host of the SMTP server |
+| NODE_CONFIG | make tls and secure of mail (only in developement) |
+| EZUNPAYWALL_SMTP_HOST | host of the SMTP server |
+| EZUNPAYWALL_SMTP_PORT | port of the SMTP server |
 | EZUNPAYWALL_NOTIFICATIONS_SENDER | the sender for emails issued by ez-unpaywall |
 | EZUNPAYWALL_NOTIFICATIONS_RECEIVERS | recipients of the recent activity email |
 
@@ -46,7 +49,7 @@ Elastic
 | ELASTICSEARCH_PORT | elastic port |
 | ELASTICSEARCH_HOST | elastic url |
 | ELASTICSEARCH_USERNAME | elastic user |
-| ELASTICSEARCH_PASSWORD | elastic user |
+| ELASTICSEARCH_PASSWORD | elastic password |
 
 ### Adjust system configuration for Elasticsearch
 
