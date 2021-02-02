@@ -41,6 +41,7 @@ services:
     command: "npm run test"
     ports:
       - "8080:8080"
+    restart: unless-stopped      
       
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
@@ -70,11 +71,13 @@ services:
       - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
       - 9200:9200
+    restart: unless-stopped
 
   maildev:
     image: djfarrelly/maildev
     ports:
       - 1080:80
+    restart: unless-stopped
 
   # kibana:
   #   image: docker.elastic.co/kibana/kibana:7.9.1

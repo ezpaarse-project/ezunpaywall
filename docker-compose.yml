@@ -19,7 +19,7 @@ services:
       - UNPAYWALL_URL
       - API_KEY_UPW
       # elastic
-      - ELASTICSEARCH_HOST=elastic
+      - ELASTICSEARCH_HOST
       - ELASTICSEARCH_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
@@ -31,6 +31,7 @@ services:
     command: "npm start"
     ports:
       - "8080:8080"
+    restart: unless-stopped
       
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
@@ -61,6 +62,7 @@ services:
       - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
       - 9200:9200
+    restart: unless-stopped
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.9.1
@@ -76,3 +78,4 @@ services:
       - KIBANA_DEFAULTAPPID
     volumes:
       - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"
+    restart: unless-stopped

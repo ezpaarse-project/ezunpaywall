@@ -2,6 +2,7 @@ const client = require('./client');
 const { logger } = require('./logger');
 const unpaywallIndex = require('../index/unpaywall.json');
 const taskIndex = require('../index/task.json');
+const { elasticsearch } = require('config');
 
 const pingElastic = async () => {
   let elasticStatus;
@@ -9,10 +10,11 @@ const pingElastic = async () => {
     try {
       elasticStatus = await client.ping();
     } catch (err) {
-      logger.error(`Error in elastic ping : ${err}`);
+      logger.error(`elastic ping : ${err}`);
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
+  logger.info(`elastic ping: ${elasticsearch.host}:${elasticsearch.port} is ok`);
   return true;
 }
 
@@ -23,7 +25,7 @@ const isIndexExist = async (name) => {
       index: name,
     });
   } catch (err) {
-    logger.error(`Error in indices.exists in isIndexExist: ${err}`);
+    logger.error(`indices.exists in isIndexExist: ${err}`);
   }
   return res.body;
 };
@@ -37,7 +39,7 @@ const createIndex = async (name, index) => {
         body: index,
       });
     } catch (err) {
-      logger.error(`Error in indices.create in createIndex: ${err}`);
+      logger.error(`indices.create in createIndex: ${err}`);
     }
   }
 };
