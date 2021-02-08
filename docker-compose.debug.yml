@@ -30,6 +30,19 @@ services:
       - "8080:8080"
     restart: unless-stopped
     
+  client:
+    image: node:14.15.4
+    working_dir: /client
+    volumes:
+      - ./client:/client
+    command: "npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+      
+
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
     environment:

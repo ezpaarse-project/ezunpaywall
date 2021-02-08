@@ -20,19 +20,20 @@ The tools you need to let ez-unpaywall run are :
 
 ## Installation
 
-``` git clone https://github.com/ezpaarse-project/ez-unpaywall```
+```bash
+git clone https://github.com/ezpaarse-project/ez-unpaywall 
+```
 ## Deploiement
 ### Setup environment
 
 Create an environment file named `ezunpaywall.env.local.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh` , which contains a set of predefined variables and is overriden by `ezunpaywall.env.local.sh`.
-
-Unpaywall
+#### Unpaywall
 | name | description |
 | --- | --- |
 | API_KEY_UPW | api key to access weekly unpaywall updates |
 | UNPAYWALL_URL | url to access unpaywall update |
+#### Mail
 
-Mail
 | name | description |
 | --- | --- |
 | NODE_CONFIG | make tls and secure of mail (only in developement) |
@@ -40,8 +41,8 @@ Mail
 | EZUNPAYWALL_SMTP_PORT | port of the SMTP server |
 | EZUNPAYWALL_NOTIFICATIONS_SENDER | the sender for emails issued by ez-unpaywall |
 | EZUNPAYWALL_NOTIFICATIONS_RECEIVERS | recipients of the recent activity email |
+#### Elastic
 
-Elastic
 | name | description |
 | --- | --- |
 | ELASTICSEARCH_PORT | elastic port |
@@ -50,6 +51,7 @@ Elastic
 | ELASTICSEARCH_PASSWORD | elastic password |
 
 ## Start/Stop/Status
+
 Before you start ez-unpaywall, make sure all necessary environment variables are set.
 
 ```bash

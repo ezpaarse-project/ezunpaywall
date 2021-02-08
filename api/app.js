@@ -60,13 +60,13 @@ app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   return graphqlQuery(req, res);
 });
 
-app.use(RouterOutFiles);
-app.use(RouterTask);
-app.use(RouterManageDatabase);
-
 app.get('/ping', (req, res) => {
   res.status(200).json({ data: 'pong' });
 });
+
+app.use(RouterOutFiles);
+app.use(RouterTask);
+app.use(RouterManageDatabase);
 
 // elastic index
 initalizeIndex();
