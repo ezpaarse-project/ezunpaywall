@@ -6,24 +6,26 @@ const morgan = require('morgan');
 const fs = require('fs-extra');
 const path = require('path');
 
+
 const schema = require('./graphql/graphql');
 
 // routers
-const RouterManageDatabase = require('./updateservice/routers/update');
-const RouterOutFiles = require('./updateservice/routers/outFiles');
-const RouterTask = require('./updateservice/routers/status');
+const RouterOutFiles = require('./routers/outFiles');
+const RouterTask = require('./routers/status');
+const RouterEnrich = require('./routers/enrich');
+const RouterManageDatabase = require('./routers/update');
 
 const { logger } = require('./lib/logger');
 const {
   initalizeIndex,
 } = require('./lib/elastic');
 
-
 const outDir = path.resolve(__dirname, 'out');
 // initiates all out dir
 fs.ensureDir(path.resolve(outDir, 'logs'));
 fs.ensureDir(path.resolve(outDir, 'download'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
+fs.ensureDir(path.resolve(outDir, 'tmp'));
 
 // start server
 const app = express();
@@ -66,6 +68,7 @@ app.get('/ping', (req, res) => {
 
 app.use(RouterOutFiles);
 app.use(RouterTask);
+app.use(RouterEnrich);
 app.use(RouterManageDatabase);
 
 // elastic index

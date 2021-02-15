@@ -35,7 +35,7 @@ describe('test weekly update', () => {
       try {
         res1 = await chai.request(ezunpaywallURL).get('/ping');
       } catch (err) {
-        logger.error(`Error in ezunpaywall ping : ${err}`);
+        logger.error(`ezunpaywall ping : ${err}`);
       }
       await new Promise((resolve) => setTimeout(resolve(), 1000));
     }
@@ -45,7 +45,7 @@ describe('test weekly update', () => {
       try {
         res2 = await chai.request(fakeUnpaywallURL).get('/ping');
       } catch (err) {
-        logger.error(`Error in fakeUnpaywall ping : ${err}`);
+        logger.error(`fakeUnpaywall ping : ${err}`);
       }
       await new Promise((resolve) => setTimeout(resolve(), 1000));
     }
@@ -55,7 +55,7 @@ describe('test weekly update', () => {
       try {
         res3 = await client.ping();
       } catch (err) {
-        logger.error(`Error in elastic ping : ${err}`);
+        logger.error(`elastic ping : ${err}`);
       }
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }

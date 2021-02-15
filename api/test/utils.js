@@ -17,7 +17,7 @@ const isIndexExist = async (name) => {
       index: name,
     });
   } catch (err) {
-    logger.error(`Error in indices.exists in isIndexExist: ${err}`);
+    logger.error(`indices.exists in isIndexExist: ${err}`);
   }
   return res.body;
 };
@@ -30,7 +30,7 @@ const deleteIndex = async (name) => {
         index: name,
       });
     } catch (err) {
-      logger.error(`Error in deleteIndex: ${err}`);
+      logger.error(`deleteIndex: ${err}`);
     }
   }
 };
@@ -43,7 +43,7 @@ const createIndex = async (name, index) => {
       body: index,
     });
   } catch (err) {
-    logger.error(`Error in indices.delete increateIndex: ${err}`);
+    logger.error(`indices.delete increateIndex: ${err}`);
   }
 };
 
@@ -56,7 +56,7 @@ const countDocuments = async () => {
         index: 'unpaywall',
       });
     } catch (err) {
-      logger.error(`Error in countDocuments: ${err}`);
+      logger.error(`countDocuments: ${err}`);
     }
   }
   return data.body.count ? data.body.count : null;
@@ -71,7 +71,7 @@ const isTaskEnd = async () => {
         index: 'task',
       });
     } catch (err) {
-      logger.error(`Error in isTaskEnd: ${err}`);
+      logger.error(`isTaskEnd: ${err}`);
     }
   }
   return task?.body?.hits?.hits[0]?._source?.done;
@@ -86,7 +86,7 @@ const getTask = async () => {
         index: 'task',
       });
     } catch (err) {
-      logger.error(`Error in getTask: ${err}`);
+      logger.error(`getTask: ${err}`);
     }
   }
   return task?.body?.hits?.hits[0]?._source;
@@ -99,7 +99,7 @@ const deleteFile = async (name) => {
     try {
       await fs.unlinkSync(filePath);
     } catch (err) {
-      logger.error(`Error in deleteFile: ${err}`);
+      logger.error(`deleteFile: ${err}`);
     }
   }
 };
@@ -120,7 +120,7 @@ const downloadFile = (name) => new Promise((resolve, reject) => {
   });
 
   writeStream.on('error', (err) => {
-    logger.error(`Error in downloadFile: ${err}`);
+    logger.error(`downloadFile: ${err}`);
     return reject(err);
   });
 });
@@ -144,7 +144,7 @@ const initializeDate = async () => {
   try {
     await fs.writeFile(changefilesPath, JSON.stringify(changefiles, null, 2), 'utf8');
   } catch (err) {
-    logger.error(`Error in fs.writeFile in initializeDate: ${err}`);
+    logger.error(`fs.writeFile in initializeDate: ${err}`);
   }
 };
 
@@ -154,7 +154,7 @@ const getLatestReport = async () => {
     const response = await chai.request(ezunpaywallURL).get('/reports?latest=true');
     report = response?.body;
   } catch (err) {
-    logger.error(`Error in ezunpaywall ping : ${err}`);
+    logger.error(`ezunpaywall ping : ${err}`);
   }
   return report;
 };

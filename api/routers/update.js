@@ -33,7 +33,7 @@ router.use((req, res, next) => {
  *
  * @api {post} /update/:name insert the content of files that the server has already downloaded
  * @apiName Update
- * @apiGroup updateservice
+ * @apiGroup Update
  *
  * @apiParam (QUERY) {Number} [offset] first line insertion, by default, we start with the first
  * @apiParam (QUERY) {Number} [limit] last line insertion by default, we have no limit
@@ -87,7 +87,7 @@ router.post('/update/:name', async (req, res) => {
  *
  * @api {post} /update downloads update files offered by unpaywall.
  * @apiName Fetch-Download-Update
- * @apiGroup updateservice
+ * @apiGroup Update
  *
  * @apiParam (QUERY) {DATE} [startDate] period start date at format YYYY-mm-dd
  * @apiParam (QUERY) {DATE} [endDate] period end date at format YYYY-mm-dd

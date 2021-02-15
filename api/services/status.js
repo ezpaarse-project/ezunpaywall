@@ -1,12 +1,12 @@
 const path = require('path');
 const fs = require('fs-extra');
 const config = require('config');
-const { sendMail, generateMail } = require('../../lib/mail');
+const { sendMail, generateMail } = require('../lib/mail');
 
-const reportDir = path.resolve(__dirname, '..', '..', 'out', 'reports');
+const reportDir = path.resolve(__dirname, '..', 'out', 'reports');
 
-const client = require('../../lib/client');
-const { logger } = require('../../lib/logger');
+const client = require('../lib/client');
+const { logger } = require('../lib/logger');
 
 let iteratorTask = -1;
 let iteratorFile = -1;
@@ -69,7 +69,7 @@ const mailUpdate = async (status) => {
       }),
     });
   } catch (err) {
-    logger.error(`Error in mailUpdate : ${err}`);
+    logger.error(`mailUpdate : ${err}`);
   }
 };
 
@@ -129,7 +129,7 @@ const createStatus = async () => {
     });
     idTask = doc.body._id;
   } catch (err) {
-    logger.error(`Error in createStatus: ${err}`);
+    logger.error(`createStatus: ${err}`);
   }
   (async function actualizeStatus() {
     if (task.done) {
@@ -145,7 +145,7 @@ const createStatus = async () => {
       });
       timeout = setTimeout(actualizeStatus, 3000);
     } catch (err) {
-      logger.error(`Error in actualizeStatus: ${err}`);
+      logger.error(`actualizeStatus: ${err}`);
     }
   }());
 };
@@ -160,7 +160,7 @@ const endStatus = async () => {
       body: task,
     });
   } catch (err) {
-    logger.error(`Error in endStatus: ${err}`);
+    logger.error(`endStatus: ${err}`);
   }
 };
 
@@ -168,7 +168,7 @@ const createReport = async (success) => {
   try {
     await fs.writeFileSync(`${reportDir}/${success}-${new Date().toISOString().slice(0, 16)}.json`, JSON.stringify(task, null, 2));
   } catch (err) {
-    logger.error(`Error in createReport: ${err}`);
+    logger.error(`createReport: ${err}`);
   }
   await mailUpdate('success');
 };

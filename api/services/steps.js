@@ -4,10 +4,10 @@ const readline = require('readline');
 const axios = require('axios');
 const zlib = require('zlib');
 const { Readable } = require('stream');
-const client = require('../../lib/client');
-const { logger } = require('../../lib/logger');
+const client = require('../lib/client');
+const { logger } = require('../lib/logger');
 
-const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'download');
+const downloadDir = path.resolve(__dirname, '..', 'out', 'download');
 
 const {
   task,
@@ -27,7 +27,7 @@ const insertUPW = async (data) => {
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
-    logger.error(`Error in insertUPW: ${err}`);
+    logger.error(`insertUPW: ${err}`);
   }
 };
 
@@ -46,7 +46,7 @@ const insertDatasUnpaywall = async (options) => {
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    logger.error(`Error in fs.stat in insertDatasUnpaywall: ${err}`);
+    logger.error(`fs.stat in insertDatasUnpaywall: ${err}`);
   }
 
   const insertion = async () => {
@@ -55,7 +55,7 @@ const insertDatasUnpaywall = async (options) => {
     try {
       readStream = fs.createReadStream(filePath);
     } catch (err) {
-      logger.error(`Error in fs.createReadStream in insertDatasUnpaywall: ${err}`);
+      logger.error(`fs.createReadStream in insertDatasUnpaywall: ${err}`);
       await fail(start);
       return null;
     }
@@ -69,7 +69,7 @@ const insertDatasUnpaywall = async (options) => {
     try {
       decompressedStream = readStream.pipe(zlib.createGunzip());
     } catch (err) {
-      logger.error(`Error in readStream.pipe(zlib.createGunzip()) in insertDatasUnpaywall: ${err}`);
+      logger.error(`readStream.pipe(zlib.createGunzip()) in insertDatasUnpaywall: ${err}`);
       await fail(start);
       return null;
     }
@@ -97,7 +97,7 @@ const insertDatasUnpaywall = async (options) => {
         try {
           tab.push(JSON.parse(line));
         } catch (err) {
-          logger.error(`Error in JSON.parse in insertDatasUnpaywall: ${err}`);
+          logger.error(`JSON.parse in insertDatasUnpaywall: ${err}`);
           await fail(start);
           return null;
         }
@@ -150,7 +150,7 @@ const downloadUpdateSnapshot = async () => {
   try {
     alreadyInstalled = await fs.pathExists(file);
   } catch (err) {
-    logger.error(`Error in fs.pathExists in downloadUpdateSnapshot: ${err}`);
+    logger.error(`fs.pathExists in downloadUpdateSnapshot: ${err}`);
   }
 
   if (alreadyInstalled) stats = fs.statSync(file);
@@ -171,7 +171,7 @@ const downloadUpdateSnapshot = async () => {
       responseType: 'stream',
     });
   } catch (err) {
-    logger.error(`Error in axios in downloadUpdateSnapshot: ${err}`);
+    logger.error(`axios in downloadUpdateSnapshot: ${err}`);
     await fail(start);
     return null;
   }
@@ -187,7 +187,7 @@ const downloadUpdateSnapshot = async () => {
       try {
         bytes = await fs.stat(filePath);
       } catch (err) {
-        logger.error(`Error in fs.stat in percentDownload: ${err}`);
+        logger.error(`fs.stat in percentDownload: ${err}`);
       }
       if (bytes.size === size) {
         clearTimeout(timeout);
@@ -207,7 +207,7 @@ const downloadUpdateSnapshot = async () => {
     });
 
     writeStream.on('error', async (err) => {
-      logger.error(`Error in writeStream in percentDownload: ${err}`);
+      logger.error(`writeStream in percentDownload: ${err}`);
       await fail(start);
       return reject(err);
     });
@@ -250,7 +250,7 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
       },
     });
   } catch (err) {
-    logger.error(`Error in axios in fetchUnpaywall: ${err}`);
+    logger.error(`axios in fetchUnpaywall: ${err}`);
     await fail(start);
     return null;
   }
