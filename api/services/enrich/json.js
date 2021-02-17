@@ -55,6 +55,7 @@ let enrichedFile = path.resolve(tmp, 'enriched.jsonl')
 const fetchAttributes = [];
 
 let best_oa_location = [];
+let first_oa_location = [];
 let oa_locations = [];
 let z_authors = [];
 
@@ -83,6 +84,9 @@ const sortAttr = (attr) => {
     if (str[0] === 'best_oa_location') {
       best_oa_location.push(str[1]);
     }
+    if (str[0] === 'first_oa_location') {
+      first_oa_location.push(str[1]);
+    }
     if (str[0] === 'oa_locations') {
       oa_locations.push(str[1]);
     }
@@ -109,6 +113,10 @@ const createFetchAttributes = () => {
   if (best_oa_location.length !== 0) {
     best_oa_location = stringifyAttributes('best_oa_location', best_oa_location);
     fetchAttributes.push(best_oa_location);
+  }
+  if (first_oa_location.length !== 0) {
+    first_oa_location = stringifyAttributes('first_oa_location', first_oa_location);
+    fetchAttributes.push(first_oa_location);
   }
   if (oa_locations.length !== 0) {
     oa_locations = stringifyAttributes('oa_locations', oa_locations);

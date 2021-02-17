@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const logger = require('../../lib/logger');
+const { logger } = require('../../lib/logger');
 
 /**
  * fetch ez-unpaywall with array of dois and fetchAttributes
@@ -26,7 +26,7 @@ const fetchEzUnpaywall = async (tab, fetchAttributes) => {
       },
     });
   } catch (err) {
-    logger.error('service unavailable');
+    logger.error(`fetchEzUnpaywall: ${err}`);
   }
   return response?.data?.data?.getDataUPW;
 };

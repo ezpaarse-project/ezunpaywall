@@ -89,7 +89,7 @@ For each node in the cluster, add certificates in `elasticsearch/config/certific
   - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file.
 
 ```yml
-# example of instancs.yml
+# example of instances.yml
 instances:
   # cat /etc/hostname
   - name: "NameComputer"  

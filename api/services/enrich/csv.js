@@ -3,7 +3,8 @@
 const fs = require('fs-extra');
 const Papa = require('papaparse');
 const get = require('lodash.get');
-const logger = require('../../lib/logger');
+const path = require('path');
+const { logger } = require('../../lib/logger');
 
 const { fetchEzUnpaywall } = require('./utils');
 
@@ -49,10 +50,18 @@ let enricherAttributesCSV = [
   'year',
 ];
 
+const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp')
+let enrichedFile = path.resolve(tmp, 'enriched.csv')
+
 const fetchAttributes = [];
+
+let best_oa_location = [];
+let first_oa_location = [];
+let z_authors = [];
+
 let headers = [];
 let separator = ',';
-let out;
+
 let lineRead = 0;
 let lineEnrich = 0;
 
@@ -71,33 +80,40 @@ const stringifyAttributes = (name, attributes) => {
 };
 
 /**
+ * sortAttr if is a complexe attributes
+ * @param {*} attr 
+ */
+const sortAttr = (attr) => {
+  // complexe attributes (like best_oa_location.license)
+  if (attr.includes('.')) {
+    const str = attr.split('.');
+    if (str[0] === 'best_oa_location') {
+      best_oa_location.push(str[1]);
+    }
+    if (str[0] === 'first_oa_location') {
+      first_oa_location.push(str[1]);
+    }
+    if (str[0] === 'z_authors') {
+      z_authors.push(str[1]);
+    }
+  } else {
+    // simple attributes (like is_oa)
+    fetchAttributes.push(attr);
+  }
+}
+
+/**
  * parse the attributes so that they can be used in the graphql query
  */
 const createFetchAttributes = () => {
-  let best_oa_location = [];
-  let first_oa_location = [];
-  let z_authors = [];
-  enricherAttributesCSV.forEach((attr) => {
-    // complexe attributes (like best_oa_location.license)
-    if (attr.includes('.')) {
-      const str = attr.split('.');
-      if (str[0] === 'best_oa_location') {
-        best_oa_location.push(str[1]);
-        return;
-      }
-      if (str[0] === 'first_oa_location') {
-        first_oa_location.push(str[1]);
-        return;
-      }
-      if (str[0] === 'z_authors') {
-        z_authors.push(str[1]);
-        return;
-      }
-    }
-    // simple attributes (like is_oa)
-    fetchAttributes.push(attr);
-  });
-
+  if(typeof enricherAttributesCSV === 'string') {
+    sortAttr(enricherAttributesCSV);
+  } else {
+    enricherAttributesCSV.forEach((attr) => {
+      sortAttr(attr);
+    });
+  }
+  
   if (best_oa_location.length !== 0) {
     best_oa_location = stringifyAttributes('best_oa_location', best_oa_location);
     fetchAttributes.push(best_oa_location);
@@ -125,10 +141,11 @@ const checkAttributesCSV = (attrs) => {
   attributes.forEach((attr) => {
     if (!enricherAttributesCSV.includes(attr)) {
       logger.error(`attribut ${attr} cannot be enriched on CSV file`);
+      return false;
     }
   });
   enricherAttributesCSV = attributes;
-  createFetchAttributes();
+  return true;
 };
 
 /**
@@ -177,20 +194,20 @@ const enricherTab = (tab, response) => {
 };
 
 /**
- * write the array of line enriched in a out file CSV
+ * write the array of line enriched in a enrichedFile file CSV
  * @param {*} tab array of line enriched
  */
 const writeInFileCSV = async (tab) => {
   const parsedTab = JSON.stringify(tab);
   try {
-    const val = await Papa.unparse(parsedTab, {
+    const unparse = await Papa.unparse(parsedTab, {
       header: false,
       delimiter: separator,
       columns: headers,
     });
-    await fs.writeFile(out, `${val}\r\n`, { flag: 'a' });
+    await fs.writeFile(enrichedFile, `${unparse}\r\n`, { flag: 'a' });
   } catch (err) {
-    console.error(err);
+    logger.error(`writeInFileCSV: ${err}`);
   }
 };
 
@@ -217,9 +234,9 @@ const enricherHeaderCSV = (header) => {
  */
 const writeHeaderCSV = async (header) => {
   try {
-    await fs.writeFile(out, `${header.join(separator)}\r\n`, { flag: 'a' });
+    await fs.writeFile(enrichedFile, `${header.join(separator)}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error('write stream bug');
+    logger.error(`writeHeaderCSV: ${err}`);
   }
 };
 
@@ -227,29 +244,23 @@ const writeHeaderCSV = async (header) => {
  * starts the enrichment process for files CSV
  * @param {*} readStream read the stream of the file you want to enrich
  */
-const enrichmentFileCSV = async (outFile, separatorFile, file, args) => {
-  if (args.attributes) {
-    checkAttributesCSV();
-  }
+const enrichmentFileCSV = async (readStream, args, separatorFile) => {
+  let valid;
 
-  let readStream;
-  try {
-    readStream = fs.createReadStream(file);
-  } catch (err) {
-    logger.error('error: impossible de read file');
+  if (args) {
+    valid = checkAttributesCSV(args);
   }
-
+  if (!valid) {
+    // TODO return a error
+    return false;
+  }
   createFetchAttributes();
-
-  out = outFile;
-
   // empty the file
-  const fileExist = await fs.pathExists(out);
+  const fileExist = await fs.pathExists(enrichedFile);
   if (fileExist) {
-    await fs.unlink(out, (err) => {
-      if (err) throw err;
-    });
+    await fs.unlink(enrichedFile);
   }
+  fs.openSync(enrichedFile, 'w')
 
   separator = separatorFile;
 
@@ -280,7 +291,7 @@ const enrichmentFileCSV = async (outFile, separatorFile, file, args) => {
           const tabWillBeEnriched = tab;
           tab = [];
           await parser.pause();
-          const response = await fetchEzUnpaywall(tabWillBeEnriched, fetchAttributes, args.use);
+          const response = await fetchEzUnpaywall(tabWillBeEnriched, fetchAttributes);
           enricherTab(tabWillBeEnriched, response);
           lineRead += 1000;
           lineEnrich += response.length;
@@ -291,7 +302,7 @@ const enrichmentFileCSV = async (outFile, separatorFile, file, args) => {
           await parser.resume();
         }
       },
-      complete: () => resolve(),
+      complete: () => resolve()
     });
   });
   // last insertion
@@ -302,6 +313,9 @@ const enrichmentFileCSV = async (outFile, separatorFile, file, args) => {
     enricherTab(tab, response);
     await writeInFileCSV(tab);
   }
+  best_oa_location = [];
+  first_oa_location = [];
+  z_authors = [];
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
 };
 

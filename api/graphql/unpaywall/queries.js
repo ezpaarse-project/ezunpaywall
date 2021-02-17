@@ -3,6 +3,7 @@ const { UnPayWallType } = require('./index');
 const client = require('../../lib/client');
 const oaLocationInput = require('../oa_location/inputType');
 const zAuthorsInput = require('../z_authors/inputType');
+const { logger } = require('../../lib/logger');
 
 const {
   GraphQLList,
@@ -125,7 +126,7 @@ module.exports = {
           },
         });
       } catch (err) {
-        console.log(err.meta.body.error);
+        logger.error(err.meta.body.error);
         return null;
       }
       return res.body.hits.hits.map((hit) => hit._source);
