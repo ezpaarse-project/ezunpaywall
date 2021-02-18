@@ -13,10 +13,7 @@ const tmpDir = path.resolve(__dirname, '..', 'out', 'tmp');
  *
  */
 router.post('/enrich/json', async (req, res) => {
-  let { args } = req.query;
-  if (!args) {
-    return res.status(400).json({ message: 'name of snapshot file expected' });
-  }
+  const { args } = req.query;
   await enrichmentFileJSON(req, args);
   return res.status(200).download(path.resolve(tmpDir, 'enriched.jsonl'));
 });
@@ -28,8 +25,8 @@ router.post('/enrich/json', async (req, res) => {
  *
  */
 router.post('/enrich/csv', async (req, res) => {
-  let { args } = req.query;
-  let { separator } = req.query;
+  const { args } = req.query;
+  const { separator } = req.query;
   if (!args) {
     return res.status(400).json({ message: 'name of snapshot file expected' });
   }

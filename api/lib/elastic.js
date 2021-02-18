@@ -10,7 +10,7 @@ const pingElastic = async () => {
     try {
       elasticStatus = await client.ping();
     } catch (err) {
-      logger.error(`elastic ping : ${err}`);
+      logger.error(`elastic ping at ${elasticsearch.host}:${elasticsearch.port} ${err}`);
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }

@@ -104,26 +104,19 @@ const deleteFile = async (name) => {
   }
 };
 
-const downloadFile = (name) => new Promise((resolve, reject) => {
+const downloadFile = async (name) => {
   const destination = path.resolve(__dirname, '..', 'out', 'download', name);
   const source = path.resolve(__dirname, '..', '..', 'fakeUnpaywall', 'snapshots', name);
 
-  const readable = fs.createReadStream(source);
-  const writable = fs.createWriteStream(destination);
+  const content = await fs.readFile(source, 'utf8');
 
-  // download unpaywall file with stream
-  const writeStream = readable.pipe(writable);
+  try {
+    await fs.writeFile(destination, content, { flag: 'a' });
+  } catch (err) {
+    logger.error(`dowloadFile: ${err}`)
+  }
 
-  writeStream.on('finish', () => {
-    logger.info(`File ${name} is installed`);
-    return resolve();
-  });
-
-  writeStream.on('error', (err) => {
-    logger.error(`downloadFile: ${err}`);
-    return reject(err);
-  });
-});
+};
 
 const initializeDate = async () => {
   const changefilesPath = path.resolve(__dirname, '..', '..', 'fakeUnpaywall', 'snapshots', 'changefiles.json');
@@ -158,6 +151,14 @@ const getLatestReport = async () => {
   }
   return report;
 };
+
+const resetAll = async () => {
+  deleteIndex('unpaywall');
+  deleteIndex('task')
+  deleteFile('fake1.jsonl.gz');
+  deleteFile('fake2.jsonl.gz');
+  deleteFile('fake3.jsonl.gz');
+}
 
 module.exports = {
   createIndex,

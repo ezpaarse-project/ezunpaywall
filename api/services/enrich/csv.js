@@ -50,8 +50,8 @@ let enricherAttributesCSV = [
   'year',
 ];
 
-const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp')
-let enrichedFile = path.resolve(tmp, 'enriched.csv')
+const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
+const enrichedFile = path.resolve(tmp, 'enriched.csv');
 
 const fetchAttributes = [];
 
@@ -81,7 +81,7 @@ const stringifyAttributes = (name, attributes) => {
 
 /**
  * sortAttr if is a complexe attributes
- * @param {*} attr 
+ * @param {*} attr
  */
 const sortAttr = (attr) => {
   // complexe attributes (like best_oa_location.license)
@@ -100,20 +100,20 @@ const sortAttr = (attr) => {
     // simple attributes (like is_oa)
     fetchAttributes.push(attr);
   }
-}
+};
 
 /**
  * parse the attributes so that they can be used in the graphql query
  */
 const createFetchAttributes = () => {
-  if(typeof enricherAttributesCSV === 'string') {
+  if (typeof enricherAttributesCSV === 'string') {
     sortAttr(enricherAttributesCSV);
   } else {
     enricherAttributesCSV.forEach((attr) => {
       sortAttr(attr);
     });
   }
-  
+
   if (best_oa_location.length !== 0) {
     best_oa_location = stringifyAttributes('best_oa_location', best_oa_location);
     fetchAttributes.push(best_oa_location);
@@ -260,7 +260,7 @@ const enrichmentFileCSV = async (readStream, args, separatorFile) => {
   if (fileExist) {
     await fs.unlink(enrichedFile);
   }
-  fs.openSync(enrichedFile, 'w')
+  fs.openSync(enrichedFile, 'w');
 
   separator = separatorFile;
 
@@ -302,7 +302,7 @@ const enrichmentFileCSV = async (readStream, args, separatorFile) => {
           await parser.resume();
         }
       },
-      complete: () => resolve()
+      complete: () => resolve(),
     });
   });
   // last insertion

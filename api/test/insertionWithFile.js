@@ -61,7 +61,6 @@ describe('test insertion with a file already installed in ez-unpaywall', () => {
       }
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-    await deleteFile('fake1.jsonl.gz');
     await downloadFile('fake1.jsonl.gz');
   });
 

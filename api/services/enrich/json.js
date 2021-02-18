@@ -49,8 +49,8 @@ let enricherAttributesJSON = [
   'year',
 ];
 
-const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp')
-let enrichedFile = path.resolve(tmp, 'enriched.jsonl')
+const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
+const enrichedFile = path.resolve(tmp, 'enriched.jsonl');
 
 const fetchAttributes = [];
 
@@ -75,7 +75,7 @@ const stringifyAttributes = (name, attributes) => {
 
 /**
  * sortAttr if is a complexe attributes
- * @param {*} attr 
+ * @param {*} attr
  */
 const sortAttr = (attr) => {
   // complexe attributes (like best_oa_location.license)
@@ -93,23 +93,24 @@ const sortAttr = (attr) => {
     if (str[0] === 'z_authors') {
       z_authors.push(str[1]);
     }
+  } else {
+    // simple attributes (like is_oa)
+    fetchAttributes.push(attr);
   }
-  // simple attributes (like is_oa)
-  fetchAttributes.push(attr);
-}
+};
 
 /**
  * parse the attributes so that they can be used in the graphql query
  */
 const createFetchAttributes = () => {
-  if(typeof enricherAttributesJSON === 'string') {
+  if (typeof enricherAttributesJSON === 'string') {
     sortAttr(enricherAttributesJSON);
   } else {
     enricherAttributesJSON.forEach((attr) => {
       sortAttr(attr);
     });
   }
-  
+
   if (best_oa_location.length !== 0) {
     best_oa_location = stringifyAttributes('best_oa_location', best_oa_location);
     fetchAttributes.push(best_oa_location);
@@ -186,7 +187,7 @@ const writeInFileJSON = async (tab) => {
     const stringTab = `${tab.map((el) => JSON.stringify(el)).join('\n')}\n`;
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
-    console.error(err);
+    logger.error(err);
   }
 };
 
@@ -200,13 +201,14 @@ const enrichmentFileJSON = async (readStream, args) => {
   let lineEnrich = 0;
 
   let valid;
-  if (args) {
+  if (args && args !== undefined) {
     valid = checkAttributesJSON(args);
+    if (!valid) {
+      // TODO return a error
+      return false;
+    }
   }
-  if (!valid) {
-    // TODO return a error
-    return false;
-  }
+
   createFetchAttributes();
   let loaded = 0;
 
@@ -217,7 +219,7 @@ const enrichmentFileJSON = async (readStream, args) => {
     await fs.unlink(enrichedFile);
   }
 
-  fs.openSync(enrichedFile, 'w')
+  fs.openSync(enrichedFile, 'w');
 
   const rl = readline.createInterface({
     input: readStream,
@@ -232,12 +234,13 @@ const enrichmentFileJSON = async (readStream, args) => {
   // eslint-disable-next-line no-restricted-syntax
   for await (const line of rl) {
     try {
+      logger.info(line);
       tab.push(JSON.parse(line));
     } catch (err) {
       logger.error(`parse line in enrichmentFileJSON ${err}`);
     }
     if (tab.length === 1000) {
-      const response = await fetchEzUnpaywall(tab, fetchAttributes, args.use);
+      const response = await fetchEzUnpaywall(tab, fetchAttributes);
       enricherTab(tab, response);
       lineRead += 1000;
       lineEnrich += response.length;
@@ -247,7 +250,7 @@ const enrichmentFileJSON = async (readStream, args) => {
   }
   // last insertion
   if (tab.length !== 0) {
-    const response = await fetchEzUnpaywall(tab, fetchAttributes, args.use);
+    const response = await fetchEzUnpaywall(tab, fetchAttributes);
     lineRead += tab.length;
     lineEnrich += response.length;
     enricherTab(tab, response);
