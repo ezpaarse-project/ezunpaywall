@@ -3,13 +3,8 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const api = require('../app');
-const fakeUnpaywall = require('../../fakeUnpaywall/app');
-
 const indexUnpawall = require('../index/unpaywall.json');
 const indexTask = require('../index/task.json');
-
-const client = require('../lib/client');
 
 const {
   createIndex,
@@ -17,75 +12,52 @@ const {
   countDocuments,
   isTaskEnd,
   getTask,
+} = require('./utils/elastic');
+
+const {
   deleteFile,
   initializeDate,
-  getLatestReport,
-} = require('./utils');
+} = require('./utils/file');
 
-const { logger } = require('../lib/logger');
+const {
+  getLatestReport,
+} = require('./utils/report');
+
+const {
+  ping,
+} = require('./utils/ping');
 
 chai.should();
 chai.use(chaiHttp);
 
-describe('test weekly update', () => {
+describe('Test: weekly update route test', () => {
   const ezunpaywallURL = 'http://localhost:8080';
-  const fakeUnpaywallURL = 'http://localhost:12000';
 
   before(async () => {
-    // wait ezunpaywall
-    let res1;
-    while (res1?.status !== 200 && res1?.body?.data !== 'pong') {
-      try {
-        res1 = await chai.request(ezunpaywallURL).get('/ping');
-      } catch (err) {
-        logger.error(`ezunpaywall ping : ${err}`);
-      }
-      await new Promise((resolve) => setTimeout(resolve(), 1000));
-    }
-    // wait fakeUnpaywall
-    let res2;
-    while (res2?.body?.data !== 'pong') {
-      try {
-        res2 = await chai.request(fakeUnpaywallURL).get('/ping');
-      } catch (err) {
-        logger.error(`fakeUnpaywall ping : ${err}`);
-      }
-      await new Promise((resolve) => setTimeout(resolve(), 1000));
-    }
-    // wait elastic started
-    let res3;
-    while (res3?.statusCode !== 200) {
-      try {
-        res3 = await client.ping();
-      } catch (err) {
-        logger.error(`elastic ping : ${err}`);
-      }
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+    await ping();
     initializeDate();
     await deleteFile('fake1.jsonl.gz');
   });
 
-  describe('/update weekly update', () => {
+  describe('Do a classic weekly update', () => {
     before(async () => {
       await createIndex('task', indexTask);
       await createIndex('unpaywall', indexUnpawall);
     });
 
     // test response
-    it('should return the process start', async () => {
-      const response = await chai.request(ezunpaywallURL)
+    it('Should return the process start', async () => {
+      const res = await chai.request(ezunpaywallURL)
         .post('/update')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
 
-      response.should.have.status(200);
-      response.body.should.have.property('message');
-      response.body.message.should.be.equal('weekly update has begun, list of task has been created on elastic');
+      expect(res).have.status(200);
+      expect(res.body.message).be.equal('weekly update has begun, list of task has been created on elastic');
     });
 
     // test insertion
-    it('should insert 50 datas', async () => {
+    it('Should insert 50 data', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -96,110 +68,110 @@ describe('test weekly update', () => {
     });
 
     // test task
-    it('should get task3 with all informations', async () => {
+    it('Should get task with all informations from the weekly update', async () => {
       const task = await getTask();
 
-      task.should.have.property('done');
-      task.should.have.property('currentTask');
-      task.should.have.property('steps');
-      task.should.have.property('createdAt');
-      task.should.have.property('endAt');
-      task.should.have.property('took');
-      task.steps[0].should.have.property('task');
-      task.steps[0].should.have.property('took');
-      task.steps[0].should.have.property('status');
+      expect(task).have.property('done');
+      expect(task).have.property('currentTask');
+      expect(task).have.property('steps');
+      expect(task).have.property('createdAt');
+      expect(task).have.property('endAt');
+      expect(task).have.property('took');
+      expect(task.steps[0]).have.property('task');
+      expect(task.steps[0]).have.property('took');
+      expect(task.steps[0]).have.property('status');
 
-      task.steps[1].should.have.property('task');
-      task.steps[1].should.have.property('file');
-      task.steps[1].should.have.property('percent');
-      task.steps[1].should.have.property('took');
-      task.steps[1].should.have.property('status');
+      expect(task.steps[1]).have.property('task');
+      expect(task.steps[1]).have.property('file');
+      expect(task.steps[1]).have.property('percent');
+      expect(task.steps[1]).have.property('took');
+      expect(task.steps[1]).have.property('status');
 
-      task.steps[2].should.have.property('task');
-      task.steps[2].should.have.property('file');
-      task.steps[2].should.have.property('percent');
-      task.steps[2].should.have.property('lineRead');
-      task.steps[2].should.have.property('took');
-      task.steps[2].should.have.property('status');
+      expect(task.steps[2]).have.property('task');
+      expect(task.steps[2]).have.property('file');
+      expect(task.steps[2]).have.property('percent');
+      expect(task.steps[2]).have.property('lineRead');
+      expect(task.steps[2]).have.property('took');
+      expect(task.steps[2]).have.property('status');
 
-      task.done.should.be.equal(true);
-      task.currentTask.should.be.equal('end');
-      task.steps[0].task.should.be.equal('fetchUnpaywall');
-      task.steps[0].status.should.be.equal('success');
+      expect(task.done).be.equal(true);
+      expect(task.currentTask).be.equal('end');
+      expect(task.steps[0].task).be.equal('fetchUnpaywall');
+      expect(task.steps[0].status).be.equal('success');
 
-      task.steps[1].task.should.be.equal('download');
-      task.steps[1].file.should.be.equal('fake1.jsonl.gz');
-      task.steps[1].percent.should.be.equal(100);
-      task.steps[1].status.should.be.equal('success');
+      expect(task.steps[1].task).be.equal('download');
+      expect(task.steps[1].file).be.equal('fake1.jsonl.gz');
+      expect(task.steps[1].percent).be.equal(100);
+      expect(task.steps[1].status).be.equal('success');
 
-      task.steps[2].task.should.be.equal('insert');
-      task.steps[2].file.should.be.equal('fake1.jsonl.gz');
-      task.steps[2].percent.should.be.equal(100);
-      task.steps[2].lineRead.should.be.equal(50);
-      task.steps[2].status.should.be.equal('success');
+      expect(task.steps[2].task).be.equal('insert');
+      expect(task.steps[2].file).be.equal('fake1.jsonl.gz');
+      expect(task.steps[2].percent).be.equal(100);
+      expect(task.steps[2].lineRead).be.equal(50);
+      expect(task.steps[2].status).be.equal('success');
     });
 
     // test report
-    it('should get report with all informations', async () => {
+    it('Should get report with all informations from the weekly update', async () => {
       const report = await getLatestReport();
 
-      report.should.have.property('done');
-      report.should.have.property('currentTask');
-      report.should.have.property('steps');
-      report.should.have.property('createdAt');
-      report.should.have.property('endAt');
-      report.should.have.property('took');
-      report.steps[0].should.have.property('task');
-      report.steps[0].should.have.property('took');
-      report.steps[0].should.have.property('status');
+      expect(report).have.property('done');
+      expect(report).have.property('currentTask');
+      expect(report).have.property('steps');
+      expect(report).have.property('createdAt');
+      expect(report).have.property('endAt');
+      expect(report).have.property('took');
+      expect(report.steps[0]).have.property('task');
+      expect(report.steps[0]).have.property('took');
+      expect(report.steps[0]).have.property('status');
 
-      report.steps[1].should.have.property('task');
-      report.steps[1].should.have.property('file');
-      report.steps[1].should.have.property('percent');
-      report.steps[1].should.have.property('took');
-      report.steps[1].should.have.property('status');
+      expect(report.steps[1]).have.property('task');
+      expect(report.steps[1]).have.property('file');
+      expect(report.steps[1]).have.property('percent');
+      expect(report.steps[1]).have.property('took');
+      expect(report.steps[1]).have.property('status');
 
-      report.steps[2].should.have.property('task');
-      report.steps[2].should.have.property('file');
-      report.steps[2].should.have.property('percent');
-      report.steps[2].should.have.property('lineRead');
-      report.steps[2].should.have.property('took');
-      report.steps[2].should.have.property('status');
+      expect(report.steps[2]).have.property('task');
+      expect(report.steps[2]).have.property('file');
+      expect(report.steps[2]).have.property('percent');
+      expect(report.steps[2]).have.property('lineRead');
+      expect(report.steps[2]).have.property('took');
+      expect(report.steps[2]).have.property('status');
 
-      report.done.should.be.equal(true);
-      report.currentTask.should.be.equal('end');
-      report.steps[0].task.should.be.equal('fetchUnpaywall');
-      report.steps[0].status.should.be.equal('success');
+      expect(report.done).be.equal(true);
+      expect(report.currentTask).be.equal('end');
+      expect(report.steps[0].task).be.equal('fetchUnpaywall');
+      expect(report.steps[0].status).be.equal('success');
 
-      report.steps[1].task.should.be.equal('download');
-      report.steps[1].file.should.be.equal('fake1.jsonl.gz');
-      report.steps[1].percent.should.be.equal(100);
-      report.steps[1].status.should.be.equal('success');
+      expect(report.steps[1].task).be.equal('download');
+      expect(report.steps[1].file).be.equal('fake1.jsonl.gz');
+      expect(report.steps[1].percent).be.equal(100);
+      expect(report.steps[1].status).be.equal('success');
 
-      report.steps[2].task.should.be.equal('insert');
-      report.steps[2].file.should.be.equal('fake1.jsonl.gz');
-      report.steps[2].percent.should.be.equal(100);
-      report.steps[2].lineRead.should.be.equal(50);
-      report.steps[2].status.should.be.equal('success');
+      expect(report.steps[2].task).be.equal('insert');
+      expect(report.steps[2].file).be.equal('fake1.jsonl.gz');
+      expect(report.steps[2].percent).be.equal(100);
+      expect(report.steps[2].lineRead).be.equal(50);
+      expect(report.steps[2].status).be.equal('success');
     });
   });
 
-  describe('/update weekly update with a file already installed', () => {
+  describe('Do a weekly update but the file is already installed', () => {
     before(async () => {
       await createIndex('task', indexTask);
       await createIndex('unpaywall', indexUnpawall);
     });
 
     // test return message
-    it('should return the process start', async () => {
-      const response = await chai.request(ezunpaywallURL)
+    it('Should return the process start', async () => {
+      const res = await chai.request(ezunpaywallURL)
         .post('/update')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
 
-      // test responses
-      response.should.have.status(200);
-      response.body.should.have.property('message').equal('weekly update has begun, list of task has been created on elastic');
+      // test response
+      expect(res).have.status(200);
+      expect(res.body).have.property('message').equal('weekly update has begun, list of task has been created on elastic');
     });
 
     // test insertion
@@ -214,49 +186,49 @@ describe('test weekly update', () => {
     });
 
     // test task
-    it('should get task with all informations', async () => {
+    it('Should get task with all informations from the weekly update', async () => {
       const task = await getTask();
 
-      task.should.have.property('done').equal(true);
-      task.should.have.property('currentTask').equal('end');
-      task.should.have.property('steps');
-      task.should.have.property('createdAt');
-      task.should.have.property('endAt');
-      task.should.have.property('took');
+      expect(task).have.property('done').equal(true);
+      expect(task).have.property('currentTask').equal('end');
+      expect(task).have.property('steps');
+      expect(task).have.property('createdAt');
+      expect(task).have.property('endAt');
+      expect(task).have.property('took');
 
-      task.steps[0].should.have.property('task').equal('fetchUnpaywall');
-      task.steps[0].should.have.property('took');
-      task.steps[0].should.have.property('status').equal('success');
+      expect(task.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(task.steps[0]).have.property('took');
+      expect(task.steps[0]).have.property('status').equal('success');
 
-      task.steps[1].should.have.property('task').equal('insert');
-      task.steps[1].should.have.property('file').equal('fake1.jsonl.gz');
-      task.steps[1].should.have.property('percent').equal(100);
-      task.steps[1].should.have.property('lineRead').equal(50);
-      task.steps[1].should.have.property('took');
-      task.steps[1].should.have.property('status').equal('success');
+      expect(task.steps[1]).have.property('task').equal('insert');
+      expect(task.steps[1]).have.property('file').equal('fake1.jsonl.gz');
+      expect(task.steps[1]).have.property('percent').equal(100);
+      expect(task.steps[1]).have.property('lineRead').equal(50);
+      expect(task.steps[1]).have.property('took');
+      expect(task.steps[1]).have.property('status').equal('success');
     });
 
     // test Report
-    it('should get report with all informations', async () => {
+    it('Should get report with all informations from the weekly update', async () => {
       const report = await getLatestReport();
 
-      report.should.have.property('done').equal(true);
-      report.should.have.property('currentTask').equal('end');
-      report.should.have.property('steps');
-      report.should.have.property('createdAt');
-      report.should.have.property('endAt');
-      report.should.have.property('took');
+      expect(report).have.property('done').equal(true);
+      expect(report).have.property('currentTask').equal('end');
+      expect(report).have.property('steps');
+      expect(report).have.property('createdAt');
+      expect(report).have.property('endAt');
+      expect(report).have.property('took');
 
-      report.steps[0].should.have.property('task').equal('fetchUnpaywall');
-      report.steps[0].should.have.property('took');
-      report.steps[0].should.have.property('status').equal('success');
+      expect(report.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(report.steps[0]).have.property('took');
+      expect(report.steps[0]).have.property('status').equal('success');
 
-      report.steps[1].should.have.property('task').equal('insert');
-      report.steps[1].should.have.property('file').equal('fake1.jsonl.gz');
-      report.steps[1].should.have.property('percent').equal(100);
-      report.steps[1].should.have.property('lineRead').equal(50);
-      report.steps[1].should.have.property('took');
-      report.steps[1].should.have.property('status').equal('success');
+      expect(report.steps[1]).have.property('task').equal('insert');
+      expect(report.steps[1]).have.property('file').equal('fake1.jsonl.gz');
+      expect(report.steps[1]).have.property('percent').equal(100);
+      expect(report.steps[1]).have.property('lineRead').equal(50);
+      expect(report.steps[1]).have.property('took');
+      expect(report.steps[1]).have.property('status').equal('success');
     });
     // TODO test Mail
   });
@@ -265,7 +237,5 @@ describe('test weekly update', () => {
     await deleteIndex('unpaywall');
     await deleteIndex('task');
     await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
   });
 });
