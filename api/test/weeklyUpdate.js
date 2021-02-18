@@ -27,7 +27,6 @@ const {
   ping,
 } = require('./utils/ping');
 
-chai.should();
 chai.use(chaiHttp);
 
 describe('Test: weekly update route test', () => {
