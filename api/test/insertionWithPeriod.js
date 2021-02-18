@@ -30,7 +30,7 @@ const ezunpaywallURL = 'http://localhost:8080';
 
 chai.use(chaiHttp);
 
-describe('test insertion between a period', () => {
+describe('Test: download and insert file from unpaywall between a period'), () => {
   const now = Date.now();
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
@@ -54,14 +54,14 @@ describe('test insertion between a period', () => {
     await deleteFile('fake3.jsonl.gz');
   });
 
-  describe(`/update?startDate=${date2} download and insert files between a period with startDate`, async () => {
+  describe(`Do a download and insert between ${date2} and now`, async () => {
     before(async () => {
       await createIndex('task', indexTask);
       await createIndex('unpaywall', indexUnpawall);
     });
 
     // test return message
-    it('should return the process start', async () => {
+    it('Should return the process start', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${date2}`)
         .set('Access-Control-Allow-Origin', '*')
@@ -71,7 +71,7 @@ describe('test insertion between a period', () => {
     });
 
     // test insertion
-    it('should insert 150 datas', async () => {
+    it('Should insert 150 datas', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -82,7 +82,7 @@ describe('test insertion between a period', () => {
     });
 
     // test task
-    it('should get task with all informations', async () => {
+    it('Should get task with all informations from the download and insertion', async () => {
       const task = await getTask();
 
       expect(task).have.property('done').equal(true);
@@ -124,7 +124,7 @@ describe('test insertion between a period', () => {
     });
 
     // test report
-    it('should get report with all informations', async () => {
+    it('Should get report with all informations from the download and insertion', async () => {
       const report = await getLatestReport();
 
       expect(report).have.property('done').equal(true);
@@ -166,7 +166,7 @@ describe('test insertion between a period', () => {
     });
   });
 
-  describe(`/update?startDate=${date3}&endDate=${date2} download and insert files between a period with startDate and endDate`, () => {
+  describe(`Do a download and insert between ${date3} and ${date2}`, () => {
     before(async () => {
       await deleteFile('fake1.jsonl.gz');
       await deleteFile('fake2.jsonl.gz');
@@ -175,7 +175,7 @@ describe('test insertion between a period', () => {
     });
 
     // test return message
-    it('should return the process start', async () => {
+    it('Should return the process start', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${date3}&endDate=${date2}`)
         .set('Access-Control-Allow-Origin', '*')
@@ -186,7 +186,7 @@ describe('test insertion between a period', () => {
     });
 
     // test insertion
-    it('should insert 2100 datas', async () => {
+    it('Should insert 2100 datas', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -197,7 +197,7 @@ describe('test insertion between a period', () => {
     });
 
     // test task
-    it('should get task with all informations', async () => {
+    it('Should get task with all informations from the download and insertion', async () => {
       const task = await getTask();
 
       expect(task).have.property('done').equal(true);
@@ -239,7 +239,7 @@ describe('test insertion between a period', () => {
     });
 
     // test task
-    it('should get report with all informations', async () => {
+    it('Should get report with all informations from the download and insertion', async () => {
       const report = await getLatestReport();
 
       expect(report).have.property('done').equal(true);
@@ -281,7 +281,7 @@ describe('test insertion between a period', () => {
     });
   });
 
-  describe(`/update?startDate=${date5}&endDate=${date4} try to download and insert files between a short period with startDate and endDate`, () => {
+  describe(`Don't download and insert between ${date5} and ${date4} because there is no file between these dates in ezunpaywall`, () => {
     before(async () => {
       await deleteFile('fake2.jsonl.gz');
       await deleteFile('fake3.jsonl.gz');
@@ -290,7 +290,7 @@ describe('test insertion between a period', () => {
     });
 
     // test return message
-    it('should return the process start', async () => {
+    it('Should return the process start', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${date5}&endDate=${date4}`)
         .set('Access-Control-Allow-Origin', '*')
@@ -300,7 +300,7 @@ describe('test insertion between a period', () => {
     });
 
     // test insertion
-    it('should insert nothing', async () => {
+    it('Should insert nothing', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -311,7 +311,7 @@ describe('test insertion between a period', () => {
     });
 
     // test task
-    it('should get task with all informations', async () => {
+    it('Should get task with all informations', async () => {
       const task = await getTask();
 
       expect(task).have.property('done').equal(true);
@@ -327,9 +327,9 @@ describe('test insertion between a period', () => {
     });
   });
 
-  describe(`/update?endDate=${date1} try to download and insert snapshot with only a endDate`, () => {
+  describe(`Don't do a download and insert with endDate=${date1} only`, () => {
     // test return message
-    it('should return a error message', async () => {
+    it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?endDate=${date1}`)
         .set('Access-Control-Allow-Origin', '*')
@@ -339,9 +339,9 @@ describe('test insertion between a period', () => {
     });
   });
 
-  describe('/update?startDate="WrongDate" try to download and insert snapshot with a date in bad format', () => {
+  describe('Don\'t do a download and insert with startDate in the wrong format', () => {
     // test return message
-    it('should return a error message', async () => {
+    it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post('/update?startDate=LookAtMyDab')
         .set('Access-Control-Allow-Origin', '*')
@@ -351,7 +351,7 @@ describe('test insertion between a period', () => {
     });
 
     // test return message
-    it('should return a error message', async () => {
+    it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post('/update?startDate=01-01-2000')
         .set('Access-Control-Allow-Origin', '*')
@@ -361,7 +361,7 @@ describe('test insertion between a period', () => {
     });
 
     // test return message
-    it('should return a error message', async () => {
+    it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post('/update?startDate=2000-50-50')
         .set('Access-Control-Allow-Origin', '*')
@@ -371,9 +371,9 @@ describe('test insertion between a period', () => {
     });
   });
 
-  describe(`/update?startDate=${date2}&endDate=${date3} try to download and insert files between a period with endDate < startDate`, () => {
+  describe(`Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
     // test return message
-    it('should return a error message', async () => {
+    it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${date2}&endDate=${date3}`)
         .set('Access-Control-Allow-Origin', '*')
@@ -383,9 +383,9 @@ describe('test insertion between a period', () => {
     });
   });
 
-  describe(`/update?startDate=${tomorrow} try to download and insert files with a startDate in the futur`, () => {
+  describe(`Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
     // test return message
-    it('should return a error message', async () => {
+    it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${tomorrow}`)
         .set('Access-Control-Allow-Origin', '*')
@@ -403,3 +403,4 @@ describe('test insertion between a period', () => {
     await deleteFile('fake3.jsonl.gz');
   });
 });
+

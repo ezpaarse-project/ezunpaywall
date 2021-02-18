@@ -319,7 +319,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
   });
 
-  describe('Don\'t do a insertion of a file already installed because the file is at the wrong format', () => {
+  describe('Don\'t do a insertion of a file already installed because the file is in the wrong format', () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
