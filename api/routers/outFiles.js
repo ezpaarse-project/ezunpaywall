@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const express = require('express');
 
-const outDir = path.resolve(__dirname, '..', '..', 'out');
+const outDir = path.resolve(__dirname, '..', 'out');
 const { getNamesOfFilesInDir } = require('../services/accessToOutFiles');
 
 /**
