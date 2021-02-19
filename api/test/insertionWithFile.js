@@ -111,6 +111,10 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   });
 
   describe('Do a classic insertion of a file already installed with parameter limit=10', () => {
+    before(async () => {
+      await createIndex('task', indexTask);
+      await createIndex('unpaywall', indexUnpawall);
+    });
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(ezunpaywallURL)

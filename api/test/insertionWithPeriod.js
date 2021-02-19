@@ -30,7 +30,7 @@ const ezunpaywallURL = 'http://localhost:8080';
 
 chai.use(chaiHttp);
 
-describe('Test: download and insert file from unpaywall between a period'), () => {
+describe('Test: download and insert file from unpaywall between a period', () => {
   const now = Date.now();
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
@@ -164,12 +164,17 @@ describe('Test: download and insert file from unpaywall between a period'), () =
       expect(report.steps[4]).have.property('took');
       expect(report.steps[4]).have.property('status').equal('success');
     });
+
+    after(async () => {
+      await deleteFile('fake1.jsonl.gz');
+      await deleteFile('fake2.jsonl.gz');
+      await deleteIndex('unpaywall');
+      await deleteIndex('task');
+    });
   });
 
   describe(`Do a download and insert between ${date3} and ${date2}`, () => {
     before(async () => {
-      await deleteFile('fake1.jsonl.gz');
-      await deleteFile('fake2.jsonl.gz');
       await createIndex('task', indexTask);
       await createIndex('unpaywall', indexUnpawall);
     });
@@ -279,12 +284,16 @@ describe('Test: download and insert file from unpaywall between a period'), () =
       expect(report.steps[4]).have.property('took');
       expect(report.steps[4]).have.property('status').equal('success');
     });
+    after(async () => {
+      await deleteFile('fake1.jsonl.gz');
+      await deleteFile('fake2.jsonl.gz');
+      await deleteIndex('unpaywall');
+      await deleteIndex('task');
+    });
   });
 
   describe(`Don't download and insert between ${date5} and ${date4} because there is no file between these dates in ezunpaywall`, () => {
     before(async () => {
-      await deleteFile('fake2.jsonl.gz');
-      await deleteFile('fake3.jsonl.gz');
       await createIndex('task', indexTask);
       await createIndex('unpaywall', indexUnpawall);
     });
@@ -311,7 +320,7 @@ describe('Test: download and insert file from unpaywall between a period'), () =
     });
 
     // test task
-    it('Should get task with all informations', async () => {
+    it('Should get task with all informations from the download and insertion', async () => {
       const task = await getTask();
 
       expect(task).have.property('done').equal(true);
@@ -403,4 +412,3 @@ describe('Test: download and insert file from unpaywall between a period'), () =
     await deleteFile('fake3.jsonl.gz');
   });
 });
-
