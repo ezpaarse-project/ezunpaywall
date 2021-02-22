@@ -65,8 +65,27 @@ const initializeDate = async () => {
   }
 };
 
+const binaryParser = (res, cb) => {
+  res.setEncoding('binary');
+  res.data = '';
+  res.on('data', (chunk) => {
+    res.data += chunk;
+  });
+  res.on('end', () => {
+    cb(null, Buffer.from(res.data, 'binary'));
+  });
+};
+
+const compareFile = async (path1, path2) => {
+  const file1 = await fs.readFile(path1, 'utf-8');
+  const file2 = await fs.readFile(path2, 'utf-8');
+  return file1.trim().replace(/\r\n/g, '\n') === file2.trim().replace(/\r\n/g, '\n');
+};
+
 module.exports = {
   initializeDate,
   deleteFile,
   downloadFile,
+  binaryParser,
+  compareFile,
 };
