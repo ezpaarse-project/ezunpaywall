@@ -153,7 +153,8 @@ Insert the content of files that the server has already downloaded (file in .gz 
 | Name | Type | Description |
 | --- | --- | --- |
 | startDate | QUERY (optionnal) | period start date at format YYYY-mm-dd |
-| endDate | QUERY (optionnal)| period end date at format YYYY-mm-dd |
+| endDate | QUERY (optionnal) | period end date at format YYYY-mm-dd |
+
 Downloads update files offered by unpaywall.
 - If there are no `start` and` end` attributes, It will execute
 the download and the insertion of the most recent update file.
