@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const path = require('path');
 
-const { enrichmentFileJSON } = require('../services/enrich/json');
-const { enrichmentFileCSV } = require('../services/enrich/csv');
+const { enrichmentFileJSON, checkAttributesJSON } = require('../services/enrich/json');
+const { enrichmentFileCSV, checkAttributesCSV } = require('../services/enrich/csv');
 
 const tmpDir = path.resolve(__dirname, '..', 'out', 'tmp');
 
@@ -14,7 +14,14 @@ const tmpDir = path.resolve(__dirname, '..', 'out', 'tmp');
  */
 router.post('/enrich/json', async (req, res) => {
   const { args } = req.query;
-  await enrichmentFileJSON(req, args);
+  let attrs = [];
+  if (args) {
+    attrs = checkAttributesJSON(args);
+    if (!attrs) {
+      return res.status(401).json({ message: 'args incorrect' });
+    }
+  }
+  await enrichmentFileJSON(req, attrs);
   return res.status(200).download(path.resolve(tmpDir, 'enriched.jsonl'));
 });
 
@@ -26,11 +33,16 @@ router.post('/enrich/json', async (req, res) => {
  */
 router.post('/enrich/csv', async (req, res) => {
   const { args } = req.query;
-  const { separator } = req.query;
-  if (!args) {
-    return res.status(400).json({ message: 'name of snapshot file expected' });
+  let { separator } = req.query;
+  let attrs = [];
+  if (args) {
+    attrs = checkAttributesCSV(args);
+    if (!attrs) {
+      return res.status(401).json({ message: 'args incorrect' });
+    }
   }
-  await enrichmentFileCSV(req, args, separator);
+  if (!separator) separator = ',';
+  await enrichmentFileCSV(req, attrs, separator);
   return res.status(200).download(path.resolve(tmpDir, 'enriched.csv'));
 });
 

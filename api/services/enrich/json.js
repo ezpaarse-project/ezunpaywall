@@ -28,6 +28,16 @@ let enricherAttributesJSON = [
   'best_oa_location.url_for_landing_page',
   'best_oa_location.url_for_pdf',
   'best_oa_location.version',
+  'first_oa_location.evidence',
+  'first_oa_location.host_type',
+  'first_oa_location.is_best',
+  'first_oa_location.license',
+  'first_oa_location.pmh_id',
+  'first_oa_location.updated',
+  'first_oa_location.url',
+  'first_oa_location.url_for_landing_page',
+  'first_oa_location.url_for_pdf',
+  'first_oa_location.version',
   'z_authors.family',
   'z_authors.given',
   'z_authors.sequence',
@@ -52,12 +62,71 @@ let enricherAttributesJSON = [
 const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
 const enrichedFile = path.resolve(tmp, 'enriched.jsonl');
 
-const fetchAttributes = [];
+let fetchAttributes = [];
 
 let best_oa_location = [];
 let first_oa_location = [];
 let oa_locations = [];
 let z_authors = [];
+
+const reset = () => {
+  enricherAttributesJSON = [
+    'oa_locations.evidence',
+    'oa_locations.host_type',
+    'oa_locations.is_best',
+    'oa_locations.license',
+    'oa_locations.pmh_id',
+    'oa_locations.updated',
+    'oa_locations.url',
+    'oa_locations.url_for_landing_page',
+    'oa_locations.url_for_pdf',
+    'oa_locations.version',
+    'best_oa_location.evidence',
+    'best_oa_location.host_type',
+    'best_oa_location.is_best',
+    'best_oa_location.license',
+    'best_oa_location.pmh_id',
+    'best_oa_location.updated',
+    'best_oa_location.url',
+    'best_oa_location.url_for_landing_page',
+    'best_oa_location.url_for_pdf',
+    'best_oa_location.version',
+    'first_oa_location.evidence',
+    'first_oa_location.host_type',
+    'first_oa_location.is_best',
+    'first_oa_location.license',
+    'first_oa_location.pmh_id',
+    'first_oa_location.updated',
+    'first_oa_location.url',
+    'first_oa_location.url_for_landing_page',
+    'first_oa_location.url_for_pdf',
+    'first_oa_location.version',
+    'z_authors.family',
+    'z_authors.given',
+    'z_authors.sequence',
+    'data_standard',
+    'doi_url',
+    'genre',
+    'is_paratext',
+    'is_oa',
+    'journal_is_in_doaj',
+    'journal_is_oa',
+    'journal_issns',
+    'journal_issn_l',
+    'journal_name',
+    'oa_status',
+    'published_date',
+    'publisher',
+    'title',
+    'updated',
+    'year',
+  ];
+  fetchAttributes = [];
+  best_oa_location = [];
+  oa_locations = [];
+  first_oa_location = [];
+  z_authors = [];
+};
 
 /**
  * parse the complexes attributes so that they can be used in the graphql query
@@ -134,22 +203,24 @@ const createFetchAttributes = () => {
  * @param {*} attr String of attributes
  */
 const checkAttributesJSON = (attrs) => {
-  let attributes = attrs;
+  const res = [];
   if (attrs.includes(',')) {
-    attributes = attrs.split(',');
-    attributes.forEach((attr) => {
-      if (!enricherAttributesJSON.includes(attr)) {
+    attrs = attrs.split(',');
+    attrs.forEach((attr) => {
+      if (enricherAttributesJSON.includes(attr)) {
+        res.push(attr);
+      } else {
         logger.error(`attribut ${attr} cannot be enriched on JSON file`);
         return false;
       }
-      return true;
     });
-  } else if (!enricherAttributesJSON.includes(attributes)) {
-    logger.error(`attribut ${attributes} cannot be enriched on JSON file`);
+  } else if (enricherAttributesJSON.includes(attrs)) {
+    res.push(attrs);
+  } else {
+    logger.error(`attribut ${attrs} cannot be enriched on JSON file`);
     return false;
   }
-  enricherAttributesJSON = attributes;
-  return true;
+  return res;
 };
 
 /**
@@ -187,7 +258,7 @@ const writeInFileJSON = async (tab) => {
     const stringTab = `${tab.map((el) => JSON.stringify(el)).join('\n')}\n`;
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
-    logger.error(err);
+    logger.error(`writeInFileJSON: ${err}`);
   }
 };
 
@@ -196,21 +267,14 @@ const writeInFileJSON = async (tab) => {
  * @param readStream read the stream of the file you want to enrich
  * @param args attributes will be add
  */
-const enrichmentFileJSON = async (readStream, args) => {
+const enrichmentFileJSON = async (readStream, attributs) => {
+  if (attributs.length) {
+    enricherAttributesJSON = attributs;
+  }
+  createFetchAttributes();
+
   let lineRead = 0;
   let lineEnrich = 0;
-
-  let valid;
-  if (args && args !== undefined) {
-    valid = checkAttributesJSON(args);
-    if (!valid) {
-      // TODO return a error
-      return false;
-    }
-  }
-
-  createFetchAttributes();
-  let loaded = 0;
 
   // TODO use a rotate delete
   // empty the file
@@ -220,6 +284,8 @@ const enrichmentFileJSON = async (readStream, args) => {
   }
 
   fs.openSync(enrichedFile, 'w');
+
+  let loaded = 0;
 
   const rl = readline.createInterface({
     input: readStream,
@@ -234,10 +300,9 @@ const enrichmentFileJSON = async (readStream, args) => {
   // eslint-disable-next-line no-restricted-syntax
   for await (const line of rl) {
     try {
-      logger.info(line);
       tab.push(JSON.parse(line));
     } catch (err) {
-      logger.error(`parse line in enrichmentFileJSON ${err}`);
+      logger.error(`parse line in enrichmentFileJSON for line : ${line} ${err}`);
     }
     if (tab.length === 1000) {
       const response = await fetchEzUnpaywall(tab, fetchAttributes);
@@ -257,9 +322,11 @@ const enrichmentFileJSON = async (readStream, args) => {
     await writeInFileJSON(tab);
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
+  reset();
   return true;
 };
 
 module.exports = {
   enrichmentFileJSON,
+  checkAttributesJSON,
 };

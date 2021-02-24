@@ -261,7 +261,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .parse(binaryParser);
 
       expect(res).have.status(401);
-      // expect(JSON.parse(res.body).message).be.equal('"don\'t exist" can be enriched by ezunpaywall');
+      expect(JSON.parse(res.body).message).be.equal('args incorrect');
     });
   });
 
