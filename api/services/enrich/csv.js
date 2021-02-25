@@ -15,9 +15,6 @@ const enrichedFile = path.resolve(tmp, 'enriched.csv');
 let headers = [];
 let separator;
 
-let lineRead = 0;
-let lineEnrich = 0;
-
 const setEnrichAttributesCSV = () => [
   'best_oa_location.evidence',
   'best_oa_location.host_type',
@@ -302,6 +299,9 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
   //   loaded += chunk.length;
   // });
 
+  let lineRead = 0;
+  let lineEnrich = 0;
+
   await new Promise((resolve) => {
     Papa.parse(readStream, {
       delimiter: ',',
@@ -346,8 +346,6 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
   headers = [];
-  lineRead = 0;
-  lineEnrich = 0;
   return true;
 };
 
