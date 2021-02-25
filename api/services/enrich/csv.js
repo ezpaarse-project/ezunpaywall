@@ -12,8 +12,6 @@ const { fetchEzUnpaywall } = require('./utils');
 const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
 const enrichedFile = path.resolve(tmp, 'enriched.csv');
 
-let fetchAttributes = [];
-
 let headers = [];
 let separator;
 
@@ -80,7 +78,7 @@ const stringifyAttributes = (name, attributes) => {
  * sortAttr if is a complexe attributes
  * @param {*} attr
  */
-const sortAttr = (attr, best_oa_location, first_oa_location, z_authors) => {
+const sortAttr = (attr, best_oa_location, first_oa_location, z_authors, fetchAttributes) => {
   // complexe attributes (like best_oa_location.license)
   if (attr.includes('.')) {
     const str = attr.split('.');
@@ -98,7 +96,7 @@ const sortAttr = (attr, best_oa_location, first_oa_location, z_authors) => {
     fetchAttributes.push(attr);
   }
   return {
-    best_oa_location, first_oa_location, z_authors,
+    best_oa_location, first_oa_location, z_authors, fetchAttributes,
   };
 };
 
@@ -106,7 +104,7 @@ const sortAttr = (attr, best_oa_location, first_oa_location, z_authors) => {
  * parse the attributes so that they can be used in the graphql query
  */
 const createFetchAttributes = (enrichAttributesCSV) => {
-
+  let fetchAttributes = [];
 
   let best_oa_location = [];
   let first_oa_location = [];
@@ -125,6 +123,7 @@ const createFetchAttributes = (enrichAttributesCSV) => {
     best_oa_location = value.best_oa_location;
     first_oa_location = value.first_oa_location;
     z_authors = value.z_authors;
+    fetchAttributes = value.fetchAttributes;
   } else {
     enrichAttributesCSV.forEach((attr) => {
       value = sortAttr(
@@ -137,6 +136,7 @@ const createFetchAttributes = (enrichAttributesCSV) => {
       best_oa_location = value.best_oa_location;
       first_oa_location = value.first_oa_location;
       z_authors = value.z_authors;
+      fetchAttributes = value.fetchAttributes;
     });
   }
 
@@ -152,6 +152,7 @@ const createFetchAttributes = (enrichAttributesCSV) => {
     z_authors = stringifyAttributes('z_authors', z_authors);
     fetchAttributes.push(z_authors);
   }
+  return fetchAttributes;
 };
 
 /**
@@ -281,7 +282,7 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
     enrichAttributesCSV = attributs;
   }
 
-  createFetchAttributes(enrichAttributesCSV);
+  const fetchAttributes = createFetchAttributes(enrichAttributesCSV);
 
   // TODO use a rotate delete
   // empty the file
@@ -345,7 +346,6 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
   headers = [];
-  fetchAttributes = [];
   lineRead = 0;
   lineEnrich = 0;
   return true;
