@@ -12,9 +12,6 @@ const { fetchEzUnpaywall } = require('./utils');
 const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
 const enrichedFile = path.resolve(tmp, 'enriched.csv');
 
-let headers = [];
-let separator;
-
 const setEnrichAttributesCSV = () => [
   'best_oa_location.evidence',
   'best_oa_location.host_type',
@@ -65,7 +62,7 @@ const setEnrichAttributesCSV = () => [
 const stringifyAttributes = (name, attributes) => {
   let res;
   if (attributes.length !== 0) {
-    res = attributes.join(separator);
+    res = attributes.join(',');
   }
   res = `${name}{${res}}`;
   return res;
@@ -226,7 +223,7 @@ const enrichTab = (tab, response, enrichAttributesCSV) => {
  * write the array of line enriched in a enrichedFile file CSV
  * @param {*} tab array of line enriched
  */
-const writeInFileCSV = async (tab) => {
+const writeInFileCSV = async (tab, headers, separator) => {
   const parsedTab = JSON.stringify(tab);
   try {
     const unparse = await Papa.unparse(parsedTab, {
@@ -261,7 +258,7 @@ const enrichHeaderCSV = (header, enrichAttributesCSV) => {
  * first writing on CSV file: the header enriched
  * @param {*} header header enriched
  */
-const writeHeaderCSV = async (header) => {
+const writeHeaderCSV = async (header, separator) => {
   try {
     await fs.writeFile(enrichedFile, `${header.join(separator)}\r\n`, { flag: 'a' });
   } catch (err) {
@@ -273,7 +270,7 @@ const writeHeaderCSV = async (header) => {
  * starts the enrichment process for files CSV
  * @param {*} readStream read the stream of the file you want to enrich
  */
-const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
+const enrichmentFileCSV = async (readStream, attributs, separator) => {
   let enrichAttributesCSV = setEnrichAttributesCSV();
   if (attributs.length) {
     enrichAttributesCSV = attributs;
@@ -289,8 +286,6 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
   }
   fs.openSync(enrichedFile, 'w');
 
-  separator = separatorFile;
-
   let tab = [];
   let head = true;
   // let loaded = 0;
@@ -301,6 +296,8 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
 
   let lineRead = 0;
   let lineEnrich = 0;
+
+  let headers = [];
 
   await new Promise((resolve) => {
     Papa.parse(readStream, {
@@ -317,7 +314,7 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
           await parser.pause();
           head = false;
           headers = await enrichHeaderCSV(headers, enrichAttributesCSV);
-          await writeHeaderCSV(headers);
+          await writeHeaderCSV(headers, separator);
           await parser.resume();
         }
 
@@ -329,7 +326,7 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
           enrichTab(tabWillBeEnriched, response, enrichAttributesCSV);
           lineRead += 1000;
           lineEnrich += response.length;
-          await writeInFileCSV(tabWillBeEnriched);
+          await writeInFileCSV(tabWillBeEnriched, headers, separator);
           await parser.resume();
         }
       },
@@ -342,7 +339,7 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
     enrichTab(tab, response, enrichAttributesCSV);
     lineRead += tab.length;
     lineEnrich += response.length;
-    await writeInFileCSV(tab);
+    await writeInFileCSV(tab, headers, separator);
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
   headers = [];
