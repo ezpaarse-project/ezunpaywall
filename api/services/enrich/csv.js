@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable camelcase */
 const fs = require('fs-extra');
@@ -8,7 +9,22 @@ const { logger } = require('../../lib/logger');
 
 const { fetchEzUnpaywall } = require('./utils');
 
-let enricherAttributesCSV = [
+const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
+const enrichedFile = path.resolve(tmp, 'enriched.csv');
+
+let fetchAttributes = [];
+
+let best_oa_location = [];
+let first_oa_location = [];
+let z_authors = [];
+
+let headers = [];
+let separator;
+
+let lineRead = 0;
+let lineEnrich = 0;
+
+const setEnrichAttributesCSV = () => [
   'best_oa_location.evidence',
   'best_oa_location.host_type',
   'best_oa_location.is_best',
@@ -50,72 +66,6 @@ let enricherAttributesCSV = [
   'year',
 ];
 
-const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
-const enrichedFile = path.resolve(tmp, 'enriched.csv');
-
-let fetchAttributes = [];
-
-let best_oa_location = [];
-let first_oa_location = [];
-let z_authors = [];
-
-let headers = [];
-let separator;
-
-let lineRead = 0;
-let lineEnrich = 0;
-
-const reset = () => {
-  enricherAttributesCSV = [
-    'best_oa_location.evidence',
-    'best_oa_location.host_type',
-    'best_oa_location.is_best',
-    'best_oa_location.license',
-    'best_oa_location.pmh_id',
-    'best_oa_location.updated',
-    'best_oa_location.url',
-    'best_oa_location.url_for_landing_page',
-    'best_oa_location.url_for_pdf',
-    'best_oa_location.version',
-    'first_oa_location.evidence',
-    'first_oa_location.host_type',
-    'first_oa_location.is_best',
-    'first_oa_location.license',
-    'first_oa_location.pmh_id',
-    'first_oa_location.updated',
-    'first_oa_location.url',
-    'first_oa_location.url_for_landing_page',
-    'first_oa_location.url_for_pdf',
-    'first_oa_location.version',
-    'z_authors.family',
-    'z_authors.given',
-    'z_authors.sequence',
-    'data_standard',
-    'doi_url',
-    'genre',
-    'is_paratext',
-    'is_oa',
-    'journal_is_in_doaj',
-    'journal_is_oa',
-    'journal_issns',
-    'journal_issn_l',
-    'journal_name',
-    'oa_status',
-    'published_date',
-    'publisher',
-    'title',
-    'updated',
-    'year',
-  ];
-  headers = [];
-  fetchAttributes = [];
-  best_oa_location = [];
-  first_oa_location = [];
-  z_authors = [];
-  lineRead = 0;
-  lineEnrich = 0;
-};
-
 /**
  * parse the complexes attributes so that they can be used in the graphql query
  * @param {*} name name of param
@@ -156,11 +106,11 @@ const sortAttr = (attr) => {
 /**
  * parse the attributes so that they can be used in the graphql query
  */
-const createFetchAttributes = () => {
-  if (typeof enricherAttributesCSV === 'string') {
-    sortAttr(enricherAttributesCSV);
+const createFetchAttributes = (enrichAttributesCSV) => {
+  if (typeof enrichAttributesCSV === 'string') {
+    sortAttr(enrichAttributesCSV);
   } else {
-    enricherAttributesCSV.forEach((attr) => {
+    enrichAttributesCSV.forEach((attr) => {
       sortAttr(attr);
     });
   }
@@ -183,19 +133,19 @@ const createFetchAttributes = () => {
  * checks if the attributes entered by the command are related to the unpaywall data model
  * @param {*} attrs array of attributes
  */
-const checkAttributesCSV = (attrs) => {
+const checkAttributesCSV = (attrs, enrichAttributesCSV) => {
   const res = [];
   if (attrs.includes(',')) {
     attrs = attrs.split(',');
     attrs.forEach((attr) => {
-      if (enricherAttributesCSV.includes(attr)) {
+      if (enrichAttributesCSV.includes(attr)) {
         res.push(attr);
       } else {
         logger.error(`attribut ${attr} cannot be enriched on CSV file`);
         return false;
       }
     });
-  } else if (enricherAttributesCSV.includes(attrs)) {
+  } else if (enrichAttributesCSV.includes(attrs)) {
     res.push(attrs);
   } else {
     logger.error(`attribut ${attrs} cannot be enriched on CSV file`);
@@ -208,7 +158,7 @@ const checkAttributesCSV = (attrs) => {
  * @param {*} tab array of line that we will enrich
  * @param {*} response response from ez-unpaywall
  */
-const enricherTab = (tab, response) => {
+const enrichTab = (tab, response, enrichAttributesCSV) => {
   const results = new Map();
   // index on doi
   response.forEach((el) => {
@@ -225,7 +175,7 @@ const enricherTab = (tab, response) => {
     if (!data) {
       return;
     }
-    enricherAttributesCSV.forEach((attr) => {
+    enrichAttributesCSV.forEach((attr) => {
       // if complex attribute (like best_oa_location.url)
       if (attr.includes('.')) {
         const str = attr.split('.');
@@ -268,15 +218,15 @@ const writeInFileCSV = async (tab) => {
 };
 
 /**
- * enrich the header with enricherAttributesCSV
+ * enrich the header with enrichAttributesCSV
  * @param {*} header header will be enrich
  */
-const enricherHeaderCSV = (header) => {
+const enrichHeaderCSV = (header, enrichAttributesCSV) => {
   // delete attributes already in header
-  let res = header.filter((el) => !enricherAttributesCSV.includes(el));
-  res = res.concat(enricherAttributesCSV);
+  let res = header.filter((el) => !enrichAttributesCSV.includes(el));
+  res = res.concat(enrichAttributesCSV);
   const found = res.find((element) => element.includes('z_authors'));
-  res = enricherAttributesCSV.filter((el) => !el.includes('z_authors'));
+  res = enrichAttributesCSV.filter((el) => !el.includes('z_authors'));
   if (found) {
     res.push('first_authors');
     res.push('additional_authors');
@@ -301,11 +251,12 @@ const writeHeaderCSV = async (header) => {
  * @param {*} readStream read the stream of the file you want to enrich
  */
 const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
+  let enrichAttributesCSV = setEnrichAttributesCSV();
   if (attributs.length) {
-    enricherAttributesCSV = attributs;
+    enrichAttributesCSV = attributs;
   }
 
-  createFetchAttributes();
+  createFetchAttributes(enrichAttributesCSV);
 
   // TODO use a rotate delete
   // empty the file
@@ -319,11 +270,11 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
 
   let tab = [];
   let head = true;
-  let loaded = 0;
+  // let loaded = 0;
 
-  readStream.on('data', (chunk) => {
-    loaded += chunk.length;
-  });
+  // readStream.on('data', (chunk) => {
+  //   loaded += chunk.length;
+  // });
 
   await new Promise((resolve) => {
     Papa.parse(readStream, {
@@ -339,7 +290,7 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
         if (head) {
           await parser.pause();
           head = false;
-          headers = await enricherHeaderCSV(headers, fetchAttributes);
+          headers = await enrichHeaderCSV(headers, enrichAttributesCSV);
           await writeHeaderCSV(headers);
           await parser.resume();
         }
@@ -349,7 +300,7 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
           tab = [];
           await parser.pause();
           const response = await fetchEzUnpaywall(tabWillBeEnriched, fetchAttributes);
-          enricherTab(tabWillBeEnriched, response);
+          enrichTab(tabWillBeEnriched, response, enrichAttributesCSV);
           lineRead += 1000;
           lineEnrich += response.length;
           await writeInFileCSV(tabWillBeEnriched);
@@ -362,17 +313,24 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
   // last insertion
   if (tab.length !== 0) {
     const response = await fetchEzUnpaywall(tab, fetchAttributes);
-    enricherTab(tab, response);
+    enrichTab(tab, response, enrichAttributesCSV);
     lineRead += tab.length;
     lineEnrich += response.length;
     await writeInFileCSV(tab);
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
-  reset();
+  headers = [];
+  fetchAttributes = [];
+  best_oa_location = [];
+  first_oa_location = [];
+  z_authors = [];
+  lineRead = 0;
+  lineEnrich = 0;
   return true;
 };
 
 module.exports = {
   checkAttributesCSV,
   enrichmentFileCSV,
+  setEnrichAttributesCSV,
 };
