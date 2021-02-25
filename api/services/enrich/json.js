@@ -13,11 +13,6 @@ const enrichedFile = path.resolve(tmp, 'enriched.jsonl');
 
 let fetchAttributes = [];
 
-let best_oa_location = [];
-let first_oa_location = [];
-let oa_locations = [];
-let z_authors = [];
-
 const setEnrichAttributesJSON = () => [
   'oa_locations.evidence',
   'oa_locations.host_type',
@@ -88,7 +83,7 @@ const stringifyAttributes = (name, attributes) => {
  * sortAttr if is a complexe attributes
  * @param {*} attr
  */
-const sortAttr = (attr) => {
+const sortAttr = (attr, best_oa_location, first_oa_location, oa_locations, z_authors) => {
   // complexe attributes (like best_oa_location.license)
   if (attr.includes('.')) {
     const str = attr.split('.');
@@ -108,17 +103,35 @@ const sortAttr = (attr) => {
     // simple attributes (like is_oa)
     fetchAttributes.push(attr);
   }
+  return {
+    best_oa_location, first_oa_location, oa_locations, z_authors,
+  };
 };
 
 /**
  * parse the attributes so that they can be used in the graphql query
  */
 const createFetchAttributes = (enrichAttributesJSON) => {
+  let best_oa_location = [];
+  let first_oa_location = [];
+  let oa_locations = [];
+  let z_authors = [];
+
+  let value;
+
   if (typeof enrichAttributesJSON === 'string') {
-    sortAttr(enrichAttributesJSON);
+    value = sortAttr(enrichAttributesJSON, best_oa_location, first_oa_location, oa_locations, z_authors);
+    best_oa_location = value.best_oa_location;
+    first_oa_location = value.first_oa_location;
+    oa_locations = value.oa_locations;
+    z_authors = value.z_authors;
   } else {
     enrichAttributesJSON.forEach((attr) => {
-      sortAttr(attr);
+      value = sortAttr(attr, best_oa_location, first_oa_location, oa_locations, z_authors);
+      best_oa_location = value.best_oa_location;
+      first_oa_location = value.first_oa_location;
+      oa_locations = value.oa_locations;
+      z_authors = value.z_authors;
     });
   }
 
@@ -266,10 +279,6 @@ const enrichmentFileJSON = async (readStream, attributs) => {
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
   fetchAttributes = [];
-  best_oa_location = [];
-  oa_locations = [];
-  first_oa_location = [];
-  z_authors = [];
   return true;
 };
 
