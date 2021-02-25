@@ -81,7 +81,14 @@ const stringifyAttributes = (name, attributes) => {
  * sortAttr if is a complexe attributes
  * @param {*} attr
  */
-const sortAttr = (attr, best_oa_location, first_oa_location, oa_locations, z_authors, fetchAttributes) => {
+const sortAttr = (
+  attr,
+  best_oa_location,
+  first_oa_location,
+  oa_locations,
+  z_authors,
+  fetchAttributes,
+) => {
   // complexe attributes (like best_oa_location.license)
   if (attr.includes('.')) {
     const str = attr.split('.');
@@ -120,7 +127,14 @@ const createFetchAttributes = (enrichAttributesJSON) => {
   let value;
 
   if (typeof enrichAttributesJSON === 'string') {
-    value = sortAttr(enrichAttributesJSON, best_oa_location, first_oa_location, oa_locations, z_authors, fetchAttributes);
+    value = sortAttr(
+      enrichAttributesJSON,
+      best_oa_location,
+      first_oa_location,
+      oa_locations,
+      z_authors,
+      fetchAttributes,
+    );
     best_oa_location = value.best_oa_location;
     first_oa_location = value.first_oa_location;
     oa_locations = value.oa_locations;
@@ -128,7 +142,14 @@ const createFetchAttributes = (enrichAttributesJSON) => {
     fetchAttributes = value.fetchAttributes;
   } else {
     enrichAttributesJSON.forEach((attr) => {
-      value = sortAttr(attr, best_oa_location, first_oa_location, oa_locations, z_authors, fetchAttributes);
+      value = sortAttr(
+        attr,
+        best_oa_location,
+        first_oa_location,
+        oa_locations,
+        z_authors,
+        fetchAttributes,
+      );
       best_oa_location = value.best_oa_location;
       first_oa_location = value.first_oa_location;
       oa_locations = value.oa_locations;
