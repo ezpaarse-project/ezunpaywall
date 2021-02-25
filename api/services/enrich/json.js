@@ -11,8 +11,6 @@ const { fetchEzUnpaywall } = require('./utils');
 const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
 const enrichedFile = path.resolve(tmp, 'enriched.jsonl');
 
-let fetchAttributes = [];
-
 const setEnrichAttributesJSON = () => [
   'oa_locations.evidence',
   'oa_locations.host_type',
@@ -83,7 +81,7 @@ const stringifyAttributes = (name, attributes) => {
  * sortAttr if is a complexe attributes
  * @param {*} attr
  */
-const sortAttr = (attr, best_oa_location, first_oa_location, oa_locations, z_authors) => {
+const sortAttr = (attr, best_oa_location, first_oa_location, oa_locations, z_authors, fetchAttributes) => {
   // complexe attributes (like best_oa_location.license)
   if (attr.includes('.')) {
     const str = attr.split('.');
@@ -104,7 +102,7 @@ const sortAttr = (attr, best_oa_location, first_oa_location, oa_locations, z_aut
     fetchAttributes.push(attr);
   }
   return {
-    best_oa_location, first_oa_location, oa_locations, z_authors,
+    best_oa_location, first_oa_location, oa_locations, z_authors, fetchAttributes,
   };
 };
 
@@ -112,6 +110,8 @@ const sortAttr = (attr, best_oa_location, first_oa_location, oa_locations, z_aut
  * parse the attributes so that they can be used in the graphql query
  */
 const createFetchAttributes = (enrichAttributesJSON) => {
+  let fetchAttributes = [];
+
   let best_oa_location = [];
   let first_oa_location = [];
   let oa_locations = [];
@@ -120,18 +120,20 @@ const createFetchAttributes = (enrichAttributesJSON) => {
   let value;
 
   if (typeof enrichAttributesJSON === 'string') {
-    value = sortAttr(enrichAttributesJSON, best_oa_location, first_oa_location, oa_locations, z_authors);
+    value = sortAttr(enrichAttributesJSON, best_oa_location, first_oa_location, oa_locations, z_authors, fetchAttributes);
     best_oa_location = value.best_oa_location;
     first_oa_location = value.first_oa_location;
     oa_locations = value.oa_locations;
     z_authors = value.z_authors;
+    fetchAttributes = value.fetchAttributes;
   } else {
     enrichAttributesJSON.forEach((attr) => {
-      value = sortAttr(attr, best_oa_location, first_oa_location, oa_locations, z_authors);
+      value = sortAttr(attr, best_oa_location, first_oa_location, oa_locations, z_authors, fetchAttributes);
       best_oa_location = value.best_oa_location;
       first_oa_location = value.first_oa_location;
       oa_locations = value.oa_locations;
       z_authors = value.z_authors;
+      fetchAttributes = value.fetchAttributes;
     });
   }
 
@@ -151,6 +153,7 @@ const createFetchAttributes = (enrichAttributesJSON) => {
     z_authors = stringifyAttributes('z_authors', z_authors);
     fetchAttributes.push(z_authors);
   }
+  return fetchAttributes;
 };
 
 /**
@@ -227,7 +230,7 @@ const enrichmentFileJSON = async (readStream, attributs) => {
   if (attributs.length) {
     enrichAttributesJSON = attributs;
   }
-  createFetchAttributes(enrichAttributesJSON);
+  const fetchAttributes = createFetchAttributes(enrichAttributesJSON);
 
   let lineRead = 0;
   let lineEnrich = 0;
@@ -278,7 +281,6 @@ const enrichmentFileJSON = async (readStream, attributs) => {
     await writeInFileJSON(tab);
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
-  fetchAttributes = [];
   return true;
 };
 
