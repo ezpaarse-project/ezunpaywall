@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const path = require('path');
 
-const { enrichmentFileJSON, checkAttributesJSON } = require('../services/enrich/json');
+const { enrichmentFileJSON, checkAttributesJSON, setEnrichAttributesJSON } = require('../services/enrich/json');
 const { enrichmentFileCSV, checkAttributesCSV } = require('../services/enrich/csv');
 
 const tmpDir = path.resolve(__dirname, '..', 'out', 'tmp');
@@ -16,7 +16,8 @@ router.post('/enrich/json', async (req, res) => {
   const { args } = req.query;
   let attrs = [];
   if (args) {
-    attrs = checkAttributesJSON(args);
+    const enrichAttributesJSON = setEnrichAttributesJSON();
+    attrs = checkAttributesJSON(args, enrichAttributesJSON);
     if (!attrs) {
       return res.status(401).json({ message: 'args incorrect' });
     }
