@@ -14,10 +14,6 @@ const enrichedFile = path.resolve(tmp, 'enriched.csv');
 
 let fetchAttributes = [];
 
-let best_oa_location = [];
-let first_oa_location = [];
-let z_authors = [];
-
 let headers = [];
 let separator;
 
@@ -84,7 +80,7 @@ const stringifyAttributes = (name, attributes) => {
  * sortAttr if is a complexe attributes
  * @param {*} attr
  */
-const sortAttr = (attr) => {
+const sortAttr = (attr, best_oa_location, first_oa_location, z_authors) => {
   // complexe attributes (like best_oa_location.license)
   if (attr.includes('.')) {
     const str = attr.split('.');
@@ -101,17 +97,46 @@ const sortAttr = (attr) => {
     // simple attributes (like is_oa)
     fetchAttributes.push(attr);
   }
+  return {
+    best_oa_location, first_oa_location, z_authors,
+  };
 };
 
 /**
  * parse the attributes so that they can be used in the graphql query
  */
 const createFetchAttributes = (enrichAttributesCSV) => {
+
+
+  let best_oa_location = [];
+  let first_oa_location = [];
+  let z_authors = [];
+
+  let value;
+
   if (typeof enrichAttributesCSV === 'string') {
-    sortAttr(enrichAttributesCSV);
+    value = sortAttr(
+      enrichAttributesCSV,
+      best_oa_location,
+      first_oa_location,
+      z_authors,
+      fetchAttributes,
+    );
+    best_oa_location = value.best_oa_location;
+    first_oa_location = value.first_oa_location;
+    z_authors = value.z_authors;
   } else {
     enrichAttributesCSV.forEach((attr) => {
-      sortAttr(attr);
+      value = sortAttr(
+        attr,
+        best_oa_location,
+        first_oa_location,
+        z_authors,
+        fetchAttributes,
+      );
+      best_oa_location = value.best_oa_location;
+      first_oa_location = value.first_oa_location;
+      z_authors = value.z_authors;
     });
   }
 
@@ -321,9 +346,6 @@ const enrichmentFileCSV = async (readStream, attributs, separatorFile) => {
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
   headers = [];
   fetchAttributes = [];
-  best_oa_location = [];
-  first_oa_location = [];
-  z_authors = [];
   lineRead = 0;
   lineEnrich = 0;
   return true;
