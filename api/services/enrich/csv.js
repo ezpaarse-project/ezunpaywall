@@ -280,7 +280,6 @@ const enrichmentFileCSV = async (readStream, attributs, separator) => {
 
   const fetchAttributes = createFetchAttributes(enrichAttributesCSV);
 
-  // TODO use a rotate delete
   // empty the file
   const fileExist = await fs.pathExists(enrichedFile);
   if (fileExist) {

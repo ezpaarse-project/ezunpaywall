@@ -1,0 +1,52 @@
+{
+  "ui": {
+    "header": {
+
+    },
+    "drawer": {
+      "home": "Home",
+      "enrich": "Enrich",
+      "language": "Langue"
+    },
+    "pages": {
+      "home": {
+        
+      },
+      "enrich": {
+        "title": "Enrich your file",
+        "stepper": {
+          "filesSelection": "Files selection",
+          "settings": "Settings",
+          "enrich": "Enrich"
+        },
+        "filesSelection": {
+          "continue": "Continue"
+        },
+        "settings": {
+          "title": "Settings",
+          "attributes" : "Unpaywall attributes",
+          "name": "Name of output enriched file",
+          "filesSelection": "Files selection",
+          "startProcess": "Start enrichisment"
+        }
+      }
+    },
+    "components": {
+      "logFiles": {
+        "clickToAdd": "Click or Drop to add",
+        "removeList": "Delete list",
+        "selectedFiles": "Selected files",
+        "total": "Total"
+      },
+      "settings": {
+        "selectAll": "Select all",
+        "unselectAll": "Unselect all"
+      }
+    },
+    "theme": {
+      "dark": "Dark theme",
+      "light": "Light theme"
+    },
+    "language": "Language"
+  }
+}

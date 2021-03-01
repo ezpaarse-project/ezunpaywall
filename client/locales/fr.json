@@ -1,0 +1,53 @@
+{
+  "ui": {
+    "header": {
+
+    },
+    "drawer": {
+      "home": "Accueil",
+      "enrich": "Enrichissement",
+      "language": "Langue"
+    },
+    "pages": {
+      "home": {
+        
+      },
+      "enrich": {
+        "title": "Enrichisser votre fichier",
+        "stepper": {
+          "filesSelection": "Sélection des fichiers",
+          "settings": "Paramètres",
+          "enrich": "Enrichissement"
+        },
+        "filesSelection": {
+          "continue": "Continuer"
+        },
+        "settings": {
+          "title": "Paramètres",
+          "attributes" : "Attributs unpaywall",
+          "name": "Nom du fichier de sortie enrichit",
+          "filesSelection": "Sélection des fichiers",
+          "startProcess": "Lancer l'enrichissement"
+        }
+      }
+    },
+    "components": {
+      "logFiles": {
+        "clickToAdd": "Cliquez ou déposez pour ajouter",
+        "removeList": "Supprimer la liste",
+        "selectedFiles": "fichiers sélectionnés",
+        "total": "au total"
+      },
+      "settings": {
+        "title": "Paramètres",
+        "selectAll": "Tout cocher",
+        "unselectAll": "Tout décocher"
+      }
+    },
+    "theme": {
+      "dark": "Thème sombre",
+      "light": "Thème clair"
+    },
+    "language": "Langue"
+  }
+}
