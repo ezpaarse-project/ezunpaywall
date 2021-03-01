@@ -258,7 +258,6 @@ const enrichmentFileJSON = async (readStream, attributs) => {
   let lineRead = 0;
   let lineEnrich = 0;
 
-  // TODO use a rotate delete
   // empty the file
   const fileExist = await fs.pathExists(enrichedFile);
   if (fileExist) {
