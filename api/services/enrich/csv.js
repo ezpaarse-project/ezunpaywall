@@ -270,7 +270,8 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
  * @param {*} readStream read the stream of the file you want to enrich
  */
 const enrichmentFileCSV = async (readStream, attributs, separator) => {
-  const enrichedFile = path.resolve(tmp, 'enriched.csv');
+  const file = `${Date.now()}.csv`;
+  const enrichedFile = path.resolve(tmp, file);
 
   let enrichAttributesCSV = setEnrichAttributesCSV();
   if (attributs.length) {
@@ -344,7 +345,7 @@ const enrichmentFileCSV = async (readStream, attributs, separator) => {
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
   headers = [];
-  return true;
+  return file;
 };
 
 module.exports = {

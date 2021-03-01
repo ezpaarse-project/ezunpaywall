@@ -22,8 +22,8 @@ router.post('/enrich/json', async (req, res) => {
       return res.status(401).json({ message: 'args incorrect' });
     }
   }
-  await enrichmentFileJSON(req, attrs);
-  return res.status(200).download(path.resolve(tmpDir, 'enriched.jsonl'));
+  const file = await enrichmentFileJSON(req, attrs);
+  return res.status(200).download(path.resolve(tmpDir, file));
 });
 
 /**
@@ -44,8 +44,8 @@ router.post('/enrich/csv', async (req, res) => {
     }
   }
   if (!separator) separator = ',';
-  await enrichmentFileCSV(req, attrs, separator);
-  return res.status(200).download(path.resolve(tmpDir, 'enriched.csv'));
+  const file = await enrichmentFileCSV(req, attrs, separator);
+  return res.status(200).download(path.resolve(tmpDir, file));
 });
 
 module.exports = router;

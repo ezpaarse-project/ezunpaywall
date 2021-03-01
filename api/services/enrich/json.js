@@ -246,7 +246,8 @@ const writeInFileJSON = async (tab, enrichedFile) => {
  * @param args attributes will be add
  */
 const enrichmentFileJSON = async (readStream, attributs) => {
-  const enrichedFile = path.resolve(tmp, 'enriched.jsonl');
+  const file = `${Date.now()}.jsonl`;
+  const enrichedFile = path.resolve(tmp, file);
 
   let enrichAttributesJSON = setEnrichAttributesJSON();
   if (attributs.length) {
@@ -303,7 +304,7 @@ const enrichmentFileJSON = async (readStream, attributs) => {
     await writeInFileJSON(tab, enrichedFile);
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
-  return true;
+  return file;
 };
 
 module.exports = {
