@@ -5,7 +5,7 @@ const graphqlHTTP = require('express-graphql');
 const morgan = require('morgan');
 const fs = require('fs-extra');
 const path = require('path');
-
+const cron = require('node-cron');
 
 const schema = require('./graphql/graphql');
 
@@ -16,6 +16,8 @@ const RouterEnrich = require('./routers/enrich');
 const RouterManageDatabase = require('./routers/update');
 
 const { logger } = require('./lib/logger');
+const { deleteTmpFile } = require('./lib/file');
+
 const {
   initalizeIndex,
 } = require('./lib/elastic');
@@ -69,6 +71,11 @@ app.get('/ping', (req, res) => {
 app.use(RouterOutFiles);
 app.use(RouterTask);
 app.use(RouterEnrich);
+
+app.get('/test', async (req, res) => {
+  await deleteTmpFile();
+});
+
 app.use(RouterManageDatabase);
 
 // elastic index
@@ -82,6 +89,11 @@ app.use((error, req, res) => res.status(500).json({ message: error.message }));
 app.listen('8080', () => {
   logger.info('Server listening on 8080');
   app.emit('ready');
+});
+
+cron.schedule('0 1 * * *', () => {
+  logger.info('deleteTmpFile');
+  deleteTmpFile();
 });
 
 module.exports = app;

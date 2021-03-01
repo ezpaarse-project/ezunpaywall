@@ -9,7 +9,6 @@ const { logger } = require('../../lib/logger');
 const { fetchEzUnpaywall } = require('./utils');
 
 const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
-const enrichedFile = path.resolve(tmp, 'enriched.jsonl');
 
 const setEnrichAttributesJSON = () => [
   'oa_locations.evidence',
@@ -232,7 +231,7 @@ const enrichTab = (tab, response) => {
  * write the array of line enriched in a out file JSON
  * @param {*} tab array of line enriched
  */
-const writeInFileJSON = async (tab) => {
+const writeInFileJSON = async (tab, enrichedFile) => {
   try {
     const stringTab = `${tab.map((el) => JSON.stringify(el)).join('\n')}\n`;
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
@@ -247,6 +246,8 @@ const writeInFileJSON = async (tab) => {
  * @param args attributes will be add
  */
 const enrichmentFileJSON = async (readStream, attributs) => {
+  const enrichedFile = path.resolve(tmp, 'enriched.jsonl');
+
   let enrichAttributesJSON = setEnrichAttributesJSON();
   if (attributs.length) {
     enrichAttributesJSON = attributs;
@@ -289,7 +290,7 @@ const enrichmentFileJSON = async (readStream, attributs) => {
       enrichTab(tab, response);
       lineRead += 1000;
       lineEnrich += response.length;
-      await writeInFileJSON(tab);
+      await writeInFileJSON(tab, enrichedFile);
       tab = [];
     }
   }
@@ -299,7 +300,7 @@ const enrichmentFileJSON = async (readStream, attributs) => {
     lineRead += tab.length;
     lineEnrich += response.length;
     enrichTab(tab, response);
-    await writeInFileJSON(tab);
+    await writeInFileJSON(tab, enrichedFile);
   }
   logger.info(`${lineEnrich}/${lineRead} lines enriched`);
   return true;
