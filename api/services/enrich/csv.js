@@ -9,7 +9,7 @@ const { logger } = require('../../lib/logger');
 
 const { fetchEzUnpaywall } = require('./utils');
 
-const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
+const enriched = path.resolve(__dirname, '..', '..', 'out', 'enriched');
 
 const setEnrichAttributesCSV = () => [
   'best_oa_location.evidence',
@@ -271,7 +271,7 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
  */
 const enrichmentFileCSV = async (readStream, attributs, separator) => {
   const file = `${Date.now()}.csv`;
-  const enrichedFile = path.resolve(tmp, file);
+  const enrichedFile = path.resolve(enriched, file);
 
   let enrichAttributesCSV = setEnrichAttributesCSV();
   if (attributs.length) {

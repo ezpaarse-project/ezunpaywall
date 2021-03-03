@@ -57,7 +57,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
   describe('Do a enrichment of a csv file with all unpaywall attributes', () => {
     it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
-      const res = await chai
+      const res1 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/csv')
         .send(file)
@@ -65,17 +65,27 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
-      expect(res).have.status(200);
+      expect(res1).have.status(200);
+
+      const nameOfFile = JSON.parse(res1.body.toString()).file;
+
+      const res2 = await chai
+        .request(ezunpaywallURL)
+        .get(`/enrich/${nameOfFile}`)
+        .buffer()
+        .parse(binaryParser);
+
+      expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'tmp', 'enriched.csv'));
-        Readable.from(res.body.toString()).pipe(writer);
+        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.csv'));
+        Readable.from(res2.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file1.csv');
-      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.csv');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -83,7 +93,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
     it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file2.csv'), 'utf8');
-      const res = await chai
+      const res1 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/csv')
         .send(file)
@@ -91,17 +101,27 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
-      expect(res).have.status(200);
+      expect(res1).have.status(200);
+
+      const nameOfFile = JSON.parse(res1.body.toString()).file;
+
+      const res2 = await chai
+        .request(ezunpaywallURL)
+        .get(`/enrich/${nameOfFile}`)
+        .buffer()
+        .parse(binaryParser);
+
+      expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'tmp', 'enriched.csv'));
-        Readable.from(res.body.toString()).pipe(writer);
+        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.csv'));
+        Readable.from(res2.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file2.csv');
-      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.csv');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -111,7 +131,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
   describe('Do a enrichment of a csv file with some unpaywall attributes (is_oa, best_oa_location.license, z_authors.family)', () => {
     it('Should enrich the file on 3 lines with is_oa attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
-      const res = await chai
+      const res1 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/csv')
         .query({ args: 'is_oa' })
@@ -120,17 +140,27 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
-      expect(res).have.status(200);
+      expect(res1).have.status(200);
+
+      const nameOfFile = JSON.parse(res1.body.toString()).file;
+
+      const res2 = await chai
+        .request(ezunpaywallURL)
+        .get(`/enrich/${nameOfFile}`)
+        .buffer()
+        .parse(binaryParser);
+
+      expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'tmp', 'enriched.csv'));
-        Readable.from(res.body.toString()).pipe(writer);
+        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.csv'));
+        Readable.from(res2.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file3.csv');
-      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.csv');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -138,7 +168,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
     it('Should enrich the file on 3 lines with best_oa_location.license attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
-      const res = await chai
+      const res1 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/csv')
         .query({ args: 'best_oa_location.license' })
@@ -147,17 +177,27 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
-      expect(res).have.status(200);
+      expect(res1).have.status(200);
+
+      const nameOfFile = JSON.parse(res1.body.toString()).file;
+
+      const res2 = await chai
+        .request(ezunpaywallURL)
+        .get(`/enrich/${nameOfFile}`)
+        .buffer()
+        .parse(binaryParser);
+
+      expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'tmp', 'enriched.csv'));
-        Readable.from(res.body.toString()).pipe(writer);
+        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.csv'));
+        Readable.from(res2.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file4.csv');
-      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.csv');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -165,7 +205,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
     it('Should enrich the file on 3 lines with z_authors.family attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
-      const res = await chai
+      const res1 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/csv')
         .query({ args: 'z_authors.family' })
@@ -174,17 +214,27 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
-      expect(res).have.status(200);
+      expect(res1).have.status(200);
+
+      const nameOfFile = JSON.parse(res1.body.toString()).file;
+
+      const res2 = await chai
+        .request(ezunpaywallURL)
+        .get(`/enrich/${nameOfFile}`)
+        .buffer()
+        .parse(binaryParser);
+
+      expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'tmp', 'enriched.csv'));
-        Readable.from(res.body.toString()).pipe(writer);
+        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.csv'));
+        Readable.from(res2.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file5.csv');
-      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.csv');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -192,7 +242,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
     it('Should enrich the file on 3 lines with is_oa, best_oa_location.license, z_authors.family attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
-      const res = await chai
+      const res1 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/csv')
         .query({ args: 'is_oa,best_oa_location.license,z_authors.family' })
@@ -201,17 +251,27 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
-      expect(res).have.status(200);
+      expect(res1).have.status(200);
+
+      const nameOfFile = JSON.parse(res1.body.toString()).file;
+
+      const res2 = await chai
+        .request(ezunpaywallURL)
+        .get(`/enrich/${nameOfFile}`)
+        .buffer()
+        .parse(binaryParser);
+
+      expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'tmp', 'enriched.csv'));
-        Readable.from(res.body.toString()).pipe(writer);
+        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.csv'));
+        Readable.from(res2.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file6.csv');
-      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.csv');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -221,7 +281,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
   describe('Do a enrichment of a csv file with all unpaywall attributes and with semi colomn separator', () => {
     it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
-      const res = await chai
+      const res1 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/csv')
         .query({ separator: ';' })
@@ -230,17 +290,27 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
-      expect(res).have.status(200);
+      expect(res1).have.status(200);
+
+      const nameOfFile = JSON.parse(res1.body.toString()).file;
+
+      const res2 = await chai
+        .request(ezunpaywallURL)
+        .get(`/enrich/${nameOfFile}`)
+        .buffer()
+        .parse(binaryParser);
+
+      expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'tmp', 'enriched.csv'));
-        Readable.from(res.body.toString()).pipe(writer);
+        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.csv'));
+        Readable.from(res2.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file7.csv');
-      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.csv');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);

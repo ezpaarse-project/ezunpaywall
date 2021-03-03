@@ -8,7 +8,7 @@ const { logger } = require('../../lib/logger');
 
 const { fetchEzUnpaywall } = require('./utils');
 
-const tmp = path.resolve(__dirname, '..', '..', 'out', 'tmp');
+const enriched = path.resolve(__dirname, '..', '..', 'out', 'enriched');
 
 const setEnrichAttributesJSON = () => [
   'oa_locations.evidence',
@@ -247,7 +247,7 @@ const writeInFileJSON = async (tab, enrichedFile) => {
  */
 const enrichmentFileJSON = async (readStream, attributs) => {
   const file = `${Date.now()}.jsonl`;
-  const enrichedFile = path.resolve(tmp, file);
+  const enrichedFile = path.resolve(enriched, file);
 
   let enrichAttributesJSON = setEnrichAttributesJSON();
   if (attributs.length) {

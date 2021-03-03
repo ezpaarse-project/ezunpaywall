@@ -16,7 +16,7 @@ const RouterEnrich = require('./routers/enrich');
 const RouterManageDatabase = require('./routers/update');
 
 const { logger } = require('./lib/logger');
-const { deleteTmpFile } = require('./lib/file');
+const { deleteEnrichedFile } = require('./lib/file');
 
 const {
   initalizeIndex,
@@ -27,12 +27,15 @@ const outDir = path.resolve(__dirname, 'out');
 fs.ensureDir(path.resolve(outDir, 'logs'));
 fs.ensureDir(path.resolve(outDir, 'download'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
-fs.ensureDir(path.resolve(outDir, 'tmp'));
+fs.ensureDir(path.resolve(outDir, 'enriched'));
 
 // start server
 const app = express();
 
 // middleware
+
+app.use(cors());
+
 const isDev = process.env.NODE_ENV === 'development';
 if (isDev) {
   app.use(morgan('dev'));
@@ -47,8 +50,6 @@ const corsOptions = {
   methods: 'GET, POST',
   allowedHeaders: ['Content-Type'],
 };
-
-app.use('/update', cors());
 
 // routers
 app.get('/', (req, res) => {
@@ -73,7 +74,7 @@ app.use(RouterTask);
 app.use(RouterEnrich);
 
 app.get('/test', async (req, res) => {
-  await deleteTmpFile();
+  await deleteEnrichedFile();
 });
 
 app.use(RouterManageDatabase);
@@ -92,8 +93,8 @@ app.listen('8080', () => {
 });
 
 cron.schedule('0 1 * * *', () => {
-  logger.info('deleteTmpFile');
-  deleteTmpFile();
+  logger.info('deleteEnrichedFile');
+  deleteEnrichedFile();
 });
 
 module.exports = app;
