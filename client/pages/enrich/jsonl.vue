@@ -120,11 +120,8 @@ export default {
     }
   },
   computed: {
-    logFiles () {
-      return this.$store.state.process.logFiles
-    },
     hasLogFiles () {
-      return Array.isArray(this.logFiles) && this.logFiles.length > 0
+      return Array.isArray(this.files) && this.files.length > 0
     },
     jobInProgress () {
       return this.status === 'progress' || this.status === 'finalization'
@@ -149,7 +146,7 @@ export default {
           params: {
             args: this.setting.join(',')
           },
-          data: this.$store.state.process.logFiles[0].file,
+          data: this.files[0].file,
           headers: {
             'Content-Type': 'application/json'
           },
