@@ -77,16 +77,7 @@
             </v-toolbar-title>
           </v-toolbar>
 
-          <v-list-group no-action>
-            <template #activator>
-              {{ $t("ui.pages.enrich.settings.attributes") }}
-            </template>
-            <Settings />
-          </v-list-group>
-          <v-text-field
-            v-model="enrichedFile"
-            :label="$t('ui.pages.enrich.settings.name')"
-          />
+          <Settings @setting="getSetting($event)" />
         </v-stepper-content>
 
         <v-stepper-content step="3">
@@ -98,6 +89,15 @@
                 </v-icon>
               </v-btn>
             </v-layout>
+            <v-spacer />
+            <v-layout row justify-end class="mb-3">
+              <v-btn :href="resultUrl">
+                <v-icon left>
+                  mdi-download
+                </v-icon>
+                {{ $t("ui.pages.enrich.process.download") }}
+              </v-btn>
+            </v-layout>
           </v-container>
         </v-stepper-content>
       </v-stepper-items>
@@ -106,8 +106,10 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 import LogFiles from '~/components/Enrich/LogFiles.vue'
-import Settings from '~/components/Settings.vue'
+import Settings from '~/components/Enrich/SettingsCSV.vue'
 
 export default {
   name: 'CSV',
@@ -118,7 +120,8 @@ export default {
   transition: 'slide-x-transition',
   data: () => {
     return {
-      enrichedFile: ''
+      enrichedFile: '',
+      setting: []
     }
   },
   computed: {
@@ -147,6 +150,9 @@ export default {
     },
     jobIsCancelable () {
       return this.$store.getters['process/cancelable']
+    },
+    resultUrl () {
+      return `http://localhost:8080/enrich/${this.enrichedFile}`
     }
   },
   methods: {
@@ -156,8 +162,29 @@ export default {
     setFormStep (value) {
       this.$store.dispatch('process/SET_PROCESS_STEP', value)
     },
-    process () {
+    async process () {
       this.$store.dispatch('process/PROCESS')
+      let res
+      try {
+        res = await axios({
+          method: 'POST',
+          url: 'http://localhost:8080/enrich/csv',
+          params: {
+            args: this.setting.join(',')
+          },
+          data: this.$store.state.process.logFiles[0].file,
+          headers: {
+            'Content-Type': 'text/csv'
+          },
+          responseType: 'json'
+        })
+      } catch (err) {
+        console.log(err)
+      }
+      this.enrichedFile = res.data.file
+    },
+    getSetting (setting) {
+      this.setting = setting
     }
   }
 }

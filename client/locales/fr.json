@@ -28,6 +28,9 @@
           "name": "Nom du fichier de sortie enrichit",
           "filesSelection": "Sélection des fichiers",
           "startProcess": "Lancer l'enrichissement"
+        },
+        "process": {
+          "download": "Télécharger le fichier enrichit"
         }
       }
     },

@@ -28,6 +28,9 @@
           "name": "Name of output enriched file",
           "filesSelection": "Files selection",
           "startProcess": "Start enrichisment"
+        },
+        "process": {
+          "download": "download the enriched file"
         }
       }
     },
@@ -39,6 +42,7 @@
         "total": "Total"
       },
       "settings": {
+        "title": "Settings",
         "selectAll": "Select all",
         "unselectAll": "Unselect all"
       }
