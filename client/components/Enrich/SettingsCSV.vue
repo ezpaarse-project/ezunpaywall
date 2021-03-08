@@ -48,7 +48,7 @@ export default {
         'journal_issn_l',
         'journal_issns',
         'journal_name',
-        'os_status',
+        'oa_status',
         'published_date',
         'publisher',
         'title',

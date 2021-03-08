@@ -4,7 +4,7 @@
       <v-toolbar-title> {{ $t("ui.pages.enrich.title") }} </v-toolbar-title>
     </v-toolbar>
 
-    <v-stepper v-model="formStep">
+    <v-stepper v-model="step">
       <v-stepper-header>
         <v-stepper-step
           edit-icon="mdi-check"
@@ -15,18 +15,18 @@
           {{ $t("ui.pages.enrich.stepper.filesSelection") }}
         </v-stepper-step>
 
-        <v-divider :color="hasLogFiles && formStep > 1 ? 'primary' : ''" />
+        <v-divider :color="hasLogFiles && step > 1 ? 'primary' : ''" />
 
         <v-stepper-step
           edit-icon="mdi-check"
           :editable="!jobInProgress"
-          :complete="formStep > 2"
+          :complete="step > 2"
           step="2"
         >
           {{ $t("ui.pages.enrich.stepper.settings") }}
         </v-stepper-step>
 
-        <v-divider :color="hasJob && formStep > 2 ? 'primary' : ''" />
+        <v-divider :color="hasJob && step > 2 ? 'primary' : ''" />
 
         <v-stepper-step :editable="hasJob" step="3">
           {{ $t("ui.pages.enrich.stepper.enrich") }}
@@ -40,7 +40,7 @@
               <v-btn
                 class="body-2"
                 color="primary"
-                @click="setFormStep(2)"
+                @click="step = 2"
                 v-text="$t('ui.pages.enrich.filesSelection.continue')"
               />
             </v-layout>
@@ -55,7 +55,7 @@
               <v-btn
                 class="body-2"
                 color="primary"
-                @click="setFormStep(1)"
+                @click="step = 1"
                 v-text="$t('ui.pages.enrich.settings.filesSelection')"
               />
               <v-spacer />
@@ -65,7 +65,7 @@
                 :disabled="!hasLogFiles"
                 @click="
                   process();
-                  setFormStep(3);
+                  step = 3;
                 "
                 v-text="$t('ui.pages.enrich.settings.startProcess')"
               />
@@ -120,19 +120,12 @@ export default {
   transition: 'slide-x-transition',
   data: () => {
     return {
+      step: 1,
       enrichedFile: '',
       setting: []
     }
   },
   computed: {
-    formStep: {
-      get () {
-        return this.$store.state.process.step
-      },
-      set (value) {
-        return this.setFormStep(value)
-      }
-    },
     logFiles () {
       return this.$store.state.process.logFiles
     },
@@ -158,9 +151,6 @@ export default {
   methods: {
     cancelJob () {
       this.$store.dispatch('process/CANCEL_PROCESS')
-    },
-    setFormStep (value) {
-      this.$store.dispatch('process/SET_PROCESS_STEP', value)
     },
     async process () {
       this.$store.dispatch('process/PROCESS')
