@@ -46,7 +46,7 @@
             </v-layout>
           </v-container>
 
-          <LogFiles class="ma-1" />
+          <LogFiles class="ma-1" @files="getFiles($event)" />
         </v-stepper-content>
 
         <v-stepper-content step="2">
@@ -82,14 +82,6 @@
 
         <v-stepper-content step="3">
           <v-container>
-            <v-layout row align-center class="mb-3">
-              <v-btn v-if="jobIsCancelable" color="error" @click="cancelJob">
-                <v-icon left>
-                  mdi-cancel
-                </v-icon>
-              </v-btn>
-            </v-layout>
-            <v-spacer />
             <v-layout row justify-end class="mb-3">
               <v-btn :href="resultUrl">
                 <v-icon left>
@@ -120,9 +112,11 @@ export default {
   transition: 'slide-x-transition',
   data: () => {
     return {
+      files: [],
       step: 1,
       enrichedFile: '',
-      setting: []
+      setting: [],
+      status: null
     }
   },
   computed: {
@@ -131,9 +125,6 @@ export default {
     },
     hasLogFiles () {
       return Array.isArray(this.logFiles) && this.logFiles.length > 0
-    },
-    status () {
-      return this.$store.state.process.status
     },
     jobInProgress () {
       return this.status === 'progress' || this.status === 'finalization'
@@ -149,11 +140,7 @@ export default {
     }
   },
   methods: {
-    cancelJob () {
-      this.$store.dispatch('process/CANCEL_PROCESS')
-    },
     async process () {
-      this.$store.dispatch('process/PROCESS')
       let res
       try {
         res = await axios({
@@ -175,6 +162,9 @@ export default {
     },
     getSetting (setting) {
       this.setting = setting
+    },
+    getFiles (files) {
+      this.files = files
     }
   }
 }

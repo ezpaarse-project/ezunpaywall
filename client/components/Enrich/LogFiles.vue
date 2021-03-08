@@ -9,7 +9,7 @@
       @dragleave="dragAndDrop('leave')"
     >
       <input
-        ref="logFiles"
+        ref="filesLoaded"
         type="file"
         multiple
         @change="handleFilesUpload"
@@ -17,15 +17,15 @@
       <v-flex
         class="headline grey--text text-center"
       >
-        {{ $t('ui.components.logFiles.clickToAdd') }}
+        {{ $t('ui.components.files.clickToAdd') }}
         <v-flex />
       </v-flex>
     </v-layout>
 
     <v-data-table
-      v-if="logFiles.length > 0"
+      v-if="files.length > 0"
       :headers="headers"
-      :items="logFiles"
+      :items="files"
       hide-default-footer
       class="elevation-1 my-3"
     >
@@ -49,14 +49,14 @@
             <v-icon left>
               mdi-delete-forever
             </v-icon>
-            <span> {{ $t('ui.components.logFiles.removeList') }} </span>
+            <span> {{ $t('ui.components.files.removeList') }} </span>
           </v-btn>
 
           <v-spacer />
 
           <span>
-            {{ logFiles.length }} {{ $t('ui.components.logFiles.selectedFiles') }}
-            ({{ totalFileSize }}) {{ $t('ui.components.logFiles.total') }}
+            {{ files.length }} {{ $t('ui.components.files.selectedFiles') }}
+            ({{ totalFileSize }}) {{ $t('ui.components.files.total') }}
           </span>
         </v-toolbar>
       </template>
@@ -72,6 +72,12 @@ export default {
       let size = parseInt(val, 10)
       if (Number.isNaN(size)) { size = 0 }
       return prettyBytes(size)
+    }
+  },
+  data: () => {
+    return {
+      files: [],
+      fileId: 1
     }
   },
   computed: {
@@ -97,26 +103,27 @@ export default {
         }
       ]
     },
-    logFiles () {
-      return this.$store.state.process.logFiles
-    },
     totalFileSize () {
-      const size = this.logFiles.reduce((prev, { file }) => prev + file.size, 0)
+      const size = this.files.reduce((prev, { file }) => prev + file.size, 0)
       return prettyBytes(size)
     }
   },
   methods: {
     handleFilesUpload () {
-      Array.from(this.$refs.logFiles.files).forEach((file) => {
-        this.$store.dispatch('process/ADD_LOG_FILE', file)
+      Array.from(this.$refs.filesLoaded.files).forEach((file) => {
+        this.files.push({ id: this.fileId, file })
+        this.fileId += 1
       })
-      this.$refs.logFiles.value = ''
+      this.$refs.filesLoaded.value = ''
+      this.$emit('files', this.files)
     },
     removeLogsFile (id) {
-      this.$store.dispatch('process/REMOVE_LOG_FILE', id)
+      this.files.filter(file => file.id !== id)
+      this.$emit('files', this.files)
     },
     clearList () {
-      this.$store.dispatch('process/CLEAR_LOG_FILES')
+      this.files = []
+      this.$emit('files', this.files)
     },
     dragAndDrop (event) {
       if (this.$refs && this.$refs.dropZone) {

@@ -35,7 +35,7 @@
       }
     },
     "components": {
-      "logFiles": {
+      "files": {
         "clickToAdd": "Click or Drop to add",
         "removeList": "Delete list",
         "selectedFiles": "Selected files",
