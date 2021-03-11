@@ -89,7 +89,7 @@ describe('Test: weekly update route test', () => {
       expect(task.steps[2]).have.property('task');
       expect(task.steps[2]).have.property('file');
       expect(task.steps[2]).have.property('percent');
-      expect(task.steps[2]).have.property('lineRead');
+      expect(task.steps[2]).have.property('linesRead');
       expect(task.steps[2]).have.property('took');
       expect(task.steps[2]).have.property('status');
 
@@ -106,7 +106,7 @@ describe('Test: weekly update route test', () => {
       expect(task.steps[2].task).be.equal('insert');
       expect(task.steps[2].file).be.equal('fake1.jsonl.gz');
       expect(task.steps[2].percent).be.equal(100);
-      expect(task.steps[2].lineRead).be.equal(50);
+      expect(task.steps[2].linesRead).be.equal(50);
       expect(task.steps[2].status).be.equal('success');
     });
 
@@ -133,7 +133,7 @@ describe('Test: weekly update route test', () => {
       expect(report.steps[2]).have.property('task');
       expect(report.steps[2]).have.property('file');
       expect(report.steps[2]).have.property('percent');
-      expect(report.steps[2]).have.property('lineRead');
+      expect(report.steps[2]).have.property('linesRead');
       expect(report.steps[2]).have.property('took');
       expect(report.steps[2]).have.property('status');
 
@@ -150,7 +150,7 @@ describe('Test: weekly update route test', () => {
       expect(report.steps[2].task).be.equal('insert');
       expect(report.steps[2].file).be.equal('fake1.jsonl.gz');
       expect(report.steps[2].percent).be.equal(100);
-      expect(report.steps[2].lineRead).be.equal(50);
+      expect(report.steps[2].linesRead).be.equal(50);
       expect(report.steps[2].status).be.equal('success');
     });
   });
@@ -202,7 +202,7 @@ describe('Test: weekly update route test', () => {
       expect(task.steps[1]).have.property('task').equal('insert');
       expect(task.steps[1]).have.property('file').equal('fake1.jsonl.gz');
       expect(task.steps[1]).have.property('percent').equal(100);
-      expect(task.steps[1]).have.property('lineRead').equal(50);
+      expect(task.steps[1]).have.property('linesRead').equal(50);
       expect(task.steps[1]).have.property('took');
       expect(task.steps[1]).have.property('status').equal('success');
     });
@@ -225,7 +225,7 @@ describe('Test: weekly update route test', () => {
       expect(report.steps[1]).have.property('task').equal('insert');
       expect(report.steps[1]).have.property('file').equal('fake1.jsonl.gz');
       expect(report.steps[1]).have.property('percent').equal(100);
-      expect(report.steps[1]).have.property('lineRead').equal(50);
+      expect(report.steps[1]).have.property('linesRead').equal(50);
       expect(report.steps[1]).have.property('took');
       expect(report.steps[1]).have.property('status').equal('success');
     });

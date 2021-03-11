@@ -30,7 +30,9 @@
           "startProcess": "Start enrichisment"
         },
         "process": {
-          "download": "download the enriched file"
+          "download": "Download the enriched file",
+          "inProcess": "Enrichment in progress",
+          "end": "Enrichment completed"
         }
       }
     },
@@ -45,6 +47,11 @@
         "title": "Settings",
         "selectAll": "Select all",
         "unselectAll": "Unselect all"
+      },
+      "metric": {
+        "linesRead": "Lines read",
+        "linesEnriched": "Lines enriched",
+        "treatmentDuration": "Treatment duration"
       }
     },
     "theme": {

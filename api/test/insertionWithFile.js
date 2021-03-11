@@ -80,7 +80,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(task.steps[0]).have.property('task').equal('insert');
       expect(task.steps[0]).have.property('file').equal('fake1.jsonl.gz');
       expect(task.steps[0]).have.property('percent').equal(100);
-      expect(task.steps[0]).have.property('lineRead').equal(50);
+      expect(task.steps[0]).have.property('linesRead').equal(50);
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
     });
@@ -99,7 +99,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report.steps[0]).have.property('task').equal('insert');
       expect(report.steps[0]).have.property('file').equal('fake1.jsonl.gz');
       expect(report.steps[0]).have.property('percent').equal(100);
-      expect(report.steps[0]).have.property('lineRead').equal(50);
+      expect(report.steps[0]).have.property('linesRead').equal(50);
       expect(report.steps[0]).have.property('took');
       expect(report.steps[0]).have.property('status').equal('success');
     });
@@ -151,7 +151,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(task.steps[0]).have.property('task').equal('insert');
       expect(task.steps[0]).have.property('file').equal('fake1.jsonl.gz');
       expect(task.steps[0]).have.property('percent').equal(100);
-      expect(task.steps[0]).have.property('lineRead').equal(10);
+      expect(task.steps[0]).have.property('linesRead').equal(10);
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
     });
@@ -170,7 +170,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report.steps[0]).have.property('task').equal('insert');
       expect(report.steps[0]).have.property('file').equal('fake1.jsonl.gz');
       expect(report.steps[0]).have.property('percent').equal(100);
-      expect(report.steps[0]).have.property('lineRead').equal(10);
+      expect(report.steps[0]).have.property('linesRead').equal(10);
       expect(report.steps[0]).have.property('took');
       expect(report.steps[0]).have.property('status').equal('success');
     });
@@ -222,7 +222,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(task.steps[0]).have.property('task').equal('insert');
       expect(task.steps[0]).have.property('file').equal('fake1.jsonl.gz');
       expect(task.steps[0]).have.property('percent').equal(100);
-      expect(task.steps[0]).have.property('lineRead').equal(50);
+      expect(task.steps[0]).have.property('linesRead').equal(50);
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
     });
@@ -241,7 +241,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report.steps[0]).have.property('task').equal('insert');
       expect(report.steps[0]).have.property('file').equal('fake1.jsonl.gz');
       expect(report.steps[0]).have.property('percent').equal(100);
-      expect(report.steps[0]).have.property('lineRead').equal(50);
+      expect(report.steps[0]).have.property('linesRead').equal(50);
       expect(report.steps[0]).have.property('took');
       expect(report.steps[0]).have.property('status').equal('success');
     });
@@ -293,7 +293,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(task.steps[0]).have.property('task').equal('insert');
       expect(task.steps[0]).have.property('file').equal('fake1.jsonl.gz');
       expect(task.steps[0]).have.property('percent').equal(100);
-      expect(task.steps[0]).have.property('lineRead').equal(20);
+      expect(task.steps[0]).have.property('linesRead').equal(20);
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
     });
@@ -312,7 +312,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report.steps[0]).have.property('task').equal('insert');
       expect(report.steps[0]).have.property('file').equal('fake1.jsonl.gz');
       expect(report.steps[0]).have.property('percent').equal(100);
-      expect(report.steps[0]).have.property('lineRead').equal(20);
+      expect(report.steps[0]).have.property('linesRead').equal(20);
       expect(report.steps[0]).have.property('took');
       expect(report.steps[0]).have.property('status').equal('success');
     });

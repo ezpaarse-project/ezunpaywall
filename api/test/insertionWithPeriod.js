@@ -105,7 +105,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(task.steps[2]).have.property('task').equal('insert');
       expect(task.steps[2]).have.property('file').equal('fake2.jsonl.gz');
       expect(task.steps[2]).have.property('percent').equal(100);
-      expect(task.steps[2]).have.property('lineRead').equal(100);
+      expect(task.steps[2]).have.property('linesRead').equal(100);
       expect(task.steps[2]).have.property('took');
       expect(task.steps[2]).have.property('status').equal('success');
 
@@ -118,7 +118,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(task.steps[4]).have.property('task').equal('insert');
       expect(task.steps[4]).have.property('file').equal('fake1.jsonl.gz');
       expect(task.steps[4]).have.property('percent').equal(100);
-      expect(task.steps[4]).have.property('lineRead').equal(50);
+      expect(task.steps[4]).have.property('linesRead').equal(50);
       expect(task.steps[4]).have.property('took');
       expect(task.steps[4]).have.property('status').equal('success');
     });
@@ -147,7 +147,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[2]).have.property('task').equal('insert');
       expect(report.steps[2]).have.property('file').equal('fake2.jsonl.gz');
       expect(report.steps[2]).have.property('percent').equal(100);
-      expect(report.steps[2]).have.property('lineRead').equal(100);
+      expect(report.steps[2]).have.property('linesRead').equal(100);
       expect(report.steps[2]).have.property('took');
       expect(report.steps[2]).have.property('status').equal('success');
 
@@ -160,7 +160,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[4]).have.property('task').equal('insert');
       expect(report.steps[4]).have.property('file').equal('fake1.jsonl.gz');
       expect(report.steps[4]).have.property('percent').equal(100);
-      expect(report.steps[4]).have.property('lineRead').equal(50);
+      expect(report.steps[4]).have.property('linesRead').equal(50);
       expect(report.steps[4]).have.property('took');
       expect(report.steps[4]).have.property('status').equal('success');
     });
@@ -225,7 +225,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(task.steps[2]).have.property('task').equal('insert');
       expect(task.steps[2]).have.property('file').equal('fake3.jsonl.gz');
       expect(task.steps[2]).have.property('percent').equal(100);
-      expect(task.steps[2]).have.property('lineRead').equal(2000);
+      expect(task.steps[2]).have.property('linesRead').equal(2000);
       expect(task.steps[2]).have.property('took');
       expect(task.steps[2]).have.property('status').equal('success');
 
@@ -238,7 +238,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(task.steps[4]).have.property('task').equal('insert');
       expect(task.steps[4]).have.property('file').equal('fake2.jsonl.gz');
       expect(task.steps[4]).have.property('percent').equal(100);
-      expect(task.steps[4]).have.property('lineRead').equal(100);
+      expect(task.steps[4]).have.property('linesRead').equal(100);
       expect(task.steps[4]).have.property('took');
       expect(task.steps[4]).have.property('status').equal('success');
     });
@@ -267,7 +267,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[2]).have.property('task').equal('insert');
       expect(report.steps[2]).have.property('file').equal('fake3.jsonl.gz');
       expect(report.steps[2]).have.property('percent').equal(100);
-      expect(report.steps[2]).have.property('lineRead').equal(2000);
+      expect(report.steps[2]).have.property('linesRead').equal(2000);
       expect(report.steps[2]).have.property('took');
       expect(report.steps[2]).have.property('status').equal('success');
 
@@ -280,7 +280,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[4]).have.property('task').equal('insert');
       expect(report.steps[4]).have.property('file').equal('fake2.jsonl.gz');
       expect(report.steps[4]).have.property('percent').equal(100);
-      expect(report.steps[4]).have.property('lineRead').equal(100);
+      expect(report.steps[4]).have.property('linesRead').equal(100);
       expect(report.steps[4]).have.property('took');
       expect(report.steps[4]).have.property('status').equal('success');
     });

@@ -62,7 +62,7 @@
               <v-btn
                 class="body-2"
                 color="primary"
-                :disabled="!hasLogFiles"
+                :disabled="!hasLogFiles || !setting.length"
                 @click="
                   process();
                   step = 3;
@@ -83,13 +83,31 @@
         <v-stepper-content step="3">
           <v-container>
             <v-layout row justify-end class="mb-3">
-              <v-btn :href="resultUrl">
+              <v-btn :href="resultUrl" :disabled="inProcess">
                 <v-icon left>
                   mdi-download
                 </v-icon>
                 {{ $t("ui.pages.enrich.process.download") }}
               </v-btn>
             </v-layout>
+          </v-container>
+          <v-container v-if="inProcess" class="text-center">
+            <v-progress-circular
+              :size="70"
+              :width="7"
+              indeterminate
+              color="green"
+            />
+            <div v-text="$t('ui.pages.enrich.process.inProcess')" />
+          </v-container>
+          <v-container v-else class="text-center">
+            <v-icon size="70" color="green darken-2">
+              mdi-check
+            </v-icon>
+            <div v-text="$t('ui.pages.enrich.process.end')" />
+          </v-container>
+          <v-container>
+            <Report :time="time" :state="state" />
           </v-container>
         </v-stepper-content>
       </v-stepper-items>
@@ -102,21 +120,29 @@ import axios from 'axios'
 
 import LogFiles from '~/components/Enrich/LogFiles.vue'
 import Settings from '~/components/Enrich/SettingsJSONL.vue'
+import Report from '~/components/Enrich/Report.vue'
 
 export default {
   name: 'CSV',
   components: {
     LogFiles,
-    Settings
+    Settings,
+    Report
   },
   transition: 'slide-x-transition',
   data: () => {
     return {
-      files: [],
       step: 1,
+      files: [],
       enrichedFile: '',
       setting: [],
-      status: null
+      status: null,
+      timeout: '',
+      fileState: '',
+      state: {},
+      time: 0,
+      timerInterval: {},
+      inProcess: false
     }
   },
   computed: {
@@ -138,13 +164,36 @@ export default {
   },
   methods: {
     async process () {
+      this.inProcess = true
+      this.startTimer()
+      await this.createState()
+      this.poling()
+      await this.enrich()
+    },
+
+    async createState () {
+      let res
+      try {
+        res = await axios({
+          method: 'POST',
+          url: 'http://localhost:8080/enrich/state',
+          responseType: 'json'
+        })
+      } catch (err) {
+        console.log(err)
+      }
+      this.fileState = res.data.state
+    },
+
+    async enrich () {
       let res
       try {
         res = await axios({
           method: 'POST',
           url: 'http://localhost:8080/enrich/json',
           params: {
-            args: this.setting.join(',')
+            args: this.setting.join(','),
+            state: this.fileState
           },
           data: this.files[0].file,
           headers: {
@@ -157,11 +206,39 @@ export default {
       }
       this.enrichedFile = res.data.file
     },
+
+    async poling () {
+      let res
+      try {
+        res = await axios({
+          method: 'GET',
+          url: `http://localhost:8080/enrich/state/${this.fileState}`,
+          responseType: 'json'
+        })
+      } catch (err) {
+        console.log(err)
+      }
+      this.state = res.data.state
+      if (res.data.state.status === 'done') {
+        this.onTimesUp()
+        this.inProcess = false
+        clearTimeout(this.timeout)
+        return
+      }
+      this.timeout = setTimeout(this.poling, 1000)
+    },
     getSetting (setting) {
       this.setting = setting
     },
     getFiles (files) {
       this.files = files
+    },
+    onTimesUp () {
+      clearInterval(this.timerInterval)
+    },
+    startTimer () {
+      this.time = 0
+      this.timerInterval = setInterval(() => (this.time += 1), 1000)
     }
   }
 }

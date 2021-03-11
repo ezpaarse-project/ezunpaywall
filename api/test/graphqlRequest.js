@@ -117,7 +117,7 @@ describe('test weekly update', () => {
       task.steps[2].should.have.property('task');
       task.steps[2].should.have.property('file');
       task.steps[2].should.have.property('percent');
-      task.steps[2].should.have.property('lineRead');
+      task.steps[2].should.have.property('linesRead');
       task.steps[2].should.have.property('took');
       task.steps[2].should.have.property('status');
 
@@ -134,7 +134,7 @@ describe('test weekly update', () => {
       task.steps[2].task.should.be.equal('insert');
       task.steps[2].file.should.be.equal('fake1.jsonl.gz');
       task.steps[2].percent.should.be.equal(100);
-      task.steps[2].lineRead.should.be.equal(50);
+      task.steps[2].linesRead.should.be.equal(50);
       task.steps[2].status.should.be.equal('success');
     });
 

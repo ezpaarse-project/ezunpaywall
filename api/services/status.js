@@ -112,7 +112,7 @@ const createStepInsert = (file) => {
       task: 'insert',
       file,
       percent: 0,
-      lineRead: 0,
+      linesRead: 0,
       took: 0,
       status: 'inProgress',
     },

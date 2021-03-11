@@ -85,14 +85,14 @@ const insertDatasUnpaywall = async (options) => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const line of rl) {
       // limit
-      if (step.lineRead === options.limit) {
+      if (step.linesRead === options.limit) {
         break;
       }
 
-      step.lineRead += 1;
+      step.linesRead += 1;
 
       // offset
-      if (step.lineRead >= options.offset + 1) {
+      if (step.linesRead >= options.offset + 1) {
         // fill the array
         try {
           tab.push(JSON.parse(line));
@@ -108,8 +108,8 @@ const insertDatasUnpaywall = async (options) => {
         step.percent = ((loaded / bytes.size) * 100).toFixed(2);
         tab = [];
       }
-      if (step?.lineRead % 100000 === 0) {
-        logger.info(`${step.lineRead}th Lines reads`);
+      if (step?.linesRead % 100000 === 0) {
+        logger.info(`${step.linesRead}th Lines reads`);
       }
     }
     // if have stays data to insert

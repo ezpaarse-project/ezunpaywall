@@ -30,7 +30,9 @@
           "startProcess": "Lancer l'enrichissement"
         },
         "process": {
-          "download": "Télécharger le fichier enrichit"
+          "download": "Télécharger le fichier enrichit",
+          "inProcess": "Enrichissement en cours",
+          "end": "Enrichissement terminé"
         }
       }
     },
@@ -45,6 +47,11 @@
         "title": "Paramètres",
         "selectAll": "Tout cocher",
         "unselectAll": "Tout décocher"
+      },
+      "metric": {
+        "linesRead": "Lignes lues",
+        "linesEnriched": "Lignes enrichies",
+        "treatmentDuration": "Temps de traitement"
       }
     },
     "theme": {

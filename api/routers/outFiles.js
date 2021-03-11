@@ -6,14 +6,6 @@ const express = require('express');
 const outDir = path.resolve(__dirname, '..', 'out');
 const { getNamesOfFilesInDir } = require('../services/accessToOutFiles');
 
-/**
- * @api {get} /download get all download
- * @apiName getNameOfDownload
- * @apiGroup OutFiles
- *
- * @apiSuccess {Array<String>} array of name of downloaded file
- *
- */
 router.get('/download', async (req, res) => {
   const downloadDir = path.resolve(outDir, 'download');
   const files = await getNamesOfFilesInDir(downloadDir, false);
@@ -22,13 +14,6 @@ router.get('/download', async (req, res) => {
   });
 });
 
-/**
- * @api {get} /report get all reports
- * @apiName getNameOfAllReports
- * @apiGroup OutFiles
- *
- * @apiSuccess {Array<String>} array of name of reports file
- */
 router.get('/reports', async (req, res) => {
   let { latest, status } = req.query;
   if (!latest) latest = false;
@@ -47,14 +32,6 @@ router.get('/reports', async (req, res) => {
   });
 });
 
-/**
- * @api {get} /logs get all logs
- * @apiName getAllNameOfLogs
- * @apiGroup OutFiles
- *
- * @apiSuccess {Array<String>} array of name of logs file
- *
- */
 router.get('/logs', async (req, res) => {
   const logsDir = path.resolve(outDir, 'logs');
   const files = await getNamesOfFilesInDir(logsDir, false);
@@ -62,6 +39,7 @@ router.get('/logs', async (req, res) => {
     files,
   });
 });
+
 // access to file in out
 router.use('/reports', express.static(path.resolve(outDir, 'reports')));
 router.use('/logs', express.static(path.resolve(outDir, 'logs')));

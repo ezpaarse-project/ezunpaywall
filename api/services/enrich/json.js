@@ -4,9 +4,18 @@
 const fs = require('fs-extra');
 const readline = require('readline');
 const path = require('path');
+const uuid = require('uuid');
+
 const { logger } = require('../../lib/logger');
 
 const { fetchEzUnpaywall } = require('./utils');
+const {
+  incrementlinesRead,
+  incrementenrichedLines,
+  incrementLoaded,
+  endState,
+  getState,
+} = require('./state');
 
 const enriched = path.resolve(__dirname, '..', '..', 'out', 'enriched');
 
@@ -245,8 +254,8 @@ const writeInFileJSON = async (tab, enrichedFile) => {
  * @param readStream read the stream of the file you want to enrich
  * @param args attributes will be add
  */
-const enrichmentFileJSON = async (readStream, attributs) => {
-  const file = `${Date.now()}.jsonl`;
+const enrichmentFileJSON = async (readStream, attributs, state) => {
+  const file = `${uuid.v4()}.jsonl`;
   const enrichedFile = path.resolve(enriched, file);
 
   let enrichAttributesJSON = setEnrichAttributesJSON();
@@ -255,27 +264,20 @@ const enrichmentFileJSON = async (readStream, attributs) => {
   }
   const fetchAttributes = createFetchAttributes(enrichAttributesJSON);
 
-  let lineRead = 0;
-  let lineEnrich = 0;
-
-  // empty the file
-  const fileExist = await fs.pathExists(enrichedFile);
-  if (fileExist) {
-    await fs.unlink(enrichedFile);
-  }
-
   fs.openSync(enrichedFile, 'w');
+
+  let linesRead = 0;
+  let lineEnrich = 0;
+  let loaded = 0;
+
+  readStream.on('data', (chunk) => {
+    loaded += chunk.length;
+  });
 
   const rl = readline.createInterface({
     input: readStream,
     crlfDelay: Infinity,
   });
-
-  // let loaded = 0;
-
-  // readStream.on('data', (chunk) => {
-  //   loaded += chunk.length;
-  // });
 
   let tab = [];
   // eslint-disable-next-line no-restricted-syntax
@@ -286,23 +288,33 @@ const enrichmentFileJSON = async (readStream, attributs) => {
       logger.error(`parse line in enrichmentFileJSON for line : ${line} ${err}`);
     }
     if (tab.length === 1000) {
+      // enrichment
       const response = await fetchEzUnpaywall(tab, fetchAttributes);
       enrichTab(tab, response);
-      lineRead += 1000;
-      lineEnrich += response.length;
       await writeInFileJSON(tab, enrichedFile);
       tab = [];
+
+      // state
+      lineEnrich += response.length;
+      await incrementenrichedLines(state, lineEnrich);
+      await incrementlinesRead(state, 1000);
+      await incrementLoaded(state, loaded);
     }
   }
   // last insertion
   if (tab.length !== 0) {
     const response = await fetchEzUnpaywall(tab, fetchAttributes);
-    lineRead += tab.length;
-    lineEnrich += response.length;
     enrichTab(tab, response);
     await writeInFileJSON(tab, enrichedFile);
+
+    lineEnrich += response.length;
+    await incrementenrichedLines(state, lineEnrich);
+    await incrementlinesRead(state, tab.length);
+    await incrementLoaded(state, loaded);
   }
-  logger.info(`${lineEnrich}/${lineRead} lines enriched`);
+  await endState(state);
+  state = await getState(state);
+  logger.info(`${lineEnrich}/${linesRead} enriched lines`);
   return file;
 };
 

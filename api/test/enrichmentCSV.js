@@ -67,11 +67,11 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
       expect(res1).have.status(200);
 
-      const nameOfFile = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res1.body.toString()).file;
 
       const res2 = await chai
         .request(ezunpaywallURL)
-        .get(`/enrich/${nameOfFile}`)
+        .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
@@ -103,11 +103,11 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
       expect(res1).have.status(200);
 
-      const nameOfFile = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res1.body.toString()).file;
 
       const res2 = await chai
         .request(ezunpaywallURL)
-        .get(`/enrich/${nameOfFile}`)
+        .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
@@ -142,11 +142,11 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
       expect(res1).have.status(200);
 
-      const nameOfFile = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res1.body.toString()).file;
 
       const res2 = await chai
         .request(ezunpaywallURL)
-        .get(`/enrich/${nameOfFile}`)
+        .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
@@ -179,11 +179,11 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
       expect(res1).have.status(200);
 
-      const nameOfFile = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res1.body.toString()).file;
 
       const res2 = await chai
         .request(ezunpaywallURL)
-        .get(`/enrich/${nameOfFile}`)
+        .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
@@ -216,11 +216,11 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
       expect(res1).have.status(200);
 
-      const nameOfFile = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res1.body.toString()).file;
 
       const res2 = await chai
         .request(ezunpaywallURL)
-        .get(`/enrich/${nameOfFile}`)
+        .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
@@ -253,11 +253,11 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
       expect(res1).have.status(200);
 
-      const nameOfFile = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res1.body.toString()).file;
 
       const res2 = await chai
         .request(ezunpaywallURL)
-        .get(`/enrich/${nameOfFile}`)
+        .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
@@ -292,11 +292,11 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
 
       expect(res1).have.status(200);
 
-      const nameOfFile = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res1.body.toString()).file;
 
       const res2 = await chai
         .request(ezunpaywallURL)
-        .get(`/enrich/${nameOfFile}`)
+        .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
