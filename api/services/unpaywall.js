@@ -7,10 +7,11 @@ const {
   startTask,
   endTask,
   resetTask,
+  fail,
 } = require('./status');
 
 const {
-  fetchUnpaywall,
+  askUnpaywall,
   downloadUpdateSnapshot,
   insertDatasUnpaywall,
 } = require('./steps');
@@ -33,8 +34,9 @@ const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
   startTask();
   await createStatus();
 
-  const fetch = await fetchUnpaywall(url, startDate, endDate);
-  if (!fetch) {
+  const response = await askUnpaywall(url, startDate, endDate);
+  if (!response) {
+    await fail(endDate);
     return null;
   }
   for (let i = 0; i < getMetadatas().length; i += 1) {

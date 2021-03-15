@@ -85,10 +85,6 @@ router.post('/update/:name', async (req, res) => {
  * - If there is the `start` attribute, It will execute the download and
  * the insertion of the update files between the` start` date and the current date.
  *
- * @api {post} /update downloads update files offered by unpaywall.
- * @apiName Fetch-Download-Update
- * @apiGroup Update
- *
  * @apiParam (QUERY) {DATE} [startDate] period start date at format YYYY-mm-dd
  * @apiParam (QUERY) {DATE} [endDate] period end date at format YYYY-mm-dd
  *

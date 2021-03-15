@@ -14,7 +14,7 @@ const {
   getMetadatas,
   getIteratorFile,
   createStepInsert,
-  createStepFetchUnpaywall,
+  createStepaskUnpaywall,
   createStepDownload,
   fail,
 } = require('./status');
@@ -234,9 +234,9 @@ const downloadUpdateSnapshot = async () => {
 /**
  * ask unpaywall to get getMetadatas() on unpaywall snapshot
  */
-const fetchUnpaywall = async (url, startDate, endDate) => {
-  // create step fetchUnpaywall
-  const start = createStepFetchUnpaywall();
+const askUnpaywall = async (url, startDate, endDate) => {
+  // create step askUnpaywall
+  const start = createStepaskUnpaywall();
 
   let response;
 
@@ -250,13 +250,11 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
       },
     });
   } catch (err) {
-    logger.error(`axios in fetchUnpaywall: ${err}`);
-    await fail(start);
+    logger.error(`axios in askUnpaywall: ${err}`);
     return null;
   }
 
   if (response?.status !== 200) {
-    await fail(start);
     return null;
   }
   if (!response?.data?.list?.length) {
@@ -278,7 +276,7 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
   step.status = 'success';
   step.took = (new Date() - start) / 1000;
 
-  logger.info('step - end fetch unpaywall ');
+  logger.info('step - end ask unpaywall ');
 
   return true;
 };
@@ -286,5 +284,5 @@ const fetchUnpaywall = async (url, startDate, endDate) => {
 module.exports = {
   insertDatasUnpaywall,
   downloadUpdateSnapshot,
-  fetchUnpaywall,
+  askUnpaywall,
 };

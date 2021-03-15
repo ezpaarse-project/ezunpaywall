@@ -13,7 +13,7 @@ const getLatestReport = async () => {
     const response = await chai.request(ezunpaywallURL).get('/reports?latest=true');
     report = response?.body;
   } catch (err) {
-    logger.error(`ezunpaywall ping : ${err}`);
+    logger.error(`getLatestReport: ${err}`);
   }
   return report;
 };

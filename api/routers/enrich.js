@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 
 const { enrichmentFileJSON, checkAttributesJSON, setEnrichAttributesJSON } = require('../services/enrich/json');
 const { enrichmentFileCSV, checkAttributesCSV, setEnrichAttributesCSV } = require('../services/enrich/csv');
-const { createState, getState } = require('../services/enrich/state');
+const { createState, getState, updateStatus } = require('../services/enrich/state');
 
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 
@@ -21,6 +21,7 @@ router.post('/enrich/json', async (req, res) => {
     const enrichAttributesJSON = setEnrichAttributesJSON();
     attrs = checkAttributesJSON(args, enrichAttributesJSON);
     if (!attrs) {
+      await updateStatus(state, 'error')
       return res.status(401).json({ message: 'args incorrect' });
     }
   }
@@ -37,6 +38,7 @@ router.post('/enrich/csv', async (req, res) => {
     const enrichAttributesCSV = setEnrichAttributesCSV();
     attrs = checkAttributesCSV(args, enrichAttributesCSV);
     if (!attrs) {
+      await updateStatus(state, 'error')
       return res.status(401).json({ message: 'args incorrect' });
     }
   }

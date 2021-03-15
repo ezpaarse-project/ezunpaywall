@@ -92,7 +92,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(task).have.property('endAt');
       expect(task).have.property('took');
 
-      expect(task.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(task.steps[0]).have.property('task').equal('askUnpaywall');
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
 
@@ -134,7 +134,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report).have.property('endAt');
       expect(report).have.property('took');
 
-      expect(report.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(report.steps[0]).have.property('task').equal('askUnpaywall');
       expect(report.steps[0]).have.property('took');
       expect(report.steps[0]).have.property('status').equal('success');
 
@@ -212,7 +212,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(task).have.property('endAt');
       expect(task).have.property('took');
 
-      expect(task.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(task.steps[0]).have.property('task').equal('askUnpaywall');
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
 
@@ -254,7 +254,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report).have.property('endAt');
       expect(report).have.property('took');
 
-      expect(report.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(report.steps[0]).have.property('task').equal('askUnpaywall');
       expect(report.steps[0]).have.property('took');
       expect(report.steps[0]).have.property('status').equal('success');
 
@@ -330,7 +330,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(task).have.property('endAt');
       expect(task).have.property('took');
 
-      expect(task.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(task.steps[0]).have.property('task').equal('askUnpaywall');
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
     });

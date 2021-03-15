@@ -123,7 +123,7 @@ describe('test weekly update', () => {
 
       task.done.should.be.equal(true);
       task.currentTask.should.be.equal('end');
-      task.steps[0].task.should.be.equal('fetchUnpaywall');
+      task.steps[0].task.should.be.equal('askUnpaywall');
       task.steps[0].status.should.be.equal('success');
 
       task.steps[1].task.should.be.equal('download');

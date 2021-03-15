@@ -30,6 +30,8 @@ const {
   ping,
 } = require('./utils/ping');
 
+const { getState } = require('../services/enrich/state');
+
 const ezunpaywallURL = 'http://localhost:8080';
 
 const enrichDir = path.resolve(__dirname, 'enrich');
@@ -57,29 +59,38 @@ describe('Test: enrichment with a json file (command ezu)', () => {
   describe('Do a enrichment of a json file with all unpaywall attributes', () => {
     it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      
       const res1 = await chai
+      .request(ezunpaywallURL)
+      .post('/enrich/state')
+      .set('responseType', 'json')
+      
+      const stateName = res1.body.state
+
+      const res2 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/json')
+        .query({ state: stateName })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
         .buffer()
         .parse(binaryParser);
 
-      expect(res1).have.status(200);
+      expect(res2).have.status(200);
 
-      const filename = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res2.body.toString()).file;
 
-      const res2 = await chai
+      const res3 = await chai
         .request(ezunpaywallURL)
         .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
-      expect(res2).have.status(200);
+      expect(res3).have.status(200);
 
       try {
         const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        Readable.from(res3.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
@@ -89,31 +100,49 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
+
+      const state = await getState(stateName)
+  
+      expect(state).have.property('loaded')
+      expect(state).have.property('linesRead').equal(3)
+      expect(state).have.property('enrichedLines').equal(3)
+      expect(state).have.property('startDate')
+      expect(state).have.property('endDate')
+      expect(state).have.property('status').equal('done')
     });
 
     it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file2.jsonl'));
+      
       const res1 = await chai
+      .request(ezunpaywallURL)
+      .post('/enrich/state')
+      .set('responseType', 'json')
+      
+      const stateName = res1.body.state
+
+      const res2 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/json')
+        .query({ state: stateName })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
         .buffer()
         .parse(binaryParser);
 
-      const filename = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res2.body.toString()).file;
 
-      const res2 = await chai
+      const res3 = await chai
         .request(ezunpaywallURL)
         .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
-      expect(res2).have.status(200);
+      expect(res3).have.status(200);
 
       try {
         const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        Readable.from(res3.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
@@ -123,36 +152,54 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
+
+      const state = await getState(stateName)
+  
+      expect(state).have.property('loaded')
+      expect(state).have.property('linesRead').equal(3)
+      expect(state).have.property('enrichedLines').equal(2)
+      expect(state).have.property('startDate')
+      expect(state).have.property('endDate')
+      expect(state).have.property('status').equal('done')
     });
   });
 
   describe('Do a enrichment of a file already installed and enrich a json file with some unpaywall attributes (is_oa, best_oa_location.license, z_authors.family)', () => {
     it('Should enrich the file on 3 lines with is_oa attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      
       const res1 = await chai
+      .request(ezunpaywallURL)
+      .post('/enrich/state')
+      .set('responseType', 'json')
+
+      const stateName = res1.body.state
+
+      const res2 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/json')
+        .query({ state: stateName })
         .query({ args: 'is_oa' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
         .buffer()
         .parse(binaryParser);
 
-      expect(res1).have.status(200);
+      expect(res2).have.status(200);
 
-      const filename = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res2.body.toString()).file;
 
-      const res2 = await chai
+      const res3 = await chai
         .request(ezunpaywallURL)
         .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
-      expect(res2).have.status(200);
+      expect(res3).have.status(200);
 
       try {
         const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        Readable.from(res3.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
@@ -162,34 +209,52 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
+
+      const state = await getState(stateName)
+  
+      expect(state).have.property('loaded')
+      expect(state).have.property('linesRead').equal(3)
+      expect(state).have.property('enrichedLines').equal(3)
+      expect(state).have.property('startDate')
+      expect(state).have.property('endDate')
+      expect(state).have.property('status').equal('done')
     });
 
     it('Should enrich the file on 3 lines with best_oa_location.license attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      
       const res1 = await chai
+      .request(ezunpaywallURL)
+      .post('/enrich/state')
+      .set('responseType', 'json')
+      
+      const stateName = res1.body.state
+
+      const res2 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/json')
+        .query({ state: stateName })
         .query({ args: 'best_oa_location.license' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
         .buffer()
         .parse(binaryParser);
 
-      expect(res1).have.status(200);
+      expect(res2).have.status(200);
 
-      const filename = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res2.body.toString()).file;
 
-      const res2 = await chai
+      const res3 = await chai
         .request(ezunpaywallURL)
         .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
-      expect(res2).have.status(200);
+      expect(res3).have.status(200);
 
       try {
         const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        Readable.from(res3.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
@@ -199,34 +264,52 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
+
+      const state = await getState(stateName)
+  
+      expect(state).have.property('loaded')
+      expect(state).have.property('linesRead').equal(3)
+      expect(state).have.property('enrichedLines').equal(3)
+      expect(state).have.property('startDate')
+      expect(state).have.property('endDate')
+      expect(state).have.property('status').equal('done')
     });
 
     it('Should enrich the file on 3 lines with z_authors.family attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      
       const res1 = await chai
+      .request(ezunpaywallURL)
+      .post('/enrich/state')
+      .set('responseType', 'json')
+
+      const stateName = res1.body.state
+
+      const res2 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/json')
+        .query({ state: stateName })
         .query({ args: 'z_authors.family' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
         .buffer()
         .parse(binaryParser);
 
-      expect(res1).have.status(200);
+      expect(res2).have.status(200);
 
-      const filename = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res2.body.toString()).file;
 
-      const res2 = await chai
+      const res3 = await chai
         .request(ezunpaywallURL)
         .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
-      expect(res2).have.status(200);
+      expect(res3).have.status(200);
 
       try {
         const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        Readable.from(res3.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
@@ -236,34 +319,52 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
+
+      const state = await getState(stateName)
+  
+      expect(state).have.property('loaded')
+      expect(state).have.property('linesRead').equal(3)
+      expect(state).have.property('enrichedLines').equal(3)
+      expect(state).have.property('startDate')
+      expect(state).have.property('endDate')
+      expect(state).have.property('status').equal('done')
     });
 
     it('Should enrich the file on 3 lines with is_oa, best_oa_location.license, z_authors.family attributes and download it', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      
       const res1 = await chai
+      .request(ezunpaywallURL)
+      .post('/enrich/state')
+      .set('responseType', 'json')
+
+      const stateName = res1.body.state
+
+      const res2 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/json')
+        .query({ state: stateName })
         .query({ args: 'is_oa,best_oa_location.license,z_authors.family' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
         .buffer()
         .parse(binaryParser);
 
-      expect(res1).have.status(200);
+      expect(res2).have.status(200);
 
-      const filename = JSON.parse(res1.body.toString()).file;
+      const filename = JSON.parse(res2.body.toString()).file;
 
-      const res2 = await chai
+      const res3 = await chai
         .request(ezunpaywallURL)
         .get(`/enrich/${filename}`)
         .buffer()
         .parse(binaryParser);
 
-      expect(res2).have.status(200);
+      expect(res3).have.status(200);
 
       try {
         const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        Readable.from(res3.body.toString()).pipe(writer);
       } catch (err) {
         logger.error(`createWriteStream: ${err}`);
       }
@@ -273,15 +374,33 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
+
+      const state = await getState(stateName)
+  
+      expect(state).have.property('loaded')
+      expect(state).have.property('linesRead').equal(3)
+      expect(state).have.property('enrichedLines').equal(3)
+      expect(state).have.property('startDate')
+      expect(state).have.property('endDate')
+      expect(state).have.property('status').equal('done')
     });
   });
 
   describe('Don\'t do a enrichment of a json file because the arguments doesn\'t exist on ezunpaywall index', () => {
     it('Should return a error message', async () => {
       const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
-      const res = await chai
+      
+      const res1 = await chai
+      .request(ezunpaywallURL)
+      .post('/enrich/state')
+      .set('responseType', 'json')
+      
+      const stateName = res1.body.state
+
+      const res2 = await chai
         .request(ezunpaywallURL)
         .post('/enrich/json')
+        .query({ state: stateName })
         .query({ args: 'don\'t exist' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
@@ -289,8 +408,17 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
-      expect(res).have.status(401);
-      expect(JSON.parse(res.body).message).be.equal('args incorrect');
+      expect(res2).have.status(401);
+      expect(JSON.parse(res2.body).message).be.equal('args incorrect');
+
+      const state = await getState(stateName)
+  
+      expect(state).have.property('loaded')
+      expect(state).have.property('linesRead').equal(0)
+      expect(state).have.property('enrichedLines').equal(0)
+      expect(state).have.property('startDate')
+      expect(state).have.property('endDate')
+      expect(state).have.property('status').equal('error')
     });
   });
 

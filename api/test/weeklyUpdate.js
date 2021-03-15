@@ -95,7 +95,7 @@ describe('Test: weekly update route test', () => {
 
       expect(task.done).be.equal(true);
       expect(task.currentTask).be.equal('end');
-      expect(task.steps[0].task).be.equal('fetchUnpaywall');
+      expect(task.steps[0].task).be.equal('askUnpaywall');
       expect(task.steps[0].status).be.equal('success');
 
       expect(task.steps[1].task).be.equal('download');
@@ -139,7 +139,7 @@ describe('Test: weekly update route test', () => {
 
       expect(report.done).be.equal(true);
       expect(report.currentTask).be.equal('end');
-      expect(report.steps[0].task).be.equal('fetchUnpaywall');
+      expect(report.steps[0].task).be.equal('askUnpaywall');
       expect(report.steps[0].status).be.equal('success');
 
       expect(report.steps[1].task).be.equal('download');
@@ -195,7 +195,7 @@ describe('Test: weekly update route test', () => {
       expect(task).have.property('endAt');
       expect(task).have.property('took');
 
-      expect(task.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(task.steps[0]).have.property('task').equal('askUnpaywall');
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
 
@@ -218,7 +218,7 @@ describe('Test: weekly update route test', () => {
       expect(report).have.property('endAt');
       expect(report).have.property('took');
 
-      expect(report.steps[0]).have.property('task').equal('fetchUnpaywall');
+      expect(report.steps[0]).have.property('task').equal('askUnpaywall');
       expect(report.steps[0]).have.property('took');
       expect(report.steps[0]).have.property('status').equal('success');
 

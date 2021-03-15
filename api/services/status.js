@@ -73,13 +73,13 @@ const mailUpdate = async (status) => {
   }
 };
 
-const createStepFetchUnpaywall = () => {
-  logger.info('step - fetch unpaywall');
+const createStepaskUnpaywall = () => {
+  logger.info('step - ask unpaywall');
   iteratorTask += 1;
-  task.currentTask = 'fetchUnpaywall';
+  task.currentTask = 'askUnpaywall';
   task.steps.push(
     {
-      task: 'fetchUnpaywall',
+      task: 'askUnpaywall',
       took: 0,
       status: 'inProgress',
     },
@@ -170,14 +170,18 @@ const createReport = async (success) => {
   } catch (err) {
     logger.error(`createReport: ${err}`);
   }
-  await mailUpdate('success');
+  await mailUpdate(success);
 };
 
 const fail = async (startDate) => {
+  task.done = true;
   task.steps[iteratorTask].status = 'error';
-  task.steps[iteratorTask].took = (startDate - new Date()) / 1000;
-  task.endAt = (task.createdAt - new Date()) / 1000;
-  createReport('error');
+  console.log(new Date().getTime())
+  console.log(startDate)
+  console.log(new Date().getTime() - startDate)
+  task.steps[iteratorTask].took = (new Date().getTime() - startDate) / 1000;
+  task.endAt = new Date();
+  await createReport('error');
   resetTask();
 };
 
@@ -186,7 +190,7 @@ module.exports = {
   getMetadatas,
   getIteratorFile,
   setIteratorFile,
-  createStepFetchUnpaywall,
+  createStepaskUnpaywall,
   createStepDownload,
   createStepInsert,
   createStatus,
