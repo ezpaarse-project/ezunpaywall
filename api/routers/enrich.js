@@ -25,7 +25,12 @@ router.post('/enrich/json', async (req, res) => {
       return res.status(401).json({ message: 'args incorrect' });
     }
   }
-  const file = await enrichmentFileJSON(req, attrs, state);
+  let file;
+  try {
+    file = await enrichmentFileJSON(req, attrs, state);
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
   return res.status(200).json({ file });
 });
 
@@ -43,7 +48,12 @@ router.post('/enrich/csv', async (req, res) => {
     }
   }
   if (!separator) separator = ',';
-  const file = await enrichmentFileCSV(req, attrs, separator, state);
+  let file;
+  try {
+    file = await enrichmentFileCSV(req, attrs, separator, state);
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
   return res.status(200).json({ file });
 });
 

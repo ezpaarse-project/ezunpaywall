@@ -73,10 +73,6 @@ app.use(RouterOutFiles);
 app.use(RouterTask);
 app.use(RouterEnrich);
 
-app.get('/test', async () => {
-  await deleteEnrichedFile();
-});
-
 app.use(RouterManageDatabase);
 
 // elastic index
@@ -92,9 +88,9 @@ app.listen('8080', () => {
   app.emit('ready');
 });
 
-cron.schedule('0 1 * * *', () => {
+cron.schedule('0 1 * * *', async () => {
   logger.info('deleteEnrichedFile');
-  deleteEnrichedFile();
+  await deleteEnrichedFile();
 });
 
 module.exports = app;

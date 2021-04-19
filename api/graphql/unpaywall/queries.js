@@ -103,17 +103,16 @@ module.exports = {
 
           filter.push(JSON.parse(range));
         } else {
-          if (attr !== 'dois' && attr !== 'best_oa_location' && attr !== 'oa_location' && attr !== 'first_oa_location') {
-            filter.push(JSON.parse(`{ "terms": { "${attr}": [${args[attr]}] } }`));
-          }
-          if (attr === 'best_oa_location') {
-            filter.push(parseTerms(attr, 'best_oa_location', args));
-          }
-          if (attr === 'oa_location') {
-            filter.push(parseTerms(attr, 'oa_location', args));
-          }
-          if (attr === 'first_oa_location') {
-            filter.push(parseTerms(attr, 'first_oa_location', args));
+          const deepAttrs = new Set(['best_oa_location', 'oa_location', 'first_oa_location']);
+          if (deepAttrs.has(attr)) {
+            filter.push(parseTerms(attr, attr, args));
+          } else if (attr !== 'dois') {
+            const value = args[attr];
+            if (Array.isArray(value)) {
+              filter.push({ terms: { [attr]: value } });
+            } else {
+              filter.push({ term: { [attr]: value } });
+            }
           }
         }
       }

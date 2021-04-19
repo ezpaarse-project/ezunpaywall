@@ -4,7 +4,7 @@ ez-unpaywall is an API and database that queries the Unpaywall database containi
 
 **Table of content**
 - [Prerequisites](#prerequisites)
-- [Deploiement](#Deploiement)
+- [Deployment](#Deploiement)
 - [Developement](#Development)
 - [Data update](#Data-update)
 - [API Graphql](#API-graphql)
@@ -23,7 +23,7 @@ The tools you need to let ez-unpaywall run are :
 ```bash
 git clone https://github.com/ezpaarse-project/ez-unpaywall 
 ```
-## Deploiement
+## Deployment
 ### Setup environment
 
 Create an environment file named `ezunpaywall.env.local.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh` , which contains a set of predefined variables and is overriden by `ezunpaywall.env.local.sh`.

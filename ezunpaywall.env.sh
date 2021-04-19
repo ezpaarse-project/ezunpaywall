@@ -2,6 +2,7 @@
 
 # unpaywall
 export API_KEY_UPW="api_key"
+export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
 # mail
 export EZUNPAYWALL_SMTP_PORT=25
