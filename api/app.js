@@ -73,7 +73,7 @@ app.use(RouterOutFiles);
 app.use(RouterTask);
 app.use(RouterEnrich);
 
-app.get('/test', async (req, res) => {
+app.get('/test', async () => {
   await deleteEnrichedFile();
 });
 

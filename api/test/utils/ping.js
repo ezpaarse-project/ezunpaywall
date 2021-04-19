@@ -44,4 +44,4 @@ const ping = async () => {
 
 module.exports = {
   ping,
-}
+};

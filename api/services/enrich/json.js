@@ -266,7 +266,6 @@ const enrichmentFileJSON = async (readStream, attributs, state) => {
 
   fs.openSync(enrichedFile, 'w');
 
-  let linesRead = 0;
   let lineEnrich = 0;
   let loaded = 0;
 
@@ -314,7 +313,7 @@ const enrichmentFileJSON = async (readStream, attributs, state) => {
   }
   await endState(state);
   state = await getState(state);
-  logger.info(`${lineEnrich}/${linesRead} enriched lines`);
+  logger.info(`${lineEnrich}/${state.linesRead} enriched lines`);
   return file;
 };
 

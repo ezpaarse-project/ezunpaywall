@@ -1,3 +1,5 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
 const graphql = require('graphql');
 const { UnPayWallType } = require('./index');
 const client = require('../../lib/client');
@@ -15,13 +17,19 @@ const {
 } = graphql;
 
 const parseTerms = (attr, name, args) => {
-  const attrParsed = JSON.parse(JSON.stringify(args[name]));
+  let attrParsed;
+  try {
+    attrParsed = JSON.parse(JSON.stringify(args[name]));
+  } catch (err) {
+    logger.error(`parseTerms: ${err}`);
+  }
+
   let val;
   for (const attr2 in attrParsed) {
     val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
   }
   return JSON.parse(val);
-}
+};
 
 module.exports = {
   getDataUPW: {

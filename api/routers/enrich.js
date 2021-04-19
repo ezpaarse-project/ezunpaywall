@@ -15,13 +15,13 @@ router.post('/enrich/state', async (req, res) => {
 
 router.post('/enrich/json', async (req, res) => {
   const { args } = req.query;
-  let { state } = req.query;
+  const { state } = req.query;
   let attrs = [];
   if (args) {
     const enrichAttributesJSON = setEnrichAttributesJSON();
     attrs = checkAttributesJSON(args, enrichAttributesJSON);
     if (!attrs) {
-      await updateStatus(state, 'error')
+      await updateStatus(state, 'error');
       return res.status(401).json({ message: 'args incorrect' });
     }
   }
@@ -32,13 +32,13 @@ router.post('/enrich/json', async (req, res) => {
 router.post('/enrich/csv', async (req, res) => {
   const { args } = req.query;
   let { separator } = req.query;
-  let { state } = req.query;
+  const { state } = req.query;
   let attrs = [];
   if (args) {
     const enrichAttributesCSV = setEnrichAttributesCSV();
     attrs = checkAttributesCSV(args, enrichAttributesCSV);
     if (!attrs) {
-      await updateStatus(state, 'error')
+      await updateStatus(state, 'error');
       return res.status(401).json({ message: 'args incorrect' });
     }
   }

@@ -1,6 +1,5 @@
 const fs = require('fs-extra');
 const path = require('path');
-const { logger } = require('./logger');
 
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 

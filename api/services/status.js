@@ -176,10 +176,7 @@ const createReport = async (success) => {
 const fail = async (startDate) => {
   task.done = true;
   task.steps[iteratorTask].status = 'error';
-  console.log(new Date().getTime())
-  console.log(startDate)
-  console.log(new Date().getTime() - startDate)
-  task.steps[iteratorTask].took = (new Date().getTime() - startDate) / 1000;
+  task.steps[iteratorTask].took = (Date.now() - startDate) / 1000;
   task.endAt = new Date();
   await createReport('error');
   resetTask();

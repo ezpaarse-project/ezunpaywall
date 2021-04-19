@@ -1,8 +1,9 @@
+/* eslint-disable no-await-in-loop */
+const { elasticsearch } = require('config');
 const client = require('./client');
 const { logger } = require('./logger');
 const unpaywallIndex = require('../index/unpaywall.json');
 const taskIndex = require('../index/task.json');
-const { elasticsearch } = require('config');
 
 const pingElastic = async () => {
   let elasticStatus;
@@ -16,7 +17,7 @@ const pingElastic = async () => {
   }
   logger.info(`elastic ping: ${elasticsearch.host}:${elasticsearch.port} is ok`);
   return true;
-}
+};
 
 const isIndexExist = async (name) => {
   let res;
@@ -50,7 +51,7 @@ const initalizeIndex = async () => {
     await createIndex('unpaywall', unpaywallIndex);
     await createIndex('task', taskIndex);
   }
-}
+};
 
 module.exports = {
   initalizeIndex,

@@ -93,6 +93,10 @@ const insertDatasUnpaywall = async (options) => {
 
       // offset
       if (step.linesRead >= options.offset + 1) {
+        const tes = JSON.parse(line);
+        await fs.appendFile(`${downloadDir}/doi.csv`, `${tes.doi}\r`, (err) => {
+          if (err) throw err;
+        });
         // fill the array
         try {
           tab.push(JSON.parse(line));
