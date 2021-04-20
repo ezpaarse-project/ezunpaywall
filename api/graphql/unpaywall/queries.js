@@ -1,6 +1,11 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
 const graphql = require('graphql');
 const { UnPayWallType } = require('./index');
 const client = require('../../lib/client');
+const oaLocationInput = require('../oa_location/inputType');
+const zAuthorsInput = require('../z_authors/inputType');
+const { logger } = require('../../lib/logger');
 
 const {
   GraphQLList,
@@ -8,10 +13,26 @@ const {
   GraphQLString,
   GraphQLInt,
   GraphQLBoolean,
+  GraphQLInputObjectType,
 } = graphql;
 
+const parseTerms = (attr, name, args) => {
+  let attrParsed;
+  try {
+    attrParsed = JSON.parse(JSON.stringify(args[name]));
+  } catch (err) {
+    logger.error(`parseTerms: ${err}`);
+  }
+
+  let val;
+  for (const attr2 in attrParsed) {
+    val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
+  }
+  return JSON.parse(val);
+};
+
 module.exports = {
-  getDatasUPW: {
+  getDataUPW: {
     type: new GraphQLList(UnPayWallType),
     args: {
       dois: { type: new GraphQLList(GraphQLID) },
@@ -29,51 +50,70 @@ module.exports = {
       oa_status: { type: GraphQLString },
       title: { type: GraphQLString },
       updated: { type: GraphQLString },
-      year: { type: GraphQLString },
+      year: { type: new GraphQLList(GraphQLString) },
       published_date: { type: GraphQLString },
-      published_date_lte: { type: GraphQLString },
-      published_date_gte: { type: GraphQLString },
+      oa_location: {
+        type: oaLocationInput,
+      },
+      best_oa_location: {
+        type: oaLocationInput,
+      },
+      first_oa_location: {
+        type: oaLocationInput,
+      },
+      published_date_range: {
+        type: new GraphQLInputObjectType({
+          name: 'published_date_range',
+          fields: () => ({
+            lte: { type: GraphQLString },
+            gte: { type: GraphQLString },
+          }),
+        }),
+      },
+      year_range: {
+        type: new GraphQLInputObjectType({
+          name: 'year_range',
+          fields: () => ({
+            lte: { type: GraphQLString },
+            gte: { type: GraphQLString },
+          }),
+        }),
+      },
+      z_authors: {
+        type: zAuthorsInput,
+      },
     },
     // attr info give informations about graphql request
     resolve: async (parent, args) => {
-      if (args.published_date) {
-        if (args.published_date_lte || args.published_date_gte) {
-          console.log('impossible to request with published_date and published_date_lte or published_date_gte');
-          return null;
-        }
-      }
-      const matchRange = /(lte|gte)/i;
-      const matchlte = /(lte)/i;
-      const matchgte = /(gte)/i;
       const filter = [{ terms: { doi: args.dois } }];
-      const tab = [];
-
-      console.log(args);
+      const matchRange = /(range)/i;
 
       /* eslint-disable no-restricted-syntax */
       /* eslint-disable guard-for-in */
       for (const attr in args) {
-        // if not attr lte or gte
-        if (!matchRange.exec(attr)) {
-          if (args.attr !== undefined) {
-            filter.push({ term: { attr: args.attr } });
+        if (matchRange.exec(attr)) {
+          const newAttr = attr.substring(0, attr.length - 6);
+          const gte = (args[attr])?.gte;
+          const lte = (args[attr])?.lte;
+          let range = {
+            gte,
+            lte,
+          };
+          range = `{"range": {"${newAttr}": ${JSON.stringify(range)}}}`;
+
+          filter.push(JSON.parse(range));
+        } else {
+          const deepAttrs = new Set(['best_oa_location', 'oa_location', 'first_oa_location']);
+          if (deepAttrs.has(attr)) {
+            filter.push(parseTerms(attr, attr, args));
+          } else if (attr !== 'dois') {
+            const value = args[attr];
+            if (Array.isArray(value)) {
+              filter.push({ terms: { [attr]: value } });
+            } else {
+              filter.push({ term: { [attr]: value } });
+            }
           }
-        }
-        let val;
-        // if attr lte or gte
-        if (matchlte.exec(attr)) {
-          [val] = attr.split('_lte');
-          console.log(args[`${attr}`]);
-          val.lte = 'nique ta mere';
-          console.log(val);
-          console.log(val.lte);
-          tab.push(val);
-        }
-        if (matchgte.exec(attr)) {
-          [val] = attr.split('_gte');
-          val.gte = args.attr;
-          console.log(val);
-          tab.push(val);
         }
       }
 
@@ -89,15 +129,11 @@ module.exports = {
           index: 'unpaywall',
           size: args.dois.length || 1000,
           body: {
-            query: {
-              bool: {
-                filter,
-              },
-            },
+            query,
           },
         });
       } catch (err) {
-        console.log(err.meta.body.error);
+        logger.error(err.meta.body.error);
         return null;
       }
       return res.body.hits.hits.map((hit) => hit._source);

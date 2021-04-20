@@ -1,4 +1,4 @@
-FROM node:14.5.0
+FROM node:14.15.4
 LABEL maintainer="ezPAARSE Team <ezpaarse@couperin.org>"
 
 ENV NODE_ENV production

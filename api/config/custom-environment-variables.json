@@ -2,8 +2,8 @@
   "apikey": "API_KEY_UPW",
   "unpaywallURL": "UNPAYWALL_URL",
   "elasticsearch": {
-    "port": "EZUNPAYWALL_ELASTIC_PORT",
-    "host": "EZUNPAYWALL_ELASTIC_HOST",
+    "port": "ELASTICSEARCH_PORT",
+    "host": "ELASTICSEARCH_HOST",
     "user": "ELASTICSEARCH_USERNAME",
     "password": "ELASTICSEARCH_PASSWORD"
   },

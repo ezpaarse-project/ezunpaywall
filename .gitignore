@@ -5,6 +5,7 @@ package-lock.json
 data/
 out/
 ezunpaywall.env.local.sh
+ezunpaywall.env.prod.sh
 doc/
 apidoc.json
 certificates/

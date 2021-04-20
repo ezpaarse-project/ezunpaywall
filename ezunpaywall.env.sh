@@ -1,16 +1,19 @@
 #!/bin/bash
 
-EZUNPAYWALL_NODE_NAME=`hostname`
-THIS_HOST=`hostname -I | cut -d ' ' -f1`
-
 # unpaywall
 export API_KEY_UPW="api_key"
 export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
-# elastic
-export EZUNPAYWALL_ELASTIC_USER="elastic"
-export EZUNPAYWALL_ELASTIC_PASSWORD="changeme"
+# mail
+export EZUNPAYWALL_SMTP_PORT=25
+export EZUNPAYWALL_NOTIFICATIONS_SENDER='ez-unpaywall <ez-unpaywall@inist.fr>'
+export EZUNPAYWALL_NOTIFICATIONS_RECEIVERS='you@you.org'
 
+# disabled it if you are in deploiement
+export NODE_CONFIG='{ "smtp": { "secure": false, "ignoreTLS": true } }'
+
+EZUNPAYWALL_NODE_NAME=`hostname`
+THIS_HOST=`hostname -I | cut -d ' ' -f1`
 
 # kibana env settings
 export EZUNPAYWALL_AUTH_SECRET="d7a8c699c63836b837af086cfb3441cbcfcf1a02"

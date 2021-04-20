@@ -1,0 +1,245 @@
+<template>
+  <v-card>
+    <v-toolbar class="secondary" dark dense flat>
+      <v-toolbar-title> {{ $t("ui.pages.enrich.title") }} </v-toolbar-title>
+    </v-toolbar>
+
+    <v-stepper v-model="step">
+      <v-stepper-header>
+        <v-stepper-step
+          edit-icon="mdi-check"
+          :editable="!jobInProgress"
+          :complete="hasLogFiles"
+          step="1"
+        >
+          {{ $t("ui.pages.enrich.stepper.filesSelection") }}
+        </v-stepper-step>
+
+        <v-divider :color="hasLogFiles && step > 1 ? 'primary' : ''" />
+
+        <v-stepper-step
+          edit-icon="mdi-check"
+          :editable="!jobInProgress"
+          :complete="step > 2"
+          step="2"
+        >
+          {{ $t("ui.pages.enrich.stepper.settings") }}
+        </v-stepper-step>
+
+        <v-divider :color="hasJob && step > 2 ? 'primary' : ''" />
+
+        <v-stepper-step :editable="hasJob" step="3">
+          {{ $t("ui.pages.enrich.stepper.enrich") }}
+        </v-stepper-step>
+      </v-stepper-header>
+
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <v-container>
+            <v-layout row justify-end class="mb-3">
+              <v-btn
+                class="body-2"
+                color="primary"
+                @click="step = 2"
+                v-text="$t('ui.pages.enrich.filesSelection.continue')"
+              />
+            </v-layout>
+          </v-container>
+
+          <LogFiles class="ma-1" @files="getFiles($event)" />
+        </v-stepper-content>
+
+        <v-stepper-content step="2">
+          <v-container>
+            <v-layout row align-center class="mb-3">
+              <v-btn
+                class="body-2"
+                color="primary"
+                @click="step = 1"
+                v-text="$t('ui.pages.enrich.settings.filesSelection')"
+              />
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                color="primary"
+                :disabled="!hasLogFiles || !setting.length"
+                @click="
+                  process();
+                  step = 3;
+                "
+                v-text="$t('ui.pages.enrich.settings.startProcess')"
+              />
+            </v-layout>
+          </v-container>
+          <v-toolbar class="secondary" dark dense flat>
+            <v-toolbar-title>
+              {{ $t("ui.pages.enrich.settings.title") }}
+            </v-toolbar-title>
+          </v-toolbar>
+
+          <Settings @setting="getSetting($event)" />
+        </v-stepper-content>
+
+        <v-stepper-content step="3">
+          <v-container>
+            <v-layout row justify-end class="mb-3">
+              <v-btn :href="resultUrl" :disabled="inProcess">
+                <v-icon left>
+                  mdi-download
+                </v-icon>
+                {{ $t("ui.pages.enrich.process.download") }}
+              </v-btn>
+            </v-layout>
+          </v-container>
+          <v-container v-if="inProcess" class="text-center">
+            <v-progress-circular
+              :size="70"
+              :width="7"
+              indeterminate
+              color="green"
+            />
+            <div v-text="$t('ui.pages.enrich.process.inProcess')" />
+          </v-container>
+          <v-container v-else class="text-center">
+            <v-icon size="70" color="green darken-2">
+              mdi-check
+            </v-icon>
+            <div v-text="$t('ui.pages.enrich.process.end')" />
+          </v-container>
+          <v-container>
+            <Report :time="time" :state="state" />
+          </v-container>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+  </v-card>
+</template>
+
+<script>
+import axios from 'axios'
+
+import LogFiles from '~/components/Enrich/LogFiles.vue'
+import Settings from '~/components/Enrich/SettingsJSONL.vue'
+import Report from '~/components/Enrich/Report.vue'
+
+export default {
+  name: 'CSV',
+  components: {
+    LogFiles,
+    Settings,
+    Report
+  },
+  transition: 'slide-x-transition',
+  data: () => {
+    return {
+      step: 1,
+      files: [],
+      enrichedFile: '',
+      setting: [],
+      status: null,
+      timeout: '',
+      fileState: '',
+      state: {},
+      time: 0,
+      timerInterval: {},
+      inProcess: false
+    }
+  },
+  computed: {
+    hasLogFiles () {
+      return Array.isArray(this.files) && this.files.length > 0
+    },
+    jobInProgress () {
+      return this.status === 'progress' || this.status === 'finalization'
+    },
+    hasJob () {
+      return this.status !== null
+    },
+    jobIsCancelable () {
+      return this.$store.getters['process/cancelable']
+    },
+    resultUrl () {
+      return `http://localhost:8080/enrich/${this.enrichedFile}`
+    }
+  },
+  methods: {
+    async process () {
+      this.inProcess = true
+      this.startTimer()
+      await this.createState()
+      this.poling()
+      await this.enrich()
+    },
+
+    async createState () {
+      let res
+      try {
+        res = await axios({
+          method: 'POST',
+          url: 'http://localhost:8080/enrich/state',
+          responseType: 'json'
+        })
+      } catch (err) {
+        console.log(err)
+      }
+      this.fileState = res.data.state
+    },
+
+    async enrich () {
+      let res
+      try {
+        res = await axios({
+          method: 'POST',
+          url: 'http://localhost:8080/enrich/json',
+          params: {
+            args: this.setting.join(','),
+            state: this.fileState
+          },
+          data: this.files[0].file,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          responseType: 'json'
+        })
+      } catch (err) {
+        console.log(err)
+      }
+      this.enrichedFile = res.data.file
+    },
+
+    async poling () {
+      let res
+      try {
+        res = await axios({
+          method: 'GET',
+          url: `http://localhost:8080/enrich/state/${this.fileState}`,
+          responseType: 'json'
+        })
+      } catch (err) {
+        console.log(err)
+      }
+      this.state = res.data.state
+      if (res.data.state.status === 'done') {
+        this.onTimesUp()
+        this.inProcess = false
+        clearTimeout(this.timeout)
+        return
+      }
+      this.timeout = setTimeout(this.poling, 1000)
+    },
+    getSetting (setting) {
+      this.setting = setting
+    },
+    getFiles (files) {
+      this.files = files
+    },
+    onTimesUp () {
+      clearInterval(this.timerInterval)
+    },
+    startTimer () {
+      this.time = 0
+      this.timerInterval = setInterval(() => (this.time += 1), 1000)
+    }
+  }
+}
+</script>

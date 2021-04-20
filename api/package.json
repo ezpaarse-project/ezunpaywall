@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon -e .js app.js",
-    "test": "nodemon -w test/ -e .js --exec 'mocha' --timeout 30000",
-    "lint": "eslint --ext .js"
+    "test": "nodemon -w test/ -e .js --exec 'mocha' --timeout 20000",
+    "lint": "eslint --ext .js ."
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -30,17 +30,21 @@
     "config": "^3.3.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
     "express-graphql": "^0.9.0",
     "fs-extra": "^9.0.1",
     "graphql": "^15.0.0",
+    "lodash.get": "^4.4.2",
     "mjml": "^4.8.1",
     "morgan": "^1.10.0",
+    "node-cron": "^2.0.3",
     "nodemailer": "^6.4.17",
     "nunjucks": "^3.2.2",
     "papaparse": "^5.3.0",
     "pg": "^8.2.1",
     "pg-hstore": "^2.3.3",
     "pretty-bytes": "^5.3.0",
+    "uuid": "^8.3.2",
     "vue": "^2.6.11",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.5.0"

@@ -8,67 +8,26 @@ services:
         - http_proxy
         - https_proxy
     environment:
+      - NODE_ENV=production
+      # mail
       - NODE_CONFIG
       - EZUNPAYWALL_SMTP_HOST
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - NODE_ENV=production
-      - http_proxy
-      - https_proxy
+      # unpaywall
       - UNPAYWALL_URL
       - API_KEY_UPW
-      - EZUNPAYWALL_ELASTIC_HOST=elastic
-      - EZUNPAYWALL_ELASTIC_PORT
+      # elastic
+      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
+      # proxy
+      - http_proxy
+      - https_proxy
     volumes:
       - ./api/out:/usr/src/api/out/
     command: "npm start"
     ports:
       - "8080:8080"
-      
-  elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
-    environment:
-      - http_proxy
-      - https_proxy
-      - CLUSTER_NAME=ezunpaywall
-      - EZUNPAYWALL_ES_PUBLISH
-      - EZUNPAYWALL_ES_NODE_NAME
-      - EZUNPAYWALL_ES_DISCOVERY
-      - EZUNPAYWALL_ES_DISCOVERY_TYPE
-      - EZUNPAYWALL_ES_NODE_MASTER
-      - EZUNPAYWALL_ES_NODE_DATA
-      - EZUNPAYWALL_ES_NODE_INGEST
-      - EZUNPAYWALL_ES_NODE_SEARCH_REMOTE
-      - EZUNPAYWALL_ES_INITIAL_MASTER_NODES
-      - EZUNPAYWALL_SMTP_HOST
-      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
-      - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - "./data:/usr/share/elasticsearch/data"
-      - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
-      - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
-    ports:
-      - 9200:9200
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.1
-    ports:
-      - 5601:5601
-    environment:
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_USERNAME
-      - SERVER_HOST
-      - SERVER_PORT
-      - THIS_HOST
-      - ELASTICSEARCH_HOSTS="http://elastic:9200"
-      - KIBANA_DEFAULTAPPID
-    volumes:
-      - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"

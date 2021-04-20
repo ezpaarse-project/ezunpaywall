@@ -3,7 +3,7 @@
   "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
   "elasticsearch": {
     "port": 9200,
-    "host": "localhost",
+    "host": "http://elastic",
     "user": "elastic",
     "password": "changeme"
   },
