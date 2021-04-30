@@ -61,7 +61,7 @@ const mailUpdate = async (status) => {
     await sendMail({
       from: config.get('notifications.sender'),
       to: config.get('notifications.receivers'),
-      subject: `ez-unpaywall - Rapport de mise à jour - ${status}`,
+      subject: `ezunpaywall - Rapport de mise à jour - ${status}`,
       ...generateMail('report', {
         task: JSON.stringify(task, null, 2),
         status,
@@ -160,6 +160,7 @@ const endStatus = async () => {
       body: task,
     });
   } catch (err) {
+    console.log(err.meta.body.error)
     logger.error(`endStatus: ${err}`);
   }
 };

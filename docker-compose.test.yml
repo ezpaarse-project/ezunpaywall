@@ -79,17 +79,17 @@ services:
       - 1080:80
     restart: unless-stopped
 
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:7.9.1
-  #   ports:
-  #     - 5601:5601
-  #   environment:
-  #     - ELASTICSEARCH_PASSWORD
-  #     - ELASTICSEARCH_USERNAME
-  #     - SERVER_HOST
-  #     - SERVER_PORT
-  #     - THIS_HOST
-  #     - ELASTICSEARCH_HOSTS="http://elastic:9200"
-  #     - KIBANA_DEFAULTAPPID
-  #   volumes:
-  #     - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"      
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.1
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME
+      - SERVER_HOST
+      - SERVER_PORT
+      - THIS_HOST
+      - ELASTICSEARCH_HOSTS="http://elastic:9200"
+      - KIBANA_DEFAULTAPPID
+    volumes:
+      - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"      

@@ -184,7 +184,7 @@ const checkAttributesCSV = (attrs, enrichAttributesCSV) => {
 
 /**
  * @param {*} tab array of line that we will enrich
- * @param {*} response response from ez-unpaywall
+ * @param {*} response response from ezunpaywall
  */
 const enrichTab = (tab, response, enrichAttributesCSV) => {
   const results = new Map();
@@ -291,7 +291,6 @@ const enrichmentFileCSV = async (readStream, attributs, separator, state) => {
 
   fs.openSync(enrichedFile, 'w');
 
-  let lineEnrich = 0;
   let loaded = 0;
 
   readStream.on('data', (chunk) => {
@@ -331,8 +330,7 @@ const enrichmentFileCSV = async (readStream, attributs, separator, state) => {
           await writeInFileCSV(tabWillBeEnriched, headers, separator, enrichedFile);
 
           // state
-          lineEnrich += response.length;
-          await incrementenrichedLines(state, lineEnrich);
+          await incrementenrichedLines(state, response.length);
           await incrementlinesRead(state, 1000);
           await incrementLoaded(state, loaded);
           await parser.resume();
@@ -349,8 +347,7 @@ const enrichmentFileCSV = async (readStream, attributs, separator, state) => {
     await writeInFileCSV(tab, headers, separator, enrichedFile);
 
     // state
-    lineEnrich += response.length;
-    await incrementenrichedLines(state, lineEnrich);
+    await incrementenrichedLines(state, response.length);
     await incrementlinesRead(state, tab.length);
     await incrementLoaded(state, loaded);
   }

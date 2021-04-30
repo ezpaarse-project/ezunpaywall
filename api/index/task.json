@@ -6,7 +6,7 @@
       "steps": { "type": "object" },
       "createdAt": { "type": "date" },
       "endAt": { "type": "date" },
-      "took": { "type": "float" }
+      "took": { "type": "integer" }
     }
   }
 }

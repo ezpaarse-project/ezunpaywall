@@ -1,7 +1,13 @@
 <template>
   <div>
     <v-container fluid>
-      <v-select v-model="tab" :label="label" :items="items" multiple>
+      <v-select
+        v-model="tab"
+        :label="label"
+        :items="items"
+        item-text="name"
+        multiple
+      >
         <template #prepend-item>
           <v-list-item ripple @click="toggle">
             <v-list-item-action>
@@ -14,6 +20,21 @@
             </v-list-item-content>
           </v-list-item>
           <v-divider class="mt-2" />
+        </template>
+        <template slot="selection" slot-scope="{ item }">
+          {{ item.name }}
+        </template>
+        <template slot="item" slot-scope="{ item }">
+          {{ item.name }}
+          <v-spacer />
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-icon color="primary" dark v-bind="attrs" v-on="on">
+                mdi-information
+              </v-icon>
+            </template>
+            <span>{{ item.info }}</span>
+          </v-tooltip>
         </template>
       </v-select>
     </v-container>

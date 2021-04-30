@@ -90,13 +90,13 @@ export default {
           width: 10
         },
         {
-          text: 'Nom du fichier',
+          text: this.$t('ui.components.enrich.LogFiles.filename'),
           align: 'left',
           sortable: false,
           value: 'name'
         },
         {
-          text: 'Taille',
+          text: this.$t('ui.components.enrich.LogFiles.size'),
           align: 'right',
           sortable: false,
           value: 'size'

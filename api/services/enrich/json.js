@@ -212,7 +212,7 @@ const checkAttributesJSON = (attrs, enrichAttributesJSON) => {
 
 /**
  * @param {*} tab array of line that we will enrich
- * @param {*} response response from ez-unpaywall
+ * @param {*} response response from ezunpaywall
  */
 const enrichTab = (tab, response) => {
   const results = new Map();
@@ -266,7 +266,6 @@ const enrichmentFileJSON = async (readStream, attributs, state) => {
 
   fs.openSync(enrichedFile, 'w');
 
-  let lineEnrich = 0;
   let loaded = 0;
 
   readStream.on('data', (chunk) => {
@@ -293,9 +292,7 @@ const enrichmentFileJSON = async (readStream, attributs, state) => {
       await writeInFileJSON(tab, enrichedFile);
       tab = [];
 
-      // state
-      lineEnrich += response.length;
-      await incrementenrichedLines(state, lineEnrich);
+      await incrementenrichedLines(state, response.length);
       await incrementlinesRead(state, 1000);
       await incrementLoaded(state, loaded);
     }
@@ -306,14 +303,13 @@ const enrichmentFileJSON = async (readStream, attributs, state) => {
     enrichTab(tab, response);
     await writeInFileJSON(tab, enrichedFile);
 
-    lineEnrich += response.length;
-    await incrementenrichedLines(state, lineEnrich);
+    await incrementenrichedLines(state, response.length);
     await incrementlinesRead(state, tab.length);
     await incrementLoaded(state, loaded);
   }
   await endState(state);
   state = await getState(state);
-  logger.info(`${lineEnrich}/${state.linesRead} enriched lines`);
+  logger.info(`${state.lineEnrich}/${state.linesRead} enriched lines`);
   return file;
 };
 

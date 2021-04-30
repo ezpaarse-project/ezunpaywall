@@ -1,7 +1,7 @@
 <template>
   <div>
     <p>
-      Le serveur ez-unpaywall est une API en graphql qui intérroge une base de
+      Le serveur ezunpaywall est une API en graphql qui intérroge une base de
       données ouverte de plus de 26 000 000 d'articles scientifiques disponible
       en open-acess. Ce projet découle d'un besoin pour le projet ezPAARSE, il
       permet entre autre de faire des requêtes par lot de DOI. Cette base de
@@ -78,6 +78,8 @@ export default {
       if (res.data.inProgress) {
         this.inUpdate = true
         this.status = res.data
+      } else {
+        this.inUpdate = false
       }
       await new Promise(resolve => setTimeout(resolve, 10000))
       await this.checkIfUpdate()

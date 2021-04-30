@@ -6,7 +6,7 @@ export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
 # mail
 export EZUNPAYWALL_SMTP_PORT=25
-export EZUNPAYWALL_NOTIFICATIONS_SENDER='ez-unpaywall <ez-unpaywall@inist.fr>'
+export EZUNPAYWALL_NOTIFICATIONS_SENDER='ezunpaywall <ezunpaywall@inist.fr>'
 export EZUNPAYWALL_NOTIFICATIONS_RECEIVERS='you@you.org'
 
 # disabled it if you are in deploiement

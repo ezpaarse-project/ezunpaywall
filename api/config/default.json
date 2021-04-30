@@ -12,7 +12,7 @@
     "port": 25
   },
   "notifications": {
-    "sender": "ez-unpaywall",
+    "sender": "ezunpaywall",
     "receivers": []
   }
 }

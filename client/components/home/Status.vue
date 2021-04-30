@@ -1,9 +1,8 @@
 <template>
   <div class="container">
     <v-divider />
-    <h2>General</h2>
-    créé le : {{ status.task.createdAt }}
-    <h3>Taches</h3>
+    {{ $t('ui.components.home.Status.createdAt') }} : {{ status.task.createdAt }}
+    <h3> {{ $t('ui.components.home.Status.tasks') }} </h3>
     <v-card-text v-for="step in status.task.steps" :key="step.took">
       <v-data-table
         v-if="step.task === 'download'"
@@ -29,8 +28,12 @@
           </div>
         </template>
 
-        <template #item.percent="{ item }"> {{ item.percent }}% </template>
-        <template #item.took="{ item }"> {{ item.took }} sec </template>
+        <template #item.percent="{ item }">
+          {{ item.percent }}%
+        </template>
+        <template #item.took="{ item }">
+          {{ item.took }} sec
+        </template>
       </v-data-table>
 
       <v-data-table
@@ -56,8 +59,12 @@
             />
           </div>
         </template>
-        <template #item.percent="{ item }"> {{ item.percent }}% </template>
-        <template #item.took="{ item }"> {{ item.took }} sec </template>
+        <template #item.percent="{ item }">
+          {{ item.percent }}%
+        </template>
+        <template #item.took="{ item }">
+          {{ item.took }} sec
+        </template>
       </v-data-table>
     </v-card-text>
   </div>
@@ -66,7 +73,10 @@
 <script>
 export default {
   props: {
-    status: Object
+    status: {
+      type: Object,
+      default: {}
+    }
   },
   data: () => {
     return {}

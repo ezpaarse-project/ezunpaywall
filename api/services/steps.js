@@ -110,7 +110,7 @@ const insertDatasUnpaywall = async (options) => {
       if (tab.length % 1000 === 0 && tab.length !== 0) {
         await insertUPW(tab);
         step.percent = ((loaded / bytes.size) * 100).toFixed(2);
-        step.took = Math.round((new Date() - start) / 1000);
+        step.took = (new Date() - start) / 1000;
         tab = [];
       }
       if (step?.linesRead % 100000 === 0) {
@@ -199,14 +199,14 @@ const downloadUpdateSnapshot = async () => {
         clearTimeout(timeout);
         return;
       }
-      step.took = Math.round((new Date() - start) / 1000);
+      step.took = (new Date() - start) / 1000;
       step.percent = ((bytes.size / size) * 100).toFixed(2);
       timeout = setTimeout(percentDownload, 3000);
     }());
 
     writeStream.on('finish', () => {
       step.status = 'success';
-      step.took = Math.round((new Date() - start) / 1000);
+      step.took = (new Date() - start) / 1000;
       step.percent = 100;
       clearTimeout(timeout);
       logger.info('step - end download');

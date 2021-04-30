@@ -1,6 +1,6 @@
-# ez-unpaywall
+# ezunpaywall
 
-ez-unpaywall is an API and database that queries the Unpaywall database containing free scholarly articles
+ezunpaywall is an API and database that queries the Unpaywall database containing free scholarly articles
 
 **Table of content**
 - [Prerequisites](#prerequisites)
@@ -11,7 +11,7 @@ ez-unpaywall is an API and database that queries the Unpaywall database containi
 
 ## Prerequisites
 
-The tools you need to let ez-unpaywall run are :
+The tools you need to let ezunpaywall run are :
 * docker
 * docker-compose
 * npm (for development)
@@ -21,7 +21,7 @@ The tools you need to let ez-unpaywall run are :
 ## Installation
 
 ```bash
-git clone https://github.com/ezpaarse-project/ez-unpaywall 
+git clone https://github.com/ezpaarse-project/ezunpaywall 
 ```
 ## Deployment
 ### Setup environment
@@ -39,7 +39,7 @@ Create an environment file named `ezunpaywall.env.local.sh` and export the follo
 | NODE_CONFIG | make tls and secure of mail (only in developement) |
 | EZUNPAYWALL_SMTP_HOST | host of the SMTP server |
 | EZUNPAYWALL_SMTP_PORT | port of the SMTP server |
-| EZUNPAYWALL_NOTIFICATIONS_SENDER | the sender for emails issued by ez-unpaywall |
+| EZUNPAYWALL_NOTIFICATIONS_SENDER | the sender for emails issued by ezunpaywall |
 | EZUNPAYWALL_NOTIFICATIONS_RECEIVERS | recipients of the recent activity email |
 #### Elastic
 
@@ -52,16 +52,16 @@ Create an environment file named `ezunpaywall.env.local.sh` and export the follo
 
 ## Start/Stop/Status
 
-Before you start ez-unpaywall, make sure all necessary environment variables are set.
+Before you start ezunpaywall, make sure all necessary environment variables are set.
 
 ```bash
-# Start ez-unpaywall as daemon
+# Start ezunpaywall as daemon
 docker-compose up -d
 
-# Stop ez-unpaywall
+# Stop ezunpaywall
 docker-compose stop
 
-# Get the status of ez-unpaywall services
+# Get the status of ezunpaywall services
 docker-compose ps
 ```
 ## Development
@@ -107,26 +107,26 @@ instances:
 ### Install
 
 ```bash
-ez-unpaywall/api$ npm i
-ez-unpaywall/fakeUnpaywall$ npm i
+ezunpaywall/api$ npm i
+ezunpaywall/fakeUnpaywall$ npm i
 ```
 ### Start
 
-Before you start ez-unpaywall, make sure all necessary environment variables are set.
+Before you start ezunpaywall, make sure all necessary environment variables are set.
 
 ```bash
-# Start ez-unpaywall as daemon
+# Start ezunpaywall as daemon
 docker-compose -f docker-compose.debug.yml up -d
 
-# Stop ez-unpaywall
+# Stop ezunpaywall
 docker-compose -f docker-compose.debug.yml stop
 
-# Get the status of ez-unpaywall services
+# Get the status of ezunpaywall services
 docker-compose -f docker-compose.debug.yml ps
 ```
 
 ```bash
-# Start ez-unpaywall test as daemon
+# Start ezunpaywall test as daemon
 docker-compose -f docker-compose.test.yml up -d
 
 # See result of the tests
