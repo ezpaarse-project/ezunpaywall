@@ -46,7 +46,7 @@ const resetTask = () => {
 
 const endTask = () => {
   task.endAt = new Date();
-  task.took = (task.endAt - task.createdAt) / 1000;
+  task.took = Math.round((task.endAt - task.createdAt) / 1000);
   task.done = true;
   task.currentTask = 'end';
 };

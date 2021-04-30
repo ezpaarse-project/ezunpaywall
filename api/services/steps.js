@@ -110,6 +110,7 @@ const insertDatasUnpaywall = async (options) => {
       if (tab.length % 1000 === 0 && tab.length !== 0) {
         await insertUPW(tab);
         step.percent = ((loaded / bytes.size) * 100).toFixed(2);
+        step.took = Math.round((new Date() - start) / 1000);
         tab = [];
       }
       if (step?.linesRead % 100000 === 0) {
@@ -183,6 +184,7 @@ const downloadUpdateSnapshot = async () => {
   const downloadFileWithStream = async (filePath) => new Promise((resolve, reject) => {
     // download unpaywall file with stream
     const writeStream = compressedFile.data.pipe(fs.createWriteStream(filePath));
+    const step = task.steps[task.steps.length - 1]
 
     // update percent of download
     let timeout;
@@ -197,14 +199,15 @@ const downloadUpdateSnapshot = async () => {
         clearTimeout(timeout);
         return;
       }
-      task.steps[task.steps.length - 1].percent = ((bytes.size / size) * 100).toFixed(2);
+      step.took = Math.round((new Date() - start) / 1000);
+      step.percent = ((bytes.size / size) * 100).toFixed(2);
       timeout = setTimeout(percentDownload, 3000);
     }());
 
     writeStream.on('finish', () => {
-      task.steps[task.steps.length - 1].status = 'success';
-      task.steps[task.steps.length - 1].took = (new Date() - start) / 1000;
-      task.steps[task.steps.length - 1].percent = 100;
+      step.status = 'success';
+      step.took = Math.round((new Date() - start) / 1000);
+      step.percent = 100;
       clearTimeout(timeout);
       logger.info('step - end download');
       return resolve();
@@ -241,6 +244,7 @@ const downloadUpdateSnapshot = async () => {
 const askUnpaywall = async (url, startDate, endDate) => {
   // create step askUnpaywall
   const start = createStepaskUnpaywall();
+  const step = task.steps[task.steps.length - 1];
 
   let response;
 
@@ -274,8 +278,6 @@ const askUnpaywall = async (url, startDate, endDate) => {
       getMetadatas().push(file);
     }
   });
-
-  const step = task.steps[task.steps.length - 1];
 
   step.status = 'success';
   step.took = (new Date() - start) / 1000;

@@ -135,9 +135,9 @@
             }
           });
         },
-        getStatusInProgress() {
+        async getStatusInProgress() {
           setTimeout(() => {
-            axios({
+            await axios({
               method: 'get',
               url: `/task`,
             }).then((response) => {
