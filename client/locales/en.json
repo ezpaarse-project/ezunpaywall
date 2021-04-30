@@ -6,7 +6,7 @@
     "drawer": {
       "home": "Home",
       "enrich": "Enrich",
-      "language": "Langue"
+      "language": "Language"
     },
     "pages": {
       "home": {
@@ -15,7 +15,7 @@
       "enrich": {
         "title": "Enrich your file",
         "stepper": {
-          "filesSelection": "Files selection",
+          "filesSelection": "Select files",
           "settings": "Settings",
           "enrich": "Enrich"
         },
@@ -25,14 +25,14 @@
         "settings": {
           "title": "Settings",
           "attributes" : "Unpaywall attributes",
-          "name": "Name of output enriched file",
-          "filesSelection": "Files selection",
-          "startProcess": "Start enrichisment"
+          "name": "Name the enriched file",
+          "filesSelection": "Select files",
+          "startProcess": "Start enrichment"
         },
         "process": {
           "download": "Download the enriched file",
           "inProcess": "Enrichment in progress",
-          "end": "Enrichment completed"
+          "end": "Enrichment complete!"
         }
       }
     },
@@ -51,7 +51,7 @@
       "metric": {
         "linesRead": "Lines read",
         "linesEnriched": "Lines enriched",
-        "treatmentDuration": "Treatment duration"
+        "treatmentDuration": "Processing duration"
       }
     },
     "theme": {
