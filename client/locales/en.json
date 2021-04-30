@@ -25,7 +25,6 @@
         "settings": {
           "title": "Settings",
           "attributes" : "Unpaywall attributes",
-          "name": "Name of output enriched file",
           "filesSelection": "Files selection",
           "startProcess": "Start enrichisment"
         },
@@ -37,21 +36,38 @@
       }
     },
     "components": {
-      "files": {
-        "clickToAdd": "Click or Drop to add",
-        "removeList": "Delete list",
-        "selectedFiles": "Selected files",
-        "total": "Total"
+      "enrich": {
+        "LogFiles": {
+          "clickToAdd": "Click or Drop to add",
+          "removeList": "Delete list",
+          "selectedFiles": "Selected files",
+          "total": "Total"
+        },
+        "Settings": {
+          "title": "Settings",
+          "name": "Name of output enriched file"
+        },
+        "Metric": {
+          "linesRead": "Lines read",
+          "linesEnriched": "Lines enriched",
+          "treatmentDuration": "Treatment duration"
+        }
       },
-      "settings": {
-        "title": "Settings",
-        "selectAll": "Select all",
-        "unselectAll": "Unselect all"
-      },
-      "metric": {
-        "linesRead": "Lines read",
-        "linesEnriched": "Lines enriched",
-        "treatmentDuration": "Treatment duration"
+      "home": {
+        "InUpdate": {
+          "status": "Unpaywall data Update is in progress"
+        },
+        "NoInUpdate": {
+          "status": "No unpaywall data update is in progress"
+        },
+        "Status": {
+          "task": "Task",
+          "took": "Took",
+          "percent": "Percent",
+          "file": "File",
+          "linesRead": "Lines read",
+          "status": "Status"
+        }
       }
     },
     "theme": {

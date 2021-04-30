@@ -25,7 +25,6 @@
         "settings": {
           "title": "Paramètres",
           "attributes" : "Attributs unpaywall",
-          "name": "Nom du fichier de sortie enrichit",
           "filesSelection": "Sélection des fichiers",
           "startProcess": "Lancer l'enrichissement"
         },
@@ -37,21 +36,38 @@
       }
     },
     "components": {
-      "files": {
-        "clickToAdd": "Cliquez ou déposez pour ajouter",
-        "removeList": "Supprimer la liste",
-        "selectedFiles": "fichiers sélectionnés",
-        "total": "au total"
+      "enrich": {
+        "LogFiles": {
+          "clickToAdd": "Cliquez ou déposez pour ajouter",
+          "removeList": "Supprimer la liste",
+          "selectedFiles": "fichiers sélectionnés",
+          "total": "au total"
+        },
+        "Settings": {
+          "name": "Nom du fichier de sortie enrichit",
+          "title": "Paramètres"
+        },
+        "Metric": {
+          "linesRead": "Lignes lues",
+          "linesEnriched": "Lignes enrichies",
+          "treatmentDuration": "Temps de traitement"
+        }
       },
-      "settings": {
-        "title": "Paramètres",
-        "selectAll": "Tout cocher",
-        "unselectAll": "Tout décocher"
-      },
-      "metric": {
-        "linesRead": "Lignes lues",
-        "linesEnriched": "Lignes enrichies",
-        "treatmentDuration": "Temps de traitement"
+      "home": {
+        "InUpdate": {
+          "status": "Une mise à jour des données unpaywall est en cours"
+        },
+        "NoInUpdate": {
+          "status": "Aucune mise à jour des données unpaywall n'est en cours"
+        },
+        "Status": {
+          "task": "Tâche",
+          "took": "Temps",
+          "percent": "Pourcentage",
+          "file": "Fichier",
+          "linesRead": "Lignes lues",
+          "status": "Status"
+        }
       }
     },
     "theme": {

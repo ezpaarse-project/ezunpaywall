@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Metric from '~/components/Enrich/Metric.vue'
+import Metric from '~/components/enrich/Metric.vue'
 
 export default {
   components: {

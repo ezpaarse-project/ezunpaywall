@@ -118,9 +118,9 @@
 <script>
 import axios from 'axios'
 
-import LogFiles from '~/components/Enrich/LogFiles.vue'
-import Settings from '~/components/Enrich/SettingsJSONL.vue'
-import Report from '~/components/Enrich/Report.vue'
+import LogFiles from '~/components/enrich/LogFiles.vue'
+import Settings from '~/components/enrich/SettingsJSONL.vue'
+import Report from '~/components/enrich/Report.vue'
 
 export default {
   name: 'CSV',

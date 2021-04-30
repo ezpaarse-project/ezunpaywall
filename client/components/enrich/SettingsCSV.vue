@@ -2,7 +2,7 @@
   <div>
     <v-text-field
       v-model="enrichedFile"
-      :label="$t('ui.pages.enrich.settings.name')"
+      :label="$t('ui.components.enrich.Settings.name')"
     />
     <Select
       :items="unpaywallAttr"

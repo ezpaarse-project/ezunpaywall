@@ -17,7 +17,7 @@
       <v-flex
         class="headline grey--text text-center"
       >
-        {{ $t('ui.components.files.clickToAdd') }}
+        {{ $t('ui.components.enrich.LogFiles.clickToAdd') }}
         <v-flex />
       </v-flex>
     </v-layout>
@@ -49,14 +49,14 @@
             <v-icon left>
               mdi-delete-forever
             </v-icon>
-            <span> {{ $t('ui.components.files.removeList') }} </span>
+            <span> {{ $t('ui.components.enrich.LogFiles.removeList') }} </span>
           </v-btn>
 
           <v-spacer />
 
           <span>
-            {{ files.length }} {{ $t('ui.components.files.selectedFiles') }}
-            ({{ totalFileSize }}) {{ $t('ui.components.files.total') }}
+            {{ files.length }} {{ $t('ui.components.enrich.LogFiles.selectedFiles') }}
+            ({{ totalFileSize }}) {{ $t('ui.components.enrich.LogFiles.total') }}
           </span>
         </v-toolbar>
       </template>
