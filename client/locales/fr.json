@@ -13,7 +13,7 @@
         
       },
       "enrich": {
-        "title": "Enrichisser votre fichier",
+        "title": "Enrichir votre fichier",
         "stepper": {
           "filesSelection": "Sélection des fichiers",
           "settings": "Paramètres",
@@ -25,7 +25,7 @@
         "settings": {
           "title": "Paramètres",
           "attributes" : "Attributs unpaywall",
-          "name": "Nom du fichier de sortie enrichit",
+          "name": "Nom du fichier enrichi",
           "filesSelection": "Sélection des fichiers",
           "startProcess": "Lancer l'enrichissement"
         },
@@ -38,7 +38,7 @@
     },
     "components": {
       "files": {
-        "clickToAdd": "Cliquez ou déposez pour ajouter",
+        "clickToAdd": "Cliquer ou déposer pour ajouter",
         "removeList": "Supprimer la liste",
         "selectedFiles": "fichiers sélectionnés",
         "total": "au total"
