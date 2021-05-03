@@ -20,7 +20,10 @@
           "enrich": "Enrichissement"
         },
         "filesSelection": {
-          "continue": "Continuer"
+          "continue": "Continuer",
+          "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezunpaywall. La seul condition est qu'il faut qu'ils aient un champ DOI.",
+          "explainationTestsLogs": "Besoin de fichiers à enrichir pour valider votre installation ? Nous en <a href=\"{url}\" target=\"_blank\">mettons à disposition sur GitHub</a>.",
+          "close": "fermer"
         },
         "settings": {
           "title": "Paramètres",
