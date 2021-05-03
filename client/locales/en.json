@@ -29,12 +29,12 @@
           "title": "Settings",
           "attributes" : "Unpaywall attributes",
           "filesSelection": "Select files",
-          "startProcess": "Start enrichisment"
+          "startProcess": "Start enrichment"
         },
         "process": {
           "download": "Download the enriched file",
           "inProcess": "Enrichment in progress",
-          "end": "Enrichment completed"
+          "end": "Enrichment complete!"
         }
       }
     },
