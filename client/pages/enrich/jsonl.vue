@@ -116,8 +116,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 import LogFiles from '~/components/enrich/LogFiles.vue'
 import Settings from '~/components/enrich/SettingsJSONL.vue'
 import Report from '~/components/enrich/Report.vue'
@@ -174,7 +172,7 @@ export default {
     async createState () {
       let res
       try {
-        res = await axios({
+        res = await this.$axios({
           method: 'POST',
           url: `${process.env.apiURL}/enrich/state`,
           responseType: 'json'
@@ -188,7 +186,7 @@ export default {
     async enrich () {
       let res
       try {
-        res = await axios({
+        res = await this.$axios({
           method: 'POST',
           url: `${process.env.apiURL}/enrich/json`,
           params: {
@@ -210,7 +208,7 @@ export default {
     async poling () {
       let res
       try {
-        res = await axios({
+        res = await this.$axios({
           method: 'GET',
           url: `${process.env.apiURL}/enrich/state/${this.fileState}`,
           responseType: 'json'

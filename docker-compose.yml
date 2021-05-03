@@ -40,7 +40,7 @@ services:
         - http_proxy
         - https_proxy
     environment:
-      - API_URL=http://api
+      - API_URL
       - HOST=0.0.0.0
       - PORT=3000
     command: "npm start"

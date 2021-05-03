@@ -42,8 +42,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 import InUpdate from '~/components/home/InUpdate.vue'
 import NoInUpdate from '~/components/home/NoInUpdate.vue'
 import Status from '~/components/home/Status.vue'
@@ -70,7 +68,7 @@ export default {
     async checkIfUpdate () {
       let res
       try {
-        res = await axios({
+        res = await this.$axios({
           method: 'get',
           url: `${process.env.apiURL}/task`
         })
