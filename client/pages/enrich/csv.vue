@@ -205,7 +205,7 @@ export default {
       return this.$store.getters['process/cancelable']
     },
     resultUrl () {
-      return `http://localhost:8080/enrich/${this.enrichedFile}`
+      return `${process.env.apiURL}/enrich/${this.enrichedFile}`
     }
   },
   methods: {
@@ -221,7 +221,7 @@ export default {
       try {
         res = await axios({
           method: 'POST',
-          url: 'http://localhost:8080/enrich/state',
+          url: `${process.env.apiURL}/enrich/state`,
           responseType: 'json'
         })
       } catch (err) {
@@ -235,7 +235,7 @@ export default {
       try {
         res = await axios({
           method: 'POST',
-          url: 'http://localhost:8080/enrich/csv',
+          url: `${process.env.apiURL}/enrich/csv`,
           params: {
             args: this.setting.join(','),
             state: this.fileState
@@ -257,7 +257,7 @@ export default {
       try {
         res = await axios({
           method: 'GET',
-          url: `http://localhost:8080/enrich/state/${this.fileState}`,
+          url: `${process.env.apiURL}/enrich/state/${this.fileState}`,
           responseType: 'json'
         })
       } catch (err) {

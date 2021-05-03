@@ -72,7 +72,7 @@ export default {
       try {
         res = await axios({
           method: 'get',
-          url: 'http://localhost:8080/task'
+          url: `${process.env.apiURL}/task`
         })
       } catch (err) {}
       if (res?.data?.inProgress) {
