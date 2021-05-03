@@ -29,7 +29,6 @@ router.post('/enrich/json', async (req, res) => {
   try {
     file = await enrichmentFileJSON(req, attrs, state);
   } catch (err) {
-    console.log(err)
     return res.status(500).json({ message: err });
   }
   return res.status(200).json({ file });

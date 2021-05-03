@@ -227,7 +227,7 @@ export default {
       } catch (err) {
         console.log(err)
       }
-      this.fileState = res.data.state
+      this.fileState = res?.data?.state
     },
 
     async enrich () {

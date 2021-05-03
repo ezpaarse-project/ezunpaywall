@@ -2,7 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   env: {
-    apiURL: process.env.API_URL || 'http://localhost:3000'
+    apiURL: process.env.API_URL || 'http://localhost:8080'
   },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -50,7 +50,6 @@ export default {
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
     theme: {
       themes: {
         dark: {

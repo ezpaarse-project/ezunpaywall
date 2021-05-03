@@ -31,3 +31,19 @@ services:
     command: "npm start"
     ports:
       - "8080:8080"
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      args:
+        - http_proxy
+        - https_proxy
+    environment:
+      - API_URL=http://api
+      - HOST=0.0.0.0
+      - PORT=3000
+    command: "npm start"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

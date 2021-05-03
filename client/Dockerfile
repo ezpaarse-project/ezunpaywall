@@ -10,5 +10,7 @@ COPY package.json /usr/src/client/
 RUN npm install && npm cache clean --force
 COPY . /usr/src/client
 
+RUN npm run build
+
 EXPOSE 3000
 CMD [ "npm", "start" ]
