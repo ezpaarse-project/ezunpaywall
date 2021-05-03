@@ -8,7 +8,7 @@ const uuid = require('uuid');
 
 const { logger } = require('../../lib/logger');
 
-const { askEzunpaywall } = require('./utils');
+const { askEzUnpaywall } = require('./utils');
 const {
   incrementlinesRead,
   incrementenrichedLines,
@@ -287,7 +287,7 @@ const enrichmentFileJSON = async (readStream, attributs, state) => {
     }
     if (tab.length === 1000) {
       // enrichment
-      const response = await askEzunpaywall(tab, fetchAttributes);
+      const response = await askEzUnpaywall(tab, fetchAttributes);
       enrichTab(tab, response);
       await writeInFileJSON(tab, enrichedFile);
       tab = [];
@@ -299,7 +299,7 @@ const enrichmentFileJSON = async (readStream, attributs, state) => {
   }
   // last insertion
   if (tab.length !== 0) {
-    const response = await askEzunpaywall(tab, fetchAttributes);
+    const response = await askEzUnpaywall(tab, fetchAttributes);
     enrichTab(tab, response);
     await writeInFileJSON(tab, enrichedFile);
 
