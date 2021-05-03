@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('../../lib/axios');
 
 const { logger } = require('../../lib/logger');
 
@@ -17,7 +17,7 @@ const askEzUnpaywall = async (tab, fetchAttributes) => {
   try {
     response = await axios({
       method: 'post',
-      url: 'http://localhost:8080/graphql',
+      url: '/graphql',
       data: {
         query: `query ($dois: [ID!]!) {getDataUPW(dois: $dois) { doi, ${fetchAttributes.toString()} }}`,
         variables: {
