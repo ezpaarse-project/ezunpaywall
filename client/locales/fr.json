@@ -13,7 +13,7 @@
         
       },
       "enrich": {
-        "title": "Enrichisser votre fichier",
+        "title": "Enrichir votre fichier",
         "stepper": {
           "filesSelection": "Sélection des fichiers",
           "settings": "Paramètres",
