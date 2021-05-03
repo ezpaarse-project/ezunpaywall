@@ -34,7 +34,7 @@
         "process": {
           "download": "Download the enriched file",
           "inProcess": "Enrichment in progress",
-          "end": "Enrichment complete!"
+          "end": "Enrichment complete !"
         }
       }
     },
@@ -86,7 +86,7 @@
         "Metric": {
           "linesRead": "Lines read",
           "linesEnriched": "Lines enriched",
-          "treatmentDuration": "Treatment duration (in second)"
+          "treatmentDuration": "Processing duration (in second)"
         }
       },
       "home": {

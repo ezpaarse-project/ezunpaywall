@@ -1,21 +1,21 @@
 <template>
   <div>
-    <Select
+    <SelectAttributes
       :items="unpaywallAttr"
       :label="'simple'"
       @tab="getTab"
     />
-    <Select
+    <SelectAttributes
       :items="oa_location"
       :label="'best_oa_location'"
       @tab="getTab"
     />
-    <Select
+    <SelectAttributes
       :items="oa_location"
       :label="'first_oa_location'"
       @tab="getTab"
     />
-    <Select
+    <SelectAttributes
       :items="oa_location"
       :label="'oa_locations'"
       @tab="getTab"
@@ -23,11 +23,11 @@
   </div>
 </template>
 <script>
-import Select from '~/components/enrich/Select.vue'
+import SelectAttributes from '~/components/enrich/SelectAttributes.vue'
 
 export default {
   components: {
-    Select
+    SelectAttributes
   },
   data: () => {
     return {
@@ -80,25 +80,12 @@ export default {
      * give setting to parent
      */
     getSetting () {
-      const array1 = []
-      const array2 = []
-      const array3 = []
-      this.best_oa_location.forEach((el) => {
-        array1.push(`best_oa_location.${el}`)
-      })
-      this.oa_locations.forEach((el) => {
-        array2.push(`oa_location.${el}`)
-      })
-      this.first_oa_location.forEach((el) => {
-        array3.push(`first_oa_location.${el}`)
-      })
-      const setting = this.simple
-        .concat(array1)
-        .concat(array2)
-        .concat(array3)
-
-      this.$emit('setting', setting)
-      return setting
+      this.$emit('setting', [
+        ...this.simple.slice(),
+        ...this.best_oa_location.map(el => `best_oa_location.${el}`),
+        ...this.oa_locations.map(el => `oa_location.${el}`),
+        ...this.first_oa_location.map(el => `first_oa_location.${el}`),
+      ])
     },
     getTab (event) {
       this[event.label] = event.tab

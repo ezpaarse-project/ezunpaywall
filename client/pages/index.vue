@@ -75,7 +75,7 @@ export default {
           url: 'http://localhost:8080/task'
         })
       } catch (err) {}
-      if (res.data.inProgress) {
+      if (res?.data?.inProgress) {
         this.inUpdate = true
         this.status = res.data
       } else {
