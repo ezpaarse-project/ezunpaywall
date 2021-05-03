@@ -160,7 +160,6 @@ const endStatus = async () => {
       body: task,
     });
   } catch (err) {
-    console.log(err.meta.body.error)
     logger.error(`endStatus: ${err}`);
   }
 };
