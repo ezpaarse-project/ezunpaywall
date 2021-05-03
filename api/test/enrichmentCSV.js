@@ -34,7 +34,7 @@ const { getState } = require('../services/enrich/state');
 
 const ezunpaywallURL = 'http://localhost:8080';
 
-const enrichDir = path.resolve(__dirname, 'enrich');
+const enrichDir = path.resolve(__dirname, 'sources');
 
 describe('Test: enrichment with a csv file (command ezu)', () => {
   before(async () => {
