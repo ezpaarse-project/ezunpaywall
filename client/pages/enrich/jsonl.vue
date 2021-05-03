@@ -157,7 +157,7 @@ export default {
       return this.$store.getters['process/cancelable']
     },
     resultUrl () {
-      return `${process.env.apiURL}/enrich/${this.enrichedFile}`
+      return `/enrich/${this.enrichedFile}`
     }
   },
   methods: {
@@ -174,7 +174,7 @@ export default {
       try {
         res = await this.$axios({
           method: 'POST',
-          url: `${process.env.apiURL}/enrich/state`,
+          url: `/enrich/state`,
           responseType: 'json'
         })
       } catch (err) {
@@ -188,7 +188,7 @@ export default {
       try {
         res = await this.$axios({
           method: 'POST',
-          url: `${process.env.apiURL}/enrich/json`,
+          url: `/enrich/json`,
           params: {
             args: this.setting.join(','),
             state: this.fileState
@@ -210,7 +210,7 @@ export default {
       try {
         res = await this.$axios({
           method: 'GET',
-          url: `${process.env.apiURL}/enrich/state/${this.fileState}`,
+          url: `/enrich/state/${this.fileState}`,
           responseType: 'json'
         })
       } catch (err) {

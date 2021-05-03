@@ -28,6 +28,8 @@ fs.ensureDir(path.resolve(outDir, 'logs'));
 fs.ensureDir(path.resolve(outDir, 'download'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
 fs.ensureDir(path.resolve(outDir, 'enriched'));
+fs.ensureDir(path.resolve(outDir, 'status'));
+fs.ensureDir(path.resolve(outDir, 'upload'));
 
 // start server
 const app = express();
