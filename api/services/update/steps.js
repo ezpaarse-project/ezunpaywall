@@ -1,11 +1,11 @@
 const path = require('path');
 const fs = require('fs-extra');
 const readline = require('readline');
-const axios = require('axios');
 const zlib = require('zlib');
 const { Readable } = require('stream');
-const client = require('../lib/client');
-const { logger } = require('../lib/logger');
+const axios = require('../../lib/axios');
+const client = require('../../lib/client');
+const { logger } = require('../../lib/logger');
 
 const downloadDir = path.resolve(__dirname, '..', 'out', 'download');
 
@@ -184,7 +184,7 @@ const downloadUpdateSnapshot = async () => {
   const downloadFileWithStream = async (filePath) => new Promise((resolve, reject) => {
     // download unpaywall file with stream
     const writeStream = compressedFile.data.pipe(fs.createWriteStream(filePath));
-    const step = task.steps[task.steps.length - 1]
+    const step = task.steps[task.steps.length - 1];
 
     // update percent of download
     let timeout;

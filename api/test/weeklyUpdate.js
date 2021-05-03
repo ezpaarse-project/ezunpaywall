@@ -174,7 +174,7 @@ describe('Test: weekly update route test', () => {
     });
 
     // test insertion
-    it('should insert 50 datas', async () => {
+    it('should insert 50 data', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));

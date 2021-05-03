@@ -56,7 +56,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     // test insertion
-    it('Should insert 50 datas', async () => {
+    it('Should insert 50 data', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -198,7 +198,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     // test insertion
-    it('Should insert 10 datas', async () => {
+    it('Should insert 10 data', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));

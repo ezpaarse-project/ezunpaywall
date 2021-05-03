@@ -84,7 +84,7 @@ describe('test weekly update', () => {
     });
 
     // test insertion
-    it('should insert 50 datas', async () => {
+    it('should insert 50 data', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -158,7 +158,7 @@ describe('test weekly update', () => {
     });
 
     describe('get unpaywall data with two DOI', () => {
-      it('should get unpaywall datas', async () => {
+      it('should get unpaywall data', async () => {
         const response = await chai.request(ezunpaywallURL)
           .get(`/graphql?query={getDataUPW(dois:["${doi1}","${doi2}"]){doi, is_oa}}`);
         response.should.have.status(200);

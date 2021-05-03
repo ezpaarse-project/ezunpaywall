@@ -1,12 +1,12 @@
 const path = require('path');
 const fs = require('fs-extra');
 const config = require('config');
-const { sendMail, generateMail } = require('../lib/mail');
+const { sendMail, generateMail } = require('../../lib/mail');
 
 const reportDir = path.resolve(__dirname, '..', 'out', 'reports');
 
-const client = require('../lib/client');
-const { logger } = require('../lib/logger');
+const client = require('../../lib/client');
+const { logger } = require('../../lib/logger');
 
 let iteratorTask = -1;
 let iteratorFile = -1;

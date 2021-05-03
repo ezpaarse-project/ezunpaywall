@@ -71,7 +71,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
 
     // test insertion
-    it('Should insert 150 datas', async () => {
+    it('Should insert 150 data', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -191,7 +191,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
 
     // test insertion
-    it('Should insert 2100 datas', async () => {
+    it('Should insert 2100 data', async () => {
       let taskEnd;
       while (!taskEnd) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
