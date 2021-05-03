@@ -52,9 +52,6 @@ const corsOptions = {
 };
 
 // routers
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve('homepage.html'));
-});
 
 // initialize API graphql
 app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {

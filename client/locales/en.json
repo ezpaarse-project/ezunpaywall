@@ -15,7 +15,7 @@
       "enrich": {
         "title": "Enrich your file",
         "stepper": {
-          "filesSelection": "Files selection",
+          "filesSelection": "Select files",
           "settings": "Settings",
           "enrich": "Enrich"
         },
@@ -28,7 +28,7 @@
         "settings": {
           "title": "Settings",
           "attributes" : "Unpaywall attributes",
-          "filesSelection": "Files selection",
+          "filesSelection": "Select files",
           "startProcess": "Start enrichisment"
         },
         "process": {
