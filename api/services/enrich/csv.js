@@ -9,7 +9,7 @@ const uuid = require('uuid');
 
 const { logger } = require('../../lib/logger');
 
-const { fetchEzUnpaywall } = require('./utils');
+const { AskEzUnpaywall } = require('./utils');
 const {
   incrementlinesRead,
   incrementenrichedLines,
@@ -325,7 +325,7 @@ const enrichmentFileCSV = async (readStream, attributs, separator, state) => {
           tab = [];
           await parser.pause();
           // enrichment
-          const response = await fetchEzUnpaywall(tabWillBeEnriched, fetchAttributes);
+          const response = await AskEzUnpaywall(tabWillBeEnriched, fetchAttributes);
           enrichTab(tabWillBeEnriched, response, enrichAttributesCSV);
           await writeInFileCSV(tabWillBeEnriched, headers, separator, enrichedFile);
 
@@ -342,7 +342,7 @@ const enrichmentFileCSV = async (readStream, attributs, separator, state) => {
   // last insertion
   if (tab.length !== 0) {
     // enrichment
-    const response = await fetchEzUnpaywall(tab, fetchAttributes);
+    const response = await AskEzUnpaywall(tab, fetchAttributes);
     enrichTab(tab, response, enrichAttributesCSV);
     await writeInFileCSV(tab, headers, separator, enrichedFile);
 

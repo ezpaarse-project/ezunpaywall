@@ -7,7 +7,7 @@ const { logger } = require('../../lib/logger');
  * @param {*} tab array of line that we will enrich
  * @param {*} fetchAttributes attributes that we will enrich
  */
-const fetchEzUnpaywall = async (tab, fetchAttributes) => {
+const askEzUnpaywall = async (tab, fetchAttributes) => {
   let dois = [];
   let response = [];
   // contain index of doi
@@ -27,11 +27,11 @@ const fetchEzUnpaywall = async (tab, fetchAttributes) => {
     });
   } catch (err) {
     logger.error(err.response.data.errors[0].locations);
-    logger.error(`fetchEzUnpaywall: ${err}`);
+    logger.error(`askEzUnpaywall: ${err}`);
   }
   return response?.data?.data?.getDataUPW;
 };
 
 module.exports = {
-  fetchEzUnpaywall,
+  askEzUnpaywall,
 };
