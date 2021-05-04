@@ -26,6 +26,8 @@ services:
       # proxy
       - http_proxy
       - https_proxy
+      # serveur
+      - API_URL
     volumes:
       - ./api/out:/usr/src/api/out/
     command: "npm start"

@@ -70,7 +70,7 @@ export default {
       try {
         res = await ({
           method: 'get',
-          url: `${process.env.apiURL}/task`
+          url: `/task`
         })
       } catch (err) {}
       if (res?.data?.inProgress) {
