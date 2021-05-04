@@ -172,23 +172,23 @@ export default {
     async createState () {
       let res
       try {
-        res = await ({
+        res = await this.$axios({
           method: 'POST',
-          url: `/enrich/state`,
+          url: '/enrich/state',
           responseType: 'json'
         })
       } catch (err) {
         console.log(err)
       }
-      this.fileState = res.data.state
+      this.fileState = res?.data?.state
     },
 
     async enrich () {
       let res
       try {
-        res = await ({
+        res = await this.$axios({
           method: 'POST',
-          url: `/enrich/json`,
+          url: '/enrich/json',
           params: {
             args: this.setting.join(','),
             state: this.fileState
@@ -208,7 +208,7 @@ export default {
     async poling () {
       let res
       try {
-        res = await ({
+        res = await this.$axios({
           method: 'GET',
           url: `/enrich/state/${this.fileState}`,
           responseType: 'json'
@@ -216,8 +216,8 @@ export default {
       } catch (err) {
         console.log(err)
       }
-      this.state = res.data.state
-      if (res.data.state.status === 'done') {
+      this.state = res?.data?.state
+      if (res?.data?.state?.status === 'done') {
         this.onTimesUp()
         this.inProcess = false
         clearTimeout(this.timeout)

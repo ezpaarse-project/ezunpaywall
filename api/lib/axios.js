@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const axiosInstance = axios.create({
-  baseURL: process.env.API_URL,
+  baseURL: 'http://localhost:8080',
 });
 
 module.exports = axiosInstance;

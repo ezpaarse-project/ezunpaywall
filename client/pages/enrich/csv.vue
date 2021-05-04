@@ -203,7 +203,7 @@ export default {
       return this.$store.getters['process/cancelable']
     },
     resultUrl () {
-      return `/enrich/${this.enrichedFile}`
+      return `${this.$axios.defaults.baseURL}/enrich/${this.enrichedFile}`
     }
   },
   methods: {
@@ -217,9 +217,9 @@ export default {
     async createState () {
       let res
       try {
-        res = await ({
+        res = await this.$axios({
           method: 'POST',
-          url: `/enrich/state`,
+          url: '/enrich/state',
           responseType: 'json'
         })
       } catch (err) {
@@ -231,9 +231,9 @@ export default {
     async enrich () {
       let res
       try {
-        res = await ({
+        res = await this.$axios({
           method: 'POST',
-          url: `/enrich/csv`,
+          url: '/enrich/csv',
           params: {
             args: this.setting.join(','),
             state: this.fileState
@@ -247,13 +247,13 @@ export default {
       } catch (err) {
         console.log(err)
       }
-      this.enrichedFile = res.data.file
+      this.enrichedFile = res?.data?.file
     },
 
     async poling () {
       let res
       try {
-        res = await ({
+        res = await this.$axios({
           method: 'GET',
           url: `/enrich/state/${this.fileState}`,
           responseType: 'json'
@@ -261,8 +261,8 @@ export default {
       } catch (err) {
         console.log(err)
       }
-      this.state = res.data.state
-      if (res.data.state.status === 'done') {
+      this.state = res?.data?.state
+      if (res?.data?.state?.status === 'done') {
         this.onTimesUp()
         this.inProcess = false
         clearTimeout(this.timeout)
