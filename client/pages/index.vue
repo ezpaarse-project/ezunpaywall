@@ -68,7 +68,7 @@ export default {
     async checkIfUpdate () {
       let res
       try {
-        res = await this.$axios({
+        res = await ({
           method: 'get',
           url: `${process.env.apiURL}/task`
         })

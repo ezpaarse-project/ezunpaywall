@@ -217,7 +217,7 @@ export default {
     async createState () {
       let res
       try {
-        res = await this.$axios({
+        res = await ({
           method: 'POST',
           url: `${process.env.apiURL}/enrich/state`,
           responseType: 'json'
@@ -231,7 +231,7 @@ export default {
     async enrich () {
       let res
       try {
-        res = await this.$axios({
+        res = await ({
           method: 'POST',
           url: `${process.env.apiURL}/enrich/csv`,
           params: {
@@ -253,7 +253,7 @@ export default {
     async poling () {
       let res
       try {
-        res = await this.$axios({
+        res = await ({
           method: 'GET',
           url: `${process.env.apiURL}/enrich/state/${this.fileState}`,
           responseType: 'json'

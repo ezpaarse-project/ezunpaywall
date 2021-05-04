@@ -32,7 +32,7 @@
           "startProcess": "Lancer l'enrichissement"
         },
         "process": {
-          "download": "Télécharger le fichier enrichit",
+          "download": "Télécharger le fichier enrichi",
           "inProcess": "Enrichissement en cours",
           "end": "Enrichissement terminé"
         }
