@@ -68,11 +68,13 @@ export default {
     async checkIfUpdate () {
       let res
       try {
-        res = await ({
+        res = await this.$axios({
           method: 'get',
-          url: `/task`
+          url: '/task'
         })
-      } catch (err) {}
+      } catch (err) {
+        console.log(err)
+      }
       if (res?.data?.inProgress) {
         this.inUpdate = true
         this.status = res.data

@@ -37,6 +37,49 @@
         <v-stepper-content step="1">
           <v-container>
             <v-layout row justify-end class="mb-3">
+              <v-menu
+                v-model="fileSelectionHelp"
+                :close-on-content-click="false"
+                :nudge-width="200"
+                max-width="500"
+                offset-x
+                transition="slide-x-transition"
+              >
+                <template #activator="{ on }">
+                  <v-btn class="mr-5" icon v-on="on">
+                    <v-icon>mdi-help-circle</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-card class="text-justify">
+                  <v-card-text
+                    v-html="
+                      $t('ui.pages.enrich.filesSelection.explainationLogs')
+                    "
+                  />
+                  <v-divider />
+                  <v-card-text
+                    v-html="
+                      $t(
+                        'ui.pages.enrich.filesSelection.explainationTestsLogs',
+                        {
+                          url: logSamplesUrl,
+                        }
+                      )
+                    "
+                  />
+
+                  <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                      class="body-2"
+                      text
+                      @click="fileSelectionHelp = false"
+                      v-text="$t('ui.pages.enrich.filesSelection.close')"
+                    />
+                  </v-card-actions>
+                </v-card>
+              </v-menu>
               <v-btn
                 class="body-2"
                 color="primary"
@@ -140,7 +183,9 @@ export default {
       state: {},
       time: 0,
       timerInterval: {},
-      inProcess: false
+      inProcess: false,
+      fileSelectionHelp: false,
+      logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall'
     }
   },
   computed: {
@@ -157,7 +202,7 @@ export default {
       return this.$store.getters['process/cancelable']
     },
     resultUrl () {
-      return `/enrich/${this.enrichedFile}`
+      return `${this.$axios.defaults.baseURL}/enrich/${this.enrichedFile}`
     }
   },
   methods: {
