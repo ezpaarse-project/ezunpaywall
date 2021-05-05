@@ -157,7 +157,7 @@ export default {
       return this.$store.getters['process/cancelable']
     },
     resultUrl () {
-      return `/enrich/${this.enrichedFile}`
+      return `${this.$axios.defaults.baseURL}/enrich/${this.enrichedFile}`
     }
   },
   methods: {
