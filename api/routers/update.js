@@ -5,25 +5,47 @@ const config = require('config');
 
 const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikey')}`;
 
+const updateDir = path.resolve(__dirname, '..', 'out', 'update', 'download');
+const stateDir = path.resolve(__dirname, '..', 'out', 'update', 'state');
+const reportDir = path.resolve(__dirname, '..', 'out', 'update', 'report');
+
 const {
   insertion,
   weeklyUpdate,
   insertSnapshotBetweenDate,
-} = require('../services/unpaywall');
+} = require('../services/update/utils');
 
 const {
-  task,
-} = require('../services/status');
+  getIsUpdate,
+} = require('../services/update/status');
+
+const {
+  getState,
+} = require('../services/update/state');
+
+const {
+  getReport,
+} = require('../services/update/report');
+
+const getMostRecentFile = async (dir) => {
+  const files = await orderReccentFiles(dir);
+  return files.length ? files[0] : undefined;
+};
+
+const orderReccentFiles = async (dir) => {
+  return fs.readdirSync(dir)
+    .filter(async (file) => await fs.lstatSync(path.join(dir, file)).isFile())
+    .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
+    .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
+};
 
 // middleware
-router.use((req, res, next) => {
-  if (!task.done) {
-    return res.status(409).json({
-      message: 'process in progress, check /insert/status',
-    });
-  }
-  return next();
-});
+// router.use((req, res, next) => {
+//   return res.status(409).json({
+//     message: 'process in progress, check /insert/status',
+//   });
+//   return next();
+// });
 
 /**
  * Insert the content of files that the
@@ -57,7 +79,7 @@ router.post('/update/:name', async (req, res) => {
   if (!pattern.test(name)) {
     return res.status(400).json({ message: 'name of file is in bad format (accepted a .gz file)' });
   }
-  const fileExist = await fs.pathExists(path.resolve(__dirname, '..', 'out', 'download', name));
+  const fileExist = await fs.pathExists(path.resolve(updateDir, name));
   if (!fileExist) {
     return res.status(404).json({ message: 'file doesn\'t exist' });
   }
@@ -130,6 +152,20 @@ router.post('/update', (req, res) => {
   return res.status(200).json({
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic`,
   });
+});
+
+router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getIsUpdate() }));
+
+router.get('/update/state', async (req, res) => {
+  const latestFile = await getMostRecentFile(stateDir);
+  const state = await getState(latestFile?.file);
+  res.status(200).json({ state });
+});
+
+router.get('/update/report', async (req, res) => {
+  const latestFile = await getMostRecentFile(reportDir);
+  const report = await getReport(latestFile?.file);
+  res.status(200).json({ report });
 });
 
 module.exports = router;

@@ -4,18 +4,17 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const indexUnpawall = require('../index/unpaywall.json');
-const indexTask = require('../index/task.json');
 
 const {
   createIndex,
   deleteIndex,
   countDocuments,
-  isTaskEnd,
-  getTask,
+  isInUpdate,
+  getState,
 } = require('./utils/elastic');
 
 const {
-  getLatestReport,
+  getReport,
 } = require('./utils/report');
 
 const {
@@ -41,9 +40,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
   describe('Do a classic insertion of a file already installed', () => {
     before(async () => {
-      await createIndex('task', indexTask);
       await createIndex('unpaywall', indexUnpawall);
     });
+
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(ezunpaywallURL)
@@ -57,10 +56,11 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test insertion
     it('Should insert 50 data', async () => {
-      let taskEnd;
-      while (!taskEnd) {
+      let isUpdate = true;
+      while (isUpdate) {
+        console.log(isUpdate)
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd();
+        isUpdate = await isInUpdate();
       }
       const count = await countDocuments();
       expect(count).to.equal(50);
@@ -68,29 +68,28 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test task
     it('Should get task with all informations from the insertion', async () => {
-      const task = await getTask();
+      const task = await getState();
 
       expect(task).have.property('done').equal(true);
-      expect(task).have.property('currentTask').equal('end');
-      expect(task).have.property('steps');
       expect(task).have.property('createdAt');
       expect(task).have.property('endAt');
+      expect(task).have.property('steps');
       expect(task).have.property('took');
+      expect(task).have.property('error').equal(false);
 
       expect(task.steps[0]).have.property('task').equal('insert');
       expect(task.steps[0]).have.property('file').equal('fake1.jsonl.gz');
-      expect(task.steps[0]).have.property('percent').equal(100);
       expect(task.steps[0]).have.property('linesRead').equal(50);
+      expect(task.steps[0]).have.property('percent').equal(100);
       expect(task.steps[0]).have.property('took');
       expect(task.steps[0]).have.property('status').equal('success');
     });
 
     // test Report
     it('Should get report with all informations from the insertion', async () => {
-      const report = await getLatestReport();
+      const report = await getReport();
 
       expect(report).have.property('done').equal(true);
-      expect(report).have.property('currentTask').equal('end');
       expect(report).have.property('steps');
       expect(report).have.property('createdAt');
       expect(report).have.property('endAt');
@@ -106,13 +105,11 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     after(async () => {
       await deleteIndex('unpaywall');
-      await deleteIndex('task');
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter limit=10', () => {
     before(async () => {
-      await createIndex('task', indexTask);
       await createIndex('unpaywall', indexUnpawall);
     });
     // test return message
@@ -128,10 +125,10 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test insertion
     it('Should insert 10 data', async () => {
-      let taskEnd;
-      while (!taskEnd) {
+      let isUpdate = true;
+      while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd();
+        isUpdate = await isInUpdate();
       }
       const count = await countDocuments();
       expect(count).to.equal(10);
@@ -139,10 +136,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test task
     it('Should get task with all informations from the insertion', async () => {
-      const task = await getTask();
+      const task = await getState();
 
       expect(task).have.property('done').equal(true);
-      expect(task).have.property('currentTask').equal('end');
       expect(task).have.property('steps');
       expect(task).have.property('createdAt');
       expect(task).have.property('endAt');
@@ -158,10 +154,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test report
     it('Should get report with all informations from the insertion', async () => {
-      const report = await getLatestReport();
+      const report = await getReport();
 
       expect(report).have.property('done').equal(true);
-      expect(report).have.property('currentTask').equal('end');
       expect(report).have.property('steps');
       expect(report).have.property('createdAt');
       expect(report).have.property('endAt');
@@ -177,13 +172,13 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     after(async () => {
       await deleteIndex('unpaywall');
-      await deleteIndex('task');
+
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter offset=40', () => {
     before(async () => {
-      await createIndex('task', indexTask);
+      
       await createIndex('unpaywall', indexUnpawall);
     });
     // test return message
@@ -199,10 +194,10 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test insertion
     it('Should insert 10 data', async () => {
-      let taskEnd;
-      while (!taskEnd) {
+      let isUpdate = true;
+      while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd();
+        isUpdate = await isInUpdate();
       }
       const count = await countDocuments();
       expect(count).to.equal(10);
@@ -210,10 +205,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test task
     it('Should get task with all informations from the insertion', async () => {
-      const task = await getTask();
+      const task = await getState();
 
       expect(task).have.property('done').equal(true);
-      expect(task).have.property('currentTask').equal('end');
       expect(task).have.property('steps');
       expect(task).have.property('createdAt');
       expect(task).have.property('endAt');
@@ -229,10 +223,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test report
     it('Should get task with all informations from the insertion', async () => {
-      const report = await getLatestReport();
+      const report = await getReport();
 
       expect(report).have.property('done').equal(true);
-      expect(report).have.property('currentTask').equal('end');
       expect(report).have.property('steps');
       expect(report).have.property('createdAt');
       expect(report).have.property('endAt');
@@ -248,13 +241,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     after(async () => {
       await deleteIndex('unpaywall');
-      await deleteIndex('task');
+
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter offset=10 and limit=20', () => {
     before(async () => {
-      await createIndex('task', indexTask);
       await createIndex('unpaywall', indexUnpawall);
     });
     // test return message
@@ -270,10 +262,10 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test insertion
     it('Should insert 10 data', async () => {
-      let taskEnd;
-      while (!taskEnd) {
+      let isUpdate = true;
+      while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        taskEnd = await isTaskEnd();
+        isUpdate = await isInUpdate();
       }
       const count = await countDocuments();
       expect(count).to.equal(10);
@@ -281,10 +273,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test task
     it('Should get task with all informations from the insertion', async () => {
-      const task = await getTask();
+      const task = await getState();
 
       expect(task).have.property('done').equal(true);
-      expect(task).have.property('currentTask').equal('end');
       expect(task).have.property('steps');
       expect(task).have.property('createdAt');
       expect(task).have.property('endAt');
@@ -300,10 +291,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test report
     it('Should get report with all informations from the insertion', async () => {
-      const report = await getLatestReport();
+      const report = await getReport();
 
       expect(report).have.property('done').equal(true);
-      expect(report).have.property('currentTask').equal('end');
       expect(report).have.property('steps');
       expect(report).have.property('createdAt');
       expect(report).have.property('endAt');
@@ -319,7 +309,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     after(async () => {
       await deleteIndex('unpaywall');
-      await deleteIndex('task');
+
     });
   });
 

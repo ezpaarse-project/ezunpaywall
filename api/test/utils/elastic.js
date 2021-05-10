@@ -1,5 +1,9 @@
+const chai = require('chai');
+
 const client = require('../../lib/client');
 const { logger } = require('../../lib/logger');
+
+const ezunpaywallURL = 'http://localhost:8080';
 
 const isIndexExist = async (name) => {
   let res;
@@ -53,40 +57,30 @@ const countDocuments = async () => {
   return data.body.count ? data.body.count : null;
 };
 
-const isTaskEnd = async () => {
-  const exist = await isIndexExist('task');
-  let task;
-  if (exist) {
-    try {
-      task = await client.search({
-        index: 'task',
-      });
-    } catch (err) {
-      logger.error(`isTaskEnd: ${err}`);
-    }
+const isInUpdate = async () => {
+  let res = true;
+  try {
+    res = await chai.request(ezunpaywallURL).get('/update/status');
+  } catch (err) {
+    logger.error(`isInUpdate : ${err}`);
   }
-  return task?.body?.hits?.hits[0]?._source?.done;
+  return res?.body?.inUpdate;
 };
 
-const getTask = async () => {
-  const exist = await isIndexExist('task');
-  let task;
-  if (exist) {
-    try {
-      task = await client.search({
-        index: 'task',
-      });
-    } catch (err) {
-      logger.error(`getTask: ${err}`);
-    }
+const getState = async () => {
+  let res;
+  try {
+    res = await chai.request(ezunpaywallURL).get('/update/state');
+  } catch (err) {
+    logger.error(`isInUpdate : ${err}`);
   }
-  return task?.body?.hits?.hits[0]?._source;
+  return res?.body?.state;
 };
 
 module.exports = {
   createIndex,
   deleteIndex,
   countDocuments,
-  isTaskEnd,
-  getTask,
+  isInUpdate,
+  getState,
 };

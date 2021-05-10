@@ -4,7 +4,7 @@ const uuid = require('uuid');
 
 const { logger } = require('../../lib/logger');
 
-const statusDir = path.resolve(__dirname, '..', '..', 'out', 'status');
+const stateDir = path.resolve(__dirname, '..', '..', 'out', 'enrich' ,'state');
 
 const createState = async () => {
   const state = {
@@ -19,16 +19,16 @@ const createState = async () => {
   const filename = `${id}.json`;
 
   try {
-    await fs.writeFileSync(path.resolve(statusDir, filename), JSON.stringify(state, null, 2));
+    await fs.writeFileSync(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`createState: ${err}`);
   }
-  return `${filename}`;
+  return filename;
 };
 
 const updateState = async (file, state) => {
   try {
-    await fs.writeFileSync(path.resolve(statusDir, file), JSON.stringify(state, null, 2));
+    await fs.writeFileSync(path.resolve(stateDir, file), JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`updateState: ${err}`);
   }
@@ -37,7 +37,7 @@ const updateState = async (file, state) => {
 const incrementlinesRead = async (file, linesRead) => {
   let state;
   try {
-    state = await fs.readFile(path.resolve(statusDir, file), 'utf-8');
+    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
   } catch (err) {
     logger.error(`incrementlinesRead: ${err}`);
   }
@@ -49,7 +49,7 @@ const incrementlinesRead = async (file, linesRead) => {
 const incrementenrichedLines = async (file, enrichedLines) => {
   let state;
   try {
-    state = await fs.readFile(path.resolve(statusDir, file), 'utf-8');
+    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
   } catch (err) {
     logger.error(`incrementenrichedLines: ${err}`);
   }
@@ -61,7 +61,7 @@ const incrementenrichedLines = async (file, enrichedLines) => {
 const incrementLoaded = async (file, loaded) => {
   let state;
   try {
-    state = await fs.readFile(path.resolve(statusDir, file), 'utf-8');
+    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
   } catch (err) {
     logger.error(`incrementLoaded: ${err}`);
   }
@@ -73,7 +73,7 @@ const incrementLoaded = async (file, loaded) => {
 const updateStatus = async (file, status) => {
   let state;
   try {
-    state = await fs.readFile(path.resolve(statusDir, file), 'utf-8');
+    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
   } catch (err) {
     logger.error(`updateStatus: ${err}`);
   }
@@ -85,7 +85,7 @@ const updateStatus = async (file, status) => {
 const endState = async (file) => {
   let state;
   try {
-    state = await fs.readFile(path.resolve(statusDir, file), 'utf-8');
+    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
   } catch (err) {
     logger.error(`endState: ${err}`);
   }
@@ -98,7 +98,7 @@ const endState = async (file) => {
 const getState = async (file) => {
   let state;
   try {
-    state = await fs.readFile(path.resolve(statusDir, file), 'utf-8');
+    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
   } catch (err) {
     logger.error(`getState: ${err}`);
   }

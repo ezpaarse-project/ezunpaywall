@@ -3,7 +3,6 @@ const { elasticsearch } = require('config');
 const client = require('./client');
 const { logger } = require('./logger');
 const unpaywallTemplate = require('../index/unpaywall.json');
-const taskTemplate = require('../index/task.json');
 
 const pingElastic = async () => {
   let elasticStatus;
@@ -49,7 +48,6 @@ const initalizeIndex = async () => {
   const up = await pingElastic();
   if (up) {
     await createIndex('unpaywall', unpaywallTemplate);
-    await createIndex('task', taskTemplate);
   }
 };
 

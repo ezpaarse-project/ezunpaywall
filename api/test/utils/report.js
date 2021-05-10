@@ -7,17 +7,17 @@ chai.use(chaiHttp);
 const ezunpaywallURL = 'http://localhost:8080';
 const { logger } = require('../../lib/logger');
 
-const getLatestReport = async () => {
-  let report;
+const getReport = async () => {
+  let res;
   try {
-    const response = await chai.request(ezunpaywallURL).get('/reports?latest=true');
-    report = response?.body;
+    res = await chai.request(ezunpaywallURL).get('/update/report');
   } catch (err) {
-    logger.error(`getLatestReport: ${err}`);
+    logger.error(`getReport: ${err}`);
   }
-  return report;
+  console.log(2)
+  return res?.body?.report;
 };
 
 module.exports = {
-  getLatestReport,
+  getReport,
 };

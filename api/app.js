@@ -10,10 +10,8 @@ const cron = require('node-cron');
 const schema = require('./graphql/graphql');
 
 // routers
-const RouterOutFiles = require('./routers/outFiles');
-const RouterTask = require('./routers/status');
 const RouterEnrich = require('./routers/enrich');
-const RouterManageDatabase = require('./routers/update');
+const RouterUpdate = require('./routers/update');
 
 const { logger } = require('./lib/logger');
 const { deleteEnrichedFile } = require('./lib/file');
@@ -23,13 +21,23 @@ const {
 } = require('./lib/elastic');
 
 const outDir = path.resolve(__dirname, 'out');
+fs.ensureDir(path.resolve(outDir));
+
+const updateDir = path.resolve(outDir, 'update');
+fs.ensureDir(path.resolve(updateDir));
+fs.ensureDir(path.resolve(updateDir, 'report'));
+fs.ensureDir(path.resolve(updateDir, 'state'));
+fs.ensureDir(path.resolve(updateDir, 'download'));
+
+const enrichDir = path.resolve(outDir, 'enrich');
+fs.ensureDir(path.resolve(enrichDir));
+fs.ensureDir(path.resolve(enrichDir, 'state'));
+fs.ensureDir(path.resolve(enrichDir, 'enriched'));
+fs.ensureDir(path.resolve(enrichDir, 'upload'));
+
 // initiates all out dir
 fs.ensureDir(path.resolve(outDir, 'logs'));
-fs.ensureDir(path.resolve(outDir, 'download'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
-fs.ensureDir(path.resolve(outDir, 'enriched'));
-fs.ensureDir(path.resolve(outDir, 'status'));
-fs.ensureDir(path.resolve(outDir, 'upload'));
 
 // start server
 const app = express();
@@ -68,11 +76,8 @@ app.get('/ping', (req, res) => {
   res.status(200).json({ data: 'pong' });
 });
 
-app.use(RouterOutFiles);
-app.use(RouterTask);
 app.use(RouterEnrich);
-
-app.use(RouterManageDatabase);
+app.use(RouterUpdate);
 
 // elastic index
 initalizeIndex();

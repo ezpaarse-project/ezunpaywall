@@ -26,8 +26,6 @@ const askEzUnpaywall = async (tab, fetchAttributes) => {
       },
     });
   } catch (err) {
-    logger.error(err)
-    logger.error(err.response.data.errors[0].locations);
     logger.error(`askEzUnpaywall: ${err}`);
   }
   return response?.data?.data?.getDataUPW;

@@ -7,17 +7,16 @@ const axios = require('../../lib/axios');
 const client = require('../../lib/client');
 const { logger } = require('../../lib/logger');
 
-const downloadDir = path.resolve(__dirname, '..', 'out', 'download');
+const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
 
 const {
-  task,
-  getMetadata,
-  getIteratorFile,
-  createStepInsert,
-  createStepaskUnpaywall,
-  createStepDownload,
+  getState,
+  updateStateInFile,
+  addStepAskUnpaywall,
+  addStepDownload,
+  addStepInsert,
   fail,
-} = require('./status');
+} = require('./state');
 
 /**
  * @param {*} data array of unpaywall data
@@ -31,15 +30,13 @@ const insertUPW = async (data) => {
   }
 };
 
-const insertDataUnpaywall = async (options) => {
-  const metadata = getMetadata();
-  const interatorFile = getIteratorFile();
-  const { filename } = metadata[interatorFile];
-
-  const start = createStepInsert(filename);
+const insertDataUnpaywall = async (stateName, opts, filename) => {
+  const start = new Date();
+  await addStepInsert(stateName, filename);
+  const state = await getState(stateName);
+  const step = state.steps[state.steps.length - 1];
 
   const filePath = path.resolve(downloadDir, filename);
-  const step = task.steps[task.steps.length - 1];
 
   let loaded = 0;
   let bytes;
@@ -56,7 +53,7 @@ const insertDataUnpaywall = async (options) => {
       readStream = fs.createReadStream(filePath);
     } catch (err) {
       logger.error(`fs.createReadStream in insertDataUnpaywall: ${err}`);
-      await fail(start);
+      await fail();
       return null;
     }
 
@@ -70,7 +67,7 @@ const insertDataUnpaywall = async (options) => {
       decompressedStream = readStream.pipe(zlib.createGunzip());
     } catch (err) {
       logger.error(`readStream.pipe(zlib.createGunzip()) in insertDataUnpaywall: ${err}`);
-      await fail(start);
+      await fail();
       return null;
     }
 
@@ -85,16 +82,16 @@ const insertDataUnpaywall = async (options) => {
     // eslint-disable-next-line no-restricted-syntax
     for await (const line of rl) {
       // limit
-      if (step.linesRead === options.limit) {
+      if (step.linesRead === opts.limit) {
         break;
       }
 
       step.linesRead += 1;
 
       // offset
-      if (step.linesRead >= options.offset + 1) {
-        const tes = JSON.parse(line);
-        await fs.appendFile(`${downloadDir}/doi.csv`, `${tes.doi}\r`, (err) => {
+      if (step.linesRead >= opts.offset + 1) {
+        const res = JSON.parse(line);
+        await fs.appendFile(`${downloadDir}/doi.csv`, `${res.doi}\r`, (err) => {
           if (err) throw err;
         });
         // fill the array
@@ -102,7 +99,7 @@ const insertDataUnpaywall = async (options) => {
           tab.push(JSON.parse(line));
         } catch (err) {
           logger.error(`JSON.parse in insertDataUnpaywall: ${err}`);
-          await fail(start);
+          await fail();
           return null;
         }
       }
@@ -111,10 +108,12 @@ const insertDataUnpaywall = async (options) => {
         await insertUPW(tab);
         step.percent = ((loaded / bytes.size) * 100).toFixed(2);
         step.took = (new Date() - start) / 1000;
+        state.steps[state.steps.length - 1] = step
+        await updateStateInFile(state, stateName);
         tab = [];
       }
-      if (step?.linesRead % 100000 === 0) {
-        logger.info(`${step.linesRead}th Lines reads`);
+      if (step.linesRead % 100000 === 0) {
+        logger.info(`${step.linesRead} Lines reads`);
       }
     }
     // if have stays data to insert
@@ -129,28 +128,23 @@ const insertDataUnpaywall = async (options) => {
   };
   await insertion();
   step.percent = 100;
+  state.steps[state.steps.length - 1] = step
+  await updateStateInFile(state, stateName);
   return true;
 };
 
 /**
  * download the snapshot
  */
-const downloadUpdateSnapshot = async () => {
+const downloadUpdateSnapshot = async (stateName, info) => {
+  const start = new Date();
+  await addStepDownload(stateName);
+  const state = await getState(stateName);
+  const step = state.steps[state.steps.length - 1];
+
   let stats;
 
-  const metadata = getMetadata();
-  const interatorFile = getIteratorFile();
-
-  const {
-    size,
-    filename,
-    filetype,
-    lines,
-    url,
-    to_date: toDate,
-  } = metadata[interatorFile];
-
-  const file = path.resolve(downloadDir, filename);
+  const file = path.resolve(downloadDir, info.filename);
   let alreadyInstalled;
   try {
     alreadyInstalled = await fs.pathExists(file);
@@ -161,30 +155,27 @@ const downloadUpdateSnapshot = async () => {
   if (alreadyInstalled) stats = fs.statSync(file);
 
   // if snapshot already exist and download completely, past
-  if (alreadyInstalled && stats.size === size) {
+  if (alreadyInstalled && stats.size === info.size) {
     logger.info('file already installed');
     return true;
   }
 
-  // create step download
-  const start = createStepDownload(filename);
   let compressedFile;
   try {
     compressedFile = await axios({
       method: 'get',
-      url,
+      url: info.url,
       responseType: 'stream',
     });
   } catch (err) {
     logger.error(`axios in downloadUpdateSnapshot: ${err}`);
-    await fail(start);
+    await fail();
     return null;
   }
 
   const downloadFileWithStream = async (filePath) => new Promise((resolve, reject) => {
     // download unpaywall file with stream
     const writeStream = compressedFile.data.pipe(fs.createWriteStream(filePath));
-    const step = task.steps[task.steps.length - 1];
 
     // update percent of download
     let timeout;
@@ -195,19 +186,23 @@ const downloadUpdateSnapshot = async () => {
       } catch (err) {
         logger.error(`fs.stat in percentDownload: ${err}`);
       }
-      if (bytes.size === size) {
+      if (bytes.size === info.size) {
         clearTimeout(timeout);
         return;
       }
       step.took = (new Date() - start) / 1000;
-      step.percent = ((bytes.size / size) * 100).toFixed(2);
+      step.percent = ((bytes.size / info.size) * 100).toFixed(2);
+      state.steps[state.steps.length - 1] = step
+      await updateStateInFile(state, stateName);
       timeout = setTimeout(percentDownload, 3000);
     }());
 
-    writeStream.on('finish', () => {
+    writeStream.on('finish', async () => {
       step.status = 'success';
       step.took = (new Date() - start) / 1000;
       step.percent = 100;
+      state.steps[state.steps.length - 1] = step
+      await updateStateInFile(state, stateName);
       clearTimeout(timeout);
       logger.info('step - end download');
       return resolve();
@@ -215,18 +210,17 @@ const downloadUpdateSnapshot = async () => {
 
     writeStream.on('error', async (err) => {
       logger.error(`writeStream in percentDownload: ${err}`);
-      await fail(start);
+      await fail();
       return reject(err);
     });
   });
 
-  const filePath = path.resolve(downloadDir, filename);
+  const filePath = path.resolve(downloadDir, info.filename);
 
-  logger.info(`Download update snapshot : ${filename}`);
-  logger.info(`filetype : ${filetype}`);
-  logger.info(`lines : ${lines}`);
-  logger.info(`size : ${size}`);
-  logger.info(`to_date : ${toDate}`);
+  logger.info(`file : ${info.filename}`);
+  logger.info(`lines : ${info.lines}`);
+  logger.info(`size : ${info.size}`);
+  logger.info(`to_date : ${info.to_date}`);
 
   if (compressedFile?.data instanceof Readable) {
     await downloadFileWithStream(filePath);
@@ -241,15 +235,15 @@ const downloadUpdateSnapshot = async () => {
 /**
  * ask unpaywall to get getMetadata() on unpaywall snapshot
  */
-const askUnpaywall = async (url, startDate, endDate) => {
-  // create step askUnpaywall
-  const start = createStepaskUnpaywall();
-  const step = task.steps[task.steps.length - 1];
+const askUnpaywall = async (url, stateName, startDate, endDate) => {
+  const start = new Date();
+  await addStepAskUnpaywall(stateName);
+  const state = await getState(stateName);
+  const step = state.steps[state.steps.length - 1];
 
-  let response;
-
+  let res;
   try {
-    response = await axios({
+    res = await axios({
       method: 'get',
       url,
       headers: {
@@ -262,29 +256,23 @@ const askUnpaywall = async (url, startDate, endDate) => {
     return null;
   }
 
-  if (response?.status !== 200) {
+  if (res?.status !== 200 || !res?.data?.list?.length) {
     return null;
   }
-  if (!response?.data?.list?.length) {
-    return true;
-  }
 
-  response.data.list.reverse().forEach((file) => {
-    if (file?.filetype !== 'jsonl') { return; }
-
-    const fileDate = new Date(file.to_date).getTime();
-
-    if (fileDate >= new Date(startDate).getTime() && fileDate <= new Date(endDate).getTime()) {
-      getMetadata().push(file);
-    }
-  });
+  let snapshotsInfo = res.data.list;
+  snapshotsInfo = snapshotsInfo
+    .reverse()
+    .filter((file) => file.filetype === 'jsonl')
+    .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
+    .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
 
   step.status = 'success';
   step.took = (new Date() - start) / 1000;
 
-  logger.info('step - end ask unpaywall ');
-
-  return true;
+  await updateStateInFile(state, stateName);
+  logger.info('step - end ask unpaywall');
+  return snapshotsInfo;
 };
 
 module.exports = {

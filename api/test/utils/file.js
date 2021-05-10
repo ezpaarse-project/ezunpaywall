@@ -5,11 +5,11 @@ const { logger } = require('../../lib/logger');
 
 const changefiles = require('../../../fakeUnpaywall/snapshots/changefiles.json');
 
-const outDir = path.resolve(__dirname, '..', '..', 'out');
+const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
 const snapshotsDir = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots');
 
 const deleteFile = async (name) => {
-  const filePath = path.resolve(outDir, 'download', name);
+  const filePath = path.resolve(downloadDir, name);
   const fileExist = await fs.pathExists(filePath);
   if (fileExist) {
     try {
@@ -18,11 +18,11 @@ const deleteFile = async (name) => {
       logger.error(`deleteFile: ${err}`);
     }
   }
-  logger.info(`file api/out/download/${name} deleted`);
+  logger.info(`file ${filePath} deleted`);
 };
 
 const downloadFile = async (name) => new Promise((resolve, reject) => {
-  const destination = path.resolve(outDir, 'download', name);
+  const destination = path.resolve(downloadDir, name);
   const source = path.resolve(snapshotsDir, name);
 
   const readable = fs.createReadStream(source);
@@ -32,12 +32,13 @@ const downloadFile = async (name) => new Promise((resolve, reject) => {
   const writeStream = readable.pipe(writable);
 
   writeStream.on('finish', () => {
-    logger.info(`File ${name} is installed`);
+    logger.info(`file ${name} is installed`);
     return resolve();
   });
 
   writeStream.on('error', (err) => {
-    logger.error(`Error in downloadFile: ${err}`);
+    console.log(err)
+    logger.error(`downloadFile: ${err}`);
     return reject(err);
   });
 });
