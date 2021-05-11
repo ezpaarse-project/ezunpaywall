@@ -1,234 +1,211 @@
-// /* eslint-disable no-await-in-loop */
-// const { expect } = require('chai');
-// const chai = require('chai');
-// const chaiHttp = require('chai-http');
+/* eslint-disable no-await-in-loop */
+const { expect } = require('chai');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
 
-// const indexUnpawall = require('../index/unpaywall.json');
+const indexUnpawall = require('../index/unpaywall.json');
 
+const {
+  createIndex,
+  deleteIndex,
+  countDocuments,
+  isInUpdate,
+  getState,
+  getReport,
+} = require('./utils/update');
 
-// const {
-//   createIndex,
-//   deleteIndex,
-//   countDocuments,
-//   isInUpdate,
-//   getState,
-// } = require('./utils/elastic');
+const {
+  deleteFile,
+  initializeDate,
+  downloadFile,
+  ping,
+} = require('./utils/prepareTest');
 
-// const {
-//   deleteFile,
-//   initializeDate,
-// } = require('./utils/file');
+chai.use(chaiHttp);
 
-// const {
-//   getLatestReport,
-// } = require('./utils/report');
+describe('Test: weekly update route test', () => {
+  const ezunpaywallURL = 'http://localhost:8080';
 
-// const {
-//   ping,
-// } = require('./utils/ping');
+  before(async () => {
+    await ping();
+    initializeDate();
+    await deleteFile('fake1.jsonl.gz');
+    await deleteFile('fake2.jsonl.gz');
+    await deleteFile('fake3.jsonl.gz');
+  });
 
-// chai.use(chaiHttp);
+  describe('Do a classic weekly update', () => {
+    before(async () => {
+      await createIndex('unpaywall', indexUnpawall);
+    });
 
-// describe('Test: weekly update route test', () => {
-//   const ezunpaywallURL = 'http://localhost:8080';
+    // test response
+    it('Should return the process start', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .post('/update')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json');
 
-//   before(async () => {
-//     await ping();
-//     initializeDate();
-//     await deleteFile('fake1.jsonl.gz');
-//   });
+      expect(res).have.status(200);
+      expect(res.body.message).be.equal('weekly update has begun, list of task has been created on elastic');
+    });
 
-//   describe('Do a classic weekly update', () => {
-//     before(async () => {
-      
-//       await createIndex('unpaywall', indexUnpawall);
-//     });
+    // test insertion
+    it('Should insert 50 data', async () => {
+      let isUpdate = true;
+      while (isUpdate) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        isUpdate = await isInUpdate();
+      }
+      const count = await countDocuments();
+      expect(count).to.equal(50);
+    });
 
-//     // test response
-//     it('Should return the process start', async () => {
-//       const res = await chai.request(ezunpaywallURL)
-//         .post('/update')
-//         .set('Access-Control-Allow-Origin', '*')
-//         .set('Content-Type', 'application/json');
+    // test task
+    it('Should get task with all informations from the weekly update', async () => {
+      const state = await getState();
 
-//       expect(res).have.status(200);
-//       expect(res.body.message).be.equal('weekly update has begun, list of task has been created on elastic');
-//     });
+      expect(state).have.property('done').equal(true);
+      expect(state).have.property('createdAt').to.not.equal(undefined);
+      expect(state).have.property('endAt').to.not.equal(undefined);
+      expect(state).have.property('steps').to.be.an('array');
+      expect(state).have.property('error').equal(false);
+      expect(state).have.property('took').to.not.equal(undefined);
 
-//     // test insertion
-//     it('Should insert 50 data', async () => {
-//       let isUpdate;
-//       while (!isUpdate) {
-//         await new Promise((resolve) => setTimeout(resolve, 1000));
-//         isUpdate = await isInUpdate();
-//       }
-//       const count = await countDocuments();
-//       expect(count).to.equal(50);
-//     });
+      expect(state.steps[0]).have.property('task').be.equal('askUnpaywall');
+      expect(state.steps[0]).have.property('took').to.not.equal(undefined);
+      expect(state.steps[0]).have.property('status').be.equal('success');
 
-//     // test task
-//     it('Should get task with all informations from the weekly update', async () => {
-//       const task = await getState();
+      expect(state.steps[1]).have.property('task').be.equal('download');
+      expect(state.steps[1]).have.property('file').be.equal('fake1.jsonl.gz');
+      expect(state.steps[1]).have.property('percent').be.equal(100);
+      expect(state.steps[1]).have.property('took').to.not.equal(undefined);
+      expect(state.steps[1]).have.property('status').be.equal('success');
 
-//       expect(task).have.property('done');
-//       expect(task).have.property('steps');
-//       expect(task).have.property('createdAt');
-//       expect(task).have.property('endAt');
-//       expect(task).have.property('took');
-//       expect(task.steps[0]).have.property('task');
-//       expect(task.steps[0]).have.property('took');
-//       expect(task.steps[0]).have.property('status');
+      expect(state.steps[2]).have.property('task').be.equal('insert');
+      expect(state.steps[2]).have.property('file').be.equal('fake1.jsonl.gz');
+      expect(state.steps[2]).have.property('percent').be.equal(100);
+      expect(state.steps[2]).have.property('linesRead').be.equal(50);
+      expect(state.steps[2]).have.property('took').to.not.equal(undefined);
+      expect(state.steps[2]).have.property('status').be.equal('success');
 
-//       expect(task.steps[1]).have.property('task');
-//       expect(task.steps[1]).have.property('file');
-//       expect(task.steps[1]).have.property('percent');
-//       expect(task.steps[1]).have.property('took');
-//       expect(task.steps[1]).have.property('status');
+      expect(state.done).be.equal(true);
+    });
 
-//       expect(task.steps[2]).have.property('task');
-//       expect(task.steps[2]).have.property('file');
-//       expect(task.steps[2]).have.property('percent');
-//       expect(task.steps[2]).have.property('linesRead');
-//       expect(task.steps[2]).have.property('took');
-//       expect(task.steps[2]).have.property('status');
+    // test report
+    it('Should get report with all informations from the weekly update', async () => {
+      const report = await getReport();
 
-//       expect(task.done).be.equal(true);
-//       expect(task.steps[0].task).be.equal('askUnpaywall');
-//       expect(task.steps[0].status).be.equal('success');
+      expect(report).have.property('done');
+      expect(report).have.property('steps').to.be.an('array');
+      expect(report).have.property('createdAt').to.not.equal(undefined);
+      expect(report).have.property('endAt').to.not.equal(undefined);
+      expect(report).have.property('error').equal(false);
+      expect(report).have.property('took').to.not.equal(undefined);
 
-//       expect(task.steps[1].task).be.equal('download');
-//       expect(task.steps[1].file).be.equal('fake1.jsonl.gz');
-//       expect(task.steps[1].percent).be.equal(100);
-//       expect(task.steps[1].status).be.equal('success');
+      expect(report.steps[0]).have.property('task').be.equal('askUnpaywall');
+      expect(report.steps[0]).have.property('took').to.not.equal(undefined);
+      expect(report.steps[0]).have.property('status').be.equal('success');
 
-//       expect(task.steps[2].task).be.equal('insert');
-//       expect(task.steps[2].file).be.equal('fake1.jsonl.gz');
-//       expect(task.steps[2].percent).be.equal(100);
-//       expect(task.steps[2].linesRead).be.equal(50);
-//       expect(task.steps[2].status).be.equal('success');
-//     });
+      expect(report.steps[1]).have.property('task').be.equal('download');
+      expect(report.steps[1]).have.property('file').be.equal('fake1.jsonl.gz');
+      expect(report.steps[1]).have.property('percent').be.equal(100);
+      expect(report.steps[1]).have.property('took').to.not.equal(undefined);
+      expect(report.steps[1]).have.property('status').be.equal('success');
 
-//     // test report
-//     it('Should get report with all informations from the weekly update', async () => {
-//       const report = await getLatestReport();
+      expect(report.steps[2]).have.property('task').be.equal('insert');
+      expect(report.steps[2]).have.property('file').be.equal('fake1.jsonl.gz');
+      expect(report.steps[2]).have.property('percent').be.equal(100);
+      expect(report.steps[2]).have.property('linesRead').be.equal(50);
+      expect(report.steps[2]).have.property('took').to.not.equal(undefined);
+      expect(report.steps[2]).have.property('status').be.equal('success');
+    });
 
-//       expect(report).have.property('done');
-//       expect(report).have.property('steps');
-//       expect(report).have.property('createdAt');
-//       expect(report).have.property('endAt');
-//       expect(report).have.property('took');
-//       expect(report.steps[0]).have.property('task');
-//       expect(report.steps[0]).have.property('took');
-//       expect(report.steps[0]).have.property('status');
+    after(async () => {
+      await deleteIndex('unpaywall');
+    });
+  });
 
-//       expect(report.steps[1]).have.property('task');
-//       expect(report.steps[1]).have.property('file');
-//       expect(report.steps[1]).have.property('percent');
-//       expect(report.steps[1]).have.property('took');
-//       expect(report.steps[1]).have.property('status');
+  describe('Do a weekly update but the file is already installed', () => {
+    before(async () => {
+      await createIndex('unpaywall', indexUnpawall);
+      await downloadFile('fake1.jsonl.gz');
+    });
 
-//       expect(report.steps[2]).have.property('task');
-//       expect(report.steps[2]).have.property('file');
-//       expect(report.steps[2]).have.property('percent');
-//       expect(report.steps[2]).have.property('linesRead');
-//       expect(report.steps[2]).have.property('took');
-//       expect(report.steps[2]).have.property('status');
+    // test return message
+    it('Should return the process start', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .post('/update')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json');
 
-//       expect(report.done).be.equal(true);
-//       expect(report.steps[0].task).be.equal('askUnpaywall');
-//       expect(report.steps[0].status).be.equal('success');
+      // test response
+      expect(res).have.status(200);
+      expect(res.body).have.property('message').equal('weekly update has begun, list of task has been created on elastic');
+    });
 
-//       expect(report.steps[1].task).be.equal('download');
-//       expect(report.steps[1].file).be.equal('fake1.jsonl.gz');
-//       expect(report.steps[1].percent).be.equal(100);
-//       expect(report.steps[1].status).be.equal('success');
+    // test insertion
+    it('should insert 50 data', async () => {
+      let isUpdate = true;
+      while (isUpdate) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        isUpdate = await isInUpdate();
+      }
+      const count = await countDocuments();
+      expect(count).to.equal(50);
+    });
 
-//       expect(report.steps[2].task).be.equal('insert');
-//       expect(report.steps[2].file).be.equal('fake1.jsonl.gz');
-//       expect(report.steps[2].percent).be.equal(100);
-//       expect(report.steps[2].linesRead).be.equal(50);
-//       expect(report.steps[2].status).be.equal('success');
-//     });
-//   });
+    // test task
+    it('Should get task with all informations from the weekly update', async () => {
+      const state = await getState();
 
-//   describe('Do a weekly update but the file is already installed', () => {
-//     before(async () => {
-      
-//       await createIndex('unpaywall', indexUnpawall);
-//     });
+      expect(state).have.property('done').equal(true);
+      expect(state).have.property('steps').to.be.an('array');
+      expect(state).have.property('createdAt').to.not.equal(undefined);
+      expect(state).have.property('endAt').to.not.equal(undefined);
+      expect(state).have.property('error').equal(false);
+      expect(state).have.property('took').to.not.equal(undefined);
 
-//     // test return message
-//     it('Should return the process start', async () => {
-//       const res = await chai.request(ezunpaywallURL)
-//         .post('/update')
-//         .set('Access-Control-Allow-Origin', '*')
-//         .set('Content-Type', 'application/json');
+      expect(state.steps[0]).have.property('task').equal('askUnpaywall');
+      expect(state.steps[0]).have.property('took').to.not.equal(undefined);
+      expect(state.steps[0]).have.property('status').equal('success');
 
-//       // test response
-//       expect(res).have.status(200);
-//       expect(res.body).have.property('message').equal('weekly update has begun, list of task has been created on elastic');
-//     });
+      expect(state.steps[1]).have.property('task').equal('insert');
+      expect(state.steps[1]).have.property('file').equal('fake1.jsonl.gz');
+      expect(state.steps[1]).have.property('percent').equal(100);
+      expect(state.steps[1]).have.property('linesRead').equal(50);
+      expect(state.steps[1]).have.property('took').to.not.equal(undefined);
+      expect(state.steps[1]).have.property('status').equal('success');
+    });
 
-//     // test insertion
-//     it('should insert 50 data', async () => {
-//       let isUpdate;
-//       while (!isUpdate) {
-//         await new Promise((resolve) => setTimeout(resolve, 1000));
-//         isUpdate = await isInUpdate();
-//       }
-//       const count = await countDocuments();
-//       expect(count).to.equal(50);
-//     });
+    // test Report
+    it('Should get report with all informations from the weekly update', async () => {
+      const report = await getReport();
 
-//     // test task
-//     it('Should get task with all informations from the weekly update', async () => {
-//       const task = await getState();
+      expect(report).have.property('done').equal(true);
+      expect(report).have.property('steps').to.be.an('array');
+      expect(report).have.property('createdAt').to.not.equal(undefined);
+      expect(report).have.property('endAt').to.not.equal(undefined);
+      expect(report).have.property('error').equal(false);
+      expect(report).have.property('took').to.not.equal(undefined);
 
-//       expect(task).have.property('done').equal(true);
-//       expect(task).have.property('steps');
-//       expect(task).have.property('createdAt');
-//       expect(task).have.property('endAt');
-//       expect(task).have.property('took');
+      expect(report.steps[0]).have.property('task').equal('askUnpaywall');
+      expect(report.steps[0]).have.property('took').to.not.equal(undefined);
+      expect(report.steps[0]).have.property('status').equal('success');
 
-//       expect(task.steps[0]).have.property('task').equal('askUnpaywall');
-//       expect(task.steps[0]).have.property('took');
-//       expect(task.steps[0]).have.property('status').equal('success');
+      expect(report.steps[1]).have.property('task').equal('insert');
+      expect(report.steps[1]).have.property('file').equal('fake1.jsonl.gz');
+      expect(report.steps[1]).have.property('percent').equal(100);
+      expect(report.steps[1]).have.property('linesRead').equal(50);
+      expect(report.steps[1]).have.property('took').to.not.equal(undefined);
+      expect(report.steps[1]).have.property('status').equal('success');
+    });
+  });
 
-//       expect(task.steps[1]).have.property('task').equal('insert');
-//       expect(task.steps[1]).have.property('file').equal('fake1.jsonl.gz');
-//       expect(task.steps[1]).have.property('percent').equal(100);
-//       expect(task.steps[1]).have.property('linesRead').equal(50);
-//       expect(task.steps[1]).have.property('took');
-//       expect(task.steps[1]).have.property('status').equal('success');
-//     });
-
-//     // test Report
-//     it('Should get report with all informations from the weekly update', async () => {
-//       const report = await getLatestReport();
-
-//       expect(report).have.property('done').equal(true);
-//       expect(report).have.property('steps');
-//       expect(report).have.property('createdAt');
-//       expect(report).have.property('endAt');
-//       expect(report).have.property('took');
-
-//       expect(report.steps[0]).have.property('task').equal('askUnpaywall');
-//       expect(report.steps[0]).have.property('took');
-//       expect(report.steps[0]).have.property('status').equal('success');
-
-//       expect(report.steps[1]).have.property('task').equal('insert');
-//       expect(report.steps[1]).have.property('file').equal('fake1.jsonl.gz');
-//       expect(report.steps[1]).have.property('percent').equal(100);
-//       expect(report.steps[1]).have.property('linesRead').equal(50);
-//       expect(report.steps[1]).have.property('took');
-//       expect(report.steps[1]).have.property('status').equal('success');
-//     });
-//     // TODO test Mail
-//   });
-
-//   after(async () => {
-//     await deleteIndex('unpaywall');
-//     await deleteIndex('task');
-//     await deleteFile('fake1.jsonl.gz');
-//   });
-// });
+  after(async () => {
+    await deleteIndex('unpaywall');
+    await deleteFile('fake1.jsonl.gz');
+    await deleteFile('fake2.jsonl.gz');
+    await deleteFile('fake3.jsonl.gz');
+  });
+});

@@ -16,7 +16,7 @@ const {
 } = require('../services/update/utils');
 
 const {
-  getIsUpdate,
+  getStatus,
 } = require('../services/update/status');
 
 const {
@@ -27,16 +27,14 @@ const {
   getReport,
 } = require('../services/update/report');
 
+const orderReccentFiles = async (dir) => fs.readdirSync(dir)
+  .filter(async (file) => fs.lstatSync(path.join(dir, file)).isFile())
+  .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
+  .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
+
 const getMostRecentFile = async (dir) => {
   const files = await orderReccentFiles(dir);
   return files.length ? files[0] : undefined;
-};
-
-const orderReccentFiles = async (dir) => {
-  return fs.readdirSync(dir)
-    .filter(async (file) => await fs.lstatSync(path.join(dir, file)).isFile())
-    .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
-    .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
 };
 
 // middleware
@@ -154,7 +152,7 @@ router.post('/update', (req, res) => {
   });
 });
 
-router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getIsUpdate() }));
+router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
 router.get('/update/state', async (req, res) => {
   const latestFile = await getMostRecentFile(stateDir);

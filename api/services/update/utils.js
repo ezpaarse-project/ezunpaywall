@@ -1,6 +1,7 @@
 const {
   createState,
   endState,
+  getState,
 } = require('./state');
 
 const {
@@ -28,9 +29,9 @@ const insertion = async (name, options) => {
 };
 
 const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
-  setIsUpdate(true);
+  startUpdate();
   const statename = await createState();
-  const snapshotsInfo = await askUnpaywall(url, statename, startDate, endDate);
+  const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
     // eslint-disable-next-line no-await-in-loop
     const snapshot = await downloadUpdateSnapshot(statename, snapshotsInfo[i]);
@@ -45,20 +46,18 @@ const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
     }
   }
   await endState(statename);
+  const state = await getState(statename);
   await createReport(statename);
-  setIsUpdate(false);
+  endUpdate();
 };
 
 const weeklyUpdate = async (url) => {
-  setIsUpdate(true);
+  startUpdate();
   const statename = await createState();
   const endDate = Date.now();
   // current date - one week
   const startDate = endDate - (7 * 24 * 60 * 60 * 1000);
   await insertSnapshotBetweenDate(url, startDate, endDate);
-  await endState(statename);
-  await createReport(statename);
-  setIsUpdate(false);
 };
 
 module.exports = {

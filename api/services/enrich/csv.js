@@ -18,7 +18,7 @@ const {
   getState,
 } = require('./state');
 
-const enriched = path.resolve(__dirname, '..', '..', 'out', 'enriched');
+const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'enriched');
 
 const setEnrichAttributesCSV = () => [
   'best_oa_location.evidence',
@@ -289,7 +289,11 @@ const enrichmentFileCSV = async (readStream, attributs, separator, state) => {
 
   const fetchAttributes = createFetchAttributes(enrichAttributesCSV);
 
-  fs.openSync(enrichedFile, 'w');
+  try {
+    await fs.open(enrichedFile, 'w');
+  } catch (err) {
+    logger.error(`enrichmentFileCSV in fs.open: ${err}`);
+  }
 
   let loaded = 0;
 

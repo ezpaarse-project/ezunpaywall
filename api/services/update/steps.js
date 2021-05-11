@@ -137,11 +137,6 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
  * download the snapshot
  */
 const downloadUpdateSnapshot = async (stateName, info) => {
-  const start = new Date();
-  await addStepDownload(stateName);
-  const state = await getState(stateName);
-  const step = state.steps[state.steps.length - 1];
-
   let stats;
 
   const file = path.resolve(downloadDir, info.filename);
@@ -159,6 +154,12 @@ const downloadUpdateSnapshot = async (stateName, info) => {
     logger.info('file already installed');
     return true;
   }
+
+  const start = new Date();
+  await addStepDownload(stateName);
+  const state = await getState(stateName);
+  const step = state.steps[state.steps.length - 1];
+  step.file = info.filename;
 
   let compressedFile;
   try {
@@ -235,7 +236,7 @@ const downloadUpdateSnapshot = async (stateName, info) => {
 /**
  * ask unpaywall to get getMetadata() on unpaywall snapshot
  */
-const askUnpaywall = async (url, stateName, startDate, endDate) => {
+const askUnpaywall = async (stateName, url, startDate, endDate) => {
   const start = new Date();
   await addStepAskUnpaywall(stateName);
   const state = await getState(stateName);

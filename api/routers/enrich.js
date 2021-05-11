@@ -6,7 +6,18 @@ const { enrichmentFileJSON, checkAttributesJSON, setEnrichAttributesJSON } = req
 const { enrichmentFileCSV, checkAttributesCSV, setEnrichAttributesCSV } = require('../services/enrich/csv');
 const { createState, getState, updateStatus } = require('../services/enrich/state');
 
-const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
+const enrichedDir = path.resolve(__dirname, '..', 'out', 'enrich', 'enriched');
+const stateDir = path.resolve(__dirname, '..', 'out', 'enrich', 'state');
+
+const orderReccentFiles = async (dir) => fs.readdirSync(dir)
+  .filter(async (file) => fs.lstatSync(path.join(dir, file)).isFile())
+  .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
+  .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
+
+const getMostRecentFile = async (dir) => {
+  const files = await orderReccentFiles(dir);
+  return files.length ? files[0] : undefined;
+};
 
 router.post('/enrich/state', async (req, res) => {
   const state = await createState();
@@ -55,6 +66,12 @@ router.post('/enrich/csv', async (req, res) => {
     return res.status(500).json({ message: err });
   }
   return res.status(200).json({ file });
+});
+
+router.get('/enrich/state', async (req, res) => {
+  const latestFile = await getMostRecentFile(stateDir);
+  const state = await getState(latestFile?.file);
+  res.status(200).json({ state });
 });
 
 router.get('/enrich/state/:name', async (req, res) => {
