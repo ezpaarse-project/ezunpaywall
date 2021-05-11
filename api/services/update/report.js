@@ -24,11 +24,11 @@ const createReport = async (stateName) => {
 
 /**
  * get report from the folder "out/update/report"
- * @param {*} fileName - report filename
+ * @param {String} filename - report filename
  * @returns {Object} report
  */
-const getReport = async (fileName) => {
-  let state = await fs.readFile(path.resolve(reportDir, fileName));
+const getReport = async (filename) => {
+  let state = await fs.readFile(path.resolve(reportDir, filename));
   try {
     state = JSON.parse(state);
   } catch (err) {
