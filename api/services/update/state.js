@@ -6,11 +6,12 @@ const { logger } = require('../../lib/logger');
 const stateDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'state');
 
 /**
- * @param {*} fileName - state file name
- * @returns {Object} state
+ * get state from the folder "out/update/state"
+ * @param {String} filename - state filename
+ * @returns {Object} - state in JSON format
  */
-const getState = async (fileName) => {
-  let state = await fs.readFile(path.resolve(stateDir, fileName));
+const getState = async (filename) => {
+  let state = await fs.readFile(path.resolve(stateDir, filename));
   try {
     state = JSON.parse(state);
   } catch (err) {
@@ -21,9 +22,11 @@ const getState = async (fileName) => {
 
 /**
  * write the latest version of the state to the file
+ * @param {Object} state - state in JSON format
+ * @param {Object} filename - name of the file where the state is saved
  */
-const updateStateInFile = async (state, fileName) => {
-  const pathfile = path.resolve(stateDir, fileName);
+const updateStateInFile = async (state, filename) => {
+  const pathfile = path.resolve(stateDir, filename);
   const isPathExist = await fs.pathExists(pathfile);
   if (!isPathExist) {
     logger.error(`updateStateInFile on fs.pathExists: file ${pathfile} doesn't exist`);
@@ -33,8 +36,8 @@ const updateStateInFile = async (state, fileName) => {
 };
 
 /**
- * create a new file containing the update status
- * @return {String} name of file
+ * create a new file on folder "out/update/state" containing the update status
+ * @return {String} name of the file where the state is saved
  */
 const createState = async () => {
   const state = {
@@ -44,21 +47,21 @@ const createState = async () => {
     steps: [],
     error: false,
   };
-  const fileName = `${uuid.v4()}.json`;
+  const filename = `${uuid.v4()}.json`;
   try {
-    await fs.writeFile(path.resolve(stateDir, fileName), JSON.stringify(state, null, 2));
+    await fs.writeFile(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`createState: ${err}`);
   }
-  return fileName;
+  return filename;
 };
 
 /**
- * add step "askUnpaywall" on steps attributes of state
- * @param {string} fileName - name of file name of state
+ * add step "askUnpaywall" in steps attributes of state
+ * @param {string} filename - name of the file where the state is saved
  */
-const addStepAskUnpaywall = async (fileName) => {
-  const state = await getState(fileName);
+const addStepAskUnpaywall = async (filename) => {
+  const state = await getState(filename);
   logger.info('step - ask unpaywall');
   const step = {
     task: 'askUnpaywall',
@@ -66,16 +69,16 @@ const addStepAskUnpaywall = async (fileName) => {
     status: 'inProgress',
   };
   state.steps.push(step);
-  await updateStateInFile(state, fileName);
+  await updateStateInFile(state, filename);
 };
 
 /**
- * add step "download" on steps attributes of state
- * @param {string} fileName - state file name
+ * add step "download" in steps attributes of state
+ * @param {string} filename - state file name
  * @param {string} downloadFile - unpaywall data update file name
  */
-const addStepDownload = async (fileName, downloadFile) => {
-  const state = await getState(fileName);
+const addStepDownload = async (filename, downloadFile) => {
+  const state = await getState(filename);
   logger.info('step - download file');
   const step = {
     task: 'download',
@@ -85,16 +88,16 @@ const addStepDownload = async (fileName, downloadFile) => {
     status: 'inProgress',
   };
   state.steps.push(step);
-  await updateStateInFile(state, fileName);
+  await updateStateInFile(state, filename);
 };
 
 /**
- * add step "download" on steps attributes of state
- * @param {string} fileName - state file name
+ * add step "download" in steps attributes of state
+ * @param {string} filename - state file name
  * @param {string} downloadFile - unpaywall data update file name
  */
-const addStepInsert = async (fileName, downloadFile) => {
-  const state = await getState(fileName);
+const addStepInsert = async (filename, downloadFile) => {
+  const state = await getState(filename);
   logger.info('step - insert file');
   const step = {
     task: 'insert',
@@ -105,24 +108,24 @@ const addStepInsert = async (fileName, downloadFile) => {
     status: 'inProgress',
   };
   state.steps.push(step);
-  await updateStateInFile(state, fileName);
+  await updateStateInFile(state, filename);
 };
 
-const fail = async (fileName) => {
-  const state = await getState(fileName);
+const fail = async (filename) => {
+  const state = await getState(filename);
   state.done = true;
   state.endAt = new Date();
   state.error = true;
-  await updateStateInFile(state, fileName);
+  await updateStateInFile(state, filename);
 };
 
-const endState = async (fileName) => {
-  const state = await getState(fileName);
+const endState = async (filename) => {
+  const state = await getState(filename);
   state.done = true;
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
   state.error = false;
-  await updateStateInFile(state, fileName);
+  await updateStateInFile(state, filename);
 };
 
 module.exports = {
