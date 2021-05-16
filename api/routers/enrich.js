@@ -9,11 +9,21 @@ const { createState, getState, updateStatus } = require('../services/enrich/stat
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enrich', 'enriched');
 const stateDir = path.resolve(__dirname, '..', 'out', 'enrich', 'state');
 
-const orderReccentFiles = async (dir) => fs.readdirSync(dir)
-  .filter(async (file) => fs.lstatSync(path.join(dir, file)).isFile())
+/**
+ * get the files in a dir in order by date
+ * @param {string} dir - dir path
+ * @returns {array<string>} files path in order
+ */
+const orderReccentFiles = (dir) => fs.readdirSync(dir)
+  .filter((file) => fs.lstatSync(path.join(dir, file)).isFile())
   .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
   .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
 
+/**
+* get the most recent file in a dir
+* @param {string} dir - dir path
+* @returns {string} most recent file path
+*/
 const getMostRecentFile = async (dir) => {
   const files = await orderReccentFiles(dir);
   return files.length ? files[0] : undefined;
