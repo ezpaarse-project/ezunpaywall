@@ -164,16 +164,22 @@ router.post('/update', (req, res) => {
 });
 
 /**
- * 
+ * gets the status if an update is in progress
  */
 router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
+/**
+ * get the most recent state in JSON format
+ */
 router.get('/update/state', async (req, res) => {
   const latestFile = await getMostRecentFile(stateDir);
   const state = await getState(latestFile?.file);
   res.status(200).json({ state });
 });
 
+/**
+ * get the most recent report in JSON format
+ */
 router.get('/update/report', async (req, res) => {
   const latestFile = await getMostRecentFile(reportDir);
   const report = await getReport(latestFile?.file);

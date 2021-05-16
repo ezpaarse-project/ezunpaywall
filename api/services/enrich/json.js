@@ -9,6 +9,7 @@ const uuid = require('uuid');
 const { logger } = require('../../lib/logger');
 
 const { askEzUnpaywall } = require('./utils');
+
 const {
   incrementlinesRead,
   incrementenrichedLines,
@@ -17,7 +18,7 @@ const {
   getState,
 } = require('./state');
 
-const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich' ,'enriched');
+const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'enriched');
 
 const setEnrichAttributesJSON = () => [
   'oa_locations.evidence',
@@ -72,22 +73,28 @@ const setEnrichAttributesJSON = () => [
 ];
 
 /**
- * parse the complexes attributes so that they can be used in the graphql query
- * @param {*} name name of param
- * @param {*} attribute attributes of param
+ * transform object attributes in graphql format to be used in the graphql query
+ * @param {string} name - name of param
+ * @param {array<string>} attributes - attributes of param
+ * @returns {String} graphql attributes
  */
 const stringifyAttributes = (name, attributes) => {
   let res;
   if (attributes.length !== 0) {
     res = attributes.join(',');
   }
-  res = `${name}{${res}}`;
-  return res;
+  return `${name}{${res}}`;
 };
 
 /**
- * sortAttr if is a complexe attributes
- * @param {*} attr
+ * sort the different attributes in several array to create the graphql query
+ * @param {array} attr - attr that will be sorted
+ * @param {array<string>} best_oa_location - array of attributes of best_oa_location
+ * @param {array<string>} first_oa_location - array of attributes of first_oa_location
+ * @param {array<string>} oa_locations - array of attributes of oa_locations
+ * @param {array<string>} z_authors - array of attributes of z_authors
+ * @param {*} fetchAttributes - array of attributes of unpaywall
+ * @returns {object} - best_oa_location, first_oa_location, oa_locations, z_authors, fetchAttributes
  */
 const sortAttr = (
   attr,
@@ -97,7 +104,7 @@ const sortAttr = (
   z_authors,
   fetchAttributes,
 ) => {
-  // complexe attributes (like best_oa_location.license)
+  // object attributes (like best_oa_location.license)
   if (attr.includes('.')) {
     const str = attr.split('.');
     if (str[0] === 'best_oa_location') {
@@ -113,7 +120,7 @@ const sortAttr = (
       z_authors.push(str[1]);
     }
   } else {
-    // simple attributes (like is_oa)
+    // string attributes (like is_oa)
     fetchAttributes.push(attr);
   }
   return {
@@ -122,7 +129,9 @@ const sortAttr = (
 };
 
 /**
- * parse the attributes so that they can be used in the graphql query
+ * create the attributes so that they can be used in the graphql query
+ * @param {array<string>} enrichAttributesJSON - attributes allowed for enrichment
+ * @returns {string} attributes for graphql query
  */
 const createFetchAttributes = (enrichAttributesJSON) => {
   let fetchAttributes = [];
@@ -186,8 +195,10 @@ const createFetchAttributes = (enrichAttributesJSON) => {
 };
 
 /**
- * checks if the attributes entered by the command are related to the unpaywall data model
- * @param {*} attr String of attributes
+ * checks if the attributes entered by the command are allowed to the unpaywall data model
+ * @param {*} attrs - String of attributes
+ * @param {array<string>} enrichAttributesJSON - attributes allowed for enrichment
+ * @returns {object/boolean} 
  */
 const checkAttributesJSON = (attrs, enrichAttributesJSON) => {
   const res = [];
@@ -211,8 +222,8 @@ const checkAttributesJSON = (attrs, enrichAttributesJSON) => {
 };
 
 /**
- * @param {*} tab array of line that we will enrich
- * @param {*} response response from ezunpaywall
+ * @param {array} tab array of line that we will enrich
+ * @param {object} response response from ezunpaywall
  */
 const enrichTab = (tab, response) => {
   const results = new Map();
