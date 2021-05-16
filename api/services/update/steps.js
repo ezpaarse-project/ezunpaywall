@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const path = require('path');
 const fs = require('fs-extra');
 const readline = require('readline');
@@ -19,7 +20,7 @@ const {
 } = require('./state');
 
 /**
- * @param {*} data array of unpaywall data
+ * @param {Array} data array of unpaywall data
  */
 const insertUPW = async (data) => {
   const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall', _id: doc.doi } }, doc]);
@@ -30,7 +31,14 @@ const insertUPW = async (data) => {
   }
 };
 
+/**
+ * Inserts the contents of an unpaywall data update file
+ * @param {*} stateName - state filename
+ * @param {*} opts - options containing a limit and an offset
+ * @param {*} filename - snapshot filename which the data will be inserted
+ */
 const insertDataUnpaywall = async (stateName, opts, filename) => {
+  // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
   const state = await getState(stateName);
@@ -38,103 +46,103 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
 
   const filePath = path.resolve(downloadDir, filename);
 
-  let loaded = 0;
+  // get information "bytes" for state
   let bytes;
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
     logger.error(`fs.stat in insertDataUnpaywall: ${err}`);
+    await fail();
+    // TODO throw Error
   }
 
-  const insertion = async () => {
-    // read file with stream
-    let readStream;
-    try {
-      readStream = fs.createReadStream(filePath);
-    } catch (err) {
-      logger.error(`fs.createReadStream in insertDataUnpaywall: ${err}`);
-      await fail();
-      return null;
+  // read file with stream
+  let readStream;
+  try {
+    readStream = fs.createReadStream(filePath);
+  } catch (err) {
+    logger.error(`fs.createReadStream in insertDataUnpaywall: ${err}`);
+    await fail();
+    // TODO throw Error
+  }
+
+  // get information "loaded" for state
+  let loaded = 0;
+  readStream.on('data', (chunk) => {
+    loaded += chunk.length;
+  });
+
+  let decompressedStream;
+  try {
+    decompressedStream = readStream.pipe(zlib.createGunzip());
+  } catch (err) {
+    logger.error(`readStream.pipe(zlib.createGunzip()) in insertDataUnpaywall: ${err}`);
+    await fail();
+    // TODO throw Error
+  }
+
+  const rl = readline.createInterface({
+    input: decompressedStream,
+    crlfDelay: Infinity,
+  });
+
+  // array that will contain the packet of 1000 unpaywall data
+  let tab = [];
+
+  // Reads line by line the output of the decompression stream to make packets of 1000
+  // to insert them in bulk in an elastic
+  for await (const line of rl) {
+    // limit
+    if (step.linesRead === opts.limit) {
+      break;
     }
 
-    readStream.on('data', (chunk) => {
-      loaded += chunk.length;
-    });
+    step.linesRead += 1;
 
-    let decompressedStream;
-
-    try {
-      decompressedStream = readStream.pipe(zlib.createGunzip());
-    } catch (err) {
-      logger.error(`readStream.pipe(zlib.createGunzip()) in insertDataUnpaywall: ${err}`);
-      await fail();
-      return null;
-    }
-
-    let tab = [];
-
-    const rl = readline.createInterface({
-      input: decompressedStream,
-      crlfDelay: Infinity,
-    });
-
-    // read line by line and sort by pack of 1000
-    // eslint-disable-next-line no-restricted-syntax
-    for await (const line of rl) {
-      // limit
-      if (step.linesRead === opts.limit) {
-        break;
-      }
-
-      step.linesRead += 1;
-
-      // offset
-      if (step.linesRead >= opts.offset + 1) {
-        const res = JSON.parse(line);
-        await fs.appendFile(`${downloadDir}/doi.csv`, `${res.doi}\r`, (err) => {
-          if (err) throw err;
-        });
-        // fill the array
-        try {
-          tab.push(JSON.parse(line));
-        } catch (err) {
-          logger.error(`JSON.parse in insertDataUnpaywall: ${err}`);
-          await fail();
-          return null;
-        }
-      }
-      // bulk insertion
-      if (tab.length % 1000 === 0 && tab.length !== 0) {
-        await insertUPW(tab);
-        step.percent = ((loaded / bytes.size) * 100).toFixed(2);
-        step.took = (new Date() - start) / 1000;
-        state.steps[state.steps.length - 1] = step
-        await updateStateInFile(state, stateName);
-        tab = [];
-      }
-      if (step.linesRead % 100000 === 0) {
-        logger.info(`${step.linesRead} Lines reads`);
+    // offset
+    if (step.linesRead >= opts.offset + 1) {
+      // fill the array
+      try {
+        tab.push(JSON.parse(line));
+      } catch (err) {
+        logger.error(`JSON.parse in insertDataUnpaywall: ${err}`);
+        await fail();
+        // TODO throw Error
       }
     }
-    // if have stays data to insert
-    if (tab.length !== 0) {
+    // bulk insertion
+    if (tab.length % 1000 === 0 && tab.length !== 0) {
       await insertUPW(tab);
+      step.percent = ((loaded / bytes.size) * 100).toFixed(2);
+      step.took = (new Date() - start) / 1000;
+      state.steps[state.steps.length - 1] = step;
+      await updateStateInFile(state, stateName);
       tab = [];
     }
-    logger.info('step - end insertion');
-    step.status = 'success';
-    step.took = (new Date() - start) / 1000;
-    return true;
-  };
-  await insertion();
+    if (step.linesRead % 100000 === 0) {
+      logger.info(`${step.linesRead} Lines reads`);
+    }
+  }
+  // last insertion if there is data left
+  if (tab.length !== 0) {
+    await insertUPW(tab);
+    tab = [];
+  }
+  logger.info('step - end insertion');
+
+  // last update of step
+  step.status = 'success';
+  step.took = (new Date() - start) / 1000;
   step.percent = 100;
-  state.steps[state.steps.length - 1] = step
+  state.steps[state.steps.length - 1] = step;
   await updateStateInFile(state, stateName);
-  return true;
 };
 
 /**
- * download the snapshot
+ * 
+ * @param {*} stateName 
+ * @param {*} info 
+ * @returns 
  */
 const downloadUpdateSnapshot = async (stateName, info) => {
   let stats;
@@ -193,7 +201,7 @@ const downloadUpdateSnapshot = async (stateName, info) => {
       }
       step.took = (new Date() - start) / 1000;
       step.percent = ((bytes.size / info.size) * 100).toFixed(2);
-      state.steps[state.steps.length - 1] = step
+      state.steps[state.steps.length - 1] = step;
       await updateStateInFile(state, stateName);
       timeout = setTimeout(percentDownload, 3000);
     }());
@@ -202,7 +210,7 @@ const downloadUpdateSnapshot = async (stateName, info) => {
       step.status = 'success';
       step.took = (new Date() - start) / 1000;
       step.percent = 100;
-      state.steps[state.steps.length - 1] = step
+      state.steps[state.steps.length - 1] = step;
       await updateStateInFile(state, stateName);
       clearTimeout(timeout);
       logger.info('step - end download');

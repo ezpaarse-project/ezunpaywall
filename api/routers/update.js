@@ -27,8 +27,8 @@ const {
   getReport,
 } = require('../services/update/report');
 
-const orderReccentFiles = async (dir) => fs.readdirSync(dir)
-  .filter(async (file) => fs.lstatSync(path.join(dir, file)).isFile())
+const orderReccentFiles = (dir) => fs.readdirSync(dir)
+  .filter((file) => fs.lstatSync(path.join(dir, file)).isFile())
   .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
   .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
 

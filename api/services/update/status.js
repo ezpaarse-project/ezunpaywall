@@ -1,17 +1,20 @@
-let isUpdate = false;
+let inUpdate = false;
 
-const startUpdate = () => {
-  inUpdate = true;
+/**
+ * setter of inUpdate
+ * @param {Boolean} status - true: update in progress. false: no update in progress
+ */
+const setInUpdate = (status) => {
+  inUpdate = status;
 };
 
-const endUpdate = () => {
-  inUpdate = false;
-};
-
+/**
+ * getter of inUpdate
+ * @returns {Boolean} - inUpdate
+ */
 const getStatus = () => inUpdate;
 
 module.exports = {
-  startUpdate,
-  endUpdate,
+  setInUpdate,
   getStatus,
 };
