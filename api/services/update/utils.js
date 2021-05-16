@@ -6,7 +6,7 @@ const {
 
 const {
   askUnpaywall,
-  downloadUpdateSnapshot,
+  downloadFileFromUnpaywall,
   insertDataUnpaywall,
 } = require('./steps');
 
@@ -35,7 +35,7 @@ const insertion = async (filename, options) => {
 /**
  * start an unpaywall data update process by retrieving update files
  * between a period from Unpaywall and inserting its content
- * @param {Stirng} url - url to call for the list of update files
+ * @param {String} url - url to call for the list of update files
  * @param {Date} startDate - start date of the period
  * @param {Date} endDate end date of the period
  */
@@ -44,7 +44,7 @@ const insertSnapshotBetweenDates = async (url, startDate, endDate) => {
   const statename = await createState();
   const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
-    await downloadUpdateSnapshot(statename, snapshotsInfo[i]);
+    await downloadFileFromUnpaywall(statename, snapshotsInfo[i]);
     const opts = { offset: -1, limit: -1 };
     await insertDataUnpaywall(statename, opts, snapshotsInfo[i].filename);
   }
