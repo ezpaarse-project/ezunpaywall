@@ -39,7 +39,7 @@ const insertion = async (filename, options) => {
  * @param {Date} startDate - start date of the period
  * @param {Date} endDate end date of the period
  */
-const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
+const insertSnapshotBetweenDates = async (url, startDate, endDate) => {
   setInUpdate(true);
   const statename = await createState();
   const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
@@ -55,5 +55,5 @@ const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
 
 module.exports = {
   insertion,
-  insertSnapshotBetweenDate,
+  insertSnapshotBetweenDates,
 };
