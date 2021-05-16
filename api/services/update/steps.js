@@ -142,11 +142,11 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
 /**
  * Update the step the percentage in download regularly until the download is complete
  * @param {setTimeout} timeout - timeout
- * @param {String} filePath - path where the file is downloaded
- * @param {Object} info - info of file
- * @param {String} stateName - state filename
- * @param {Object} state - state in JSON format
- * @param {Date} start - download start date
+ * @param {string} filePath - path where the file is downloaded
+ * @param {object} info - info of file
+ * @param {string} stateName - state filename
+ * @param {object} state - state in JSON format
+ * @param {date} start - download start date
  */
 async function updatePercentStepDownload(timeout, filePath, info, stateName, state, start) {
   const step = state.steps[state.steps.length - 1];
@@ -171,8 +171,8 @@ async function updatePercentStepDownload(timeout, filePath, info, stateName, sta
 
 /**
  * Start the download of the update file from unpaywall
- * @param {String} stateName - state filename
- * @param {String} info - information of the file to download
+ * @param {string} stateName - state filename
+ * @param {string} info - information of the file to download
  */
 const downloadFileFromUnpaywall = async (stateName, info) => {
   let stats;
@@ -254,11 +254,11 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
 /**
  * ask unpaywall to get information and download links for snapshots files
- * @param {String} stateName - state filename
- * @param {String} url - url to call for the list of update files
- * @param {Date} startDate - start date of the period
- * @param {Date} endDate - end date of the period
- * @returns {Array<Object>} information about snapshots files
+ * @param {string} stateName - state filename
+ * @param {string} url - url to call for the list of update files
+ * @param {date} startDate - start date of the period
+ * @param {date} endDate - end date of the period
+ * @returns {array<object>} information about snapshots files
  */
 const askUnpaywall = async (stateName, url, startDate, endDate) => {
   const start = new Date();

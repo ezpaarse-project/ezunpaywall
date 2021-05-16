@@ -10,7 +10,7 @@ const {
 
 /**
  * create report on the folder "out/update/report" on behalf of the date of treatment
- * @param {String} stateName - state filename
+ * @param {string} stateName - state filename
  */
 const createReport = async (stateName) => {
   const state = await getState(stateName);
@@ -24,8 +24,8 @@ const createReport = async (stateName) => {
 
 /**
  * get report from the folder "out/update/report"
- * @param {String} filename - report filename
- * @returns {Object} report
+ * @param {string} filename - report filename
+ * @returns {object} report
  */
 const getReport = async (filename) => {
   let state = await fs.readFile(path.resolve(reportDir, filename));

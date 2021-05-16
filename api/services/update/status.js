@@ -2,7 +2,7 @@ let inUpdate = false;
 
 /**
  * setter of inUpdate
- * @param {Boolean} status - true: update in progress. false: no update in progress
+ * @param {boolean} status - true: update in progress. false: no update in progress
  */
 const setInUpdate = (status) => {
   inUpdate = status;
@@ -10,7 +10,7 @@ const setInUpdate = (status) => {
 
 /**
  * getter of inUpdate
- * @returns {Boolean} - inUpdate
+ * @returns {boolean} - inUpdate
  */
 const getStatus = () => inUpdate;
 

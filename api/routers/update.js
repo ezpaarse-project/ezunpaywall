@@ -56,9 +56,9 @@ const getMostRecentFile = async (dir) => {
  *
  * @apiParam (QUERY) {Number} [offset] first line insertion, by default, we start with the first
  * @apiParam (QUERY) {Number} [limit] last line insertion by default, we have no limit
- * @apiParam (PARAMS) {String} name name of file
+ * @apiParam (PARAMS) {string} name name of file
  *
- * @apiSuccess {String} message informing the start of the process
+ * @apiSuccess {string} message informing the start of the process
  *
  * @apiError 400 name of snapshot file expected /
  * name of file is in bad format (accepted [a-zA-Z0-9_.-] patern) /
@@ -107,7 +107,7 @@ router.post('/update/:name', async (req, res) => {
  * @apiParam (QUERY) {DATE} [startDate] period start date at format YYYY-mm-dd
  * @apiParam (QUERY) {DATE} [endDate] period end date at format YYYY-mm-dd
  *
- * @apiSuccess {String} message informing the start of the process
+ * @apiSuccess {string} message informing the start of the process
  *
  * @apiError 400 start date is missing / end date is lower than start date /
  * start date or end are date in bad format, dates in format YYYY-mm-dd

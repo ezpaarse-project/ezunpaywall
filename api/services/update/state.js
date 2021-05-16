@@ -7,8 +7,8 @@ const stateDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'state');
 
 /**
  * get state from the folder "out/update/state"
- * @param {String} filename - state filename
- * @returns {Object} - state in JSON format
+ * @param {string} filename - state filename
+ * @returns {object} - state in JSON format
  */
 const getState = async (filename) => {
   let state = await fs.readFile(path.resolve(stateDir, filename));
@@ -22,8 +22,8 @@ const getState = async (filename) => {
 
 /**
  * write the latest version of the state to the file
- * @param {Object} state - state in JSON format
- * @param {Object} filename - name of the file where the state is saved
+ * @param {object} state - state in JSON format
+ * @param {object} filename - name of the file where the state is saved
  */
 const updateStateInFile = async (state, filename) => {
   const pathfile = path.resolve(stateDir, filename);
@@ -37,7 +37,7 @@ const updateStateInFile = async (state, filename) => {
 
 /**
  * create a new file on folder "out/update/state" containing the update status
- * @return {String} name of the file where the state is saved
+ * @return {string} name of the file where the state is saved
  */
 const createState = async () => {
   const state = {
@@ -113,7 +113,7 @@ const addStepInsert = async (filename, downloadFile) => {
 
 /**
  * update the state when there is an error
- * @param {*} filename - name of the file where the state is saved
+ * @param {string} filename - name of the file where the state is saved
  */
 const fail = async (filename) => {
   const state = await getState(filename);
@@ -125,7 +125,7 @@ const fail = async (filename) => {
 
 /**
  * update the state when the process is finished
- * @param {*} filename - name of the file where the state is saved
+ * @param {string} filename - name of the file where the state is saved
  */
 const endState = async (filename) => {
   const state = await getState(filename);
