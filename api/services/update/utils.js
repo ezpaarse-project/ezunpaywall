@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const {
   createState,
   endState,
@@ -17,24 +18,34 @@ const {
   createReport,
 } = require('./report');
 
-const insertion = async (name, options) => {
+/**
+ * start an update process of unpaywall data with a file present in ezunpaywall
+ * @param {Stirng} filename - nom du fichier à insérer
+ * @param {Object} options - limit and offset of insertion
+ */
+const insertion = async (filename, options) => {
   setInUpdate(true);
   const statename = await createState();
-  await insertDataUnpaywall(statename, options, name);
+  await insertDataUnpaywall(statename, options, filename);
   await endState(statename);
   await createReport(statename);
   setInUpdate(false);
 };
 
+/**
+ * start an unpaywall data update process by retrieving update files
+ * between a period from Unpaywall and inserting its content
+ * @param {Stirng} url - url to call for the list of update files
+ * @param {Date} startDate - start date of the period
+ * @param {Date} endDate end date of the period
+ */
 const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
   setInUpdate(true);
   const statename = await createState();
   const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
     await downloadUpdateSnapshot(statename, snapshotsInfo[i]);
     const opts = { offset: -1, limit: -1 };
-    // eslint-disable-next-line no-await-in-loop
     await insertDataUnpaywall(statename, opts, snapshotsInfo[i].filename);
   }
   await endState(statename);
@@ -42,16 +53,7 @@ const insertSnapshotBetweenDate = async (url, startDate, endDate) => {
   setInUpdate(false);
 };
 
-const weeklyUpdate = async (url) => {
-  setInUpdate(true);
-  const endDate = Date.now();
-  // current date - one week
-  const startDate = endDate - (7 * 24 * 60 * 60 * 1000);
-  await insertSnapshotBetweenDate(url, startDate, endDate);
-};
-
 module.exports = {
   insertion,
-  weeklyUpdate,
   insertSnapshotBetweenDate,
 };

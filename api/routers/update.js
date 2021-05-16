@@ -11,7 +11,6 @@ const reportDir = path.resolve(__dirname, '..', 'out', 'update', 'report');
 
 const {
   insertion,
-  weeklyUpdate,
   insertSnapshotBetweenDate,
 } = require('../services/update/utils');
 
@@ -114,10 +113,12 @@ router.post('/update/:name', async (req, res) => {
  * start date or end are date in bad format, dates in format YYYY-mm-dd
  */
 router.post('/update', (req, res) => {
-  const { startDate } = req.query;
+  let { startDate } = req.query;
   let { endDate } = req.query;
   if (!startDate && !endDate) {
-    weeklyUpdate(url);
+    endDate = Date.now();
+    startDate = endDate - (7 * 24 * 60 * 60 * 1000);
+    insertSnapshotBetweenDate(url, startDate, endDate);
     return res.status(200).json({
       message: 'weekly update has begun, list of task has been created on elastic',
     });
