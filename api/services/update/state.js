@@ -6,7 +6,28 @@ const { logger } = require('../../lib/logger');
 const stateDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'state');
 
 /**
- * get state from the folder "out/update/state"
+ * create a new file on folder "out/update/state" containing the update state
+ * @return {string} name of the file where the state is saved
+ */
+const createState = async () => {
+  const state = {
+    done: false,
+    createdAt: new Date(),
+    endAt: null,
+    steps: [],
+    error: false,
+  };
+  const filename = `${uuid.v4()}.json`;
+  try {
+    await fs.writeFile(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
+  } catch (err) {
+    logger.error(`createState: ${err}`);
+  }
+  return filename;
+};
+
+/**
+ * get state from the folder "out/enrich/state"
  * @param {string} filename - state filename
  * @returns {object} - state in JSON format
  */
@@ -33,27 +54,6 @@ const updateStateInFile = async (state, filename) => {
   } else {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   }
-};
-
-/**
- * create a new file on folder "out/update/state" containing the update status
- * @return {string} name of the file where the state is saved
- */
-const createState = async () => {
-  const state = {
-    done: false,
-    createdAt: new Date(),
-    endAt: null,
-    steps: [],
-    error: false,
-  };
-  const filename = `${uuid.v4()}.json`;
-  try {
-    await fs.writeFile(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
-  } catch (err) {
-    logger.error(`createState: ${err}`);
-  }
-  return filename;
 };
 
 /**
@@ -137,9 +137,9 @@ const endState = async (filename) => {
 };
 
 module.exports = {
+  createState,
   getState,
   updateStateInFile,
-  createState,
   addStepAskUnpaywall,
   addStepDownload,
   addStepInsert,

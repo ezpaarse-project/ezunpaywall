@@ -53,7 +53,7 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
     bytes = await fs.stat(filePath);
   } catch (err) {
     logger.error(`fs.stat in insertDataUnpaywall: ${err}`);
-    await fail();
+    await fail(stateName);
     // TODO throw Error
   }
 
@@ -63,7 +63,7 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
     readStream = fs.createReadStream(filePath);
   } catch (err) {
     logger.error(`fs.createReadStream in insertDataUnpaywall: ${err}`);
-    await fail();
+    await fail(stateName);
     // TODO throw Error
   }
 
@@ -78,7 +78,7 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
     decompressedStream = readStream.pipe(zlib.createGunzip());
   } catch (err) {
     logger.error(`readStream.pipe(zlib.createGunzip()) in insertDataUnpaywall: ${err}`);
-    await fail();
+    await fail(stateName);
     // TODO throw Error
   }
 
@@ -107,7 +107,7 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
         tab.push(JSON.parse(line));
       } catch (err) {
         logger.error(`JSON.parse in insertDataUnpaywall: ${err}`);
-        await fail();
+        await fail(stateName);
         // TODO throw Error
       }
     }
@@ -183,6 +183,8 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
     alreadyInstalled = await fs.pathExists(file);
   } catch (err) {
     logger.error(`fs.pathExists in downloadFileFromUnpaywall: ${err}`);
+    await fail(stateName);
+    // TODO thown Error;
   }
 
   if (alreadyInstalled) stats = fs.statSync(file);
@@ -207,7 +209,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
     });
   } catch (err) {
     logger.error(`axios in downloadFileFromUnpaywall: ${err}`);
-    await fail();
+    await fail(stateName);
     // TODO throw Error
   }
 
@@ -241,7 +243,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
       writeStream.on('error', async (err) => {
         logger.error(`writeStream in updatePercentStepDownload: ${err}`);
-        await fail();
+        await fail(stateName);
         return reject(err);
       });
     });

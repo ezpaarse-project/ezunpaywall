@@ -4,20 +4,23 @@ const uuid = require('uuid');
 
 const { logger } = require('../../lib/logger');
 
-const stateDir = path.resolve(__dirname, '..', '..', 'out', 'enrich' ,'state');
+const stateDir = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'state');
 
+/**
+ * create a new file on folder "out/enrich/state" containing the enrich state
+ * @return {string} name of the file where the state is saved
+ */
 const createState = async () => {
   const state = {
+    done: false,
     loaded: 0,
     linesRead: 0,
     enrichedLines: 0,
-    startDate: Date.now(),
-    endDate: null,
-    status: 'enrich',
+    createdAt: Date.now(),
+    endAt: null,
+    error: false,
   };
-  const id = uuid.v4();
-  const filename = `${id}.json`;
-
+  const filename = `${uuid.v4()}.json`;
   try {
     await fs.writeFileSync(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
   } catch (err) {
@@ -26,91 +29,63 @@ const createState = async () => {
   return filename;
 };
 
-const updateState = async (file, state) => {
+/**
+ * get state from the folder "out/enrich/state"
+ * @param {string} filename - state filename
+ * @returns {object} - state in JSON format
+ */
+const getState = async (filename) => {
+  let state = await fs.readFile(path.resolve(stateDir, filename));
   try {
-    await fs.writeFileSync(path.resolve(stateDir, file), JSON.stringify(state, null, 2));
+    state = JSON.parse(state);
   } catch (err) {
-    logger.error(`updateState: ${err}`);
+    logger.error(`getState on JSON.parse: ${err}`);
+  }
+  return state;
+};
+
+/**
+ * write the latest version of the state to the file
+ * @param {object} state - state in JSON format
+ * @param {object} filename - name of the file where the state is saved
+ */
+const updateStateInFile = async (state, filename) => {
+  const pathfile = path.resolve(stateDir, filename);
+  const isPathExist = await fs.pathExists(pathfile);
+  if (!isPathExist) {
+    logger.error(`updateStateInFile on fs.pathExists: file ${pathfile} doesn't exist`);
+  } else {
+    await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   }
 };
 
-const incrementlinesRead = async (file, linesRead) => {
-  let state;
-  try {
-    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
-  } catch (err) {
-    logger.error(`incrementlinesRead: ${err}`);
-  }
-  const stateParsed = JSON.parse(state);
-  stateParsed.linesRead += linesRead;
-  updateState(file, stateParsed);
+/**
+ * update the state when there is an error
+ * @param {string} filename - name of the file where the state is saved
+ */
+const fail = async (filename) => {
+  const state = await getState(filename);
+  state.done = true;
+  state.endAt = new Date();
+  state.error = true;
+  await updateStateInFile(state, filename);
 };
 
-const incrementenrichedLines = async (file, enrichedLines) => {
-  let state;
-  try {
-    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
-  } catch (err) {
-    logger.error(`incrementenrichedLines: ${err}`);
-  }
-  const stateParsed = JSON.parse(state);
-  stateParsed.enrichedLines += enrichedLines;
-  updateState(file, stateParsed);
-};
-
-const incrementLoaded = async (file, loaded) => {
-  let state;
-  try {
-    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
-  } catch (err) {
-    logger.error(`incrementLoaded: ${err}`);
-  }
-  const stateParsed = JSON.parse(state);
-  stateParsed.loaded = loaded;
-  updateState(file, stateParsed);
-};
-
-const updateStatus = async (file, status) => {
-  let state;
-  try {
-    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
-  } catch (err) {
-    logger.error(`updateStatus: ${err}`);
-  }
-  const stateParsed = JSON.parse(state);
-  stateParsed.status = status;
-  updateState(file, stateParsed);
-};
-
-const endState = async (file) => {
-  let state;
-  try {
-    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
-  } catch (err) {
-    logger.error(`endState: ${err}`);
-  }
-  const stateParsed = JSON.parse(state);
-  stateParsed.endDate = Date.now();
-  stateParsed.status = 'done';
-  updateState(file, stateParsed);
-};
-
-const getState = async (file) => {
-  let state;
-  try {
-    state = await fs.readFile(path.resolve(stateDir, file), 'utf-8');
-  } catch (err) {
-    logger.error(`getState: ${err}`);
-  }
-  return JSON.parse(state);
+/**
+ * update the state when the process is finished
+ * @param {string} filename - name of the file where the state is saved
+ */
+const endState = async (filename) => {
+  const state = await getState(filename);
+  state.endAt = Date.now();
+  state.done = true;
+  updateStateInFile(state, filename);
 };
 
 module.exports = {
   createState,
-  incrementlinesRead,
-  incrementenrichedLines,
-  incrementLoaded,
-  updateStatus,
-  endState,
   getState,
+  updateStateInFile,
+  fail,
+  endState,
 };

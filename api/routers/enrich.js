@@ -2,9 +2,14 @@ const router = require('express').Router();
 const path = require('path');
 const fs = require('fs-extra');
 
-const { enrichmentFileJSON, checkAttributesJSON, setEnrichAttributesJSON } = require('../services/enrich/json');
-const { enrichmentFileCSV, checkAttributesCSV, setEnrichAttributesCSV } = require('../services/enrich/csv');
-const { createState, getState, updateStatus } = require('../services/enrich/state');
+const {
+  getState,
+} = require('../services/enrich/state');
+
+const {
+  enrichJSON,
+  enrichCSV,
+} = require('../services/enrich/utils');
 
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enrich', 'enriched');
 const stateDir = path.resolve(__dirname, '..', 'out', 'enrich', 'state');
@@ -29,26 +34,12 @@ const getMostRecentFile = async (dir) => {
   return files.length ? files[0] : undefined;
 };
 
-router.post('/enrich/state', async (req, res) => {
-  const state = await createState();
-  return res.status(200).json({ state });
-});
-
 router.post('/enrich/json', async (req, res) => {
   const { args } = req.query;
-  const { state } = req.query;
-  let attrs = [];
-  if (args) {
-    const enrichAttributesJSON = setEnrichAttributesJSON();
-    attrs = checkAttributesJSON(args, enrichAttributesJSON);
-    if (!attrs) {
-      await updateStatus(state, 'error');
-      return res.status(401).json({ message: 'args incorrect' });
-    }
-  }
+  // TODO check args with graphqlSyntax
   let file;
   try {
-    file = await enrichmentFileJSON(req, attrs, state);
+    file = await enrichJSON(req, args);
   } catch (err) {
     return res.status(500).json({ message: err });
   }
@@ -57,21 +48,12 @@ router.post('/enrich/json', async (req, res) => {
 
 router.post('/enrich/csv', async (req, res) => {
   const { args } = req.query;
+  // TODO check args with graphqlSyntax
   let { separator } = req.query;
-  const { state } = req.query;
-  let attrs = [];
-  if (args) {
-    const enrichAttributesCSV = setEnrichAttributesCSV();
-    attrs = checkAttributesCSV(args, enrichAttributesCSV);
-    if (!attrs) {
-      await updateStatus(state, 'error');
-      return res.status(401).json({ message: 'args incorrect' });
-    }
-  }
   if (!separator) separator = ',';
   let file;
   try {
-    file = await enrichmentFileCSV(req, attrs, separator, state);
+    file = await enrichCSV(req, args, separator);
   } catch (err) {
     return res.status(500).json({ message: err });
   }

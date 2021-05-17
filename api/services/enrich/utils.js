@@ -1,36 +1,31 @@
-const axios = require('../../lib/axios');
+const {
+  createState,
+  endState,
+} = require('./state');
 
-const { logger } = require('../../lib/logger');
+const {
+  processEnrichJSON,
+} = require('./json');
 
-/**
- * fetch ezunpaywall with array of dois and fetchAttributes
- * @param {*} tab array of line that we will enrich
- * @param {*} fetchAttributes attributes that we will enrich
- */
-const askEzUnpaywall = async (tab, fetchAttributes) => {
-  let dois = [];
-  let response = [];
-  // contain index of doi
-  const map1 = await tab.map((elem) => elem?.doi);
-  // contain array of doi to request ezunpaywall
-  dois = await map1.filter((elem) => elem !== undefined);
-  try {
-    response = await axios({
-      method: 'post',
-      url: '/graphql',
-      data: {
-        query: `query ($dois: [ID!]!) {getDataUPW(dois: $dois) { doi, ${fetchAttributes.toString()} }}`,
-        variables: {
-          dois,
-        },
-      },
-    });
-  } catch (err) {
-    logger.error(`askEzUnpaywall: ${err}`);
-  }
-  return response?.data?.data?.getDataUPW;
+const {
+  processEnrichCSV,
+} = require('./csv');
+
+const enrichJSON = async (readStream, args) => {
+  const statename = await createState();
+  const filename = await processEnrichJSON(readStream, args, statename);
+  await endState(statename);
+  return filename;
+};
+
+const enrichCSV = async (readStream, args, separator) => {
+  const statename = await createState();
+  const filename = await processEnrichCSV(readStream, args, separator, statename);
+  await endState(statename);
+  return filename;
 };
 
 module.exports = {
-  askEzUnpaywall,
+  enrichJSON,
+  enrichCSV,
 };
