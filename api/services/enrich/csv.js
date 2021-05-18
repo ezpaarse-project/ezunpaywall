@@ -127,6 +127,11 @@ const flatten = (obj) => {
   function flattenProp(data, keys) {
     Object.entries(data).forEach(([key, value]) => {
       const newKeys = [...keys, key];
+      if (key === 'z_authors') {
+        value = value.map((item) => JSON.stringify(item));
+        value = value.join(' & ');
+        value = value.replace(/{|}|"|:|family|given|sequence/g, '').replace(/,/g, ' ');
+      }
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         flattenProp(value, newKeys);
       } else {
@@ -146,7 +151,6 @@ const flatten = (obj) => {
  */
 const enrichTab = (data, response) => {
   const results = new Map();
-
   response.forEach((el) => {
     if (el.doi) {
       results.set(el.doi, el);
@@ -206,14 +210,20 @@ const enrichHeaderCSV = (header, args) => {
   while (res !== null) {
     res = regex.exec(args);
     if (res) {
-      deleted.push(res[0]);
-      // split graphql object
-      const master = res[1];
-      const slaves = res[2].split(',');
-      // add object graphql on header in csv format
-      slaves.forEach((slave) => {
-        header.push(`${master}.${slave}`);
-      });
+      // exception with z_authors because it's a array
+      if (res[1] === 'z_authors') {
+        deleted.push(res[0]);
+        header.push('z_authors');
+      } else {
+        deleted.push(res[0]);
+        // split graphql object
+        const master = res[1];
+        const slaves = res[2].split(',');
+        // add object graphql on header in csv format
+        slaves.forEach((slave) => {
+          header.push(`${master}.${slave}`);
+        });
+      }
     }
   }
   // take off object graphql from the args string

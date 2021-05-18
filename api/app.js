@@ -62,7 +62,6 @@ const corsOptions = {
 };
 
 // routers
-
 // initialize API graphql
 app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   const graphqlQuery = graphqlHTTP({
@@ -89,7 +88,6 @@ app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
 app.listen('8080', () => {
   logger.info('Server listening on 8080');
-  app.emit('ready');
 });
 
 cron.schedule('0 1 * * *', async () => {

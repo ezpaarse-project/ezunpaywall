@@ -4,10 +4,6 @@ const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 const fs = require('fs-extra');
 const path = require('path');
-const { Readable } = require('stream');
-
-const api = require('../app');
-const fakeUnpaywall = require('../../fakeUnpaywall/app');
 
 chai.use(chaiHttp);
 
@@ -56,7 +52,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
   describe('Do a enrichment of a json file with all unpaywall attributes', () => {
     it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
-      const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
 
       const res1 = await chai
         .request(ezunpaywallURL)
@@ -67,7 +63,6 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .parse(binaryParser);
 
       expect(res1).have.status(200);
-
       const filename = JSON.parse(res1.body.toString()).file;
 
       const res2 = await chai
@@ -79,10 +74,9 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res2.body.toString());
       } catch (err) {
-        logger.error(`createWriteStream: ${err}`);
+        logger.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file1.jsonl');
@@ -103,7 +97,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
     });
 
     it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
-      const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file2.jsonl'));
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file2.jsonl'));
 
       const res1 = await chai
         .request(ezunpaywallURL)
@@ -126,10 +120,9 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res2.body.toString());
       } catch (err) {
-        logger.error(`createWriteStream: ${err}`);
+        logger.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file2.jsonl');
@@ -152,7 +145,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
   describe('Do a enrichment of a file already installed and enrich a json file with some unpaywall attributes (is_oa, best_oa_location.license, z_authors.family)', () => {
     it('Should enrich the file on 3 lines with is_oa attributes and download it', async () => {
-      const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
 
       const res1 = await chai
         .request(ezunpaywallURL)
@@ -176,10 +169,9 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res2.body.toString());
       } catch (err) {
-        logger.error(`createWriteStream: ${err}`);
+        logger.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file3.jsonl');
@@ -200,7 +192,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
     });
 
     it('Should enrich the file on 3 lines with args { best_oa_location { license } } and download it', async () => {
-      const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
 
       const res1 = await chai
         .request(ezunpaywallURL)
@@ -224,10 +216,9 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res2.body.toString());
       } catch (err) {
-        logger.error(`createWriteStream: ${err}`);
+        logger.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file4.jsonl');
@@ -248,7 +239,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
     });
 
     it('Should enrich the file on 3 lines with args { z_authors { family } } and download it', async () => {
-      const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
 
       const res1 = await chai
         .request(ezunpaywallURL)
@@ -272,10 +263,9 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res2.body.toString());
       } catch (err) {
-        logger.error(`createWriteStream: ${err}`);
+        logger.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file5.jsonl');
@@ -296,7 +286,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
     });
 
     it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors{ family } } and download it', async () => {
-      const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
 
       const res1 = await chai
         .request(ezunpaywallURL)
@@ -320,10 +310,9 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       expect(res2).have.status(200);
 
       try {
-        const writer = fs.createWriteStream(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'));
-        Readable.from(res2.body.toString()).pipe(writer);
+        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res2.body.toString());
       } catch (err) {
-        logger.error(`createWriteStream: ${err}`);
+        logger.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file6.jsonl');
@@ -346,7 +335,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
   describe('Don\'t do a enrichment of a json file because the arguments doesn\'t exist on ezunpaywall index', () => {
     it('Should return a error message', async () => {
-      const file = fs.readFileSync(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
 
       const res1 = await chai
         .request(ezunpaywallURL)

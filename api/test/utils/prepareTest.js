@@ -3,6 +3,9 @@ const fs = require('fs-extra');
 const path = require('path');
 const chai = require('chai');
 
+require('../../app');
+require('../../../fakeUnpaywall/app');
+
 const { logger } = require('../../lib/logger');
 const client = require('../../lib/client');
 
@@ -89,6 +92,7 @@ const compareFile = async (path1, path2) => {
 };
 
 const ping = async () => {
+  // api ezunpaywall
   let res1;
   while (res1?.status !== 200 && res1?.body?.data !== 'pong') {
     try {
