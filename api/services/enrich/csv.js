@@ -18,12 +18,69 @@ const {
 
 const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'enriched');
 
+const allArgs = () => `
+{
+  data_standard,
+  doi_url,
+  genre,
+  is_paratext,
+  has_repository_copy,
+  is_oa,
+  journal_is_in_doaj,
+  journal_is_oa,
+  journal_issns,
+  journal_issn_l,
+  journal_name,
+  oa_status,
+  published_date,
+  publisher,
+  title,
+  updated,
+  year,
+  best_oa_location {
+    endpoint_id,
+    evidence,
+    host_type,
+    is_best,
+    license,
+    pmh_id,
+    repository_institution,
+    updated,
+    url,
+    url_for_landing_page,
+    url_for_pdf,
+    version
+  },
+  first_oa_location {
+    endpoint_id,
+    evidence,
+    host_type,
+    is_best,
+    license,
+    pmh_id,
+    repository_institution,
+    updated,
+    url,
+    url_for_landing_page,
+    url_for_pdf,
+    version
+  },
+  z_authors {
+    family,
+    given,
+    sequence
+  }
+}`;
+
 /**
  * add attribute doi to args to be used with Map
  * @param {string} args graphql args
  * @returns {string} args with doi
  */
-const addDOItoGraphqlRequest = (args) => `{ doi, ${args.substring(1)}`;
+const addDOItoGraphqlRequest = (args) => {
+  args = args.replace(/\s/g, '');
+  return `{ doi, ${args.substring(1)}`;
+};
 
 /**
   * ask ezunpaywall to get informations of unpaywall to enrich a file
@@ -140,15 +197,16 @@ const writeInFileCSV = async (data, headers, separator, enrichedFile, stateName)
  * @returns {array<string>} header enriched
  */
 const enrichHeaderCSV = (header, args) => {
-  args = args.replace(/\s/g, '').substring(1).slice(0, -1);
+  args = args.replace(/\s/g, '').substring(1);
+  args = args.substring(0, args.length - 1);
   const regex = /,([a-z_]+){(.*?)}/gm;
   let res = true;
+  const deleted = [];
   // isolate object graphql attributes
   while (res !== null) {
     res = regex.exec(args);
     if (res) {
-      // take off object graphql from the args string
-      args = args.replace(res[0], '');
+      deleted.push(res[0]);
       // split graphql object
       const master = res[1];
       const slaves = res[2].split(',');
@@ -158,6 +216,10 @@ const enrichHeaderCSV = (header, args) => {
       });
     }
   }
+  // take off object graphql from the args string
+  deleted.forEach((el) => {
+    args = args.replace(el, '');
+  });
   // delete doublon
   const uSet = new Set(header.concat(args.split(',')));
   return [...uSet];
@@ -186,6 +248,11 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
  * @returns {string} name of enriched file
  */
 const processEnrichCSV = async (readStream, args, separator, stateName) => {
+  if (!args) {
+    args = allArgs();
+  }
+  args = addDOItoGraphqlRequest(args);
+
   const state = await getState(stateName);
   const file = `${uuid.v4()}.csv`;
   const enrichedFile = path.resolve(enriched, file);
@@ -205,7 +272,6 @@ const processEnrichCSV = async (readStream, args, separator, stateName) => {
   let data = [];
   let headers = [];
   let head = true;
-  args = addDOItoGraphqlRequest(args);
   await new Promise((resolve) => {
     Papa.parse(readStream, {
       delimiter: ',',
@@ -252,13 +318,13 @@ const processEnrichCSV = async (readStream, args, separator, stateName) => {
     const response = await askEzUnpaywall(data, args, stateName);
     enrichTab(data, response);
     await writeInFileCSV(data, headers, separator, enrichedFile);
-
     // state
     state.linesRead += data.length;
     state.enrichedLines += response.length;
     state.loaded += loaded;
     await updateStateInFile(state, stateName);
   }
+
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
   return file;
 };

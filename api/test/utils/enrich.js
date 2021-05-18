@@ -4,16 +4,15 @@ const { logger } = require('../../lib/logger');
 
 const ezunpaywallURL = 'http://localhost:8080';
 
-const getStateOfEnrich = async () => {
+const getState = async () => {
   let res;
   try {
     res = await chai.request(ezunpaywallURL).get('/enrich/state');
   } catch (err) {
-    logger.error(`isInUpdate : ${err}`);
+    logger.error(`getState : ${err}`);
   }
   return res?.body?.state;
 };
-
 module.exports = {
-  getStateOfEnrich,
+  getState,
 };

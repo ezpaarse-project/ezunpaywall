@@ -18,12 +18,84 @@ const {
 
 const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'enriched');
 
+const allArgs = () => `
+{
+  data_standard,
+  doi_url,
+  genre,
+  is_paratext,
+  has_repository_copy,
+  is_oa,
+  journal_is_in_doaj,
+  journal_is_oa,
+  journal_issns,
+  journal_issn_l,
+  journal_name,
+  oa_status,
+  published_date,
+  publisher,
+  title,
+  updated,
+  year,
+  best_oa_location {
+    endpoint_id,
+    evidence,
+    host_type,
+    is_best,
+    license,
+    pmh_id,
+    repository_institution,
+    updated,
+    url,
+    url_for_landing_page,
+    url_for_pdf,
+    version,
+  },
+  first_oa_location {
+    endpoint_id,
+    evidence,
+    host_type,
+    is_best,
+    license,
+    pmh_id,
+    repository_institution,
+    updated,
+    url,
+    url_for_landing_page,
+    url_for_pdf,
+    version,
+  },
+  oa_locations {
+    endpoint_id,
+    evidence,
+    host_type,
+    is_best,
+    license,
+    pmh_id,
+    repository_institution,
+    updated,
+    url,
+    url_for_landing_page,
+    url_for_pdf,
+    version,
+  },
+  z_authors {
+    family,
+    given,
+    sequence,
+  }
+}`;
+
 /**
  * add attribute doi to args to be used with Map
  * @param {string} args graphql args
  * @returns {string} args with doi
  */
-const addDOItoGraphqlRequest = (args) => `{ doi, ${args.substring(1)}`;
+ const addDOItoGraphqlRequest = (args) => {
+  args = args.replace(/\s/g, '');
+  return `{ doi, ${args.substring(1)}`;
+};
+
 
 /**
  * ask ezunpaywall to get informations of unpaywall to enrich a file
@@ -109,6 +181,11 @@ const writeInFileJSON = async (data, enrichedFile, stateName) => {
  * @returns {string} name of enriched file
  */
 const processEnrichJSON = async (readStream, args, stateName) => {
+  if (!args) {
+    args = allArgs();
+  }
+  args = addDOItoGraphqlRequest(args);
+
   const state = await getState(stateName);
 
   const file = `${uuid.v4()}.jsonl`;
@@ -130,8 +207,6 @@ const processEnrichJSON = async (readStream, args, stateName) => {
     input: readStream,
     crlfDelay: Infinity,
   });
-
-  args = addDOItoGraphqlRequest(args);
 
   let data = [];
   // eslint-disable-next-line no-restricted-syntax
