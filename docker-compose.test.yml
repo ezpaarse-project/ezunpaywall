@@ -34,6 +34,9 @@ services:
       # proxy
       - http_proxy
       - https_proxy
+      # URL
+      - EZUNPAYWALL_URL=http://localhost:8080
+      - FAKE_UNPAYWALL_URL=http://localhost:12000
     working_dir: /api
     volumes:
       - ./fakeUnpaywall:/fakeUnpaywall

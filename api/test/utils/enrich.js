@@ -2,7 +2,7 @@ const chai = require('chai');
 
 const { logger } = require('../../lib/logger');
 
-const ezunpaywallURL = 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 
 const getState = async () => {
   let res;

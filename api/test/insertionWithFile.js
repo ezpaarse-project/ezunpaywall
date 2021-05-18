@@ -22,7 +22,7 @@ const {
 
 chai.use(chaiHttp);
 
-const ezunpaywallURL = 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async () => {
@@ -321,7 +321,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('Content-Type', 'application/json');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('name of file is in bad format (accepted a .gz file)');
+      expect(res.body.message).be.equal('filename of file is in bad format (accepted a .gz file)');
     });
   });
 

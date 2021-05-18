@@ -14,8 +14,8 @@ const changefiles = require('../../../fakeUnpaywall/snapshots/changefiles.json')
 const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
 const snapshotsDir = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots');
 
-const ezunpaywallURL = 'http://localhost:8080';
-const fakeUnpaywallURL = 'http://localhost:12000';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL;
 
 const deleteFile = async (name) => {
   const filePath = path.resolve(downloadDir, name);

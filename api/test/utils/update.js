@@ -4,7 +4,7 @@ const { logger } = require('../../lib/logger');
 
 const client = require('../../lib/client');
 
-const ezunpaywallURL = 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 
 const getReport = async () => {
   let res;

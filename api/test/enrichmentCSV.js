@@ -27,7 +27,7 @@ const {
 
 const { getState } = require('./utils/enrich');
 
-const ezunpaywallURL = 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 
 const enrichDir = path.resolve(__dirname, 'sources');
 

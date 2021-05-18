@@ -25,8 +25,8 @@ const {
 chai.use(chaiHttp);
 
 describe('test graphqlRequest update', () => {
-  const ezunpaywallURL = 'http://localhost:8080';
-  const fakeUnpaywallURL = 'http://localhost:12000';
+  const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+  const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL;
 
   const doi1 = '10.1186/s40510-015-0109-6'; // ligne 1 of fake1.jsonl.gz
   const doi2 = '10.14393/ufu.di.2018.728'; // line 35 of fake1.jsonl.gz

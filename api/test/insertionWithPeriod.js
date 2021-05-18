@@ -20,7 +20,7 @@ const {
   ping,
 } = require('./utils/prepareTest');
 
-const ezunpaywallURL = 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 
 chai.use(chaiHttp);
 
