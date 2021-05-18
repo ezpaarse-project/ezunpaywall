@@ -325,7 +325,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
   });
 
-  describe('Don\'t do a insertion of a file already installed because the file doesn\'t exist on ezunpaywall', () => {
+  describe('Don\'t do a insertion of a file already installed because the file not found on ezunpaywall', () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
@@ -334,7 +334,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('Content-Type', 'application/json');
 
       expect(res).have.status(404);
-      expect(res.body.message).be.equal('file doesn\'t exist');
+      expect(res.body.message).be.equal('file not found');
     });
   });
 

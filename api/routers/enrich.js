@@ -34,6 +34,15 @@ const getMostRecentFile = async (dir) => {
   return files.length ? files[0] : undefined;
 };
 
+/**
+ * enrich a jsonl file
+ *
+ * @apiParam QUERY args - graphql attributes for enrichment
+ *
+ * @apiError 500 internal server error
+ *
+ * @apiSuccess name of enriched file to download it
+ */
 router.post('/enrich/json', async (req, res) => {
   const { args } = req.query;
   // TODO check args with graphqlSyntax
@@ -41,11 +50,20 @@ router.post('/enrich/json', async (req, res) => {
   try {
     file = await enrichJSON(req, args);
   } catch (err) {
-    return res.status(500).json({ message: err });
+    return res.status(500).json({ message: `internal server error: ${err}` });
   }
   return res.status(200).json({ file });
 });
 
+/**
+ * enrich a csv file
+ *
+ * @apiParam QUERY args - graphql attributes for enrichment
+ *
+ * @apiError 500 internal server error
+ *
+ * @apiSuccess name of enriched file to download it
+ */
 router.post('/enrich/csv', async (req, res) => {
   const { args } = req.query;
   // TODO check args with graphqlSyntax
@@ -55,33 +73,63 @@ router.post('/enrich/csv', async (req, res) => {
   try {
     file = await enrichCSV(req, args, separator);
   } catch (err) {
-    return res.status(500).json({ message: err });
+    return res.status(500).json({ message: `internal server error: ${err}` });
   }
   return res.status(200).json({ file });
 });
 
+/**
+ * get the most recent state in JSON format
+ *
+ * @apiSuccess state
+ */
 router.get('/enrich/state', async (req, res) => {
   const latestFile = await getMostRecentFile(stateDir);
   const state = await getState(latestFile?.file);
   res.status(200).json({ state });
 });
 
-router.get('/enrich/state/:name', async (req, res) => {
-  const { name } = req.params;
-  const state = await getState(name);
+/**
+ * get state in JSON format
+ *
+ * @apiError 400 filename expected
+ * @apiError 404 file not found
+ *
+ * @apiSuccess state
+ */
+router.get('/enrich/state/:filename', async (req, res) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
+  }
+  const fileExist = await fs.pathExists(path.resolve(enrichedDir, filename));
+  if (!fileExist) {
+    return res.status(404).json({ message: 'file not found' });
+  }
+  const state = await getState(filename);
   return res.status(200).json({ state });
 });
 
-router.get('/enrich/:file', async (req, res) => {
-  const { file } = req.params;
-  if (!file) {
-    return res.status(400).json({ message: 'name of enriched file expected' });
+/**
+ * get enriched file
+ *
+ * @apiParam PARAMS args - filename
+ *
+ * @apiError 400 filename expected
+ * @apiError 404 file not found
+ *
+ * @apiSuccess enriched file
+ */
+router.get('/enrich/:filename', async (req, res) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(enrichedDir, file));
+  const fileExist = await fs.pathExists(path.resolve(enrichedDir, filename));
   if (!fileExist) {
-    return res.status(404).json({ message: 'file doesn\'t exist' });
+    return res.status(404).json({ message: 'file not found' });
   }
-  return res.sendFile(path.resolve(enrichedDir, file));
+  return res.sendFile(path.resolve(enrichedDir, filename));
 });
 
 module.exports = router;

@@ -60,35 +60,31 @@ const getMostRecentFile = async (dir) => {
  * offset and limit are the variables to designate
  * from which line to insert and from which line to stop.
  *
- * @api {post} /update/:name insert the content of files that the server has already downloaded
- * @apiName Update
- * @apiGroup Update
- *
- * @apiParam (QUERY) {Number} [offset] first line insertion, by default, we start with the first
- * @apiParam (QUERY) {Number} [limit] last line insertion by default, we have no limit
- * @apiParam (PARAMS) {string} name name of file
+ * @apiParam QUERRY offset - first line insertion, by default, we start with the first
+ * @apiParam QUERRY limit - last line insertion by default, we have no limit
+ * @apiParam PARAMS filename - filename
  *
  * @apiSuccess {string} message informing the start of the process
  *
- * @apiError 400 name of snapshot file expected /
- * name of file is in bad format (accepted [a-zA-Z0-9_.-] patern) /
- * limit can't be lower than offset or 0
- * @apiError 404 file doesn't exist
+ * @apiError 400 name of snapshot file expected
+ * @apiError 400 filename is in bad format (accepted [a-zA-Z0-9_.-] patern)
+ * @apiError 400 limit can't be lower than offset or 0
+ * @apiError 404 file not found
  *
  */
-router.post('/update/:name', async (req, res) => {
-  const { name } = req.params;
+router.post('/update/:filename', async (req, res) => {
+  const { filename } = req.params;
   let { offset, limit } = req.query;
-  if (!name) {
-    return res.status(400).json({ message: 'name of snapshot file expected' });
+  if (!filename) {
+    return res.status(400).json({ message: 'filename of snapshot file expected' });
   }
   const pattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
-  if (!pattern.test(name)) {
-    return res.status(400).json({ message: 'name of file is in bad format (accepted a .gz file)' });
+  if (!pattern.test(filename)) {
+    return res.status(400).json({ message: 'filename of file is in bad format (accepted a .gz file)' });
   }
-  const fileExist = await fs.pathExists(path.resolve(updateDir, name));
+  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
   if (!fileExist) {
-    return res.status(404).json({ message: 'file doesn\'t exist' });
+    return res.status(404).json({ message: 'file not found' });
   }
   if (Number(limit) <= Number(offset)) {
     return res.status(400).json({ message: 'limit can\t be lower than offset or 0' });
@@ -96,9 +92,9 @@ router.post('/update/:name', async (req, res) => {
 
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  insertion(name, { offset: Number(offset), limit: Number(limit) });
+  insertion(filename, { offset: Number(offset), limit: Number(limit) });
   return res.status(200).json({
-    message: `start upsert with ${name}`,
+    message: `start upsert with ${filename}`,
   });
 });
 
@@ -114,13 +110,14 @@ router.post('/update/:name', async (req, res) => {
  * - If there is the `start` attribute, It will execute the download and
  * the insertion of the update files between the` start` date and the current date.
  *
- * @apiParam (QUERY) {DATE} [startDate] period start date at format YYYY-mm-dd
- * @apiParam (QUERY) {DATE} [endDate] period end date at format YYYY-mm-dd
+ * @apiParam QUERY startDate - start date at format YYYY-mm-dd
+ * @apiParam QUERY endDate - end date at format YYYY-mm-dd
  *
- * @apiSuccess {string} message informing the start of the process
+ * @apiSuccess message informing the start of the process
  *
- * @apiError 400 start date is missing / end date is lower than start date /
- * start date or end are date in bad format, dates in format YYYY-mm-dd
+ * @apiError 400 start date is missing
+ * @apiError 400 end date is lower than start date
+ * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
  */
 router.post('/update', (req, res) => {
   let { startDate } = req.query;
@@ -165,11 +162,14 @@ router.post('/update', (req, res) => {
 
 /**
  * gets the status if an update is in progress
+ *
+ * @apiSuccess status
  */
 router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
 /**
  * get the most recent state in JSON format
+ * @apiSuccess state
  */
 router.get('/update/state', async (req, res) => {
   const latestFile = await getMostRecentFile(stateDir);
@@ -178,9 +178,33 @@ router.get('/update/state', async (req, res) => {
 });
 
 /**
+ * get state in JSON format
+ *
+ * @apiError 400 filename expected
+ * @apiError 404 file not found
+ *
+ * @apiSuccess state
+ */
+router.get('/update/state/:filename', async (req, res) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
+  }
+  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  if (!fileExist) {
+    return res.status(404).json({ message: 'file not found' });
+  }
+  const state = await getState(filename);
+  return res.status(200).json({ state });
+});
+
+/**
  * get the most recent report in JSON format
+ *
+ * @apiSuccess report
  */
 router.get('/update/report', async (req, res) => {
+  // TODO use param filename and query latest
   const latestFile = await getMostRecentFile(reportDir);
   const report = await getReport(latestFile?.file);
   res.status(200).json({ report });

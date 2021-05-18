@@ -18,6 +18,10 @@ const {
 
 const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'enriched');
 
+/**
+ * getter of all the unpaywall attributes that can be used for enrichment in graphql format
+ * @returns {string} all attributs in graphql format
+ */
 const allArgs = () => `
 {
   data_standard,

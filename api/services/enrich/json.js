@@ -18,6 +18,10 @@ const {
 
 const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'enriched');
 
+/**
+ * getter of all the unpaywall attributes that can be used for enrichment in graphql format
+ * @returns {string} all attributs in graphql format
+ */
 const allArgs = () => `
 {
   data_standard,
@@ -91,11 +95,10 @@ const allArgs = () => `
  * @param {string} args graphql args
  * @returns {string} args with doi
  */
- const addDOItoGraphqlRequest = (args) => {
+const addDOItoGraphqlRequest = (args) => {
   args = args.replace(/\s/g, '');
   return `{ doi, ${args.substring(1)}`;
 };
-
 
 /**
  * ask ezunpaywall to get informations of unpaywall to enrich a file
