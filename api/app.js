@@ -43,7 +43,6 @@ fs.ensureDir(path.resolve(outDir, 'reports'));
 const app = express();
 
 // middleware
-
 app.use(cors());
 
 const isDev = process.env.NODE_ENV === 'development';

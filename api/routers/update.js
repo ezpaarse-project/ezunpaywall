@@ -46,13 +46,23 @@ const getMostRecentFile = async (dir) => {
   return files.length ? files[0] : undefined;
 };
 
+/**
+ * gets the status if an update is in progress
+ *
+ * @apiSuccess status
+ */
+ router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
+
 // middleware
-// router.use((req, res, next) => {
-//   return res.status(409).json({
-//     message: 'process in progress, check /insert/status',
-//   });
-//   return next();
-// });
+router.use((req, res, next) => {
+  const status = getStatus()
+  if (status) {
+    return res.status(409).json({
+      message: 'update in progress',
+    });
+  }
+  return next();
+});
 
 /**
  * Insert the content of files that the
@@ -159,13 +169,6 @@ router.post('/update', (req, res) => {
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic`,
   });
 });
-
-/**
- * gets the status if an update is in progress
- *
- * @apiSuccess status
- */
-router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
 /**
  * get the most recent state in JSON format

@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs-extra');
-const uuid = require('uuid');
 
 const { logger } = require('../../lib/logger');
 
@@ -8,9 +7,9 @@ const stateDir = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'state');
 
 /**
  * create a new file on folder "out/enrich/state" containing the enrich state
- * @return {string} name of the file where the state is saved
+ * @param {string} id - id of process
  */
-const createState = async () => {
+const createState = async (id) => {
   const state = {
     done: false,
     loaded: 0,
@@ -20,22 +19,21 @@ const createState = async () => {
     endAt: null,
     error: false,
   };
-  const filename = `${uuid.v4()}.json`;
+  const filename = `${id}.json`;
   try {
     await fs.writeFileSync(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`createState: ${err}`);
   }
-  return filename;
 };
 
 /**
  * get state from the folder "out/enrich/state"
- * @param {string} filename - state filename
+ * @param {string} id - id of process
  * @returns {object} - state in JSON format
  */
-const getState = async (filename) => {
-  let state = await fs.readFile(path.resolve(stateDir, filename));
+const getState = async (id) => {
+  let state = await fs.readFile(path.resolve(stateDir, `${id}.json`));
   try {
     state = JSON.parse(state);
   } catch (err) {
@@ -47,10 +45,10 @@ const getState = async (filename) => {
 /**
  * write the latest version of the state to the file
  * @param {object} state - state in JSON format
- * @param {object} filename - name of the file where the state is saved
+ * @param {object} id - id of process
  */
-const updateStateInFile = async (state, filename) => {
-  const pathfile = path.resolve(stateDir, filename);
+const updateStateInFile = async (state, id) => {
+  const pathfile = path.resolve(stateDir, `${id}.json`);
   const isPathExist = await fs.pathExists(pathfile);
   if (!isPathExist) {
     logger.error(`updateStateInFile on fs.pathExists: file ${pathfile} doesn't exist`);
@@ -61,25 +59,25 @@ const updateStateInFile = async (state, filename) => {
 
 /**
  * update the state when there is an error
- * @param {string} filename - name of the file where the state is saved
+ * @param {string} id - id of process
  */
-const fail = async (filename) => {
-  const state = await getState(filename);
+const fail = async (id) => {
+  const state = await getState(id);
   state.done = true;
   state.endAt = new Date();
   state.error = true;
-  await updateStateInFile(state, filename);
+  await updateStateInFile(state, id);
 };
 
 /**
  * update the state when the process is finished
- * @param {string} filename - name of the file where the state is saved
+ * @param {string} id - id of process
  */
-const endState = async (filename) => {
-  const state = await getState(filename);
+const endState = async (id) => {
+  const state = await getState(id);
   state.endAt = Date.now();
   state.done = true;
-  updateStateInFile(state, filename);
+  updateStateInFile(state, id);
 };
 
 module.exports = {

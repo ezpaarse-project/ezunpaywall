@@ -1,10 +1,10 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable camelcase */
 const fs = require('fs-extra');
 const readline = require('readline');
 const path = require('path');
-const uuid = require('uuid');
 
 const axios = require('../../lib/axios');
 
@@ -15,6 +15,7 @@ const {
   updateStateInFile,
   fail,
 } = require('./state');
+const { Readable } = require('stream');
 
 const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'enriched');
 
@@ -104,10 +105,10 @@ const addDOItoGraphqlRequest = (args) => {
  * ask ezunpaywall to get informations of unpaywall to enrich a file
  * @param {array<string>} data - array of line that we will enrich
  * @param {string} args - attributes that we will enrich
- * @param {string} stateName - state filename
+ * @param {string} id - id of process
  * @return {array} ezunpaywall respons
  */
-const askEzUnpaywall = async (data, args, stateName) => {
+const askEzUnpaywall = async (data, args, id) => {
   let dois = [];
   let response = [];
   // contain index of doi
@@ -127,7 +128,7 @@ const askEzUnpaywall = async (data, args, stateName) => {
     });
   } catch (err) {
     logger.error(`askEzUnpaywall: ${err}`);
-    await fail(stateName);
+    await fail(id);
     // TODO throw Error
   }
   return response?.data?.data?.getDataUPW;
@@ -164,15 +165,15 @@ const enrichTab = (data, response) => {
 /**
  * write the array of line enriched in a out file JSON
  * @param {array} data - array of line enriched
- * @param {string} enrichedFile - filepath of enriched file
+ * @param {string} id - id of process
  */
-const writeInFileJSON = async (data, enrichedFile, stateName) => {
+const writeInFileJSON = async (data, enrichedFile, id) => {
   try {
     const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
     logger.error(`writeInFileJSON: ${err}`);
-    await fail(stateName);
+    await fail(id);
   }
 };
 
@@ -180,20 +181,20 @@ const writeInFileJSON = async (data, enrichedFile, stateName) => {
  * starts the enrichment process for files JSON
  * @param {readable} readStream - readstream of the file you want to enrich
  * @param {string} args - attributes will be add
- * @param {string} stateName - state filename
- * @returns {string} name of enriched file
+ * @param {string} id - id of process
  */
-const processEnrichJSON = async (readStream, args, stateName) => {
+const processEnrichJSON = async (readStream, args, id) => {
   if (!args) {
     args = allArgs();
   }
   args = addDOItoGraphqlRequest(args);
 
-  const state = await getState(stateName);
+  const state = await getState(id);
 
-  const file = `${uuid.v4()}.jsonl`;
+  const file = `${id}.jsonl`;
   const enrichedFile = path.resolve(enriched, file);
 
+  // TODO fs.ensurefile
   try {
     await fs.open(enrichedFile, 'w');
   } catch (err) {
@@ -212,7 +213,6 @@ const processEnrichJSON = async (readStream, args, stateName) => {
   });
 
   let data = [];
-  // eslint-disable-next-line no-restricted-syntax
   for await (const line of rl) {
     try {
       data.push(JSON.parse(line));
@@ -221,31 +221,31 @@ const processEnrichJSON = async (readStream, args, stateName) => {
     }
     // enrichment
     if (data.length === 1000) {
-      const response = await askEzUnpaywall(data, args, stateName);
+      const response = await askEzUnpaywall(data, args, id);
       enrichTab(data, response);
-      await writeInFileJSON(data, enrichedFile, stateName);
+      await writeInFileJSON(data, enrichedFile, id);
       data = [];
 
       state.linesRead += 1000;
       state.enrichedLines += response.length;
       state.loaded += loaded;
-      await updateStateInFile(state, stateName);
+      await updateStateInFile(state, id);
     }
   }
+
   // last insertion
   if (data.length !== 0) {
-    const response = await askEzUnpaywall(data, args, stateName);
+    const response = await askEzUnpaywall(data, args, id);
     data = enrichTab(data, response);
-    await writeInFileJSON(data, enrichedFile, stateName);
+    await writeInFileJSON(data, enrichedFile, id);
 
     state.linesRead += data.length;
     state.enrichedLines += response.length;
     state.loaded += loaded;
-    await updateStateInFile(state, stateName);
+    await updateStateInFile(state, id);
   }
 
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
-  return file;
 };
 
 module.exports = {

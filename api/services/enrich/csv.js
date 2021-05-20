@@ -4,7 +4,6 @@
 const fs = require('fs-extra');
 const Papa = require('papaparse');
 const path = require('path');
-const uuid = require('uuid');
 
 const axios = require('../../lib/axios');
 
@@ -90,10 +89,10 @@ const addDOItoGraphqlRequest = (args) => {
   * ask ezunpaywall to get informations of unpaywall to enrich a file
   * @param {array<string>} data array of line that we will enrich
   * @param {string} args attributes that we will enrich
-  * @param {string} stateName - state filename
+  * @param {string} id - id of process
   * @return {array} ezunpaywall respons
   */
-const askEzUnpaywall = async (data, args, stateName) => {
+const askEzUnpaywall = async (data, args, id) => {
   let dois = [];
   let response = [];
   // contain index of doi
@@ -113,7 +112,7 @@ const askEzUnpaywall = async (data, args, stateName) => {
     });
   } catch (err) {
     logger.error(`askEzUnpaywall: ${err}`);
-    await fail(stateName);
+    await fail(id);
     // TODO throw Error
   }
   return response?.data?.data?.getDataUPW;
@@ -258,17 +257,16 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
  * @param {readable} readStream - readstream of the file you want to enrich
  * @param {string} args - attributes will be add
  * @param {string} separator - separator of enriched file
- * @param {string} stateName - state filename
- * @returns {string} name of enriched file
+ * @param {string} id - id of process
  */
-const processEnrichCSV = async (readStream, args, separator, stateName) => {
+const processEnrichCSV = async (readStream, args, separator, id) => {
   if (!args) {
     args = allArgs();
   }
   args = addDOItoGraphqlRequest(args);
 
-  const state = await getState(stateName);
-  const file = `${uuid.v4()}.csv`;
+  const state = await getState(id);
+  const file = `${id}.csv`;
   const enrichedFile = path.resolve(enriched, file);
 
   try {
@@ -278,7 +276,6 @@ const processEnrichCSV = async (readStream, args, separator, stateName) => {
   }
 
   let loaded = 0;
-
   readStream.on('data', (chunk) => {
     loaded += chunk.length;
   });
@@ -311,7 +308,7 @@ const processEnrichCSV = async (readStream, args, separator, stateName) => {
           await parser.pause();
 
           // enrichment
-          const response = await askEzUnpaywall(data, args, stateName);
+          const response = await askEzUnpaywall(data, args, id);
           enrichTab(tabWillBeEnriched, response, args);
           await writeInFileCSV(tabWillBeEnriched, headers, separator, enrichedFile);
 
@@ -319,7 +316,7 @@ const processEnrichCSV = async (readStream, args, separator, stateName) => {
           state.linesRead += 1000;
           state.enrichedLines += response.length;
           state.loaded += loaded;
-          await updateStateInFile(state, stateName);
+          await updateStateInFile(state, id);
           await parser.resume();
         }
       },
@@ -329,18 +326,17 @@ const processEnrichCSV = async (readStream, args, separator, stateName) => {
   // last insertion
   if (data.length !== 0) {
     // enrichment
-    const response = await askEzUnpaywall(data, args, stateName);
+    const response = await askEzUnpaywall(data, args, id);
     enrichTab(data, response);
     await writeInFileCSV(data, headers, separator, enrichedFile);
     // state
     state.linesRead += data.length;
     state.enrichedLines += response.length;
     state.loaded += loaded;
-    await updateStateInFile(state, stateName);
+    await updateStateInFile(state, id);
   }
 
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
-  return file;
 };
 
 module.exports = {

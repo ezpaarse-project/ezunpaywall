@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const path = require('path');
 const fs = require('fs-extra');
+const uuid = require('uuid');
 
 const {
   getState,
@@ -37,45 +38,51 @@ const getMostRecentFile = async (dir) => {
 /**
  * enrich a jsonl file
  *
+ * @apiParam PARAMS id - id of process
+ *
  * @apiParam QUERY args - graphql attributes for enrichment
  *
  * @apiError 500 internal server error
  *
  * @apiSuccess name of enriched file to download it
  */
-router.post('/enrich/json', async (req, res) => {
+router.post('/enrich/json/:id', async (req, res) => {
   const { args } = req.query;
   // TODO check args with graphqlSyntax
-  let file;
+  const { id } = req.params;
+  // TODO check if is is already used
   try {
-    file = await enrichJSON(req, args);
+    await enrichJSON(req, args, id);
   } catch (err) {
     return res.status(500).json({ message: `internal server error: ${err}` });
   }
-  return res.status(200).json({ file });
+  return res.status(200).json({ id });
 });
 
 /**
  * enrich a csv file
  *
+ * @apiParam PARAMS id - id of process
+ *
  * @apiParam QUERY args - graphql attributes for enrichment
  *
  * @apiError 500 internal server error
  *
  * @apiSuccess name of enriched file to download it
  */
-router.post('/enrich/csv', async (req, res) => {
+router.post('/enrich/csv/:id', async (req, res) => {
   const { args } = req.query;
   // TODO check args with graphqlSyntax
+  const { id } = req.params;
+  // TODO check if is is already used
   let { separator } = req.query;
   if (!separator) separator = ',';
-  let file;
   try {
-    file = await enrichCSV(req, args, separator);
+    await enrichCSV(req, args, separator, id);
   } catch (err) {
     return res.status(500).json({ message: `internal server error: ${err}` });
   }
-  return res.status(200).json({ file });
+  return res.status(200).json({ id });
 });
 
 /**
@@ -92,21 +99,23 @@ router.get('/enrich/state', async (req, res) => {
 /**
  * get state in JSON format
  *
- * @apiError 400 filename expected
+ * @apiParam PARAMS id - id of process
+ *
+ * @apiError 400 id expected
  * @apiError 404 file not found
  *
  * @apiSuccess state
  */
-router.get('/enrich/state/:filename', async (req, res) => {
-  const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ message: 'filename expected' });
+router.get('/enrich/state/:id', async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ message: 'id expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(enrichedDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(stateDir, `${id}.json`));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
-  const state = await getState(filename);
+  const state = await getState(id);
   return res.status(200).json({ state });
 });
 
