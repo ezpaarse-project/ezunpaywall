@@ -17,7 +17,8 @@
     "core-js": "^3.8.3",
     "i18n-iso-countries": "^6.4.0",
     "nuxt": "^2.14.12",
-    "nuxt-i18n": "^6.20.0"
+    "nuxt-i18n": "^6.20.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^5.0.0",

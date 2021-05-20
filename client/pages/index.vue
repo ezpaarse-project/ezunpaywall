@@ -70,7 +70,7 @@ export default {
       try {
         res = await this.$axios({
           method: 'get',
-          url: '/task'
+          url: '/update/status'
         })
       } catch (err) {
         console.log(err)

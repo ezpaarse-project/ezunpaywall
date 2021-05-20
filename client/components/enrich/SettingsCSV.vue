@@ -1,8 +1,16 @@
 <template>
   <div>
     <SelectAttributes :items="unpaywallAttr" :label="'simple'" @tab="getTab" />
-    <SelectAttributes :items="oa_location" :label="'best_oa_location'" @tab="getTab" />
-    <SelectAttributes :items="oa_location" :label="'first_oa_location'" @tab="getTab" />
+    <SelectAttributes
+      :items="oa_location"
+      :label="'best_oa_location'"
+      @tab="getTab"
+    />
+    <SelectAttributes
+      :items="oa_location"
+      :label="'first_oa_location'"
+      @tab="getTab"
+    />
   </div>
 </template>
 <script>
@@ -175,11 +183,17 @@ export default {
      * give setting to parent
      */
     getSetting () {
-      this.$emit('setting', [
-        ...this.simple.slice(),
-        ...this.best_oa_location.map(el => `best_oa_location.${el}`),
-        ...this.first_oa_location.map(el => `first_oa_location.${el}`)
-      ])
+      let bestOaLocation = ''
+      let firstOaLocation = ''
+
+      if (this.best_oa_location.length) {
+        bestOaLocation = `,best_oa_location { ${this.best_oa_location.join(',')} }`
+      }
+      if (this.first_oa_location.length) {
+        firstOaLocation = `,first_oa_location { ${this.first_oa_location.join(',')} }`
+      }
+      const setting = `{ ${this.simple.join(',')} ${bestOaLocation} ${firstOaLocation} }`
+      this.$emit('setting', setting)
     },
     getTab (event) {
       this[event.label] = event.tab

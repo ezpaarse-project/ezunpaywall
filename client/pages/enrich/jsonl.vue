@@ -159,6 +159,8 @@
 </template>
 
 <script>
+import { v4 } from 'uuid'
+
 import LogFiles from '~/components/enrich/LogFiles.vue'
 import Settings from '~/components/enrich/SettingsJSONL.vue'
 import Report from '~/components/enrich/Report.vue'
@@ -178,11 +180,8 @@ export default {
       enrichedFile: '',
       setting: [],
       status: null,
-      timeout: '',
-      fileState: '',
       state: {},
       time: 0,
-      timerInterval: {},
       inProcess: false,
       fileSelectionHelp: false,
       logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall'
@@ -208,35 +207,19 @@ export default {
   methods: {
     async process () {
       this.inProcess = true
-      this.startTimer()
-      await this.createState()
-      this.poling()
-      await this.enrich()
+      const id = v4()
+      this.enrichedFile = `${id}.jsonl`
+      this.enrich(id)
+      await this.poll(id)
     },
 
-    async createState () {
-      let res
+    enrich (id) {
       try {
-        res = await this.$axios({
+        this.$axios({
           method: 'POST',
-          url: '/enrich/state',
-          responseType: 'json'
-        })
-      } catch (err) {
-        console.log(err)
-      }
-      this.fileState = res?.data?.state
-    },
-
-    async enrich () {
-      let res
-      try {
-        res = await this.$axios({
-          method: 'POST',
-          url: '/enrich/json',
+          url: `/enrich/json/${id}`,
           params: {
-            args: this.setting.join(','),
-            state: this.fileState
+            args: this.setting
           },
           data: this.files[0].file,
           headers: {
@@ -247,41 +230,38 @@ export default {
       } catch (err) {
         console.log(err)
       }
-      this.enrichedFile = res.data.file
     },
 
-    async poling () {
+    async poll (id) {
       let res
       try {
         res = await this.$axios({
           method: 'GET',
-          url: `/enrich/state/${this.fileState}`,
+          url: `/enrich/state/${id}`,
           responseType: 'json'
         })
       } catch (err) {
         console.log(err)
       }
       this.state = res?.data?.state
-      if (res?.data?.state?.status === 'done') {
-        this.onTimesUp()
-        this.inProcess = false
-        clearTimeout(this.timeout)
-        return
+      // TODO put it on computer
+      if (Number.isInteger(this.state?.createdAt)) {
+        this.time = Math.round((Date.now() - this.state?.createdAt) / 1000)
+      } else {
+        this.time = 0
       }
-      this.timeout = setTimeout(this.poling, 1000)
+      if (this.state?.done === true) {
+        this.inProcess = false
+      } else {
+        setTimeout(() => this.poll(id), 1000)
+      }
     },
+
     getSetting (setting) {
       this.setting = setting
     },
     getFiles (files) {
       this.files = files
-    },
-    onTimesUp () {
-      clearInterval(this.timerInterval)
-    },
-    startTimer () {
-      this.time = 0
-      this.timerInterval = setInterval(() => (this.time += 1), 1000)
     }
   }
 }
