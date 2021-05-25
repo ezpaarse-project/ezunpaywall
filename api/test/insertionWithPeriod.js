@@ -17,8 +17,11 @@ const {
 const {
   initializeDate,
   deleteFile,
+} = require('./utils/file');
+
+const {
   ping,
-} = require('./utils/prepareTest');
+} = require('./utils/ping');
 
 const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 

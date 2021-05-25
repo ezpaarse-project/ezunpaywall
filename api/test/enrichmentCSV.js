@@ -17,8 +17,7 @@ const {
   deleteFile,
   binaryParser,
   compareFile,
-  ping,
-} = require('./utils/prepareTest');
+} = require('./utils/file');
 
 const {
   createIndex,
@@ -26,6 +25,10 @@ const {
   deleteIndex,
   countDocuments,
 } = require('./utils/update');
+
+const {
+  ping,
+} = require('./utils/ping');
 
 const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 

@@ -18,8 +18,11 @@ const {
   deleteFile,
   initializeDate,
   downloadFile,
+} = require('./utils/file');
+
+const {
   ping,
-} = require('./utils/prepareTest');
+} = require('./utils/ping');
 
 chai.use(chaiHttp);
 

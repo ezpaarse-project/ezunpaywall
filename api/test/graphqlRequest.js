@@ -18,7 +18,7 @@ const {
 const {
   initializeDate,
   deleteFile,
-} = require('./utils/prepareTest');
+} = require('./utils/file');
 
 chai.use(chaiHttp);
 
