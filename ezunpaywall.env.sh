@@ -50,7 +50,7 @@ fi
 # set local EZUNPAYWALL_ES_DISCOVERY variable
 # should contain all ES cluster IP host except local IP address
 # needs EZUNPAYWALL_NODES in environment
-
+set +u
 if [[ ! -z ${EZUNPAYWALL_NODES} ]] ; then
   for node in ${EZUNPAYWALL_NODES} ; do
     if [[ ! $node = $THIS_HOST ]] ; then
@@ -62,3 +62,4 @@ fi
 if [[ ! -z ${EZUNPAYWALL_ES_DISCOVERY} ]] ; then
   EZUNPAYWALL_ES_DISCOVERY_TYPE="zen"
 fi
+set -u
