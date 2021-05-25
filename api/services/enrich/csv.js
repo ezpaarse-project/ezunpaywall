@@ -309,7 +309,7 @@ const processEnrichCSV = async (readStream, args, separator, id) => {
 
           // enrichment
           const response = await askEzUnpaywall(data, args, id);
-          enrichTab(tabWillBeEnriched, response, args);
+          enrichTab(tabWillBeEnriched, response);
           await writeInFileCSV(tabWillBeEnriched, headers, separator, enrichedFile);
 
           // state
