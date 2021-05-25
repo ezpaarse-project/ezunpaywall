@@ -41,8 +41,8 @@ export EZUNPAYWALL_ES_NODE_SEARCH_REMOTE="true"
 export ES_JAVA_OPTS="-Xms2g -Xmx2g"
 export EZUNPAYWALL_ES_MEM_LIMIT="4g"
 
-if [[ -f ezunpaywall.env.local.sh ]] ; then
-  source ezunpaywall.env.local.sh
+if [[ -f ezunpaywall.local.env.sh ]] ; then
+  source ezunpaywall.local.env.sh
 fi
 
 # set local EZUNPAYWALL_ES_DISCOVERY variable
