@@ -44,15 +44,9 @@ export EZUNPAYWALL_ES_NODE_SEARCH_REMOTE="true"
 export ES_JAVA_OPTS="-Xms2g -Xmx2g"
 export EZUNPAYWALL_ES_MEM_LIMIT="4g"
 
-<<<<<<< HEAD
 if [[ -f $LOCAL_ENV_FILE ]] ; then
   source "$LOCAL_ENV_FILE"
-=======
-if [[ -f ezunpaywall.local.env.sh ]] ; then
-  source ezunpaywall.local.env.sh
->>>>>>> cd6298f2cab7566b2bf270cb65dd6a6563d8fc65
 fi
-
 # set local EZUNPAYWALL_ES_DISCOVERY variable
 # should contain all ES cluster IP host except local IP address
 # needs EZUNPAYWALL_NODES in environment
