@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const path = require('path');
 const fs = require('fs-extra');
-const uuid = require('uuid');
 
 const {
   getState,
@@ -50,7 +49,7 @@ router.post('/enrich/json/:id', async (req, res) => {
   const { args } = req.query;
   // TODO check args with graphqlSyntax
   const { id } = req.params;
-  // TODO check if is is already used
+  // TODO check if id is already used
   try {
     await enrichJSON(req, args, id);
   } catch (err) {

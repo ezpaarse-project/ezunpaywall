@@ -3,11 +3,24 @@ const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
 
-const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikey')}`;
-
 const updateDir = path.resolve(__dirname, '..', 'out', 'update', 'download');
 const stateDir = path.resolve(__dirname, '..', 'out', 'update', 'state');
 const reportDir = path.resolve(__dirname, '..', 'out', 'update', 'report');
+
+const multer = require('multer');
+
+const storage = multer.diskStorage(
+  {
+    destination: updateDir,
+    filename: (req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  },
+);
+
+const upload = multer({ storage });
+
+const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikey')}`;
 
 const {
   insertion,
@@ -25,6 +38,11 @@ const {
 const {
   getReport,
 } = require('../services/update/report');
+
+const {
+  deleteSnapshot,
+  addSnapshot,
+} = require('../services/update/snapshot');
 
 /**
  * get the files in a dir in order by date
@@ -51,11 +69,37 @@ const getMostRecentFile = async (dir) => {
  *
  * @apiSuccess status
  */
- router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
+router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
-// middleware
+router.post('/update/snapshot/:filename', upload.single('file'), async (req, res) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
+  }
+  await addSnapshot(req, filename);
+  return res.status(200).json({ messsage: 'file added' });
+});
+
+router.delete('/update/snapshot/:filename', async (req, res) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
+  }
+  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  if (!fileExist) {
+    return res.status(404).json({ message: 'file not found' });
+  }
+  await deleteSnapshot(filename);
+  return res.status(200).json({ messsage: `${filename} deleted` });
+});
+
+/**
+ * middleware that blocks simultaneous updates of unpaywall data
+ *
+ * @apiError 409 update in progress
+ */
 router.use((req, res, next) => {
-  const status = getStatus()
+  const status = getStatus();
   if (status) {
     return res.status(409).json({
       message: 'update in progress',

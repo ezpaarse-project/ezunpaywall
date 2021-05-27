@@ -36,6 +36,7 @@
     "lodash.get": "^4.4.2",
     "mjml": "^4.8.1",
     "morgan": "^1.10.0",
+    "multer": "^1.4.2",
     "node-cron": "^2.0.3",
     "nodemailer": "^6.4.17",
     "nunjucks": "^3.2.2",
