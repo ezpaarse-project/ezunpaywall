@@ -200,9 +200,9 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   const step = state.steps[state.steps.length - 1];
   step.file = info.filename;
 
-  let compressedFile;
+  let res;
   try {
-    compressedFile = await axios({
+    res = await axios({
       method: 'get',
       url: info.url,
       responseType: 'stream',
@@ -220,10 +220,10 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   logger.info(`size : ${info.size}`);
   logger.info(`to_date : ${info.to_date}`);
 
-  if (compressedFile?.data instanceof Readable) {
+  if (res?.data instanceof Readable) {
     await new Promise((resolve, reject) => {
       // download unpaywall file with stream
-      const writeStream = compressedFile.data.pipe(fs.createWriteStream(filePath));
+      const writeStream = res.data.pipe(fs.createWriteStream(filePath));
 
       const start = new Date();
       let timeout;
@@ -249,7 +249,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
     });
   } else {
     const writeStream = fs.createWriteStream(filePath);
-    writeStream.write(compressedFile.data);
+    writeStream.write(res.data);
     writeStream.end();
   }
 };
