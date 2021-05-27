@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# unpaywall
+# api ezunpaywall
 export API_KEY_UPW="api_key"
 export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
+
+# interface ezunpaywall
+export API_URL="localhost:8080"
 
 # mail
 export EZUNPAYWALL_SMTP_PORT=25
