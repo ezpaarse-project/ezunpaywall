@@ -15,7 +15,6 @@ const {
   updateStateInFile,
   fail,
 } = require('./state');
-const { Readable } = require('stream');
 
 const enriched = path.resolve(__dirname, '..', '..', 'out', 'enrich', 'enriched');
 
