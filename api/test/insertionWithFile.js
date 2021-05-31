@@ -9,14 +9,14 @@ const {
   createIndex,
   deleteIndex,
   countDocuments,
-  isInUpdate,
+  checkIfInUpdate,
   getState,
   getReport,
 } = require('./utils/update');
 
 const {
-  deleteFile,
-  downloadFile,
+  deleteSnapshot,
+  addSnapshot,
 } = require('./utils/file');
 
 const {
@@ -30,7 +30,7 @@ const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async () => {
     await ping();
-    await downloadFile('fake1.jsonl.gz');
+    await addSnapshot('fake1.jsonl.gz');
   });
 
   describe('Do a classic insertion of a file already installed', () => {
@@ -55,9 +55,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
+      const count = await countDocuments('unpaywall');
       expect(count).to.equal(50);
     });
 
@@ -126,9 +126,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
+      const count = await countDocuments('unpaywall');
       expect(count).to.equal(10);
     });
 
@@ -196,9 +196,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
+      const count = await countDocuments('unpaywall');
       expect(count).to.equal(10);
     });
 
@@ -266,9 +266,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
+      const count = await countDocuments('unpaywall');
       expect(count).to.equal(10);
     });
 
@@ -356,8 +356,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
   after(async () => {
     await deleteIndex('unpaywall');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
   });
 });

@@ -9,20 +9,28 @@ const changefiles = require('../../../fakeUnpaywall/snapshots/changefiles.json')
 const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
 const snapshotsDir = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots');
 
-const deleteFile = async (name) => {
-  const filePath = path.resolve(downloadDir, name);
+/**
+ * delete a snapshot in ezunpaywall
+ * @param {String} filename name of file needed to be delete on ezunpaywall
+ */
+const deleteSnapshot = async (filename) => {
+  const filePath = path.resolve(downloadDir, filename);
   const fileExist = await fs.pathExists(filePath);
   if (fileExist) {
     try {
       await fs.unlinkSync(filePath);
     } catch (err) {
-      logger.error(`deleteFile: ${err}`);
+      logger.error(`deleteSnapshot: ${err}`);
     }
   }
   logger.info(`file ${filePath} deleted`);
 };
 
-const downloadFile = async (name) => new Promise((resolve, reject) => {
+/**
+ * add a snapshot in ezunpaywall
+ * @param {String} filename name of file needed to be add on ezunpaywall
+ */
+const addSnapshot = async (name) => new Promise((resolve, reject) => {
   const destination = path.resolve(downloadDir, name);
   const source = path.resolve(snapshotsDir, name);
 
@@ -38,11 +46,14 @@ const downloadFile = async (name) => new Promise((resolve, reject) => {
   });
 
   writeStream.on('error', (err) => {
-    logger.error(`downloadFile: ${err}`);
+    logger.error(`addSnapshot: ${err}`);
     return reject(err);
   });
 });
 
+/**
+ * updates the dates of the fake unpaywall snapshot management file
+ */
 const initializeDate = async () => {
   const changefilesPath = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots', 'changefiles.json');
   const now = Date.now();
@@ -66,6 +77,11 @@ const initializeDate = async () => {
   }
 };
 
+/**
+ * parses the content of the response of a request to retrieve the content of a file
+ * @param {Object} res response
+ * @param {Object} cb callback
+ */
 const binaryParser = (res, cb) => {
   res.setEncoding('binary');
   res.data = '';
@@ -77,6 +93,12 @@ const binaryParser = (res, cb) => {
   });
 };
 
+/**
+ * compares the content of 2 files and indicates whether they are identical or not
+ * @param {String} path1 filepath of the first file
+ * @param {String} path2 filepath of the second file
+ * @returns {boolean} if identical
+ */
 const compareFile = async (path1, path2) => {
   const file1 = await fs.readFile(path1, 'utf-8');
   const file2 = await fs.readFile(path2, 'utf-8');
@@ -85,8 +107,8 @@ const compareFile = async (path1, path2) => {
 
 module.exports = {
   initializeDate,
-  deleteFile,
-  downloadFile,
+  deleteSnapshot,
+  addSnapshot,
   binaryParser,
   compareFile,
 };

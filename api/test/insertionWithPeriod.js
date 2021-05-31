@@ -9,14 +9,14 @@ const {
   createIndex,
   deleteIndex,
   countDocuments,
-  isInUpdate,
+  checkIfInUpdate,
   getState,
   getReport,
 } = require('./utils/update');
 
 const {
   initializeDate,
-  deleteFile,
+  deleteSnapshot,
 } = require('./utils/file');
 
 const {
@@ -47,9 +47,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   before(async () => {
     await ping();
     initializeDate();
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
     await deleteIndex('unpaywall');
   });
 
@@ -74,9 +74,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
+      const count = await countDocuments('unpaywall');
       expect(count).to.equal(150);
     });
 
@@ -165,8 +165,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
 
     after(async () => {
-      await deleteFile('fake1.jsonl.gz');
-      await deleteFile('fake2.jsonl.gz');
+      await deleteSnapshot('fake1.jsonl.gz');
+      await deleteSnapshot('fake2.jsonl.gz');
       await deleteIndex('unpaywall');
     });
   });
@@ -193,9 +193,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
+      const count = await countDocuments('unpaywall');
       expect(count).to.equal(2100);
     });
 
@@ -283,8 +283,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[4]).have.property('status').equal('success');
     });
     after(async () => {
-      await deleteFile('fake1.jsonl.gz');
-      await deleteFile('fake2.jsonl.gz');
+      await deleteSnapshot('fake1.jsonl.gz');
+      await deleteSnapshot('fake2.jsonl.gz');
       await deleteIndex('unpaywall');
     });
   });
@@ -310,10 +310,10 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
-      expect(count).to.equal(null);
+      const count = await countDocuments('unpaywall');
+      expect(count).to.equal(0);
     });
 
     // test task
@@ -403,8 +403,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   after(async () => {
     await deleteIndex('unpaywall');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
   });
 });

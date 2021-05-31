@@ -9,15 +9,15 @@ const {
   createIndex,
   deleteIndex,
   countDocuments,
-  isInUpdate,
+  checkIfInUpdate,
   getState,
   getReport,
 } = require('./utils/update');
 
 const {
-  deleteFile,
+  deleteSnapshot,
   initializeDate,
-  downloadFile,
+  addSnapshot,
 } = require('./utils/file');
 
 const {
@@ -32,9 +32,9 @@ describe('Test: weekly update route test', () => {
   before(async () => {
     await ping();
     initializeDate();
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
   });
 
   describe('Do a classic weekly update', () => {
@@ -58,9 +58,9 @@ describe('Test: weekly update route test', () => {
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
+      const count = await countDocuments('unpaywall');
       expect(count).to.equal(50);
     });
 
@@ -132,7 +132,7 @@ describe('Test: weekly update route test', () => {
   describe('Do a weekly update but the file is already installed', () => {
     before(async () => {
       await createIndex('unpaywall', indexUnpawall);
-      await downloadFile('fake1.jsonl.gz');
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     // test return message
@@ -152,9 +152,9 @@ describe('Test: weekly update route test', () => {
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        isUpdate = await isInUpdate();
+        isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments();
+      const count = await countDocuments('unpaywall');
       expect(count).to.equal(50);
     });
 
@@ -207,8 +207,8 @@ describe('Test: weekly update route test', () => {
 
   after(async () => {
     await deleteIndex('unpaywall');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
   });
 });

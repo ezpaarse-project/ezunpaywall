@@ -12,12 +12,12 @@ const {
   deleteIndex,
   createIndex,
   countDocuments,
-  isInUpdate,
+  checkIfInUpdate,
 } = require('./utils/update');
 
 const {
   initializeDate,
-  deleteFile,
+  deleteSnapshot,
 } = require('./utils/file');
 
 chai.use(chaiHttp);
@@ -61,9 +61,9 @@ describe('test graphqlRequest update', () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     initializeDate();
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
   });
 
   describe('Test: weekly update route test', () => {
@@ -88,9 +88,9 @@ describe('test graphqlRequest update', () => {
         let isUpdate = true;
         while (isUpdate) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
-          isUpdate = await isInUpdate();
+          isUpdate = await checkIfInUpdate();
         }
-        const count = await countDocuments();
+        const count = await countDocuments('unpaywall');
         expect(count).to.equal(50);
       });
     });
@@ -300,8 +300,8 @@ describe('test graphqlRequest update', () => {
   });
   after(async () => {
     await deleteIndex('unpaywall');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
   });
 });

@@ -1,4 +1,7 @@
 const chai = require('chai');
+const chaiHttp = require('chai-http');
+
+chai.use(chaiHttp);
 
 const { logger } = require('../../lib/logger');
 
@@ -6,6 +9,10 @@ const client = require('../../lib/client');
 
 const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 
+/**
+ * get report of update
+ * @returns {JSON} report
+ */
 const getReport = async () => {
   let res;
   try {
@@ -16,20 +23,29 @@ const getReport = async () => {
   return res?.body?.report;
 };
 
-const isIndexExist = async (name) => {
+/**
+ * check if index exit
+ * @param {string} name Name of index
+ * @returns {boolean} if exist
+ */
+const checkIfIndexExist = async (name) => {
   let res;
   try {
     res = await client.indices.exists({
       index: name,
     });
   } catch (err) {
-    logger.error(`indices.exists in isIndexExist: ${err}`);
+    logger.error(`indices.exists in checkIfIndexExist: ${err}`);
   }
   return res.body;
 };
 
+/**
+ * delete index if it exist
+ * @param {string} name Name of index
+ */
 const deleteIndex = async (name) => {
-  const exist = await isIndexExist(name);
+  const exist = await checkIfIndexExist(name);
   if (exist) {
     try {
       await client.indices.delete({
@@ -41,48 +57,69 @@ const deleteIndex = async (name) => {
   }
 };
 
-const createIndex = async (name, index) => {
-  try {
-    await client.indices.create({
-      index: name,
-      body: index,
-    });
-  } catch (err) {
-    logger.error(`indices.delete in createIndex: ${err}`);
+/**
+ * create index if it doesn't exist
+ * @param {string} name Name of index
+ * @param {JSON} index index in JSON format
+ */
+ const createIndex = async (name, index) => {
+  const exist = await checkIfIndexExist(name);
+  if (!exist) {
+    try {
+      await client.indices.create({
+        index: name,
+        body: index,
+      });
+    } catch (err) {
+      console.error(`indices.create in createIndex: ${err}`);
+    }
   }
 };
 
-const countDocuments = async () => {
-  const exist = await isIndexExist('unpaywall');
+/**
+ * count how many documents there are in an index
+ * @param {string} name Name of index
+ * @returns {number} number of document
+ */
+ const countDocuments = async (name) => {
+  const exist = await checkIfIndexExist(name);
   let data;
   if (exist) {
     try {
       data = await client.count({
-        index: 'unpaywall',
+        index: name,
       });
     } catch (err) {
-      logger.error(`countDocuments: ${err}`);
+      console.error(`countDocuments: ${err}`);
     }
   }
-  return data.body.count ? data.body.count : null;
+  return data.body.count ? data.body.count : 0;
 };
 
-const isInUpdate = async () => {
+/**
+ * checks if an update process is being processed
+ * @returns {boolean} if in update
+ */
+const checkIfInUpdate = async () => {
   let res = true;
   try {
     res = await chai.request(ezunpaywallURL).get('/update/status');
   } catch (err) {
-    logger.error(`isInUpdate : ${err}`);
+    logger.error(`checkIfInUpdate : ${err}`);
   }
   return res?.body?.inUpdate;
 };
 
+/**
+ * get state of update
+ * @returns {JSON} state
+ */
 const getState = async () => {
   let res;
   try {
     res = await chai.request(ezunpaywallURL).get('/update/state');
   } catch (err) {
-    logger.error(`isInUpdate : ${err}`);
+    logger.error(`getState : ${err}`);
   }
   return res?.body?.state;
 };
@@ -91,7 +128,7 @@ module.exports = {
   createIndex,
   deleteIndex,
   countDocuments,
-  isInUpdate,
+  checkIfInUpdate,
   getState,
   getReport,
 };

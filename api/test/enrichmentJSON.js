@@ -13,15 +13,15 @@ const { logger } = require('../lib/logger');
 const indexUnpawall = require('../index/unpaywall.json');
 
 const {
-  downloadFile,
-  deleteFile,
+  addSnapshot,
+  deleteSnapshot,
   binaryParser,
   compareFile,
 } = require('./utils/file');
 
 const {
   createIndex,
-  isInUpdate,
+  checkIfInUpdate,
   deleteIndex,
   countDocuments,
 } = require('./utils/update');
@@ -37,7 +37,7 @@ const enrichDir = path.resolve(__dirname, 'sources');
 describe('Test: enrichment with a json file (command ezu)', () => {
   before(async () => {
     await ping();
-    await downloadFile('fake1.jsonl.gz');
+    await addSnapshot('fake1.jsonl.gz');
     await createIndex('unpaywall', indexUnpawall);
 
     // test insertion
@@ -49,9 +49,9 @@ describe('Test: enrichment with a json file (command ezu)', () => {
     let inUpdate = true;
     while (inUpdate) {
       await new Promise((resolve) => setTimeout(resolve, 10));
-      inUpdate = await isInUpdate();
+      inUpdate = await checkIfInUpdate();
     }
-    const count = await countDocuments();
+    const count = await countDocuments('unpaywall');
     expect(count).to.equal(50);
   });
 
@@ -388,6 +388,6 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
   after(async () => {
     await deleteIndex('unpaywall');
-    await deleteFile('fake1.jsonl.gz');
+    await deleteSnapshot('fake1.jsonl.gz');
   });
 });
