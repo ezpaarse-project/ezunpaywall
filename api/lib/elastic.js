@@ -18,20 +18,20 @@ const pingElastic = async () => {
   return true;
 };
 
-const isIndexExist = async (name) => {
+const checkIfIndexExist = async (name) => {
   let res;
   try {
     res = await client.indices.exists({
       index: name,
     });
   } catch (err) {
-    logger.error(`indices.exists in isIndexExist: ${err}`);
+    logger.error(`indices.exists in checkIfIndexExist: ${err}`);
   }
   return res.body;
 };
 
 const createIndex = async (name, index) => {
-  const exist = await isIndexExist(name);
+  const exist = await checkIfIndexExist(name);
   if (!exist) {
     try {
       await client.indices.create({
