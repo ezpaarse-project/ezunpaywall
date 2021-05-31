@@ -91,7 +91,7 @@ router.post('/enrich/csv/:id', async (req, res) => {
  */
 router.get('/enrich/state', async (req, res) => {
   const latestFile = await getMostRecentFile(stateDir);
-  const state = await getState(latestFile?.file);
+  const state = await getState(latestFile?.file.split('.')[0]);
   res.status(200).json({ state });
 });
 
