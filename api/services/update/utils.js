@@ -23,10 +23,10 @@ const {
  * @param {string} filename - nom du fichier à insérer
  * @param {object} options - limit and offset of insertion
  */
-const insertion = async (filename, options) => {
+const insertion = async (filename, options, index) => {
   setInUpdate(true);
   const statename = await createState();
-  await insertDataUnpaywall(statename, options, filename);
+  await insertDataUnpaywall(statename, options, filename, index);
   await endState(statename);
   await createReport(statename);
   setInUpdate(false);
@@ -39,14 +39,14 @@ const insertion = async (filename, options) => {
  * @param {date} startDate - start date of the period
  * @param {date} endDate end date of the period
  */
-const insertSnapshotBetweenDates = async (url, startDate, endDate) => {
+const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   setInUpdate(true);
   const statename = await createState();
   const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
     await downloadFileFromUnpaywall(statename, snapshotsInfo[i]);
     const opts = { offset: -1, limit: -1 };
-    await insertDataUnpaywall(statename, opts, snapshotsInfo[i].filename);
+    await insertDataUnpaywall(statename, opts, snapshotsInfo[i].filename, index);
   }
   await endState(statename);
   await createReport(statename);

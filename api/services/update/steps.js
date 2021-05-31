@@ -23,8 +23,8 @@ const {
 /**
  * @param {Array} data array of unpaywall data
  */
-const insertUPW = async (data) => {
-  const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall', _id: doc.doi } }, doc]);
+const insertUPW = async (data, index) => {
+  const body = data.flatMap((doc) => [{ index: { _index: index, _id: doc.doi } }, doc]);
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
@@ -38,7 +38,7 @@ const insertUPW = async (data) => {
  * @param {*} opts - options containing a limit and an offset
  * @param {*} filename - snapshot filename which the data will be inserted
  */
-const insertDataUnpaywall = async (stateName, opts, filename) => {
+const insertDataUnpaywall = async (stateName, opts, filename, index) => {
   // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
@@ -113,7 +113,7 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
     }
     // bulk insertion
     if (tab.length % 1000 === 0 && tab.length !== 0) {
-      await insertUPW(tab);
+      await insertUPW(tab, index);
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       state.steps[state.steps.length - 1] = step;
@@ -126,7 +126,7 @@ const insertDataUnpaywall = async (stateName, opts, filename) => {
   }
   // last insertion if there is data left
   if (tab.length !== 0) {
-    await insertUPW(tab);
+    await insertUPW(tab, index);
     tab = [];
   }
   logger.info('step - end insertion');

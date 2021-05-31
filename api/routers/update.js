@@ -125,7 +125,10 @@ router.use((req, res, next) => {
  */
 router.post('/update/:filename', async (req, res) => {
   const { filename } = req.params;
-  let { offset, limit } = req.query;
+  let { offset, limit, index } = req.query;
+  if (!index) {
+    index = 'unpaywall';
+  }
   if (!filename) {
     return res.status(400).json({ message: 'filename of snapshot file expected' });
   }
@@ -143,7 +146,7 @@ router.post('/update/:filename', async (req, res) => {
 
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  insertion(filename, { offset: Number(offset), limit: Number(limit) });
+  insertion(filename, { offset: Number(offset), limit: Number(limit) }, index);
   return res.status(200).json({
     message: `start upsert with ${filename}`,
   });
@@ -171,12 +174,14 @@ router.post('/update/:filename', async (req, res) => {
  * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
  */
 router.post('/update', (req, res) => {
-  let { startDate } = req.query;
-  let { endDate } = req.query;
+  let { startDate, endDate, index } = req.query;
+  if (!index) {
+    index = 'unpaywall';
+  }
   if (!startDate && !endDate) {
     endDate = Date.now();
     startDate = endDate - (7 * 24 * 60 * 60 * 1000);
-    insertSnapshotBetweenDates(url, startDate, endDate);
+    insertSnapshotBetweenDates(url, startDate, endDate, index);
     return res.status(200).json({
       message: 'weekly update has begun, list of task has been created on elastic',
     });
@@ -205,7 +210,7 @@ router.post('/update', (req, res) => {
   if (startDate && !endDate) {
     [endDate] = new Date().toISOString().split('T');
   }
-  insertSnapshotBetweenDates(url, startDate, endDate);
+  insertSnapshotBetweenDates(url, startDate, endDate, index);
   return res.status(200).json({
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic`,
   });
