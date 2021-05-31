@@ -41,7 +41,6 @@ const {
 
 const {
   deleteSnapshot,
-  addSnapshot,
 } = require('../services/update/snapshot');
 
 /**
@@ -71,12 +70,10 @@ const getMostRecentFile = async (dir) => {
  */
 router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
-router.post('/update/snapshot/:filename', upload.single('file'), async (req, res) => {
-  const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ message: 'filename expected' });
+router.post('/update/snapshot', upload.single('file'), async (req, res) => {
+  if (!req?.file) {
+    return res.status(500).json({ messsage: 'internal server error' });
   }
-  await addSnapshot(req, filename);
   return res.status(200).json({ messsage: 'file added' });
 });
 

@@ -14,27 +14,6 @@ const deleteSnapshot = async (filename) => {
   }
 };
 
-const addSnapshot = async (readStream, filename) => {
-
-  const filepath = path.resolve(downloadDir, filename);
-  let alreadyInstalled;
-  try {
-    alreadyInstalled = await fs.pathExists(path.resolve(downloadDir, filename));
-  } catch (err) {
-    logger.error(`addSnapshot in fs.pathExists: ${err}`);
-  }
-  if (alreadyInstalled) {
-    try {
-      await fs.remove(filepath);
-    } catch (err) {
-      logger.error(`addSnapshot in fs.remove: ${err}`);
-    }
-  }
-  // le readstream a une ligne en trop au début et à la fin et c'est fucked
-  await readStream.pipe(fs.createWriteStream(filepath));
-};
-
 module.exports = {
   deleteSnapshot,
-  addSnapshot,
 };
