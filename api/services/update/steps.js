@@ -22,6 +22,7 @@ const {
 
 /**
  * @param {Array} data array of unpaywall data
+ * @param {string} index name of the index to which the data will be saved
  */
 const insertUPW = async (data, index) => {
   const body = data.flatMap((doc) => [{ index: { _index: index, _id: doc.doi } }, doc]);
@@ -37,6 +38,7 @@ const insertUPW = async (data, index) => {
  * @param {*} stateName - state filename
  * @param {*} opts - options containing a limit and an offset
  * @param {*} filename - snapshot filename which the data will be inserted
+ * @param {string} index name of the index to which the data will be saved
  */
 const insertDataUnpaywall = async (stateName, opts, filename, index) => {
   // step initiation in the state

@@ -22,6 +22,7 @@ const {
  * start an update process of unpaywall data with a file present in ezunpaywall
  * @param {string} filename - nom du fichier à insérer
  * @param {object} options - limit and offset of insertion
+ * @param {string} index name of the index to which the data will be saved
  */
 const insertion = async (filename, options, index) => {
   setInUpdate(true);
@@ -38,6 +39,7 @@ const insertion = async (filename, options, index) => {
  * @param {string} url - url to call for the list of update files
  * @param {date} startDate - start date of the period
  * @param {date} endDate end date of the period
+ * @param {string} index name of the index to which the data will be saved
  */
 const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   setInUpdate(true);

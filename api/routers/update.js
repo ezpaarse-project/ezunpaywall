@@ -113,6 +113,7 @@ router.use((req, res, next) => {
  *
  * @apiParam QUERRY offset - first line insertion, by default, we start with the first
  * @apiParam QUERRY limit - last line insertion by default, we have no limit
+ * @apiParam QUERRY index - name of the index to which the data will be saved
  * @apiParam PARAMS filename - filename
  *
  * @apiSuccess {string} message informing the start of the process
@@ -166,6 +167,7 @@ router.post('/update/:filename', async (req, res) => {
  *
  * @apiParam QUERY startDate - start date at format YYYY-mm-dd
  * @apiParam QUERY endDate - end date at format YYYY-mm-dd
+ * @apiParam QUERRY index - name of the index to which the data will be saved
  *
  * @apiSuccess message informing the start of the process
  *
