@@ -7,17 +7,13 @@ const indexUnpawall = require('../index/unpaywall.json');
 
 const {
   createIndex,
-  deleteIndex,
   countDocuments,
   checkIfInUpdate,
   getState,
   getReport,
-} = require('./utils/update');
-
-const {
-  deleteSnapshot,
   addSnapshot,
-} = require('./utils/file');
+  resetAll,
+} = require('./utils/update');
 
 const {
   ping,
@@ -30,12 +26,13 @@ const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async () => {
     await ping();
-    await addSnapshot('fake1.jsonl.gz');
   });
 
   describe('Do a classic insertion of a file already installed', () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     // test return message
@@ -100,13 +97,15 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await resetAll();
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter limit=10', () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     // test return message
@@ -171,13 +170,15 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await resetAll();
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter offset=40', () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
+      await addSnapshot('fake1.jsonl.gz');
     });
     // test return message
     it('should return the process start', async () => {
@@ -241,13 +242,15 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await resetAll();
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter offset=10 and limit=20', () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
+      await addSnapshot('fake1.jsonl.gz');
     });
     // test return message
     it('Should return the process start', async () => {
@@ -311,7 +314,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await resetAll();
     });
   });
 
@@ -342,6 +345,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   });
 
   describe('Don\'t do a insertion of a file already installed because the parameter limit can\t be lower than offset', () => {
+    before(async () => {
+      await resetAll();
+      await createIndex('unpaywall', indexUnpawall);
+      await addSnapshot('fake1.jsonl.gz');
+    });
+
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(ezunpaywallURL)
@@ -352,12 +361,13 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('limit can\t be lower than offset or 0');
     });
+
+    after(async () => {
+      await resetAll();
+    });
   });
 
   after(async () => {
-    await deleteIndex('unpaywall');
-    await deleteSnapshot('fake1.jsonl.gz');
-    await deleteSnapshot('fake2.jsonl.gz');
-    await deleteSnapshot('fake3.jsonl.gz');
+    await resetAll();
   });
 });

@@ -7,17 +7,16 @@ const indexUnpawall = require('../index/unpaywall.json');
 
 const {
   createIndex,
-  deleteIndex,
   countDocuments,
   checkIfInUpdate,
   getState,
   getReport,
+  addSnapshot,
+  resetAll,
 } = require('./utils/update');
 
 const {
-  deleteSnapshot,
   initializeDate,
-  addSnapshot,
 } = require('./utils/file');
 
 const {
@@ -32,13 +31,11 @@ describe('Test: weekly update route test', () => {
   before(async () => {
     await ping();
     initializeDate();
-    await deleteSnapshot('fake1.jsonl.gz');
-    await deleteSnapshot('fake2.jsonl.gz');
-    await deleteSnapshot('fake3.jsonl.gz');
   });
 
   describe('Do a classic weekly update', () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
     });
 
@@ -125,12 +122,13 @@ describe('Test: weekly update route test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await resetAll();
     });
   });
 
   describe('Do a weekly update but the file is already installed', () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
       await addSnapshot('fake1.jsonl.gz');
     });
@@ -203,12 +201,13 @@ describe('Test: weekly update route test', () => {
       expect(report.steps[1]).have.property('took').to.not.equal(undefined);
       expect(report.steps[1]).have.property('status').equal('success');
     });
+
+    after(async () => {
+      await resetAll();
+    });
   });
 
   after(async () => {
-    await deleteIndex('unpaywall');
-    await deleteSnapshot('fake1.jsonl.gz');
-    await deleteSnapshot('fake2.jsonl.gz');
-    await deleteSnapshot('fake3.jsonl.gz');
+    await resetAll();
   });
 });

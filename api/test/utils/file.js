@@ -6,51 +6,6 @@ const { logger } = require('../../lib/logger');
 
 const changefiles = require('../../../fakeUnpaywall/snapshots/changefiles.json');
 
-const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
-const snapshotsDir = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots');
-
-/**
- * delete a snapshot in ezunpaywall
- * @param {String} filename name of file needed to be delete on ezunpaywall
- */
-const deleteSnapshot = async (filename) => {
-  const filePath = path.resolve(downloadDir, filename);
-  const fileExist = await fs.pathExists(filePath);
-  if (fileExist) {
-    try {
-      await fs.unlinkSync(filePath);
-    } catch (err) {
-      logger.error(`deleteSnapshot: ${err}`);
-    }
-  }
-  logger.info(`file ${filePath} deleted`);
-};
-
-/**
- * add a snapshot in ezunpaywall
- * @param {String} filename name of file needed to be add on ezunpaywall
- */
-const addSnapshot = async (name) => new Promise((resolve, reject) => {
-  const destination = path.resolve(downloadDir, name);
-  const source = path.resolve(snapshotsDir, name);
-
-  const readable = fs.createReadStream(source);
-  const writable = fs.createWriteStream(destination);
-
-  // download unpaywall file with stream
-  const writeStream = readable.pipe(writable);
-
-  writeStream.on('finish', () => {
-    logger.info(`file ${name} is installed`);
-    return resolve();
-  });
-
-  writeStream.on('error', (err) => {
-    logger.error(`addSnapshot: ${err}`);
-    return reject(err);
-  });
-});
-
 /**
  * updates the dates of the fake unpaywall snapshot management file
  */
@@ -107,8 +62,6 @@ const compareFile = async (path1, path2) => {
 
 module.exports = {
   initializeDate,
-  deleteSnapshot,
-  addSnapshot,
   binaryParser,
   compareFile,
 };

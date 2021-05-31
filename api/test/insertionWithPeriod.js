@@ -7,16 +7,15 @@ const indexUnpawall = require('../index/unpaywall.json');
 
 const {
   createIndex,
-  deleteIndex,
   countDocuments,
   checkIfInUpdate,
   getState,
   getReport,
+  resetAll,
 } = require('./utils/update');
 
 const {
   initializeDate,
-  deleteSnapshot,
 } = require('./utils/file');
 
 const {
@@ -47,14 +46,11 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   before(async () => {
     await ping();
     initializeDate();
-    await deleteSnapshot('fake1.jsonl.gz');
-    await deleteSnapshot('fake2.jsonl.gz');
-    await deleteSnapshot('fake3.jsonl.gz');
-    await deleteIndex('unpaywall');
   });
 
   describe(`Do a download and insert between ${date2} and now`, async () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
     });
 
@@ -165,14 +161,13 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
 
     after(async () => {
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteIndex('unpaywall');
+      await resetAll();
     });
   });
 
   describe(`Do a download and insert between ${date3} and ${date2}`, () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
     });
 
@@ -283,14 +278,13 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[4]).have.property('status').equal('success');
     });
     after(async () => {
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteIndex('unpaywall');
+      await resetAll();
     });
   });
 
   describe(`Don't download and insert between ${date5} and ${date4} because there is no file between these dates in ezunpaywall`, () => {
     before(async () => {
+      await resetAll();
       await createIndex('unpaywall', indexUnpawall);
     });
 
@@ -330,6 +324,10 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(state.steps[0]).have.property('task').equal('askUnpaywall');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
       expect(state.steps[0]).have.property('status').equal('success');
+    });
+
+    after(async () => {
+      await resetAll();
     });
   });
 
@@ -402,9 +400,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   });
 
   after(async () => {
-    await deleteIndex('unpaywall');
-    await deleteSnapshot('fake1.jsonl.gz');
-    await deleteSnapshot('fake2.jsonl.gz');
-    await deleteSnapshot('fake3.jsonl.gz');
+    await resetAll();
   });
 });

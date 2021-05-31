@@ -1,11 +1,15 @@
+const fs = require('fs-extra');
+const path = require('path');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
 const { logger } = require('../../lib/logger');
-
 const client = require('../../lib/client');
+
+const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
+const snapshotsDir = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots');
 
 const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
 
@@ -62,7 +66,7 @@ const deleteIndex = async (name) => {
  * @param {string} name Name of index
  * @param {JSON} index index in JSON format
  */
- const createIndex = async (name, index) => {
+const createIndex = async (name, index) => {
   const exist = await checkIfIndexExist(name);
   if (!exist) {
     try {
@@ -81,7 +85,7 @@ const deleteIndex = async (name) => {
  * @param {string} name Name of index
  * @returns {number} number of document
  */
- const countDocuments = async (name) => {
+const countDocuments = async (name) => {
   const exist = await checkIfIndexExist(name);
   let data;
   if (exist) {
@@ -124,6 +128,58 @@ const getState = async () => {
   return res?.body?.state;
 };
 
+/**
+ * delete a snapshot in ezunpaywall
+ * @param {String} filename name of file needed to be delete on ezunpaywall
+ */
+const deleteSnapshot = async (filename) => {
+  const filePath = path.resolve(downloadDir, filename);
+  const fileExist = await fs.pathExists(filePath);
+  if (fileExist) {
+    try {
+      await fs.unlinkSync(filePath);
+    } catch (err) {
+      logger.error(`deleteSnapshot: ${err}`);
+    }
+  }
+  logger.info(`file ${filePath} deleted`);
+};
+
+/**
+ * add a snapshot in ezunpaywall
+ * @param {String} filename name of file needed to be add on ezunpaywall
+ */
+const addSnapshot = async (name) => new Promise((resolve, reject) => {
+  const destination = path.resolve(downloadDir, name);
+  const source = path.resolve(snapshotsDir, name);
+
+  const readable = fs.createReadStream(source);
+  const writable = fs.createWriteStream(destination);
+
+  // download unpaywall file with stream
+  const writeStream = readable.pipe(writable);
+
+  writeStream.on('finish', () => {
+    logger.info(`file ${name} is installed`);
+    return resolve();
+  });
+
+  writeStream.on('error', (err) => {
+    logger.error(`addSnapshot: ${err}`);
+    return reject(err);
+  });
+});
+
+/**
+ * reset the test environment
+ */
+const resetAll = async () => {
+  await deleteIndex('unpaywall');
+  await deleteSnapshot('fake1.jsonl.gz');
+  await deleteSnapshot('fake2.jsonl.gz');
+  await deleteSnapshot('fake3.jsonl.gz');
+};
+
 module.exports = {
   createIndex,
   deleteIndex,
@@ -131,4 +187,7 @@ module.exports = {
   checkIfInUpdate,
   getState,
   getReport,
+  addSnapshot,
+  deleteSnapshot,
+  resetAll,
 };

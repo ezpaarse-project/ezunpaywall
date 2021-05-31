@@ -13,8 +13,6 @@ const { logger } = require('../lib/logger');
 const indexUnpawall = require('../index/unpaywall.json');
 
 const {
-  addSnapshot,
-  deleteSnapshot,
   binaryParser,
   compareFile,
 } = require('./utils/file');
@@ -22,8 +20,9 @@ const {
 const {
   createIndex,
   checkIfInUpdate,
-  deleteIndex,
   countDocuments,
+  addSnapshot,
+  resetAll,
 } = require('./utils/update');
 
 const {
@@ -37,6 +36,7 @@ const enrichDir = path.resolve(__dirname, 'sources');
 describe('Test: enrichment with a json file (command ezu)', () => {
   before(async () => {
     await ping();
+    await resetAll();
     await addSnapshot('fake1.jsonl.gz');
     await createIndex('unpaywall', indexUnpawall);
 
@@ -387,7 +387,6 @@ describe('Test: enrichment with a json file (command ezu)', () => {
   });
 
   after(async () => {
-    await deleteIndex('unpaywall');
-    await deleteSnapshot('fake1.jsonl.gz');
+    await resetAll();
   });
 });
