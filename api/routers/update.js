@@ -64,6 +64,49 @@ const getMostRecentFile = async (dir) => {
 };
 
 /**
+ * get the most recent state in JSON format
+ * @apiSuccess state
+ */
+router.get('/update/state', async (req, res) => {
+  const latestFile = await getMostRecentFile(stateDir);
+  const state = await getState(latestFile?.file);
+  res.status(200).json({ state });
+});
+
+/**
+ * get state in JSON format
+ *
+ * @apiError 400 filename expected
+ * @apiError 404 file not found
+ *
+ * @apiSuccess state
+ */
+router.get('/update/state/:filename', async (req, res) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
+  }
+  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  if (!fileExist) {
+    return res.status(404).json({ message: 'file not found' });
+  }
+  const state = await getState(filename);
+  return res.status(200).json({ state });
+});
+
+/**
+ * get the most recent report in JSON format
+ *
+ * @apiSuccess report
+ */
+router.get('/update/report', async (req, res) => {
+  // TODO use param filename and query latest
+  const latestFile = await getMostRecentFile(reportDir);
+  const report = await getReport(latestFile?.file);
+  res.status(200).json({ report });
+});
+
+/**
  * gets the status if an update is in progress
  *
  * @apiSuccess status
@@ -216,49 +259,6 @@ router.post('/update', (req, res) => {
   return res.status(200).json({
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic`,
   });
-});
-
-/**
- * get the most recent state in JSON format
- * @apiSuccess state
- */
-router.get('/update/state', async (req, res) => {
-  const latestFile = await getMostRecentFile(stateDir);
-  const state = await getState(latestFile?.file);
-  res.status(200).json({ state });
-});
-
-/**
- * get state in JSON format
- *
- * @apiError 400 filename expected
- * @apiError 404 file not found
- *
- * @apiSuccess state
- */
-router.get('/update/state/:filename', async (req, res) => {
-  const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ message: 'filename expected' });
-  }
-  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
-  if (!fileExist) {
-    return res.status(404).json({ message: 'file not found' });
-  }
-  const state = await getState(filename);
-  return res.status(200).json({ state });
-});
-
-/**
- * get the most recent report in JSON format
- *
- * @apiSuccess report
- */
-router.get('/update/report', async (req, res) => {
-  // TODO use param filename and query latest
-  const latestFile = await getMostRecentFile(reportDir);
-  const report = await getReport(latestFile?.file);
-  res.status(200).json({ report });
 });
 
 module.exports = router;

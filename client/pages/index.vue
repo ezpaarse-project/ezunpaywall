@@ -26,7 +26,7 @@
       </v-card-actions>
       <v-expand-transition>
         <div v-show="show">
-          <Status :status="status" />
+          <Status :status="state" />
         </div>
       </v-expand-transition>
     </v-card>
@@ -58,7 +58,7 @@ export default {
     return {
       show: false,
       inUpdate: false,
-      status: {}
+      state: {}
     }
   },
   mounted () {
@@ -75,14 +75,26 @@ export default {
       } catch (err) {
         console.log(err)
       }
-      if (res?.data?.inProgress) {
+      if (res?.data?.inUpdate) {
         this.inUpdate = true
-        this.status = res.data
+        await this.getState()
       } else {
         this.inUpdate = false
       }
       await new Promise(resolve => setTimeout(resolve, 10000))
       await this.checkIfUpdate()
+    },
+    async getState () {
+      let res
+      try {
+        res = await this.$axios({
+          method: 'get',
+          url: '/update/state'
+        })
+      } catch (err) {
+        console.log(err)
+      }
+      this.state = res?.data?.state
     }
   }
 }

@@ -75,7 +75,7 @@ const createIndex = async (name, index) => {
         body: index,
       });
     } catch (err) {
-      console.error(`indices.create in createIndex: ${err}`);
+      logger.error(`indices.create in createIndex: ${err}`);
     }
   }
 };
@@ -94,7 +94,7 @@ const countDocuments = async (name) => {
         index: name,
       });
     } catch (err) {
-      console.error(`countDocuments: ${err}`);
+      logger.error(`countDocuments: ${err}`);
     }
   }
   return data.body.count ? data.body.count : 0;

@@ -167,7 +167,7 @@ async function updatePercentStepDownload(timeout, filePath, info, stateName, sta
   state.steps[state.steps.length - 1] = step;
   await updateStateInFile(state, stateName);
   timeout = setTimeout(
-    updatePercentStepDownload(timeout, filePath, info, stateName, state, start), 1000,
+    await updatePercentStepDownload(timeout, filePath, info, stateName, state, start), 1000,
   );
 }
 

@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <v-divider />
-    {{ $t('ui.components.home.Status.createdAt') }} : {{ status.task.createdAt }}
+    {{ $t('ui.components.home.Status.createdAt') }} : {{ status.createdAt }}
     <h3> {{ $t('ui.components.home.Status.tasks') }} </h3>
-    <v-card-text v-for="step in status.task.steps" :key="step.took">
+    <v-card-text v-for="step in status.steps" :key="step.took">
       <v-data-table
         v-if="step.task === 'download'"
         :headers="headerDownload"
@@ -12,7 +12,7 @@
         class="elevation-1"
         hide-default-footer
       >
-        <template #item.status="{ item }">
+        <template #[`item.status`]="{item}">
           <div v-if="item.status === 'success'">
             <v-icon class="text-center" size="30" color="green darken-2">
               mdi-check
@@ -28,10 +28,10 @@
           </div>
         </template>
 
-        <template #item.percent="{ item }">
+        <template #[`item.percent`]="{item}">
           {{ item.percent }}%
         </template>
-        <template #item.took="{ item }">
+        <template #[`item.took`]="{item}">
           {{ item.took }} sec
         </template>
       </v-data-table>
@@ -44,7 +44,7 @@
         class="elevation-1"
         hide-default-footer
       >
-        <template #item.status="{ item }">
+        <template #[`item.status`]="{item}">
           <div v-if="item.status === 'success'">
             <v-icon class="text-center" size="30" color="green darken-2">
               mdi-check
@@ -59,10 +59,10 @@
             />
           </div>
         </template>
-        <template #item.percent="{ item }">
+        <template #[`item.percent`]="{item}">
           {{ item.percent }}%
         </template>
-        <template #item.took="{ item }">
+        <template #[`item.took`]="{item}">
           {{ item.took }} sec
         </template>
       </v-data-table>
@@ -75,7 +75,7 @@ export default {
   props: {
     status: {
       type: Object,
-      default: {}
+      default: () => {}
     }
   },
   data: () => {
