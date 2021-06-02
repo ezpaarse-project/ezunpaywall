@@ -122,7 +122,6 @@ module.exports = {
           filter,
         },
       };
-
       let res;
       try {
         res = await client.search({
@@ -133,7 +132,7 @@ module.exports = {
           },
         });
       } catch (err) {
-        logger.error(err.meta.body.error);
+        logger.error(err);
         return null;
       }
       return res.body.hits.hits.map((hit) => hit._source);

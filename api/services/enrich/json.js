@@ -5,9 +5,10 @@
 const fs = require('fs-extra');
 const readline = require('readline');
 const path = require('path');
+const { graphql } = require('graphql');
 
-const axios = require('../../lib/axios');
-
+const schema = require('../../graphql/graphql');
+const getDataUPW = require('../../graphql/unpaywall/queries');
 const { logger } = require('../../lib/logger');
 
 const {
@@ -109,28 +110,19 @@ const addDOItoGraphqlRequest = (args) => {
  */
 const askEzUnpaywall = async (data, args, id) => {
   let dois = [];
-  let response = [];
+  let res = [];
   // contain index of doi
   const map1 = await data.map((elem) => elem?.doi);
   // contain array of doi to request ezunpaywall
   dois = await map1.filter((elem) => elem !== undefined);
+  dois = dois.join('","');
   try {
-    response = await axios({
-      method: 'post',
-      url: '/graphql',
-      data: {
-        query: `query ($dois: [ID!]!) {getDataUPW(dois: $dois) ${args.toString()} }`,
-        variables: {
-          dois,
-        },
-      },
-    });
+    res = await graphql(schema, `{ getDataUPW(dois: ["${dois}"]) ${args.toString()} }`, getDataUPW);
   } catch (err) {
     logger.error(`askEzUnpaywall: ${err}`);
     await fail(id);
-    // TODO throw Error
   }
-  return response?.data?.data?.getDataUPW;
+  return res?.data?.getDataUPW;
 };
 
 /**
