@@ -8,7 +8,7 @@ const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'downlo
 const deleteSnapshot = async (filename) => {
   const filepath = path.resolve(downloadDir, filename);
   try {
-    await fs.unlink(filepath);
+    await fs.remove(filepath);
   } catch (err) {
     logger.error(`deleteSnapshot: ${err}`);
   }

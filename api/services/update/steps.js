@@ -5,7 +5,7 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const zlib = require('zlib');
 const { Readable } = require('stream');
-const axios = require('../../lib/axios');
+const axios = require('axios');
 const client = require('../../lib/client');
 const { logger } = require('../../lib/logger');
 
@@ -21,26 +21,35 @@ const {
 } = require('./state');
 
 /**
+ * insert data on elastic with request
  * @param {Array} data array of unpaywall data
  * @param {string} index name of the index to which the data will be saved
  */
-const insertUPW = async (data, index) => {
+const insertUPW = async (data, index, stateName) => {
+  let res;
   const body = data.flatMap((doc) => [{ index: { _index: index, _id: doc.doi } }, doc]);
   try {
-    await client.bulk({ refresh: true, body });
+    res = await client.bulk({ refresh: true, body });
   } catch (err) {
     logger.error(`insertUPW: ${err}`);
+  }
+  if (res?.body?.errors) {
+    const { error } = res?.body?.items;
+    error.forEach((e) => {
+      logger.error(`insertUPW item : ${JSON.stringify(e)}`);
+    });
+    await fail(stateName);
   }
 };
 
 /**
  * Inserts the contents of an unpaywall data update file
- * @param {*} stateName - state filename
- * @param {*} opts - options containing a limit and an offset
- * @param {*} filename - snapshot filename which the data will be inserted
+ * @param {string} stateName - state filename
+ * @param {string} filename - snapshot filename which the data will be inserted
  * @param {string} index name of the index to which the data will be saved
+ * @param {object} opts - options containing a limit and an offset
  */
-const insertDataUnpaywall = async (stateName, opts, filename, index) => {
+const insertDataUnpaywall = async (stateName, filename, index, opts) => {
   // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
@@ -115,7 +124,7 @@ const insertDataUnpaywall = async (stateName, opts, filename, index) => {
     }
     // bulk insertion
     if (tab.length % 1000 === 0 && tab.length !== 0) {
-      await insertUPW(tab, index);
+      await insertUPW(tab, index, stateName);
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       state.steps[state.steps.length - 1] = step;
@@ -128,7 +137,7 @@ const insertDataUnpaywall = async (stateName, opts, filename, index) => {
   }
   // last insertion if there is data left
   if (tab.length !== 0) {
-    await insertUPW(tab, index);
+    await insertUPW(tab, index, stateName);
     tab = [];
   }
   logger.info('step - end insertion');
@@ -143,14 +152,17 @@ const insertDataUnpaywall = async (stateName, opts, filename, index) => {
 
 /**
  * Update the step the percentage in download regularly until the download is complete
- * @param {setTimeout} timeout - timeout
  * @param {string} filePath - path where the file is downloaded
  * @param {object} info - info of file
  * @param {string} stateName - state filename
  * @param {object} state - state in JSON format
  * @param {date} start - download start date
  */
-async function updatePercentStepDownload(timeout, filePath, info, stateName, state, start) {
+async function updatePercentStepDownload(filePath, info, stateName, start) {
+  const state = await getState(stateName);
+  if (state.error) {
+    return;
+  }
   const step = state.steps[state.steps.length - 1];
   let bytes;
   try {
@@ -158,17 +170,15 @@ async function updatePercentStepDownload(timeout, filePath, info, stateName, sta
   } catch (err) {
     logger.error(`fs.stat in updatePercentStepDownload: ${err}`);
   }
-  if (bytes.size === info.size) {
-    clearTimeout(timeout);
+  if (bytes?.size >= info.size) {
     return;
   }
   step.took = (new Date() - start) / 1000;
   step.percent = ((bytes.size / info.size) * 100).toFixed(2);
   state.steps[state.steps.length - 1] = step;
   await updateStateInFile(state, stateName);
-  timeout = setTimeout(
-    await updatePercentStepDownload(timeout, filePath, info, stateName, state, start), 1000,
-  );
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  updatePercentStepDownload(filePath, info, stateName, start);
 }
 
 /**
@@ -179,17 +189,17 @@ async function updatePercentStepDownload(timeout, filePath, info, stateName, sta
 const downloadFileFromUnpaywall = async (stateName, info) => {
   let stats;
 
-  const file = path.resolve(downloadDir, info.filename);
+  const filepath = path.resolve(downloadDir, info.filename);
   let alreadyInstalled;
   try {
-    alreadyInstalled = await fs.pathExists(file);
+    alreadyInstalled = await fs.pathExists(filepath);
   } catch (err) {
     logger.error(`fs.pathExists in downloadFileFromUnpaywall: ${err}`);
     await fail(stateName);
     // TODO thown Error;
   }
 
-  if (alreadyInstalled) stats = fs.statSync(file);
+  if (alreadyInstalled) stats = await fs.stat(filepath);
 
   // if snapshot already exist and download completely, past
   if (alreadyInstalled && stats.size === info.size) {
@@ -228,23 +238,26 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
       const writeStream = res.data.pipe(fs.createWriteStream(filePath));
 
       const start = new Date();
-      let timeout;
       // update the percentage of the download step in parallel
-      updatePercentStepDownload(timeout, filePath, info, stateName, state, start);
+      updatePercentStepDownload(filePath, info, stateName, start);
 
       writeStream.on('finish', async () => {
+        stats = await fs.stat(filepath);
+        if (stats.size !== info.size) {
+          await fail();
+          return reject();
+        }
         step.status = 'success';
         step.took = (new Date() - start) / 1000;
         step.percent = 100;
         state.steps[state.steps.length - 1] = step;
         await updateStateInFile(state, stateName);
-        clearTimeout(timeout);
         logger.info('step - end download');
         return resolve();
       });
 
       writeStream.on('error', async (err) => {
-        logger.error(`writeStream in updatePercentStepDownload: ${err}`);
+        logger.error(`writeStream in downloadFileFromUnpaywall: ${err}`);
         await fail(stateName);
         return reject(err);
       });

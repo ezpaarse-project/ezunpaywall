@@ -170,7 +170,7 @@ const enrichTab = (data, response) => {
  * @param {array<object>} data array of line enriched
  * @param {string} headers headers
  * @param {char} separator separator of enriched file
- * @param {*} enrichedFile filepath of enriched file
+ * @param {string} enrichedFile filepath of enriched file
  * @param {string} stateName - state filename
  */
 const writeInFileCSV = async (data, headers, separator, enrichedFile, stateName) => {
@@ -232,9 +232,9 @@ const enrichHeaderCSV = (header, args) => {
 
 /**
  * write header in the enriched file
- * @param {*} header - header enriched
- * @param {*} separator - separator of file
- * @param {*} enrichedFile - pathfile of enriched file
+ * @param {array<string>} header - header enriched
+ * @param {char} separator - separator of file
+ * @param {string} enrichedFile - pathfile of enriched file
  */
 const writeHeaderCSV = async (header, separator, enrichedFile) => {
   try {

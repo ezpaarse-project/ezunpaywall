@@ -11,7 +11,7 @@ const deleteEnrichedFile = async () => {
     const now = Date.now();
     const oneHour = 1000 * 60 * 60;
     if (stats.mtime < (now - oneHour)) {
-      await fs.unlink(path.join(enrichedDir, files[i]));
+      await fs.remove(path.join(enrichedDir, files[i]));
     }
   }
 };

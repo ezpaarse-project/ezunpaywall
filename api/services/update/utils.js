@@ -21,13 +21,13 @@ const {
 /**
  * start an update process of unpaywall data with a file present in ezunpaywall
  * @param {string} filename - nom du fichier à insérer
- * @param {object} options - limit and offset of insertion
  * @param {string} index name of the index to which the data will be saved
+ * @param {object} options - limit and offset of insertion
  */
-const insertion = async (filename, options, index) => {
+const insertion = async (filename, index, options) => {
   setInUpdate(true);
   const statename = await createState();
-  await insertDataUnpaywall(statename, options, filename, index);
+  await insertDataUnpaywall(statename, filename, index, options);
   await endState(statename);
   await createReport(statename);
   setInUpdate(false);
@@ -48,7 +48,7 @@ const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
     await downloadFileFromUnpaywall(statename, snapshotsInfo[i]);
     const opts = { offset: -1, limit: -1 };
-    await insertDataUnpaywall(statename, opts, snapshotsInfo[i].filename, index);
+    await insertDataUnpaywall(statename, snapshotsInfo[i].filename, index, opts);
   }
   await endState(statename);
   await createReport(statename);

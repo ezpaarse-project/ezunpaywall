@@ -15,13 +15,13 @@ const createState = async (id) => {
     loaded: 0,
     linesRead: 0,
     enrichedLines: 0,
-    createdAt: Date.now(),
+    createdAt: new Date(),
     endAt: null,
     error: false,
   };
   const filename = `${id}.json`;
   try {
-    await fs.writeFileSync(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
+    await fs.writeFile(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`createState: ${err}`);
   }
@@ -75,7 +75,7 @@ const fail = async (id) => {
  */
 const endState = async (id) => {
   const state = await getState(id);
-  state.endAt = Date.now();
+  state.endAt = new Date();
   state.done = true;
   updateStateInFile(state, id);
 };

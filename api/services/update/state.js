@@ -48,11 +48,10 @@ const getState = async (filename) => {
  */
 const updateStateInFile = async (state, filename) => {
   const pathfile = path.resolve(stateDir, filename);
-  const isPathExist = await fs.pathExists(pathfile);
-  if (!isPathExist) {
-    logger.error(`updateStateInFile on fs.pathExists: file ${pathfile} doesn't exist`);
-  } else {
+  try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
+  } catch (err) {
+    logger.error(`updateStateInFile: ${err}`);
   }
 };
 
@@ -119,6 +118,7 @@ const fail = async (filename) => {
   const state = await getState(filename);
   state.done = true;
   state.endAt = new Date();
+  state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
   state.error = true;
   await updateStateInFile(state, filename);
 };

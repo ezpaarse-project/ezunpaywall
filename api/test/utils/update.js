@@ -123,7 +123,7 @@ const getState = async () => {
   try {
     res = await chai.request(ezunpaywallURL).get('/update/state');
   } catch (err) {
-    logger.error(`getState : ${err}`);
+    logger.error(`getState: ${err}`);
   }
   return res?.body?.state;
 };
@@ -134,15 +134,12 @@ const getState = async () => {
  */
 const deleteSnapshot = async (filename) => {
   const filePath = path.resolve(downloadDir, filename);
-  const fileExist = await fs.pathExists(filePath);
-  if (fileExist) {
-    try {
-      await fs.unlinkSync(filePath);
-    } catch (err) {
-      logger.error(`deleteSnapshot: ${err}`);
-    }
+  try {
+    await fs.remove(filePath);
+    logger.info(`file ${filePath} deleted`);
+  } catch (err) {
+    logger.error(`deleteSnapshot: ${err}`);
   }
-  logger.info(`file ${filePath} deleted`);
 };
 
 /**

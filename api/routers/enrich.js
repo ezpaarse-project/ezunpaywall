@@ -19,10 +19,23 @@ const stateDir = path.resolve(__dirname, '..', 'out', 'enrich', 'state');
  * @param {string} dir - dir path
  * @returns {array<string>} files path in order
  */
-const orderReccentFiles = (dir) => fs.readdirSync(dir)
-  .filter((file) => fs.lstatSync(path.join(dir, file)).isFile())
-  .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
-  .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
+async function orderRecentFiles(dir) {
+  const filenames = await fs.readdir(dir);
+
+  const files = await Promise.all(
+    filenames.map(async (filename) => {
+      const filePath = path.resolve(dir, filename);
+      return {
+        filename,
+        stat: await fs.lstat(filePath),
+      };
+    }),
+  );
+
+  return files
+    .filter((file) => file.stat.isFile())
+    .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
+}
 
 /**
 * get the most recent file in a dir
@@ -30,8 +43,8 @@ const orderReccentFiles = (dir) => fs.readdirSync(dir)
 * @returns {string} most recent file path
 */
 const getMostRecentFile = async (dir) => {
-  const files = await orderReccentFiles(dir);
-  return files.length ? files[0] : undefined;
+  const files = await orderRecentFiles(dir);
+  return Array.isArray(files) ? files[0] : undefined;
 };
 
 /**
@@ -45,7 +58,7 @@ const getMostRecentFile = async (dir) => {
  *
  * @apiSuccess name of enriched file to download it
  */
-router.post('/enrich/json/:id', async (req, res) => {
+router.post('/enrich/json/:id', async (req, res, next) => {
   const { args } = req.query;
   // TODO check args with graphqlSyntax
   const { id } = req.params;
@@ -53,7 +66,7 @@ router.post('/enrich/json/:id', async (req, res) => {
   try {
     await enrichJSON(req, args, id);
   } catch (err) {
-    return res.status(500).json({ message: `internal server error: ${err}` });
+    return next(err);
   }
   return res.status(200).json({ id });
 });
@@ -69,7 +82,7 @@ router.post('/enrich/json/:id', async (req, res) => {
  *
  * @apiSuccess name of enriched file to download it
  */
-router.post('/enrich/csv/:id', async (req, res) => {
+router.post('/enrich/csv/:id', async (req, res, next) => {
   const { args } = req.query;
   // TODO check args with graphqlSyntax
   const { id } = req.params;
@@ -79,7 +92,7 @@ router.post('/enrich/csv/:id', async (req, res) => {
   try {
     await enrichCSV(req, args, separator, id);
   } catch (err) {
-    return res.status(500).json({ message: `internal server error: ${err}` });
+    return next(err);
   }
   return res.status(200).json({ id });
 });
@@ -89,10 +102,22 @@ router.post('/enrich/csv/:id', async (req, res) => {
  *
  * @apiSuccess state
  */
-router.get('/enrich/state', async (req, res) => {
-  const latestFile = await getMostRecentFile(stateDir);
-  const state = await getState(latestFile?.file.split('.')[0]);
-  res.status(200).json({ state });
+router.get('/enrich/state', async (req, res, next) => {
+  let latestFile;
+  try {
+    latestFile = await getMostRecentFile(stateDir);
+  } catch (err) {
+    return next(err);
+  }
+
+  let state;
+  try {
+    state = await getState(latestFile?.filename);
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(200).json({ state });
 });
 
 /**
@@ -105,7 +130,7 @@ router.get('/enrich/state', async (req, res) => {
  *
  * @apiSuccess state
  */
-router.get('/enrich/state/:id', async (req, res) => {
+router.get('/enrich/state/:id', async (req, res, next) => {
   const { id } = req.params;
   if (!id) {
     return res.status(400).json({ message: 'id expected' });
@@ -114,7 +139,13 @@ router.get('/enrich/state/:id', async (req, res) => {
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
-  const state = await getState(id);
+
+  let state;
+  try {
+    state = await getState(id);
+  } catch (err) {
+    return next(err);
+  }
   return res.status(200).json({ state });
 });
 

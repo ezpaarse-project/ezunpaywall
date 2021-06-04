@@ -88,8 +88,6 @@ module.exports = {
       const filter = [{ terms: { doi: args.dois } }];
       const matchRange = /(range)/i;
 
-      /* eslint-disable no-restricted-syntax */
-      /* eslint-disable guard-for-in */
       for (const attr in args) {
         if (matchRange.exec(attr)) {
           const newAttr = attr.substring(0, attr.length - 6);

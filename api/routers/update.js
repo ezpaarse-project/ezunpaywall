@@ -48,18 +48,30 @@ const {
  * @param {string} dir - dir path
  * @returns {array<string>} files path in order
  */
-const orderReccentFiles = (dir) => fs.readdirSync(dir)
-  .filter((file) => fs.lstatSync(path.join(dir, file)).isFile())
-  .map((file) => ({ file, mtime: fs.lstatSync(path.join(dir, file)).mtime }))
-  .sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
+async function orderRecentFiles(dir) {
+  const filenames = await fs.readdir(dir);
 
+  const files = await Promise.all(
+    filenames.map(async (filename) => {
+      const filePath = path.resolve(dir, filename);
+      return {
+        filename,
+        stat: await fs.lstat(filePath),
+      };
+    }),
+  );
+
+  return files
+    .filter((file) => file.stat.isFile())
+    .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
+}
 /**
  * get the most recent file in a dir
  * @param {string} dir - dir path
  * @returns {string} most recent file path
  */
 const getMostRecentFile = async (dir) => {
-  const files = await orderReccentFiles(dir);
+  const files = await orderRecentFiles(dir);
   return files.length ? files[0] : undefined;
 };
 
@@ -67,10 +79,22 @@ const getMostRecentFile = async (dir) => {
  * get the most recent state in JSON format
  * @apiSuccess state
  */
-router.get('/update/state', async (req, res) => {
-  const latestFile = await getMostRecentFile(stateDir);
-  const state = await getState(latestFile?.file);
-  res.status(200).json({ state });
+router.get('/update/state', async (req, res, next) => {
+  let latestFile;
+  try {
+    latestFile = await getMostRecentFile(stateDir);
+  } catch (err) {
+    return next(err);
+  }
+
+  let state;
+  try {
+    state = await getState(latestFile?.filename);
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(200).json({ state });
 });
 
 /**
@@ -81,7 +105,7 @@ router.get('/update/state', async (req, res) => {
  *
  * @apiSuccess state
  */
-router.get('/update/state/:filename', async (req, res) => {
+router.get('/update/state/:filename', async (req, res, next) => {
   const { filename } = req.params;
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });
@@ -90,7 +114,13 @@ router.get('/update/state/:filename', async (req, res) => {
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
-  const state = await getState(filename);
+
+  let state;
+  try {
+    state = await getState(filename);
+  } catch (err) {
+    return next(err);
+  }
   return res.status(200).json({ state });
 });
 
@@ -99,11 +129,23 @@ router.get('/update/state/:filename', async (req, res) => {
  *
  * @apiSuccess report
  */
-router.get('/update/report', async (req, res) => {
+router.get('/update/report', async (req, res, next) => {
   // TODO use param filename and query latest
-  const latestFile = await getMostRecentFile(reportDir);
-  const report = await getReport(latestFile?.file);
-  res.status(200).json({ report });
+  let latestFile;
+  try {
+    latestFile = await getMostRecentFile(reportDir);
+  } catch (err) {
+    return next(err);
+  }
+
+  let report;
+  try {
+    report = await getReport(latestFile?.filename);
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(200).json({ report });
 });
 
 /**
@@ -113,6 +155,13 @@ router.get('/update/report', async (req, res) => {
  */
 router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
+/**
+ * add snapshot in "out/update/download"
+ *
+ * @apiError 500 internal server error
+ *
+ * @apiSuccess success message
+ */
 router.post('/update/snapshot', upload.single('file'), async (req, res) => {
   if (!req?.file) {
     return res.status(500).json({ messsage: 'internal server error' });
@@ -120,7 +169,7 @@ router.post('/update/snapshot', upload.single('file'), async (req, res) => {
   return res.status(200).json({ messsage: 'file added' });
 });
 
-router.delete('/update/snapshot/:filename', async (req, res) => {
+router.delete('/update/snapshot/:filename', async (req, res, next) => {
   const { filename } = req.params;
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });
@@ -129,7 +178,11 @@ router.delete('/update/snapshot/:filename', async (req, res) => {
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
-  await deleteSnapshot(filename);
+  try {
+    await deleteSnapshot(filename);
+  } catch (err) {
+    return next(err);
+  }
   return res.status(200).json({ messsage: `${filename} deleted` });
 });
 
@@ -190,7 +243,7 @@ router.post('/update/:filename', async (req, res) => {
 
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  insertion(filename, { offset: Number(offset), limit: Number(limit) }, index);
+  insertion(filename, index, { offset: Number(offset), limit: Number(limit) });
   return res.status(200).json({
     message: `start upsert with ${filename}`,
   });
