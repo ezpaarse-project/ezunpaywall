@@ -1,6 +1,10 @@
 #!/bin/bash
 
 # api ezunpaywall
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
+
+# unpaywall
 export API_KEY_UPW="api_key"
 export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
@@ -44,14 +48,13 @@ export EZUNPAYWALL_ES_NODE_SEARCH_REMOTE="true"
 export ES_JAVA_OPTS="-Xms2g -Xmx2g"
 export EZUNPAYWALL_ES_MEM_LIMIT="4g"
 
-if [[ -f ezunpaywall.local.env.sh ]] ; then
-  source ezunpaywall.local.env.sh
+if [[ -f $LOCAL_ENV_FILE ]] ; then
+  source "$LOCAL_ENV_FILE"
 fi
-
 # set local EZUNPAYWALL_ES_DISCOVERY variable
 # should contain all ES cluster IP host except local IP address
 # needs EZUNPAYWALL_NODES in environment
-
+set +u
 if [[ ! -z ${EZUNPAYWALL_NODES} ]] ; then
   for node in ${EZUNPAYWALL_NODES} ; do
     if [[ ! $node = $THIS_HOST ]] ; then
@@ -63,3 +66,4 @@ fi
 if [[ ! -z ${EZUNPAYWALL_ES_DISCOVERY} ]] ; then
   EZUNPAYWALL_ES_DISCOVERY_TYPE="zen"
 fi
+set -u
