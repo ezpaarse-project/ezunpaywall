@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app dark fixed clipped-left color="#4caf50">
     <v-app-bar-nav-icon dark @click.stop="setDrawer(!drawer)" />
-    <v-toolbar-title> EZ-Unpaywall </v-toolbar-title>
+    <v-toolbar-title> ezunpaywall </v-toolbar-title>
   </v-app-bar>
 </template>
 

@@ -20,44 +20,97 @@
           "enrich": "Enrich"
         },
         "filesSelection": {
-          "continue": "Continue"
+          "continue": "Continue",
+          "explainationLogs": "Indicate here the files you want to enrich by ezunpaywall. The only condition is that they must have a DOI field.",
+          "explainationTestsLogs": "Need files to enrich to validate your installation? <a href=\"{url}\" target=\"_blank\">We provide some on GitHub</a>.",
+          "close": "close"
         },
         "settings": {
           "title": "Settings",
           "attributes" : "Unpaywall attributes",
-          "name": "Name the enriched file",
           "filesSelection": "Select files",
           "startProcess": "Start enrichment"
         },
         "process": {
           "download": "Download the enriched file",
           "inProcess": "Enrichment in progress",
-          "end": "Enrichment complete!"
+          "end": "Enrichment complete !"
         }
       }
     },
     "components": {
-      "files": {
-        "clickToAdd": "Click or Drop to add",
-        "removeList": "Delete list",
-        "selectedFiles": "Selected files",
-        "total": "Total"
+      "enrich": {
+        "LogFiles": {
+          "filename": "Filename",
+          "size": "Size",
+          "clickToAdd": "Click or Drop to add",
+          "removeList": "Delete list",
+          "selectedFiles": "Selected files",
+          "total": "Total"
+        },
+        "Settings": {
+          "title": "Settings",
+          "info": {
+            "general": {
+              "data_standard": "Indicates the data collection approaches used for this resource",
+              "doi_url": "The DOI in hyperlink form",
+              "genre": "The type of resource",
+              "is_oa": "Is there an OA copy of this resource",
+              "is_paratext": "Is the item an ancillary part of a journal, like a table of contents",
+              "journal_is_in_doaj": "Is this resource published in a DOAJ-indexed journal",
+              "journal_is_oa": "Is this resource published in a completely OA journal",
+              "journal_issn_l": "A single ISSN for the journal publishing this resource",
+              "journal_issns": "Any ISSNs assigned to the journal publishing this resource",
+              "journal_name": "The name of the journal publishing this resource",
+              "oa_status": "The OA status, or color, of this resource",
+              "published_date": "The date this resource was published",
+              "publisher": "The name of this resource's publisher",
+              "title": "The title of this resource",
+              "updated": "Time when the data for this resource was last updated",
+              "year": "The year this resource was published"
+            },
+            "oa_location": {
+              "evidence": "How unpaywall found this OA location",
+              "host_type": "The type of host that serves this OA location",
+              "is_best": "Is this location the best_oa_location for its resource",
+              "license": "The license under which this copy is published",
+              "pmh_id": "OAI-PMH endpoint where we found this location",
+              "updated": "Time when the data for this location was last updated",
+              "url": "The url_for_pdf if there is one; otherwise landing page URL",
+              "url_for_landing_page": "The URL for a landing page describing this OA copy",
+              "url_for_pdf": "The URL with a PDF version of this OA copy",
+              "version": "The content version accessible at this location"
+            }
+          }
+        },
+        "Metric": {
+          "linesRead": "Lines read",
+          "linesEnriched": "Lines enriched",
+          "treatmentDuration": "Processing duration (in second)"
+        }
       },
-      "settings": {
-        "title": "Settings",
-        "selectAll": "Select all",
-        "unselectAll": "Unselect all"
-      },
-      "metric": {
-        "linesRead": "Lines read",
-        "linesEnriched": "Lines enriched",
-        "treatmentDuration": "Processing duration"
+      "home": {
+        "InUpdate": {
+          "status": "Unpaywall data Update is in progress"
+        },
+        "NoInUpdate": {
+          "status": "No unpaywall data update is in progress"
+        },
+        "Status": {
+          "createdAt": "Created at",
+          "tasks": "Tasks",
+          "task": "Task",
+          "took": "Took",
+          "percent": "Percent",
+          "file": "File",
+          "linesRead": "Lines read",
+          "status": "Status"
+        }
       }
     },
     "theme": {
       "dark": "Dark theme",
       "light": "Light theme"
-    },
-    "language": "Language"
+    }
   }
 }

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# api ezunpaywall
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
 
@@ -7,9 +8,12 @@ LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
 export API_KEY_UPW="api_key"
 export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
+# interface ezunpaywall
+export API_URL="localhost:8080"
+
 # mail
 export EZUNPAYWALL_SMTP_PORT=25
-export EZUNPAYWALL_NOTIFICATIONS_SENDER='ez-unpaywall <ez-unpaywall@inist.fr>'
+export EZUNPAYWALL_NOTIFICATIONS_SENDER='ezunpaywall <ezunpaywall@inist.fr>'
 export EZUNPAYWALL_NOTIFICATIONS_RECEIVERS='you@you.org'
 
 # disabled it if you are in deploiement

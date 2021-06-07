@@ -1,16 +1,22 @@
 /* eslint-disable no-await-in-loop */
 const chai = require('chai');
-
+const chaiHttp = require('chai-http');
 const client = require('../../lib/client');
 const { logger } = require('../../lib/logger');
 
-const api = require('../../app');
-const fakeUnpaywall = require('../../../fakeUnpaywall/app');
+chai.use(chaiHttp);
 
-const ezunpaywallURL = 'http://localhost:8080';
-const fakeUnpaywallURL = 'http://localhost:12000';
+require('../../app');
+require('../../../fakeUnpaywall/app');
 
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL;
+
+/**
+ * ping all services to see if they are available
+ */
 const ping = async () => {
+  // api ezunpaywall
   let res1;
   while (res1?.status !== 200 && res1?.body?.data !== 'pong') {
     try {

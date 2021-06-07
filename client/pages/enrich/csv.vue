@@ -37,6 +37,50 @@
         <v-stepper-content step="1">
           <v-container>
             <v-layout row justify-end class="mb-3">
+              <v-menu
+                v-model="fileSelectionHelp"
+                :close-on-content-click="false"
+                :nudge-width="200"
+                max-width="500"
+                offset-x
+                transition="slide-x-transition"
+              >
+                <template #activator="{ on }">
+                  <v-btn class="mr-5" icon v-on="on">
+                    <v-icon>mdi-help-circle</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-card class="text-justify">
+                  <v-card-text
+                    v-html="
+                      $t('ui.pages.enrich.filesSelection.explainationLogs')
+                    "
+                  />
+                  <v-divider />
+                  <v-card-text
+                    v-html="
+                      $t(
+                        'ui.pages.enrich.filesSelection.explainationTestsLogs',
+                        {
+                          url: logSamplesUrl,
+                        }
+                      )
+                    "
+                  />
+
+                  <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                      class="body-2"
+                      text
+                      @click="fileSelectionHelp = false"
+                      v-text="$t('ui.pages.enrich.filesSelection.close')"
+                    />
+                  </v-card-actions>
+                </v-card>
+              </v-menu>
+
               <v-btn
                 class="body-2"
                 color="primary"
@@ -116,11 +160,11 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { v4 } from 'uuid'
 
-import LogFiles from '~/components/Enrich/LogFiles.vue'
-import Settings from '~/components/Enrich/SettingsCSV.vue'
-import Report from '~/components/Enrich/Report.vue'
+import LogFiles from '~/components/enrich/LogFiles.vue'
+import Settings from '~/components/enrich/SettingsCSV.vue'
+import Report from '~/components/enrich/Report.vue'
 
 export default {
   name: 'CSV',
@@ -137,12 +181,11 @@ export default {
       enrichedFile: '',
       setting: [],
       status: null,
-      timeout: '',
-      fileState: '',
       state: {},
       time: 0,
-      timerInterval: {},
-      inProcess: false
+      inProcess: false,
+      fileSelectionHelp: false,
+      logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall'
     }
   },
   computed: {
@@ -159,40 +202,25 @@ export default {
       return this.$store.getters['process/cancelable']
     },
     resultUrl () {
-      return `http://localhost:8080/enrich/${this.enrichedFile}`
+      return `${this.$axios.defaults.baseURL}/enrich/${this.enrichedFile}`
     }
   },
   methods: {
     async process () {
       this.inProcess = true
-      this.startTimer()
-      await this.createState()
-      this.poling()
-      await this.enrich()
-    },
-    async createState () {
-      let res
-      try {
-        res = await axios({
-          method: 'POST',
-          url: 'http://localhost:8080/enrich/state',
-          responseType: 'json'
-        })
-      } catch (err) {
-        console.log(err)
-      }
-      this.fileState = res.data.state
+      const id = v4()
+      this.enrichedFile = `${id}.csv`
+      this.enrich(id)
+      await this.poll(id)
     },
 
-    async enrich () {
-      let res
+    enrich (id) {
       try {
-        res = await axios({
+        this.$axios({
           method: 'POST',
-          url: 'http://localhost:8080/enrich/csv',
+          url: `/enrich/csv/${id}`,
           params: {
-            args: this.setting.join(','),
-            state: this.fileState
+            args: this.setting
           },
           data: this.files[0].file,
           headers: {
@@ -203,28 +231,31 @@ export default {
       } catch (err) {
         console.log(err)
       }
-      this.enrichedFile = res.data.file
     },
 
-    async poling () {
+    async poll (id) {
       let res
       try {
-        res = await axios({
+        res = await this.$axios({
           method: 'GET',
-          url: `http://localhost:8080/enrich/state/${this.fileState}`,
+          url: `/enrich/state/${id}`,
           responseType: 'json'
         })
       } catch (err) {
         console.log(err)
       }
-      this.state = res.data.state
-      if (res.data.state.status === 'done') {
-        this.onTimesUp()
-        this.inProcess = false
-        clearTimeout(this.timeout)
-        return
+      this.state = res?.data?.state
+      // TODO put it on computer
+      if (Number.isInteger(this.state?.createdAt)) {
+        this.time = Math.round((Date.now() - this.state?.createdAt) / 1000)
+      } else {
+        this.time = 0
       }
-      this.timeout = setTimeout(this.poling, 1000)
+      if (this.state?.done === true) {
+        this.inProcess = false
+      } else {
+        setTimeout(() => this.poll(id), 1000)
+      }
     },
 
     getSetting (setting) {
@@ -232,13 +263,6 @@ export default {
     },
     getFiles (files) {
       this.files = files
-    },
-    onTimesUp () {
-      clearInterval(this.timerInterval)
-    },
-    startTimer () {
-      this.time = 0
-      this.timerInterval = setInterval(() => (this.time += 1), 1000)
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <v-app
-    id="ez-unpaywall"
+    id="ezunpaywall"
   >
     <AppDrawer />
     <AppHeader />

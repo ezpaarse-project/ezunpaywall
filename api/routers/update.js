@@ -3,23 +3,199 @@ const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
 
+const updateDir = path.resolve(__dirname, '..', 'out', 'update', 'download');
+const stateDir = path.resolve(__dirname, '..', 'out', 'update', 'state');
+const reportDir = path.resolve(__dirname, '..', 'out', 'update', 'report');
+
+const multer = require('multer');
+
+const storage = multer.diskStorage(
+  {
+    destination: updateDir,
+    filename: (req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  },
+);
+
+const upload = multer({ storage });
+
 const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikey')}`;
 
 const {
   insertion,
-  weeklyUpdate,
-  insertSnapshotBetweenDate,
-} = require('../services/unpaywall');
+  insertSnapshotBetweenDates,
+} = require('../services/update/utils');
 
 const {
-  task,
-} = require('../services/status');
+  getStatus,
+} = require('../services/update/status');
 
-// middleware
+const {
+  getState,
+} = require('../services/update/state');
+
+const {
+  getReport,
+} = require('../services/update/report');
+
+const {
+  deleteSnapshot,
+} = require('../services/update/snapshot');
+
+/**
+ * get the files in a dir in order by date
+ * @param {string} dir - dir path
+ * @returns {array<string>} files path in order
+ */
+async function orderRecentFiles(dir) {
+  const filenames = await fs.readdir(dir);
+
+  const files = await Promise.all(
+    filenames.map(async (filename) => {
+      const filePath = path.resolve(dir, filename);
+      return {
+        filename,
+        stat: await fs.lstat(filePath),
+      };
+    }),
+  );
+
+  return files
+    .filter((file) => file.stat.isFile())
+    .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
+}
+/**
+ * get the most recent file in a dir
+ * @param {string} dir - dir path
+ * @returns {string} most recent file path
+ */
+const getMostRecentFile = async (dir) => {
+  const files = await orderRecentFiles(dir);
+  return files.length ? files[0] : undefined;
+};
+
+/**
+ * get the most recent state in JSON format
+ * @apiSuccess state
+ */
+router.get('/update/state', async (req, res, next) => {
+  let latestFile;
+  try {
+    latestFile = await getMostRecentFile(stateDir);
+  } catch (err) {
+    return next(err);
+  }
+
+  let state;
+  try {
+    state = await getState(latestFile?.filename);
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(200).json({ state });
+});
+
+/**
+ * get state in JSON format
+ *
+ * @apiError 400 filename expected
+ * @apiError 404 file not found
+ *
+ * @apiSuccess state
+ */
+router.get('/update/state/:filename', async (req, res, next) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
+  }
+  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  if (!fileExist) {
+    return res.status(404).json({ message: 'file not found' });
+  }
+
+  let state;
+  try {
+    state = await getState(filename);
+  } catch (err) {
+    return next(err);
+  }
+  return res.status(200).json({ state });
+});
+
+/**
+ * get the most recent report in JSON format
+ *
+ * @apiSuccess report
+ */
+router.get('/update/report', async (req, res, next) => {
+  // TODO use param filename and query latest
+  let latestFile;
+  try {
+    latestFile = await getMostRecentFile(reportDir);
+  } catch (err) {
+    return next(err);
+  }
+
+  let report;
+  try {
+    report = await getReport(latestFile?.filename);
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(200).json({ report });
+});
+
+/**
+ * gets the status if an update is in progress
+ *
+ * @apiSuccess status
+ */
+router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
+
+/**
+ * add snapshot in "out/update/download"
+ *
+ * @apiError 500 internal server error
+ *
+ * @apiSuccess success message
+ */
+router.post('/update/snapshot', upload.single('file'), async (req, res) => {
+  if (!req?.file) {
+    return res.status(500).json({ messsage: 'internal server error' });
+  }
+  return res.status(200).json({ messsage: 'file added' });
+});
+
+router.delete('/update/snapshot/:filename', async (req, res, next) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
+  }
+  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  if (!fileExist) {
+    return res.status(404).json({ message: 'file not found' });
+  }
+  try {
+    await deleteSnapshot(filename);
+  } catch (err) {
+    return next(err);
+  }
+  return res.status(200).json({ messsage: `${filename} deleted` });
+});
+
+/**
+ * middleware that blocks simultaneous updates of unpaywall data
+ *
+ * @apiError 409 update in progress
+ */
 router.use((req, res, next) => {
-  if (!task.done) {
+  const status = getStatus();
+  if (status) {
     return res.status(409).json({
-      message: 'process in progress, check /insert/status',
+      message: 'update in progress',
     });
   }
   return next();
@@ -31,35 +207,35 @@ router.use((req, res, next) => {
  * offset and limit are the variables to designate
  * from which line to insert and from which line to stop.
  *
- * @api {post} /update/:name insert the content of files that the server has already downloaded
- * @apiName Update
- * @apiGroup Update
+ * @apiParam QUERRY offset - first line insertion, by default, we start with the first
+ * @apiParam QUERRY limit - last line insertion by default, we have no limit
+ * @apiParam QUERRY index - name of the index to which the data will be saved
+ * @apiParam PARAMS filename - filename
  *
- * @apiParam (QUERY) {Number} [offset] first line insertion, by default, we start with the first
- * @apiParam (QUERY) {Number} [limit] last line insertion by default, we have no limit
- * @apiParam (PARAMS) {String} name name of file
+ * @apiSuccess {string} message informing the start of the process
  *
- * @apiSuccess {String} message informing the start of the process
- *
- * @apiError 400 name of snapshot file expected /
- * name of file is in bad format (accepted [a-zA-Z0-9_.-] patern) /
- * limit can't be lower than offset or 0
- * @apiError 404 file doesn't exist
+ * @apiError 400 name of snapshot file expected
+ * @apiError 400 filename is in bad format (accepted [a-zA-Z0-9_.-] patern)
+ * @apiError 400 limit can't be lower than offset or 0
+ * @apiError 404 file not found
  *
  */
-router.post('/update/:name', async (req, res) => {
-  const { name } = req.params;
-  let { offset, limit } = req.query;
-  if (!name) {
-    return res.status(400).json({ message: 'name of snapshot file expected' });
+router.post('/update/:filename', async (req, res) => {
+  const { filename } = req.params;
+  let { offset, limit, index } = req.query;
+  if (!index) {
+    index = 'unpaywall';
+  }
+  if (!filename) {
+    return res.status(400).json({ message: 'filename of snapshot file expected' });
   }
   const pattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
-  if (!pattern.test(name)) {
-    return res.status(400).json({ message: 'name of file is in bad format (accepted a .gz file)' });
+  if (!pattern.test(filename)) {
+    return res.status(400).json({ message: 'filename of file is in bad format (accepted a .gz file)' });
   }
-  const fileExist = await fs.pathExists(path.resolve(__dirname, '..', 'out', 'download', name));
+  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
   if (!fileExist) {
-    return res.status(404).json({ message: 'file doesn\'t exist' });
+    return res.status(404).json({ message: 'file not found' });
   }
   if (Number(limit) <= Number(offset)) {
     return res.status(400).json({ message: 'limit can\t be lower than offset or 0' });
@@ -67,9 +243,9 @@ router.post('/update/:name', async (req, res) => {
 
   if (!offset) { offset = 0; }
   if (!limit) { limit = -1; }
-  insertion(name, { offset: Number(offset), limit: Number(limit) });
+  insertion(filename, index, { offset: Number(offset), limit: Number(limit) });
   return res.status(200).json({
-    message: `start upsert with ${name}`,
+    message: `start upsert with ${filename}`,
   });
 });
 
@@ -85,19 +261,25 @@ router.post('/update/:name', async (req, res) => {
  * - If there is the `start` attribute, It will execute the download and
  * the insertion of the update files between the` start` date and the current date.
  *
- * @apiParam (QUERY) {DATE} [startDate] period start date at format YYYY-mm-dd
- * @apiParam (QUERY) {DATE} [endDate] period end date at format YYYY-mm-dd
+ * @apiParam QUERY startDate - start date at format YYYY-mm-dd
+ * @apiParam QUERY endDate - end date at format YYYY-mm-dd
+ * @apiParam QUERRY index - name of the index to which the data will be saved
  *
- * @apiSuccess {String} message informing the start of the process
+ * @apiSuccess message informing the start of the process
  *
- * @apiError 400 start date is missing / end date is lower than start date /
- * start date or end are date in bad format, dates in format YYYY-mm-dd
+ * @apiError 400 start date is missing
+ * @apiError 400 end date is lower than start date
+ * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
  */
 router.post('/update', (req, res) => {
-  const { startDate } = req.query;
-  let { endDate } = req.query;
+  let { startDate, endDate, index } = req.query;
+  if (!index) {
+    index = 'unpaywall';
+  }
   if (!startDate && !endDate) {
-    weeklyUpdate(url);
+    endDate = Date.now();
+    startDate = endDate - (7 * 24 * 60 * 60 * 1000);
+    insertSnapshotBetweenDates(url, startDate, endDate, index);
     return res.status(200).json({
       message: 'weekly update has begun, list of task has been created on elastic',
     });
@@ -126,7 +308,7 @@ router.post('/update', (req, res) => {
   if (startDate && !endDate) {
     [endDate] = new Date().toISOString().split('T');
   }
-  insertSnapshotBetweenDate(url, startDate, endDate);
+  insertSnapshotBetweenDates(url, startDate, endDate, index);
   return res.status(200).json({
     message: `insert snapshot beetween ${startDate} and ${endDate} has begun, list of task has been created on elastic`,
   });

@@ -1,0 +1,10 @@
+{
+  "eslint.workingDirectories": [
+    "api",
+    "client",
+  ],
+  "eslint.validate": [
+    "javascript",
+    "vue"
+  ]
+}

@@ -10,10 +10,8 @@ const cron = require('node-cron');
 const schema = require('./graphql/graphql');
 
 // routers
-const RouterOutFiles = require('./routers/outFiles');
-const RouterTask = require('./routers/status');
 const RouterEnrich = require('./routers/enrich');
-const RouterManageDatabase = require('./routers/update');
+const RouterUpdate = require('./routers/update');
 
 const { logger } = require('./lib/logger');
 const { deleteEnrichedFile } = require('./lib/file');
@@ -23,17 +21,28 @@ const {
 } = require('./lib/elastic');
 
 const outDir = path.resolve(__dirname, 'out');
+fs.ensureDir(path.resolve(outDir));
+
+const updateDir = path.resolve(outDir, 'update');
+fs.ensureDir(path.resolve(updateDir));
+fs.ensureDir(path.resolve(updateDir, 'report'));
+fs.ensureDir(path.resolve(updateDir, 'state'));
+fs.ensureDir(path.resolve(updateDir, 'download'));
+
+const enrichDir = path.resolve(outDir, 'enrich');
+fs.ensureDir(path.resolve(enrichDir));
+fs.ensureDir(path.resolve(enrichDir, 'state'));
+fs.ensureDir(path.resolve(enrichDir, 'enriched'));
+fs.ensureDir(path.resolve(enrichDir, 'upload'));
+
 // initiates all out dir
 fs.ensureDir(path.resolve(outDir, 'logs'));
-fs.ensureDir(path.resolve(outDir, 'download'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
-fs.ensureDir(path.resolve(outDir, 'enriched'));
 
 // start server
 const app = express();
 
 // middleware
-
 app.use(cors());
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -52,10 +61,6 @@ const corsOptions = {
 };
 
 // routers
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve('homepage.html'));
-});
-
 // initialize API graphql
 app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
   const graphqlQuery = graphqlHTTP({
@@ -69,11 +74,8 @@ app.get('/ping', (req, res) => {
   res.status(200).json({ data: 'pong' });
 });
 
-app.use(RouterOutFiles);
-app.use(RouterTask);
 app.use(RouterEnrich);
-
-app.use(RouterManageDatabase);
+app.use(RouterUpdate);
 
 // elastic index
 initalizeIndex();
@@ -85,7 +87,6 @@ app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
 app.listen('8080', () => {
   logger.info('Server listening on 8080');
-  app.emit('ready');
 });
 
 cron.schedule('0 1 * * *', async () => {

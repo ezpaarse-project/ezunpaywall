@@ -1,0 +1,19 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd api/ 
+npm run lint
+
+if [ $? -ne 0 ]
+then 
+  exit $?
+fi
+
+cd ..
+cd client
+npm run lint
+
+if [ $? -ne 0 ]
+then 
+  exit $?
+fi

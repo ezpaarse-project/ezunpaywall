@@ -17,7 +17,7 @@
     <mj-section background-color="#4CAF50" border-radius="5px 5px 0px 0px">
       <mj-column>
         <mj-text align="center" color="white" font-size="24px">
-          <p>ez-unpaywall</p>
+          <p>ezunpaywall</p>
         </mj-text>
       </mj-column>
     </mj-section>

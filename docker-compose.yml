@@ -26,8 +26,26 @@ services:
       # proxy
       - http_proxy
       - https_proxy
+      # serveur
+      - API_URL
     volumes:
       - ./api/out:/usr/src/api/out/
     command: "npm start"
     ports:
       - "8080:8080"
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      args:
+        - http_proxy
+        - https_proxy
+    environment:
+      - API_URL
+      - HOST=0.0.0.0
+      - PORT=3000
+    command: "npm start"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

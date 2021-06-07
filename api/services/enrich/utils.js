@@ -1,37 +1,42 @@
-const axios = require('axios');
+const {
+  createState,
+  endState,
+} = require('./state');
 
-const { logger } = require('../../lib/logger');
+const {
+  processEnrichJSON,
+} = require('./json');
+
+const {
+  processEnrichCSV,
+} = require('./csv');
 
 /**
- * fetch ez-unpaywall with array of dois and fetchAttributes
- * @param {*} tab array of line that we will enrich
- * @param {*} fetchAttributes attributes that we will enrich
+ * start an enrich process with a file give by user
+ * @param {readStream} readStream - file need to be enriched
+ * @param {String} args - graphql args for enrichment
+ * @param {String} id - id of process
  */
-const fetchEzUnpaywall = async (tab, fetchAttributes) => {
-  let dois = [];
-  let response = [];
-  // contain index of doi
-  const map1 = await tab.map((elem) => elem?.doi);
-  // contain array of doi to request ezunpaywall
-  dois = await map1.filter((elem) => elem !== undefined);
-  try {
-    response = await axios({
-      method: 'post',
-      url: 'http://localhost:8080/graphql',
-      data: {
-        query: `query ($dois: [ID!]!) {getDataUPW(dois: $dois) { doi, ${fetchAttributes.toString()} }}`,
-        variables: {
-          dois,
-        },
-      },
-    });
-  } catch (err) {
-    logger.error(err.response.data.errors[0].locations);
-    logger.error(`fetchEzUnpaywall: ${err}`);
-  }
-  return response?.data?.data?.getDataUPW;
+const enrichJSON = async (readStream, args, id) => {
+  await createState(id);
+  await processEnrichJSON(readStream, args, id);
+  await endState(id);
+};
+
+/**
+ * start an enrich process with a file give by user
+ * @param {readStream} readStream - file need to be enriched
+ * @param {String} args - graphql args for enrichment
+ * @param {string} separator - separator of enriched file
+ * @param {String} id - id of process
+ */
+const enrichCSV = async (readStream, args, separator, id) => {
+  await createState(id);
+  await processEnrichCSV(readStream, args, separator, id);
+  await endState(id);
 };
 
 module.exports = {
-  fetchEzUnpaywall,
+  enrichJSON,
+  enrichCSV,
 };

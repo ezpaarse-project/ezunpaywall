@@ -1,7 +1,7 @@
 {% extends "layout.mjml" %}
 
 {% block title %}
-<mj-title>Rapport ez-unpaywall du {{ date }}.</mj-title>
+<mj-title>Rapport ezunpaywall du {{ date }}.</mj-title>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +25,7 @@
 
     <mj-text>
       <p>
-        Ce message est envoyé automatiquement par l'application ez-unpaywall,
+        Ce message est envoyé automatiquement par l'application ezunpaywall,
         vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
       </p>
     </mj-text>

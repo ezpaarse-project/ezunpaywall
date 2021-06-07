@@ -90,7 +90,7 @@
         <v-btn
           small
           class="ma-3"
-          href="https://github.com/ezpaarse-project/ez-unpaywall#readme"
+          href="https://github.com/ezpaarse-project/ezunpaywall#readme"
           target="_blank"
           rel="noreferrer"
           outlined
