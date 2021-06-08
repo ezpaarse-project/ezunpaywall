@@ -66,7 +66,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .request(ezunpaywallURL)
         .post(`/enrich/csv/${id}`)
         .send(file)
-        .set('Content-Type', 'text/csv');
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
@@ -117,7 +118,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .request(ezunpaywallURL)
         .post(`/enrich/csv/${id}`)
         .send(file)
-        .set('Content-Type', 'text/csv');
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
@@ -144,7 +146,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .request(ezunpaywallURL)
         .get(`/enrich/${id}.csv`)
         .buffer()
-        .parse(binaryParser);
+        .parse(binaryParser)
+        .set('api_key', 'user');
 
       try {
         await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.csv'), res3.body.toString());
@@ -170,7 +173,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .post(`/enrich/csv/${id}`)
         .query({ args: '{ is_oa }' })
         .send(file)
-        .set('Content-Type', 'text/csv');
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
@@ -221,7 +225,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .post(`/enrich/csv/${id}`)
         .query({ args: '{ best_oa_location { license } }' })
         .send(file)
-        .set('Content-Type', 'text/csv');
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
@@ -272,7 +277,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .post(`/enrich/csv/${id}`)
         .query({ args: '{ z_authors { given } }' })
         .send(file)
-        .set('Content-Type', 'text/csv');
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
@@ -323,7 +329,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .post(`/enrich/csv/${id}`)
         .query({ args: '{ is_oa, best_oa_location { license }, z_authors{ family } }' })
         .send(file)
-        .set('Content-Type', 'text/csv');
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
@@ -376,7 +383,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .post(`/enrich/csv/${id}`)
         .query({ separator: ';' })
         .send(file)
-        .set('Content-Type', 'text/csv');
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
@@ -429,11 +437,45 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
         .post(`/enrich/csv/${id}`)
         .query({ args: '{ coin }' })
         .send(file)
-        .set('Content-Type', 'text/csv');
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'user');
 
       // TODO mettre une erreur 401
       expect(res).have.status(500);
       // expect(JSON.parse(res.body).message).be.equal('args incorrect');
+    });
+  });
+
+  describe('Don\'t do a enrichment of a csv file because wrong api_key', () => {
+    it('Should return a error message', async () => {
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
+
+      const id = uuid.v4();
+      const res = await chai
+        .request(ezunpaywallURL)
+        .post(`/enrich/csv/${id}`)
+        .query({ args: '{ is_oa }' })
+        .send(file)
+        .set('Content-Type', 'text/csv');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
+    });
+
+    it('Should return a error message', async () => {
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
+
+      const id = uuid.v4();
+      const res = await chai
+        .request(ezunpaywallURL)
+        .post(`/enrich/csv/${id}`)
+        .query({ args: '{ is_oa }' })
+        .send(file)
+        .set('Content-Type', 'text/csv')
+        .set('api_key', 'wrong apikey');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 

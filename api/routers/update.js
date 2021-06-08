@@ -20,7 +20,7 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
-const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikey')}`;
+const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikeyupw')}`;
 
 const {
   insertion,
@@ -42,6 +42,10 @@ const {
 const {
   deleteSnapshot,
 } = require('../services/update/snapshot');
+
+const {
+  checkStatus,
+} = require('../middlewares/status');
 
 /**
  * get the files in a dir in order by date
@@ -187,21 +191,6 @@ router.delete('/update/snapshot/:filename', async (req, res, next) => {
 });
 
 /**
- * middleware that blocks simultaneous updates of unpaywall data
- *
- * @apiError 409 update in progress
- */
-router.use((req, res, next) => {
-  const status = getStatus();
-  if (status) {
-    return res.status(409).json({
-      message: 'update in progress',
-    });
-  }
-  return next();
-});
-
-/**
  * Insert the content of files that the
  * server has already downloaded (file in .gz format).
  * offset and limit are the variables to designate
@@ -220,7 +209,7 @@ router.use((req, res, next) => {
  * @apiError 404 file not found
  *
  */
-router.post('/update/:filename', async (req, res) => {
+router.post('/update/:filename', checkStatus, async (req, res) => {
   const { filename } = req.params;
   let { offset, limit, index } = req.query;
   if (!index) {
@@ -271,7 +260,7 @@ router.post('/update/:filename', async (req, res) => {
  * @apiError 400 end date is lower than start date
  * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
  */
-router.post('/update', (req, res) => {
+router.post('/update', checkStatus, (req, res) => {
   let { startDate, endDate, index } = req.query;
   if (!index) {
     index = 'unpaywall';

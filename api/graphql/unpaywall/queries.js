@@ -1,6 +1,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 const graphql = require('graphql');
+
 const { UnPayWallType } = require('./index');
 const client = require('../../lib/client');
 const oaLocationInput = require('../oa_location/inputType');

@@ -118,7 +118,6 @@ const askEzUnpaywall = async (data, args, id) => {
  */
 const flatten = (obj) => {
   const flattened = {};
-  // TODO check if array
   function flattenProp(data, keys) {
     Object.entries(data).forEach(([key, value]) => {
       const newKeys = [...keys, key];

@@ -1,5 +1,7 @@
 { 
-  "apikey": "api_key",
+  "apikeyupw": "api_key",
+  "apikeyusers": "[\"user\"]",
+  "apikeyadmin": "[\"admin\"]",
   "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
   "elasticsearch": {
     "port": 9200,

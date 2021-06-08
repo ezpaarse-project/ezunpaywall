@@ -37,6 +37,9 @@ services:
       # URL
       - EZUNPAYWALL_URL=http://localhost:8080
       - FAKE_UNPAYWALL_URL=http://localhost:12000
+      # apikey
+      - API_KEY_USERS=["user"]
+      - API_KEY_ADMIN=["admin"]
     working_dir: /api
     volumes:
       - ./fakeUnpaywall:/fakeUnpaywall

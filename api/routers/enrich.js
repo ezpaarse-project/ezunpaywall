@@ -11,6 +11,10 @@ const {
   enrichCSV,
 } = require('../services/enrich/utils');
 
+const {
+  checkAuth,
+} = require('../middlewares/auth');
+
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enrich', 'enriched');
 const stateDir = path.resolve(__dirname, '..', 'out', 'enrich', 'state');
 
@@ -46,56 +50,6 @@ const getMostRecentFile = async (dir) => {
   const files = await orderRecentFiles(dir);
   return Array.isArray(files) ? files[0] : undefined;
 };
-
-/**
- * enrich a jsonl file
- *
- * @apiParam PARAMS id - id of process
- *
- * @apiParam QUERY args - graphql attributes for enrichment
- *
- * @apiError 500 internal server error
- *
- * @apiSuccess name of enriched file to download it
- */
-router.post('/enrich/json/:id', async (req, res, next) => {
-  const { args } = req.query;
-  // TODO check args with graphqlSyntax
-  const { id } = req.params;
-  // TODO check if id is already used
-  try {
-    await enrichJSON(req, args, id);
-  } catch (err) {
-    return next(err);
-  }
-  return res.status(200).json({ id });
-});
-
-/**
- * enrich a csv file
- *
- * @apiParam PARAMS id - id of process
- *
- * @apiParam QUERY args - graphql attributes for enrichment
- *
- * @apiError 500 internal server error
- *
- * @apiSuccess name of enriched file to download it
- */
-router.post('/enrich/csv/:id', async (req, res, next) => {
-  const { args } = req.query;
-  // TODO check args with graphqlSyntax
-  const { id } = req.params;
-  // TODO check if is is already used
-  let { separator } = req.query;
-  if (!separator) separator = ',';
-  try {
-    await enrichCSV(req, args, separator, id);
-  } catch (err) {
-    return next(err);
-  }
-  return res.status(200).json({ id });
-});
 
 /**
  * get the most recent state in JSON format
@@ -169,6 +123,56 @@ router.get('/enrich/:filename', async (req, res) => {
     return res.status(404).json({ message: 'file not found' });
   }
   return res.sendFile(path.resolve(enrichedDir, filename));
+});
+
+/**
+ * enrich a jsonl file
+ *
+ * @apiParam PARAMS id - id of process
+ *
+ * @apiParam QUERY args - graphql attributes for enrichment
+ *
+ * @apiError 500 internal server error
+ *
+ * @apiSuccess name of enriched file to download it
+ */
+router.post('/enrich/json/:id', checkAuth, async (req, res, next) => {
+  const { args } = req.query;
+  // TODO check args with graphqlSyntax
+  const { id } = req.params;
+  // TODO check if id is already used
+  try {
+    await enrichJSON(req, args, id);
+  } catch (err) {
+    return next(err);
+  }
+  return res.status(200).json({ id });
+});
+
+/**
+ * enrich a csv file
+ *
+ * @apiParam PARAMS id - id of process
+ *
+ * @apiParam QUERY args - graphql attributes for enrichment
+ *
+ * @apiError 500 internal server error
+ *
+ * @apiSuccess name of enriched file to download it
+ */
+router.post('/enrich/csv/:id', checkAuth, async (req, res, next) => {
+  const { args } = req.query;
+  // TODO check args with graphqlSyntax
+  const { id } = req.params;
+  // TODO check if is is already used
+  let { separator } = req.query;
+  if (!separator) separator = ',';
+  try {
+    await enrichCSV(req, args, separator, id);
+  } catch (err) {
+    return next(err);
+  }
+  return res.status(200).json({ id });
 });
 
 module.exports = router;

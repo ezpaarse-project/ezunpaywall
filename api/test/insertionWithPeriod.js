@@ -60,6 +60,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post(`/update?startDate=${date2}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
+
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`insert snapshot beetween ${date2} and ${dateNow} has begun, list of task has been created on elastic`);
     });
@@ -294,6 +295,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post(`/update?startDate=${date5}&endDate=${date4}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
+
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`insert snapshot beetween ${date5} and ${date4} has begun, list of task has been created on elastic`);
     });
@@ -338,6 +340,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post(`/update?endDate=${date1}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('start date is missing');
     });
@@ -350,6 +353,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post('/update?startDate=LookAtMyDab')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
     });
@@ -360,6 +364,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post('/update?startDate=01-01-2000')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
     });
@@ -370,6 +375,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post('/update?startDate=2000-50-50')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
     });
@@ -382,6 +388,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post(`/update?startDate=${date2}&endDate=${date3}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('endDate is lower than startDate');
     });
@@ -394,6 +401,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post(`/update?startDate=${tomorrow}`)
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate is in the futur');
     });

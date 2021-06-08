@@ -31,6 +31,7 @@
     "express-graphql": "^0.9.0",
     "fs-extra": "^9.0.1",
     "graphql": "^15.0.0",
+    "jsonwebtoken": "^8.5.1",
     "lodash.get": "^4.4.2",
     "mjml": "^4.8.1",
     "morgan": "^1.10.0",
