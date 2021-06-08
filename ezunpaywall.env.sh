@@ -66,4 +66,3 @@ fi
 if [[ ! -z ${EZUNPAYWALL_ES_DISCOVERY} ]] ; then
   EZUNPAYWALL_ES_DISCOVERY_TYPE="zen"
 fi
-set -u
