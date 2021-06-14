@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs-extra');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 
 // start server
@@ -10,7 +9,7 @@ const server = express();
 const RouterSnapshots = require('./routers/snapshots');
 
 server.use('/snapshots', cors());
-server.use(bodyParser.json());
+server.use(express.json());
 
 server.get('/', (req, res) => {
   res.status(200).json({ message: 'fakeUnpaywall Up' });

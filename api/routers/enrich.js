@@ -63,7 +63,6 @@ router.get('/enrich/state', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-
   let state;
   try {
     state = await getState(latestFile?.filename);
@@ -77,26 +76,26 @@ router.get('/enrich/state', async (req, res, next) => {
 /**
  * get state in JSON format
  *
- * @apiParam PARAMS id - id of process
+ * @apiParam PARAMS filename - state
  *
  * @apiError 400 id expected
  * @apiError 404 file not found
  *
  * @apiSuccess state
  */
-router.get('/enrich/state/:id', async (req, res, next) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ message: 'id expected' });
+router.get('/enrich/state/:filename', async (req, res, next) => {
+  const { filename } = req.params;
+  if (!filename) {
+    return res.status(400).json({ message: 'filename expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(stateDir, `${id}.json`));
+  const fileExist = await fs.pathExists(path.resolve(stateDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
 
   let state;
   try {
-    state = await getState(id);
+    state = await getState(filename);
   } catch (err) {
     return next(err);
   }
@@ -139,10 +138,12 @@ router.get('/enrich/:filename', async (req, res) => {
 router.post('/enrich/json/:id', checkAuth, async (req, res, next) => {
   const { args } = req.query;
   // TODO check args with graphqlSyntax
+  let { index } = req.query;
+  if (!index) index = 'unpaywall';
   const { id } = req.params;
   // TODO check if id is already used
   try {
-    await enrichJSON(req, args, id);
+    await enrichJSON(req, args, id, index);
   } catch (err) {
     return next(err);
   }
@@ -162,13 +163,15 @@ router.post('/enrich/json/:id', checkAuth, async (req, res, next) => {
  */
 router.post('/enrich/csv/:id', checkAuth, async (req, res, next) => {
   const { args } = req.query;
+  let { index } = req.query;
+  if (!index) index = 'unpaywall';
   // TODO check args with graphqlSyntax
   const { id } = req.params;
   // TODO check if is is already used
   let { separator } = req.query;
   if (!separator) separator = ',';
   try {
-    await enrichCSV(req, args, separator, id);
+    await enrichCSV(req, args, separator, id, index);
   } catch (err) {
     return next(err);
   }

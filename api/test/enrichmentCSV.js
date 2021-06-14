@@ -46,7 +46,8 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
     await chai.request(ezunpaywallURL)
       .post('/update/fake1.jsonl.gz')
       .set('Access-Control-Allow-Origin', '*')
-      .set('Content-Type', 'application/json');
+      .set('Content-Type', 'application/json')
+      .set('api_key', 'admin');
 
     let inUpdate = true;
     while (inUpdate) {
@@ -74,7 +75,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -126,7 +127,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -181,7 +182,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -233,7 +234,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -285,7 +286,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -337,7 +338,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -391,7 +392,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }

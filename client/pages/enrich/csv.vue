@@ -115,12 +115,12 @@
               />
             </v-layout>
           </v-container>
+          <v-text-field v-model="apiKey" label="api key" />
           <v-toolbar class="secondary" dark dense flat>
             <v-toolbar-title>
               {{ $t("ui.pages.enrich.settings.title") }}
             </v-toolbar-title>
           </v-toolbar>
-
           <Settings @setting="getSetting($event)" />
         </v-stepper-content>
 
@@ -185,7 +185,8 @@ export default {
       time: 0,
       inProcess: false,
       fileSelectionHelp: false,
-      logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall'
+      logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
+      apiKey: ''
     }
   },
   computed: {
@@ -224,7 +225,8 @@ export default {
           },
           data: this.files[0].file,
           headers: {
-            'Content-Type': 'text/csv'
+            'Content-Type': 'text/csv',
+            api_key: this.apiKey
           },
           responseType: 'json'
         })
@@ -238,7 +240,7 @@ export default {
       try {
         res = await this.$axios({
           method: 'GET',
-          url: `/enrich/state/${id}`,
+          url: `/enrich/state/${id}.json`,
           responseType: 'json'
         })
       } catch (err) {

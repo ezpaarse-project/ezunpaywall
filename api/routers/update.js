@@ -3,11 +3,11 @@ const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
 
-const updateDir = path.resolve(__dirname, '..', 'out', 'update', 'download');
+const multer = require('multer');
+
+const updateDir = path.resolve(__dirname, '..', 'out', 'update', 'snapshot');
 const stateDir = path.resolve(__dirname, '..', 'out', 'update', 'state');
 const reportDir = path.resolve(__dirname, '..', 'out', 'update', 'report');
-
-const multer = require('multer');
 
 const storage = multer.diskStorage(
   {
@@ -46,6 +46,10 @@ const {
 const {
   checkStatus,
 } = require('../middlewares/status');
+
+const {
+  checkAdmin,
+} = require('../middlewares/admin');
 
 /**
  * get the files in a dir in order by date
@@ -160,7 +164,7 @@ router.get('/update/report', async (req, res, next) => {
 router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
 /**
- * add snapshot in "out/update/download"
+ * add snapshot in "out/update/snapshot"
  *
  * @apiError 500 internal server error
  *
@@ -209,7 +213,7 @@ router.delete('/update/snapshot/:filename', async (req, res, next) => {
  * @apiError 404 file not found
  *
  */
-router.post('/update/:filename', checkStatus, async (req, res) => {
+router.post('/update/:filename', checkStatus, checkAdmin, async (req, res) => {
   const { filename } = req.params;
   let { offset, limit, index } = req.query;
   if (!index) {
@@ -260,7 +264,7 @@ router.post('/update/:filename', checkStatus, async (req, res) => {
  * @apiError 400 end date is lower than start date
  * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
  */
-router.post('/update', checkStatus, (req, res) => {
+router.post('/update', checkStatus, checkAdmin, (req, res) => {
   let { startDate, endDate, index } = req.query;
   if (!index) {
     index = 'unpaywall';

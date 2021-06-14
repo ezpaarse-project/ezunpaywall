@@ -44,7 +44,8 @@ describe('Test: weekly update route test', () => {
       const res = await chai.request(ezunpaywallURL)
         .post('/update')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('weekly update has begun, list of task has been created on elastic');
@@ -138,7 +139,8 @@ describe('Test: weekly update route test', () => {
       const res = await chai.request(ezunpaywallURL)
         .post('/update')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       // test response
       expect(res).have.status(200);
@@ -204,6 +206,30 @@ describe('Test: weekly update route test', () => {
 
     after(async () => {
       await resetAll();
+    });
+  });
+
+  describe('Don\'t a classic weekly update because wrong api_key', () => {
+    it('Should return a error message', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .post('/update')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'wrong api_key');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
+    });
+
+    it('Should return a error message', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .post('/update')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'wrong api_key');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 

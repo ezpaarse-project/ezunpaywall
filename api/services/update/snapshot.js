@@ -3,10 +3,10 @@ const path = require('path');
 const fs = require('fs-extra');
 const { logger } = require('../../lib/logger');
 
-const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
+const snapshotDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'snapshot');
 
 const deleteSnapshot = async (filename) => {
-  const filepath = path.resolve(downloadDir, filename);
+  const filepath = path.resolve(snapshotDir, filename);
   try {
     await fs.remove(filepath);
   } catch (err) {

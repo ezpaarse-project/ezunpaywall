@@ -23,7 +23,7 @@ services:
       - http_proxy
       - https_proxy
       # apikey
-      - API_KEY_USERS=["user"]
+      - API_KEY_USERS=["user", "admin"]
       - API_KEY_ADMIN=["admin"]
     working_dir: /api
     volumes:

@@ -1,6 +1,6 @@
 { 
-  "apikeyupw": "api_key",
-  "apikeyusers": "[\"user\"]",
+  "apikeyupw": "unpaywall",
+  "apikeyusers": "[\"user\", \"admin\"]",
   "apikeyadmin": "[\"admin\"]",
   "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
   "elasticsearch": {

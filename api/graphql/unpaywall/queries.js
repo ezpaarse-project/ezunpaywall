@@ -25,11 +25,17 @@ const parseTerms = (attr, name, args) => {
     logger.error(`parseTerms: ${err}`);
   }
 
-  let val;
+  let res;
   for (const attr2 in attrParsed) {
-    val = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
+    res = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
   }
-  return JSON.parse(val);
+  let parsedRes;
+  try {
+    parsedRes = JSON.parse(res);
+  } catch (err) {
+    logger.error(`getDataUPW - JSON.parse(res): ${err}`);
+  }
+  return parsedRes;
 };
 
 module.exports = {
@@ -85,7 +91,10 @@ module.exports = {
       },
     },
     // attr info give informations about graphql request
-    resolve: async (parent, args) => {
+    resolve: async (parent, args, context) => {
+      if (!context?.index) {
+        context.index = 'unpaywall';
+      }
       const filter = [{ terms: { doi: args.dois } }];
       const matchRange = /(range)/i;
 
@@ -99,8 +108,13 @@ module.exports = {
             lte,
           };
           range = `{"range": {"${newAttr}": ${JSON.stringify(range)}}}`;
-
-          filter.push(JSON.parse(range));
+          let rangeParsed;
+          try {
+            rangeParsed = JSON.parse(range);
+          } catch (err) {
+            logger.error(`getDataUPW - JSON.parse(range): ${err}`);
+          }
+          filter.push(rangeParsed);
         } else {
           const deepAttrs = new Set(['best_oa_location', 'oa_location', 'first_oa_location']);
           if (deepAttrs.has(attr)) {
@@ -124,7 +138,7 @@ module.exports = {
       let res;
       try {
         res = await client.search({
-          index: 'unpaywall',
+          index: context.index,
           size: args.dois.length || 1000,
           body: {
             query,

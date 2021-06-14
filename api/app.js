@@ -29,7 +29,7 @@ const updateDir = path.resolve(outDir, 'update');
 fs.ensureDir(path.resolve(updateDir));
 fs.ensureDir(path.resolve(updateDir, 'report'));
 fs.ensureDir(path.resolve(updateDir, 'state'));
-fs.ensureDir(path.resolve(updateDir, 'download'));
+fs.ensureDir(path.resolve(updateDir, 'snapshot'));
 
 const enrichDir = path.resolve(outDir, 'enrich');
 fs.ensureDir(path.resolve(enrichDir));
@@ -52,6 +52,8 @@ const app = express();
 
 // middleware
 app.use(cors());
+
+app.use(express.urlencoded({ extended: true }));
 
 const isDev = process.env.NODE_ENV === 'development';
 if (isDev) {

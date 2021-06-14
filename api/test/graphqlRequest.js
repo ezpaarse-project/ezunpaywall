@@ -37,7 +37,8 @@ describe('test graphqlRequest update', () => {
     await chai.request(ezunpaywallURL)
       .post('/update')
       .set('Access-Control-Allow-Origin', '*')
-      .set('Content-Type', 'application/json');
+      .set('Content-Type', 'application/json')
+      .set('api_key', 'admin');
 
     let isUpdate = true;
     while (isUpdate) {

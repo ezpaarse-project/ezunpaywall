@@ -44,7 +44,8 @@ describe('Test: enrichment with a json file (command ezu)', () => {
     await chai.request(ezunpaywallURL)
       .post('/update/fake1.jsonl.gz')
       .set('Access-Control-Allow-Origin', '*')
-      .set('Content-Type', 'application/json');
+      .set('Content-Type', 'application/json')
+      .set('api_key', 'admin');
 
     let inUpdate = true;
     while (inUpdate) {
@@ -73,7 +74,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -125,7 +126,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -180,7 +181,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -233,7 +234,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -285,7 +286,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -337,7 +338,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -384,7 +385,6 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .query({ args: '{ coin }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
-        .set('Content-Type', 'application/json')
         .set('api_key', 'user');
 
       // TODO status code not wrong (401)
