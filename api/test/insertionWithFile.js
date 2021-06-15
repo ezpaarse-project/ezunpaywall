@@ -226,7 +226,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     // test report
-    it('Should get task with all informations from the insertion', async () => {
+    it('Should get report with all informations from the insertion', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);

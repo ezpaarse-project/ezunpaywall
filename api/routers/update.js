@@ -5,13 +5,13 @@ const config = require('config');
 
 const multer = require('multer');
 
-const updateDir = path.resolve(__dirname, '..', 'out', 'update', 'snapshot');
+const snapshotDir = path.resolve(__dirname, '..', 'out', 'update', 'snapshot');
 const stateDir = path.resolve(__dirname, '..', 'out', 'update', 'state');
 const reportDir = path.resolve(__dirname, '..', 'out', 'update', 'report');
 
 const storage = multer.diskStorage(
   {
-    destination: updateDir,
+    destination: snapshotDir,
     filename: (req, file, cb) => {
       cb(null, file.originalname);
     },
@@ -105,6 +105,25 @@ router.get('/update/state', async (req, res, next) => {
   return res.status(200).json({ state });
 });
 
+router.get('/update/snapshot', async (req, res, next) => {
+  const { latest } = req.query;
+  let files;
+  if (latest) {
+    try {
+      files = await getMostRecentFile(snapshotDir);
+      return res.status(200).json(files?.filename);
+    } catch (err) {
+      return next(err);
+    }
+  }
+  try {
+    files = await fs.readdir(snapshotDir);
+  } catch (err) {
+    return next(err);
+  }
+  return res.status(200).json(files);
+});
+
 /**
  * get state in JSON format
  *
@@ -118,7 +137,7 @@ router.get('/update/state/:filename', async (req, res, next) => {
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(snapshotDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
@@ -182,7 +201,7 @@ router.delete('/update/snapshot/:filename', async (req, res, next) => {
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(snapshotDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
@@ -226,7 +245,7 @@ router.post('/update/:filename', checkStatus, checkAdmin, async (req, res) => {
   if (!pattern.test(filename)) {
     return res.status(400).json({ message: 'filename of file is in bad format (accepted a .gz file)' });
   }
-  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(snapshotDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
