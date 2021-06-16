@@ -17,25 +17,22 @@ const {
   GraphQLInputObjectType,
 } = graphql;
 
-const parseTerms = (attr, name, args) => {
-  let attrParsed;
-  try {
-    attrParsed = JSON.parse(JSON.stringify(args[name]));
-  } catch (err) {
-    logger.error(`parseTerms: ${err}`);
-  }
-
-  let res;
-  for (const attr2 in attrParsed) {
-    res = `{ "terms": { "${attr}.${attr2}": ["${attrParsed[attr2]}"] } }`;
-  }
-  let parsedRes;
-  try {
-    parsedRes = JSON.parse(res);
-  } catch (err) {
-    logger.error(`getDataUPW - JSON.parse(res): ${err}`);
-  }
-  return parsedRes;
+/**
+ * convert a unpaywall deep attr into elastic readable object
+ *
+ * example
+ * attr = best_oa_location
+ * args = { dois: [ '10.1186/s40510-015-0109-6' ], best_oa_location: { license: 'cc-by' } }
+ * return { terms: { 'best_oa_location.license': [ 'cc-by' ] } }
+ *
+ * @param {string} attr name of attribute
+ * @param {object} args graphql arguments
+ * @returns {object} elatic readable object
+ */
+const parseTerms = (attr, args) => {
+  const subAttr = args[attr];
+  const [filters] = Object.entries(subAttr).map(([key, value]) => ({ terms: { [`${attr}.${key}`]: [value] } }));
+  return filters;
 };
 
 module.exports = {
@@ -107,18 +104,18 @@ module.exports = {
             gte,
             lte,
           };
-          range = `{"range": {"${newAttr}": ${JSON.stringify(range)}}}`;
-          let rangeParsed;
-          try {
-            rangeParsed = JSON.parse(range);
-          } catch (err) {
-            logger.error(`getDataUPW - JSON.parse(range): ${err}`);
-          }
-          filter.push(rangeParsed);
+
+          range = {
+            range: {
+              [newAttr]: { gte, lte },
+            },
+          };
+
+          filter.push(range);
         } else {
           const deepAttrs = new Set(['best_oa_location', 'oa_location', 'first_oa_location']);
           if (deepAttrs.has(attr)) {
-            filter.push(parseTerms(attr, attr, args));
+            filter.push(parseTerms(attr, args));
           } else if (attr !== 'dois') {
             const value = args[attr];
             if (Array.isArray(value)) {
