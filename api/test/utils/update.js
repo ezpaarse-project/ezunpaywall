@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 const { logger } = require('../../lib/logger');
 const client = require('../../lib/client');
 
-const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
+const snapshotDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'snapshot');
 const snapshotsDir = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots');
 
 const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
@@ -133,7 +133,7 @@ const getState = async () => {
  * @param {String} filename name of file needed to be delete on ezunpaywall
  */
 const deleteSnapshot = async (filename) => {
-  const filePath = path.resolve(downloadDir, filename);
+  const filePath = path.resolve(snapshotDir, filename);
   try {
     await fs.remove(filePath);
     logger.info(`file ${filePath} deleted`);
@@ -147,7 +147,7 @@ const deleteSnapshot = async (filename) => {
  * @param {String} filename name of file needed to be add on ezunpaywall
  */
 const addSnapshot = async (name) => new Promise((resolve, reject) => {
-  const destination = path.resolve(downloadDir, name);
+  const destination = path.resolve(snapshotDir, name);
   const source = path.resolve(snapshotsDir, name);
 
   const readable = fs.createReadStream(source);

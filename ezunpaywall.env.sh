@@ -9,7 +9,7 @@ export API_KEY_UPW="api_key"
 export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
 # interface ezunpaywall
-export API_URL="localhost:8080"
+export API_URL="http://localhost:8080"
 
 # mail
 export EZUNPAYWALL_SMTP_PORT=25
@@ -66,4 +66,3 @@ fi
 if [[ ! -z ${EZUNPAYWALL_ES_DISCOVERY} ]] ; then
   EZUNPAYWALL_ES_DISCOVERY_TYPE="zen"
 fi
-set -u

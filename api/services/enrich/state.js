@@ -29,11 +29,11 @@ const createState = async (id) => {
 
 /**
  * get state from the folder "out/enrich/state"
- * @param {string} id - id of process
+ * @param {string} filename - state filename
  * @returns {object} - state in JSON format
  */
-const getState = async (id) => {
-  let state = await fs.readFile(path.resolve(stateDir, `${id}.json`));
+const getState = async (filename) => {
+  let state = await fs.readFile(path.resolve(stateDir, filename));
   try {
     state = JSON.parse(state);
   } catch (err) {
@@ -45,10 +45,10 @@ const getState = async (id) => {
 /**
  * write the latest version of the state to the file
  * @param {object} state - state in JSON format
- * @param {object} id - id of process
+ * @param {string} filename - state filename
  */
-const updateStateInFile = async (state, id) => {
-  const pathfile = path.resolve(stateDir, `${id}.json`);
+const updateStateInFile = async (state, filename) => {
+  const pathfile = path.resolve(stateDir, filename);
   const isPathExist = await fs.pathExists(pathfile);
   if (!isPathExist) {
     logger.error(`updateStateInFile on fs.pathExists: file ${pathfile} doesn't exist`);
@@ -59,25 +59,25 @@ const updateStateInFile = async (state, id) => {
 
 /**
  * update the state when there is an error
- * @param {string} id - id of process
+ * @param {string} filename - state filename
  */
-const fail = async (id) => {
-  const state = await getState(id);
+const fail = async (filename) => {
+  const state = await getState(filename);
   state.done = true;
   state.endAt = new Date();
   state.error = true;
-  await updateStateInFile(state, id);
+  await updateStateInFile(state, filename);
 };
 
 /**
  * update the state when the process is finished
- * @param {string} id - id of process
+ * @param {string} filename - state filename
  */
-const endState = async (id) => {
-  const state = await getState(id);
+const endState = async (filename) => {
+  const state = await getState(filename);
   state.endAt = new Date();
   state.done = true;
-  updateStateInFile(state, id);
+  updateStateInFile(state, filename);
 };
 
 module.exports = {

@@ -40,7 +40,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       const res = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('start upsert with fake1.jsonl.gz');
@@ -113,7 +114,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       const res = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz?limit=10')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('start upsert with fake1.jsonl.gz');
@@ -185,7 +187,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       const res = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz?offset=40')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('start upsert with fake1.jsonl.gz');
@@ -223,7 +226,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     // test report
-    it('Should get task with all informations from the insertion', async () => {
+    it('Should get report with all informations from the insertion', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);
@@ -257,7 +260,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       const res = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz?offset=10&limit=20')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('start upsert with fake1.jsonl.gz');
@@ -324,7 +328,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       const res = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('filename of file is in bad format (accepted a .gz file)');
@@ -337,7 +342,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       const res = await chai.request(ezunpaywallURL)
         .post('/update/fileDoesntExist.jsonl.gz')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(404);
       expect(res.body.message).be.equal('file not found');
@@ -356,7 +362,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       const res = await chai.request(ezunpaywallURL)
         .post('/update/fake1.jsonl.gz?offset=100&limit=50')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('limit can\t be lower than offset or 0');
@@ -364,6 +371,29 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     after(async () => {
       await resetAll();
+    });
+  });
+
+  describe('Don\'t do a classic insertion of a file already installed because wrong api_key', () => {
+    it('Should return a error message', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .post('/update/fake1.jsonl.gz')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
+    });
+
+    it('Should return a error message', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .post('/update/fake1.jsonl.gz')
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'wrong apikey');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 

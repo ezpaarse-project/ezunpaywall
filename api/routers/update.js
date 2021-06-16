@@ -3,15 +3,15 @@ const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
 
-const updateDir = path.resolve(__dirname, '..', 'out', 'update', 'download');
+const multer = require('multer');
+
+const snapshotDir = path.resolve(__dirname, '..', 'out', 'update', 'snapshot');
 const stateDir = path.resolve(__dirname, '..', 'out', 'update', 'state');
 const reportDir = path.resolve(__dirname, '..', 'out', 'update', 'report');
 
-const multer = require('multer');
-
 const storage = multer.diskStorage(
   {
-    destination: updateDir,
+    destination: snapshotDir,
     filename: (req, file, cb) => {
       cb(null, file.originalname);
     },
@@ -20,7 +20,7 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
-const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikey')}`;
+const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikeyupw')}`;
 
 const {
   insertion,
@@ -42,6 +42,14 @@ const {
 const {
   deleteSnapshot,
 } = require('../services/update/snapshot');
+
+const {
+  checkStatus,
+} = require('../middlewares/status');
+
+const {
+  checkAdmin,
+} = require('../middlewares/admin');
 
 /**
  * get the files in a dir in order by date
@@ -98,6 +106,29 @@ router.get('/update/state', async (req, res, next) => {
 });
 
 /**
+ * get list of snapshot installed on ezunpaywall
+ * @apiSuccess filename
+ */
+router.get('/update/snapshot', async (req, res, next) => {
+  const { latest } = req.query;
+  let files;
+  if (latest) {
+    try {
+      files = await getMostRecentFile(snapshotDir);
+      return res.status(200).json(files?.filename);
+    } catch (err) {
+      return next(err);
+    }
+  }
+  try {
+    files = await fs.readdir(snapshotDir);
+  } catch (err) {
+    return next(err);
+  }
+  return res.status(200).json(files);
+});
+
+/**
  * get state in JSON format
  *
  * @apiError 400 filename expected
@@ -110,7 +141,7 @@ router.get('/update/state/:filename', async (req, res, next) => {
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(snapshotDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
@@ -156,7 +187,7 @@ router.get('/update/report', async (req, res, next) => {
 router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 
 /**
- * add snapshot in "out/update/download"
+ * add snapshot in "out/update/snapshot"
  *
  * @apiError 500 internal server error
  *
@@ -174,7 +205,7 @@ router.delete('/update/snapshot/:filename', async (req, res, next) => {
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(snapshotDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
@@ -184,21 +215,6 @@ router.delete('/update/snapshot/:filename', async (req, res, next) => {
     return next(err);
   }
   return res.status(200).json({ messsage: `${filename} deleted` });
-});
-
-/**
- * middleware that blocks simultaneous updates of unpaywall data
- *
- * @apiError 409 update in progress
- */
-router.use((req, res, next) => {
-  const status = getStatus();
-  if (status) {
-    return res.status(409).json({
-      message: 'update in progress',
-    });
-  }
-  return next();
 });
 
 /**
@@ -212,6 +228,8 @@ router.use((req, res, next) => {
  * @apiParam QUERRY index - name of the index to which the data will be saved
  * @apiParam PARAMS filename - filename
  *
+ * @apiHeader HEADER api_key - filename
+ *
  * @apiSuccess {string} message informing the start of the process
  *
  * @apiError 400 name of snapshot file expected
@@ -220,7 +238,7 @@ router.use((req, res, next) => {
  * @apiError 404 file not found
  *
  */
-router.post('/update/:filename', async (req, res) => {
+router.post('/update/:filename', checkStatus, checkAdmin, async (req, res) => {
   const { filename } = req.params;
   let { offset, limit, index } = req.query;
   if (!index) {
@@ -233,7 +251,7 @@ router.post('/update/:filename', async (req, res) => {
   if (!pattern.test(filename)) {
     return res.status(400).json({ message: 'filename of file is in bad format (accepted a .gz file)' });
   }
-  const fileExist = await fs.pathExists(path.resolve(updateDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(snapshotDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }
@@ -271,7 +289,7 @@ router.post('/update/:filename', async (req, res) => {
  * @apiError 400 end date is lower than start date
  * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
  */
-router.post('/update', (req, res) => {
+router.post('/update', checkStatus, checkAdmin, (req, res) => {
   let { startDate, endDate, index } = req.query;
   if (!index) {
     index = 'unpaywall';
@@ -281,7 +299,7 @@ router.post('/update', (req, res) => {
     startDate = endDate - (7 * 24 * 60 * 60 * 1000);
     insertSnapshotBetweenDates(url, startDate, endDate, index);
     return res.status(200).json({
-      message: 'weekly update has begun, list of task has been created on elastic',
+      message: 'weekly update started',
     });
   }
   if (new Date(startDate).getTime() > Date.now()) {

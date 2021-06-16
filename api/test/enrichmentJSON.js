@@ -44,7 +44,8 @@ describe('Test: enrichment with a json file (command ezu)', () => {
     await chai.request(ezunpaywallURL)
       .post('/update/fake1.jsonl.gz')
       .set('Access-Control-Allow-Origin', '*')
-      .set('Content-Type', 'application/json');
+      .set('Content-Type', 'application/json')
+      .set('api_key', 'admin');
 
     let inUpdate = true;
     while (inUpdate) {
@@ -65,14 +66,15 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .request(ezunpaywallURL)
         .post(`/enrich/json/${id}`)
         .send(file)
-        .set('Content-Type', 'application/x-ndjson');
+        .set('Content-Type', 'application/x-ndjson')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -116,14 +118,15 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .request(ezunpaywallURL)
         .post(`/enrich/json/${id}`)
         .send(file)
-        .set('Content-Type', 'application/x-ndjson');
+        .set('Content-Type', 'application/x-ndjson')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -170,14 +173,15 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .post(`/enrich/json/${id}`)
         .query({ args: '{ is_oa }' })
         .send(file)
-        .set('Content-Type', 'application/x-ndjson');
+        .set('Content-Type', 'application/x-ndjson')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -222,14 +226,15 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .post(`/enrich/json/${id}`)
         .query({ args: '{ best_oa_location { license } }' })
         .send(file)
-        .set('Content-Type', 'application/x-ndjson');
+        .set('Content-Type', 'application/x-ndjson')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -273,14 +278,15 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .post(`/enrich/json/${id}`)
         .query({ args: '{ z_authors { family } }' })
         .send(file)
-        .set('Content-Type', 'application/x-ndjson');
+        .set('Content-Type', 'application/x-ndjson')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -324,14 +330,15 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .post(`/enrich/json/${id}`)
         .query({ args: '{ is_oa, best_oa_location { license }, z_authors{ family } }' })
         .send(file)
-        .set('Content-Type', 'application/x-ndjson');
+        .set('Content-Type', 'application/x-ndjson')
+        .set('api_key', 'user');
 
       // get the state of process
       let res2;
       while (!res2?.body?.state?.done) {
         res2 = await chai
           .request(ezunpaywallURL)
-          .get(`/enrich/state/${id}`);
+          .get(`/enrich/state/${id}.json`);
         expect(res2).have.status(200);
         await new Promise((resolve) => setTimeout(resolve, 10));
       }
@@ -378,11 +385,44 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .query({ args: '{ coin }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
-        .set('Content-Type', 'application/json');
+        .set('api_key', 'user');
 
       // TODO status code not wrong (401)
       expect(res).have.status(500);
       // expect(JSON.parse(res1.body).message).be.equal('args incorrect');
+    });
+  });
+
+  describe('Don\'t do a enrichment of a jsonl file because wrong api_key', () => {
+    it('Should return a error message', async () => {
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+
+      const id = uuid.v4();
+      const res = await chai
+        .request(ezunpaywallURL)
+        .post(`/enrich/json/${id}`)
+        .query({ args: '{ is_oa }' })
+        .send(file)
+        .set('Content-Type', 'application/x-ndjson');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
+    });
+
+    it('Should return a error message', async () => {
+      const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'utf8');
+
+      const id = uuid.v4();
+      const res = await chai
+        .request(ezunpaywallURL)
+        .post(`/enrich/json/${id}`)
+        .query({ args: '{ is_oa }' })
+        .send(file)
+        .set('Content-Type', 'application/x-ndjson')
+        .set('api_key', 'wrong apikey');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 

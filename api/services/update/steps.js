@@ -9,7 +9,7 @@ const axios = require('axios');
 const client = require('../../lib/client');
 const { logger } = require('../../lib/logger');
 
-const downloadDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'download');
+const snapshotDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'snapshot');
 
 const {
   getState,
@@ -56,7 +56,7 @@ const insertDataUnpaywall = async (stateName, filename, index, opts) => {
   const state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
 
-  const filePath = path.resolve(downloadDir, filename);
+  const filePath = path.resolve(snapshotDir, filename);
 
   // get information "bytes" for state
   let bytes;
@@ -189,7 +189,7 @@ async function updatePercentStepDownload(filePath, info, stateName, start) {
 const downloadFileFromUnpaywall = async (stateName, info) => {
   let stats;
 
-  const filepath = path.resolve(downloadDir, info.filename);
+  const filepath = path.resolve(snapshotDir, info.filename);
   let alreadyInstalled;
   try {
     alreadyInstalled = await fs.pathExists(filepath);
@@ -225,7 +225,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
     // TODO throw Error
   }
 
-  const filePath = path.resolve(downloadDir, info.filename);
+  const filePath = path.resolve(snapshotDir, info.filename);
 
   logger.info(`file : ${info.filename}`);
   logger.info(`lines : ${info.lines}`);
