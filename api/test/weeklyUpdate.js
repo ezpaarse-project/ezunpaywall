@@ -48,7 +48,7 @@ describe('Test: weekly update route test', () => {
         .set('api_key', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('weekly update has begun, list of task has been created on elastic');
+      expect(res.body.message).be.equal('weekly update started');
     });
 
     // test insertion
@@ -144,7 +144,7 @@ describe('Test: weekly update route test', () => {
 
       // test response
       expect(res).have.status(200);
-      expect(res.body).have.property('message').equal('weekly update has begun, list of task has been created on elastic');
+      expect(res.body).have.property('message').equal('weekly update started');
     });
 
     // test insertion

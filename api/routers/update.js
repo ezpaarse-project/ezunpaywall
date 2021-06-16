@@ -105,6 +105,10 @@ router.get('/update/state', async (req, res, next) => {
   return res.status(200).json({ state });
 });
 
+/**
+ * get list of snapshot installed on ezunpaywall
+ * @apiSuccess filename
+ */
 router.get('/update/snapshot', async (req, res, next) => {
   const { latest } = req.query;
   let files;
@@ -224,6 +228,8 @@ router.delete('/update/snapshot/:filename', async (req, res, next) => {
  * @apiParam QUERRY index - name of the index to which the data will be saved
  * @apiParam PARAMS filename - filename
  *
+ * @apiHeader HEADER api_key - filename
+ *
  * @apiSuccess {string} message informing the start of the process
  *
  * @apiError 400 name of snapshot file expected
@@ -293,7 +299,7 @@ router.post('/update', checkStatus, checkAdmin, (req, res) => {
     startDate = endDate - (7 * 24 * 60 * 60 * 1000);
     insertSnapshotBetweenDates(url, startDate, endDate, index);
     return res.status(200).json({
-      message: 'weekly update has begun, list of task has been created on elastic',
+      message: 'weekly update started',
     });
   }
   if (new Date(startDate).getTime() > Date.now()) {
