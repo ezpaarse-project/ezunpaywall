@@ -7,7 +7,7 @@ const cors = require('cors');
 const server = express();
 
 const RouterSnapshots = require('./routers/snapshots');
-
+ 
 server.use('/snapshots', cors());
 server.use(express.json());
 
