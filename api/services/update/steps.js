@@ -35,9 +35,7 @@ const insertUPW = async (data, index, stateName) => {
   }
   if (res?.body?.errors) {
     const { error } = res?.body?.items;
-    error.forEach((e) => {
-      logger.error(`insertUPW item : ${JSON.stringify(e)}`);
-    });
+    logger.error(`insertUPW item : ${JSON.stringify(error)}`);
     await fail(stateName);
   }
 };

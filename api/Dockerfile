@@ -1,5 +1,5 @@
-FROM node:14.15.4
-LABEL maintainer="ezPAARSE Team <ezpaarse@couperin.org>"
+FROM node:14.15.5-alpine3.13
+LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
 
