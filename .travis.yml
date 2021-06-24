@@ -1,9 +1,9 @@
 sudo: required
 language: node_js
 node_js: 
- - "14.15"
+  - "14.15"
 services:
- - docker
+  - docker
 env:
   - DOCKER_COMPOSE_VERSION=1.4.2
   - EZUNPAYWALL_URL=http://localhost:8080
