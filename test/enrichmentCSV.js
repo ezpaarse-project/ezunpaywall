@@ -8,9 +8,7 @@ const uuid = require('uuid');
 
 chai.use(chaiHttp);
 
-const { logger } = require('../lib/logger');
-
-const indexUnpawall = require('../index/unpaywall.json');
+const indexUnpawall = require('../api/index/unpaywall.json');
 
 const {
   binaryParser,
@@ -31,7 +29,7 @@ const {
   ping,
 } = require('./utils/ping');
 
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
 
 const enrichDir = path.resolve(__dirname, 'sources');
 
@@ -48,6 +46,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       .set('Access-Control-Allow-Origin', '*')
       .set('Content-Type', 'application/json')
       .set('api_key', 'admin');
+
 
     let inUpdate = true;
     while (inUpdate) {
@@ -100,7 +99,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       try {
         await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.csv'), res3.body.toString());
       } catch (err) {
-        logger.error(`writeFile: ${err}`);
+        console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file1.csv');
@@ -153,7 +152,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       try {
         await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.csv'), res3.body.toString());
       } catch (err) {
-        logger.error(`writeFile: ${err}`);
+        console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file2.csv');
@@ -207,7 +206,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       try {
         await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.csv'), res3.body.toString());
       } catch (err) {
-        logger.error(`writeFile: ${err}`);
+        console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file3.csv');
@@ -259,7 +258,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       try {
         await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.csv'), res3.body.toString());
       } catch (err) {
-        logger.error(`writeFile: ${err}`);
+        console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file4.csv');
@@ -311,7 +310,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       try {
         await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.csv'), res3.body.toString());
       } catch (err) {
-        logger.error(`writeFile: ${err}`);
+        console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file5.csv');
@@ -363,7 +362,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       try {
         await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.csv'), res3.body.toString());
       } catch (err) {
-        logger.error(`writeFile: ${err}`);
+        console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file6.csv');
@@ -417,7 +416,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
       try {
         await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.csv'), res3.body.toString());
       } catch (err) {
-        logger.error(`writeFile: ${err}`);
+        console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file7.csv');

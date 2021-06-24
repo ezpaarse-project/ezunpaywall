@@ -50,6 +50,10 @@ const corsOptions = {
 // start server
 const app = express();
 
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'ezunpaywall Up' });
+});
+
 // middleware
 app.use(cors());
 

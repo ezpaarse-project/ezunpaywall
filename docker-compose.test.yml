@@ -2,36 +2,19 @@ version: "3"
 
 services:
   api:
-    image: node:14.15.4
+    build:
+      context: ./api
+      args:
+        - http_proxy
+        - https_proxy
     environment:
-      - NODE_ENV=test
-      # mail
-      - NODE_CONFIG
-      - EZUNPAYWALL_SMTP_HOST=maildev
-      - EZUNPAYWALL_SMTP_PORT
-      - EZUNPAYWALL_NOTIFICATIONS_SENDER
-      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       # unpaywall
-      - UNPAYWALL_URL=http://fakeUnpaywall:12000/snapshots/changefiles.json
-      # elastic
+      - UNPAYWALL_URL=http://fakeunpaywall:12000/snapshots/changefiles.json
       - ELASTICSEARCH_HOST=http://elastic
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
       # proxy
       - http_proxy
       - https_proxy
-      # URL
-      - EZUNPAYWALL_URL=http://localhost:8080
-      - FAKE_UNPAYWALL_URL=http://localhost:12000
-      # apikey
-      - API_KEY_USERS=["user", "admin"]
-      - API_KEY_ADMIN=["admin"]
-    working_dir: /api
-    volumes:
-      - ./fakeUnpaywall:/fakeUnpaywall
-      - ./api:/api
-    command: "npm run test"
+    command: "npm start"
     ports:
       - "8080:8080"
     restart: unless-stopped      
@@ -51,16 +34,17 @@ services:
       - 9200:9200
     restart: unless-stopped
 
-  fakeUnpaywall:
-    image: node:14.15.4
+  fakeunpaywall:
+    build:
+      context: ./fakeUnpaywall
+      args:
+        - http_proxy
+        - https_proxy
     environment:
-      - NODE_ENV=test
       - http_proxy
       - https_proxy
-    working_dir: /fakeUnpaywall
-    volumes:
-      - ./fakeUnpaywall:/fakeUnpaywall
-    command: "npm run dev"
+    command: "npm start"
     ports:
       - "12000:12000"
+    restart: unless-stopped 
   

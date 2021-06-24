@@ -151,6 +151,7 @@ const flatten = (obj) => {
  */
 const enrichTab = (data, response) => {
   const results = new Map();
+  // TODO if response = 1 data
   response.forEach((el) => {
     if (el.doi) {
       results.set(el.doi, el);

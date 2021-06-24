@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const indexUnpawall = require('../index/unpaywall.json');
+const indexUnpawall = require('../api/index/unpaywall.json');
 
 const {
   createIndex,
@@ -26,7 +26,7 @@ const {
 chai.use(chaiHttp);
 
 describe('Test: weekly update route test', () => {
-  const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+  const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
 
   before(async () => {
     await ping();
@@ -55,7 +55,7 @@ describe('Test: weekly update route test', () => {
     it('Should insert 50 data', async () => {
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');
@@ -151,7 +151,7 @@ describe('Test: weekly update route test', () => {
     it('should insert 50 data', async () => {
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');

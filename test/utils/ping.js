@@ -1,16 +1,12 @@
 /* eslint-disable no-await-in-loop */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const client = require('../../lib/client');
-const { logger } = require('../../lib/logger');
+const client = require('./client');
 
 chai.use(chaiHttp);
 
-require('../../app');
-require('../../../fakeUnpaywall/app');
-
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
-const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL;
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
+const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:12000';
 
 /**
  * ping all services to see if they are available
@@ -22,7 +18,7 @@ const ping = async () => {
     try {
       res1 = await chai.request(ezunpaywallURL).get('/ping');
     } catch (err) {
-      logger.error(`ezunpaywall ping : ${err}`);
+      console.error(`ezunpaywall ping : ${err}`);
     }
     await new Promise((resolve) => setTimeout(resolve(), 1000));
   }
@@ -32,7 +28,7 @@ const ping = async () => {
     try {
       res2 = await chai.request(fakeUnpaywallURL).get('/ping');
     } catch (err) {
-      logger.error(`fakeUnpaywall ping : ${err}`);
+      console.error(`fakeUnpaywall ping : ${err}`);
     }
     await new Promise((resolve) => setTimeout(resolve(), 1000));
   }
@@ -42,9 +38,9 @@ const ping = async () => {
     try {
       res3 = await client.ping();
     } catch (err) {
-      logger.error(`elastic ping : ${err}`);
+      console.error(`elastic ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 };
 

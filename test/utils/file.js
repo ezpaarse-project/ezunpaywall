@@ -2,15 +2,13 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-const { logger } = require('../../lib/logger');
-
-const changefiles = require('../../../fakeUnpaywall/snapshots/changefiles.json');
+const changefiles = require('../../fakeUnpaywall/snapshots/changefiles.json');
 
 /**
  * updates the dates of the fake unpaywall snapshot management file
  */
 const initializeDate = async () => {
-  const changefilesPath = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots', 'changefiles.json');
+  const changefilesPath = path.resolve(__dirname, '..', '..', 'fakeUnpaywall', 'snapshots', 'changefiles.json');
   const now = Date.now();
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
@@ -28,7 +26,7 @@ const initializeDate = async () => {
   try {
     await fs.writeFile(changefilesPath, JSON.stringify(changefiles, null, 2), 'utf8');
   } catch (err) {
-    logger.error(`fs.writeFile in initializeDate: ${err}`);
+    console.error(`fs.writeFile in initializeDate: ${err}`);
   }
 };
 

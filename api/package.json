@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon -e .js app.js",
-    "test": "nodemon -w test/ -e .js --exec 'mocha' --timeout 30000",
     "lint": "eslint --ext .js ."
   },
   "devDependencies": {

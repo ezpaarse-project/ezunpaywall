@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const indexUnpawall = require('../index/unpaywall.json');
+const indexUnpawall = require('../api/index/unpaywall.json');
 
 const {
   createIndex,
@@ -21,7 +21,7 @@ const {
 
 chai.use(chaiHttp);
 
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
 
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async () => {
@@ -52,7 +52,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');
@@ -126,7 +126,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');
@@ -199,7 +199,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');
@@ -272,7 +272,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');

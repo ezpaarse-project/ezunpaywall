@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const indexUnpawall = require('../index/unpaywall.json');
+const indexUnpawall = require('../api/index/unpaywall.json');
 
 const {
   createIndex,
@@ -22,7 +22,7 @@ const {
   ping,
 } = require('./utils/ping');
 
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
 
 chai.use(chaiHttp);
 
@@ -71,7 +71,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');
@@ -190,7 +190,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');
@@ -308,7 +308,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall');

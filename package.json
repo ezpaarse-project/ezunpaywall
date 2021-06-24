@@ -1,8 +1,17 @@
 {
    "scripts": {
-    "prepare": "husky install"
-  },
-  "devDependencies": {
-    "husky": "^6.0.0"
-  }
+      "prepare": "husky install",
+      "test": "NODE_CONFIG_DIR=./api/config mocha --timeout 30000"
+   },
+   "devDependencies": {
+      "chai": "^4.3.4",
+      "chai-http": "^4.3.0",
+      "husky": "^6.0.0",
+      "mocha": "^9.0.1"
+   },
+   "dependencies": {
+      "@elastic/elasticsearch": "^7.13.0",
+      "fs-extra": "^10.0.0",
+      "uuid": "^8.3.2"
+   }
 }

@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const indexUnpawall = require('../index/unpaywall.json');
+const indexUnpawall = require('../api/index/unpaywall.json');
 
 const {
   createIndex,
@@ -23,7 +23,7 @@ const {
 chai.use(chaiHttp);
 
 describe('test graphqlRequest update', () => {
-  const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+  const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
 
   const doi1 = '10.1186/s40510-015-0109-6'; // ligne 1 of fake1.jsonl
   const doi2 = '10.14393/ufu.di.2018.728'; // line 35 of fake1.jsonl
@@ -42,7 +42,7 @@ describe('test graphqlRequest update', () => {
 
     let isUpdate = true;
     while (isUpdate) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       isUpdate = await checkIfInUpdate();
     }
     const count = await countDocuments('unpaywall');

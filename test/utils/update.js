@@ -5,13 +5,10 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const { logger } = require('../../lib/logger');
-const client = require('../../lib/client');
+const client = require('./client');
 
-const snapshotDir = path.resolve(__dirname, '..', '..', 'out', 'update', 'snapshot');
-const snapshotsDir = path.resolve(__dirname, '..', '..', '..', 'fakeUnpaywall', 'snapshots');
-
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL;
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
+const snapshotsDir = path.resolve(__dirname, '..', '..', 'fakeUnpaywall', 'snapshots')
 
 /**
  * get report of update
@@ -22,7 +19,7 @@ const getReport = async () => {
   try {
     res = await chai.request(ezunpaywallURL).get('/update/report');
   } catch (err) {
-    logger.error(`getReport: ${err}`);
+    console.error(`getReport: ${err}`);
   }
   return res?.body?.report;
 };
@@ -39,7 +36,7 @@ const checkIfIndexExist = async (name) => {
       index: name,
     });
   } catch (err) {
-    logger.error(`indices.exists in checkIfIndexExist: ${err}`);
+    console.error(`indices.exists in checkIfIndexExist: ${err}`);
   }
   return res.body;
 };
@@ -56,7 +53,7 @@ const deleteIndex = async (name) => {
         index: name,
       });
     } catch (err) {
-      logger.error(`deleteIndex: ${err}`);
+      console.error(`deleteIndex: ${err}`);
     }
   }
 };
@@ -75,7 +72,7 @@ const createIndex = async (name, index) => {
         body: index,
       });
     } catch (err) {
-      logger.error(`indices.create in createIndex: ${err}`);
+      console.error(`indices.create in createIndex: ${err}`);
     }
   }
 };
@@ -94,7 +91,7 @@ const countDocuments = async (name) => {
         index: name,
       });
     } catch (err) {
-      logger.error(`countDocuments: ${err}`);
+      console.error(`countDocuments: ${err}`);
     }
   }
   return data.body.count ? data.body.count : 0;
@@ -109,7 +106,7 @@ const checkIfInUpdate = async () => {
   try {
     res = await chai.request(ezunpaywallURL).get('/update/status');
   } catch (err) {
-    logger.error(`checkIfInUpdate : ${err}`);
+    console.error(`checkIfInUpdate : ${err}`);
   }
   return res?.body?.inUpdate;
 };
@@ -123,7 +120,7 @@ const getState = async () => {
   try {
     res = await chai.request(ezunpaywallURL).get('/update/state');
   } catch (err) {
-    logger.error(`getState: ${err}`);
+    console.error(`getState: ${err}`);
   }
   return res?.body?.state;
 };
@@ -133,39 +130,27 @@ const getState = async () => {
  * @param {String} filename name of file needed to be delete on ezunpaywall
  */
 const deleteSnapshot = async (filename) => {
-  const filePath = path.resolve(snapshotDir, filename);
   try {
-    await fs.remove(filePath);
-    logger.info(`file ${filePath} deleted`);
-  } catch (err) {
-    logger.error(`deleteSnapshot: ${err}`);
-  }
-};
+    await chai.request(ezunpaywallURL)
+      .delete(`/update/snapshot/${filename}`);
+    } catch (err) {
+      console.error(`deleteSnapshot: ${err}`);
+    }
+}
 
 /**
  * add a snapshot in ezunpaywall
  * @param {String} filename name of file needed to be add on ezunpaywall
  */
-const addSnapshot = async (name) => new Promise((resolve, reject) => {
-  const destination = path.resolve(snapshotDir, name);
-  const source = path.resolve(snapshotsDir, name);
-
-  const readable = fs.createReadStream(source);
-  const writable = fs.createWriteStream(destination);
-
-  // download unpaywall file with stream
-  const writeStream = readable.pipe(writable);
-
-  writeStream.on('finish', () => {
-    logger.info(`file ${name} is installed`);
-    return resolve();
-  });
-
-  writeStream.on('error', (err) => {
-    logger.error(`addSnapshot: ${err}`);
-    return reject(err);
-  });
-});
+const addSnapshot = async (filename) => {
+  try {
+    await chai.request(ezunpaywallURL)
+      .post(`/update/snapshot`)
+      .attach('file', path.resolve(snapshotsDir, filename), filename)
+  } catch (err) {
+    console.error(`addSnapshot: ${err}`);
+  }
+};
 
 /**
  * reset the test environment

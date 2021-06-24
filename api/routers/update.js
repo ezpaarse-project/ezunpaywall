@@ -195,7 +195,7 @@ router.get('/update/status', (req, res) => res.status(200).json({ inUpdate: getS
  */
 router.post('/update/snapshot', upload.single('file'), async (req, res) => {
   if (!req?.file) {
-    return res.status(500).json({ messsage: 'internal server error' });
+    return res.status(403).json({ messsage: 'file not send' });
   }
   return res.status(200).json({ messsage: 'file added' });
 });
