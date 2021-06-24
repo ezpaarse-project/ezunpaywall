@@ -1,19 +1,6 @@
 version: "3"
 
 services:
-  fakeUnpaywall:
-    image: node:14.15.4
-    environment:
-      - NODE_ENV=test
-      - http_proxy
-      - https_proxy
-    working_dir: /fakeUnpaywall
-    volumes:
-      - ./fakeUnpaywall:/fakeUnpaywall
-    command: "npm run dev"
-    ports:
-      - "12000:12000"
-
   api:
     image: node:14.15.4
     environment:
@@ -52,50 +39,28 @@ services:
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
     environment:
-      - http_proxy
-      - https_proxy
       - CLUSTER_NAME=ezunpaywall
-      - EZUNPAYWALL_ES_PUBLISH
-      - EZUNPAYWALL_ES_NODE_NAME
-      - EZUNPAYWALL_ES_DISCOVERY
-      - EZUNPAYWALL_ES_DISCOVERY_TYPE
-      - EZUNPAYWALL_ES_NODE_MASTER
-      - EZUNPAYWALL_ES_NODE_DATA
-      - EZUNPAYWALL_ES_NODE_INGEST
-      - EZUNPAYWALL_ES_NODE_SEARCH_REMOTE
-      - EZUNPAYWALL_ES_INITIAL_MASTER_NODES
-      - EZUNPAYWALL_SMTP_HOST
-      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
-      - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
       - 9200:9200
     restart: unless-stopped
 
-  maildev:
-    image: djfarrelly/maildev
-    ports:
-      - 1080:80
-    restart: unless-stopped
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.1
-    ports:
-      - 5601:5601
+  fakeUnpaywall:
+    image: node:14.15.4
     environment:
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_USERNAME
-      - SERVER_HOST
-      - SERVER_PORT
-      - THIS_HOST
-      - ELASTICSEARCH_HOSTS="http://elastic:9200"
-      - KIBANA_DEFAULTAPPID
+      - NODE_ENV=test
+      - http_proxy
+      - https_proxy
+    working_dir: /fakeUnpaywall
     volumes:
-      - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"      
+      - ./fakeUnpaywall:/fakeUnpaywall
+    command: "npm run dev"
+    ports:
+      - "12000:12000"
+  

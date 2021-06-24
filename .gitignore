@@ -3,6 +3,8 @@ ezunpaywall.local.env.sh
 kibana/config/certificates
 elasticsearch/config/certificates
 certs/instances.yml
+fullchain.pem
+privkey.pem
 data/
 out/
 node_modules/
