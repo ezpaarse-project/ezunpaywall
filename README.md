@@ -52,23 +52,10 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | ELASTICSEARCH_USERNAME | elastic user |
 | ELASTICSEARCH_PASSWORD | elastic password |
 
-## Start/Stop/Status
+## Configuration (optionnal)
 
-Before you start ezunpaywall, make sure all necessary environment variables are set.
-
-```bash
-# Start ezunpaywall as daemon
-docker-compose up -d
-
-# Stop ezunpaywall
-docker-compose stop
-
-# Get the status of ezunpaywall services
-docker-compose ps
-```
-## Development
-### Configuration
-#### Adjust system configuration for Elasticsearch
+this part is not obligatory, but it can be interesting in a pre-production environment
+### Adjust system configuration for Elasticsearch
 
 Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
 
@@ -83,7 +70,7 @@ Then apply the changes :
 ```bash
 sysctl -p
 ```
-#### Setup Elastic certificates
+### Setup Elastic certificates
 
 For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
 
@@ -106,13 +93,29 @@ instances:
 
   - Run `docker-compose -f create-certs.yml up`.
   - A `certificates` directory should be created, you can just put it in both `elasticsearch/config/` and `kibana/config/`. (**NB**: you may need to `chown` it)
+
+## Start/Stop/Status
+
+Before you start ezunpaywall, make sure all necessary environment variables are set.
+
+```bash
+# Start ezunpaywall as daemon
+docker-compose up -d
+
+# Stop ezunpaywall
+docker-compose stop
+
+# Get the status of ezunpaywall services
+docker-compose ps
+```
+## Development
 ### Install
 
 ```bash
 $ /ezunpaywall/api npm i
 $ /ezunpaywall/fakeUnpaywall npm i
 ```
-#### pre-commit (optionnal)
+### Pre-commit and test (optionnal)
 
 if you want to enable pre-commit (syntax checking via eslint), run this commande on the ezunpaywall repository
 
@@ -124,22 +127,25 @@ $ /ezunpaywall npm i
 Before you start ezunpaywall, make sure all necessary environment variables are set.
 
 ```bash
+# Build ezunpaywall 
+$ /ezunpaywall docker-compose -f docker-compose.debug.yml build
+
 # Start ezunpaywall as daemon
-docker-compose -f docker-compose.debug.yml up -d
+$ /ezunpaywall docker-compose -f docker-compose.debug.yml up -d
 
 # Stop ezunpaywall
-docker-compose -f docker-compose.debug.yml stop
+$ /ezunpaywall docker-compose -f docker-compose.debug.yml stop
 
 # Get the status of ezunpaywall services
-docker-compose -f docker-compose.debug.yml ps
+$ /ezunpaywall docker-compose -f docker-compose.debug.yml ps
 ```
 
 ```bash
 # Start ezunpaywall test as daemon
-docker-compose -f docker-compose.test.yml up -d
+$ /ezunpaywall docker-compose -f docker-compose.test.yml up -d
 
-# See result of the tests
-docker-compose logs -f api
+# start test
+$ /ezunpaywall npm run test
 ```
 ## Data update 
 
