@@ -1,23 +1,40 @@
 version: "3"
 
 services:
+
   api:
-    build:
-      context: ./api
-      args:
-        - http_proxy
-        - https_proxy
+    image: node:14.15.4
     environment:
+      - NODE_ENV=development
+      # mail
+      - NODE_CONFIG
+      - EZUNPAYWALL_SMTP_HOST=maildev
+      - EZUNPAYWALL_SMTP_PORT
+      - EZUNPAYWALL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       # unpaywall
+      - API_KEY_UPW
       - UNPAYWALL_URL=http://fakeunpaywall:12000/snapshots/changefiles.json
+      # elastic
       - ELASTICSEARCH_HOST=http://elastic
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
       # proxy
       - http_proxy
       - https_proxy
-    command: "npm start"
+      # apikey
+      - API_KEY_USERS=["user", "admin"]
+      - API_KEY_ADMIN=["admin"]
+    working_dir: /api
+    volumes:
+      - ./api:/api
+    command: "npm run dev"
     ports:
       - "8080:8080"
-    restart: unless-stopped      
+    depends_on:
+      - "elastic"
+    restart: unless-stopped   
       
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
@@ -35,16 +52,22 @@ services:
     restart: unless-stopped
 
   fakeunpaywall:
-    build:
-      context: ./fakeUnpaywall
-      args:
-        - http_proxy
-        - https_proxy
+    image: node:14.15.4
     environment:
       - http_proxy
       - https_proxy
-    command: "npm start"
+    working_dir: /fakeUnpaywall
+    volumes:
+      - ./fakeUnpaywall:/fakeUnpaywall
+    command: "npm run dev"
     ports:
       - "12000:12000"
-    restart: unless-stopped 
+    depends_on:
+      - "elastic"
+    restart: unless-stopped
+
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - 1080:80
   

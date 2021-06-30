@@ -20,7 +20,7 @@
     </mj-text>
 
     <mj-text>
-      <pre>{{ task }}</pre>
+      <pre>{{ state }}</pre>
     </mj-text>
 
     <mj-text>

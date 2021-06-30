@@ -2,7 +2,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
+const enrichedDir = path.resolve(__dirname, '..', 'out', 'enrich', 'enriched');
 
 const deleteEnrichedFile = async () => {
   const files = await fs.readdir(enrichedDir);

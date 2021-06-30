@@ -31,6 +31,8 @@ services:
     command: "npm run dev"
     ports:
       - "8080:8080"
+    depends_on:
+      - "elastic"
     restart: unless-stopped
     
   client:
@@ -40,11 +42,13 @@ services:
       - ./client:/client
     command: "npm run dev"
     ports:
-      - "3000:3000"
+      - "443:3000"
     environment:
       - API_URL
       - HOST=0.0.0.0
-      - PORT=3000
+      - PORT=443
+    depends_on:
+      - "elastic"
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
@@ -77,10 +81,11 @@ services:
       - KIBANA_DEFAULTAPPID
     volumes:
       - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"
+    depends_on:
+      - "elastic"
     restart: unless-stopped
 
   maildev:
     image: djfarrelly/maildev
     ports:
       - 1080:80
-    restart: unless-stopped
