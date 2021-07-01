@@ -50,5 +50,5 @@ services:
     environment:
       - NGINX_HOST
     volumes:
-      - "./rp/templates/:/etc/nginx/templates:ro"
+      - "./rp/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro"
       - "./rp/certs/:/etc/nginx/ssl:ro"

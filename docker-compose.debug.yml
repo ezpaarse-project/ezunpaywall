@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api:
-    image: node:14.15.4
+    image: node:14.15.5-alpine3.13
     environment:
       - NODE_ENV=development
       # mail
@@ -30,23 +30,23 @@ services:
       - ./api:/api
     command: "npm run dev"
     ports:
-      - "8080:8080"
+      - 3000:3000
     depends_on:
       - "elastic"
     restart: unless-stopped
     
   client:
-    image: node:14.15.4
+    image: node:14.15.5-alpine3.13
     working_dir: /client
     volumes:
       - ./client:/client
     command: "npm run dev"
     ports:
-      - "443:3000"
+      - 8080:8080
     environment:
       - API_URL
       - HOST=0.0.0.0
-      - PORT=443
+      - PORT=8080
     depends_on:
       - "elastic"
 
@@ -85,6 +85,18 @@ services:
       - "elastic"
     restart: unless-stopped
 
+  rp:
+    image: nginx:1.20.1-alpine
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - NGINX_HOST
+    volumes:
+      - "./rp/templates/dev.conf.template:/etc/nginx/templates/dev.conf.template:ro"
+      - "./rp/ssl/:/etc/nginx/ssl:ro"
+    restart: unless-stopped
+    
   maildev:
     image: djfarrelly/maildev
     ports:

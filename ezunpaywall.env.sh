@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# rp
+export NGINX_HOST="ezunpaywall.dev"
+
 # api ezunpaywall
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
@@ -9,7 +12,7 @@ export API_KEY_UPW="api_key"
 export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
 # interface ezunpaywall
-export API_URL="http://localhost:8080"
+export API_URL="https://ezunpaywall.dev/api"
 
 # mail
 export EZUNPAYWALL_SMTP_PORT=25

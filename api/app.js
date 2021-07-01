@@ -92,8 +92,8 @@ app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${re
 
 app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
-app.listen('8080', () => {
-  logger.info('Server listening on 8080');
+app.listen(3000, () => {
+  logger.info('Server listening on 3000');
 });
 
 cron.schedule('0 1 * * *', async () => {
