@@ -58,7 +58,7 @@ const send = async (state) => {
       to: notifications.receivers,
       subject: `ezunpaywall - Rapport de mise à jour - ${status}`,
       ...generateMail('report', {
-        state: JSON.stringify(state, null, 2),
+        state,
         status,
         date: new Date().toISOString().slice(0, 10),
       }),

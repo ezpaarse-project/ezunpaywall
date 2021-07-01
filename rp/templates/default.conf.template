@@ -33,13 +33,25 @@ server {
   proxy_set_header X-Forwarded-Proto https;
   proxy_hide_header X-Powered-By;
 
+
+  ## client
   location / {
     root /usr/share/nginx/html;
   }
 
-  location /api {
-    proxy_pass http://api:8080;
+  location /graphql {
+    proxy_pass http://graphql:3000;
   }
+
+  ## TODO nom en fonction du nom du service
+  ## location /api/update {
+  ## proxy_pass http://update:4000;
+  ## }
+
+  ## TODO nom en fonction du nom du service
+  ## location /api/enrich {
+  ## proxy_pass http://enrich:5000;
+  ## }
 
   ## Diffie-Hellman
   ssl_ecdh_curve secp384r1;
