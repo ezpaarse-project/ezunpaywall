@@ -38,8 +38,8 @@ server {
     root /usr/share/nginx/html;
   }
 
-  location /api {
-    proxy_pass http://api:3000;
+  location ^~ /api/ {
+    proxy_pass http://api:3000/;
   }
 
   ## doc
