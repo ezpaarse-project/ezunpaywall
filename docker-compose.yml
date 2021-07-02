@@ -51,4 +51,4 @@ services:
       - NGINX_HOST
     volumes:
       - "./rp/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro"
-      - "./rp/certs/:/etc/nginx/ssl:ro"
+      - "./rp/ssl/:/etc/nginx/ssl:ro"
