@@ -2,6 +2,7 @@
 const {
   createState,
   endState,
+  getState,
 } = require('./state');
 
 const {
@@ -18,6 +19,8 @@ const {
   createReport,
 } = require('./report');
 
+const { send } = require('../../lib/mail');
+
 /**
  * start an update process of unpaywall data with a file present in ezunpaywall
  * @param {string} filename - nom du fichier à insérer
@@ -31,6 +34,7 @@ const insertion = async (filename, index, options) => {
   await endState(statename);
   await createReport(statename);
   setInUpdate(false);
+  await send(await getState(statename));
 };
 
 /**
@@ -53,6 +57,7 @@ const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   await endState(statename);
   await createReport(statename);
   setInUpdate(false);
+  await send(await getState(statename));
 };
 
 module.exports = {
