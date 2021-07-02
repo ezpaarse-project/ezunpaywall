@@ -33,7 +33,7 @@ services:
       - ./api/out:/usr/src/api/out/
     command: "npm start"
     ports:
-      - "8080:8080"
+      - "3000:3000"
     restart: unless-stopped
 
   rp:
