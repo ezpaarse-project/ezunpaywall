@@ -24,7 +24,7 @@ server.get('/snapshots/:file', async (req, res) => {
   }
   const fileExist = await fs.pathExists(path.resolve(__dirname, 'snapshots', file));
   if (!fileExist) {
-    return res.status(404).json({ message: 'file doesn\'t exist' });
+    return res.status(404).json({ message: 'file doesn\'t exists' });
   }
   res.sendFile(path.resolve(__dirname, 'snapshots', file));
 });

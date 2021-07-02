@@ -51,7 +51,7 @@ const updateStateInFile = async (state, filename) => {
   const pathfile = path.resolve(stateDir, filename);
   const isPathExist = await fs.pathExists(pathfile);
   if (!isPathExist) {
-    logger.error(`updateStateInFile on fs.pathExists: file ${pathfile} doesn't exist`);
+    logger.error(`updateStateInFile on fs.pathExists: file ${pathfile} doesn't exists`);
   } else {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   }

@@ -27,7 +27,7 @@ const getReport = async () => {
 /**
  * check if index exit
  * @param {string} name Name of index
- * @returns {boolean} if exist
+ * @returns {boolean} if exists
  */
 const checkIfIndexExist = async (name) => {
   let res;
@@ -42,12 +42,12 @@ const checkIfIndexExist = async (name) => {
 };
 
 /**
- * delete index if it exist
+ * delete index if it exists
  * @param {string} name Name of index
  */
 const deleteIndex = async (name) => {
-  const exist = await checkIfIndexExist(name);
-  if (exist) {
+  const exists = await checkIfIndexExist(name);
+  if (exists) {
     try {
       await client.indices.delete({
         index: name,
@@ -59,13 +59,13 @@ const deleteIndex = async (name) => {
 };
 
 /**
- * create index if it doesn't exist
+ * create index if it doesn't exists
  * @param {string} name Name of index
  * @param {JSON} index index in JSON format
  */
 const createIndex = async (name, index) => {
-  const exist = await checkIfIndexExist(name);
-  if (!exist) {
+  const exists = await checkIfIndexExist(name);
+  if (!exists) {
     try {
       await client.indices.create({
         index: name,
@@ -83,9 +83,9 @@ const createIndex = async (name, index) => {
  * @returns {number} number of document
  */
 const countDocuments = async (name) => {
-  const exist = await checkIfIndexExist(name);
+  const exists = await checkIfIndexExist(name);
   let data;
-  if (exist) {
+  if (exists) {
     try {
       data = await client.count({
         index: name,

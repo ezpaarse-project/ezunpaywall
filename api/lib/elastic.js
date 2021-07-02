@@ -6,16 +6,16 @@ const unpaywallTemplate = require('../index/unpaywall.json');
 
 const pingElastic = async () => {
   let elasticStatus;
-  while (elasticStatus?.statusCode !== 200) {
-    try {
-      elasticStatus = await client.ping();
-    } catch (err) {
-      logger.error(`elastic ping at ${elasticsearch.host}:${elasticsearch.port} ${err}`);
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  try {
+    elasticStatus = await client.ping();
+  } catch (err) {
+    logger.error(`elastic ping at ${elasticsearch.host}:${elasticsearch.port} ${err}`);
   }
-  logger.info(`elastic ping: ${elasticsearch.host}:${elasticsearch.port} is ok`);
-  return true;
+  if (elasticStatus?.statusCode !== 200) {
+    setTimeout(pingElastic, 1000);
+  } else {
+    logger.info(`elastic ping: ${elasticsearch.host}:${elasticsearch.port} is ok`);
+  }
 };
 
 const checkIfIndexExist = async (name) => {
@@ -31,8 +31,8 @@ const checkIfIndexExist = async (name) => {
 };
 
 const createIndex = async (name, index) => {
-  const exist = await checkIfIndexExist(name);
-  if (!exist) {
+  const exists = await checkIfIndexExist(name);
+  if (!exists) {
     try {
       await client.indices.create({
         index: name,

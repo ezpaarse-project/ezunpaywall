@@ -199,7 +199,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
   if (alreadyInstalled) stats = await fs.stat(filepath);
 
-  // if snapshot already exist and download completely, past
+  // if snapshot already exists and download completely, past
   if (alreadyInstalled && stats.size === info.size) {
     logger.info('file already installed');
     return;

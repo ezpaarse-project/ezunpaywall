@@ -39,7 +39,7 @@ xpack.security.enabled: true
 # elasticsearch.preserveHost: true
 
 # Kibana uses an index in Elasticsearch to store saved searches, visualizations and
-# dashboards. Kibana creates a new index if the index doesn’t already exist.
+# dashboards. Kibana creates a new index if the index doesn’t already exists.
 # kibana.index: ".kibana"
 
 # The default application to load.

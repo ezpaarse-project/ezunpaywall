@@ -427,7 +427,7 @@ describe('Test: enrichment with a csv file (command ezu)', () => {
     });
   });
 
-  describe('Don\'t do a enrichment of a csv file because the arguments doesn\'t exist on ezunpaywall index', () => {
+  describe('Don\'t do a enrichment of a csv file because the arguments doesn\'t exists on ezunpaywall index', () => {
     it('Should return a error message', async () => {
       const file = await fs.readFile(path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'utf8');
 
