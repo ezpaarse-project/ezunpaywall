@@ -33,7 +33,7 @@ const checkIfIndexExists = async (name) => {
 const createIndex = async (name, index) => {
   const exists = await checkIfIndexExists(name);
   if (exists) {
-    return logger.info(`index [${name}] already exist`);
+    return logger.info(`index [${name}] already exists`);
   }
   return client.indices.create({
     index: name,
