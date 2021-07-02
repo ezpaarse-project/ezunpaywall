@@ -8,7 +8,7 @@ const {
 } = graphql;
 
 const inputOaLocation = new GraphQLInputObjectType({
-  name: 'input_oa_location',
+  name: 'inputOaLocation',
   fields: {
     endpoint_id: { type: GraphQLID },
     evidence: { type: GraphQLString },

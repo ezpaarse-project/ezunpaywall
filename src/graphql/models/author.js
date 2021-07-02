@@ -5,8 +5,8 @@ const {
   GraphQLString,
 } = graphql;
 
-const inputZAuthor = new GraphQLInputObjectType({
-  name: 'input_z_author',
+const inputAuthor = new GraphQLInputObjectType({
+  name: 'inputAuthor',
   fields: {
     family: { type: GraphQLString },
     given: { type: GraphQLString },
@@ -24,6 +24,6 @@ const zAuthors = new GraphQLObjectType({
 });
 
 module.exports = {
-  inputZAuthor,
+  inputAuthor,
   zAuthors
 };

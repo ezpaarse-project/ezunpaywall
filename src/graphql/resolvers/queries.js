@@ -2,11 +2,12 @@
 /* eslint-disable no-restricted-syntax */
 const graphql = require('graphql');
 
-const { UnPayWallType } = require('./index');
+const { unpaywall } = require('../models/unpaywall');
+const { inputOaLocation } = require('../models/location');
+const { inputAuthor } = require('../models/author');
+
 const client = require('../../lib/client');
-const oaLocationInput = require('../oa_location/inputType');
-const zAuthorsInput = require('../z_authors/inputType');
-const { logger } = require('../../lib/logger');
+const logger = require('../lib/logger');
 
 const {
   GraphQLList,
@@ -37,7 +38,7 @@ const parseTerms = (attr, args) => {
 
 module.exports = {
   getDataUPW: {
-    type: new GraphQLList(UnPayWallType),
+    type: new GraphQLList(unpaywall),
     args: {
       dois: { type: new GraphQLList(GraphQLID) },
       data_standard: { type: GraphQLInt },
@@ -57,13 +58,13 @@ module.exports = {
       year: { type: new GraphQLList(GraphQLString) },
       published_date: { type: GraphQLString },
       oa_location: {
-        type: oaLocationInput,
+        type: inputOaLocation,
       },
       best_oa_location: {
-        type: oaLocationInput,
+        type: inputOaLocation,
       },
       first_oa_location: {
-        type: oaLocationInput,
+        type: inputOaLocation,
       },
       published_date_range: {
         type: new GraphQLInputObjectType({
@@ -84,7 +85,7 @@ module.exports = {
         }),
       },
       z_authors: {
-        type: zAuthorsInput,
+        type: inputAuthor,
       },
     },
     // attr info give informations about graphql request

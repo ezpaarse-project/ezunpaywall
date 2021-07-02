@@ -9,8 +9,8 @@ const {
   GraphQLID,
 } = graphql;
 
-const objectType = new GraphQLObjectType({
-  name: 'UnPayWall',
+const unpaywall = new GraphQLObjectType({
+  name: 'unpaywall',
   fields: () => {
     // eslint-disable-next-line global-require
     const { oaLocation } = require('./oalocation');
@@ -44,5 +44,5 @@ const objectType = new GraphQLObjectType({
 });
 
 module.exports = {
-  objectType
+  unpaywall
 }
