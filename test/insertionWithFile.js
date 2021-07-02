@@ -21,7 +21,7 @@ const {
 
 chai.use(chaiHttp);
 
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:3000';
 
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async () => {

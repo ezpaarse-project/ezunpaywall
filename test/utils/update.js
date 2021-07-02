@@ -7,7 +7,7 @@ chai.use(chaiHttp);
 
 const client = require('./client');
 
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:3000';
 const snapshotsDir = path.resolve(__dirname, '..', '..', 'fakeUnpaywall', 'snapshots')
 
 /**

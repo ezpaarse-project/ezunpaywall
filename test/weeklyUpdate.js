@@ -26,7 +26,7 @@ const {
 chai.use(chaiHttp);
 
 describe('Test: weekly update route test', () => {
-  const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
+  const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:3000';
 
   before(async () => {
     await ping();

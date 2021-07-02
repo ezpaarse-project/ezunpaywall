@@ -5,7 +5,7 @@ const client = require('./client');
 
 chai.use(chaiHttp);
 
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:3000';
 const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:12000';
 
 /**

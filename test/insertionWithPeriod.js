@@ -22,7 +22,7 @@ const {
   ping,
 } = require('./utils/ping');
 
-const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:8080';
+const ezunpaywallURL = process.env.EZUNPAYWALL_URL || 'http://localhost:3000';
 
 chai.use(chaiHttp);
 
