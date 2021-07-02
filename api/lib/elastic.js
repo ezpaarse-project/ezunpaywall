@@ -18,37 +18,40 @@ const pingElastic = async () => {
   }
 };
 
-const checkIfIndexExist = async (name) => {
+const checkIfIndexExists = async (name) => {
   let res;
   try {
     res = await client.indices.exists({
       index: name,
     });
   } catch (err) {
-    logger.error(`indices.exists in checkIfIndexExist: ${err}`);
+    logger.error(`indices.exists in checkIfIndexExists: ${err}`);
   }
   return res.body;
 };
 
 const createIndex = async (name, index) => {
-  const exists = await checkIfIndexExist(name);
-  if (!exists) {
-    try {
-      await client.indices.create({
-        index: name,
-        body: index,
-      });
-    } catch (err) {
-      logger.error(`indices.create in createIndex: ${err}`);
-    }
+  const exists = await checkIfIndexExists(name);
+  if (exists) {
+    return logger.info(`index [${name}] already exist`);
   }
+  return client.indices.create({
+    index: name,
+    body: index,
+  });
 };
 
 const initalizeIndex = async () => {
   const up = await pingElastic();
-  if (up) {
-    await createIndex('unpaywall', unpaywallTemplate);
+  if (!up) {
+    return logger.warn('waiting for elasticsearch');
   }
+  try {
+    await createIndex('unpaywall', unpaywallTemplate);
+  } catch (err) {
+    logger.error(`indices.create in createIndex: ${err}`);
+  }
+  return logger.info('index initialized');
 };
 
 module.exports = {
