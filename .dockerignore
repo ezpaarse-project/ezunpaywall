@@ -1,6 +1,6 @@
 node_modules/
 data/
-out/
+api/out/
 elasticsearch/
 kibana/
 .husky/
