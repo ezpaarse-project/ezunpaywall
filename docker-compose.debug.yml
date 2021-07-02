@@ -101,3 +101,4 @@ services:
     image: djfarrelly/maildev
     ports:
       - 1080:80
+    restart: unless-stopped
