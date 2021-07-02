@@ -28,26 +28,12 @@ const processConfiguration = [
   new (transports.Console)(),
 ];
 
-const apiConfiguration = [
-  new transports.File({
-    filename: path.resolve(__dirname, '..', 'out', 'logs', 'combined.log'),
-  }),
-  new transports.File({ filename: path.resolve(__dirname, '..', 'out', 'logs', 'errors.log'), level: 'error' }),
-  new (transports.Console)(),
-];
-
 const logger = createLogger({
   format: combine(colorize(), timestamp(), myFormat),
   transports: processConfiguration,
 });
 
-const apiLogger = createLogger({
-  format: combine(colorize(), timestamp(), myFormat),
-  transports: apiConfiguration,
-});
-
 // create the logger
 module.exports = {
   logger,
-  apiLogger,
 };

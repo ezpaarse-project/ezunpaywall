@@ -41,12 +41,6 @@ fs.ensureDir(path.resolve(enrichDir, 'upload'));
 fs.ensureDir(path.resolve(outDir, 'logs'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
 
-const corsOptions = {
-  origin: '*',
-  methods: 'GET, POST',
-  allowedHeaders: ['Content-Type'],
-};
-
 // start server
 const app = express();
 
@@ -69,7 +63,7 @@ if (isDev) {
 }
 // routers
 // initialize API graphql
-app.use('/graphql', cors(corsOptions), checkAuth, (req, res) => {
+app.use('/graphql', cors(), checkAuth, (req, res) => {
   const graphqlQuery = graphqlHTTP({
     schema,
     graphiql: true,

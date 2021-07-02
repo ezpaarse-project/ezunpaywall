@@ -7,6 +7,7 @@ fullchain.pem
 privkey.pem
 data/
 out/
+ssl/
 node_modules/
 certificates/
 
