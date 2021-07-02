@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
 const morgan = require('morgan');
@@ -9,9 +8,12 @@ const cron = require('node-cron');
 
 const schema = require('./graphql/graphql');
 
-// routers
 const RouterEnrich = require('./routers/enrich');
 const RouterUpdate = require('./routers/update');
+
+const {
+  checkAuth,
+} = require('./middlewares/auth');
 
 const { logger } = require('./lib/logger');
 const { deleteEnrichedFile } = require('./lib/file');
@@ -27,7 +29,7 @@ const updateDir = path.resolve(outDir, 'update');
 fs.ensureDir(path.resolve(updateDir));
 fs.ensureDir(path.resolve(updateDir, 'report'));
 fs.ensureDir(path.resolve(updateDir, 'state'));
-fs.ensureDir(path.resolve(updateDir, 'download'));
+fs.ensureDir(path.resolve(updateDir, 'snapshot'));
 
 const enrichDir = path.resolve(outDir, 'enrich');
 fs.ensureDir(path.resolve(enrichDir));
@@ -39,11 +41,19 @@ fs.ensureDir(path.resolve(enrichDir, 'upload'));
 fs.ensureDir(path.resolve(outDir, 'logs'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
 
+const corsOptions = {
+  origin: '*',
+  methods: 'GET, POST',
+  allowedHeaders: ['Content-Type'],
+};
+
 // start server
 const app = express();
 
 // middleware
 app.use(cors());
+
+app.use(express.urlencoded({ extended: true }));
 
 const isDev = process.env.NODE_ENV === 'development';
 if (isDev) {
@@ -53,16 +63,9 @@ if (isDev) {
     stream: fs.createWriteStream(path.resolve(outDir, 'logs', 'access.log'), { flags: 'a+' }),
   }));
 }
-
-const corsOptions = {
-  origin: '*',
-  methods: 'GET, POST',
-  allowedHeaders: ['Content-Type'],
-};
-
 // routers
 // initialize API graphql
-app.use('/graphql', cors(corsOptions), bodyParser.json(), (req, res) => {
+app.use('/graphql', cors(corsOptions), checkAuth, (req, res) => {
   const graphqlQuery = graphqlHTTP({
     schema,
     graphiql: true,

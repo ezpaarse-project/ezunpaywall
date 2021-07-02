@@ -37,7 +37,8 @@ describe('test graphqlRequest update', () => {
     await chai.request(ezunpaywallURL)
       .post('/update')
       .set('Access-Control-Allow-Origin', '*')
-      .set('Content-Type', 'application/json');
+      .set('Content-Type', 'application/json')
+      .set('api_key', 'admin');
 
     let isUpdate = true;
     while (isUpdate) {
@@ -51,7 +52,8 @@ describe('test graphqlRequest update', () => {
   describe('get unpaywall data with one DOI', () => {
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"]){doi, is_oa}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"]){doi, is_oa}}`)
+        .set('api_key', 'user');
 
       expect(res).have.status(200);
 
@@ -63,7 +65,8 @@ describe('test graphqlRequest update', () => {
 
     it('It should get empty tab because doi not found on database', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get('/graphql?query={getDataUPW(dois:["Coin Coin"]){doi, is_oa}}');
+        .get('/graphql?query={getDataUPW(dois:["Coin Coin"]){doi, is_oa}}')
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -75,7 +78,8 @@ describe('test graphqlRequest update', () => {
   describe('get unpaywall data with two DOI', () => {
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}","${doi2}"]){doi, is_oa}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}","${doi2}"]){doi, is_oa}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -86,7 +90,8 @@ describe('test graphqlRequest update', () => {
 
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}","Coin Coin"]){doi, is_oa}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}","Coin Coin"]){doi, is_oa}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -96,7 +101,8 @@ describe('test graphqlRequest update', () => {
 
     it('It should get empty tab', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get('/graphql?query={getDataUPW(dois:["Coin Coin","Coin Coin2"]){doi, is_oa}}');
+        .get('/graphql?query={getDataUPW(dois:["Coin Coin","Coin Coin2"]){doi, is_oa}}')
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -107,7 +113,8 @@ describe('test graphqlRequest update', () => {
   describe('get unpaywall data with one DOI and year', () => {
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year:"2015"){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year:"2015"){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -119,7 +126,8 @@ describe('test graphqlRequest update', () => {
 
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}","${doi2}"], year:"2015"){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}","${doi2}"], year:"2015"){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -131,7 +139,8 @@ describe('test graphqlRequest update', () => {
 
     it('It should get empty tab', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year:"2016"){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year:"2016"){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -142,7 +151,8 @@ describe('test graphqlRequest update', () => {
   describe('get unpaywall data with one DOI and range_year', () => {
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2014"}){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2014"}){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -154,7 +164,8 @@ describe('test graphqlRequest update', () => {
 
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2015"}){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2015"}){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -166,7 +177,8 @@ describe('test graphqlRequest update', () => {
 
     it('It should get empty tab', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2016"}){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2016"}){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -175,7 +187,8 @@ describe('test graphqlRequest update', () => {
 
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{lte:"2016"}){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{lte:"2016"}){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -187,7 +200,8 @@ describe('test graphqlRequest update', () => {
 
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{lte:"2015"}){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{lte:"2015"}){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -199,7 +213,8 @@ describe('test graphqlRequest update', () => {
 
     it('It should get empty tab', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{lte:"2014"}){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{lte:"2014"}){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -208,7 +223,8 @@ describe('test graphqlRequest update', () => {
 
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2014" lte:"2016"}){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2014" lte:"2016"}){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -220,7 +236,8 @@ describe('test graphqlRequest update', () => {
 
     it('It should get empty tab', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2016", lte:"2018"}){doi, is_oa, year}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], year_range:{gte:"2016", lte:"2018"}){doi, is_oa, year}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -231,7 +248,8 @@ describe('test graphqlRequest update', () => {
   describe('get unpaywall data with one DOI and best_oa_location:{licence}', () => {
     it('should get unpaywall data', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], best_oa_location:{license: "cc-by"}){doi, is_oa, best_oa_location {license}}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], best_oa_location:{license: "cc-by"}){doi, is_oa, best_oa_location {license}}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
@@ -243,11 +261,31 @@ describe('test graphqlRequest update', () => {
 
     it('It should get empty tab', async () => {
       const res = await chai.request(ezunpaywallURL)
-        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], best_oa_location:{license: "coin coin"}){doi, is_oa, best_oa_location {license}}}`);
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"], best_oa_location:{license: "coin coin"}){doi, is_oa, best_oa_location {license}}}`)
+        .set('api_key', 'user');
       expect(res).have.status(200);
 
       const data = res?.body?.data?.getDataUPW;
       expect(data).be.a('array').eql([]);
+    });
+  });
+
+  describe('Don\'t get unpaywall data because wrong api_key', () => {
+    it('Should return a error message', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"]){doi, is_oa}}`);
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
+    });
+
+    it('Should return a error message', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .get(`/graphql?query={getDataUPW(dois:["${doi1}"]){doi, is_oa}}`)
+        .set('api_key', 'wrong apikey');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
   after(async () => {

@@ -1,5 +1,7 @@
 { 
-  "apikey": "API_KEY_UPW",
+  "apikeyupw": "API_KEY_UPW",
+  "apikeyusers": "API_KEY_USERS",
+  "apikeyadmin": "API_KEY_ADMIN",
   "unpaywallURL": "UNPAYWALL_URL",
   "elasticsearch": {
     "port": "ELASTICSEARCH_PORT",

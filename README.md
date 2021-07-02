@@ -26,12 +26,14 @@ git clone https://github.com/ezpaarse-project/ezunpaywall
 ## Deployment
 ### Setup environment
 
-Create an environment file named `ezunpaywall.env.local.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh` , which contains a set of predefined variables and is overriden by `ezunpaywall.env.local.sh`.
+Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh` , which contains a set of predefined variables and is overriden by `ezunpaywall.local.env.sh`.
 #### Unpaywall
+
 | name | description |
 | --- | --- |
 | API_KEY_UPW | api key to access weekly unpaywall updates |
-| UNPAYWALL_URL | url to access unpaywall update |
+| API_KEY_USERS | api key to give to users to authorize them to request on ezunpaywall |
+| API_KEY_ADMIN | api key to run unpaywall updates |
 #### Mail
 
 | name | description |
@@ -107,8 +109,15 @@ instances:
 ### Install
 
 ```bash
-ezunpaywall/api$ npm i
-ezunpaywall/fakeUnpaywall$ npm i
+$ /ezunpaywall/api npm i
+$ /ezunpaywall/fakeUnpaywall npm i
+```
+#### pre-commit (optionnal)
+
+if you want to enable pre-commit (syntax checking via eslint), run this commande on the ezunpaywall repository
+
+```bash
+$ /ezunpaywall npm i
 ```
 ### Start
 

@@ -59,7 +59,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${date2}`)
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
+
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`insert snapshot beetween ${date2} and ${dateNow} has begun, list of task has been created on elastic`);
     });
@@ -176,7 +178,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${date3}&endDate=${date2}`)
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`insert snapshot beetween ${date3} and ${date2} has begun, list of task has been created on elastic`);
@@ -293,7 +296,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${date5}&endDate=${date4}`)
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
+
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`insert snapshot beetween ${date5} and ${date4} has begun, list of task has been created on elastic`);
     });
@@ -337,7 +342,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?endDate=${date1}`)
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('start date is missing');
     });
@@ -349,7 +356,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post('/update?startDate=LookAtMyDab')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
     });
@@ -359,7 +368,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post('/update?startDate=01-01-2000')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
     });
@@ -369,7 +380,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post('/update?startDate=2000-50-50')
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
     });
@@ -381,7 +394,9 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${date2}&endDate=${date3}`)
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('endDate is lower than startDate');
     });
@@ -393,9 +408,34 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const res = await chai.request(ezunpaywallURL)
         .post(`/update?startDate=${tomorrow}`)
         .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'admin');
+
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate is in the futur');
+    });
+  });
+
+  describe(`Do a download and insert between ${date2} and now because wrong api_key`, () => {
+    it('Should return a error message', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .post(`/update?startDate=${date2}`)
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
+    });
+
+    it('Should return a error message', async () => {
+      const res = await chai.request(ezunpaywallURL)
+        .post(`/update?startDate=${date2}`)
+        .set('Access-Control-Allow-Origin', '*')
+        .set('Content-Type', 'application/json')
+        .set('api_key', 'wrong api_key');
+
+      expect(res).have.status(401);
+      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 
