@@ -3,7 +3,6 @@ LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
 
-RUN mkdir -p /usr/src/api
 WORKDIR /usr/src/api
 
 COPY package.json /usr/src/api/
