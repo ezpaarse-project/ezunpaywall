@@ -1,0 +1,41 @@
+{% extends "layout.mjml" %}
+
+{% block title %}
+<mj-title>Rapport ezunpaywall du {{ date }}.</mj-title>
+{% endblock %}
+
+{% block content %}
+
+<mj-section>
+  <mj-column>
+    <mj-text>
+      <p>Bonjour,</p>
+      <p>
+        Vous trouverez dans ce mail le rapport de mise à jour des données unpaywall généré le <strong>{{ date }}</strong>.
+      </p>
+    </mj-text>
+
+    <mj-text align="center" color="#55575d" font-size="24px" line-height="22px" padding="10px 25px">
+      <p>Rapport - {{status}}</p>
+    </mj-text>
+
+    <mj-text>
+      <pre>{{ state }}</pre>
+    </mj-text>
+
+    <mj-text>
+      <p>
+        Ce message est envoyé automatiquement par l'application ezunpaywall,
+        vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
+      </p>
+    </mj-text>
+
+    <mj-text>
+      <p>Cordialement,</p>
+      <p>L'équipe ezMESURE.</p>
+    </mj-text>
+
+  </mj-column>
+</mj-section>
+
+{% endblock %}

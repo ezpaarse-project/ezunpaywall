@@ -1,0 +1,11 @@
+{ 
+  "apikeyupw": "default",
+  "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
+  "apikeyadmin": "[\"admin\"]",
+  "elasticsearch": {
+    "port": 9200,
+    "host": "http://elastic",
+    "user": "elastic",
+    "password": "changeme"
+  }
+}
