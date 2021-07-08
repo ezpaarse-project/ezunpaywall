@@ -1,0 +1,116 @@
+{
+  "ui": {
+    "header": {
+
+    },
+    "drawer": {
+      "home": "Accueil",
+      "enrich": "Enrichissement",
+      "language": "Langue"
+    },
+    "pages": {
+      "home": {
+        
+      },
+      "enrich": {
+        "title": "Enrichir votre fichier",
+        "stepper": {
+          "filesSelection": "Sélection des fichiers",
+          "settings": "Paramètres",
+          "enrich": "Enrichissement"
+        },
+        "filesSelection": {
+          "continue": "Continuer",
+          "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezunpaywall. La seul condition est qu'il faut qu'ils aient un champ DOI.",
+          "explainationTestsLogs": "Besoin de fichiers à enrichir pour valider votre installation ? Nous en <a href=\"{url}\" target=\"_blank\">mettons à disposition sur GitHub</a>.",
+          "close": "fermer"
+        },
+        "settings": {
+          "title": "Paramètres",
+          "attributes" : "Attributs unpaywall",
+          "filesSelection": "Sélection des fichiers",
+          "startProcess": "Lancer l'enrichissement"
+        },
+        "process": {
+          "download": "Télécharger le fichier enrichi",
+          "inProcess": "Enrichissement en cours",
+          "end": "Enrichissement terminé"
+        }
+      }
+    },
+    "components": {
+      "enrich": {
+        "LogFiles": {
+          "filename": "Nom des fichiers",
+          "size": "Taille",
+          "clickToAdd": "Cliquez ou déposez pour ajouter",
+          "removeList": "Supprimer la liste",
+          "selectedFiles": "fichiers sélectionnés",
+          "total": "au total"
+        },
+        "Settings": {
+          "title": "Paramètres",
+          "info": {
+            "general": {
+              "data_standard": "Indique les approches de collecte de données utilisées pour cette ressource",
+              "doi_url": "Le DOI sous forme de lien hypertexte",
+              "genre": "Le type de ressource",
+              "is_oa": "S'il existe une copie OA de cette ressource",
+              "is_paratext": "Si l'élément est-il une partie auxiliaire d'un journal, comme une table des matières",
+              "journal_is_in_doaj": "Si cette ressource est-elle publiée dans une revue indexée par le DOAJ",
+              "journal_is_oa": "Si cette ressource est-elle publiée dans une revue entièrement en libre accès",
+              "journal_issn_l": "Un seul ISSN pour la revue qui publie cette ressource",
+              "journal_issns": "Tous les ISSN attribués à la revue publiant cette ressource",
+              "journal_name": "Le nom de la revue qui publie cette ressource",
+              "oa_status": "Le statut OA, ou la couleur, de cette ressource",
+              "published_date": "La date à laquelle cette ressource a été publiée",
+              "publisher": "Le nom de l'éditeur de cette ressource",
+              "title": "Le titre de cette ressource",
+              "updated": "Heure de la dernière mise à jour des données de cette ressource",
+              "year": "L'année de publication de cette ressource"
+            },
+            "oa_location": {
+              "evidence": "Comment Unpaywall a trouvé cet emplacement OA",
+              "host_type": "Le type d'hôte qui dessert cet emplacement OA",
+              "is_best": "Si cet emplacement est-il le meilleur_oa_location pour sa ressource",
+              "license": "La licence sous laquelle cette copie est publiée",
+              "pmh_id": "Point de terminaison OAI-PMH où nous avons trouvé cet emplacement",
+              "updated": "Heure de la dernière mise à jour des données de cet emplacement",
+              "url": "L'URL d'une page de destination décrivant cette copie OA",
+              "url_for_landing_page": "L'URL d'une page de destination décrivant cette copie OA",
+              "url_for_pdf": "L'URL avec une version PDF de cette copie OA",
+              "version": "La version du contenu accessible à cet emplacement"
+            }
+          }
+        },
+        "Metric": {
+          "linesRead": "Lignes lues",
+          "linesEnriched": "Lignes enrichies",
+          "treatmentDuration": "Temps de traitement (en seconde)"
+        }
+      },
+      "home": {
+        "InUpdate": {
+          "status": "Une mise à jour des données unpaywall est en cours"
+        },
+        "NoInUpdate": {
+          "status": "Aucune mise à jour des données unpaywall n'est en cours"
+        },
+        "Status": {
+          "createdAt": "Créé le",
+          "tasks": "Tâches",
+          "task": "Tâche",
+          "took": "Temps",
+          "percent": "Pourcentage",
+          "file": "Fichier",
+          "linesRead": "Lignes lues",
+          "status": "Status"
+        }
+      }
+    },
+    "theme": {
+      "dark": "Thème sombre",
+      "light": "Thème clair"
+    }
+  }
+}
