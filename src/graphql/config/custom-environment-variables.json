@@ -1,4 +1,10 @@
 { 
   "apikeyusers": "API_KEY_USERS",
-  "apikeyadmin": "API_KEY_ADMIN"
+  "apikeyadmin": "API_KEY_ADMIN",
+  "elasticsearch": {
+    "port": "ELASTICSEARCH_PORT",
+    "host": "ELASTICSEARCH_HOST",
+    "user": "ELASTICSEARCH_USERNAME",
+    "password": "ELASTICSEARCH_PASSWORD"
+  }
 }

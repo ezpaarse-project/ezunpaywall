@@ -15,7 +15,7 @@ try {
  * @returns {Object|function} res or next
  */
 const checkAuth = (req, res, next) => {
-  if (!apikeyusers.includes(req.get('api_key'))) {
+  if (!apikeyusers.includes(req.get('X-API-KEY'))) {
     return res.status(401).json({ message: 'Not authorized' });
   }
   return next();

@@ -2,13 +2,14 @@ const graphql = require('graphql');
 
 const {
   GraphQLInputObjectType,
+  GraphQLObjectType,
   GraphQLString,
   GraphQLBoolean,
   GraphQLID,
 } = graphql;
 
-const inputOaLocation = new GraphQLInputObjectType({
-  name: 'inputOaLocation',
+exports.oaLocationInput = new GraphQLInputObjectType({
+  name: 'oaLocationInput',
   fields: {
     endpoint_id: { type: GraphQLID },
     evidence: { type: GraphQLString },
@@ -25,8 +26,8 @@ const inputOaLocation = new GraphQLInputObjectType({
   },
 });
 
-const oaLocation = new GraphQLObjectType({
-  name: 'oa_location',
+exports.oaLocationType = new GraphQLObjectType({
+  name: 'oaLocationType',
   fields: {
     endpoint_id: { type: GraphQLID },
     evidence: { type: GraphQLString },
@@ -42,9 +43,3 @@ const oaLocation = new GraphQLObjectType({
     version: { type: GraphQLString },
   },
 });
-
-module.exports = {
-  inputOaLocation,
-  oaLocation
-};
-

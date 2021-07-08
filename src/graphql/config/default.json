@@ -1,4 +1,10 @@
 { 
   "apikeyusers": "[\"user\", \"admin\"]",
-  "apikeyadmin": "[\"admin\"]"
+  "apikeyadmin": "[\"admin\"]",
+  "elasticsearch": {
+    "port": 9200,
+    "host": "http://elastic",
+    "user": "elastic",
+    "password": "changeme"
+  }
 }

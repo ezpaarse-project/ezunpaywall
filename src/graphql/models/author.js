@@ -2,11 +2,12 @@ const graphql = require('graphql');
 
 const {
   GraphQLInputObjectType,
+  GraphQLObjectType,
   GraphQLString,
 } = graphql;
 
-const inputAuthor = new GraphQLInputObjectType({
-  name: 'inputAuthor',
+exports.authorType = new GraphQLObjectType({
+  name: 'authorType',
   fields: {
     family: { type: GraphQLString },
     given: { type: GraphQLString },
@@ -14,16 +15,11 @@ const inputAuthor = new GraphQLInputObjectType({
   },
 });
 
-const zAuthors = new GraphQLObjectType({
-  name: 'z_author',
+exports.authorInput = new GraphQLInputObjectType({
+  name: 'authorInput',
   fields: {
     family: { type: GraphQLString },
     given: { type: GraphQLString },
     sequence: { type: GraphQLString },
   },
 });
-
-module.exports = {
-  inputAuthor,
-  zAuthors
-};

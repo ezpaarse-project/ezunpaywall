@@ -1,0 +1,5 @@
+2021-07-08T06:03:48.973Z [32minfo[39m: ezunpaywall graphQL API listening on 3000
+2021-07-08T06:27:44.529Z [32minfo[39m: ezunpaywall graphQL API listening on 3000
+2021-07-08T06:29:27.643Z [32minfo[39m: ezunpaywall graphQL API listening on 3000
+2021-07-08T06:30:11.820Z [31merror[39m: index_not_found_exception: [index_not_found_exception] Reason: no such index [unpaywall]
+2021-07-08T06:32:17.569Z [31merror[39m: index_not_found_exception: [index_not_found_exception] Reason: no such index [unpaywall]

@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 
-const { UnPayWallQueries } = require('./unpaywall');
+const GetByDOI = require('./resolvers/queries');
 
 const {
   GraphQLSchema,
@@ -10,7 +10,7 @@ const {
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
-    ...UnPayWallQueries,
+    GetByDOI,
   }),
 });
 
