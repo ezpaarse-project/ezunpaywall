@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 
 const { logger } = require('./lib/logger');
+const { client, pingElastic } = require('./lib/client');
 const { name, version } = require('./package.json');
 
 const routerJob = require('./routers/job');
@@ -22,8 +23,15 @@ fs.ensureDir(path.resolve(outDir, 'snapshots'));
 const app = express();
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.status(200).json({ name, version });
+app.get('/', async (req, res) => {
+  let elasticStatus;
+  try {
+    await client.ping();
+    elasticStatus = 'OK';
+  } catch (err) {
+    elasticStatus = 'Error';
+  }
+  res.status(200).json({ name, version, elasticPing: elasticStatus });
 });
 
 app.use(routerJob);
@@ -31,6 +39,8 @@ app.use(routerReport);
 app.use(routerSnapshot);
 app.use(routerState);
 app.use(routerStatus);
+
+pingElastic();
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

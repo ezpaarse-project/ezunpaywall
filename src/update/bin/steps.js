@@ -7,7 +7,7 @@ const zlib = require('zlib');
 const { Readable } = require('stream');
 const axios = require('axios');
 
-const client = require('../lib/client');
+const { client } = require('../lib/client');
 const { logger } = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');

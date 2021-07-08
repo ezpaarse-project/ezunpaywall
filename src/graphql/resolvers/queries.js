@@ -3,7 +3,7 @@
 const graphql = require('graphql');
 
 const unpaywallType = require('../models/unpaywall');
-const client = require('../lib/client');
+const { client } = require('../lib/client');
 const { oaLocationInput } = require('../models/oalocation');
 const { authorInput } = require('../models/author');
 const { logger } = require('../lib/logger');

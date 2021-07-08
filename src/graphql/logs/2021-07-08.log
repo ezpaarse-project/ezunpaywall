@@ -3,3 +3,28 @@
 2021-07-08T06:29:27.643Z [32minfo[39m: ezunpaywall graphQL API listening on 3000
 2021-07-08T06:30:11.820Z [31merror[39m: index_not_found_exception: [index_not_found_exception] Reason: no such index [unpaywall]
 2021-07-08T06:32:17.569Z [31merror[39m: index_not_found_exception: [index_not_found_exception] Reason: no such index [unpaywall]
+2021-07-08T09:13:10.689Z [32minfo[39m: ezunpaywall graphQL API listening on 3000
+2021-07-08T09:13:10.737Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:13:11.746Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:13:12.756Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:13:13.761Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:13:14.767Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:13:15.773Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:13:16.778Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:13:17.786Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:13:18.833Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:49.718Z [32minfo[39m: ezunpaywall graphQL API listening on 3000
+2021-07-08T09:28:49.748Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:50.753Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:51.759Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:52.780Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:53.785Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:54.796Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:55.799Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:56.803Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:57.809Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:58.813Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:28:59.818Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:29:00.823Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:29:01.826Z [31merror[39m: elastic ping at http://elastic:9200 ConnectionError: connect ECONNREFUSED 172.19.0.3:9200
+2021-07-08T09:29:04.001Z [32minfo[39m: elastic ping: http://elastic:9200 is ok
