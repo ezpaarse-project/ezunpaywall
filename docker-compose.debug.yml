@@ -1,19 +1,10 @@
 version: "3"
 
 services:
-  api:
-    image: node:14.15.4
+  graphql:
+    image: node:14.15.5-alpine3.13
     environment:
       - NODE_ENV=development
-      # mail
-      - NODE_CONFIG
-      - EZUNPAYWALL_SMTP_HOST=maildev
-      - EZUNPAYWALL_SMTP_PORT
-      - EZUNPAYWALL_NOTIFICATIONS_SENDER
-      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      # unpaywall
-      - API_KEY_UPW
-      - UNPAYWALL_URL
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
       - ELASTICSEARCH_PORT
@@ -24,32 +15,108 @@ services:
       - https_proxy
       # apikey
       - API_KEY_USERS=["user", "admin"]
-      - API_KEY_ADMIN=["admin"]
-    working_dir: /api
+    working_dir: /graphql
     volumes:
-      - ./api:/api
+      - ./src/graphql:/graphql
     command: "npm run dev"
     ports:
-      - "8080:8080"
+      - 3000:3000
     depends_on:
       - "elastic"
     restart: unless-stopped
-    
-  client:
-    image: node:14.15.4
-    working_dir: /client
+
+  update:
+    image: node:14.15.5-alpine3.13
+    environment:
+      - NODE_ENV=development
+      # mail
+      - NODE_CONFIG
+      - EZUNPAYWALL_SMTP_HOST=maildev
+      - EZUNPAYWALL_SMTP_PORT
+      - EZUNPAYWALL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
+      # unpaywall
+      - API_KEY_UPW
+      - UNPAYWALL_URL=http://fakeunpaywall:12000/snapshots/changefiles.json
+      # elastic
+      - ELASTICSEARCH_HOST=http://elastic
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+      # proxy
+      - http_proxy
+      - https_proxy
+      # apikey
+      - API_KEY_ADMIN=["admin"]
+    working_dir: /update
     volumes:
-      - ./client:/client
+      - ./src/update:/update
     command: "npm run dev"
     ports:
-      - "443:3000"
-    environment:
-      - API_URL
-      - HOST=0.0.0.0
-      - PORT=443
+      - 4000:4000
     depends_on:
-      - "elastic"
+      - elastic
+    restart: unless-stopped
+  
+  enrich:
+    image: node:14.15.5-alpine3.13
+    environment:
+      - NODE_ENV=development
+      # elastic
+      - ELASTICSEARCH_HOST=http://elastic
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      # proxy
+      - http_proxy
+      - https_proxy
+      # apikey
+      - API_KEY_USERS=["user", "admin"]
+      # URL service
+      - GRAPHQL_URL=http://graphql:3000
+    working_dir: /enrich
+    volumes:
+      - ./src/enrich:/enrich
+    command: "npm run dev"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - graphql
+      - elastic
+    restart: unless-stopped
 
+  fakeunpaywall:
+    image: node:14.15.5-alpine3.13
+    environment:
+      - http_proxy
+      - https_proxy
+    working_dir: /fakeUnpaywall
+    volumes:
+      - ./src/fakeUnpaywall:/fakeUnpaywall
+    command: "npm run dev"
+    ports:
+      - "12000:12000"
+    depends_on:
+      - elastic
+    restart: unless-stopped
+
+  frontend:
+    image: node:14.15.5-alpine3.13
+    working_dir: /frontend
+    volumes:
+      - ./src/frontend:/frontend
+    command: "npm run dev"
+    ports:
+      - "8080:3000"
+    environment:
+      - GRAPHQL_URL=https://ezunpaywall.dev/api
+      - UPDATE_URL=https://ezunpaywall.dev/api/update
+      - ENRICH_URL=https://ezunpaywall.dev/api/enrich
+      - HOST=0.0.0.0
+      - PORT=8080
+    depends_on:
+      - elastic
+  
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
     environment:
@@ -66,7 +133,7 @@ services:
     ports:
       - 9200:9200
     restart: unless-stopped
-      
+
   kibana:
     image: docker.elastic.co/kibana/kibana:7.9.1
     ports:
@@ -80,12 +147,25 @@ services:
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
       - KIBANA_DEFAULTAPPID
     volumes:
-      - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"
+      - "./config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml"
     depends_on:
       - "elastic"
+    restart: unless-stopped
+
+  rp:
+    image: nginx:1.20.1-alpine
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - NGINX_HOST
+    volumes:
+      - "./rp/templates/dev.conf.template:/etc/nginx/templates/dev.conf.template:ro"
+      - "./rp/ssl/:/etc/nginx/ssl:ro"
     restart: unless-stopped
 
   maildev:
     image: djfarrelly/maildev
     ports:
       - 1080:80
+  
