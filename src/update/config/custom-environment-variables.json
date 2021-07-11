@@ -2,6 +2,10 @@
   "apikeyupw": "API_KEY_UPW",
   "unpaywallURL": "UNPAYWALL_URL",
   "apikeyadmin": "API_KEY_ADMIN",
+  "smtp": {
+    "host": "EZUNPAYWALL_SMTP_HOST",
+    "port": "EZUNPAYWALL_SMTP_PORT"
+  },
   "elasticsearch": {
     "port": "ELASTICSEARCH_PORT",
     "host": "ELASTICSEARCH_HOST",

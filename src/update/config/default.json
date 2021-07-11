@@ -2,6 +2,10 @@
   "apikeyupw": "default",
   "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
   "apikeyadmin": "[\"admin\"]",
+  "smtp": {
+    "host": "localhost",
+    "port": 25
+  },
   "elasticsearch": {
     "port": 9200,
     "host": "http://elastic",
