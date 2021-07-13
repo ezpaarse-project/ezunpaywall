@@ -60,17 +60,18 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   describe(`Do a download and insert between ${date2} and now`, async () => {
     before(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall', mappingUnpaywall);
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
-        .post(`/update?startDate=${date2}`)
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: date2 })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -87,7 +88,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments('unpaywall');
+      const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(150);
     });
 
@@ -176,7 +177,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
@@ -185,17 +186,18 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   describe(`Do a download and insert between ${date3} and ${date2}`, () => {
     before(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall', mappingUnpaywall);
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
-        .post(`/update?startDate=${date3}&endDate=${date2}`)
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: date3, endDate: date2 })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -212,7 +214,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments('unpaywall');
+      const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(2100);
     });
 
@@ -300,7 +302,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[4]).have.property('status').equal('success');
     });
     after(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
@@ -309,17 +311,18 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   describe(`Don't download and insert between ${date5} and ${date4} because there is no file between these dates in ezunpaywall`, () => {
     before(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall', mappingUnpaywall);
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
-        .post(`/update?startDate=${date5}&endDate=${date4}`)
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: date5, endDate: date4 })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -336,7 +339,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments('unpaywall');
+      const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(0);
     });
 
@@ -357,7 +360,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
@@ -368,7 +371,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post(`/update?endDate=${date1}`)
+        .post('/update')
+        .query({ index: 'unpaywall-test', endDate: date1 })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -382,7 +386,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update?startDate=LookAtMyDab')
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: 'doen\'t exist' })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -394,7 +399,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update?startDate=01-01-2000')
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: '01-01-2000' })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -406,7 +412,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update?startDate=2000-50-50')
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: '2000-50-50' })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -420,7 +427,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post(`/update?startDate=${date2}&endDate=${date3}`)
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: date2, endDate: date3 })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -434,7 +442,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post(`/update?startDate=${tomorrow}`)
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: tomorrow })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -447,7 +456,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   describe(`Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post(`/update?startDate=${date2}`)
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: date2 })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
 
@@ -457,7 +467,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post(`/update?startDate=${date2}`)
+        .post('/update')
+        .query({ index: 'unpaywall-test', startDate: date2 })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'wrong X-API-KEY');
@@ -468,7 +479,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   });
 
   after(async () => {
-    await deleteIndex('unpaywall');
+    await deleteIndex('unpaywall-test');
     await deleteSnapshot('fake1.jsonl.gz');
     await deleteSnapshot('fake2.jsonl.gz');
     await deleteSnapshot('fake3.jsonl.gz');
