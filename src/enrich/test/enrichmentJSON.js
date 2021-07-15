@@ -33,9 +33,10 @@ const enrichDir = path.resolve(__dirname, 'sources');
 describe('Test: enrichment with a json file (command ezu)', () => {
   before(async () => {
     await ping();
-    await createIndex('unpaywall', mappingUnpaywall);
+    await deleteIndex('unpaywall-test');
+    await createIndex('unpaywall-test', mappingUnpaywall);
     await insertDataUnpaywall();
-    const ndData = await countDocuments('unpaywall');
+    const ndData = await countDocuments('unpaywall-test');
     expect(ndData).eq(50);
   });
 
@@ -48,6 +49,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res1 = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
         .set('X-API-KEY', 'user');
@@ -56,15 +58,18 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       // get the state of process
       let res2;
-      while (!res2?.body?.state?.done) {
+
+      do {
         res2 = await chai
           .request(enrichService)
           .get(`/state/${id}.json`);
         expect(res2).have.status(200);
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (!res2?.body?.state?.done);
 
       const { state } = res2?.body;
+
+      console.log(state);
 
       expect(state).have.property('done').equal(true);
       expect(state).have.property('loaded').to.not.equal(undefined);
@@ -81,14 +86,14 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
+      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
       try {
-        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res3.body.toString());
+        await fs.writeFile(path.resolve(fileEnriched), res3.body.toString());
       } catch (err) {
         console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file1.jsonl');
-      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.jsonl');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -102,6 +107,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res1 = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
         .set('X-API-KEY', 'user');
@@ -110,13 +116,13 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       // get the state of process
       let res2;
-      while (!res2?.body?.state?.done) {
+      do {
         res2 = await chai
           .request(enrichService)
           .get(`/state/${id}.json`);
         expect(res2).have.status(200);
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (!res2?.body?.state?.done);
 
       const { state } = res2?.body;
 
@@ -135,14 +141,14 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
+      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
       try {
-        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res3.body.toString());
+        await fs.writeFile(path.resolve(fileEnriched), res3.body.toString());
       } catch (err) {
         console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file2.jsonl');
-      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.jsonl');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -158,6 +164,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res1 = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .query({ args: '{ is_oa }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
@@ -167,13 +174,13 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       // get the state of process
       let res2;
-      while (!res2?.body?.state?.done) {
+      do {
         res2 = await chai
           .request(enrichService)
           .get(`/state/${id}.json`);
         expect(res2).have.status(200);
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (!res2?.body?.state?.done);
 
       const { state } = res2?.body;
 
@@ -192,14 +199,14 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
+      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
       try {
-        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res3.body.toString());
+        await fs.writeFile(path.resolve(fileEnriched), res3.body.toString());
       } catch (err) {
         console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file3.jsonl');
-      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.jsonl');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -213,6 +220,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res1 = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .query({ args: '{ best_oa_location { license } }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
@@ -222,13 +230,13 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       // get the state of process
       let res2;
-      while (!res2?.body?.state?.done) {
+      do {
         res2 = await chai
           .request(enrichService)
           .get(`/state/${id}.json`);
         expect(res2).have.status(200);
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (!res2?.body?.state?.done);
 
       const { state } = res2?.body;
 
@@ -247,14 +255,14 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
+      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
       try {
-        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res3.body.toString());
+        await fs.writeFile(path.resolve(fileEnriched), res3.body.toString());
       } catch (err) {
         console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file4.jsonl');
-      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.jsonl');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -267,6 +275,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res1 = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .query({ args: '{ z_authors { family } }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
@@ -276,13 +285,13 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       // get the state of process
       let res2;
-      while (!res2?.body?.state?.done) {
+      do {
         res2 = await chai
           .request(enrichService)
           .get(`/state/${id}.json`);
         expect(res2).have.status(200);
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (!res2?.body?.state?.done);
 
       const { state } = res2?.body;
 
@@ -301,14 +310,14 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
+      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
       try {
-        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res3.body.toString());
+        await fs.writeFile(path.resolve(fileEnriched), res3.body.toString());
       } catch (err) {
         console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file5.jsonl');
-      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.jsonl');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -321,6 +330,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res1 = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .query({ args: '{ is_oa, best_oa_location { license }, z_authors{ family } }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
@@ -330,13 +340,13 @@ describe('Test: enrichment with a json file (command ezu)', () => {
 
       // get the state of process
       let res2;
-      while (!res2?.body?.state?.done) {
+      do {
         res2 = await chai
           .request(enrichService)
           .get(`/state/${id}.json`);
         expect(res2).have.status(200);
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (!res2?.body?.state?.done);
 
       const { state } = res2?.body;
 
@@ -355,14 +365,14 @@ describe('Test: enrichment with a json file (command ezu)', () => {
         .buffer()
         .parse(binaryParser);
 
+      const fileEnriched = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
       try {
-        await fs.writeFile(path.resolve(enrichDir, 'enriched', 'enriched.jsonl'), res3.body.toString());
+        await fs.writeFile(path.resolve(fileEnriched), res3.body.toString());
       } catch (err) {
         console.error(`writeFile: ${err}`);
       }
 
       const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file6.jsonl');
-      const fileEnriched = path.resolve(enrichDir, 'enriched', 'enriched.jsonl');
 
       const same = await compareFile(reference, fileEnriched);
       expect(same).to.be.equal(true);
@@ -377,6 +387,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .query({ args: '{ coin }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
@@ -396,6 +407,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .query({ args: '{ is_oa }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson');
@@ -411,6 +423,7 @@ describe('Test: enrichment with a json file (command ezu)', () => {
       const res = await chai
         .request(enrichService)
         .post(`/json/${id}`)
+        .query({ index: 'unpaywall-test' })
         .query({ args: '{ is_oa }' })
         .send(file)
         .set('Content-Type', 'application/x-ndjson')
@@ -422,6 +435,6 @@ describe('Test: enrichment with a json file (command ezu)', () => {
   });
 
   after(async () => {
-    await deleteIndex('unpaywall');
+    await deleteIndex('unpaywall-test');
   });
 });
