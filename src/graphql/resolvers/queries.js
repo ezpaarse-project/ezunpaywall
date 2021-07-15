@@ -88,8 +88,9 @@ module.exports = {
   },
   // attr info give informations about graphql request
   resolve: async (parent, args, context) => {
-    if (!context?.index) {
-      context.index = 'unpaywall';
+    let { index } = context?.headers;
+    if (!index) {
+      index = 'unpaywall';
     }
     const filter = [{ terms: { doi: args.dois } }];
     const matchRange = /(range)/i;
@@ -134,7 +135,7 @@ module.exports = {
     let res;
     try {
       res = await client.search({
-        index: context.index,
+        index,
         size: args.dois.length || 1000,
         body: {
           query,
