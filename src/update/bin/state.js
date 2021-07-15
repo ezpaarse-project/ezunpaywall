@@ -33,7 +33,7 @@ const createState = async () => {
  * @returns {object} - state in JSON format
  */
 const getState = async (filename) => {
-  let state = await fs.readFile(path.resolve(statesDir, filename));
+  let state = await fs.readFile(path.resolve(statesDir, filename), 'utf-8');
   try {
     state = JSON.parse(state);
   } catch (err) {
