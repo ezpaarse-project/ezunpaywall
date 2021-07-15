@@ -35,8 +35,8 @@ const insertDataInElastic = async (data, index, stateName) => {
     logger.error(`insertDataInElastic: ${err}`);
   }
   if (res?.body?.errors) {
-    const { error } = res?.body?.items;
-    logger.error(`insertDataInElastic item : ${JSON.stringify(error)}`);
+    const { items } = res?.body;
+    logger.error(`insertDataInElastic item : ${JSON.stringify(items)}`);
     await fail(stateName);
   }
 };
