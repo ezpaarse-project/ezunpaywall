@@ -129,6 +129,7 @@ const askEzUnpaywall = async (data, args, stateName, index, apikey) => {
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'X-API-KEY': apikey,
+        index,
       },
     });
   } catch (err) {
