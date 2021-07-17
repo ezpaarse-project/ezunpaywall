@@ -43,35 +43,39 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
   describe('Do a classic insertion of a file already installed', () => {
     before(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall-test', mappingUnpaywall);
       await addSnapshot('fake1.jsonl.gz');
+      await deleteIndex('unpaywall-test');
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fake1.jsonl.gz')
-        .query({ index: 'unpaywall-test' })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          filename: 'fake1.jsonl.gz',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('start upsert with fake1.jsonl.gz');
+      expect(res.body.message).be.equal('update withfake1.jsonl.gz');
     });
 
     // test insertion
     it('Should insert 50 data', async () => {
       // wait for the update to finish
       let isUpdate = true;
-      while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+      do {
         isUpdate = await checkIfInUpdate();
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (isUpdate);
+
       const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(50);
     });
@@ -115,44 +119,49 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     after(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
+      await deleteIndex('unpaywall-test');
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter limit=10', () => {
     before(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall-test', mappingUnpaywall);
       await addSnapshot('fake1.jsonl.gz');
+      await deleteIndex('unpaywall-test');
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fake1.jsonl.gz')
-        .query({ index: 'unpaywall-test', limit: 10 })
+        .post('/job')
+        .send({
+          filename: 'fake1.jsonl.gz',
+          index: 'unpaywall-test',
+          limit: 10,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('start upsert with fake1.jsonl.gz');
+      expect(res.body.message).be.equal('update withfake1.jsonl.gz');
     });
 
     // test insertion
     it('Should insert 10 data', async () => {
       // wait for the update to finish
       let isUpdate = true;
-      while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+      do {
         isUpdate = await checkIfInUpdate();
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (isUpdate);
+
       const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(10);
     });
@@ -196,43 +205,48 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     after(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
+      await deleteIndex('unpaywall-test');
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter offset=40', () => {
     before(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall-test', mappingUnpaywall);
       await addSnapshot('fake1.jsonl.gz');
+      await deleteIndex('unpaywall-test');
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
     // test return message
     it('should return the process start', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fake1.jsonl.gz')
-        .query({ index: 'unpaywall-test', offset: 40 })
+        .post('/job')
+        .send({
+          filename: 'fake1.jsonl.gz',
+          index: 'unpaywall-test',
+          offset: 40,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('start upsert with fake1.jsonl.gz');
+      expect(res.body.message).be.equal('update withfake1.jsonl.gz');
     });
 
     // test insertion
     it('Should insert 10 data', async () => {
       // wait for the update to finish
       let isUpdate = true;
-      while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+      do {
         isUpdate = await checkIfInUpdate();
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (isUpdate);
+
       const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(10);
     });
@@ -276,43 +290,49 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     after(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
+      await deleteIndex('unpaywall-test');
     });
   });
 
   describe('Do a classic insertion of a file already installed with parameter offset=10 and limit=20', () => {
     before(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall-test', mappingUnpaywall);
       await addSnapshot('fake1.jsonl.gz');
+      await deleteIndex('unpaywall-test');
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fake1.jsonl.gz')
-        .query({ index: 'unpaywall-test', offset: 10, limit: 20 })
+        .post('/job')
+        .send({
+          filename: 'fake1.jsonl.gz',
+          index: 'unpaywall-test',
+          offset: 10,
+          limit: 20,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('start upsert with fake1.jsonl.gz');
+      expect(res.body.message).be.equal('update withfake1.jsonl.gz');
     });
 
     // test insertion
     it('Should insert 10 data', async () => {
       // wait for the update to finish
       let isUpdate = true;
-      while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+      do {
         isUpdate = await checkIfInUpdate();
-      }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (isUpdate);
+
       const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(10);
     });
@@ -367,14 +387,17 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fake1.jsonl')
-        .query({ index: 'unpaywall-test' })
+        .post('/job')
+        .send({
+          filename: 'fake1.jsonl',
+          index: 'unpaywall-test',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('filename of file is in bad format (accepted a .gz file)');
+      expect(res.body.message).be.equal('Only ".gz" files are accepted');
     });
   });
 
@@ -382,8 +405,11 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fileDoesntExist.jsonl.gz')
-        .query({ index: 'unpaywall-test' })
+        .post('/job')
+        .send({
+          filename: 'fileDoesntExist.jsonl.gz',
+          index: 'unpaywall-test',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -395,40 +421,48 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
   describe('Don\'t do a insertion of a file already installed because the parameter limit can\t be lower than offset', () => {
     before(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall-test', mappingUnpaywall);
       await addSnapshot('fake1.jsonl.gz');
+      await deleteIndex('unpaywall-test');
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fake1.jsonl.gz')
-        .query({ index: 'unpaywall-test', offset: 100, limit: 50 })
+        .post('/job')
+        .send({
+          filename: 'fake1.jsonl.gz',
+          index: 'unpaywall-test',
+          offset: 100,
+          limit: 50,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('limit can\t be lower than offset or 0');
+      expect(res.body.message).be.equal('limit cannot be low than offset or 0');
     });
 
     after(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
+      await deleteIndex('unpaywall-test');
     });
   });
 
   describe('Don\'t do a classic insertion of a file already installed because wrong X-API-KEY', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fake1.jsonl.gz')
-        .query({ index: 'unpaywall-test' })
+        .post('/job')
+        .send({
+          filename: 'fake1.jsonl.gz',
+          index: 'unpaywall-test',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
 
@@ -438,7 +472,11 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     it('Should return a error message', async () => {
       const res = await chai.request(updateService)
-        .post('/update/fake1.jsonl.gz')
+        .post('/job')
+        .send({
+          filename: 'fake1.jsonl.gz',
+          index: 'unpaywall-test',
+        })
         .query({ index: 'unpaywall-test' })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -450,9 +488,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   });
 
   after(async () => {
-    await deleteIndex('unpaywall-test');
     await deleteSnapshot('fake1.jsonl.gz');
     await deleteSnapshot('fake2.jsonl.gz');
     await deleteSnapshot('fake3.jsonl.gz');
+    await deleteIndex('unpaywall-test');
   });
 });

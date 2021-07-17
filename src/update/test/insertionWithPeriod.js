@@ -60,24 +60,27 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   describe(`Do a download and insert between ${date2} and now`, async () => {
     before(async () => {
-      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
+      await deleteIndex('unpaywall-test');
       await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: date2 })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: date2,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`insert snapshot beetween ${date2} and ${dateNow} has begun, list of task has been created on elastic`);
+      expect(res.body.message).be.equal(`dowload and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
     });
 
     // test insertion
@@ -196,14 +199,18 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: date3, endDate: date2 })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: date3,
+          endDate: date2,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`insert snapshot beetween ${date3} and ${date2} has begun, list of task has been created on elastic`);
+      expect(res.body.message).be.equal(`dowload and insert snapshot from unpaywall from ${date3} and ${date2}`);
     });
 
     // test insertion
@@ -321,14 +328,18 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: date5, endDate: date4 })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: date5,
+          endDate: date4,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`insert snapshot beetween ${date5} and ${date4} has begun, list of task has been created on elastic`);
+      expect(res.body.message).be.equal(`dowload and insert snapshot from unpaywall from ${date5} and ${date4}`);
     });
 
     // test insertion
@@ -371,14 +382,14 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', endDate: date1 })
+        .post('/job')
+        .send({ index: 'unpaywall-test', endDate: date1 })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('start date is missing');
+      expect(res.body.message).be.equal('startDate is missing');
     });
   });
 
@@ -386,40 +397,50 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
+        .post('/job')
         .query({ index: 'unpaywall-test', startDate: 'doen\'t exist' })
+        .send({
+          index: 'unpaywall-test',
+          startDate: 'doen\'t exist',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
+      expect(res.body.message).be.equal('startDate are in bad format, required YYYY-mm-dd');
     });
 
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: '01-01-2000' })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: '01-01-2000',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
+      expect(res.body.message).be.equal('startDate are in bad format, required YYYY-mm-dd');
     });
 
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: '2000-50-50' })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: '2000-50-50',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in bad format, date need to be in format YYYY-mm-dd');
+      expect(res.body.message).be.equal('startDate are in bad format, required YYYY-mm-dd');
     });
   });
 
@@ -427,14 +448,18 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: date2, endDate: date3 })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: date2,
+          endDate: date3,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('endDate is lower than startDate');
+      expect(res.body.message).be.equal('endDate cannot be lower than startDate');
     });
   });
 
@@ -442,22 +467,28 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: tomorrow })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: tomorrow,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate is in the futur');
+      expect(res.body.message).be.equal('startDate cannot be in the futur');
     });
   });
 
   describe(`Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: date2 })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: date2,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
 
@@ -467,8 +498,11 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
-        .query({ index: 'unpaywall-test', startDate: date2 })
+        .post('/job')
+        .send({
+          index: 'unpaywall-test',
+          startDate: date2,
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'wrong X-API-KEY');

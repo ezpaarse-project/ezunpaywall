@@ -17,7 +17,7 @@ nunjucks.configure(templatesDir);
 
 const images = fs.readdirSync(imagesDir);
 
-const sendMail = async (options) => {
+const sendMail = (options) => {
   const mailOptions = options || {};
   mailOptions.attachments = mailOptions.attachments || [];
 
@@ -64,7 +64,7 @@ const send = async (state) => {
       }),
     });
   } catch (err) {
-    logger.error(`send : ${err}`);
+    logger.error(`send: ${err}`);
   }
 };
 

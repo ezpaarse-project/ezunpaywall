@@ -13,7 +13,7 @@ const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 const checkIfInUpdate = async () => {
   let res = true;
   try {
-    res = await chai.request(updateURL).get('/update/status');
+    res = await chai.request(updateURL).get('/status');
   } catch (err) {
     console.error(`checkIfInUpdate : ${err}`);
   }

@@ -36,7 +36,7 @@ const insertion = async (filename, index, options) => {
   await createReport(statename);
   setInUpdate(false);
   // TODO use micro-service mail
-  await send(await getState(statename));
+  send(await getState(statename));
 };
 
 /**
@@ -60,7 +60,7 @@ const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   await createReport(statename);
   setInUpdate(false);
   // TODO use micro-service mail
-  await send(await getState(statename));
+  send(await getState(statename));
 };
 
 module.exports = {

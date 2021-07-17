@@ -21,6 +21,7 @@ fs.ensureDir(path.resolve(outDir, 'states'));
 fs.ensureDir(path.resolve(outDir, 'snapshots'));
 
 const app = express();
+app.use(express.json());
 app.use(cors());
 
 app.get('/', async (req, res) => {

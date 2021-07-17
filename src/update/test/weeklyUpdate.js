@@ -55,7 +55,7 @@ describe('Test: weekly update route test', () => {
     // test response
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
+        .post('/job')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -156,7 +156,7 @@ describe('Test: weekly update route test', () => {
     // test return message
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
+        .post('/job')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -234,7 +234,7 @@ describe('Test: weekly update route test', () => {
   describe('Don\'t a classic weekly update because wrong X-API-KEY', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
+        .post('/job')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'wrong X-API-KEY');
@@ -245,7 +245,7 @@ describe('Test: weekly update route test', () => {
 
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
-        .post('/update')
+        .post('/job')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'wrong X-API-KEY');
