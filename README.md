@@ -74,25 +74,14 @@ sysctl -p
 
 For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
 
-  - Open the `certs` directory.
-  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file.
-
-```yml
-# example of instances.yml
-instances:
-  # cat /etc/hostname
-  - name: "NameComputer"  
-    ip:
-      # hostname -I | awk '{print $1}'
-      - "127.0.0.1" 
-    dns:
-      # cat /etc/hostname
-      - "NameComputer"  
-      - "localhost"
-```
+  - Open the `config/certs` directory.
+  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file (an example file is available).
 
   - Run `docker-compose -f create-certs.yml up`.
-  - A `certificates` directory should be created, you can just put it in both `elasticsearch/config/` and `kibana/config/`. (**NB**: you may need to `chown` it)
+  - A bundle.zip archive is created, it must be decompressed in the certificates folder.
+  ```bash
+  unzip bundle.zip -d ../elasticsearch/certificates/
+  ```
 
 ## Start/Stop/Status
 
@@ -112,15 +101,7 @@ docker-compose ps
 ### Install
 
 ```bash
-$ /ezunpaywall/api npm i
-$ /ezunpaywall/fakeUnpaywall npm i
-```
-### Pre-commit and test (optionnal)
-
-if you want to enable pre-commit (syntax checking via eslint), run this commande on the ezunpaywall repository
-
-```bash
-$ /ezunpaywall npm i
+npm i
 ```
 ### Start
 
@@ -128,24 +109,21 @@ Before you start ezunpaywall, make sure all necessary environment variables are 
 
 ```bash
 # Build ezunpaywall 
-$ /ezunpaywall docker-compose -f docker-compose.debug.yml build
+docker-compose -f docker-compose.debug.yml build
 
 # Start ezunpaywall as daemon
-$ /ezunpaywall docker-compose -f docker-compose.debug.yml up -d
+docker-compose -f docker-compose.debug.yml up -d
 
 # Stop ezunpaywall
-$ /ezunpaywall docker-compose -f docker-compose.debug.yml stop
+docker-compose -f docker-compose.debug.yml stop
 
 # Get the status of ezunpaywall services
-$ /ezunpaywall docker-compose -f docker-compose.debug.yml ps
+docker-compose -f docker-compose.debug.yml ps
 ```
 
 ```bash
-# Start ezunpaywall test as daemon
-$ /ezunpaywall docker-compose -f docker-compose.test.yml up -d
-
 # start test
-$ /ezunpaywall npm run test
+npm run test
 ```
 ## Data update 
 

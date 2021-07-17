@@ -7,9 +7,9 @@ services:
       - NODE_ENV=development
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
       # proxy
       - http_proxy
       - https_proxy
@@ -64,9 +64,9 @@ services:
       - NODE_ENV=development
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
       # proxy
       - http_proxy
       - https_proxy
@@ -82,7 +82,6 @@ services:
       - "5000:5000"
     depends_on:
       - graphql
-      - elastic
     restart: unless-stopped
 
   fakeunpaywall:
@@ -96,8 +95,6 @@ services:
     command: "npm run dev"
     ports:
       - "12000:12000"
-    depends_on:
-      - elastic
     restart: unless-stopped
 
   frontend:
@@ -114,16 +111,16 @@ services:
       - ENRICH_URL=https://ezunpaywall.dev/api/enrich
       - HOST=0.0.0.0
       - PORT=8080
-    depends_on:
-      - elastic
   
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
     environment:
-      - CLUSTER_NAME=ezunpaywall
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=changeme
+      - xpack.security.enabled=true
     ulimits:
       memlock:
         soft: -1
@@ -135,19 +132,14 @@ services:
     restart: unless-stopped
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.1
+    image: docker.elastic.co/kibana/kibana:7.10.2
     ports:
       - 5601:5601
     environment:
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_USERNAME
-      - SERVER_HOST
-      - SERVER_PORT
-      - THIS_HOST
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
-      - KIBANA_DEFAULTAPPID
-    volumes:
-      - "./config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml"
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+      - xpack.security.enabled=true
     depends_on:
       - "elastic"
     restart: unless-stopped

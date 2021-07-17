@@ -36,6 +36,8 @@ describe('test graphqlRequest', () => {
         .get(`/graphql?query={GetByDOI(dois:["${doi1}"]){doi, is_oa}}`)
         .set('X-API-KEY', 'user');
 
+      console.log(res);
+
       expect(res).have.status(200);
 
       const data = res?.body?.data?.GetByDOI;

@@ -1,7 +1,16 @@
 {
    "scripts": {
       "prepare": "husky install",
-      "test": "NODE_CONFIG_DIR=./api/config mocha --timeout 30000"
+      "install:enrich": "cd src/enrich; npm install",
+      "install:fakeUnpaywall": "cd src/fakeUnpaywall; npm install",
+      "install:frontend": "cd src/frontend; npm install",
+      "install:graphql": "cd src/graphql; npm install",
+      "install:update": "cd src/update; npm install",
+      "postinstall": "npm run install:enrich && npm run install:fakeUnpaywall && npm run install:frontend && npm run install:graphql && npm run install:update",
+      "test:enrich": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/enrich && npm run test",
+      "test:graphql": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/graphql && npm run test",
+      "test:update": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/update && npm run test",
+      "test": "npm run test:enrich && npm run test:graphql && npm run test:update"
    },
    "devDependencies": {
       "chai": "^4.3.4",

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon -e .js app.js",
-    "test": "NODE_CONFIG_DIR=./config mocha --timeout 3000",
+    "test": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && NODE_CONFIG_DIR=./config mocha --timeout 3000",
     "lint": "eslint --ext .js ."
   },
   "author": "",
