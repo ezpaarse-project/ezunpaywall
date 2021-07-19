@@ -46,9 +46,10 @@ const insertDataInElastic = async (data, index, stateName) => {
  * @param {string} stateName - state filename
  * @param {string} filename - snapshot filename which the data will be inserted
  * @param {string} index name of the index to which the data will be saved
- * @param {object} opts - options containing a limit and an offset
+ * @param {number} offset - offset
+ * @param {number} limit - limit
  */
-const insertDataUnpaywall = async (stateName, filename, index, opts) => {
+const insertDataUnpaywall = async (stateName, filename, index, offset, limit) => {
   // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
@@ -104,14 +105,14 @@ const insertDataUnpaywall = async (stateName, filename, index, opts) => {
   // to insert them in bulk in an elastic
   for await (const line of rl) {
     // limit
-    if (step.linesRead === opts.limit) {
+    if (step.linesRead === limit) {
       break;
     }
 
     step.linesRead += 1;
 
     // offset
-    if (step.linesRead >= opts.offset + 1) {
+    if (step.linesRead >= offset + 1) {
       // fill the array
       try {
         tab.push(JSON.parse(line));

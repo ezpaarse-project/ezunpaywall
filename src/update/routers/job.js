@@ -68,7 +68,7 @@ router.post('/job', checkStatus, checkAdmin, async (req, res) => {
     if (!offset) { offset = 0; }
     if (!limit) { limit = -1; }
 
-    insertion(filename, index, { offset: Number(offset), limit: Number(limit) });
+    insertion(filename, index, Number(offset), Number(limit));
 
     return res.status(200).json({ message: `update with ${filename}` });
   }

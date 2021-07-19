@@ -26,12 +26,13 @@ const { send } = require('../lib/mail');
  * start an update process of unpaywall data with a file present in ezunpaywall
  * @param {string} filename - nom du fichier à insérer
  * @param {string} index name of the index to which the data will be saved
- * @param {object} options - limit and offset of insertion
+ * @param {number} offset - offset of insertion
+ * @param {number} limit - limit of insertion
  */
-const insertion = async (filename, index, options) => {
+const insertion = async (filename, index, offset, limit) => {
   setInUpdate(true);
   const statename = await createState();
-  await insertDataUnpaywall(statename, filename, index, options);
+  await insertDataUnpaywall(statename, filename, index, offset, limit);
   await endState(statename);
   await createReport(statename);
   setInUpdate(false);
@@ -53,8 +54,7 @@ const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
     await downloadFileFromUnpaywall(statename, snapshotsInfo[i]);
-    const opts = { offset: -1, limit: -1 };
-    await insertDataUnpaywall(statename, snapshotsInfo[i].filename, index, opts);
+    await insertDataUnpaywall(statename, snapshotsInfo[i].filename, index, -1, -1);
   }
   await endState(statename);
   await createReport(statename);
