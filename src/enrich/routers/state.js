@@ -6,7 +6,7 @@ const {
   getState,
 } = require('../bin/state');
 
-const stateDir = path.resolve(__dirname, '..', 'out', 'states');
+const statesDir = path.resolve(__dirname, '..', 'out', 'states');
 
 /**
  * get the files in a dir in order by date
@@ -49,7 +49,7 @@ const getMostRecentFile = async (dir) => {
 router.get('/state', async (req, res, next) => {
   let latestFile;
   try {
-    latestFile = await getMostRecentFile(stateDir);
+    latestFile = await getMostRecentFile(statesDir);
   } catch (err) {
     return next(err);
   }
@@ -78,7 +78,7 @@ router.get('/state/:filename', async (req, res, next) => {
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(stateDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(statesDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'file not found' });
   }

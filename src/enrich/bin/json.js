@@ -15,7 +15,8 @@ const {
   fail,
 } = require('./state');
 
-const enriched = path.resolve(__dirname, '..', 'out', 'enriched');
+const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
+const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 
 /**
  * getter of all the unpaywall attributes that can be used for enrichment in graphql format
@@ -190,7 +191,8 @@ const writeInFileJSON = async (data, enrichedFile, stateName) => {
  * @param {String} index - index name of mapping
  * @param {String} apikey - apikey of user
  */
-const processEnrichJSON = async (readStream, args, id, index, apikey) => {
+const processEnrichJSON = async (id, index, args, apikey) => {
+  const readStream = fs.createReadStream(path.resolve(uploadDir, `${id}.jsonl`));
   if (!args) {
     args = allArgs();
   }
@@ -198,7 +200,7 @@ const processEnrichJSON = async (readStream, args, id, index, apikey) => {
   const stateName = `${id}.json`;
   const state = await getState(stateName);
   const file = `${id}.jsonl`;
-  const enrichedFile = path.resolve(enriched, file);
+  const enrichedFile = path.resolve(enrichedDir, file);
 
   try {
     await fs.ensureFile(enrichedFile);

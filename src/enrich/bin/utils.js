@@ -19,9 +19,9 @@ const {
  * @param {String} index - index name of mapping
  * @param {String} apikey - apikey of user
  */
-const enrichJSON = async (readStream, args, id, index, apiKey) => {
+const enrichJSON = async (id, index, args, apikey) => {
   await createState(id);
-  await processEnrichJSON(readStream, args, id, index, apiKey);
+  await processEnrichJSON(id, index, args, apikey);
   await endState(`${id}.json`);
 };
 
@@ -34,9 +34,10 @@ const enrichJSON = async (readStream, args, id, index, apiKey) => {
  * @param {String} index - index name of mapping
  * @param {String} apikey - apikey of user
  */
-const enrichCSV = async (readStream, args, id, separator, index, apiKey) => {
+const enrichCSV = async (id, index, args, apikey, separator) => {
+  console.log('utils', typeof id);
   await createState(id);
-  await processEnrichCSV(readStream, args, id, separator, index, apiKey);
+  await processEnrichCSV(id, index, args, apikey, separator);
   await endState(`${id}.json`);
 };
 

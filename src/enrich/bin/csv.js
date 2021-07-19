@@ -14,6 +14,7 @@ const {
   fail,
 } = require('./state');
 
+const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
 const enriched = path.resolve(__dirname, '..', 'out', 'enriched');
 
 /**
@@ -265,15 +266,22 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
  * @param {String} index - index name of mapping
  * @param {String} apikey - apikey of user
  */
-const processEnrichCSV = async (readStream, args, id, separator, index, apikey) => {
+const processEnrichCSV = async (id, index, args, apikey, separator) => {
+  console.log('csv', typeof id);
+
+  const filename = `${id}.csv`;
+
+  const readStream = fs.createReadStream(path.resolve(uploadDir, filename));
+
+  const stateName = `${id}.json`;
+  const state = await getState(stateName);
+
+  const enrichedFile = path.resolve(enriched, filename);
+
   if (!args) {
     args = allArgs();
   }
   args = addDOItoGraphqlRequest(args);
-  const stateName = `${id}.json`;
-  const state = await getState(stateName);
-  const file = `${id}.csv`;
-  const enrichedFile = path.resolve(enriched, file);
 
   try {
     await fs.ensureFile(enrichedFile);
