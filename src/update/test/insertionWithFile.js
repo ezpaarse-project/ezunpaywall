@@ -64,7 +64,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('update withfake1.jsonl.gz');
+      expect(res.body.message).be.equal('update with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -150,7 +150,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('update withfake1.jsonl.gz');
+      expect(res.body.message).be.equal('update with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -235,7 +235,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('update withfake1.jsonl.gz');
+      expect(res.body.message).be.equal('update with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -321,7 +321,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('update withfake1.jsonl.gz');
+      expect(res.body.message).be.equal('update with fake1.jsonl.gz');
     });
 
     // test insertion
