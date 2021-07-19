@@ -46,8 +46,6 @@ router.post('/job', checkAuth, async (req, res, next) => {
 
   if (!separator) separator = ',';
 
-  console.log('job', typeof id);
-
   if (type === 'csv') {
     try {
       await enrichCSV(id, index, args, apiKey, separator);

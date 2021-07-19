@@ -35,7 +35,6 @@ const enrichJSON = async (id, index, args, apikey) => {
  * @param {String} apikey - apikey of user
  */
 const enrichCSV = async (id, index, args, apikey, separator) => {
-  console.log('utils', typeof id);
   await createState(id);
   await processEnrichCSV(id, index, args, apikey, separator);
   await endState(`${id}.json`);

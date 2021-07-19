@@ -267,8 +267,6 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
  * @param {String} apikey - apikey of user
  */
 const processEnrichCSV = async (id, index, args, apikey, separator) => {
-  console.log('csv', typeof id);
-
   const filename = `${id}.csv`;
 
   const readStream = fs.createReadStream(path.resolve(uploadDir, filename));
