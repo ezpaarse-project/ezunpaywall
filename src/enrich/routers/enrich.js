@@ -4,15 +4,6 @@ const fs = require('fs-extra');
 const multer = require('multer');
 const uuid = require('uuid');
 
-const {
-  enrichJSON,
-  enrichCSV,
-} = require('../bin/utils');
-
-const {
-  checkAuth,
-} = require('../middlewares/auth');
-
 const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
 
 const storage = multer.diskStorage(
@@ -62,60 +53,6 @@ router.post('/upload', upload.single('file'), async (req, res) => {
   const { filename } = req?.file;
   // TODO return name of file
   return res.status(200).json({ messsage: 'file added', filename, id: path.parse(filename).name });
-});
-
-/**
- * enrich a jsonl file
- *
- * @apiParam PARAMS id - id of process
- * @apiParam QUERY args - graphql attributes for enrichment
- *
- * @apiError 500 internal server error
- *
- * @apiSuccess name of enriched file to download it
- */
-router.post('/json/:id', checkAuth, async (req, res, next) => {
-  const { args } = req.query;
-  // TODO check args with graphqlSyntax
-  let { index } = req.query;
-  const apiKey = req.get('x-api-key');
-  if (!index) index = 'unpaywall';
-  const { id } = req.params;
-  // TODO check if id is already used
-  try {
-    await enrichJSON(req, args, id, index, apiKey);
-  } catch (err) {
-    return next(err);
-  }
-  return res.status(200).json({ id });
-});
-
-/**
- * enrich a csv file
- *
- * @apiParam PARAMS id - id of process
- * @apiParam QUERY args - graphql attributes for enrichment
- *
- * @apiError 500 internal server error
- *
- * @apiSuccess name of enriched file to download it
- */
-router.post('/csv/:id', checkAuth, async (req, res, next) => {
-  const { args } = req.query;
-  let { index } = req.query;
-  const apiKey = req.get('x-api-key');
-  if (!index) index = 'unpaywall';
-  // TODO check args with graphqlSyntax
-  const { id } = req.params;
-  // TODO check if is is already used
-  let { separator } = req.query;
-  if (!separator) separator = ',';
-  try {
-    await enrichCSV(req, args, id, separator, index, apiKey);
-  } catch (err) {
-    return next(err);
-  }
-  return res.status(200).json({ id });
 });
 
 module.exports = router;

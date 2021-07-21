@@ -20,7 +20,10 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
-router.get('/snapshot', async (req, res) => res.status(200).json({ ...await fs.readdir(snapshotsDir) }));
+router.get('/snapshot', async (req, res) => {
+  const files = await fs.readdir(snapshotsDir);
+  res.status(200).json(files);
+});
 
 /**
  * @apiError 500 internal server error
