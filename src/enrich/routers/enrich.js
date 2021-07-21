@@ -5,6 +5,7 @@ const multer = require('multer');
 const uuid = require('uuid');
 
 const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
+const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 
 const storage = multer.diskStorage(
   {
@@ -17,6 +18,16 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
+router.get('/enriched', async (req, res) => {
+  const files = await fs.readdir(enrichedDir);
+  res.status(200).json(files);
+});
+
+router.get('/upload', async (req, res) => {
+  const files = await fs.readdir(uploadDir);
+  res.status(200).json(files);
+});
+
 /**
  * get enriched file
  *
@@ -28,7 +39,6 @@ const upload = multer({ storage });
  * @apiSuccess enriched file
  */
 router.get('/enriched/:filename', async (req, res) => {
-  const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
   const { filename } = req.params;
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });

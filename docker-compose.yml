@@ -20,7 +20,7 @@ services:
       # apikey
       - API_KEY_USERS
     volumes:
-      - ./src/graphql/out:/usr/src/out/
+      - ./src/graphql/out:/usr/src/graphql/out
     command: "npm start"
     ports:
       - 3000:3000
@@ -54,7 +54,7 @@ services:
       # apikey
       - API_KEY_ADMIN
     volumes:
-      - ./src/update/out:/usr/src/out/
+      - ./src/update/out:/usr/src/update/out
     command: "npm start"
     ports:
       - 4000:4000
@@ -81,7 +81,7 @@ services:
       # URL services
       - GRAPHQL_URL
     volumes:
-      - ./src/enrich/out:/usr/src/out/
+      - ./src/enrich/out:/usr/src/enrich/out
     command: "npm start"
     ports:
       - 5000:5000
