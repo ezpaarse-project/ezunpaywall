@@ -1,11 +1,12 @@
 const config = require('config');
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 let apikeyusers = config.get('apikeyusers');
 try {
   apikeyusers = JSON.parse(apikeyusers);
 } catch (err) {
-  logger.error(`JSON.parse in auth.js - ${err}`);
+  logger.error(`Cannot parse ${apikeyusers} in json format`);
+  logger.error(err);
 }
 /**
  * check the user's api key

@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const cors = require('cors');
 
-const { logger } = require('./lib/logger');
+const logger = require('./lib/logger');
 const { client, pingElastic } = require('./lib/client');
 const { name, version } = require('./package.json');
 
@@ -12,6 +12,7 @@ const routerReport = require('./routers/report');
 const routerSnapshot = require('./routers/snapshot');
 const routerState = require('./routers/state');
 const routerStatus = require('./routers/status');
+const routerUnpaywall = require('./routers/unpaywall');
 
 const outDir = path.resolve(__dirname, 'out');
 fs.ensureDir(path.resolve(outDir));
@@ -40,6 +41,7 @@ app.use(routerReport);
 app.use(routerSnapshot);
 app.use(routerState);
 app.use(routerStatus);
+app.use(routerUnpaywall);
 
 pingElastic();
 

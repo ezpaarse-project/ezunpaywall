@@ -18,21 +18,24 @@ const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
  * @apiSuccess state
  */
 router.get('/state', async (req, res, next) => {
-  let latestFile;
-  try {
-    latestFile = await getMostRecentFile(statesDir);
-  } catch (err) {
-    return next(err);
+  const { latest } = req.query;
+  if (latest) {
+    let latestFile;
+    try {
+      latestFile = await getMostRecentFile(statesDir);
+    } catch (err) {
+      return next(err);
+    }
+    let state;
+    try {
+      state = await getState(latestFile?.filename);
+    } catch (err) {
+      return next(err);
+    }
+    return res.status(200).json({ state });
   }
-
-  let state;
-  try {
-    state = await getState(latestFile?.filename);
-  } catch (err) {
-    return next(err);
-  }
-
-  return res.status(200).json({ state });
+  const states = await fs.readdir(statesDir);
+  return res.status(200).json(states);
 });
 
 /**

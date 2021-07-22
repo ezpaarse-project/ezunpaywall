@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
 
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 const statesDir = path.resolve(__dirname, '..', 'out', 'states');
 
@@ -22,7 +22,8 @@ const createState = async () => {
   try {
     await fs.writeFile(path.resolve(statesDir, filename), JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`createState: ${err}`);
+    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${path.resolve(statesDir, filename)}`);
+    logger.error(err);
   }
   return filename;
 };
@@ -37,7 +38,8 @@ const getState = async (filename) => {
   try {
     state = JSON.parse(state);
   } catch (err) {
-    logger.error(`getState on JSON.parse: ${err}`);
+    logger.error(`Cannot parse ${state} in json format`);
+    logger.error(err);
   }
   return state;
 };
@@ -48,11 +50,12 @@ const getState = async (filename) => {
  * @param {object} filename - name of the file where the state is saved
  */
 const updateStateInFile = async (state, filename) => {
-  const pathfile = path.resolve(statesDir, filename);
+  const filepath = path.resolve(statesDir, filename);
   try {
-    await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
+    await fs.writeFile(filepath, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`updateStateInFile: ${err}`);
+    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${filepath}`);
+    logger.error(err);
   }
 };
 

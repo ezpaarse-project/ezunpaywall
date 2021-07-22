@@ -8,7 +8,7 @@ const { Readable } = require('stream');
 const axios = require('axios');
 
 const { client } = require('../lib/client');
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
@@ -32,11 +32,12 @@ const insertDataInElastic = async (data, index, stateName) => {
   try {
     res = await client.bulk({ refresh: true, body });
   } catch (err) {
-    logger.error(`insertDataInElastic: ${err}`);
+    logger.error('Cannot bulk on elastic');
+    logger.error(err);
   }
   if (res?.body?.errors) {
     const { items } = res?.body;
-    logger.error(`insertDataInElastic item : ${JSON.stringify(items)}`);
+    logger.error(JSON.stringify(items));
     await fail(stateName);
   }
 };
@@ -63,7 +64,8 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    logger.error(`fs.stat in insertDataUnpaywall: ${err}`);
+    logger.error(`Cannot stat ${filePath}`);
+    logger.error(err);
     await fail(stateName);
     // TODO throw Error
   }
@@ -73,7 +75,8 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
   try {
     readStream = fs.createReadStream(filePath);
   } catch (err) {
-    logger.error(`fs.createReadStream in insertDataUnpaywall: ${err}`);
+    logger.error(`Cannot read ${filePath}`);
+    logger.error(err);
     await fail(stateName);
     // TODO throw Error
   }
@@ -88,7 +91,8 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
   try {
     decompressedStream = readStream.pipe(zlib.createGunzip());
   } catch (err) {
-    logger.error(`readStream.pipe(zlib.createGunzip()) in insertDataUnpaywall: ${err}`);
+    logger.error(`Cannot pipe ${readStream?.filename}`);
+    logger.error(err);
     await fail(stateName);
     // TODO throw Error
   }
@@ -117,7 +121,8 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
       try {
         tab.push(JSON.parse(line));
       } catch (err) {
-        logger.error(`JSON.parse in insertDataUnpaywall: ${err}`);
+        logger.error(`Cannot parse ${line} in json format`);
+        logger.error(err);
         await fail(stateName);
         // TODO throw Error
       }
@@ -152,13 +157,13 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
 
 /**
  * Update the step the percentage in download regularly until the download is complete
- * @param {string} filePath - path where the file is downloaded
+ * @param {string} filepath - path where the file is downloaded
  * @param {object} info - info of file
  * @param {string} stateName - state filename
  * @param {object} state - state in JSON format
  * @param {date} start - download start date
  */
-async function updatePercentStepDownload(filePath, info, stateName, start) {
+async function updatePercentStepDownload(filepath, info, stateName, start) {
   const state = await getState(stateName);
   if (state.error) {
     return;
@@ -166,9 +171,10 @@ async function updatePercentStepDownload(filePath, info, stateName, start) {
   const step = state.steps[state.steps.length - 1];
   let bytes;
   try {
-    bytes = await fs.stat(filePath);
+    bytes = await fs.stat(filepath);
   } catch (err) {
-    logger.error(`fs.stat in updatePercentStepDownload: ${err}`);
+    logger.error(`Cannot stat ${filepath}`);
+    logger.error(err);
   }
   if (bytes?.size >= info.size) {
     return;
@@ -178,7 +184,7 @@ async function updatePercentStepDownload(filePath, info, stateName, start) {
   state.steps[state.steps.length - 1] = step;
   await updateStateInFile(state, stateName);
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  updatePercentStepDownload(filePath, info, stateName, start);
+  updatePercentStepDownload(filepath, info, stateName, start);
 }
 
 /**
@@ -194,7 +200,8 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   try {
     alreadyInstalled = await fs.pathExists(filepath);
   } catch (err) {
-    logger.error(`fs.pathExists in downloadFileFromUnpaywall: ${err}`);
+    logger.error(`Cannot verify if ${filepath} exist`);
+    logger.error(err);
     await fail(stateName);
     // TODO thown Error;
   }
@@ -220,7 +227,8 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
       responseType: 'stream',
     });
   } catch (err) {
-    logger.error(`axios in downloadFileFromUnpaywall: ${err}`);
+    logger.error(`Cannot request ${info.url}`);
+    logger.error(err);
     await fail(stateName);
     // TODO throw Error
   }
@@ -257,7 +265,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
       });
 
       writeStream.on('error', async (err) => {
-        logger.error(`writeStream in downloadFileFromUnpaywall: ${err}`);
+        logger.error(err);
         await fail(stateName);
         return reject(err);
       });
@@ -293,7 +301,8 @@ const askUnpaywall = async (stateName, url, startDate, endDate) => {
       },
     });
   } catch (err) {
-    logger.error(`axios in askUnpaywall: ${err}`);
+    logger.error(`Cannot request ${url}`);
+    logger.error(err);
     // TODO thow error
   }
 

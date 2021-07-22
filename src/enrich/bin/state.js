@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs-extra');
 
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 const stateDir = path.resolve(__dirname, '..', 'out', 'states');
 
@@ -23,7 +23,8 @@ const createState = async (id) => {
   try {
     await fs.writeFile(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`createState: ${err}`);
+    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${path.resolve(stateDir, filename)}`);
+    logger.error(err);
   }
 };
 
@@ -37,7 +38,8 @@ const getState = async (filename) => {
   try {
     state = JSON.parse(state);
   } catch (err) {
-    logger.error(`getState on JSON.parse: ${err}`);
+    logger.error(`Cannot parse ${state} in json format`);
+    logger.error(err);
   }
   return state;
 };
@@ -51,9 +53,13 @@ const updateStateInFile = async (state, filename) => {
   const pathfile = path.resolve(stateDir, filename);
   const isPathExist = await fs.pathExists(pathfile);
   if (!isPathExist) {
-    logger.error(`updateStateInFile on fs.pathExists: file ${pathfile} doesn't exist`);
-  } else {
+    logger.error(`Cannot update state because ${pathfile} doesn't exist`);
+    return;
+  }
+  try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
+  } catch (err) {
+    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`);
   }
 };
 

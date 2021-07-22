@@ -7,6 +7,10 @@ const {
   deleteSnapshot,
 } = require('../bin/snapshot');
 
+const {
+  getMostRecentFile,
+} = require('../lib/file');
+
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
 const storage = multer.diskStorage(
@@ -20,9 +24,19 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
-router.get('/snapshot', async (req, res) => {
+router.get('/snapshot', async (req, res, next) => {
+  const { latest } = req.query;
+  if (latest) {
+    let latestSnapshot;
+    try {
+      latestSnapshot = await getMostRecentFile(snapshotsDir);
+    } catch (err) {
+      return next(err);
+    }
+    return res.status(200).json(latestSnapshot?.filename);
+  }
   const files = await fs.readdir(snapshotsDir);
-  res.status(200).json(files);
+  return res.status(200).json(files);
 });
 
 /**

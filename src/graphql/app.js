@@ -4,7 +4,7 @@ const { graphqlHTTP } = require('express-graphql');
 
 const { name, version } = require('./package.json');
 
-const { logger } = require('./lib/logger');
+const logger = require('./lib/logger');
 const { client, pingElastic } = require('./lib/client');
 const { checkAuth } = require('./middlewares/auth');
 

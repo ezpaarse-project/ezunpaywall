@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
 
@@ -18,7 +18,8 @@ const createReport = async (stateName) => {
   try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`createReport: ${err}`);
+    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`);
+    logger.error(err);
   }
 };
 
@@ -32,13 +33,15 @@ const getReport = async (filename) => {
   try {
     state = await fs.readFile(path.resolve(reportsDir, filename));
   } catch (err) {
-    logger.error(`getReport on fs.readFile: ${err}`);
+    logger.error(`Cannot read ${path.resolve(reportsDir, filename)}`);
+    logger.error(err);
     return undefined;
   }
   try {
     state = JSON.parse(state);
   } catch (err) {
-    logger.error(`getReport on JSON.parse: ${err}`);
+    logger.error(`Cannot parse ${state} at json format`);
+    logger.error(err);
     return undefined;
   }
   return state;

@@ -7,7 +7,7 @@ const readline = require('readline');
 const path = require('path');
 const axios = require('axios');
 
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 const {
   getState,
@@ -109,7 +109,7 @@ const addDOItoGraphqlRequest = (args) => {
  * @param {String} apikey - apikey of user
  * @return {array} ezunpaywall response
  */
-const askEzUnpaywall = async (data, args, stateName, index, apikey) => {
+const askEzunpaywall = async (data, args, stateName, index, apikey) => {
   let dois = [];
   let res = [];
   // contain index of doi
@@ -134,7 +134,8 @@ const askEzUnpaywall = async (data, args, stateName, index, apikey) => {
       },
     });
   } catch (err) {
-    logger.error(`askEzUnpaywall: ${JSON.stringify(err?.response?.data?.errors)}`);
+    logger.error(`Cannot request graphql service at ${process.env.GRAPHQL_URL || 'http://localhost:3000'}`);
+    logger.error(JSON.stringify(err?.response?.data?.errors));
     await fail(stateName);
   }
   return res?.data?.data?.GetByDOI;
@@ -174,11 +175,12 @@ const enrichTab = (data, response) => {
  * @param {string} stateName  state filename
  */
 const writeInFileJSON = async (data, enrichedFile, stateName) => {
+  const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
   try {
-    const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
-    logger.error(`writeInFileJSON: ${err}`);
+    logger.error(`Cannot write ${stringTab} in ${enrichedFile}`);
+    logger.error(err);
     await fail(stateName);
   }
 };
@@ -205,7 +207,8 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   try {
     await fs.ensureFile(enrichedFile);
   } catch (err) {
-    logger.error(`enrichmentFileCSV in ensureFile: ${err}`);
+    logger.error(`Cannot ensure ${enrichedFile}`);
+    logger.error(err);
   }
 
   let loaded = 0;
@@ -222,15 +225,18 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   let data = [];
 
   for await (const line of rl) {
+    let li;
     try {
-      const ligne = JSON.parse(line);
-      data.push(ligne);
+      li = JSON.parse(line);
     } catch (err) {
-      logger.error(`parse line in processEnrichJSON for line : ${line} ${err}`);
+      logger.error(`Cannot parse ${line} in json format`);
+      logger.error(err);
     }
+    data.push(li);
+
     // enrichment
     if (data.length === 1000) {
-      const response = await askEzUnpaywall(data, args, stateName, index, apikey);
+      const response = await askEzunpaywall(data, args, stateName, index, apikey);
       enrichTab(data, response);
       await writeInFileJSON(data, enrichedFile, stateName);
       data = [];
@@ -244,7 +250,7 @@ const processEnrichJSON = async (id, index, args, apikey) => {
 
   // last insertion
   if (data.length !== 0) {
-    const response = await askEzUnpaywall(data, args, stateName, index, apikey);
+    const response = await askEzunpaywall(data, args, stateName, index, apikey);
     data = enrichTab(data, response);
     await writeInFileJSON(data, enrichedFile, stateName);
     state.linesRead += data.length;

@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const { smtp, notifications } = require('config');
 
-const { logger } = require('./logger');
+const logger = require('./logger');
 
 const templatesDir = path.resolve(__dirname, '..', 'templates');
 const imagesDir = path.resolve(templatesDir, 'images');
@@ -64,7 +64,8 @@ const send = async (state) => {
       }),
     });
   } catch (err) {
-    logger.error(`send: ${err}`);
+    logger.error(`Cannot send mail ${err}`);
+    logger.error(err);
   }
 };
 

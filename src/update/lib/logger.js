@@ -1,21 +1,31 @@
+const path = require('path');
+
 const {
   createLogger,
   transports,
   format,
 } = require('winston');
 
+require('winston-daily-rotate-file');
+
 const {
   combine,
   timestamp,
+  // label,
   printf,
   colorize,
 } = format;
 
-require('winston-daily-rotate-file');
-
-const path = require('path');
-
-const myFormat = printf(({ level, message, timestamp: currentTime }) => `${currentTime} ${level}: ${message}`);
+// TODO log for prod
+// function prodFormat() {
+//   const replaceError = ({
+//     name, level, message, stack,
+//   }) => ({
+//     name, level, message, stack,
+//   });
+//   const replacer = (key, value) => (value instanceof Error ? replaceError(value) : value);
+//   return combine(label({ name: 'ssr server log' }), format.json({ replacer }));
+// }
 
 // logger configuration
 const processConfiguration = [
@@ -28,12 +38,18 @@ const processConfiguration = [
   new (transports.Console)(),
 ];
 
+function devFormat() {
+  const formatMessage = (info) => `${info.timestamp} ${info.level} - ${info.message}`;
+  const formatError = (info) => `${info.timestamp} ${info.level} - ${info.message}\n\n${info.stack}\n`;
+  const form = (info) => (info instanceof Error ? formatError(info) : formatMessage(info));
+  return combine(colorize(), timestamp(), printf(form));
+}
+
 const logger = createLogger({
-  format: combine(colorize(), timestamp(), myFormat),
+  level: process.env.LOG_LEVEL || 'info',
+  exitOnError: false,
   transports: processConfiguration,
+  format: devFormat(),
 });
 
-// create the logger
-module.exports = {
-  logger,
-};
+module.exports = logger;

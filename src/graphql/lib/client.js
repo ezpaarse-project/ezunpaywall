@@ -1,7 +1,7 @@
 const { Client } = require('@elastic/elasticsearch');
 const { URL } = require('url');
 const { elasticsearch } = require('config');
-const { logger } = require('./logger');
+const logger = require('./logger');
 
 const client = new Client({
   node: {
@@ -20,11 +20,12 @@ const pingElastic = async () => {
     try {
       elasticStatus = await client.ping();
     } catch (err) {
-      logger.error(`elastic ping at ${elasticsearch.host}:${elasticsearch.port} ${err}`);
+      logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port}`);
+      logger.error(err);
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-  logger.info(`elastic ping: ${elasticsearch.host}:${elasticsearch.port} is ok`);
+  logger.info(`ping: ${elasticsearch.host}:${elasticsearch.port} ok`);
   return true;
 };
 

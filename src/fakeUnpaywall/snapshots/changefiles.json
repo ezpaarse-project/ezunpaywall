@@ -3,31 +3,31 @@
     {
       "filename": "fake1.jsonl.gz",
       "filetype": "jsonl",
-      "from_date": "2021-07-12",
-      "last_modified": "2021-07-19T13:12:29",
+      "from_date": "2021-07-14",
+      "last_modified": "2021-07-21T12:26:11",
       "lines": 50,
       "size": 19896,
-      "to_date": "2021-07-19",
+      "to_date": "2021-07-21",
       "url": "http://fakeUnpaywall:12000/snapshots/fake1.jsonl.gz"
     },
     {
       "filename": "fake2.jsonl.gz",
       "filetype": "jsonl",
-      "from_date": "2021-07-05",
-      "last_modified": "2021-07-12T13:12:29",
+      "from_date": "2021-07-07",
+      "last_modified": "2021-07-14T12:26:11",
       "lines": 100,
       "size": 44137,
-      "to_date": "2021-07-12",
+      "to_date": "2021-07-14",
       "url": "http://fakeUnpaywall:12000/snapshots/fake2.jsonl.gz"
     },
     {
       "filename": "fake3.jsonl.gz",
       "filetype": "jsonl",
-      "from_date": "2021-06-28",
-      "last_modified": "2021-07-05T13:12:29",
+      "from_date": "2021-06-30",
+      "last_modified": "2021-07-07T12:26:11",
       "lines": 2000,
       "size": 877494,
-      "to_date": "2021-07-05",
+      "to_date": "2021-07-07",
       "url": "http://fakeUnpaywall:12000/snapshots/fake3.jsonl.gz"
     }
   ]

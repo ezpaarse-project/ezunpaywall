@@ -6,7 +6,7 @@ const Papa = require('papaparse');
 const path = require('path');
 const axios = require('axios');
 
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 const {
   getState,
@@ -94,7 +94,7 @@ const addDOItoGraphqlRequest = (args) => {
   * @param {String} apikey - apikey of user
   * @return {array} ezunpaywal response
   */
-const askEzUnpaywall = async (data, args, stateName, index, apikey) => {
+const askEzunpaywall = async (data, args, stateName, index, apikey) => {
   let dois = [];
   let res = [];
   // contain index of doi
@@ -118,7 +118,8 @@ const askEzUnpaywall = async (data, args, stateName, index, apikey) => {
       },
     });
   } catch (err) {
-    logger.error(`askEzUnpaywall: ${JSON.stringify(err?.response?.data?.errors)}`);
+    logger.error(`Cannot request graphql service at ${process.env.GRAPHQL_URL || 'http://localhost:3000'}`);
+    logger.error(JSON.stringify(err?.response?.data?.errors));
     await fail(stateName);
   }
   return res?.data?.data?.GetByDOI;
@@ -189,15 +190,17 @@ const enrichTab = (data, response) => {
  */
 const writeInFileCSV = async (data, headers, separator, enrichedFile, stateName) => {
   const parsedTab = JSON.stringify(data);
+  let unparse;
   try {
-    const unparse = await Papa.unparse(parsedTab, {
+    unparse = await Papa.unparse(parsedTab, {
       header: false,
       delimiter: separator,
       columns: headers,
     });
     await fs.writeFile(enrichedFile, `${unparse}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error(`writeInFileCSV: ${err}`);
+    logger.error(`Cannot write ${unparse}\\r\\n in ${enrichedFile}`);
+    logger.error(err);
     await fail(stateName);
   }
 };
@@ -253,7 +256,8 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
   try {
     await fs.writeFile(enrichedFile, `${header.join(separator)}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error(`writeHeaderCSV: ${err}`);
+    logger.error(`Cannot write ${header.join(separator)}\\r\\n in ${enrichedFile}`);
+    logger.error(err);
   }
 };
 
@@ -284,7 +288,8 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   try {
     await fs.ensureFile(enrichedFile);
   } catch (err) {
-    logger.error(`enrichmentFileCSV in ensureFile: ${err}`);
+    logger.error(`Cannot ensure ${enrichedFile}`);
+    logger.error(err);
   }
 
   let loaded = 0;
@@ -322,7 +327,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
           await parser.pause();
 
           // enrichment
-          const response = await askEzUnpaywall(data, args, stateName, index, apikey);
+          const response = await askEzunpaywall(data, args, stateName, index, apikey);
           enrichTab(tabWillBeEnriched, response);
           await writeInFileCSV(tabWillBeEnriched, headers, separator, enrichedFile);
 
@@ -340,7 +345,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   // last insertion
   if (data.length !== 0) {
     // enrichment
-    const response = await askEzUnpaywall(data, args, stateName, index, apikey);
+    const response = await askEzunpaywall(data, args, stateName, index, apikey);
     enrichTab(data, response);
     await writeInFileCSV(data, headers, separator, enrichedFile);
     // state

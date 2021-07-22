@@ -142,6 +142,7 @@ module.exports = {
         },
       });
     } catch (err) {
+      logger.error('Cannot request elastic');
       logger.error(err);
       return null;
     }

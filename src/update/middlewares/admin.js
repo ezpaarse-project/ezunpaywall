@@ -1,11 +1,12 @@
 const config = require('config');
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 let apikeyadmin = config.get('apikeyadmin');
 try {
   apikeyadmin = JSON.parse(apikeyadmin);
 } catch (err) {
-  logger.error(`JSON.parse in admin.js - ${err}`);
+  logger.error(`Cannot parse ${apikeyadmin} in json format`);
+  logger.error(err);
 }
 
 /**

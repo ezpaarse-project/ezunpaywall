@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const cors = require('cors');
 
-const { logger } = require('./lib/logger');
+const logger = require('./lib/logger');
 const { name, version } = require('./package.json');
 
 const routerJob = require('./routers/job');
