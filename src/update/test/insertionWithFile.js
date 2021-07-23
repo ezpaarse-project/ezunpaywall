@@ -64,7 +64,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('update with fake1.jsonl.gz');
+      expect(res.body.message).be.equal('Update with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -150,7 +150,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('update with fake1.jsonl.gz');
+      expect(res.body.message).be.equal('Update with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -235,7 +235,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('update with fake1.jsonl.gz');
+      expect(res.body.message).be.equal('Update with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -321,7 +321,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('update with fake1.jsonl.gz');
+      expect(res.body.message).be.equal('Update with fake1.jsonl.gz');
     });
 
     // test insertion
@@ -401,7 +401,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
   });
 
-  describe('Don\'t do a insertion of a file already installed because the file not found on ezunpaywall', () => {
+  describe('Don\'t do a insertion of a file already installed because the File not found on ezunpaywall', () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateService)
@@ -415,7 +415,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(404);
-      expect(res.body.message).be.equal('file not found');
+      expect(res.body.message).be.equal('File not found');
     });
   });
 
@@ -444,7 +444,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('limit cannot be low than offset or 0');
+      expect(res.body.message).be.equal('Limit cannot be low than offset or 0');
     });
 
     after(async () => {

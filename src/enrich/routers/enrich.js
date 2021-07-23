@@ -34,7 +34,7 @@ router.get('/upload', async (req, res) => {
  * @apiParam PARAMS args - filename
  *
  * @apiError 400 filename expected
- * @apiError 404 file not found
+ * @apiError 404 File not found
  *
  * @apiSuccess enriched file
  */
@@ -45,7 +45,7 @@ router.get('/enriched/:filename', async (req, res) => {
   }
   const fileExist = await fs.pathExists(path.resolve(enrichedDir, filename));
   if (!fileExist) {
-    return res.status(404).json({ message: 'file not found' });
+    return res.status(404).json({ message: 'File not found' });
   }
   return res.sendFile(path.resolve(enrichedDir, filename));
 });

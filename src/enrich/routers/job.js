@@ -1,5 +1,6 @@
 const router = require('express').Router();
 
+const logger = require('../lib/logger');
 const {
   enrichJSON,
   enrichCSV,
@@ -40,6 +41,8 @@ router.post('/job', checkAuth, async (req, res, next) => {
     try {
       await enrichJSON(id, index, args, apiKey);
     } catch (err) {
+      logger.error(`Cannot enrich ${id}.jsonl`);
+      logger.error(err);
       return next(err);
     }
   }
@@ -50,6 +53,8 @@ router.post('/job', checkAuth, async (req, res, next) => {
     try {
       await enrichCSV(id, index, args, apiKey, separator);
     } catch (err) {
+      logger.error(`Cannot enrich ${id}.csv`);
+      logger.error(err);
       return next(err);
     }
   }

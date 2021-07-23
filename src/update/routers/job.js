@@ -38,7 +38,7 @@ const {
  * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
  * @apiError 400 filename is in bad format (accepted [a-zA-Z0-9_.-] patern)
  * @apiError 400 limit can't be lower than offset or 0
- * @apiError 404 file not found
+ * @apiError 404 File not found
  *
  */
 router.post('/job', checkStatus, checkAdmin, async (req, res) => {
@@ -59,10 +59,10 @@ router.post('/job', checkStatus, checkAdmin, async (req, res) => {
     }
     const fileExist = await fs.pathExists(path.resolve(snapshotsDir, filename));
     if (!fileExist) {
-      return res.status(404).json({ message: 'file not found' });
+      return res.status(404).json({ message: 'File not found' });
     }
     if (Number(limit) <= Number(offset)) {
-      return res.status(400).json({ message: 'limit cannot be low than offset or 0' });
+      return res.status(400).json({ message: 'Limit cannot be low than offset or 0' });
     }
 
     if (!offset) { offset = 0; }
@@ -70,14 +70,14 @@ router.post('/job', checkStatus, checkAdmin, async (req, res) => {
 
     insertion(filename, index, Number(offset), Number(limit));
 
-    return res.status(200).json({ message: `update with ${filename}` });
+    return res.status(200).json({ message: `Update with ${filename}` });
   }
 
   if (!startDate && !endDate) {
     endDate = Date.now();
     startDate = endDate - (7 * 24 * 60 * 60 * 1000);
     insertSnapshotBetweenDates(url, startDate, endDate, index);
-    return res.status(200).json({ message: 'weekly update started' });
+    return res.status(200).json({ message: 'Weekly update started' });
   }
 
   if (new Date(startDate).getTime() > Date.now()) {
@@ -97,11 +97,11 @@ router.post('/job', checkStatus, checkAdmin, async (req, res) => {
   const pattern = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
 
   if (startDate && !pattern.test(startDate)) {
-    return res.status(400).json({ message: 'startDate are in bad format, required YYYY-mm-dd' });
+    return res.status(400).json({ message: 'startDate are in wrong format, required YYYY-mm-dd' });
   }
 
   if (endDate && !pattern.test(endDate)) {
-    return res.status(400).json({ message: 'endDate are in bad format, required YYYY-mm-dd' });
+    return res.status(400).json({ message: 'endDate are in wrong format, required YYYY-mm-dd' });
   }
 
   if (startDate && !endDate) {
@@ -111,7 +111,7 @@ router.post('/job', checkStatus, checkAdmin, async (req, res) => {
   insertSnapshotBetweenDates(url, startDate, endDate, index);
 
   return res.status(200).json({
-    message: `dowload and insert snapshot from unpaywall from ${startDate} and ${endDate}`,
+    message: `Dowload and insert snapshot from unpaywall from ${startDate} and ${endDate}`,
   });
 });
 

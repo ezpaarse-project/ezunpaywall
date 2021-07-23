@@ -42,7 +42,7 @@ router.get('/state', async (req, res, next) => {
  * get state in JSON format
  *
  * @apiError 400 filename expected
- * @apiError 404 file not found
+ * @apiError 404 File not found
  *
  * @apiSuccess state
  */
@@ -53,7 +53,7 @@ router.get('/state/:filename', async (req, res, next) => {
   }
   const fileExist = await fs.pathExists(path.resolve(snapshotsDir, filename));
   if (!fileExist) {
-    return res.status(404).json({ message: 'file not found' });
+    return res.status(404).json({ message: 'File not found' });
   }
 
   let state;

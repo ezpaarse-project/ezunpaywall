@@ -38,7 +38,7 @@ const getState = async (filename) => {
   try {
     state = JSON.parse(state);
   } catch (err) {
-    logger.error(`Cannot parse ${state} in json format`);
+    logger.error(`Cannot parse "${state}" in json format`);
     logger.error(err);
   }
   return state;

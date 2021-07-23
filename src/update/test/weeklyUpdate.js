@@ -61,7 +61,7 @@ describe('Test: weekly update route test', () => {
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('weekly update started');
+      expect(res.body.message).be.equal('Weekly update started');
     });
 
     // test insertion
@@ -163,7 +163,7 @@ describe('Test: weekly update route test', () => {
 
       // test response
       expect(res).have.status(200);
-      expect(res.body).have.property('message').equal('weekly update started');
+      expect(res.body).have.property('message').equal('Weekly update started');
     });
 
     // test insertion

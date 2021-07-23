@@ -5,7 +5,7 @@ let apikeyadmin = config.get('apikeyadmin');
 try {
   apikeyadmin = JSON.parse(apikeyadmin);
 } catch (err) {
-  logger.error(`Cannot parse ${apikeyadmin} in json format`);
+  logger.error(`Cannot parse "${apikeyadmin}" in json format`);
   logger.error(err);
 }
 

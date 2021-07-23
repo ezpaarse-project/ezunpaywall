@@ -148,6 +148,10 @@ const askEzunpaywall = async (data, args, stateName, index, apikey) => {
  * @returns {Map} map of enrich
  */
 const enrichTab = (data, response) => {
+  if (!response) {
+    return data;
+  }
+
   const results = new Map();
 
   response.forEach((el) => {
@@ -229,7 +233,7 @@ const processEnrichJSON = async (id, index, args, apikey) => {
     try {
       li = JSON.parse(line);
     } catch (err) {
-      logger.error(`Cannot parse ${line} in json format`);
+      logger.error(`Cannot parse "${line}" in json format`);
       logger.error(err);
     }
     data.push(li);
@@ -242,7 +246,7 @@ const processEnrichJSON = async (id, index, args, apikey) => {
       data = [];
 
       state.linesRead += 1000;
-      state.enrichedLines += response.length;
+      state.enrichedLines += response?.length || 0;
       state.loaded += loaded;
       await updateStateInFile(state, stateName);
     }
@@ -250,11 +254,13 @@ const processEnrichJSON = async (id, index, args, apikey) => {
 
   // last insertion
   if (data.length !== 0) {
+    // enrichment
     const response = await askEzunpaywall(data, args, stateName, index, apikey);
     data = enrichTab(data, response);
     await writeInFileJSON(data, enrichedFile, stateName);
-    state.linesRead += data.length;
-    state.enrichedLines += response.length;
+    // state
+    state.linesRead += data?.length || 0;
+    state.enrichedLines += response?.length || 0;
     state.loaded += loaded;
     await updateStateInFile(state, stateName);
   }

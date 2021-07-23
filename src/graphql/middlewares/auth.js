@@ -5,7 +5,7 @@ let apikeyusers = config.get('apikeyusers');
 try {
   apikeyusers = JSON.parse(apikeyusers);
 } catch (err) {
-  logger.error(`Cannot parse ${apikeyusers} in json format`);
+  logger.error(`Cannot parse "${apikeyusers}" in json format`);
   logger.error(err);
 }
 /**

@@ -159,6 +159,10 @@ const flatten = (obj) => {
  * @returns {array<object>} enriched data
  */
 const enrichTab = (data, response) => {
+  if (!response) {
+    return data;
+  }
+
   const results = new Map();
 
   response.forEach((el) => {
@@ -333,7 +337,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
 
           // state
           state.linesRead += 1000;
-          state.enrichedLines += response.length;
+          state.enrichedLines += response.length || 0;
           state.loaded += loaded;
           await updateStateInFile(state, stateName);
           await parser.resume();
@@ -349,8 +353,8 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
     enrichTab(data, response);
     await writeInFileCSV(data, headers, separator, enrichedFile);
     // state
-    state.linesRead += data.length;
-    state.enrichedLines += response.length;
+    state.linesRead += data?.length || 0;
+    state.enrichedLines += response?.length || 0;
     state.loaded += loaded;
     await updateStateInFile(state, stateName);
   }

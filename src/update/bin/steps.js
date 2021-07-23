@@ -121,7 +121,7 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
       try {
         tab.push(JSON.parse(line));
       } catch (err) {
-        logger.error(`Cannot parse ${line} in json format`);
+        logger.error(`Cannot parse "${line}" in json format`);
         logger.error(err);
         await fail(stateName);
         // TODO throw Error

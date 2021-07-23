@@ -80,7 +80,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`dowload and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
+      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
     });
 
     // test insertion
@@ -210,7 +210,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`dowload and insert snapshot from unpaywall from ${date3} and ${date2}`);
+      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date3} and ${date2}`);
     });
 
     // test insertion
@@ -339,7 +339,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`dowload and insert snapshot from unpaywall from ${date5} and ${date4}`);
+      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date5} and ${date4}`);
     });
 
     // test insertion
@@ -408,7 +408,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in bad format, required YYYY-mm-dd');
+      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
 
     // test return message
@@ -424,7 +424,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in bad format, required YYYY-mm-dd');
+      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
 
     // test return message
@@ -440,7 +440,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in bad format, required YYYY-mm-dd');
+      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
   });
 
