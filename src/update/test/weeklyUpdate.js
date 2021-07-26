@@ -35,9 +35,9 @@ const {
 
 chai.use(chaiHttp);
 
-describe('Test: weekly update route test', () => {
-  const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
+const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 
+describe('Test: weekly update route test', () => {
   before(async () => {
     await ping();
     await updateChangeFile();
@@ -45,17 +45,20 @@ describe('Test: weekly update route test', () => {
 
   describe('Do a classic weekly update', () => {
     before(async () => {
-      await deleteIndex('unpaywall');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall', mappingUnpaywall);
+      await deleteIndex('unpaywall-test');
+      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test response
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
+        .send({
+          index: 'unpaywall-test',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -71,7 +74,7 @@ describe('Test: weekly update route test', () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments('unpaywall');
+      const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(50);
     });
 
@@ -136,7 +139,7 @@ describe('Test: weekly update route test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
@@ -145,11 +148,11 @@ describe('Test: weekly update route test', () => {
 
   describe('Do a weekly update but the file is already installed', () => {
     before(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall', mappingUnpaywall);
+      await createIndex('unpaywall-test', mappingUnpaywall);
       await addSnapshot('fake1.jsonl.gz');
     });
 
@@ -157,6 +160,9 @@ describe('Test: weekly update route test', () => {
     it('Should return the process start', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
+        .send({
+          index: 'unpaywall-test',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -173,7 +179,7 @@ describe('Test: weekly update route test', () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments('unpaywall');
+      const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(50);
     });
 
@@ -224,7 +230,7 @@ describe('Test: weekly update route test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall');
+      await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
@@ -256,7 +262,7 @@ describe('Test: weekly update route test', () => {
   });
 
   after(async () => {
-    await deleteIndex('unpaywall');
+    await deleteIndex('unpaywall-test');
     await deleteSnapshot('fake1.jsonl.gz');
     await deleteSnapshot('fake2.jsonl.gz');
     await deleteSnapshot('fake3.jsonl.gz');

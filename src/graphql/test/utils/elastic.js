@@ -52,12 +52,12 @@ const insertDataUnpaywall = async () => {
     data.push(JSON.parse(line));
   }
 
-  const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall', _id: doc.doi } }, doc]);
+  const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall-test', _id: doc.doi } }, doc]);
 
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
-    console.error(`insertUPW: ${err}`);
+    console.error(err);
   }
 };
 
