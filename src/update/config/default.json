@@ -1,0 +1,19 @@
+{ 
+  "apikeyupw": "default",
+  "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
+  "apikeyadmin": "[\"admin\"]",
+  "smtp": {
+    "host": "localhost",
+    "port": 25
+  },
+  "notifications": {
+    "sender": "ezunpaywall",
+    "receivers": []
+  },
+  "elasticsearch": {
+    "port": 9200,
+    "host": "http://elastic",
+    "user": "elastic",
+    "password": "changeme"
+  }
+}

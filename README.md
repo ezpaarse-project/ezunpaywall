@@ -52,6 +52,37 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | ELASTICSEARCH_USERNAME | elastic user |
 | ELASTICSEARCH_PASSWORD | elastic password |
 
+## Configuration (optionnal)
+
+this part is not obligatory, but it can be interesting in a pre-production environment
+### Adjust system configuration for Elasticsearch
+
+Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
+
+To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
+
+```ini
+# configuration needed for elastic search
+vm.max_map_count=262144
+```
+
+Then apply the changes : 
+```bash
+sysctl -p
+```
+### Setup Elastic certificates
+
+For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
+
+  - Open the `config/certs` directory.
+  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file (an example file is available).
+
+  - Run `docker-compose -f create-certs.yml up`.
+  - A bundle.zip archive is created, it must be decompressed in the certificates folder.
+  ```bash
+  unzip bundle.zip -d ../elasticsearch/certificates/
+  ```
+
 ## Start/Stop/Status
 
 Before you start ezunpaywall, make sure all necessary environment variables are set.
@@ -67,63 +98,19 @@ docker-compose stop
 docker-compose ps
 ```
 ## Development
-### Configuration
-#### Adjust system configuration for Elasticsearch
-
-Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
-
-To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
-
-```ini
-# configuration needed for elastic search
-vm.max_map_count=262144
-```
-
-Then apply the changes : 
-```bash
-sysctl -p
-```
-#### Setup Elastic certificates
-
-For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
-
-  - Open the `certs` directory.
-  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file.
-
-```yml
-# example of instances.yml
-instances:
-  # cat /etc/hostname
-  - name: "NameComputer"  
-    ip:
-      # hostname -I | awk '{print $1}'
-      - "127.0.0.1" 
-    dns:
-      # cat /etc/hostname
-      - "NameComputer"  
-      - "localhost"
-```
-
-  - Run `docker-compose -f create-certs.yml up`.
-  - A `certificates` directory should be created, you can just put it in both `elasticsearch/config/` and `kibana/config/`. (**NB**: you may need to `chown` it)
 ### Install
 
 ```bash
-$ /ezunpaywall/api npm i
-$ /ezunpaywall/fakeUnpaywall npm i
-```
-#### pre-commit (optionnal)
-
-if you want to enable pre-commit (syntax checking via eslint), run this commande on the ezunpaywall repository
-
-```bash
-$ /ezunpaywall npm i
+npm i
 ```
 ### Start
 
 Before you start ezunpaywall, make sure all necessary environment variables are set.
 
 ```bash
+# Build ezunpaywall 
+docker-compose -f docker-compose.debug.yml build
+
 # Start ezunpaywall as daemon
 docker-compose -f docker-compose.debug.yml up -d
 
@@ -135,11 +122,8 @@ docker-compose -f docker-compose.debug.yml ps
 ```
 
 ```bash
-# Start ezunpaywall test as daemon
-docker-compose -f docker-compose.test.yml up -d
-
-# See result of the tests
-docker-compose logs -f api
+# start test
+npm run test
 ```
 ## Data update 
 

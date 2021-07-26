@@ -1,10 +1,10 @@
-.directory
 ezunpaywall.local.env.sh
-kibana/config/certificates
-elasticsearch/config/certificates
+config/kibana/certificates/
+config/elastic/certificates/
 certs/instances.yml
+fullchain.pem
+privkey.pem
 data/
 out/
+ssl/
 node_modules/
-certificates/
-

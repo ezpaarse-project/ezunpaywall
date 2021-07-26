@@ -1,6 +1,13 @@
 node_modules/
-.vscode
+data/
+**/out/
+elasticsearch/
+kibana/
+.husky/
+certs/
+examples/
+fakeUnpaywall/
+.vscode/
 .directory
 package-lock.json
-out/
 ezunpaywall.local.env.sh

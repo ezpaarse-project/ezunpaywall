@@ -1,8 +1,32 @@
-version: "3"
+version: "3.3"
 
 services:
-  api:
-    image: node:14.15.4
+  graphql:
+    image: node:14.15.5-alpine3.13
+    environment:
+      - NODE_ENV=development
+      # elastic
+      - ELASTICSEARCH_HOST=http://elastic
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+      # proxy
+      - http_proxy
+      - https_proxy
+      # apikey
+      - API_KEY_USERS=["user", "admin"]
+    working_dir: /graphql
+    volumes:
+      - ./src/graphql:/graphql
+    command: "npm run dev"
+    ports:
+      - 3000:3000
+    depends_on:
+      - "elastic"
+    restart: unless-stopped
+
+  update:
+    image: node:14.15.5-alpine3.13
     environment:
       - NODE_ENV=development
       # mail
@@ -13,88 +37,127 @@ services:
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       # unpaywall
       - API_KEY_UPW
-      - UNPAYWALL_URL
+      - UNPAYWALL_URL=http://fakeunpaywall:12000/snapshots/changefiles.json
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+      # proxy
+      - http_proxy
+      - https_proxy
+      # apikey
+      - API_KEY_ADMIN=["admin"]
+    working_dir: /update
+    volumes:
+      - ./src/update:/update
+    command: "npm run dev"
+    ports:
+      - 4000:4000
+    depends_on:
+      - elastic
+    restart: unless-stopped
+  
+  enrich:
+    image: node:14.15.5-alpine3.13
+    environment:
+      - NODE_ENV=development
+      # elastic
+      - ELASTICSEARCH_HOST=http://elastic
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
       # proxy
       - http_proxy
       - https_proxy
       # apikey
       - API_KEY_USERS=["user", "admin"]
-      - API_KEY_ADMIN=["admin"]
-    working_dir: /api
+      # URL service
+      - GRAPHQL_URL=http://graphql:3000
+    working_dir: /enrich
     volumes:
-      - ./api:/api
+      - ./src/enrich:/enrich
     command: "npm run dev"
     ports:
-      - "8080:8080"
+      - "5000:5000"
+    depends_on:
+      - graphql
     restart: unless-stopped
-    
-  client:
-    image: node:14.15.4
-    working_dir: /client
-    volumes:
-      - ./client:/client
-    command: "npm run dev"
-    ports:
-      - "3000:3000"
-    environment:
-      - API_URL
-      - HOST=0.0.0.0
-      - PORT=3000
-      
-  elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+
+  fakeunpaywall:
+    image: node:14.15.5-alpine3.13
     environment:
       - http_proxy
       - https_proxy
-      - CLUSTER_NAME=ezunpaywall
-      - EZUNPAYWALL_ES_PUBLISH
-      - EZUNPAYWALL_ES_NODE_NAME
-      - EZUNPAYWALL_ES_DISCOVERY
-      - EZUNPAYWALL_ES_DISCOVERY_TYPE
-      - EZUNPAYWALL_ES_NODE_MASTER
-      - EZUNPAYWALL_ES_NODE_DATA
-      - EZUNPAYWALL_ES_NODE_INGEST
-      - EZUNPAYWALL_ES_NODE_SEARCH_REMOTE
-      - EZUNPAYWALL_ES_INITIAL_MASTER_NODES
-      - EZUNPAYWALL_SMTP_HOST
-      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+    working_dir: /fakeUnpaywall
+    volumes:
+      - ./src/fakeUnpaywall:/fakeUnpaywall
+    command: "npm run dev"
+    ports:
+      - "12000:12000"
+    restart: unless-stopped
+
+  frontend:
+    image: node:14.15.5-alpine3.13
+    working_dir: /frontend
+    volumes:
+      - ./src/frontend:/frontend
+    command: "npm run dev"
+    ports:
+      - "8080:3000"
+    environment:
+      - GRAPHQL_URL=https://ezunpaywall.dev/api
+      - UPDATE_URL=https://ezunpaywall.dev/api/update
+      - ENRICH_URL=https://ezunpaywall.dev/api/enrich
+      - HOST=0.0.0.0
+      - PORT=8080
+  
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    environment:
+      - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - ES_JAVA_OPTS
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=changeme
+      - xpack.security.enabled=true
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
       - "./data:/usr/share/elasticsearch/data"
-      - "./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
-      - "./elasticsearch/config/certificates:/usr/share/elasticsearch/config/x-pack/certificates"
     ports:
       - 9200:9200
     restart: unless-stopped
-      
+
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.1
+    image: docker.elastic.co/kibana/kibana:7.10.2
     ports:
       - 5601:5601
     environment:
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_USERNAME
-      - SERVER_HOST
-      - SERVER_PORT
-      - THIS_HOST
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
-      - KIBANA_DEFAULTAPPID
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=changeme
+      - xpack.security.enabled=true
+    depends_on:
+      - "elastic"
+    restart: unless-stopped
+
+  rp:
+    image: nginx:1.20.1-alpine
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - NGINX_HOST
     volumes:
-      - "./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml"
+      - "./rp/templates/dev.conf.template:/etc/nginx/templates/dev.conf.template:ro"
+      - "./rp/ssl/:/etc/nginx/ssl:ro"
     restart: unless-stopped
 
   maildev:
     image: djfarrelly/maildev
     ports:
       - 1080:80
-    restart: unless-stopped
+  

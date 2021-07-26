@@ -1,7 +1,6 @@
 {
   "eslint.workingDirectories": [
-    "api",
-    "client",
+    "src/**",
   ],
   "eslint.validate": [
     "javascript",

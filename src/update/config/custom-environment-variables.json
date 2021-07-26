@@ -1,0 +1,19 @@
+{ 
+  "apikeyupw": "API_KEY_UPW",
+  "unpaywallURL": "UNPAYWALL_URL",
+  "apikeyadmin": "API_KEY_ADMIN",
+  "smtp": {
+    "host": "EZUNPAYWALL_SMTP_HOST",
+    "port": "EZUNPAYWALL_SMTP_PORT"
+  },
+  "notifications": {
+    "sender": "EZUNPAYWALL_NOTIFICATIONS_SENDER",
+    "receivers": "EZUNPAYWALL_NOTIFICATIONS_RECEIVERS"
+  },
+  "elasticsearch": {
+    "port": "ELASTICSEARCH_PORT",
+    "host": "ELASTICSEARCH_HOST",
+    "user": "ELASTICSEARCH_USERNAME",
+    "password": "ELASTICSEARCH_PASSWORD"
+  }
+}

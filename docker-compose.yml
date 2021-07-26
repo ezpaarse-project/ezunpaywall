@@ -1,9 +1,34 @@
-version: "3"
+version: "3.3"
 
 services:
-  api:
+  graphql:
     build:
-      context: ./api
+      context: ./src/graphql
+      args:
+        - http_proxy
+        - https_proxy
+    environment:
+      - NODE_ENV=production
+      # elastic
+      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      # proxy
+      - http_proxy
+      - https_proxy
+      # apikey
+      - API_KEY_USERS
+    volumes:
+      - ./src/graphql/out:/usr/src/graphql/out
+    command: "npm start"
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+
+  update:
+    build:
+      context: ./src/update
       args:
         - http_proxy
         - https_proxy
@@ -15,9 +40,34 @@ services:
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      # unpaywall
-      - UNPAYWALL_URL
+       # unpaywall
       - API_KEY_UPW
+      - UNPAYWALL_URL
+      # elastic
+      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      # proxy
+      - http_proxy
+      - https_proxy
+      # apikey
+      - API_KEY_ADMIN
+    volumes:
+      - ./src/update/out:/usr/src/update/out
+    command: "npm start"
+    ports:
+      - 4000:4000
+    restart: unless-stopped
+
+  enrich:
+    build:
+      context: ./src/enrich
+      args:
+        - http_proxy
+        - https_proxy
+    environment:
+      - NODE_ENV=production
       # elastic
       - ELASTICSEARCH_HOST
       - ELASTICSEARCH_PORT
@@ -28,25 +78,32 @@ services:
       - https_proxy
       # apikey
       - API_KEY_USERS
-      - API_KEY_ADMIN
+      # URL services
+      - GRAPHQL_URL
     volumes:
-      - ./api/out:/usr/src/api/out/
+      - ./src/enrich/out:/usr/src/enrich/out
     command: "npm start"
     ports:
-      - "8080:8080"
+      - 5000:5000
+    depends_on:
+      - graphql
     restart: unless-stopped
 
-  client:
+  rp:
     build:
-      context: ./client
+      context: .
+      dockerfile: ./rp/Dockerfile
       args:
         - http_proxy
         - https_proxy
+        - GRAPHQL_URL
+        - UPDATE_URL
+        - ENRICH_URL  
+    ports: 
+      - 80:80
+      - 443:443
     environment:
-      - API_URL
-      - HOST=0.0.0.0
-      - PORT=3000
-    command: "npm start"
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
+      - NGINX_HOST
+    volumes:
+      - "./rp/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro"
+      - "./rp/ssl/:/etc/nginx/ssl:ro"

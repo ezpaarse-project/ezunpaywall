@@ -1,0 +1,7 @@
+instances:
+  - name: "computer-name"
+    ip:
+      - "127.0.0.1"
+    dns:
+      - "computer-name"
+      - "localhost"
