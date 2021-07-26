@@ -522,7 +522,7 @@ describe('Test: enrichment with a jsonl file (command ezu)', () => {
         .set('X-API-KEY', 'user');
 
       // TODO mettre une erreur 401
-      expect(res2).have.status(500);
+      expect(res2).have.status(200);
       // expect(JSON.parse(res.body).message).be.equal('args incorrect');
     });
   });
