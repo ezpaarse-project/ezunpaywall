@@ -6,7 +6,6 @@ LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
 
 # unpaywall
 export API_KEY_UPW="X-API-KEY"
-export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
 # mail
 export SMTP_PORT=25

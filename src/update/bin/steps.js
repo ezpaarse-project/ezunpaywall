@@ -218,6 +218,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   const state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
   step.file = info.filename;
+  await updateStateInFile(state, stateName);
 
   let res;
   try {

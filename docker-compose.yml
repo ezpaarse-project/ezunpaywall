@@ -42,7 +42,7 @@ services:
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
        # unpaywall
       - API_KEY_UPW
-      - UNPAYWALL_URL
+      - UNPAYWALL_URL=http://api.unpaywall.org/feed/changefiles
       # elastic
       - ELASTICSEARCH_HOST
       - ELASTICSEARCH_PORT
