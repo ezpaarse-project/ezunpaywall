@@ -5,12 +5,15 @@ const { graphqlHTTP } = require('express-graphql');
 const { name, version } = require('./package.json');
 
 const logger = require('./lib/logger');
+const morgan = require('./lib/morgan');
 const { client, pingElastic } = require('./lib/client');
 const { checkAuth } = require('./middlewares/auth');
 
 const schema = require('./graphql');
 
 const app = express();
+
+app.use(morgan);
 
 // middleware
 app.use(cors({
