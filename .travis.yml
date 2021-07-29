@@ -6,12 +6,8 @@ services:
   - docker
 env:
   NODE_CONFIG: '{ "smtp": { "secure": false, "ignoreTLS": true } }'
-before_install:
-  - sudo service docker restart
-  - sleep 10
-  - npm install
 before_script:
-  - docker-compose -f docker-compose.debug.yml up -d
+  - docker-compose -f docker-compose.debug.yml up -d graphql update enrich elastic fakeunpaywall maildev
   - until [[ "$(curl -u elastic:changeme -s -o null http://localhost:9200 -w %{http_code})" == *"200"* ]]; do echo 'Waiting for ElasticSearch sync'; sleep 10; done
 script: "npm run test"
 notifications:
