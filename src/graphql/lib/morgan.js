@@ -5,6 +5,7 @@ const path = require('path');
 const accessLogDir = path.resolve(__dirname, '..', 'out', 'logs');
 
 function formatDate(d) {
+  // TODO see padStart
   let month = `${d.getMonth() + 1}`;
   let day = `${d.getDate()}`;
   const year = d.getFullYear();

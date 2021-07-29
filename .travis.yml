@@ -5,16 +5,15 @@ node_js:
 services:
   - docker
 env:
-  - DOCKER_COMPOSE_VERSION=1.4.2
-  - EZUNPAYWALL_URL=http://localhost:8080
-  - FAKE_UNPAYWALL_URL=http://localhost:12000
+  NODE_CONFIG: '{ "smtp": { "secure": false, "ignoreTLS": true } }'
 before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-  - docker-compose -f docker-compose.test.yml build
-  - docker-compose -f docker-compose.test.yml up -d
+  - sudo service docker restart
+  - sleep 10
+  - npm install
+before_script:
+  - docker-compose -f docker-compose.debug.yml up -d
+  - until [[ "$(curl -u elastic:changeme -s -o null http://localhost:9200 -w %{http_code})" == *"200"* ]]; do echo 'Waiting for ElasticSearch sync'; sleep 10; done
+script: "npm run test"
 notifications:
   email:
     recipients:
