@@ -9,6 +9,7 @@ env:
   NODE_CONFIG: |
     { "smtp": { "secure": false, "ignoreTLS": true } }
 before_script:
+  - docker-compose -f docker-compose.debug.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/  
   - docker-compose -f docker-compose.debug.yml up -d graphql update enrich elastic fakeunpaywall maildev
 script: "npm run test"
 notifications:
