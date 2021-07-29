@@ -1,4 +1,5 @@
 {
+   "name": "ezunpaywall",
    "scripts": {
       "prepare": "husky install",
       "install:enrich": "cd src/enrich; npm install",
