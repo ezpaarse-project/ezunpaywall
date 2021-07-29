@@ -20,7 +20,7 @@ const ping = async () => {
     } catch (err) {
       console.error(`graphql ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve(), 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   console.log('graphql ping : OK');
   // wait fakeUnpaywall
@@ -31,7 +31,7 @@ const ping = async () => {
     } catch (err) {
       console.error(`fakeUnpaywall ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve(), 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   console.log('fakeUnpaywall ping : OK');
   // wait elastic started

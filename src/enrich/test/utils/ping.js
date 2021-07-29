@@ -20,7 +20,7 @@ const ping = async () => {
     } catch (err) {
       console.error(`enrich ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve(), 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   console.log('enrich ping : OK');
   // wait fakeUnpaywall
@@ -31,7 +31,7 @@ const ping = async () => {
     } catch (err) {
       console.error(`fakeUnpaywall ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve(), 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   console.log('fakeUnpaywall ping : OK');
   // wait elastic started
