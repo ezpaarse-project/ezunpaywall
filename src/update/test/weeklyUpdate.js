@@ -38,7 +38,8 @@ chai.use(chaiHttp);
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 
 describe('Test: weekly update route test', () => {
-  before(async () => {
+  before(async function () {
+    this.timeout(30000);
     await ping();
     await updateChangeFile();
   });

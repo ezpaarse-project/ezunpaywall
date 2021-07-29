@@ -23,7 +23,8 @@ describe('test graphqlRequest', () => {
   const doi1 = '10.1186/s40510-015-0109-6'; // ligne 1 of fake1.jsonl
   const doi2 = '10.14393/ufu.di.2018.728'; // line 35 of fake1.jsonl
 
-  before(async () => {
+  before(async function () {
+    this.timeout(30000);
     await ping();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);
