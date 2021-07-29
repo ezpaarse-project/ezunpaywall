@@ -69,7 +69,7 @@ const deleteIndex = async (name) => {
 };
 
 const insertDataUnpaywall = async () => {
-  const filepath = path.resolve(__dirname, '..', 'sources', 'data', 'fake1.jsonl');
+  const filepath = path.resolve(__dirname, '..', 'sources', 'unpaywall', 'fake1.jsonl');
   let readStream;
   try {
     readStream = await fs.createReadStream(filepath);
