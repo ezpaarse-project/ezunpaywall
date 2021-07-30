@@ -11,7 +11,6 @@ const {
 } = require('../bin/state');
 
 const statesDir = path.resolve(__dirname, '..', 'out', 'states');
-const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
 /**
  * get the most recent state in JSON format
@@ -51,7 +50,7 @@ router.get('/state/:filename', async (req, res, next) => {
   if (!filename) {
     return res.status(400).json({ message: 'filename expected' });
   }
-  const fileExist = await fs.pathExists(path.resolve(snapshotsDir, filename));
+  const fileExist = await fs.pathExists(path.resolve(statesDir, filename));
   if (!fileExist) {
     return res.status(404).json({ message: 'File not found' });
   }

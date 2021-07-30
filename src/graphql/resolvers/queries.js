@@ -6,7 +6,7 @@ const unpaywallType = require('../models/unpaywall');
 const { client } = require('../lib/client');
 const { oaLocationInput } = require('../models/oalocation');
 const { authorInput } = require('../models/author');
-const { logger } = require('../lib/logger');
+const logger = require('../lib/logger');
 
 const {
   GraphQLList,
@@ -88,7 +88,7 @@ module.exports = {
   },
   // attr info give informations about graphql request
   resolve: async (parent, args, context) => {
-    let { index } = context?.headers;
+    let index = context?.get('index');
     if (!index) {
       index = 'unpaywall';
     }

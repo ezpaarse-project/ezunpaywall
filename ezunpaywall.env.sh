@@ -6,7 +6,6 @@ LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
 
 # unpaywall
 export API_KEY_UPW="X-API-KEY"
-export UNPAYWALL_URL="http://api.unpaywall.org/feed/changefiles"
 
 # mail
 export SMTP_PORT=25
@@ -14,7 +13,6 @@ export NOTIFICATIONS_SENDER='ezunpaywall <ezunpaywall@inist.fr>'
 export NOTIFICATIONS_RECEIVERS='you@you.org'
 
 # disabled it if you are in deploiement
-export NODE_CONFIG='{ "smtp": { "secure": false, "ignoreTLS": true } }'
 
 if [[ -f $LOCAL_ENV_FILE ]] ; then
   source "$LOCAL_ENV_FILE"

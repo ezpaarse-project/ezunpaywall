@@ -13,7 +13,9 @@ const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 const getReport = async () => {
   let res;
   try {
-    res = await chai.request(updateURL).get('/report');
+    res = await chai.request(updateURL)
+      .get('/report')
+      .query({ latest: true });
   } catch (err) {
     console.error(`getReport: ${err}`);
   }

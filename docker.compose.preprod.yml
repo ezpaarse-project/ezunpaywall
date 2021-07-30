@@ -25,6 +25,8 @@ services:
     ports:
       - 3000:3000
     restart: unless-stopped
+    networks:
+      - elastic
 
   update:
     build:
@@ -59,6 +61,8 @@ services:
     ports:
       - 4000:4000
     restart: unless-stopped
+    networks:
+      - elastic
 
   enrich:
     build:
@@ -88,6 +92,8 @@ services:
     depends_on:
       - graphql
     restart: unless-stopped
+    networks:
+      - elastic
 
   rp:
     build:
@@ -107,3 +113,8 @@ services:
     volumes:
       - "./rp/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro"
       - "./rp/ssl/:/etc/nginx/ssl:ro"
+  
+networks:
+  elastic:
+    external : 
+      name: ezmeta-single-node_elastic

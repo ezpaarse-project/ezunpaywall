@@ -53,7 +53,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   const date5 = new Date(now - (5 * oneDay)).toISOString().slice(0, 10);
   const tomorrow = new Date(now + (1 * oneDay)).toISOString().slice(0, 10);
 
-  before(async () => {
+  before(async function () {
+    this.timeout(30000);
     await ping();
     await updateChangeFile();
   });

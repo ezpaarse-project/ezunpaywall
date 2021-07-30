@@ -5,24 +5,26 @@ const { client } = require('./elastic');
 
 chai.use(chaiHttp);
 
-const updateService = process.env.UPDATE_URL || 'http://localhost:4000';
-const fakeUnpaywallURL = process.env.FAKEUNPAYWALL_URL || 'http://localhost:12000';
+const enrichURL = process.env.ENRICH_URL || 'http://localhost:3000';
+const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:12000';
 
 /**
  * ping all services to see if they are available
  */
 const ping = async () => {
-  // update
+  // enrich
   let res1;
   while (res1?.status !== 200) {
     try {
-      res1 = await chai.request(updateService).get('/');
+      res1 = await chai.request(enrichURL).get('/');
     } catch (err) {
-      console.error(`update ping : ${err}`);
+      console.error(`enrich ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve(), 1000));
+    if (res1?.status !== 200) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
-  console.log('update ping : OK');
+  console.log('enrich ping : OK');
   // wait fakeUnpaywall
   let res2;
   while (res2?.status !== 200) {
@@ -31,7 +33,9 @@ const ping = async () => {
     } catch (err) {
       console.error(`fakeUnpaywall ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve(), 1000));
+    if (res2?.status !== 200) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
   console.log('fakeUnpaywall ping : OK');
   // wait elastic started
@@ -42,7 +46,9 @@ const ping = async () => {
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    if (res3?.statusCode !== 200) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
   console.log('elastic ping : OK');
 };

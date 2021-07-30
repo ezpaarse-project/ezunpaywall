@@ -37,7 +37,7 @@ server {
     proxy_pass http://frontend:8080;
   }
 
-  location ^~ /api/graphql/{
+  location ^~ /api/{
     proxy_pass http://graphql:3000/;
   }
 
