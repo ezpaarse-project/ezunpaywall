@@ -1,4 +1,6 @@
 {
+   "author": "felixleo22",
+   "license": "CeCILL",
    "scripts": {
       "prepare": "husky install",
       "install:enrich": "cd src/enrich; npm install",

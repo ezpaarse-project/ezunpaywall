@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "author": "felixleo22",
+  "license": "CeCILL",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon -e .js app.js",
     "test": "export NODE_TLS_REJECT_UNAUTHORIZED=0 && NODE_CONFIG_DIR=./config mocha --timeout 3000",
     "lint": "eslint --ext .js ."
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",

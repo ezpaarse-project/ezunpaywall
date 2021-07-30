@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "author": "felixleo22",
+  "license": "CeCILL",
   "scripts": {
     "dev": "nodemon -e .js app.js",
     "start": "node app.js"
   },
-  "author": "felixleo22",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
