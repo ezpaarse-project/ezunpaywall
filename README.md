@@ -109,6 +109,7 @@ Before you start ezunpaywall, make sure all necessary environment variables are 
 
 ```bash
 # Build ezunpaywall 
+docker-compose run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/ 
 docker-compose -f docker-compose.debug.yml build
 
 # Start ezunpaywall as daemon

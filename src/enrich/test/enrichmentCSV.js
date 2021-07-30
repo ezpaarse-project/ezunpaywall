@@ -30,7 +30,8 @@ const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
 const enrichDir = path.resolve(__dirname, 'sources');
 
 describe('Test: enrichment with a csv file (command ezu)', () => {
-  before(async () => {
+  before(async function () {
+    this.timeout(30000);
     await ping();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);

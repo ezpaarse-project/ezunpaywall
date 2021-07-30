@@ -13,7 +13,6 @@ export NOTIFICATIONS_SENDER='ezunpaywall <ezunpaywall@inist.fr>'
 export NOTIFICATIONS_RECEIVERS='you@you.org'
 
 # disabled it if you are in deploiement
-export NODE_CONFIG='{ "smtp": { "secure": false, "ignoreTLS": true } }'
 
 if [[ -f $LOCAL_ENV_FILE ]] ; then
   source "$LOCAL_ENV_FILE"
