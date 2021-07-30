@@ -12,7 +12,7 @@
   },
   "elasticsearch": {
     "port": 9200,
-    "host": "http://elastic",
+    "host": "elastic",
     "user": "elastic",
     "password": "changeme"
   }
