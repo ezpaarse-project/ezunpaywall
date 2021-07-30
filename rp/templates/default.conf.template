@@ -38,7 +38,7 @@ server {
     root /usr/share/nginx/html;
   }
 
-  location ^~ /api/graphql/{
+  location ^~ /api/{
     proxy_pass http://graphql:3000/;
   }
 
