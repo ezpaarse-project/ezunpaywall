@@ -42,7 +42,7 @@ const ping = async () => {
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   console.log('elastic ping : OK');
 };
