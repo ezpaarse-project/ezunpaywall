@@ -20,7 +20,9 @@ const ping = async () => {
     } catch (err) {
       console.error(`enrich ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res1?.status !== 200) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
   console.log('enrich ping : OK');
   // wait fakeUnpaywall
@@ -31,7 +33,9 @@ const ping = async () => {
     } catch (err) {
       console.error(`fakeUnpaywall ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res1?.status !== 200) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
   console.log('fakeUnpaywall ping : OK');
   // wait elastic started
@@ -42,7 +46,9 @@ const ping = async () => {
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res1?.status !== 200) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
   console.log('elastic ping : OK');
 };
