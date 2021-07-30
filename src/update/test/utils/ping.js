@@ -33,7 +33,7 @@ const ping = async () => {
     } catch (err) {
       console.error(`fakeUnpaywall ping : ${err}`);
     }
-    if (res1?.status !== 200) {
+    if (res2?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
@@ -46,7 +46,7 @@ const ping = async () => {
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    if (res1?.status !== 200) {
+    if (res3?.statusCode !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
