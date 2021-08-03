@@ -1,0 +1,34 @@
+server {
+  server_name ${NGINX_HOST};
+
+  listen 80;
+  listen [::]:80;
+
+  ## Configuration
+  ## proxy_set_header X-Forwarded-Host $host;
+  ## proxy_set_header X-Forwarded-Server $host;
+  ## proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_hide_header X-Powered-By;
+
+  ## client
+  location / {
+    root /usr/share/nginx/html;
+  }
+
+  location ^~ /api/{
+    proxy_pass http://graphql:3000/;
+  }
+
+  location ^~ /api/update/ {
+    proxy_pass http://update:4000/;
+  }
+
+  location ^~ /api/enrich/ {
+    proxy_pass http://enrich:5000/;
+  }
+
+  ## doc
+  ## location /doc {
+  ## root /usr/share/nginx/html;
+  ## }
+}

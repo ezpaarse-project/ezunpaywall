@@ -148,12 +148,10 @@ services:
     image: nginx:1.20.1-alpine
     ports:
       - 80:80
-      - 443:443
     environment:
       - NGINX_HOST
     volumes:
-      - "./rp/templates/dev.conf.template:/etc/nginx/templates/dev.conf.template:ro"
-      - "./rp/ssl/:/etc/nginx/ssl:ro"
+      - "./rp/templates/http.conf.template:/etc/nginx/templates/http.conf.template:ro"
     restart: unless-stopped
 
   maildev:
