@@ -50,11 +50,6 @@ server {
     proxy_pass http://enrich:5000/;
   }
 
-  ## doc
-  ## location /doc {
-  ## root /usr/share/nginx/html;
-  ## }
-
   ## Diffie-Hellman
   ssl_ecdh_curve secp384r1;
 

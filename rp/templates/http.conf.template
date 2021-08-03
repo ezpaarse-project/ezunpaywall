@@ -26,9 +26,4 @@ server {
   location ^~ /api/enrich/ {
     proxy_pass http://enrich:5000/;
   }
-
-  ## doc
-  ## location /doc {
-  ## root /usr/share/nginx/html;
-  ## }
 }

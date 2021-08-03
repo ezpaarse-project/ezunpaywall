@@ -110,7 +110,7 @@ services:
     environment:
       - NGINX_HOST
     volumes:
-      - "./rp/templates/http.conf.template:/etc/nginx/templates/http.conf.template:ro"
+      - "./rp/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
   
 networks:
   elastic:

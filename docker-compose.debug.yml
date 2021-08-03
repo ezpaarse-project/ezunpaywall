@@ -106,9 +106,9 @@ services:
     ports:
       - "8080:3000"
     environment:
-      - GRAPHQL_URL=https://ezunpaywall.dev/api
-      - UPDATE_URL=https://ezunpaywall.dev/api/update
-      - ENRICH_URL=https://ezunpaywall.dev/api/enrich
+      - GRAPHQL_URL=http://ezunpaywall.dev/api
+      - UPDATE_URL=http://ezunpaywall.dev/api/update
+      - ENRICH_URL=http://ezunpaywall.dev/api/enrich
       - HOST=0.0.0.0
       - PORT=8080
   
@@ -151,7 +151,7 @@ services:
     environment:
       - NGINX_HOST
     volumes:
-      - "./rp/templates/http.conf.template:/etc/nginx/templates/http.conf.template:ro"
+      - "./rp/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro"
     restart: unless-stopped
 
   maildev:
