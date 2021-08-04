@@ -29,11 +29,11 @@ app.get('/', async (req, res) => {
   let elasticStatus;
   try {
     await client.ping();
-    elasticStatus = 'OK';
+    elasticStatus = 'Alive';
   } catch (err) {
     elasticStatus = 'Error';
   }
-  res.status(200).json({ name, version, elasticPing: elasticStatus });
+  res.status(200).json({ name, version, elastic: elasticStatus });
 });
 
 app.use(routerJob);
