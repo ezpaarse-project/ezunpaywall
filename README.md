@@ -4,7 +4,7 @@ ezunpaywall is an API and database that queries the Unpaywall database containin
 
 **Table of content**
 - [Prerequisites](#prerequisites)
-- [Deployment](#Deploiement)
+- [Deployment](#Deployment)
 - [Developement](#Development)
 - [Data update](#Data-update)
 - [API Graphql](#API-graphql)
@@ -52,7 +52,7 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | ELASTICSEARCH_USERNAME | elastic user |
 | ELASTICSEARCH_PASSWORD | elastic password |
 
-## Configuration (optionnal)
+### Configuration (optionnal)
 
 this part is not obligatory, but it can be interesting in a pre-production environment
 ### Adjust system configuration for Elasticsearch
@@ -83,7 +83,7 @@ For each node in the cluster, add certificates in `elasticsearch/config/certific
   unzip bundle.zip -d ../elasticsearch/certificates/
   ```
 
-## Start/Stop/Status
+### Start/Stop/Status
 
 Before you start ezunpaywall, make sure all necessary environment variables are set.
 
