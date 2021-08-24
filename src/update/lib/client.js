@@ -5,7 +5,7 @@ const logger = require('./logger');
 
 const client = new Client({
   node: {
-    url: new URL(`http://${elasticsearch.host}:${elasticsearch.port}`),
+    url: new URL(`${elasticsearch.host}:${elasticsearch.port}`),
     auth: {
       username: elasticsearch.user,
       password: elasticsearch.password,
@@ -20,12 +20,12 @@ const pingElastic = async () => {
     try {
       elasticStatus = await client.ping();
     } catch (err) {
-      logger.error(`Cannot ping http://${elasticsearch.host}:${elasticsearch.port}`);
+      logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port}`);
       logger.error(err);
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-  logger.info(`elastic ping: http://${elasticsearch.host}:${elasticsearch.port} ok`);
+  logger.info(`elastic ping: ${elasticsearch.host}:${elasticsearch.port} ok`);
   return true;
 };
 
