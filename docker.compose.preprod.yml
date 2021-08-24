@@ -10,7 +10,7 @@ services:
     environment:
       - NODE_ENV=production
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elastic}
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
@@ -73,7 +73,7 @@ services:
     environment:
       - NODE_ENV=production
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elastic}
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD

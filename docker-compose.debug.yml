@@ -6,7 +6,7 @@ services:
     environment:
       - NODE_ENV=development
       # elastic
-      - ELASTICSEARCH_HOST=elastic
+      - ELASTICSEARCH_HOST=http://elastic
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
@@ -39,7 +39,7 @@ services:
       - API_KEY_UPW
       - UNPAYWALL_URL=http://fakeunpaywall:12000/snapshots/changefiles.json
       # elastic
-      - ELASTICSEARCH_HOST=elastic
+      - ELASTICSEARCH_HOST=http://elastic
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
@@ -63,7 +63,7 @@ services:
     environment:
       - NODE_ENV=development
       # elastic
-      - ELASTICSEARCH_HOST=elastic
+      - ELASTICSEARCH_HOST=http://elastic
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme

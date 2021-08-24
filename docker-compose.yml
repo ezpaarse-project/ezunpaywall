@@ -10,7 +10,7 @@ services:
     environment:
       - NODE_ENV=production
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elastic}
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
@@ -44,7 +44,7 @@ services:
       - API_KEY_UPW
       - UNPAYWALL_URL=http://api.unpaywall.org/feed/changefiles
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elastic}
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
