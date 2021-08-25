@@ -29,6 +29,10 @@ router.get('/report', async (req, res, next) => {
       return next(err);
     }
 
+    if (!latestFile) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
     let report;
     try {
       report = await getReport(latestFile?.filename);

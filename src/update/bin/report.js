@@ -29,22 +29,22 @@ const createReport = async (stateName) => {
  * @returns {object} report
  */
 const getReport = async (filename) => {
-  let state;
+  let report;
   try {
-    state = await fs.readFile(path.resolve(reportsDir, filename));
+    report = await fs.readFile(path.resolve(reportsDir, filename));
   } catch (err) {
     logger.error(`Cannot read ${path.resolve(reportsDir, filename)}`);
     logger.error(err);
     return undefined;
   }
   try {
-    state = JSON.parse(state);
+    report = JSON.parse(report);
   } catch (err) {
-    logger.error(`Cannot parse "${state}" at json format`);
+    logger.error(`Cannot parse "${report}" at json format`);
     logger.error(err);
     return undefined;
   }
-  return state;
+  return report;
 };
 
 module.exports = {
