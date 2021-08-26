@@ -1,8 +1,8 @@
 server {
   server_name ${NGINX_HOST};
 
-  listen 80;
-  listen [::]:80;
+  listen 59700;
+  listen [::]:59700;
 
   ## Configuration
   ## proxy_set_header X-Forwarded-Host $host;

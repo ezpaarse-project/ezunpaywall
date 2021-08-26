@@ -2,8 +2,8 @@
 server {
   server_name ${NGINX_HOST};
 
-  listen 80;
-  listen [::]:80;
+  listen 59700;
+  listen [::]:59700;
 
   location ~ /\.well-known/acme-challenge {
     allow all;
