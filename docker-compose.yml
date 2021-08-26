@@ -4,9 +4,6 @@ services:
   graphql:
     build:
       context: ./src/graphql
-      args:
-        - http_proxy
-        - https_proxy
     environment:
       - NODE_ENV=production
       # elastic
@@ -63,9 +60,6 @@ services:
   enrich:
     build:
       context: ./src/enrich
-      args:
-        - http_proxy
-        - https_proxy
     environment:
       - NODE_ENV=production
       # elastic
@@ -94,8 +88,6 @@ services:
       context: .
       dockerfile: ./rp/Dockerfile
       args:
-        - http_proxy
-        - https_proxy
         - GRAPHQL_URL=${GRAPHQL_URL:-http://graphql}
         - UPDATE_URL=${UPDATE_URL:-http://update}
         - ENRICH_URL=${ENRICH_URL:-http://enrich}  
