@@ -4,7 +4,7 @@ services:
   graphql:
     build:
       context: ./src/graphql
-      args: 
+      args:
         - http_proxy
         - https_proxy
     environment:
@@ -25,6 +25,8 @@ services:
     ports:
       - 3000:3000
     restart: unless-stopped
+    networks:
+      - elastic
 
   update:
     build:
@@ -59,11 +61,13 @@ services:
     ports:
       - 4000:4000
     restart: unless-stopped
+    networks:
+      - elastic
 
   enrich:
     build:
       context: ./src/enrich
-      args: 
+      args:
         - http_proxy
         - https_proxy
     environment:
@@ -88,6 +92,8 @@ services:
     depends_on:
       - graphql
     restart: unless-stopped
+    networks:
+      - elastic
 
   rp:
     build:
@@ -105,4 +111,10 @@ services:
       - NGINX_HOST
     volumes:
       - "./rp/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
-    restart: unless-stopped
+    networks:
+      - elastic
+  
+networks:
+  elastic:
+    external : 
+      name: ezmeta-single-node_elastic
