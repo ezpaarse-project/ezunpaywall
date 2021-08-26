@@ -69,7 +69,7 @@ services:
     environment:
       - NODE_ENV=production
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elastic}
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
@@ -96,11 +96,11 @@ services:
       args:
         - http_proxy
         - https_proxy
-        - GRAPHQL_URL=${GRAPHQL_URL:-graphql}
-        - UPDATE_URL=${UPDATE_URL:-update}
-        - ENRICH_URL=${ENRICH_URL:-enrich}  
+        - GRAPHQL_URL=${GRAPHQL_URL:-http://graphql}
+        - UPDATE_URL=${UPDATE_URL:-http://update}
+        - ENRICH_URL=${ENRICH_URL:-http://enrich}  
     ports: 
-      - 80:80
+      - 59700:80
     environment:
       - NGINX_HOST
     volumes:

@@ -46,7 +46,7 @@ services:
       - API_KEY_UPW
       - UNPAYWALL_URL=http://api.unpaywall.org/feed/changefiles
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elastic}
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
@@ -102,9 +102,9 @@ services:
       args:
         - http_proxy
         - https_proxy
-        - GRAPHQL_URL=${GRAPHQL_URL:-graphql}
-        - UPDATE_URL=${UPDATE_URL:-update}
-        - ENRICH_URL=${ENRICH_URL:-enrich}  
+        - GRAPHQL_URL=${GRAPHQL_URL:-http://graphql}
+        - UPDATE_URL=${UPDATE_URL:-http://update}
+        - ENRICH_URL=${ENRICH_URL:-http://enrich}  
     ports: 
       - 80:80
     environment:
