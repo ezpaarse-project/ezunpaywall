@@ -163,21 +163,33 @@ You can also use intervals
 ### Examples
 #### GET
 
-`GET "/graphql?query={getDataUPW(dois:["10.1038/2211089b0","10.1038/nature12373"], published_date_range: {gte: "2014", lte: "2019"}){doi, is_oa, best_oa_location{ url }}}"`
+```json
+headers: {
+    "x-api-key": "<YOUR_API_KEY>"
+}
+```
+
+`GET "<HOST>/api/graphql?query={getDataUPW(dois:["10.1038/2211089b0","10.1038/nature12373"], published_date_range: {gte: "2014", lte: "2019"}){doi, is_oa, best_oa_location{ url }}}"`
 
 #### POST
 
-`POST "/graphql"`
+`POST "<HOST>/api/graphql"`
 
 ```json
+headers: {
+    "x-api-key": "<YOUR_API_KEY>"
+},
 body: {
     "query": "{getDataUPW(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"], published_date_range: {gte: \"2014\", lte: \"2019\"}){doi, is_oa, best_oa_location{ url }}}"
 }
 ```
 
-`POST "/graphql"`
+`POST "<HOST>/api/graphql"`
 
 ```json
+headers: {
+    "x-api-key": "<YOUR_API_KEY>"
+},
 body: {
     "query": "query ($dois: [ID!]!){ getDataUPW(dois: $dois, published_date_range: $published_date_range){is_oa} }",
     "variables": { 
@@ -259,3 +271,4 @@ Status: 200
 | authenticated-orcid | Boolean | If true, record owner asserts that the ORCID user completed ORCID OAuth authentication |
 | affiliation | Array of Affiliation |  |
 
+[data-format](https://unpaywall.org/data-format)
