@@ -1,4 +1,4 @@
-{ 
+{
   "apikeyupw": "API_KEY_UPW",
   "unpaywallURL": "UNPAYWALL_URL",
   "apikeyadmin": "API_KEY_ADMIN",
@@ -14,6 +14,7 @@
     "port": "ELASTICSEARCH_PORT",
     "host": "ELASTICSEARCH_HOST",
     "user": "ELASTICSEARCH_USERNAME",
-    "password": "ELASTICSEARCH_PASSWORD"
+    "password": "ELASTICSEARCH_PASSWORD",
+    "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE"
   }
 }

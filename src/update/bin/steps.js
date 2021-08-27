@@ -6,11 +6,13 @@ const readline = require('readline');
 const zlib = require('zlib');
 const { Readable } = require('stream');
 const axios = require('axios');
+const config = require('config');
 
 const { client } = require('../lib/client');
 const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const bulkSize = config.get('elasticsearch.maxBulkSize');
 
 const {
   getState,
@@ -128,7 +130,7 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
       }
     }
     // bulk insertion
-    if (tab.length % 1000 === 0 && tab.length !== 0) {
+    if ((tab.length * 2) >= bulkSize) {
       await insertDataInElastic(tab, index, stateName);
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
@@ -141,7 +143,7 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
     }
   }
   // last insertion if there is data left
-  if (tab.length !== 0) {
+  if (tab.length > 0) {
     await insertDataInElastic(tab, index, stateName);
     tab = [];
   }
