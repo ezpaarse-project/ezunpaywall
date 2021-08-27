@@ -3,8 +3,6 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const mappingUnpaywall = require('../mapping/unpaywall.json');
-
 const {
   deleteSnapshot,
   updateChangeFile,
@@ -19,7 +17,6 @@ const {
 } = require('./utils/report');
 
 const {
-  createIndex,
   countDocuments,
   deleteIndex,
 } = require('./utils/elastic');
@@ -65,7 +62,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
       await deleteIndex('unpaywall-test');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
@@ -194,7 +190,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
@@ -323,7 +318,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message

@@ -3,10 +3,7 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const mappingUnpaywall = require('../mapping/unpaywall.json');
-
 const {
-  createIndex,
   countDocuments,
   deleteIndex,
 } = require('./utils/elastic');
@@ -49,7 +46,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       await deleteSnapshot('fake3.jsonl.gz');
       await addSnapshot('fake1.jsonl.gz');
       await deleteIndex('unpaywall-test');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
@@ -134,7 +130,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       await deleteSnapshot('fake3.jsonl.gz');
       await addSnapshot('fake1.jsonl.gz');
       await deleteIndex('unpaywall-test');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message
@@ -220,7 +215,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       await deleteSnapshot('fake3.jsonl.gz');
       await addSnapshot('fake1.jsonl.gz');
       await deleteIndex('unpaywall-test');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
     // test return message
     it('should return the process start', async () => {
@@ -305,7 +299,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       await deleteSnapshot('fake3.jsonl.gz');
       await addSnapshot('fake1.jsonl.gz');
       await deleteIndex('unpaywall-test');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
     // test return message
     it('Should return the process start', async () => {
@@ -427,7 +420,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       await deleteSnapshot('fake3.jsonl.gz');
       await addSnapshot('fake1.jsonl.gz');
       await deleteIndex('unpaywall-test');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test return message

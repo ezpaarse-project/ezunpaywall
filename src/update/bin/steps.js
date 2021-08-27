@@ -11,6 +11,7 @@ const { client } = require('../lib/client');
 const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const unpaywallMapping = path.resolve(__dirname, '..', 'mapping', 'unpaywall.json');
 
 const {
   getState,
@@ -22,13 +23,50 @@ const {
 } = require('./state');
 
 /**
+ * check if index exit
+ * @param {string} name Name of index
+ * @returns {boolean} if exist
+ */
+const checkIfIndexExist = async (name) => {
+  let res;
+  try {
+    res = await client.indices.exists({
+      index: name,
+    });
+  } catch (err) {
+    console.error(`indices.exists in checkIfIndexExist: ${err}`);
+  }
+  return res.body;
+};
+
+/**
+ * create index if it doesn't exist
+ * @param {string} name Name of index
+ * @param {JSON} mapping mapping in JSON format
+ */
+const createIndex = async (name, mapping) => {
+  const exist = await checkIfIndexExist(name);
+  if (!exist) {
+    try {
+      await client.indices.create({
+        index: name,
+        body: mapping,
+      });
+    } catch (err) {
+      console.error(`indices.create in createIndex: ${err}`);
+    }
+  }
+};
+
+/**
  * insert data on elastic with request
  * @param {Array} data array of unpaywall data
  * @param {string} index name of the index to which the data will be saved
  */
-const insertDataInElastic = async (data, index, stateName) => {
+const insertDataInElastic = async (data, indexname, stateName) => {
+  await createIndex(indexname, unpaywallMapping);
   let res;
-  const body = data.flatMap((doc) => [{ index: { _index: index, _id: doc.doi } }, doc]);
+  const body = data.flatMap((doc) => [{ index: { _index: indexname, _id: doc.doi } }, doc]);
   try {
     res = await client.bulk({ refresh: true, body });
   } catch (err) {
