@@ -148,7 +148,14 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
     await insertDataInElastic(bulkOps, stateName);
     bulkOps = [];
   }
+
   logger.info('step - end insertion');
+
+  try {
+    await client.indices.refresh({ index });
+  } catch (e) {
+    logger.warn(`step - failed to refresh the index: ${e.message}`);
+  }
 
   // last update of step
   step.status = 'success';
