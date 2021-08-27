@@ -12,6 +12,7 @@ const { client } = require('../lib/client');
 const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const unpaywallMapping = path.resolve(__dirname, '..', 'mapping', 'unpaywall.json');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 
 const {
@@ -22,6 +23,42 @@ const {
   addStepInsert,
   fail,
 } = require('./state');
+
+/**
+ * check if index exit
+ * @param {string} name Name of index
+ * @returns {boolean} if exist
+ */
+const checkIfIndexExist = async (name) => {
+  let res;
+  try {
+    res = await client.indices.exists({
+      index: name,
+    });
+  } catch (err) {
+    console.error(`indices.exists in checkIfIndexExist: ${err}`);
+  }
+  return res.body;
+};
+
+/**
+ * create index if it doesn't exist
+ * @param {string} name Name of index
+ * @param {JSON} mapping mapping in JSON format
+ */
+const createIndex = async (name, mapping) => {
+  const exist = await checkIfIndexExist(name);
+  if (!exist) {
+    try {
+      await client.indices.create({
+        index: name,
+        body: mapping,
+      });
+    } catch (err) {
+      console.error(`indices.create in createIndex: ${err}`);
+    }
+  }
+};
 
 /**
  * insert data on elastic with request
@@ -47,11 +84,12 @@ const insertDataInElastic = async (data, stateName) => {
  * Inserts the contents of an unpaywall data update file
  * @param {string} stateName - state filename
  * @param {string} filename - snapshot filename which the data will be inserted
- * @param {string} index name of the index to which the data will be saved
+ * @param {string} indexname name of the index to which the data will be saved
  * @param {number} offset - offset
  * @param {number} limit - limit
  */
-const insertDataUnpaywall = async (stateName, filename, index, offset, limit) => {
+const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit) => {
+  await createIndex(indexname, unpaywallMapping);
   // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
@@ -121,7 +159,7 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
       // fill the array
       try {
         const doc = JSON.parse(line);
-        bulkOps.push({ index: { _index: index, _id: doc.doi } });
+        bulkOps.push({ index: { _index: indexname, _id: doc.doi } });
         bulkOps.push(doc);
       } catch (err) {
         logger.error(`Cannot parse "${line}" in json format`);
@@ -153,7 +191,7 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
   logger.info('step - end insertion');
 
   try {
-    await client.indices.refresh({ index });
+    await client.indices.refresh({ index: indexname });
   } catch (e) {
     logger.warn(`step - failed to refresh the index: ${e.message}`);
   }
