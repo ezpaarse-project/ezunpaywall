@@ -156,7 +156,7 @@ the download and the insertion of the most recent update file.
 - If there is the `start` attribute, It will execute the download and
 the insertion of the update files between the` start` date and the current date.
 ## API Graphql
-### getDataUPW
+### GetByDOI
 
 get Unpaywall data with [parameters](#Object-structure). 
 You can also use intervals 
@@ -169,7 +169,7 @@ headers: {
 }
 ```
 
-`GET "<HOST>/api/graphql?query={getDataUPW(dois:["10.1038/2211089b0","10.1038/nature12373"], published_date_range: {gte: "2014", lte: "2019"}){doi, is_oa, best_oa_location{ url }}}"`
+`GET "<HOST>/api/graphql?query={GetByDOI(dois:["10.1038/2211089b0","10.1038/nature12373"], published_date_range: {gte: "2014", lte: "2019"}){doi, is_oa, best_oa_location{ url }}}"`
 
 #### POST
 
@@ -180,7 +180,7 @@ headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
 body: {
-    "query": "{getDataUPW(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"], published_date_range: {gte: \"2014\", lte: \"2019\"}){doi, is_oa, best_oa_location{ url }}}"
+    "query": "{GetByDOI(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"], published_date_range: {gte: \"2014\", lte: \"2019\"}){doi, is_oa, best_oa_location{ url }}}"
 }
 ```
 
@@ -191,7 +191,7 @@ headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
 body: {
-    "query": "query ($dois: [ID!]!){ getDataUPW(dois: $dois, published_date_range: $published_date_range){is_oa} }",
+    "query": "query ($dois: [ID!]!){ GetByDOI(dois: $dois, published_date_range: $published_date_range){is_oa} }",
     "variables": { 
         "dois": ["10.1038/2211089b0","10.1038/nature12373"],
         "published_date_range": {
@@ -208,7 +208,7 @@ Status: 200
 ```json
 {
     "data": {
-        "getDataUPW": [
+        "GetByDOI": [
             {
                 "doi": "10.1038/2211089b0",
                 "is_oa": true,
