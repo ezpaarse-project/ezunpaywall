@@ -64,7 +64,6 @@ const createIndex = async (name, mapping) => {
  * @param {string} index name of the index to which the data will be saved
  */
 const insertDataInElastic = async (data, indexname, stateName) => {
-  await createIndex(indexname, unpaywallMapping);
   let res;
   const body = data.flatMap((doc) => [{ index: { _index: indexname, _id: doc.doi } }, doc]);
   try {
@@ -84,11 +83,12 @@ const insertDataInElastic = async (data, indexname, stateName) => {
  * Inserts the contents of an unpaywall data update file
  * @param {string} stateName - state filename
  * @param {string} filename - snapshot filename which the data will be inserted
- * @param {string} index name of the index to which the data will be saved
+ * @param {string} indexname name of the index to which the data will be saved
  * @param {number} offset - offset
  * @param {number} limit - limit
  */
-const insertDataUnpaywall = async (stateName, filename, index, offset, limit) => {
+const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit) => {
+  await createIndex(indexname, unpaywallMapping);
   // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
@@ -167,7 +167,7 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
     }
     // bulk insertion
     if (tab.length % 1000 === 0 && tab.length !== 0) {
-      await insertDataInElastic(tab, index, stateName);
+      await insertDataInElastic(tab, indexname, stateName);
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       state.steps[state.steps.length - 1] = step;
@@ -180,7 +180,7 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
   }
   // last insertion if there is data left
   if (tab.length !== 0) {
-    await insertDataInElastic(tab, index, stateName);
+    await insertDataInElastic(tab, indexname, stateName);
     tab = [];
   }
   logger.info('step - end insertion');
