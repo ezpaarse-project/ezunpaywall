@@ -120,8 +120,9 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
     if (step.linesRead >= offset + 1) {
       // fill the array
       try {
+        const doc = JSON.parse(line);
         bulkOps.push({ index: { _index: index, _id: doc.doi } });
-        bulkOps.push(JSON.parse(line));
+        bulkOps.push(doc);
       } catch (err) {
         logger.error(`Cannot parse "${line}" in json format`);
         logger.error(err);
