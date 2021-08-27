@@ -132,12 +132,13 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
     }
     // bulk insertion
     if (bulkOps.length >= maxBulkSize) {
-      await insertDataInElastic(bulkOps, stateName);
+      const dataToInsert = bulkOps.slice();
+      bulkOps = [];
+      await insertDataInElastic(dataToInsert, stateName);
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       state.steps[state.steps.length - 1] = step;
       await updateStateInFile(state, stateName);
-      bulkOps = [];
     }
     if (step.linesRead % 100000 === 0) {
       logger.info(`${step.linesRead} Lines reads`);
