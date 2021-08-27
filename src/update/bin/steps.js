@@ -32,7 +32,7 @@ const insertDataInElastic = async (data, index, stateName) => {
   let res;
   const body = data.flatMap((doc) => [{ index: { _index: index, _id: doc.doi } }, doc]);
   try {
-    res = await client.bulk({ refresh: true, body });
+    res = await client.bulk({ body });
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
