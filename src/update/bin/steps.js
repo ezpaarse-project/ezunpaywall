@@ -12,7 +12,7 @@ const { client } = require('../lib/client');
 const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
-const bulkSize = config.get('elasticsearch.maxBulkSize');
+const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 
 const {
   getState,
@@ -26,13 +26,12 @@ const {
 /**
  * insert data on elastic with request
  * @param {Array} data array of unpaywall data
- * @param {string} index name of the index to which the data will be saved
+ * @param {string} stateName - state filename
  */
-const insertDataInElastic = async (data, index, stateName) => {
+const insertDataInElastic = async (data, stateName) => {
   let res;
-  const body = data.flatMap((doc) => [{ index: { _index: index, _id: doc.doi } }, doc]);
   try {
-    res = await client.bulk({ body });
+    res = await client.bulk({ body: data });
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
@@ -105,7 +104,7 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
   });
 
   // array that will contain the packet of 1000 unpaywall data
-  let tab = [];
+  let bulkOps = [];
 
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
@@ -121,7 +120,8 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
     if (step.linesRead >= offset + 1) {
       // fill the array
       try {
-        tab.push(JSON.parse(line));
+        bulkOps.push({ index: { _index: index, _id: doc.doi } });
+        bulkOps.push(JSON.parse(line));
       } catch (err) {
         logger.error(`Cannot parse "${line}" in json format`);
         logger.error(err);
@@ -130,22 +130,22 @@ const insertDataUnpaywall = async (stateName, filename, index, offset, limit) =>
       }
     }
     // bulk insertion
-    if ((tab.length * 2) >= bulkSize) {
-      await insertDataInElastic(tab, index, stateName);
+    if (bulkOps.length >= maxBulkSize) {
+      await insertDataInElastic(bulkOps, stateName);
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       state.steps[state.steps.length - 1] = step;
       await updateStateInFile(state, stateName);
-      tab = [];
+      bulkOps = [];
     }
     if (step.linesRead % 100000 === 0) {
       logger.info(`${step.linesRead} Lines reads`);
     }
   }
   // last insertion if there is data left
-  if (tab.length > 0) {
-    await insertDataInElastic(tab, index, stateName);
-    tab = [];
+  if (bulkOps.length > 0) {
+    await insertDataInElastic(bulkOps, stateName);
+    bulkOps = [];
   }
   logger.info('step - end insertion');
 
