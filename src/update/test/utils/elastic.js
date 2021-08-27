@@ -114,7 +114,7 @@ const countDocuments = async (name) => {
       console.error(`countDocuments: ${err}`);
     }
   }
-  return data.body.count ? data.body.count : 0;
+  return data?.body?.count ? data?.body?.count : 0;
 };
 
 module.exports = {

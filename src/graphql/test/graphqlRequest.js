@@ -38,7 +38,6 @@ describe('test graphqlRequest', () => {
         .set('X-API-KEY', 'user')
         .set('index', 'unpaywall-test');
 
-      console.log(`${graphqlURL}/graphql`);
       expect(res).have.status(200);
 
       const data = res?.body?.data?.GetByDOI;

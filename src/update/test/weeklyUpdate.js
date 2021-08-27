@@ -3,10 +3,7 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const mappingUnpaywall = require('../mapping/unpaywall.json');
-
 const {
-  createIndex,
   countDocuments,
   deleteIndex,
 } = require('./utils/elastic');
@@ -50,7 +47,6 @@ describe('Test: weekly update route test', () => {
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
       await deleteIndex('unpaywall-test');
-      await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
     // test response
@@ -153,7 +149,6 @@ describe('Test: weekly update route test', () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-      await createIndex('unpaywall-test', mappingUnpaywall);
       await addSnapshot('fake1.jsonl.gz');
     });
 

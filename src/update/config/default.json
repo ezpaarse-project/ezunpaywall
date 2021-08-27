@@ -1,4 +1,4 @@
-{ 
+{
   "apikeyupw": "default",
   "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
   "apikeyadmin": "[\"admin\"]",
@@ -14,6 +14,7 @@
     "port": 9200,
     "host": "elastic",
     "user": "elastic",
-    "password": "changeme"
+    "password": "changeme",
+    "maxBulkSize": 4000
   }
 }
