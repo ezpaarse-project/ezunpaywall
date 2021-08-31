@@ -5,5 +5,8 @@
   "eslint.validate": [
     "javascript",
     "vue"
-  ]
+  ],
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "terminal.integrated.fontFamily": "Menlo for Powerline"
 }
