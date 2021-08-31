@@ -32,8 +32,6 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | name | description |
 | --- | --- |
 | API_KEY_UPW | api key to access weekly unpaywall updates |
-| API_KEY_USERS | api key to give to users to authorize them to request on ezunpaywall |
-| API_KEY_ADMIN | api key to run unpaywall updates |
 #### Mail
 
 | name | description |
@@ -51,6 +49,11 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | ELASTICSEARCH_HOST | elastic url |
 | ELASTICSEARCH_USERNAME | elastic user |
 | ELASTICSEARCH_PASSWORD | elastic password |
+
+#### Redis
+| name | description |
+| --- | --- |
+| REDIS_PASSWORD | password to access at redis |
 
 ### Configuration (optionnal)
 
