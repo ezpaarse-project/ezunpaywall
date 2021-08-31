@@ -1,13 +1,5 @@
-const config = require('config');
-const logger = require('../lib/logger');
+const apiKeyUser = require('../apikey.json');
 
-let apikeyusers = config.get('apikeyusers');
-try {
-  apikeyusers = JSON.parse(apikeyusers);
-} catch (err) {
-  logger.error(`Cannot parse "${apikeyusers}" in json format`);
-  logger.error(err);
-}
 /**
  * check the user's api key
  * @param {Object} req - HTTP request
@@ -15,8 +7,13 @@ try {
  * @param {function} next - do the following
  * @returns {Object|function} res or next
  */
-const checkAuth = (req, res, next) => {
-  if (!apikeyusers.includes(req.get('X-API-KEY'))) {
+const checkAuth = async (req, res, next) => {
+  // TODO check in query
+  const apikey = req.get('X-API-KEY');
+  if (!apiKeyUser[apikey]) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+  if (!apiKeyUser[apikey].access.includes('update')) {
     return res.status(401).json({ message: 'Not authorized' });
   }
   return next();

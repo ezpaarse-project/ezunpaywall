@@ -8,6 +8,8 @@ const { oaLocationInput } = require('../models/oalocation');
 const { authorInput } = require('../models/author');
 const logger = require('../lib/logger');
 
+const apiKeyUser = require('../apikey.json');
+
 const {
   GraphQLList,
   GraphQLID,
@@ -89,9 +91,16 @@ module.exports = {
   // attr info give informations about graphql request
   resolve: async (parent, args, context) => {
     let index = context?.get('index');
+    const apikey = context?.get('x-api-key');
+
+    const { attributes } = apiKeyUser[apikey];
+
     if (!index) {
       index = 'unpaywall';
     }
+
+    logger.info(attributes);
+
     const filter = [{ terms: { doi: args.dois } }];
     const matchRange = /(range)/i;
 
@@ -132,6 +141,9 @@ module.exports = {
         filter,
       },
     };
+
+    console.log(attributes);
+
     let res;
     try {
       res = await client.search({
@@ -139,7 +151,9 @@ module.exports = {
         size: args.dois.length || 1000,
         body: {
           query,
+          _source: attributes,
         },
+
       });
     } catch (err) {
       logger.error('Cannot request elastic');

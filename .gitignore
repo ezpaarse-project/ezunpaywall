@@ -8,3 +8,4 @@ data/
 out/
 ssl/
 node_modules/
+apikey.json
