@@ -1,4 +1,3 @@
 { 
-  "apikeyusers": "API_KEY_USERS",
-  "apikeyadmin": "API_KEY_ADMIN"
+  "redisPassword": "REDIS_PASSWORD"
 }
