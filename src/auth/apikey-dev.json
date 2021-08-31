@@ -1,0 +1,14 @@
+{
+    "user": {
+        "name": "user",
+        "access": ["graphql", "enrich"],
+        "attributes": "*",
+        "allowed": true
+    },
+    "admin": {
+        "name": "admin",
+        "access": ["graphql", "enrich", "update"],
+        "attributes": "*",
+        "allowed": true
+    }
+}
