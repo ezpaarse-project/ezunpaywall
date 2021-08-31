@@ -7,12 +7,7 @@ LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
 # unpaywall
 export API_KEY_UPW="X-API-KEY"
 
-# apikey
-export API_KEY_USERS="[\"user\"]"
-export API_KEY_ADMIN="[\"admin\"]"
-
 # redis
-
 export REDIS_PASSWORD="changeme"
 
 # mail

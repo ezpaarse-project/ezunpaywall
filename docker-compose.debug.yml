@@ -13,12 +13,9 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_USERS=["user", "admin"]
     working_dir: /graphql
     volumes:
       - ./src/graphql:/graphql
-      - ./src/auth/apikey.json:/graphql/apikey.json
     command: "npm run dev"
     ports:
       - 3000:3000
@@ -47,12 +44,9 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_ADMIN=["admin"]
     working_dir: /update
     volumes:
       - ./src/update:/update
-      - ./src/auth/apikey.json:/update/apikey.json
     command: "npm run dev"
     ports:
       - 4000:4000
@@ -72,14 +66,11 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_USERS=["user", "admin"]
       # URL service
       - GRAPHQL_URL=http://graphql:3000
     working_dir: /enrich
     volumes:
       - ./src/enrich:/enrich
-      - ./src/auth/apikey.json:/enrich/apikey.json
     command: "npm run dev"
     ports:
       - "5000:5000"
@@ -87,12 +78,28 @@ services:
       - graphql
     restart: unless-stopped
 
-  # redis:
-  #   image: "redis:6.2.5-alpine3.13"
-  #   command: redis-server --requirepass changeme
-  #   ports:
-  #    - "6379:6379"
-  #   restart: unless-stopped
+  auth: 
+    image: node:14.15.5-alpine3.13
+    environment:
+      # proxy
+      - http_proxy
+      - https_proxy
+    working_dir: /auth
+    volumes:
+      - ./src/auth:/auth
+    command: "npm run dev"
+    ports:
+      - 6000:6000
+    depends_on:
+      - redis
+    restart: unless-stopped
+  
+  redis:
+    image: "redis:6.2.5-alpine3.14"
+    command: redis-server --requirepass changeme
+    ports:
+     - "6379:6379"
+    restart: unless-stopped
 
   frontend:
     image: node:14.15.5-alpine3.13

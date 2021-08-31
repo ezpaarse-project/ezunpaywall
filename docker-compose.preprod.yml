@@ -17,8 +17,8 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_USERS
+      # redis
+      - REDIS_PASSWORD
     volumes:
       - ./src/graphql/out:/usr/src/graphql/out
     command: "npm start"
@@ -53,8 +53,8 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_ADMIN
+      # redis
+      - REDIS_PASSWORD
     volumes:
       - ./src/update/out:/usr/src/update/out
     command: "npm start"
@@ -80,8 +80,8 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_USERS
+      # redis
+      - REDIS_PASSWORD
       # URL services
       - GRAPHQL_URL
     volumes:
