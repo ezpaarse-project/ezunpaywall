@@ -4,11 +4,10 @@ const graphql = require('graphql');
 
 const unpaywallType = require('../models/unpaywall');
 const { client } = require('../lib/client');
+const redisClient = require('../lib/redis');
 const { oaLocationInput } = require('../models/oalocation');
 const { authorInput } = require('../models/author');
 const logger = require('../lib/logger');
-
-const apiKeyUser = require('../apikey.json');
 
 const {
   GraphQLList,
@@ -93,7 +92,9 @@ module.exports = {
     let index = context?.get('index');
     const apikey = context?.get('x-api-key');
 
-    const { attributes } = apiKeyUser[apikey];
+    const configApi = await redisClient.get(apikey);
+    const parsedConfigApi = JSON.parse(configApi);
+    const { attributes } = parsedConfigApi;
 
     if (!index) {
       index = 'unpaywall';

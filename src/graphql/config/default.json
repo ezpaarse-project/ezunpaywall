@@ -1,6 +1,5 @@
-{ 
-  "apikeyusers": "[\"user\", \"admin\"]",
-  "apikeyadmin": "[\"admin\"]",
+{
+  "redisPassword": "changeme",
   "elasticsearch": {
     "port": 9200,
     "host": "elastic",
