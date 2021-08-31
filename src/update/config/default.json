@@ -1,7 +1,7 @@
 {
   "apikeyupw": "default",
   "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
-  "apikeyadmin": "[\"admin\"]",
+  "redisPassword": "changeme",
   "smtp": {
     "host": "localhost",
     "port": 25

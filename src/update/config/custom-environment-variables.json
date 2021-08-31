@@ -1,7 +1,7 @@
 {
   "apikeyupw": "API_KEY_UPW",
   "unpaywallURL": "UNPAYWALL_URL",
-  "apikeyadmin": "API_KEY_ADMIN",
+  "redisPassword": "REDIS_PASSWORD",
   "smtp": {
     "host": "EZUNPAYWALL_SMTP_HOST",
     "port": "EZUNPAYWALL_SMTP_PORT"

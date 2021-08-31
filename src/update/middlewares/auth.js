@@ -1,4 +1,4 @@
-const apiKeyUser = require('../apikey.json');
+const redisClient = require('../lib/redis');
 
 /**
  * check the user's api key
@@ -10,10 +10,18 @@ const apiKeyUser = require('../apikey.json');
 const checkAuth = async (req, res, next) => {
   // TODO check in query
   const apikey = req.get('X-API-KEY');
-  if (!apiKeyUser[apikey]) {
+
+  if (!apikey) {
     return res.status(401).json({ message: 'Not authorized' });
   }
-  if (!apiKeyUser[apikey].access.includes('update')) {
+
+  const key = await redisClient.get(apikey);
+  const keyParsed = JSON.parse(key);
+
+  if (!keyParsed) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+  if (!keyParsed.access.includes('update')) {
     return res.status(401).json({ message: 'Not authorized' });
   }
   return next();
