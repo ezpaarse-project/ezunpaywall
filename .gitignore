@@ -2,10 +2,6 @@ ezunpaywall.local.env.sh
 config/kibana/certificates/
 config/elastic/certificates/
 certs/instances.yml
-fullchain.pem
-privkey.pem
 data/
-out/
 ssl/
 node_modules/
-apikey.json
