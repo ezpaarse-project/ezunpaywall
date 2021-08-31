@@ -99,8 +99,6 @@ module.exports = {
       index = 'unpaywall';
     }
 
-    logger.info(attributes);
-
     const filter = [{ terms: { doi: args.dois } }];
     const matchRange = /(range)/i;
 
@@ -141,8 +139,6 @@ module.exports = {
         filter,
       },
     };
-
-    console.log(attributes);
 
     let res;
     try {
