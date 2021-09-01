@@ -1,14 +1,44 @@
 {
-    "user": {
-        "name": "user",
-        "access": ["graphql", "enrich"],
-        "attributes": "*",
-        "allowed": true
-    },
-    "admin": {
-        "name": "admin",
-        "access": ["graphql", "enrich", "update"],
-        "attributes": "*",
-        "allowed": true
-    }
+  "user": {
+    "name": "user",
+    "access": ["graphql", "enrich"],
+    "attributes": "*",
+    "allowed": true
+  },
+  "userRestricted": {
+    "name": "userRestricted",
+    "access": ["graphql", "enrich"],
+    "attributes": "doi, is_oa",
+    "allowed": true
+  },
+  "admin": {
+    "name": "admin",
+    "access": ["graphql", "enrich", "update"],
+    "attributes": "*",
+    "allowed": true
+  },
+  "graphql": {
+    "name": "graphql",
+    "access": ["graphql"],
+    "attributes": "*",
+    "allowed": true
+  },
+  "enrich": {
+    "name": "enrich",
+    "access": ["enrich"],
+    "attributes": "*",
+    "allowed": true
+  },
+  "update": {
+    "name": "update",
+    "access": ["update"],
+    "attributes": "*",
+    "allowed": true
+  },
+  "notAllowed": {
+    "name": "notAllowed",
+    "access": ["graphql", "enrich", "update"],
+    "attributes": "*",
+    "allowed": false
+  }
 }

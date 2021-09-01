@@ -16,12 +16,15 @@ const checkAuth = async (req, res, next) => {
   }
 
   const key = await redisClient.get(apikey);
-  const keyParsed = JSON.parse(key);
+  const config = JSON.parse(key);
 
-  if (!keyParsed) {
+  if (!config) {
     return res.status(401).json({ message: 'Not authorized' });
   }
-  if (!keyParsed.access.includes('update')) {
+  if (!config.access.includes('update')) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+  if (!config.allowed) {
     return res.status(401).json({ message: 'Not authorized' });
   }
   return next();

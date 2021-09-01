@@ -16,14 +16,42 @@ const checkAuth = async (req, res, next) => {
   }
 
   const key = await redisClient.get(apikey);
-  const keyParsed = JSON.parse(key);
+  const config = JSON.parse(key);
 
-  if (!keyParsed) {
+  if (!config) {
     return res.status(401).json({ message: 'Not authorized' });
   }
-  if (!keyParsed.access.includes('enrich')) {
+  if (!config.access.includes('enrich')) {
     return res.status(401).json({ message: 'Not authorized' });
   }
+  if (!config.allowed) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+  let { args } = req.body;
+
+  if (!config.attributes === '*') {
+    if (!args) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+    let error = false;
+    const errors = [];
+    args = args.substr(1);
+    args = args.substring(0, args.length - 1);
+    args = args.replace(/{/g, '.');
+    args = args.replace(/}/g, '');
+    args = args.replace(/ /g, '');
+    args = args.split(',');
+    args.forEach((attribute) => {
+      if (!config.attributes.includes(attribute)) {
+        error = true;
+        errors.push(attribute);
+      }
+    });
+    if (error) {
+      return res.status(401).json({ message: `You don't have access to "${errors.join(',')}" attribute(s)` });
+    }
+  }
+
   return next();
 };
 

@@ -16,12 +16,18 @@ const checkAuth = async (req, res, next) => {
   }
 
   const key = await redisClient.get(apikey);
-  const keyParsed = JSON.parse(key);
+  const config = JSON.parse(key);
+  console.log(apikey);
+  console.log('=========');
+  console.log(key);
 
-  if (!keyParsed) {
+  if (!config) {
     return res.status(401).json({ message: 'Not authorized' });
   }
-  if (!keyParsed.access.includes('graphql')) {
+  if (!config.access.includes('graphql')) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+  if (!config.allowed) {
     return res.status(401).json({ message: 'Not authorized' });
   }
   return next();
