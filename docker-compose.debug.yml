@@ -85,8 +85,6 @@ services:
       - http_proxy
       - https_proxy
     working_dir: /auth
-    volumes:
-      - ./src/auth:/auth
     command: "npm run dev"
     ports:
       - 6000:6000

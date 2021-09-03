@@ -17,9 +17,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const client = redis.createClient({
-  host: config.get('reids.host'),
-  port: config.get('reids.port'),
-  password: config.get('reids.password'),
+  host: config.get('redis.host'),
+  port: config.get('redis.port'),
+  password: config.get('redis.password'),
 });
 
 client.on('error', (err) => {
