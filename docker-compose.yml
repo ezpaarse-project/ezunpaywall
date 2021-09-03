@@ -99,6 +99,7 @@ services:
       # proxy
       - http_proxy
       - https_proxy
+      - REDIS_PASSWORD
     command: "npm start"
     ports:
       - 6000:6000
