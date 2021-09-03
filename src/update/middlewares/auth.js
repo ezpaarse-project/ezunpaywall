@@ -1,4 +1,5 @@
 const redisClient = require('../lib/redis');
+const logger = require('../lib/redis');
 
 /**
  * check the user's api key
@@ -15,18 +16,28 @@ const checkAuth = async (req, res, next) => {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
-  const key = await redisClient.get(apikey);
-  const config = JSON.parse(key);
+  let key;
+  try {
+    key = await redisClient.get(apikey);
+  } catch (err) {
+    logger.error(`Cannot get ${apikey} on redis`);
+    logger.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
 
-  if (!config) {
+  let config;
+  try {
+    config = JSON.parse(key);
+  } catch (err) {
+    logger.error(`Cannot parse ${key}`);
+    logger.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+
+  if (!Array.isArray(config?.access) || !config.access.includes('update') || !config.allowed) {
     return res.status(401).json({ message: 'Not authorized' });
   }
-  if (!config.access.includes('update')) {
-    return res.status(401).json({ message: 'Not authorized' });
-  }
-  if (!config.allowed) {
-    return res.status(401).json({ message: 'Not authorized' });
-  }
+
   return next();
 };
 
