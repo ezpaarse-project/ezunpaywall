@@ -125,8 +125,8 @@ describe('Test: auth service in graphql service', () => {
         .set('X-API-KEY', 'userRestricted')
         .set('index', 'unpaywall-test');
 
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');
+      expect(res).have.status(200);
+      expect(res?.body.errors[0].message).eq('You don\'t have access to oa_status');
     });
   });
 });

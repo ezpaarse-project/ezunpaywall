@@ -38,48 +38,6 @@ const checkAuth = async (req, res, next) => {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
-  let args;
-  args = req.query;
-
-  if (!args) {
-    args = req.body;
-  }
-
-  args = JSON.stringify(args);
-
-  if (args === '{}') return next();
-
-  // {doi, is_oa, oa_status, best_oa_location { licence }}
-  // => ["doi", "is_oa", "is_oa", "best_oa_location.licence"]
-  args = args.split(')');
-  [, args] = args;
-  args = args.replace(/ /g, '');
-  args = args.substring(0, args.length - 3);
-
-  if (config.attributes !== '*') {
-    if (!args) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    let error = false;
-    const errors = [];
-    args = args.substr(1);
-    args = args.substring(0, args.length - 1);
-    args = args.replace(/{/g, '.');
-    args = args.replace(/}/g, '');
-    args = args.replace(/ /g, '');
-    args = args.split(',');
-
-    args.forEach((attribute) => {
-      if (!config.attributes.includes(attribute)) {
-        error = true;
-        errors.push(attribute);
-      }
-    });
-    if (error) {
-      return res.status(401).json({ message: `You don't have access to "${errors.join(',')}" attribute(s)` });
-    }
-  }
   req.attributes = config.attributes;
   return next();
 };
