@@ -4,7 +4,6 @@ const graphql = require('graphql');
 
 const unpaywallType = require('../models/unpaywall');
 const { client } = require('../lib/client');
-const redisClient = require('../lib/redis');
 const { oaLocationInput } = require('../models/oalocation');
 const { authorInput } = require('../models/author');
 const logger = require('../lib/logger');
@@ -88,13 +87,10 @@ module.exports = {
     },
   },
   // attr info give informations about graphql request
-  resolve: async (parent, args, context) => {
-    let index = context?.get('index');
-    const apikey = context?.get('x-api-key');
+  resolve: async (parent, args, req) => {
+    let index = req?.get('index');
 
-    const configApi = await redisClient.get(apikey);
-    const parsedConfigApi = JSON.parse(configApi);
-    const { attributes } = parsedConfigApi;
+    const { attributes } = req;
 
     if (!index) {
       index = 'unpaywall';
