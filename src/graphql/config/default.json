@@ -1,5 +1,9 @@
 {
-  "redisPassword": "changeme",
+  "redis":  {
+    "password": "changeme",
+    "host": "redis",
+    "port": "6379"
+  },
   "elasticsearch": {
     "port": 9200,
     "host": "elastic",
