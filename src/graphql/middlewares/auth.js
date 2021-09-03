@@ -49,6 +49,8 @@ const checkAuth = async (req, res, next) => {
 
   if (args === '{}') return next();
 
+  // {doi, is_oa, oa_status, best_oa_location { licence }}
+  // => ["doi", "is_oa", "is_oa", "best_oa_location.licence"]
   args = args.split(')');
   [, args] = args;
   args = args.replace(/ /g, '');
