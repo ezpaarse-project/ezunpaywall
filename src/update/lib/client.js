@@ -25,7 +25,7 @@ const pingElastic = async () => {
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-  logger.info(`elastic ping: ${elasticsearch.host}:${elasticsearch.port} ok`);
+  logger.info(`ping: ${elasticsearch.host}:${elasticsearch.port} ok`);
   return true;
 };
 

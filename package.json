@@ -15,7 +15,7 @@
       "test:enrich": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/enrich && npm run test",
       "test:graphql": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/graphql && npm run test",
       "test:update": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/update && npm run test",
-      "test": "npm run test:enrich && npm run test:graphql && npm run test:update"
+      "test": "npm run test:update; npm run test:graphql; npm run test:enrich"
    },
    "devDependencies": {
       "chai": "^4.3.4",
@@ -24,7 +24,9 @@
       "mocha": "^9.0.1"
    },
    "dependencies": {
+      "flat": "^5.0.2",
       "fs-extra": "^10.0.0",
+      "graphql-fields": "^2.0.3",
       "uuid": "^8.3.2"
    }
 }

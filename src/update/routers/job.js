@@ -13,12 +13,12 @@ const {
 } = require('../bin/update');
 
 const {
-  checkAdmin,
-} = require('../middlewares/admin');
-
-const {
   checkStatus,
 } = require('../middlewares/status');
+
+const {
+  checkAuth,
+} = require('../middlewares/auth');
 
 /**
  *
@@ -41,7 +41,7 @@ const {
  * @apiError 404 File not found
  *
  */
-router.post('/job', checkStatus, checkAdmin, async (req, res) => {
+router.post('/job', checkStatus, checkAuth, async (req, res) => {
   let {
     index, startDate, endDate, offset, limit,
   } = req.body;

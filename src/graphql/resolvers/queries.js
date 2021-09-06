@@ -1,6 +1,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 const graphql = require('graphql');
+const graphqlFields = require('graphql-fields');
 
 const unpaywallType = require('../models/unpaywall');
 const { client } = require('../lib/client');
@@ -16,6 +17,28 @@ const {
   GraphQLBoolean,
   GraphQLInputObjectType,
 } = graphql;
+
+function flatten(obj) {
+  const flattened = [];
+
+  function flattenProp(data, keys) {
+    Object.entries(data).forEach(([key, value]) => {
+      if (typeof value !== 'object') { return; }
+
+      const newKeys = [...keys, key];
+
+      if (Object.keys(value).length === 0) {
+        flattened.push(newKeys.join('.'));
+      } else {
+        flattenProp(value, newKeys);
+      }
+    });
+  }
+
+  flattenProp(obj, []);
+
+  return flattened;
+}
 
 /**
  * convert a unpaywall deep attr into elastic readable object
@@ -87,11 +110,26 @@ module.exports = {
     },
   },
   // attr info give informations about graphql request
-  resolve: async (parent, args, context) => {
-    let index = context?.get('index');
+  resolve: async (parent, args, req, info) => {
+    let index = req?.get('index');
+
+    const { attributes } = req;
+
     if (!index) {
       index = 'unpaywall';
     }
+
+    if (attributes !== '*') {
+      const test = graphqlFields(info);
+      const requestedField = flatten(test);
+
+      requestedField.forEach((field) => {
+        if (!attributes.includes(field)) {
+          throw Error(`You don't have access to ${field}`);
+        }
+      });
+    }
+
     const filter = [{ terms: { doi: args.dois } }];
     const matchRange = /(range)/i;
 
@@ -132,6 +170,7 @@ module.exports = {
         filter,
       },
     };
+
     let res;
     try {
       res = await client.search({
@@ -139,7 +178,9 @@ module.exports = {
         size: args.dois.length || 1000,
         body: {
           query,
+          _source: attributes,
         },
+
       });
     } catch (err) {
       logger.error('Cannot request elastic');

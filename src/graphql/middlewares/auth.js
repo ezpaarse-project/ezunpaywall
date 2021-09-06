@@ -1,13 +1,6 @@
-const config = require('config');
+const redisClient = require('../lib/redis');
 const logger = require('../lib/logger');
 
-let apikeyusers = config.get('apikeyusers');
-try {
-  apikeyusers = JSON.parse(apikeyusers);
-} catch (err) {
-  logger.error(`Cannot parse "${apikeyusers}" in json format`);
-  logger.error(err);
-}
 /**
  * check the user's api key
  * @param {Object} req - HTTP request
@@ -15,10 +8,37 @@ try {
  * @param {function} next - do the following
  * @returns {Object|function} res or next
  */
-const checkAuth = (req, res, next) => {
-  if (!apikeyusers.includes(req.get('X-API-KEY'))) {
+const checkAuth = async (req, res, next) => {
+  // TODO check in query
+  const apikey = req.get('X-API-KEY');
+
+  if (!apikey) {
     return res.status(401).json({ message: 'Not authorized' });
   }
+
+  let key;
+  try {
+    key = await redisClient.get(apikey);
+  } catch (err) {
+    logger.error(`Cannot get ${apikey} on redis`);
+    logger.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+
+  let config;
+  try {
+    config = JSON.parse(key);
+  } catch (err) {
+    logger.error(`Cannot parse ${key}`);
+    logger.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+
+  if (!Array.isArray(config?.access) || !config.access.includes('graphql') || !config.allowed) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+
+  req.attributes = config.attributes;
   return next();
 };
 

@@ -1,6 +1,9 @@
 { 
-  "apikeyusers": "API_KEY_USERS",
-  "apikeyadmin": "API_KEY_ADMIN",
+  "redis":  {
+    "password": "REDIS_PASSWORD",
+    "host": "REDIS_HOST",
+    "port": "REDIS_PORT"
+  },
   "elasticsearch": {
     "host": "ELASTICSEARCH_HOST",
     "port": "ELASTICSEARCH_PORT",

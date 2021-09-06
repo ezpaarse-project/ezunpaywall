@@ -12,7 +12,9 @@ const { client } = require('../lib/client');
 const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
-const unpaywallMapping = path.resolve(__dirname, '..', 'mapping', 'unpaywall.json');
+
+const unpaywallMapping = require('../mapping/unpaywall.json');
+
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 
 const {

@@ -13,8 +13,6 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_USERS=["user", "admin"]
     working_dir: /graphql
     volumes:
       - ./src/graphql:/graphql
@@ -46,8 +44,6 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_ADMIN=["admin"]
     working_dir: /update
     volumes:
       - ./src/update:/update
@@ -70,8 +66,6 @@ services:
       # proxy
       - http_proxy
       - https_proxy
-      # apikey
-      - API_KEY_USERS=["user", "admin"]
       # URL service
       - GRAPHQL_URL=http://graphql:3000
     working_dir: /enrich
@@ -84,17 +78,27 @@ services:
       - graphql
     restart: unless-stopped
 
-  fakeunpaywall:
+  auth: 
     image: node:14.15.5-alpine3.13
     environment:
+      # proxy
       - http_proxy
       - https_proxy
-    working_dir: /fakeUnpaywall
+    working_dir: /auth
     volumes:
-      - ./src/fakeUnpaywall:/fakeUnpaywall
+      - ./src/auth:/auth
     command: "npm run dev"
     ports:
-      - "12000:12000"
+      - 6000:6000
+    depends_on:
+      - redis
+    restart: unless-stopped
+  
+  redis:
+    image: "redis:6.2.5-alpine3.14"
+    command: redis-server --requirepass changeme
+    ports:
+     - "6379:6379"
     restart: unless-stopped
 
   frontend:
@@ -111,6 +115,19 @@ services:
       - ENRICH_URL=http://ezunpaywall.dev/api/enrich
       - HOST=0.0.0.0
       - PORT=8080
+
+  fakeunpaywall:
+    image: node:14.15.5-alpine3.13
+    environment:
+      - http_proxy
+      - https_proxy
+    working_dir: /fakeUnpaywall
+    volumes:
+      - ./src/fakeUnpaywall:/fakeUnpaywall
+    command: "npm run dev"
+    ports:
+      - "12000:12000"
+    restart: unless-stopped
   
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
