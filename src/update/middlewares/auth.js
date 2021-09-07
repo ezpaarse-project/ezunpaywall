@@ -1,5 +1,5 @@
-const redisClient = require('../lib/redis');
-const logger = require('../lib/redis');
+const { redisClient } = require('../lib/redis');
+const logger = require('../lib/logger');
 
 /**
  * check the user's api key

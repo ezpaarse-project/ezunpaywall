@@ -4,6 +4,8 @@ const path = require('path');
 const cors = require('cors');
 
 const logger = require('./lib/logger');
+const { pingRedis } = require('./lib/redis');
+
 const { name, version } = require('./package.json');
 
 const routerJob = require('./routers/job');
@@ -32,6 +34,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.status(200).json({ name, version });
 });
+
+pingRedis();
 
 app.use(routerJob);
 app.use(routerEnrich);

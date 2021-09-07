@@ -6,7 +6,8 @@ const { name, version } = require('./package.json');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
-const { client, pingElastic } = require('./lib/client');
+const { pingRedis } = require('./lib/redis');
+const { elasticClient, pingElastic } = require('./lib/elastic');
 const { checkAuth } = require('./middlewares/auth');
 
 const schema = require('./graphql');
@@ -28,7 +29,7 @@ app.use(express.json());
 app.get('/', async (req, res) => {
   let elasticStatus;
   try {
-    await client.ping();
+    await elasticClient.ping();
     elasticStatus = 'Alive';
   } catch (err) {
     elasticStatus = 'Error';
@@ -42,6 +43,7 @@ app.use('/graphql', checkAuth, graphqlHTTP({
 }));
 
 pingElastic();
+pingRedis();
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

@@ -16,22 +16,41 @@ if (process.env.NODE_ENV === 'production') {
   apiKeys = require('../apikey-dev.json');
 }
 
-const client = redis.createClient({
+const redisClient = redis.createClient({
   host: config.get('redis.host'),
   port: config.get('redis.port'),
   password: config.get('redis.password'),
 });
 
-client.on('error', (err) => {
-  logger.error(err);
+redisClient.on('error', (err) => {
+  logger.error(`Error in redis ${err}`);
 });
 
 const apiKeysJSON = Object.keys(apiKeys);
 
 const load = () => {
   apiKeysJSON.forEach((key) => {
-    client.set(key, `${JSON.stringify(apiKeys[key])}`, redis.print);
+    redisClient.set(key, `${JSON.stringify(apiKeys[key])}`, redis.print);
   });
 };
 
-module.exports = load;
+const pingRedis = async () => {
+  let redisStatus;
+  while (redisStatus !== 'PONG') {
+    try {
+      redisStatus = await redisClient.ping();
+    } catch (err) {
+      logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
+      logger.error(err);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  logger.info(`ping: ${config.get('redis.host')}:${config.get('redis.port')} ok`);
+  return true;
+};
+
+module.exports = {
+  redisClient,
+  pingRedis,
+  load,
+};

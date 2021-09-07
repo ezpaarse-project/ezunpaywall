@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 const { name, version } = require('./package.json');
-const load = require('./lib/redis');
+const { load, pingRedis } = require('./lib/redis');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -27,6 +27,7 @@ app.get('/', (req, res) => {
   res.status(200).json({ name, version });
 });
 
+pingRedis();
 load();
 
 /* Errors and unknown routes */

@@ -4,7 +4,8 @@ const path = require('path');
 const cors = require('cors');
 
 const logger = require('./lib/logger');
-const { client, pingElastic } = require('./lib/client');
+const { elasticClient, pingElastic } = require('./lib/elastic');
+const { pingRedis } = require('./lib/redis');
 const { name, version } = require('./package.json');
 
 const routerJob = require('./routers/job');
@@ -28,7 +29,7 @@ app.use(cors());
 app.get('/', async (req, res) => {
   let elasticStatus;
   try {
-    await client.ping();
+    await elasticClient.ping();
     elasticStatus = 'Alive';
   } catch (err) {
     elasticStatus = 'Error';
@@ -44,6 +45,7 @@ app.use(routerStatus);
 app.use(routerUnpaywall);
 
 pingElastic();
+pingRedis();
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
