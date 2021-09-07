@@ -26,7 +26,7 @@ describe('Test: auth service in update service', () => {
   });
 
   describe('Test with update API key', () => {
-    it('Should return a error message', async () => {
+    it('Should return a succes message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -42,8 +42,8 @@ describe('Test: auth service in update service', () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
-
       expect(res).have.status(200);
+      expect(res?.body).have.property('message').eq('Weekly update started');
     });
   });
 
