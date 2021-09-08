@@ -30,28 +30,41 @@ app.get('/snapshots/:file', async (req, res) => {
 });
 
 app.patch('/changefiles', async (req, res) => {
-  const changefilesPath = path.resolve(__dirname, 'snapshots', 'changefiles.json');
+  const changefilesPathExemple = path.resolve(__dirname, 'snapshots', 'changefiles-example.json');
 
-  const changefiles = require('./snapshots/changefiles.json');
+  // create local file if dosn't exist
+  let changefilesPath = './snapshots/changefiles.json';
+  try {
+    await fs.ensureFile(changefilesPath)
+  } catch (err) {
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+
+  
+  changefilesPath = path.resolve(__dirname, 'snapshots', 'changefiles.json');
+
+  const changefilesExemple = require('./snapshots/changefiles.json');
 
   const now = Date.now();
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
-  changefiles.list[0].to_date = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
-  changefiles.list[0].last_modified = new Date(now - (1 * oneDay)).toISOString().slice(0, 19);
-  changefiles.list[0].from_date = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
+  changefilesExemple.list[0].to_date = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
+  changefilesExemple.list[0].last_modified = new Date(now - (1 * oneDay)).toISOString().slice(0, 19);
+  changefilesExemple.list[0].from_date = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
 
-  changefiles.list[1].to_date = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
-  changefiles.list[1].last_modified = new Date(now - (8 * oneDay)).toISOString().slice(0, 19);
-  changefiles.list[1].from_date = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
+  changefilesExemple.list[1].to_date = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
+  changefilesExemple.list[1].last_modified = new Date(now - (8 * oneDay)).toISOString().slice(0, 19);
+  changefilesExemple.list[1].from_date = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
 
-  changefiles.list[2].to_date = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
-  changefiles.list[2].last_modified = new Date(now - (15 * oneDay)).toISOString().slice(0, 19);
-  changefiles.list[2].from_date = new Date(now - (22 * oneDay)).toISOString().slice(0, 10);
+  changefilesExemple.list[2].to_date = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
+  changefilesExemple.list[2].last_modified = new Date(now - (15 * oneDay)).toISOString().slice(0, 19);
+  changefilesExemple.list[2].from_date = new Date(now - (22 * oneDay)).toISOString().slice(0, 10);
   try {
-    await fs.writeFile(changefilesPath, JSON.stringify(changefiles, null, 2), 'utf8');
+    await fs.writeFile(changefilesPath, JSON.stringify(changefilesExemple, null, 2), 'utf8');
   } catch (err) {
-    console.error(`fs.writeFile in initializeDate: ${err}`);
+    console.error(`Cannot write ${JSON.stringify(changefilesExemple, null, 2)} in file "${changefilesPath}"`);
+    console.error(err)
+    return res.status(500).json({ message: 'Internal server error' });
   }
   res.set('Location', changefilesPath).status(200).end();
 });
