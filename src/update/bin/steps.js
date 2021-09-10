@@ -74,12 +74,16 @@ const insertDataInElastic = async (data, stateName) => {
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
+    await fail(stateName);
+    return false;
   }
   if (res?.body?.errors) {
     const { items } = res?.body;
     logger.error(JSON.stringify(items));
     await fail(stateName);
+    return false;
   }
+  return true;
 };
 
 /**
@@ -146,6 +150,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   // array that will contain the packet of 1000 unpaywall data
   let bulkOps = [];
 
+  let success;
+
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
   for await (const line of rl) {
@@ -174,7 +180,13 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
     if (bulkOps.length >= maxBulkSize) {
       const dataToInsert = bulkOps.slice();
       bulkOps = [];
-      await insertDataInElastic(dataToInsert, stateName);
+      success = await insertDataInElastic(dataToInsert, stateName);
+      if (!success) {
+        step.status = 'error';
+        state.steps[state.steps.length - 1] = step;
+        await updateStateInFile(state, stateName);
+        return false;
+      }
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       state.steps[state.steps.length - 1] = step;
@@ -186,7 +198,13 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    await insertDataInElastic(bulkOps, stateName);
+    success = await insertDataInElastic(bulkOps, stateName);
+    if (!success) {
+      step.status = 'error';
+      state.steps[state.steps.length - 1] = step;
+      await updateStateInFile(state, stateName);
+      return false;
+    }
     bulkOps = [];
   }
 
@@ -204,6 +222,7 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   step.percent = 100;
   state.steps[state.steps.length - 1] = step;
   await updateStateInFile(state, stateName);
+  return true;
 };
 
 /**
@@ -323,7 +342,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
       });
     });
   } else {
-    const writeStream = fs.createWriteStream(filePath);
+    const writeStream = await fs.createWriteStream(filePath);
     writeStream.write(res.data);
     writeStream.end();
   }
