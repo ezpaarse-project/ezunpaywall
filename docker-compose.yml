@@ -24,6 +24,8 @@ services:
     command: "npm start"
     ports:
       - 3000:3000
+    depends_on:
+      - redis
     restart: unless-stopped
 
   update:
@@ -58,6 +60,8 @@ services:
     command: "npm start"
     ports:
       - 4000:4000
+    depends_on:
+      - redis
     restart: unless-stopped
 
   enrich:
@@ -86,7 +90,7 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      - graphql
+      - redis
     restart: unless-stopped
 
   auth: 
@@ -131,3 +135,7 @@ services:
     volumes:
       - "./rp/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
     restart: unless-stopped
+    depends_on:
+      - enrich
+      - update
+      - graphql

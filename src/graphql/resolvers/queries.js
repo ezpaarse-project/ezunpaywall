@@ -4,7 +4,7 @@ const graphql = require('graphql');
 const graphqlFields = require('graphql-fields');
 
 const unpaywallType = require('../models/unpaywall');
-const { client } = require('../lib/client');
+const { elasticClient } = require('../lib/elastic');
 const { oaLocationInput } = require('../models/oalocation');
 const { authorInput } = require('../models/author');
 const logger = require('../lib/logger');
@@ -173,7 +173,7 @@ module.exports = {
 
     let res;
     try {
-      res = await client.search({
+      res = await elasticClient.search({
         index,
         size: args.dois.length || 1000,
         body: {

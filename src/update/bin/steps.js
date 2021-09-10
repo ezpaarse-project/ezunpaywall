@@ -8,7 +8,7 @@ const { Readable } = require('stream');
 const axios = require('axios');
 const config = require('config');
 
-const { client } = require('../lib/client');
+const { elasticClient } = require('../lib/elastic');
 const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
@@ -34,7 +34,7 @@ const {
 const checkIfIndexExist = async (name) => {
   let res;
   try {
-    res = await client.indices.exists({
+    res = await elasticClient.indices.exists({
       index: name,
     });
   } catch (err) {
@@ -52,7 +52,7 @@ const createIndex = async (name, mapping) => {
   const exist = await checkIfIndexExist(name);
   if (!exist) {
     try {
-      await client.indices.create({
+      await elasticClient.indices.create({
         index: name,
         body: mapping,
       });
@@ -70,7 +70,7 @@ const createIndex = async (name, mapping) => {
 const insertDataInElastic = async (data) => {
   let res;
   try {
-    res = await client.bulk({ body: data });
+    res = await elasticClient.bulk({ body: data });
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
@@ -211,7 +211,7 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   logger.info('step - end insertion');
 
   try {
-    await client.indices.refresh({ index: indexname });
+    await elasticClient.indices.refresh({ index: indexname });
   } catch (e) {
     logger.warn(`step - failed to refresh the index: ${e.message}`);
   }

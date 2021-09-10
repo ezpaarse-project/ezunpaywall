@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const { client } = require('./elastic');
+const { elasticClient } = require('./elastic');
 
 chai.use(chaiHttp);
 
@@ -42,7 +42,7 @@ const ping = async () => {
   let res3;
   while (res3?.statusCode !== 200) {
     try {
-      res3 = await client.ping();
+      res3 = await elasticClient.ping();
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }

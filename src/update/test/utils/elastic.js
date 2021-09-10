@@ -5,7 +5,7 @@ const readline = require('readline');
 const { Client } = require('@elastic/elasticsearch');
 const { URL } = require('url');
 
-const client = new Client({
+const elasticClient = new Client({
   node: {
     url: new URL('http://localhost:9200'),
     auth: {
@@ -38,7 +38,7 @@ const insertDataUnpaywall = async () => {
   const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall-test', _id: doc.doi } }, doc]);
 
   try {
-    await client.bulk({ refresh: true, body });
+    await elasticClient.bulk({ refresh: true, body });
   } catch (err) {
     console.error(err);
   }
@@ -52,7 +52,7 @@ const insertDataUnpaywall = async () => {
 const checkIfIndexExist = async (name) => {
   let res;
   try {
-    res = await client.indices.exists({
+    res = await elasticClient.indices.exists({
       index: name,
     });
   } catch (err) {
@@ -70,7 +70,7 @@ const createIndex = async (name, index) => {
   const exist = await checkIfIndexExist(name);
   if (!exist) {
     try {
-      await client.indices.create({
+      await elasticClient.indices.create({
         index: name,
         body: index,
       });
@@ -88,7 +88,7 @@ const deleteIndex = async (name) => {
   const exist = await checkIfIndexExist(name);
   if (exist) {
     try {
-      await client.indices.delete({
+      await elasticClient.indices.delete({
         index: name,
       });
     } catch (err) {
@@ -107,7 +107,7 @@ const countDocuments = async (name) => {
   let data;
   if (exist) {
     try {
-      data = await client.count({
+      data = await elasticClient.count({
         index: name,
       });
     } catch (err) {
@@ -118,7 +118,7 @@ const countDocuments = async (name) => {
 };
 
 module.exports = {
-  client,
+  elasticClient,
   createIndex,
   deleteIndex,
   checkIfIndexExist,
