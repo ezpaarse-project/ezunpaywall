@@ -136,7 +136,6 @@ const endState = async (filename) => {
   state.done = true;
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
-  state.error = false;
   await updateStateInFile(state, filename);
 };
 
