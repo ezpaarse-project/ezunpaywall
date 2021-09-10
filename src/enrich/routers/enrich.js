@@ -36,7 +36,7 @@ router.get('/upload', async (req, res) => {
  * @apiError 400 filename expected
  * @apiError 404 File not found
  *
- * @apiSuccess enriched file
+ * @return enriched file
  */
 router.get('/enriched/:filename', async (req, res) => {
   const { filename } = req.params;
@@ -54,7 +54,7 @@ router.get('/enriched/:filename', async (req, res) => {
  * @apiError 500 internal server error
  * @apiError 403 file not send
  *
- * @apiSuccess 200 file added
+ * @return 200 file added
  */
 router.post('/upload', upload.single('file'), async (req, res) => {
   if (!req?.file) {

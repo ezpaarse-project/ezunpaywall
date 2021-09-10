@@ -43,7 +43,7 @@ router.get('/snapshot', async (req, res, next) => {
  * @apiError 500 internal server error
  * @apiError 403 file not send
  *
- * @apiSuccess 200 file added
+ * @return 200 file added
  */
 router.post('/snapshot', upload.single('file'), async (req, res) => {
   if (!req?.file) {
@@ -57,7 +57,7 @@ router.post('/snapshot', upload.single('file'), async (req, res) => {
  * @apiError 400 filename expected
  * @apiError 404 File not found
  *
- * @apiSuccess 200 <filename> deleted
+ * @return 200 <filename> deleted
  */
 router.delete('/snapshot/:filename', async (req, res, next) => {
   const { filename } = req.params;

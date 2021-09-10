@@ -31,7 +31,7 @@ const {
  *
  * @apiHeader HEADER X-API-KEY - admin apikey
  *
- * @apiSuccess message informing the start of the process
+ * @return message informing the start of the process
  *
  * @apiError 400 start date is missing
  * @apiError 400 end date is lower than start date

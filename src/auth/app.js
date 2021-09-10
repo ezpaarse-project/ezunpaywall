@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 const { name, version } = require('./package.json');
-const { load, pingRedis } = require('./lib/redis');
+const { load, pingRedis, redisClient } = require('./lib/redis');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -25,6 +25,33 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   res.status(200).json({ name, version });
+});
+
+app.get('/config', async (req, res) => {
+  const apikey = req.get('X-API-KEY');
+  if (!apikey) {
+    return res.status(400).json({ message: 'apikey expected' });
+  }
+
+  let key;
+  try {
+    key = await redisClient.get(apikey);
+  } catch (err) {
+    logger.error(`Cannot get ${apikey} on redis`);
+    logger.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+
+  let config;
+  try {
+    config = JSON.parse(key);
+  } catch (err) {
+    logger.error(`Cannot parse ${key}`);
+    logger.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+
+  return res.status(200).json({ config });
 });
 
 pingRedis();

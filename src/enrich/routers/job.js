@@ -17,7 +17,7 @@ const {
  *
  * @apiError 500 internal server error
  *
- * @apiSuccess name of enriched file to download it
+ * @return name of enriched file to download it
  */
 router.post('/job', checkAuth, async (req, res, next) => {
   // TODO create route to upload file with id and use this route after
