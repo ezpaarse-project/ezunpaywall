@@ -51,7 +51,12 @@ const generateMail = (templateName, locals = {}) => {
 };
 
 const send = async (state) => {
-  const status = state.error;
+  let status = state.error;
+  if (status) {
+    status = 'error';
+  } else {
+    status = 'success';
+  }
   try {
     await sendMail({
       from: notifications.sender,
