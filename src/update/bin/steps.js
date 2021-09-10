@@ -67,20 +67,18 @@ const createIndex = async (name, mapping) => {
  * @param {Array} data array of unpaywall data
  * @param {string} stateName - state filename
  */
-const insertDataInElastic = async (data, stateName) => {
+const insertDataInElastic = async (data) => {
   let res;
   try {
     res = await client.bulk({ body: data });
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
-    await fail(stateName);
     return false;
   }
   if (res?.body?.errors) {
     const { items } = res?.body;
     logger.error(JSON.stringify(items));
-    await fail(stateName);
     return false;
   }
   return true;
@@ -180,11 +178,12 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
     if (bulkOps.length >= maxBulkSize) {
       const dataToInsert = bulkOps.slice();
       bulkOps = [];
-      success = await insertDataInElastic(dataToInsert, stateName);
+      success = await insertDataInElastic(dataToInsert);
       if (!success) {
         step.status = 'error';
         state.steps[state.steps.length - 1] = step;
         await updateStateInFile(state, stateName);
+        await fail(stateName);
         return false;
       }
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
@@ -198,11 +197,12 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    success = await insertDataInElastic(bulkOps, stateName);
+    success = await insertDataInElastic(bulkOps);
     if (!success) {
       step.status = 'error';
       state.steps[state.steps.length - 1] = step;
       await updateStateInFile(state, stateName);
+      await fail(stateName);
       return false;
     }
     bulkOps = [];
