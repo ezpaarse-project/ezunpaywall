@@ -29,7 +29,7 @@ const checkAuth = async (req, res, next) => {
   try {
     config = JSON.parse(key);
   } catch (err) {
-    logger.error(`Cannot parse ${key}`);
+    logger.error(`Cannot parse ${key} in json format`);
     logger.error(err);
     return res.status(500).json({ message: 'Internal server error' });
   }

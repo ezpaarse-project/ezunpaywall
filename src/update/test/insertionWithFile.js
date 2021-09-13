@@ -31,7 +31,7 @@ const {
 
 chai.use(chaiHttp);
 
-const updateService = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
+const updateURL = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
 
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async function () {
@@ -50,7 +50,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test return message
     it('Should return the process start', async () => {
-      const res = await chai.request(updateService)
+      const res = await chai.request(updateURL)
         .post('/job')
         .send({
           index: 'unpaywall-test',
@@ -134,7 +134,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test return message
     it('Should return the process start', async () => {
-      const res = await chai.request(updateService)
+      const res = await chai.request(updateURL)
         .post('/job')
         .send({
           filename: 'fake1.jsonl.gz',
@@ -218,7 +218,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
     // test return message
     it('should return the process start', async () => {
-      const res = await chai.request(updateService)
+      const res = await chai.request(updateURL)
         .post('/job')
         .send({
           filename: 'fake1.jsonl.gz',
@@ -302,7 +302,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
     // test return message
     it('Should return the process start', async () => {
-      const res = await chai.request(updateService)
+      const res = await chai.request(updateURL)
         .post('/job')
         .send({
           filename: 'fake1.jsonl.gz',
@@ -380,7 +380,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the file is in the wrong format', () => {
     // test return message
     it('Should return a error message', async () => {
-      const res = await chai.request(updateService)
+      const res = await chai.request(updateURL)
         .post('/job')
         .send({
           filename: 'fake1.jsonl',
@@ -398,7 +398,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the File not found on ezunpaywall', () => {
     // test return message
     it('Should return a error message', async () => {
-      const res = await chai.request(updateService)
+      const res = await chai.request(updateURL)
         .post('/job')
         .send({
           filename: 'fileDoesntExist.jsonl.gz',
@@ -424,7 +424,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     // test return message
     it('Should return a error message', async () => {
-      const res = await chai.request(updateService)
+      const res = await chai.request(updateURL)
         .post('/job')
         .send({
           filename: 'fake1.jsonl.gz',
@@ -445,38 +445,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
       await deleteIndex('unpaywall-test');
-    });
-  });
-
-  describe('Don\'t do a classic insertion of a file already installed because wrong X-API-KEY', () => {
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateService)
-        .post('/job')
-        .send({
-          filename: 'fake1.jsonl.gz',
-          index: 'unpaywall-test',
-        })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
-    });
-
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateService)
-        .post('/job')
-        .send({
-          filename: 'fake1.jsonl.gz',
-          index: 'unpaywall-test',
-        })
-        .query({ index: 'unpaywall-test' })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong apikey');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 

@@ -14,7 +14,7 @@
   </mj-head>
   <mj-body width="700px">
     <mj-spacer height="30px" />
-    <mj-section background-color="#4CAF50" border-radius="5px 5px 0px 0px">
+    <mj-section background-color={{ "#4CAF50" if status == 'success' else "#d11b1b" }} border-radius="5px 5px 0px 0px">
       <mj-column>
         <mj-text align="center" color="white" font-size="24px">
           <p>ezunpaywall</p>

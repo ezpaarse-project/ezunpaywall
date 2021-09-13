@@ -28,12 +28,12 @@
       <table style="border-collapse: collapse; width: 100%; margin-bottom: 20px">
         <thead>
           <tr style="border: 1px solid #ddd; padding: 8px;">
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">task</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">took</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">percent</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">file</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">linesRead</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">status</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: {{ "#4CAF50" if status == 'success' else "#d11b1b" }}; color: white;">task</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: {{ "#4CAF50" if status == 'success' else "#d11b1b" }}; color: white;">took</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: {{ "#4CAF50" if status == 'success' else "#d11b1b" }}; color: white;">percent</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: {{ "#4CAF50" if status == 'success' else "#d11b1b" }}; color: white;">file</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: {{ "#4CAF50" if status == 'success' else "#d11b1b" }}; color: white;">linesRead</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: {{ "#4CAF50" if status == 'success' else "#d11b1b" }}; color: white;">status</th>
           </tr>
         </thead>
         <tbody>
