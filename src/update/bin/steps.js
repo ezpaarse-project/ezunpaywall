@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 const path = require('path');
@@ -67,18 +68,26 @@ const createIndex = async (name, mapping) => {
  * @param {Array} data array of unpaywall data
  * @param {string} stateName - state filename
  */
-const insertDataInElastic = async (data) => {
+const insertDataInElastic = async (data, stateName) => {
   let res;
   try {
     res = await elasticClient.bulk({ body: data });
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
+    await fail(stateName, err);
     return false;
   }
   if (res?.body?.errors) {
+    const errors = [];
     const { items } = res?.body;
-    logger.error(JSON.stringify(items));
+    items.forEach((e) => {
+      if (e?.index?.error !== undefined) {
+        errors.push(e?.index?.error);
+      }
+    });
+    logger.error(JSON.stringify(errors, null, 2));
+    await fail(stateName, errors);
     return false;
   }
   return true;
@@ -97,7 +106,7 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
-  const state = await getState(stateName);
+  let state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
 
   const filePath = path.resolve(snapshotsDir, filename);
@@ -109,8 +118,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   } catch (err) {
     logger.error(`Cannot stat ${filePath}`);
     logger.error(err);
-    await fail(stateName);
-    // TODO throw Error
+    await fail(stateName, err);
+    return false;
   }
 
   // read file with stream
@@ -120,8 +129,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   } catch (err) {
     logger.error(`Cannot read ${filePath}`);
     logger.error(err);
-    await fail(stateName);
-    // TODO throw Error
+    await fail(stateName, err);
+    return false;
   }
 
   // get information "loaded" for state
@@ -136,8 +145,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   } catch (err) {
     logger.error(`Cannot pipe ${readStream?.filename}`);
     logger.error(err);
-    await fail(stateName);
-    // TODO throw Error
+    await fail(stateName, err);
+    return false;
   }
 
   const rl = readline.createInterface({
@@ -170,20 +179,20 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
       } catch (err) {
         logger.error(`Cannot parse "${line}" in json format`);
         logger.error(err);
-        await fail(stateName);
-        // TODO throw Error
+        await fail(stateName, err);
+        return false;
       }
     }
     // bulk insertion
     if (bulkOps.length >= maxBulkSize) {
       const dataToInsert = bulkOps.slice();
       bulkOps = [];
-      success = await insertDataInElastic(dataToInsert);
+      success = await insertDataInElastic(dataToInsert, stateName);
       if (!success) {
+        state = await getState(stateName);
         step.status = 'error';
         state.steps[state.steps.length - 1] = step;
         await updateStateInFile(state, stateName);
-        await fail(stateName);
         return false;
       }
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
@@ -197,12 +206,12 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    success = await insertDataInElastic(bulkOps);
+    success = await insertDataInElastic(bulkOps, stateName);
     if (!success) {
+      state = await getState(stateName);
       step.status = 'error';
       state.steps[state.steps.length - 1] = step;
       await updateStateInFile(state, stateName);
-      await fail(stateName);
       return false;
     }
     bulkOps = [];
@@ -272,8 +281,8 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   } catch (err) {
     logger.error(`Cannot verify if ${filepath} exist`);
     logger.error(err);
-    await fail(stateName);
-    // TODO thown Error;
+    await fail(stateName, err);
+    return false;
   }
 
   if (alreadyInstalled) stats = await fs.stat(filepath);
@@ -281,7 +290,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   // if snapshot already exist and download completely, past
   if (alreadyInstalled && stats.size === info.size) {
     logger.info('file already installed');
-    return;
+    return true;
   }
 
   await addStepDownload(stateName);
@@ -300,8 +309,8 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   } catch (err) {
     logger.error(`Cannot request ${info.url}`);
     logger.error(err);
-    await fail(stateName);
-    // TODO throw Error
+    await fail(stateName, err);
+    return false;
   }
 
   const filePath = path.resolve(snapshotsDir, info.filename);
@@ -323,6 +332,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
       writeStream.on('finish', async () => {
         stats = await fs.stat(filepath);
         if (stats.size !== info.size) {
+          logger.error(`${stats.size} !== ${info.size}`);
           await fail();
           return reject();
         }
@@ -337,7 +347,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
       writeStream.on('error', async (err) => {
         logger.error(err);
-        await fail(stateName);
+        await fail(stateName, err);
         return reject(err);
       });
     });
@@ -374,11 +384,13 @@ const askUnpaywall = async (stateName, url, startDate, endDate) => {
   } catch (err) {
     logger.error(`Cannot request ${url}`);
     logger.error(err);
-    // TODO thow error
+    await fail(stateName, err);
+    return false;
   }
 
   if (res?.status !== 200 || !res?.data?.list?.length) {
-    // TODO thow error
+    await fail(stateName, `code: ${res?.status} - liss lenght: ${!res?.data?.list?.length}`);
+    return false;
   }
 
   let snapshotsInfo = res.data.list;

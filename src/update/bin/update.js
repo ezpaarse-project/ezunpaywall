@@ -32,8 +32,10 @@ const { send } = require('../lib/mail');
 const insertion = async (filename, index, offset, limit) => {
   setInUpdate(true);
   const statename = await createState();
-  await insertDataUnpaywall(statename, filename, index, offset, limit);
-  await endState(statename);
+  const success = await insertDataUnpaywall(statename, filename, index, offset, limit);
+  if (success) {
+    await endState(statename);
+  }
   await createReport(statename);
   setInUpdate(false);
   // TODO use micro-service mail
@@ -54,7 +56,14 @@ const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
     await downloadFileFromUnpaywall(statename, snapshotsInfo[i]);
-    await insertDataUnpaywall(statename, snapshotsInfo[i].filename, index, -1, -1);
+    const success = await insertDataUnpaywall(statename, snapshotsInfo[i].filename, index, -1, -1);
+    if (!success) {
+      await endState(statename);
+      await createReport(statename);
+      setInUpdate(false);
+      await send(await getState(statename));
+      return;
+    }
   }
   await endState(statename);
   await createReport(statename);

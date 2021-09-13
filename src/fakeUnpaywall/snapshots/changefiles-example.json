@@ -29,6 +29,26 @@
       "size": 877494,
       "to_date": "",
       "url": "http://fakeUnpaywall:12000/snapshots/fake3.jsonl.gz"
+    },
+    {
+      "filename": "fake1-error.jsonl.gz",
+      "filetype": "jsonl",
+      "from_date": "",
+      "last_modified": "",
+      "lines": 50,
+      "size": 19918,
+      "to_date": "",
+      "url": "http://fakeUnpaywall:12000/snapshots/fake1-error.jsonl.gz"
+    },
+    {
+      "filename": "fake1.jsonl.gz",
+      "filetype": "jsonl",
+      "from_date": "",
+      "last_modified": "",
+      "lines": 50,
+      "size": 19896,
+      "to_date": "",
+      "url": "http://fakeUnpaywall:12000/snapshots/fake1.jsonl.gz"
     }
   ]
 }
