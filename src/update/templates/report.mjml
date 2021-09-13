@@ -16,7 +16,7 @@
     </mj-text>
 
     <mj-text align="center" color="#55575d" font-size="24px" line-height="22px" padding="10px 25px">
-      <p>Rapport - {{status}}</p>
+      <p>Rapport - </p><p color={{ "#4CAF50" if status == 'success' else "#d11b1b" }}>{{status}}</p>
     </mj-text>
 
     <mj-text>
@@ -28,12 +28,12 @@
       <table style="border-collapse: collapse; width: 100%; margin-bottom: 20px">
         <thead>
           <tr style="border: 1px solid #ddd; padding: 8px;">
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">task</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">took</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">percent</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">file</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">linesRead</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">status</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #3E3E3E; color: white;">task</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #3E3E3E; color: white;">took</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #3E3E3E; color: white;">percent</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #3E3E3E; color: white;">file</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #3E3E3E; color: white;">linesRead</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #3E3E3E; color: white;">status</th>
           </tr>
         </thead>
         <tbody>
