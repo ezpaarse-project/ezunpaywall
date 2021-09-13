@@ -52,7 +52,8 @@ app.patch('/changefiles', async (req, res) => {
 
 
   const now = Date.now();
-  const oneDay = (1 * 24 * 60 * 60 * 1000);
+  const oneDay = 1 * 24 * 60 * 60 * 1000;
+  const oneYear = 1 * 24 * 60 * 60 * 1000 * 365;
 
   changefilesExample.list[0].to_date = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
   changefilesExample.list[0].last_modified = new Date(now - (1 * oneDay)).toISOString().slice(0, 19);
@@ -65,6 +66,14 @@ app.patch('/changefiles', async (req, res) => {
   changefilesExample.list[2].to_date = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
   changefilesExample.list[2].last_modified = new Date(now - (15 * oneDay)).toISOString().slice(0, 19);
   changefilesExample.list[2].from_date = new Date(now - (22 * oneDay)).toISOString().slice(0, 10);
+
+  changefilesExample.list[3].to_date = new Date(now - oneYear - (1 * oneDay)).toISOString().slice(0, 10);
+  changefilesExample.list[3].last_modified = new Date(now - oneYear - (1 * oneDay)).toISOString().slice(0, 19);
+  changefilesExample.list[3].from_date = new Date(now - oneYear - (8 * oneDay)).toISOString().slice(0, 10);
+
+  changefilesExample.list[4].to_date = new Date(now - oneYear - (8 * oneDay)).toISOString().slice(0, 10);
+  changefilesExample.list[4].last_modified = new Date(now - oneYear - (8 * oneDay)).toISOString().slice(0, 19);
+  changefilesExample.list[4].from_date = new Date(now - oneYear - (15 * oneDay)).toISOString().slice(0, 10);
 
   try {
     await fs.writeFile(changefilesPath, JSON.stringify(changefilesExample, null, 2), 'utf8');

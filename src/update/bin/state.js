@@ -117,13 +117,15 @@ const addStepInsert = async (filename, downloadFile) => {
 /**
  * update the state when there is an error
  * @param {string} filename - name of the file where the state is saved
+ * @param {Array<String>} stackTrace - log of error
  */
-const fail = async (filename) => {
+const fail = async (filename, stackTrace) => {
   const state = await getState(filename);
   state.done = true;
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
   state.error = true;
+  state.stackTrace = stackTrace;
   await updateStateInFile(state, filename);
 };
 
