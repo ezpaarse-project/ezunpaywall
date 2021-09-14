@@ -13,7 +13,7 @@
   },
   "admin": {
     "name": "admin",
-    "access": ["graphql", "enrich", "update"],
+    "access": ["graphql", "enrich", "update", "auth"],
     "attributes": "*",
     "allowed": true
   },

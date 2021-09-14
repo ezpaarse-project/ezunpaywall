@@ -1,4 +1,5 @@
 const redis = require('redis');
+const util = require('util');
 const config = require('config');
 const fs = require('fs-extra');
 
@@ -50,6 +51,9 @@ const pingRedis = async () => {
   logger.info(`ping: ${config.get('redis.host')}:${config.get('redis.port')} ok`);
   return true;
 };
+
+redisClient.get = util.promisify(redisClient.get);
+redisClient.ping = util.promisify(redisClient.ping);
 
 module.exports = {
   redisClient,
