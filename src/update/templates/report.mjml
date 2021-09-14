@@ -85,6 +85,13 @@
       </table>
     </mj-text>
 
+    {% if status == 'error' %}
+    <mj-text>
+      <strong> Stacktrace : </strong>
+      <p> {{ state.stackTrace[0].reason }} </p>
+    </mj-text>
+    {% endif %}
+
     <mj-text>
       <p>
         Ce message est envoyé automatiquement par l'application ezunpaywall,
