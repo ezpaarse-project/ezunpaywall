@@ -75,9 +75,10 @@ const insertDataInElastic = async (data, stateName) => {
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
-    await fail(stateName, err);
+    await fail(stateName, 'Cannot bulk on elastic');
     return false;
   }
+
   if (res?.body?.errors) {
     const errors = [];
     const { items } = res?.body;
@@ -158,6 +159,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   let bulkOps = [];
 
   let success;
+
+  logger.info(`Start insert with ${filename}`);
 
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
