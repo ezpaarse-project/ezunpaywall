@@ -202,6 +202,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
     }
     if (step.linesRead % 100000 === 0) {
       logger.info(`${step.linesRead} Lines reads`);
+      state.steps[state.steps.length - 1] = step;
+      await updateStateInFile(state, stateName);
     }
   }
   // last insertion if there is data left
