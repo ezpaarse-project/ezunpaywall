@@ -53,6 +53,7 @@ const pingRedis = async () => {
 };
 
 redisClient.get = util.promisify(redisClient.get);
+redisClient.del = util.promisify(redisClient.del);
 redisClient.ping = util.promisify(redisClient.ping);
 
 module.exports = {
