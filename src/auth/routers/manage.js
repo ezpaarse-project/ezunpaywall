@@ -9,8 +9,13 @@ const {
   deleteAuth,
 } = require('../bin/manage');
 
-router.get('/config', checkAuth, async (req, res) => {
+router.get('/config', async (req, res) => {
   const apikey = req.get('X-API-KEY');
+
+  if (!apikey) {
+    return res.status(400).json({ message: 'id expected' });
+  }
+
   let key;
   try {
     key = await redisClient.get(apikey);
@@ -18,6 +23,10 @@ router.get('/config', checkAuth, async (req, res) => {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
     return res.status(500).json({ message: 'Internal server error' });
+  }
+
+  if (!key) {
+    return res.status(404).json({ message: `[${apikey}] apikey doesn't exist` });
   }
 
   let config;
@@ -29,24 +38,48 @@ router.get('/config', checkAuth, async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 
-  return res.status(200).json({ config });
+  return res.status(200).json(config);
 });
 
-router.post('/keys/create', checkAuth, async (req, res, next) => {
+router.post('/key/create', checkAuth, async (req, res, next) => {
   const { config } = req.body;
+
+  if (!config?.name) {
+    return res.status(400).json({ message: 'Name expected' });
+  }
+
+  if (!config?.attributes) {
+    return res.status(400).json({ message: 'Attributes expected' });
+  }
+
+  if (!Array.isArray(config?.access) || config.access.length !== 0) {
+    return res.status(400).json({ message: 'Access expected' });
+  }
+
+  config.access.forEach((e) => {
+    if (e !== 'enrich' || e !== 'update' || e !== 'graphql' || e !== 'auth') {
+      return res.status(400).json({ message: 'Access expected' });
+    }
+  });
+
+  if (config.access.some()) {
+    
+  }
 
   let id;
 
   try {
     id = await createAuth(config.name, config.access, config.attributes, config.allowed);
   } catch (err) {
+    logger.error('Cannot create apikey on redis');
+    logger.error(`${err}`);
     return next(err);
   }
 
-  return res.status(200).json({ id });
+  return res.status(200).json(id);
 });
 
-router.pur('/keys/update', checkAuth, async (req, res, next) => {
+router.put('/key/update', checkAuth, async (req, res, next) => {
   let { config } = req.body;
 
   const { id } = config;
@@ -77,7 +110,7 @@ router.pur('/keys/update', checkAuth, async (req, res, next) => {
   return res.status(200).json({ config });
 });
 
-router.put('/keys/delete', checkAuth, async (req, res, next) => {
+router.put('/key/delete', checkAuth, async (req, res, next) => {
   const { id } = req.body;
 
   if (!id) {

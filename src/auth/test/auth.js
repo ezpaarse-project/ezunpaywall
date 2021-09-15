@@ -2,6 +2,13 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 const ping = require('./utils/ping');
+const {
+  redisClient,
+  pingRedis,
+  load,
+} = require('./utils/redis');
+
+const authURL = process.env.AUTH_URL || 'http://localhost:6000';
 
 describe('Test: auth service', () => {
   before(async function () {
@@ -11,21 +18,59 @@ describe('Test: auth service', () => {
 
   describe('Test: Get config of apikey', () => {
     it('Should get config of apikey', async () => {
+      const res = await chai
+        .request(authURL)
+        .get('/config')
+        .set('X-API-KEY', 'user');
 
+      expect(res).have.status(200);
+      expect(res.body).have.property('name').equal('user');
+      expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+      expect(res.body).have.property('attributes').equal('*');
+      expect(res.body).have.property('allowed').equal(true);
     });
 
     it('Shouldn\'t get config of apikey because this apikey doesn\'t exist', async () => {
+      const res = await chai
+        .request(authURL)
+        .get('/config')
+        .set('X-API-KEY', 'doen\'t exist');
 
+      expect(res).have.status(404);
+    });
+
+    it('Shouldn\'t get config of apikey because no apikey send', async () => {
+      const res = await chai
+        .request(authURL)
+        .get('/config');
+
+      expect(res).have.status(400);
     });
   });
 
   describe('Test: Create apikey', () => {
-    it('Should create apikey', async () => {
+    let id;
+    before(async () => {
 
+    });
+    it('Should create apikey', async () => {
+      const res = await chai
+        .request(authURL)
+        .post('/key/create')
+        .set('X-API-KEY', 'admin');
+
+      console.log(res.status);
+      console.lob(res.body);
+      expect(res).have.status(200);
+      id = res.body;
+      console.log(res.body);
     });
 
     it('Shouldn\'t create apikey because it\'s already exist', async () => {
 
+    });
+    after(async () => {
+      await redisClient.del('id');
     });
   });
 
