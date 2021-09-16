@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
+const { format } = require('date-fns');
 const logger = require('../lib/logger');
 
 const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
@@ -14,7 +15,7 @@ const {
  */
 const createReport = async (stateName) => {
   const state = await getState(stateName);
-  const pathfile = path.resolve(reportsDir, `${new Date().toISOString().slice(0, 10)}.json`);
+  const pathfile = path.resolve(reportsDir, `${format(new Date(), 'yyyy-MM-dd-HH-mm')}.json`);
   try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   } catch (err) {

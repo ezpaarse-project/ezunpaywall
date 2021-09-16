@@ -3,7 +3,7 @@ const nunjucks = require('nunjucks');
 const mjml2html = require('mjml');
 const path = require('path');
 const fs = require('fs');
-
+const { format } = require('date-fns');
 const { smtp, notifications } = require('config');
 
 const logger = require('./logger');
@@ -50,7 +50,7 @@ const generateMail = (templateName, locals = {}) => {
   return { html, text, errors };
 };
 
-const send = async (state) => {
+const sendMailReport = async (state) => {
   let status = state.error;
   if (status) {
     status = 'error';
@@ -65,7 +65,24 @@ const send = async (state) => {
       ...generateMail('report', {
         state,
         status,
-        date: new Date().toISOString().slice(0, 10),
+        date: format(new Date(), 'dd-MM-yyyy'),
+      }),
+    });
+  } catch (err) {
+    logger.error(`Cannot send mail ${err}`);
+    logger.error(err);
+  }
+};
+
+const sendMailStarted = async (config) => {
+  try {
+    await sendMail({
+      from: notifications.sender,
+      to: notifications.receivers,
+      subject: `ezunpaywall ${notifications.machine} - Mise à jour des données`,
+      ...generateMail('started', {
+        config,
+        date: format(new Date(), 'dd-MM-yyyy'),
       }),
     });
   } catch (err) {
@@ -75,5 +92,6 @@ const send = async (state) => {
 };
 
 module.exports = {
-  send,
+  sendMailReport,
+  sendMailStarted,
 };
