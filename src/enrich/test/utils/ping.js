@@ -7,7 +7,6 @@ chai.use(chaiHttp);
 
 const enrichURL = process.env.ENRICH_URL || 'http://localhost:3000';
 const authURL = process.env.AUTH_URL || 'http://localhost:7000';
-const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:12000';
 
 /**
  * ping all services to see if they are available
@@ -72,7 +71,6 @@ const ping = async () => {
       console.log('redis ping : OK');
     }
   } while (res5?.body.redis !== 'Alive');
-
 };
 
 module.exports = {
