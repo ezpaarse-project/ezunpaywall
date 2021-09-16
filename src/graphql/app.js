@@ -34,7 +34,17 @@ app.get('/', async (req, res) => {
   } catch (err) {
     elasticStatus = 'Error';
   }
-  res.status(200).json({ name, version, elastic: elasticStatus });
+
+  let redis = await pingRedis();
+
+  if (redis) {
+    redis = 'Alive';
+  } else {
+    redis = 'Error';
+  }
+  res.status(200).json({
+    name, version, elastic: elasticStatus, redis,
+  });
 });
 
 app.use('/graphql', checkAuth, graphqlHTTP({

@@ -114,7 +114,7 @@ services:
       - ./src/auth:/auth
     command: "npm start"
     ports:
-      - 6000:6000
+      - 7000:7000
     depends_on:
       - redis
     restart: unless-stopped

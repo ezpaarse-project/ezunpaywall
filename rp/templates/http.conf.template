@@ -26,4 +26,8 @@ server {
   location ^~ /api/enrich/ {
     proxy_pass http://enrich:5000/;
   }
+
+  location ^~ /api/auth/ {
+    proxy_pass http://auth:7000/;
+  }
 }

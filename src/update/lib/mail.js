@@ -61,7 +61,7 @@ const send = async (state) => {
     await sendMail({
       from: notifications.sender,
       to: notifications.receivers,
-      subject: `ezunpaywall - Rapport de mise à jour - ${status}`,
+      subject: `ezunpaywall ${notifications.machine} - Rapport de mise à jour - ${status}`,
       ...generateMail('report', {
         state,
         status,

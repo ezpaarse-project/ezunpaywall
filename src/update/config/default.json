@@ -12,7 +12,8 @@
   },
   "notifications": {
     "sender": "ezunpaywall",
-    "receivers": []
+    "receivers": [],
+    "machine": "dev"
   },
   "elasticsearch": {
     "port": 9200,

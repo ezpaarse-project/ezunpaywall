@@ -23,18 +23,23 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.status(200).json({ name, version });
+app.get('/', async (req, res) => {
+  let redis = await pingRedis();
+  if (redis) {
+    redis = 'Alive';
+  } else {
+    redis = 'Error';
+  }
+  res.status(200).json({ name, version, redis });
 });
+
+/* Errors and unknown routes */
+app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
+app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
 pingRedis();
 load();
 
-/* Errors and unknown routes */
-app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
-
-app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
-
-app.listen(6000, () => {
-  logger.info('ezunpaywall auth service listening on 6000');
+app.listen(7000, () => {
+  logger.info('ezunpaywall auth service listening on 7000');
 });

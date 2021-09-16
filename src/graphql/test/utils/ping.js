@@ -5,52 +5,71 @@ const { elasticClient } = require('./elastic');
 
 chai.use(chaiHttp);
 
-const enrichURL = process.env.ENRICH_URL || 'http://localhost:3000';
-const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:12000';
+const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
+const authURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 /**
  * ping all services to see if they are available
  */
 const ping = async () => {
-  // enrich
+  // graphql
   let res1;
   while (res1?.status !== 200) {
     try {
-      res1 = await chai.request(enrichURL).get('/');
+      res1 = await chai.request(graphqlURL).get('/');
     } catch (err) {
-      console.error(`enrich ping : ${err}`);
+      console.error(`graphql ping : ${err}`);
     }
     if (res1?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
+    } else {
+      console.log('graphql ping : OK');
     }
   }
-  console.log('enrich ping : OK');
-  // wait fakeUnpaywall
-  let res2;
-  while (res2?.status !== 200) {
-    try {
-      res2 = await chai.request(fakeUnpaywallURL).get('/');
-    } catch (err) {
-      console.error(`fakeUnpaywall ping : ${err}`);
-    }
-    if (res2?.status !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  }
-  console.log('fakeUnpaywall ping : OK');
+
   // wait elastic started
-  let res3;
-  while (res3?.statusCode !== 200) {
+  let res2;
+  while (res2?.statusCode !== 200) {
     try {
-      res3 = await elasticClient.ping();
+      res2 = await elasticClient.ping();
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    if (res3?.statusCode !== 200) {
+    if (res2?.statusCode !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
   console.log('elastic ping : OK');
+
+  // auth
+  let res3;
+  do {
+    try {
+      res3 = await chai.request(authURL).get('/');
+    } catch (err) {
+      console.error(`auth ping : ${err}`);
+    }
+    if (res3?.statusCode !== 200) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } else {
+      console.log('auth ping : OK');
+    }
+  } while (res3?.statusCode !== 200);
+
+  // redis
+  let res4;
+  do {
+    try {
+      res4 = await chai.request(authURL).get('/');
+    } catch (err) {
+      console.error(`redis ping : ${err}`);
+    }
+    if (res4?.body.redis !== 'Alive') {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } else {
+      console.log('redis ping : OK');
+    }
+  } while (res4?.body.redis !== 'Alive');
 };
 
 module.exports = {

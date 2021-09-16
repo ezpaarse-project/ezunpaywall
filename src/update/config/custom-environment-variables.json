@@ -12,7 +12,8 @@
   },
   "notifications": {
     "sender": "EZUNPAYWALL_NOTIFICATIONS_SENDER",
-    "receivers": "EZUNPAYWALL_NOTIFICATIONS_RECEIVERS"
+    "receivers": "EZUNPAYWALL_NOTIFICATIONS_RECEIVERS",
+    "machine": "NOTIFICATIONS_MACHINE"
   },
   "elasticsearch": {
     "port": "ELASTICSEARCH_PORT",

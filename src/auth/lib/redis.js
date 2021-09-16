@@ -1,4 +1,5 @@
 const redis = require('redis');
+const util = require('util');
 const config = require('config');
 const fs = require('fs-extra');
 
@@ -21,6 +22,8 @@ const redisClient = redis.createClient({
   port: config.get('redis.port'),
   password: config.get('redis.password'),
 });
+
+redisClient.ping = util.promisify(redisClient.ping);
 
 redisClient.on('error', (err) => {
   logger.error(`Error in redis ${err}`);
