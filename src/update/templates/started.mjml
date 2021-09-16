@@ -11,7 +11,7 @@
     <mj-text>
       <p>Bonjour,</p>
       <p>
-        Nous vous informons que nous lançons une mise à jour des données unpaywall.
+        Une mise à jour est en cours.
       </p>
       {% if config.type == 'file' %}
         <p>
@@ -30,9 +30,9 @@
 
       {% if config.type == 'period' %}
         <p>
-          Insertion des mises à jours 
-          entre <strong> {{ config.startDate }} </strong> 
-          et <strong> {{ config.endDate }} </strong> 
+          Insertion des snapshots 
+          pour la période du <strong> {{ config.startDate }} </strong> 
+          au <strong> {{ config.endDate }} </strong> 
           sur l'index <strong> {{ config.index }} </strong> 
         </p>
       {% endif %}
@@ -40,15 +40,17 @@
     </mj-text>
 
     <mj-text>
-      <p>
-        Ce message est envoyé automatiquement par l'application ezunpaywall,
-        vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
-      </p>
+      <p>Cordialement,</p>
+      <p>L'équipe ezMESURE.</p>
     </mj-text>
 
     <mj-text>
-      <p>Cordialement,</p>
-      <p>L'équipe ezMESURE.</p>
+      <i>
+        <font size="1">
+          Ce message est envoyé automatiquement par l'application ezunpaywall,
+          vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
+        </font>
+      </i>
     </mj-text>
 
   </mj-column>
