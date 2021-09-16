@@ -5,7 +5,7 @@ const config = require('config');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
-const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikeyupw')}`;
+let url = `${config.get('unpaywallURL')}?api_key=${config.get('apikeyupw')}`;
 
 const {
   insertion,
@@ -43,10 +43,14 @@ const {
  */
 router.post('/job', checkStatus, checkAuth, async (req, res) => {
   let {
-    index, startDate, endDate, offset, limit,
+    index, startDate, endDate, offset, limit, interval,
   } = req.body;
 
   const { filename } = req.body;
+
+  if (!interval) {
+    interval = 'week';
+  }
 
   if (!index) {
     index = 'unpaywall';
@@ -67,7 +71,6 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
 
     if (!offset) { offset = 0; }
     if (!limit) { limit = -1; }
-
     insertion(filename, index, Number(offset), Number(limit));
 
     return res.status(200).json({ message: `Update with ${filename}` });
@@ -76,7 +79,7 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
   if (!startDate && !endDate) {
     endDate = Date.now();
     startDate = endDate - (7 * 24 * 60 * 60 * 1000);
-    insertSnapshotBetweenDates(url, startDate, endDate, index);
+    insertSnapshotBetweenDates(url, interval, startDate, endDate, index);
     return res.status(200).json({ message: 'Weekly update started' });
   }
 
@@ -108,7 +111,9 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     [endDate] = new Date().toISOString().split('T');
   }
 
-  insertSnapshotBetweenDates(url, startDate, endDate, index);
+  url = `${url}&interval=${interval}`;
+
+  insertSnapshotBetweenDates(url, interval, startDate, endDate, index);
 
   return res.status(200).json({
     message: `Dowload and insert snapshot from unpaywall from ${startDate} and ${endDate}`,

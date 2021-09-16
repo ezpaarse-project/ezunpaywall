@@ -367,11 +367,12 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
  * ask unpaywall to get information and download links for snapshots files
  * @param {string} stateName - state filename
  * @param {string} url - url to call for the list of update files
+ * @param {string} interval - interval of snapshot update, day or week
  * @param {date} startDate - start date of the period
  * @param {date} endDate - end date of the period
  * @returns {array<object>} information about snapshots files
  */
-const askUnpaywall = async (stateName, url, startDate, endDate) => {
+const askUnpaywall = async (stateName, interval, url, startDate, endDate) => {
   const start = new Date();
   await addStepAskUnpaywall(stateName);
   const state = await getState(stateName);
@@ -401,9 +402,19 @@ const askUnpaywall = async (stateName, url, startDate, endDate) => {
   let snapshotsInfo = res.data.list;
   snapshotsInfo = snapshotsInfo
     .reverse()
-    .filter((file) => file.filetype === 'jsonl')
-    .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
-    .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
+    .filter((file) => file.filetype === 'jsonl');
+
+  if (interval === 'week') {
+    snapshotsInfo = snapshotsInfo
+      .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
+      .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
+  }
+
+  if (interval === 'day') {
+    snapshotsInfo = snapshotsInfo
+      .filter((file) => new Date(file.date).getTime() >= new Date(startDate).getTime())
+      .filter((file) => new Date(file.date).getTime() <= new Date(endDate).getTime());
+  }
 
   step.status = 'success';
   step.took = (new Date() - start) / 1000;
