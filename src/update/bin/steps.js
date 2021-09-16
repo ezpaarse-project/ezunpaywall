@@ -17,6 +17,7 @@ const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 const unpaywallMapping = require('../mapping/unpaywall.json');
 
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
+const indexAlias = config.get('elasticsearch.indexAlias');
 
 const {
   getState,
@@ -29,37 +30,27 @@ const {
 
 /**
  * check if index exit
- * @param {string} name Name of index
+ * @param {string} index Name of index
  * @returns {boolean} if exist
  */
-const checkIfIndexExist = async (name) => {
-  let res;
-  try {
-    res = await elasticClient.indices.exists({
-      index: name,
-    });
-  } catch (err) {
-    console.error(`indices.exists in checkIfIndexExist: ${err}`);
-  }
-  return res.body;
+const checkIfIndexExist = async (index) => {
+  const { body } = await elasticClient.indices.exists({ index });
+  return body;
 };
 
 /**
  * create index if it doesn't exist
- * @param {string} name Name of index
+ * @param {string} index Name of index
  * @param {JSON} mapping mapping in JSON format
  */
-const createIndex = async (name, mapping) => {
-  const exist = await checkIfIndexExist(name);
+const createIndex = async (index, mapping) => {
+  const exist = await checkIfIndexExist(index);
+
   if (!exist) {
-    try {
-      await elasticClient.indices.create({
-        index: name,
-        body: mapping,
-      });
-    } catch (err) {
-      console.error(`indices.create in createIndex: ${err}`);
-    }
+    await elasticClient.indices.create({
+      index,
+      body: mapping,
+    });
   }
 };
 
@@ -103,7 +94,31 @@ const insertDataInElastic = async (data, stateName) => {
  * @param {number} limit - limit
  */
 const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit) => {
-  await createIndex(indexname, unpaywallMapping);
+  try {
+    await createIndex(indexname, unpaywallMapping);
+  } catch (err) {
+    logger.error(`Cannot create index [${indexname}]`);
+    logger.error(err);
+    await fail(stateName, err);
+    return false;
+  }
+
+  try {
+    const { body: aliasExists } = await elasticClient.indices.existsAlias({ name: indexAlias });
+
+    if (aliasExists) {
+      logger.info(`Alias [${indexAlias}] already exists`);
+    } else {
+      logger.info(`Creating alias [${indexAlias}] pointing to index [${indexname}]`);
+      await elasticClient.indices.putAlias({ index: indexname, name: indexAlias });
+    }
+  } catch (err) {
+    logger.error(`Cannot create alias [${indexAlias}] pointing to index [${indexname}]`);
+    logger.error(err);
+    await fail(stateName, err);
+    return false;
+  }
+
   // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);

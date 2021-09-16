@@ -4,7 +4,7 @@ services:
   graphql:
     build:
       context: ./src/graphql
-      args: 
+      args:
         - http_proxy
         - https_proxy
     environment:
@@ -50,6 +50,7 @@ services:
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
       - https_proxy
@@ -93,7 +94,7 @@ services:
       - redis
     restart: unless-stopped
 
-  auth: 
+  auth:
     build:
       context: ./src/auth
       args:
@@ -127,8 +128,8 @@ services:
         - https_proxy
         - GRAPHQL_URL=${GRAPHQL_URL:-http://graphql}
         - UPDATE_URL=${UPDATE_URL:-http://update}
-        - ENRICH_URL=${ENRICH_URL:-http://enrich}  
-    ports: 
+        - ENRICH_URL=${ENRICH_URL:-http://enrich}
+    ports:
       - 59700:80
     environment:
       - NGINX_HOST
