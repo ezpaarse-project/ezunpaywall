@@ -68,7 +68,6 @@ const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   };
   await sendMailStarted(config);
   const statename = await createState();
-  console.log(startDate);
   const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
     await downloadFileFromUnpaywall(statename, snapshotsInfo[i]);

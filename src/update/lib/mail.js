@@ -74,8 +74,6 @@ const sendMailReport = async (state) => {
 };
 
 const sendMailStarted = async (config) => {
-  console.log(config.startDate);
-  console.log(config.endDate);
   try {
     await sendMail({
       from: notifications.sender,
