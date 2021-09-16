@@ -3,6 +3,7 @@ const nunjucks = require('nunjucks');
 const mjml2html = require('mjml');
 const path = require('path');
 const fs = require('fs');
+const { format } = require('date-fns');
 const { smtp, notifications } = require('config');
 
 const logger = require('./logger');
@@ -64,7 +65,7 @@ const sendMailReport = async (state) => {
       ...generateMail('report', {
         state,
         status,
-        date: new Date().toISOString().slice(0, 10),
+        date: format(new Date(), 'dd-MM-yyyy'),
       }),
     });
   } catch (err) {
@@ -81,7 +82,7 @@ const sendMailStarted = async (config) => {
       subject: `ezunpaywall ${notifications.machine} - Mise à jour des données`,
       ...generateMail('started', {
         config,
-        date: new Date().toISOString().slice(0, 10),
+        date: format(new Date(), 'dd-MM-yyyy'),
       }),
     });
   } catch (err) {

@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs-extra');
-const uuid = require('uuid');
 
 const logger = require('../lib/logger');
 
@@ -18,7 +17,7 @@ const createState = async () => {
     steps: [],
     error: false,
   };
-  const filename = `${uuid.v4()}.json`;
+  const filename = `${new Date().toISOString()}.json`;
   try {
     await fs.writeFile(path.resolve(statesDir, filename), JSON.stringify(state, null, 2));
   } catch (err) {
