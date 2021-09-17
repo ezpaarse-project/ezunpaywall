@@ -53,7 +53,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile();
+    await updateChangeFile('week');
   });
 
   describe(`Do a download and insert between ${date2} and now`, async () => {

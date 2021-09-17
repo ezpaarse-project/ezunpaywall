@@ -39,7 +39,7 @@ const checkIfIndexExist = async (name) => {
       index: name,
     });
   } catch (err) {
-    console.error(`indices.exists in checkIfIndexExist: ${err}`);
+    logger.error(`indices.exists in checkIfIndexExist: ${err}`);
   }
   return res.body;
 };
@@ -58,7 +58,7 @@ const createIndex = async (name, mapping) => {
         body: mapping,
       });
     } catch (err) {
-      console.error(`indices.create in createIndex: ${err}`);
+      logger.error(`indices.create in createIndex: ${err}`);
     }
   }
 };
@@ -372,16 +372,21 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
  * @param {date} endDate - end date of the period
  * @returns {array<object>} information about snapshots files
  */
-const askUnpaywall = async (stateName, interval, url, startDate, endDate) => {
+const askUnpaywall = async (stateName, apikey, interval, url, startDate, endDate) => {
   const start = new Date();
   await addStepAskUnpaywall(stateName);
   const state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
   let res;
+
   try {
     res = await axios({
       method: 'get',
       url,
+      params: {
+        apikey,
+        interval,
+      },
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',

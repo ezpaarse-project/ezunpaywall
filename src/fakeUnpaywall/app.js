@@ -29,11 +29,37 @@ app.get('/snapshots/:file', async (req, res) => {
   res.sendFile(path.resolve(__dirname, 'snapshots', file));
 });
 
+app.get('/feed/changefiles', async (req, res) => {
+  const { interval } = req.query;
+
+  
+  if (!interval) {
+    return res.status(400).json({ message: 'interval expected' });
+  }
+
+  const intervals = ['week', 'day']
+  if (!intervals.includes(interval)) {
+    return res.status(404).json({ message: `${interval} is not accepted, only week and day are accepted` });
+  }
+  const file = `changefiles-${interval}.json`;
+  res.sendFile(path.resolve(__dirname, 'snapshots', file));
+});
+
 app.patch('/changefiles', async (req, res) => {
-  const changefilesExample = require('./snapshots/changefiles-example.json');
+  const { interval } = req.query;
+  if (!interval) {
+    return res.status(400).json({ message: 'interval expected' });
+  }
+
+  const intervals = ['week', 'day']
+  if (!intervals.includes(interval)) {
+    return res.status(404).json({ message: `${interval} is not accepted, only week and day are accepted` });
+  }
+
+  const changefilesExample = require(`./snapshots/changefiles-${interval}-example.json`);
 
   // create local file if dosn't exist
-  let changefilesPath = './snapshots/changefiles.json';
+  let changefilesPath = `./snapshots/changefiles-${interval}.json`;
   try {
     await fs.ensureFile(changefilesPath)
   } catch (err) {
@@ -48,7 +74,7 @@ app.patch('/changefiles', async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 
-  changefilesPath = path.resolve(__dirname, 'snapshots', 'changefiles.json');
+  changefilesPath = path.resolve(__dirname, 'snapshots', `changefiles-${interval}.json`);
 
 
   const now = Date.now();
@@ -82,6 +108,7 @@ app.patch('/changefiles', async (req, res) => {
     console.error(err)
     return res.status(500).json({ message: 'Internal server error' });
   }
+
   res.set('Location', changefilesPath).status(200).end();
 });
 

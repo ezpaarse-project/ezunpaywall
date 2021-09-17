@@ -22,7 +22,7 @@ describe('Test: auth service in update service', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile();
+    await updateChangeFile('week');
   });
 
   describe('Test with update API key', () => {

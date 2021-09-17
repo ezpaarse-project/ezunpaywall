@@ -5,7 +5,7 @@ const config = require('config');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
-let url = `${config.get('unpaywallURL')}?api_key=${config.get('apikeyupw')}`;
+const url = config.get('unpaywallURL');
 
 const {
   insertion,
@@ -79,7 +79,7 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
   if (!startDate && !endDate) {
     endDate = Date.now();
     startDate = endDate - (7 * 24 * 60 * 60 * 1000);
-    insertSnapshotBetweenDates(url, interval, startDate, endDate, index);
+    insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
     return res.status(200).json({ message: 'Weekly update started' });
   }
 
@@ -111,9 +111,7 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     [endDate] = new Date().toISOString().split('T');
   }
 
-  url = `${url}&interval=${interval}`;
-
-  insertSnapshotBetweenDates(url, interval, startDate, endDate, index);
+  insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
 
   return res.status(200).json({
     message: `Dowload and insert snapshot from unpaywall from ${startDate} and ${endDate}`,

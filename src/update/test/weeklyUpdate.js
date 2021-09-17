@@ -38,7 +38,7 @@ describe('Test: weekly update route test', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile();
+    await updateChangeFile('week');
   });
 
   describe('Do a classic weekly update', () => {
