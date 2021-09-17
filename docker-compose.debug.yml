@@ -10,6 +10,7 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_INDEX_ALIAS=upw
       # proxy
       - http_proxy
       - https_proxy
@@ -41,7 +42,7 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
-      - ELASTICSEARCH_INDEX_ALIAS
+      - ELASTICSEARCH_INDEX_ALIAS=upw
       # proxy
       - http_proxy
       - https_proxy
