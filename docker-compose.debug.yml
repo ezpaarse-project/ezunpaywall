@@ -34,6 +34,7 @@ services:
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
       # unpaywall
       - API_KEY_UPW
       - UNPAYWALL_URL=http://fakeunpaywall:12000/feed/changefiles
