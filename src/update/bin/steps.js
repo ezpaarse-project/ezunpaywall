@@ -59,7 +59,7 @@ const createIndex = async (index, mapping) => {
  * @param {Array} data array of unpaywall data
  * @param {string} stateName - state filename
  */
-const insertDataInElastic = async (data, stateName) => {
+const insertDataInElastic = async (data, stateName, step) => {
   let res;
   try {
     res = await elasticClient.bulk({ body: data });
@@ -70,18 +70,32 @@ const insertDataInElastic = async (data, stateName) => {
     return false;
   }
 
-  if (res?.body?.errors) {
-    const errors = [];
-    const { items } = res?.body;
-    items.forEach((e) => {
-      if (e?.index?.error !== undefined) {
-        errors.push(e?.index?.error);
-      }
-    });
+  const errors = [];
+  const items = Array.isArray(res?.body?.items) ? res?.body?.items : [];
+
+  items.forEach((i) => {
+    if (i?.index?.result === 'created') {
+      step.insertedDocs += 1;
+      return;
+    }
+    if (i?.index?.result === 'updated') {
+      step.updatedDocs += 1;
+      return;
+    }
+
+    if (i?.index?.error !== undefined) {
+      errors.push(i?.index?.error);
+    }
+
+    step.failedDocs += 1;
+  });
+
+  if (errors.length > 0) {
     logger.error(JSON.stringify(errors, null, 2));
     await fail(stateName, errors);
     return false;
   }
+
   return true;
 };
 
@@ -205,7 +219,7 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
     if (bulkOps.length >= maxBulkSize) {
       const dataToInsert = bulkOps.slice();
       bulkOps = [];
-      success = await insertDataInElastic(dataToInsert, stateName);
+      success = await insertDataInElastic(dataToInsert, stateName, step);
       if (!success) {
         state = await getState(stateName);
         step.status = 'error';
@@ -226,7 +240,7 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    success = await insertDataInElastic(bulkOps, stateName);
+    success = await insertDataInElastic(bulkOps, stateName, step);
     if (!success) {
       state = await getState(stateName);
       step.status = 'error';
