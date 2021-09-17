@@ -4,14 +4,29 @@ const config = require('config');
 
 const logger = require('../lib/logger');
 
-const url = `${config.get('unpaywallURL')}?api_key=${config.get('apikeyupw')}`;
+const url = `${config.get('unpaywallURL')}`;
 
 router.get('/unpaywall/snapshot', async (req, res, next) => {
+  let { interval } = req.query;
+
+  if (!interval) {
+    interval = 'day';
+  }
+
+  const intervals = ['week', 'day'];
+  if (!intervals.includes(interval)) {
+    return res.status(400).json({ message: `${interval} is not accepted, only 'week' and 'day' are accepted` });
+  }
+
   let snapshotsInfo;
   try {
     snapshotsInfo = await axios({
       method: 'get',
       url,
+      params: {
+        apikey: config.get('apikeyupw'),
+        interval,
+      },
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
