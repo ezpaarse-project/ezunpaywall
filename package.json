@@ -12,9 +12,9 @@
       "install:graphql": "cd src/graphql; npm install",
       "install:update": "cd src/update; npm install",
       "postinstall": "npm run install:enrich && npm run install:fakeUnpaywall && npm run install:frontend && npm run install:graphql && npm run install:update",
-      "test:enrich": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/enrich && npm run test",
-      "test:graphql": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/graphql && npm run test",
-      "test:update": "NODE_TLS_REJECT_UNAUTHORIZED=0; cd src/update && npm run test",
+      "test:enrich": "cd src/enrich && npm run test",
+      "test:graphql": "cd src/graphql && npm run test",
+      "test:update": "cd src/update && npm run test",
       "test": "npm run test:update; npm run test:graphql; npm run test:enrich"
    },
    "devDependencies": {

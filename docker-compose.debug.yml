@@ -35,7 +35,7 @@ services:
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       # unpaywall
       - API_KEY_UPW
-      - UNPAYWALL_URL=http://fakeunpaywall:12000/snapshots/changefiles.json
+      - UNPAYWALL_URL=http://fakeunpaywall:12000/feed/changefiles
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
       - ELASTICSEARCH_PORT=9200

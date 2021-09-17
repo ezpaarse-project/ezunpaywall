@@ -54,11 +54,12 @@ const insertion = async (filename, index, offset, limit) => {
  * start an unpaywall data update process by retrieving update files
  * between a period from Unpaywall and inserting its content
  * @param {string} url - url to call for the list of update files
+ * @param {string} interval - interval of snapshot update, day or week
  * @param {date} startDate - start date of the period
  * @param {date} endDate end date of the period
  * @param {string} index name of the index to which the data will be saved
  */
-const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
+const insertSnapshotBetweenDates = async (url, apikey, interval, startDate, endDate, index) => {
   setInUpdate(true);
   const config = {
     type: 'period',
@@ -68,7 +69,7 @@ const insertSnapshotBetweenDates = async (url, startDate, endDate, index) => {
   };
   await sendMailStarted(config);
   const statename = await createState();
-  const snapshotsInfo = await askUnpaywall(statename, url, startDate, endDate);
+  const snapshotsInfo = await askUnpaywall(statename, apikey, interval, url, startDate, endDate);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
     await downloadFileFromUnpaywall(statename, snapshotsInfo[i]);
     const success = await insertDataUnpaywall(statename, snapshotsInfo[i].filename, index, -1, -1);
