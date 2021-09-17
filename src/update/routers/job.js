@@ -52,6 +52,11 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     interval = 'week';
   }
 
+  const intervals = ['week', 'day'];
+  if (!intervals.includes(interval)) {
+    return res.status(400).json({ message: `${interval} is not accepted, only 'week' and 'day' are accepted` });
+  }
+
   if (!index) {
     index = 'unpaywall';
   }
@@ -76,11 +81,19 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     return res.status(200).json({ message: `Update with ${filename}` });
   }
 
+  // if no dates are send, do weekly / daily update
   if (!startDate && !endDate) {
     endDate = Date.now();
-    startDate = endDate - (7 * 24 * 60 * 60 * 1000);
-    insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
-    return res.status(200).json({ message: 'Weekly update started' });
+    if (interval === 'week') {
+      startDate = endDate - (7 * 24 * 60 * 60 * 1000);
+      insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
+      return res.status(200).json({ message: 'Weekly update started' });
+    }
+    if (interval === 'day') {
+      startDate = endDate - (1 * 24 * 60 * 60 * 1000);
+      insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
+      return res.status(200).json({ message: 'daily update started' });
+    }
   }
 
   if (new Date(startDate).getTime() > Date.now()) {
