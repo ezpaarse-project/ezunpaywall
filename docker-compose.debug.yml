@@ -10,6 +10,7 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_INDEX_ALIAS=upw
       # proxy
       - http_proxy
       - https_proxy
@@ -41,6 +42,7 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_INDEX_ALIAS=upw
       # proxy
       - http_proxy
       - https_proxy
@@ -53,7 +55,7 @@ services:
     depends_on:
       - redis
     restart: unless-stopped
-  
+
   enrich:
     image: node:14.15.5-alpine3.13
     environment:
@@ -78,7 +80,7 @@ services:
       - redis
     restart: unless-stopped
 
-  auth: 
+  auth:
     image: node:14.15.5-alpine3.13
     environment:
       # proxy
@@ -93,7 +95,7 @@ services:
     depends_on:
       - redis
     restart: unless-stopped
-  
+
   redis:
     image: "redis:6.2.5-alpine3.14"
     command: redis-server --requirepass changeme
@@ -128,7 +130,7 @@ services:
     ports:
       - "12000:12000"
     restart: unless-stopped
-  
+
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
     environment:
@@ -180,4 +182,4 @@ services:
     image: djfarrelly/maildev
     ports:
       - 1080:80
-  
+

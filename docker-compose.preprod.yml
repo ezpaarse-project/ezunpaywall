@@ -14,6 +14,7 @@ services:
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
       - https_proxy
@@ -52,6 +53,7 @@ services:
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
       - https_proxy
