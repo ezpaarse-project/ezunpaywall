@@ -399,7 +399,7 @@ const askUnpaywall = async (stateName, apikey, interval, url, startDate, endDate
       method: 'get',
       url,
       params: {
-        apikey,
+        api_key: apikey,
         interval,
       },
       headers: {
