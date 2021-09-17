@@ -49,7 +49,7 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
   const { filename } = req.body;
 
   if (!interval) {
-    interval = 'week';
+    interval = 'day';
   }
 
   const intervals = ['week', 'day'];
@@ -92,7 +92,7 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     if (interval === 'day') {
       startDate = endDate - (1 * 24 * 60 * 60 * 1000);
       insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
-      return res.status(200).json({ message: 'daily update started' });
+      return res.status(200).json({ message: 'Daily update started' });
     }
   }
 

@@ -62,7 +62,7 @@ describe('Test: daily update route test', () => {
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('daily update started');
+      expect(res.body.message).be.equal('Daily update started');
     });
 
     // test insertion
@@ -167,7 +167,7 @@ describe('Test: daily update route test', () => {
 
       // test response
       expect(res).have.status(200);
-      expect(res.body).have.property('message').equal('daily update started');
+      expect(res.body).have.property('message').equal('Daily update started');
     });
 
     // test insertion

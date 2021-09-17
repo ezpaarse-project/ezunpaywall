@@ -71,6 +71,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: date2,
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -200,6 +201,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           index: 'unpaywall-test',
           startDate: date3,
           endDate: date2,
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -328,6 +330,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           index: 'unpaywall-test',
           startDate: date5,
           endDate: date4,
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -378,7 +381,12 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
-        .send({ index: 'unpaywall-test', endDate: date1 })
+        .send({
+          index:
+          'unpaywall-test',
+          endDate: date1,
+          interval: 'week',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -393,7 +401,11 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
-        .query({ index: 'unpaywall-test', startDate: 'doen\'t exist' })
+        .query({
+          index: 'unpaywall-test',
+          startDate: 'doen\'t exist',
+          interval: 'week',
+        })
         .send({
           index: 'unpaywall-test',
           startDate: 'doen\'t exist',
@@ -413,6 +425,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: '01-01-2000',
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -429,6 +442,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: '2000-50-50',
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -448,6 +462,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           index: 'unpaywall-test',
           startDate: date2,
           endDate: date3,
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -466,6 +481,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: tomorrow,
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -483,24 +499,10 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: date2,
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
-    });
-
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .send({
-          index: 'unpaywall-test',
-          startDate: date2,
-        })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong X-API-KEY');
 
       expect(res).have.status(401);
       expect(res?.body).have.property('message').eq('Not authorized');

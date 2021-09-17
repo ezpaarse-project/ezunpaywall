@@ -55,6 +55,7 @@ describe('Test: weekly update route test', () => {
         .post('/job')
         .send({
           index: 'unpaywall-test',
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -158,6 +159,7 @@ describe('Test: weekly update route test', () => {
         .post('/job')
         .send({
           index: 'unpaywall-test',
+          interval: 'week',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -230,30 +232,6 @@ describe('Test: weekly update route test', () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
-    });
-  });
-
-  describe('Don\'t a classic weekly update because wrong X-API-KEY', () => {
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong X-API-KEY');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
-    });
-
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong X-API-KEY');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 

@@ -31,6 +31,7 @@ describe('Test: auth service in update service', () => {
         .post('/job')
         .send({
           index: 'unpaywall-test',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -43,7 +44,7 @@ describe('Test: auth service in update service', () => {
         isUpdate = await checkIfInUpdate();
       }
       expect(res).have.status(200);
-      expect(res?.body).have.property('message').eq('Weekly update started');
+      expect(res?.body).have.property('message').eq('Daily update started');
     });
   });
 
@@ -54,6 +55,7 @@ describe('Test: auth service in update service', () => {
         .send({
           filename: 'fake1.jsonl.gz',
           index: 'unpaywall-test',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
@@ -70,6 +72,7 @@ describe('Test: auth service in update service', () => {
         .send({
           filename: 'fake1.jsonl.gz',
           index: 'unpaywall-test',
+          interval: 'day',
         })
         .query({ index: 'unpaywall-test' })
         .set('Access-Control-Allow-Origin', '*')
@@ -87,6 +90,7 @@ describe('Test: auth service in update service', () => {
         .post('/job')
         .send({
           index: 'unpaywall-test',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -103,6 +107,7 @@ describe('Test: auth service in update service', () => {
         .post('/job')
         .send({
           index: 'unpaywall-test',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -119,6 +124,7 @@ describe('Test: auth service in update service', () => {
         .post('/job')
         .send({
           index: 'unpaywall-test',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')

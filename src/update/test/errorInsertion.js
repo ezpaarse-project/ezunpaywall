@@ -146,6 +146,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .send({
           index: 'unpaywall-test',
           startDate: date1,
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
