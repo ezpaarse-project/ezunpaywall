@@ -395,12 +395,14 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
  */
 const askUnpaywall = async (jobConfig) => {
   const start = new Date();
-  const { stateName } = jobConfig;
-  const { url } = jobConfig;
-  const { apikey } = jobConfig;
-  const { interval } = jobConfig;
-  const { startDate } = jobConfig;
-  const { endDate } = jobConfig;
+  const {
+    stateName,
+    url,
+    apikey,
+    interval,
+    startDate,
+    endDate,
+  } = jobConfig;
 
   await addStepAskUnpaywall(stateName);
   const state = await getState(stateName);
