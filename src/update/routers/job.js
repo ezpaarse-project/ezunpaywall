@@ -46,7 +46,7 @@ const {
  *
  */
 router.post('/job', checkStatus, checkAuth, async (req, res) => {
-  const configJob = {};
+  const jobConfig = {};
 
   let {
     index, offset, limit, interval,
@@ -67,7 +67,7 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     index = 'unpaywall';
   }
 
-  configJob.index = index;
+  jobConfig.index = index;
 
   if (filename) {
     const pattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
@@ -85,31 +85,31 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     if (!offset) { offset = 0; }
     if (!limit) { limit = -1; }
 
-    configJob.filename = filename;
-    configJob.offset = Number(offset);
-    configJob.limit = Number(limit);
-    insertion(configJob);
+    jobConfig.filename = filename;
+    jobConfig.offset = Number(offset);
+    jobConfig.limit = Number(limit);
+    insertion(jobConfig);
 
     return res.status(200).json({ message: `Update with ${filename}` });
   }
 
-  configJob.url = url;
-  configJob.apikey = apikey;
-  configJob.interval = interval;
-  configJob.startDate = startDate;
-  configJob.endDate = endDate;
+  jobConfig.url = url;
+  jobConfig.apikey = apikey;
+  jobConfig.interval = interval;
+  jobConfig.startDate = startDate;
+  jobConfig.endDate = endDate;
 
   // if no dates are send, do weekly / daily update
   if (!startDate && !endDate) {
-    configJob.endDate = format(new Date(), 'yyyy-MM-dd');
+    jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
     if (interval === 'week') {
-      configJob.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
-      insertSnapshotBetweenDates(configJob);
+      jobConfig.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
+      insertSnapshotBetweenDates(jobConfig);
       return res.status(200).json({ message: 'Weekly update started' });
     }
     if (interval === 'day') {
-      configJob.startDate = format(new Date(), 'yyyy-MM-dd');
-      insertSnapshotBetweenDates(configJob);
+      jobConfig.startDate = format(new Date(), 'yyyy-MM-dd');
+      insertSnapshotBetweenDates(jobConfig);
       return res.status(200).json({ message: 'Daily update started' });
     }
   }
@@ -139,13 +139,13 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
   }
 
   if (startDate && !endDate) {
-    configJob.endDate = format(new Date(), 'yyyy-MM-dd');
+    jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
   }
 
-  insertSnapshotBetweenDates(configJob);
+  insertSnapshotBetweenDates(jobConfig);
 
   return res.status(200).json({
-    message: `Dowload and insert snapshot from unpaywall from ${configJob.startDate} and ${configJob.endDate}`,
+    message: `Dowload and insert snapshot from unpaywall from ${jobConfig.startDate} and ${jobConfig.endDate}`,
   });
 });
 

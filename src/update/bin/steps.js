@@ -92,12 +92,12 @@ const insertDataInElastic = async (data, stateName) => {
  * @param {Integer} offset - offset
  * @param {Integer} limit - limit
  */
-const insertDataUnpaywall = async (configJob) => {
-  const { stateName } = configJob;
-  const { index } = configJob;
-  const { filename } = configJob;
-  const { offset } = configJob;
-  const { limit } = configJob;
+const insertDataUnpaywall = async (jobConfig) => {
+  const { stateName } = jobConfig;
+  const { index } = jobConfig;
+  const { filename } = jobConfig;
+  const { offset } = jobConfig;
+  const { limit } = jobConfig;
 
   try {
     await createIndex(index, unpaywallMapping);
@@ -393,14 +393,14 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
  * @param {Date} endDate - end date of the period
  * @returns {array<object>} information about snapshots files
  */
-const askUnpaywall = async (configJob) => {
+const askUnpaywall = async (jobConfig) => {
   const start = new Date();
-  const { stateName } = configJob;
-  const { url } = configJob;
-  const { apikey } = configJob;
-  const { interval } = configJob;
-  const { startDate } = configJob;
-  const { endDate } = configJob;
+  const { stateName } = jobConfig;
+  const { url } = jobConfig;
+  const { apikey } = jobConfig;
+  const { interval } = jobConfig;
+  const { startDate } = jobConfig;
+  const { endDate } = jobConfig;
 
   await addStepAskUnpaywall(stateName);
   const state = await getState(stateName);

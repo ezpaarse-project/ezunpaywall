@@ -32,13 +32,13 @@ const {
  * @param {Integer} offset - offset of insertion
  * @param {Integer} limit - limit of insertion
  */
-const insertion = async (configJob) => {
+const insertion = async (jobConfig) => {
   setInUpdate(true);
-  configJob.type = 'file';
-  await sendMailStarted(configJob);
+  jobConfig.type = 'file';
+  await sendMailStarted(jobConfig);
   const stateName = await createState();
-  configJob.stateName = stateName;
-  const success = await insertDataUnpaywall(configJob);
+  jobConfig.stateName = stateName;
+  const success = await insertDataUnpaywall(jobConfig);
   if (success) {
     await endState(stateName);
   }
@@ -56,19 +56,19 @@ const insertion = async (configJob) => {
  * @param {Date} endDate end date of the period
  * @param {String} index name of the index to which the data will be saved
  */
-const insertSnapshotBetweenDates = async (configJob) => {
+const insertSnapshotBetweenDates = async (jobConfig) => {
   setInUpdate(true);
-  configJob.type = 'period';
-  await sendMailStarted(configJob);
+  jobConfig.type = 'period';
+  await sendMailStarted(jobConfig);
   const stateName = await createState();
-  configJob.stateName = stateName;
-  const snapshotsInfo = await askUnpaywall(configJob);
+  jobConfig.stateName = stateName;
+  const snapshotsInfo = await askUnpaywall(jobConfig);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
-    configJob.filename = snapshotsInfo[i].filename;
-    configJob.offset = -1;
-    configJob.limit = -1;
+    jobConfig.filename = snapshotsInfo[i].filename;
+    jobConfig.offset = -1;
+    jobConfig.limit = -1;
     await downloadFileFromUnpaywall(stateName, snapshotsInfo[i]);
-    const success = await insertDataUnpaywall(configJob);
+    const success = await insertDataUnpaywall(jobConfig);
     if (!success) {
       await endState(stateName);
       await createReport(stateName);
