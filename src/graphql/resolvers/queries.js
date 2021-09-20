@@ -49,9 +49,9 @@ function flatten(obj) {
  * args = { dois: [ '10.1186/s40510-015-0109-6' ], best_oa_location: { license: 'cc-by' } }
  * return { terms: { 'best_oa_location.license': [ 'cc-by' ] } }
  *
- * @param {string} attr name of attribute
- * @param {object} args graphql arguments
- * @returns {object} elatic readable object
+ * @param {String} attr name of attribute
+ * @param {Object} args graphql arguments
+ * @returns {Object} elatic readable object
  */
 const parseTerms = (attr, args) => {
   const subAttr = args[attr];

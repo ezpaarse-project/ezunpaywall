@@ -7,7 +7,7 @@ const stateDir = path.resolve(__dirname, '..', 'out', 'states');
 
 /**
  * create a new file on folder "out/enrich/state" containing the enrich state
- * @param {string} id - id of process
+ * @param {String} id - id of process
  */
 const createState = async (id) => {
   const state = {
@@ -30,8 +30,8 @@ const createState = async (id) => {
 
 /**
  * get state from the folder "out/enrich/state"
- * @param {string} filename - state filename
- * @returns {object} - state in JSON format
+ * @param {String} filename - state filename
+ * @returns {Object} - state in JSON format
  */
 const getState = async (filename) => {
   let state = await fs.readFile(path.resolve(stateDir, filename), 'utf8');
@@ -46,8 +46,8 @@ const getState = async (filename) => {
 
 /**
  * write the latest version of the state to the file
- * @param {object} state - state in JSON format
- * @param {string} filename - state filename
+ * @param {Object} state - state in JSON format
+ * @param {String} filename - state filename
  */
 const updateStateInFile = async (state, filename) => {
   const pathfile = path.resolve(stateDir, filename);
@@ -65,7 +65,7 @@ const updateStateInFile = async (state, filename) => {
 
 /**
  * update the state when there is an error
- * @param {string} filename - state filename
+ * @param {String} filename - state filename
  */
 const fail = async (filename) => {
   const state = await getState(filename);
@@ -77,7 +77,7 @@ const fail = async (filename) => {
 
 /**
  * update the state when the process is finished
- * @param {string} filename - state filename
+ * @param {String} filename - state filename
  */
 const endState = async (filename) => {
   const state = await getState(filename);

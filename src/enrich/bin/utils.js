@@ -30,7 +30,7 @@ const enrichJSON = async (id, index, args, apikey) => {
  * @param {readStream} readStream - file need to be enriched
  * @param {String} args - graphql args for enrichment
  * @param {String} id - id of process
- * @param {string} separator - separator of enriched file
+ * @param {String} separator - separator of enriched file
  * @param {String} index - index name of mapping
  * @param {String} apikey - apikey of user
  */
