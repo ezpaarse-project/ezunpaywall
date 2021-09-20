@@ -11,7 +11,7 @@ const {
 
 /**
  * create report on the folder "out/update/report" on behalf of the date of treatment
- * @param {string} stateName - state filename
+ * @param {String} stateName - state filename
  */
 const createReport = async (stateName) => {
   const state = await getState(stateName);
@@ -26,8 +26,8 @@ const createReport = async (stateName) => {
 
 /**-
  * get report from the folder "out/update/report"
- * @param {string} filename - report filename
- * @returns {object} report
+ * @param {String} filename - report filename
+ * @returns {Object} report
  */
 const getReport = async (filename) => {
   let report;

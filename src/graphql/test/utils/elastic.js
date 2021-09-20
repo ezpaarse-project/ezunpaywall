@@ -17,7 +17,7 @@ const elasticClient = new Client({
 
 /**
  * check if index exit
- * @param {string} name Name of index
+ * @param {String} name Name of index
  * @returns {boolean} if exist
  */
 const checkIfIndexExist = async (name) => {
@@ -63,7 +63,7 @@ const insertDataUnpaywall = async () => {
 
 /**
  * create index if it doesn't exist
- * @param {string} name Name of index
+ * @param {String} name Name of index
  * @param {JSON} index index in JSON format
  */
 const createIndex = async (name, index) => {
@@ -82,7 +82,7 @@ const createIndex = async (name, index) => {
 
 /**
  * delete index if it exist
- * @param {string} name Name of index
+ * @param {String} name Name of index
  */
 const deleteIndex = async (name) => {
   const exist = await checkIfIndexExist(name);

@@ -33,7 +33,7 @@ const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 
 chai.use(chaiHttp);
 
-describe('Test: download and insert file from unpaywall between a period', () => {
+describe('Week: Test: download and insert file from unpaywall between a period', () => {
   const now = Date.now();
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
@@ -56,7 +56,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     await updateChangeFile('week');
   });
 
-  describe(`Do a download and insert between ${date2} and now`, async () => {
+  describe(`Week: Do a download and insert between ${date2} and now`, async () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -78,7 +78,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
     });
 
     // test insertion
@@ -185,7 +185,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Do a download and insert between ${date3} and ${date2}`, () => {
+  describe(`Week: Do a download and insert between ${date3} and ${date2}`, () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
@@ -208,7 +208,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date3} and ${date2}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date3} and ${date2}`);
     });
 
     // test insertion
@@ -314,7 +314,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert between ${date5} and ${date4} because there is no file between these dates in ezunpaywall`, () => {
+  describe(`Week: Don't download and insert between ${date5} and ${date4} because there is no file between these dates in ezunpaywall`, () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
@@ -337,7 +337,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date5} and ${date4}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date5} and ${date4}`);
     });
 
     // test insertion
@@ -376,7 +376,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't do a download and insert with endDate=${date1} only`, () => {
+  describe(`Week: Don't do a download and insert with endDate=${date1} only`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -396,7 +396,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe('Don\'t do a download and insert with startDate in the wrong format', () => {
+  describe('Week: Don\'t do a download and insert with startDate in the wrong format', () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -453,7 +453,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
+  describe(`Week: Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -473,7 +473,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
+  describe(`Week: Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -492,7 +492,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
+  describe(`Week: Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')

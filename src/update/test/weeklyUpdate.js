@@ -34,14 +34,14 @@ chai.use(chaiHttp);
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 
-describe('Test: weekly update route test', () => {
+describe('Week: Test: weekly update route test', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
     await updateChangeFile('week');
   });
 
-  describe('Do a classic weekly update', () => {
+  describe('Do weekly update', () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -144,7 +144,7 @@ describe('Test: weekly update route test', () => {
     });
   });
 
-  describe('Do a weekly update but the file is already installed', () => {
+  describe('Week: Do a weekly update but the file is already installed', () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
