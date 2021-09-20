@@ -41,7 +41,7 @@ describe('Test: daily update route test', () => {
     await updateChangeFile('day');
   });
 
-  describe('Do a classic daily update', () => {
+  describe('Day: Do daily update', () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -144,7 +144,7 @@ describe('Test: daily update route test', () => {
     });
   });
 
-  describe('Do a daily update but the file is already installed', () => {
+  describe('Day: Do a daily update but the file is already installed', () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
@@ -235,7 +235,7 @@ describe('Test: daily update route test', () => {
     });
   });
 
-  describe('Don\'t a classic daily update because wrong X-API-KEY', () => {
+  describe('Day: Don\'t daily update because wrong X-API-KEY', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')

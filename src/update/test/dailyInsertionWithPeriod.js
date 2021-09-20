@@ -55,7 +55,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     await updateChangeFile('day');
   });
 
-  describe(`Do a download and insert between ${date1} and now`, async () => {
+  describe(`Day: Do a download and insert between ${date1} and now`, async () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -184,7 +184,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Do a download and insert between ${date2} and ${date1}`, () => {
+  describe(`Day: Do a download and insert between ${date2} and ${date1}`, () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
@@ -313,7 +313,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert between ${date4} and ${date3} because there is no file between these dates in ezunpaywall`, () => {
+  describe(`Day: Don't download and insert between ${date4} and ${date3} because there is no file between these dates in ezunpaywall`, () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
@@ -375,7 +375,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't do a download and insert with endDate=${date1} only`, () => {
+  describe(`Day: Don't do a download and insert with endDate=${date1} only`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -394,7 +394,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe('Don\'t do a download and insert with startDate in the wrong format', () => {
+  describe('Day: Don\'t do a download and insert with startDate in the wrong format', () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -448,7 +448,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
+  describe(`Day: Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -468,7 +468,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
+  describe(`Day: Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -487,7 +487,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
+  describe(`Day: Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')

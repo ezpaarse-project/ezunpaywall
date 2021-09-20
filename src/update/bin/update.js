@@ -1,5 +1,4 @@
-/* eslint-disable no-await-in-loop */
-const { format } = require('date-fns');
+/* eslint-disable no-param-reassign */
 
 const {
   createState,
@@ -28,63 +27,60 @@ const {
 
 /**
  * start an update process of unpaywall data with a file present in ezunpaywall
- * @param {string} filename - nom du fichier à insérer
- * @param {string} index name of the index to which the data will be saved
- * @param {number} offset - offset of insertion
- * @param {number} limit - limit of insertion
+ * @param {String} filename - name of the file to insert
+ * @param {String} index name of the index to which the data will be saved
+ * @param {Integer} offset - offset of insertion
+ * @param {Integer} limit - limit of insertion
  */
-const insertion = async (filename, index, offset, limit) => {
+const insertion = async (configJob) => {
   setInUpdate(true);
-  const config = {
-    type: 'file', filename, index, offset, limit,
-  };
-  await sendMailStarted(config);
-  const statename = await createState();
-  const success = await insertDataUnpaywall(statename, filename, index, offset, limit);
+  configJob.type = 'file';
+  await sendMailStarted(configJob);
+  const stateName = await createState();
+  configJob.stateName = stateName;
+  const success = await insertDataUnpaywall(configJob);
   if (success) {
-    await endState(statename);
+    await endState(stateName);
   }
-  await createReport(statename);
+  await createReport(stateName);
   setInUpdate(false);
-  // TODO use micro-service mail
-  await sendMailReport(await getState(statename));
+  await sendMailReport(await getState(stateName));
 };
 
 /**
  * start an unpaywall data update process by retrieving update files
  * between a period from Unpaywall and inserting its content
- * @param {string} url - url to call for the list of update files
- * @param {string} interval - interval of snapshot update, day or week
- * @param {date} startDate - start date of the period
- * @param {date} endDate end date of the period
- * @param {string} index name of the index to which the data will be saved
+ * @param {String} url - url to call for the list of update files
+ * @param {String} interval - interval of snapshot update, day or week
+ * @param {Date} startDate - start date of the period
+ * @param {Date} endDate end date of the period
+ * @param {String} index name of the index to which the data will be saved
  */
-const insertSnapshotBetweenDates = async (url, apikey, interval, startDate, endDate, index) => {
+const insertSnapshotBetweenDates = async (configJob) => {
   setInUpdate(true);
-  const config = {
-    type: 'period',
-    index,
-    startDate: format(new Date(startDate), 'dd-MM-yyyy'),
-    endDate: format(new Date(endDate), 'dd-MM-yyyy'),
-  };
-  await sendMailStarted(config);
-  const statename = await createState();
-  const snapshotsInfo = await askUnpaywall(statename, apikey, interval, url, startDate, endDate);
+  configJob.type = 'period';
+  await sendMailStarted(configJob);
+  const stateName = await createState();
+  configJob.stateName = stateName;
+  const snapshotsInfo = await askUnpaywall(configJob);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
-    await downloadFileFromUnpaywall(statename, snapshotsInfo[i]);
-    const success = await insertDataUnpaywall(statename, snapshotsInfo[i].filename, index, -1, -1);
+    configJob.filename = snapshotsInfo[i].filename;
+    configJob.offset = -1;
+    configJob.limit = -1;
+    await downloadFileFromUnpaywall(stateName, snapshotsInfo[i]);
+    const success = await insertDataUnpaywall(configJob);
     if (!success) {
-      await endState(statename);
-      await createReport(statename);
+      await endState(stateName);
+      await createReport(stateName);
       setInUpdate(false);
-      await sendMailReport(await getState(statename));
+      await sendMailReport(await getState(stateName));
       return;
     }
   }
-  await endState(statename);
-  await createReport(statename);
+  await endState(stateName);
+  await createReport(stateName);
   setInUpdate(false);
-  await sendMailReport(await getState(statename));
+  await sendMailReport(await getState(stateName));
 };
 
 module.exports = {

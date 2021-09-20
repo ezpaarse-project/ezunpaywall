@@ -51,7 +51,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     await updateChangeFile('week');
   });
 
-  describe('Do a classic insertion of a corrupted file already installed', () => {
+  describe('Do insertion of a corrupted file already installed', () => {
     before(async () => {
       await addSnapshot('fake1-error.jsonl.gz');
       await deleteIndex('unpaywall-test');

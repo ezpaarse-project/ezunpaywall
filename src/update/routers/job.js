@@ -2,10 +2,12 @@ const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
 const config = require('config');
+const { format } = require('date-fns');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
 const url = config.get('unpaywallURL');
+const apikey = config.get('apikeyupw');
 
 const {
   insertion,
@@ -23,6 +25,7 @@ const {
 /**
  *
  * @apiParam BODY index - name of the index to which the data will be saved
+ * @apiParam BODY interval - interval of snapshot update, day or week
  * @apiParam BODY startDate - start date at format YYYY-mm-dd
  * @apiParam BODY endDate - end date at format YYYY-mm-dd
  * @apiParam BODY filename - filename of a file found in ezunpaywall
@@ -33,6 +36,7 @@ const {
  *
  * @apiSuccess message informing the start of the process
  *
+ * @apiError 400 interval cannot be different than [week] and [day]
  * @apiError 400 start date is missing
  * @apiError 400 end date is lower than start date
  * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
@@ -42,11 +46,13 @@ const {
  *
  */
 router.post('/job', checkStatus, checkAuth, async (req, res) => {
+  const configJob = {};
+
   let {
-    index, startDate, endDate, offset, limit, interval,
+    index, offset, limit, interval,
   } = req.body;
 
-  const { filename } = req.body;
+  const { startDate, filename, endDate } = req.body;
 
   if (!interval) {
     interval = 'day';
@@ -60,6 +66,8 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
   if (!index) {
     index = 'unpaywall';
   }
+
+  configJob.index = index;
 
   if (filename) {
     const pattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
@@ -76,22 +84,32 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
 
     if (!offset) { offset = 0; }
     if (!limit) { limit = -1; }
-    insertion(filename, index, Number(offset), Number(limit));
+
+    configJob.filename = filename;
+    configJob.offset = Number(offset);
+    configJob.limit = Number(limit);
+    insertion(configJob);
 
     return res.status(200).json({ message: `Update with ${filename}` });
   }
 
+  configJob.url = url;
+  configJob.apikey = apikey;
+  configJob.interval = interval;
+  configJob.startDate = startDate;
+  configJob.endDate = endDate;
+
   // if no dates are send, do weekly / daily update
   if (!startDate && !endDate) {
-    endDate = Date.now();
+    configJob.endDate = format(new Date(), 'yyyy-MM-dd');
     if (interval === 'week') {
-      startDate = endDate - (7 * 24 * 60 * 60 * 1000);
-      insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
+      configJob.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
+      insertSnapshotBetweenDates(configJob);
       return res.status(200).json({ message: 'Weekly update started' });
     }
     if (interval === 'day') {
-      startDate = endDate - (1 * 24 * 60 * 60 * 1000);
-      insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
+      configJob.startDate = format(new Date(), 'yyyy-MM-dd');
+      insertSnapshotBetweenDates(configJob);
       return res.status(200).json({ message: 'Daily update started' });
     }
   }
@@ -121,13 +139,13 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
   }
 
   if (startDate && !endDate) {
-    [endDate] = new Date().toISOString().split('T');
+    configJob.endDate = format(new Date(), 'yyyy-MM-dd');
   }
 
-  insertSnapshotBetweenDates(url, config.get('apikeyupw'), interval, startDate, endDate, index);
+  insertSnapshotBetweenDates(configJob);
 
   return res.status(200).json({
-    message: `Dowload and insert snapshot from unpaywall from ${startDate} and ${endDate}`,
+    message: `Dowload and insert snapshot from unpaywall from ${configJob.startDate} and ${configJob.endDate}`,
   });
 });
 
