@@ -59,6 +59,23 @@ describe('test graphqlRequest', () => {
     });
   });
 
+  describe('get unpaywall data with one DOI nor normalized', () => {
+    it('should get unpaywall data', async () => {
+      const res = await chai.request(graphqlURL)
+        .get('/graphql')
+        .query({ query: '{GetByDOI(dois:["10.1186/S40510-015-0109-6"]){doi, is_oa}}' })
+        .set('X-API-KEY', 'user')
+        .set('index', 'unpaywall-test');
+
+      expect(res).have.status(200);
+
+      const data = res?.body?.data?.GetByDOI;
+      expect(data).be.a('array');
+      expect(data[0]).have.property('doi').eq(doi1);
+      expect(data[0]).have.property('is_oa').eq(true);
+    });
+  });
+
   describe('get unpaywall data with two DOI', () => {
     it('should get unpaywall data', async () => {
       const res = await chai.request(graphqlURL)
