@@ -131,7 +131,14 @@ module.exports = {
       });
     }
 
-    const filter = [{ terms: { doi: args.dois } }];
+    const dois = [];
+
+    // normalize request
+    args.dois.forEach((doi) => {
+      dois.push(doi.toLowerCase());
+    });
+
+    const filter = [{ terms: { doi: dois } }];
     const matchRange = /(range)/i;
 
     for (const attr in args) {
@@ -176,7 +183,7 @@ module.exports = {
     try {
       res = await elasticClient.search({
         index,
-        size: args.dois.length || 1000,
+        size: dois.length || 1000,
         body: {
           query,
           _source: attributes,
