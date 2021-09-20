@@ -78,7 +78,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
     });
 
     // test insertion
@@ -208,7 +208,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date3} and ${date2}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date3} and ${date2}`);
     });
 
     // test insertion
@@ -337,7 +337,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date5} and ${date4}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date5} and ${date4}`);
     });
 
     // test insertion

@@ -153,7 +153,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date1} and ${dateNow}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date1} and ${dateNow}`);
     });
 
     // test insertion
