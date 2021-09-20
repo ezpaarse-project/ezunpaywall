@@ -145,7 +145,7 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
   insertSnapshotBetweenDates(configJob);
 
   return res.status(200).json({
-    message: `Dowload and insert snapshot from unpaywall from ${configJob.startDate} and ${configJob.endDate}`,
+    message: `Download and insert snapshot from unpaywall from ${configJob.startDate} and ${configJob.endDate}`,
   });
 });
 
