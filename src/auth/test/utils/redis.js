@@ -3,19 +3,7 @@ const util = require('util');
 const config = require('config');
 const fs = require('fs-extra');
 
-const logger = require('./logger');
-
-let apiKeys;
-
-if (!fs.pathExists('../apikey.json')) {
-  logger.warn('No API key are set');
-}
-
-if (process.env.NODE_ENV === 'production') {
-  apiKeys = require('../apikey.json');
-} else {
-  apiKeys = require('../apikey-dev.json');
-}
+const apiKeys = require('../../apikey-dev.json');
 
 const redisClient = redis.createClient({
   host: config.get('redis.host'),
@@ -23,10 +11,8 @@ const redisClient = redis.createClient({
   password: config.get('redis.password'),
 });
 
-redisClient.ping = util.promisify(redisClient.ping);
-
 redisClient.on('error', (err) => {
-  logger.error(`Error in redis ${err}`);
+  console.error(`Error in redis ${err}`);
 });
 
 const apiKeysJSON = Object.keys(apiKeys);
@@ -43,14 +29,14 @@ const pingRedis = async () => {
     try {
       redisStatus = await redisClient.ping();
     } catch (err) {
-      logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
-      logger.error(err);
+      console.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
+      console.error(err);
     }
     if (redisStatus !== 'PONG') {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   } while (redisStatus !== 'PONG');
-  logger.info(`ping: ${config.get('redis.host')}:${config.get('redis.port')} ok`);
+  console.log(`ping: ${config.get('redis.host')}:${config.get('redis.port')} ok`);
   return true;
 };
 

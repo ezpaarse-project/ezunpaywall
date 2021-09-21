@@ -34,7 +34,7 @@ const {
  *
  * @apiHeader HEADER X-API-KEY - admin apikey
  *
- * @apiSuccess message informing the start of the process
+ * @return message informing the start of the process
  *
  * @apiError 400 interval cannot be different than [week] and [day]
  * @apiError 400 start date is missing
