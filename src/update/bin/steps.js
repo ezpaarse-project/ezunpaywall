@@ -414,7 +414,7 @@ const askUnpaywall = async (jobConfig) => {
       method: 'get',
       url,
       params: {
-        apikey,
+        api_key: apikey,
         interval,
       },
       headers: {
