@@ -15,7 +15,7 @@ const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
 /**
  * get the most recent report in JSON format
  *
- * @apiSuccess report
+ * @return report
  */
 router.get('/report', async (req, res, next) => {
   const { latest } = req.query;
@@ -81,7 +81,7 @@ router.get('/report', async (req, res, next) => {
  * @apiError 400 filename expected
  * @apiError 404 File not found
  *
- * @apiSuccess report
+ * @return report
  */
 router.get('/report/:filename', async (req, res, next) => {
   const { filename } = req.params;

@@ -14,7 +14,7 @@ const statesDir = path.resolve(__dirname, '..', 'out', 'states');
 
 /**
  * get the most recent state in JSON format
- * @apiSuccess state
+ * @return state
  */
 router.get('/state', async (req, res, next) => {
   const { latest } = req.query;
@@ -43,7 +43,7 @@ router.get('/state', async (req, res, next) => {
  * @apiError 400 filename expected
  * @apiError 404 File not found
  *
- * @apiSuccess state
+ * @return state
  */
 router.get('/state/:filename', async (req, res, next) => {
   const { filename } = req.params;

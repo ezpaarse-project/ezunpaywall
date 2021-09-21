@@ -44,7 +44,7 @@ const getMostRecentFile = async (dir) => {
 /**
  * get the most recent state in JSON format
  *
- * @apiSuccess state
+ * @return state
  */
 router.get('/state', async (req, res, next) => {
   let latestFile;
@@ -71,7 +71,7 @@ router.get('/state', async (req, res, next) => {
  * @apiError 400 id expected
  * @apiError 404 File not found
  *
- * @apiSuccess state
+ * @return state
  */
 router.get('/state/:filename', async (req, res, next) => {
   const { filename } = req.params;

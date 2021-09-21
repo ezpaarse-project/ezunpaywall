@@ -155,6 +155,7 @@ services:
       - enrich
       - update
       - graphql
+      - auth
     networks:
       - elastic
   

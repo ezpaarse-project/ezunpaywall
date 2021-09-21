@@ -4,6 +4,7 @@ LABEL maintainer="ezTEAM <ezteam@couperin.org>"
 ARG GRAPHQL_URL
 ARG UPDATE_URL
 ARG ENRICH_URL
+ARG AUTH_URL
 
 ENV NODE_ENV production
 

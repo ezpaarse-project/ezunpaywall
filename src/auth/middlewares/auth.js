@@ -34,16 +34,11 @@ const checkAuth = async (req, res, next) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 
-  if (!Array.isArray(config?.access) || !config?.access?.includes('graphql') || !config?.allowed) {
+  if (config.name !== 'admin' || !config?.access?.includes('auth') || !config?.allowed) {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
-  req.user = config.name;
-
-  req.attributes = config.attributes;
   return next();
 };
 
-module.exports = {
-  checkAuth,
-};
+module.exports = checkAuth;
