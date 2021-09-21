@@ -12,8 +12,11 @@ export REDIS_PASSWORD="changeme"
 
 # mail
 export SMTP_PORT=25
+export NODE_CONFIG='{ "smtp": { "secure": false, "ignoreTLS": true } }'
+
 export NOTIFICATIONS_SENDER='ezunpaywall <ezunpaywall@inist.fr>'
 export NOTIFICATIONS_RECEIVERS='you@you.org'
+export NOTIFICATIONS_MACHINE='dev'
 
 # disabled it if you are in deploiement
 

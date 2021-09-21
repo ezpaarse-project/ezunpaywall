@@ -1,0 +1,59 @@
+{% extends "layout.mjml" %}
+
+{% block title %}
+<mj-title>Rapport ezunpaywall du {{ date }}.</mj-title>
+{% endblock %}
+
+{% block content %}
+
+<mj-section>
+  <mj-column>
+    <mj-text>
+      <p>Bonjour,</p>
+      <p>
+        Une mise à jour est en cours.
+      </p>
+      {% if config.type == 'file' %}
+        <p>
+          Insertion du fichier <strong> {{ config.filename }} </strong> 
+          sur l'index <strong> {{ config.index }} </strong> 
+        </p>
+
+        {% if config.offset != 0 or config.limit != -1 %}
+          <p> Attributs: 
+            {% if config.offset != 0 %} offset: {{ config.offset }} {% endif %}
+            {% if config.limit != -1 %} limit: {{ config.limit }} {% endif %}
+          </p>
+        {% endif %}
+  
+      {% endif %}
+
+      {% if config.type == 'period' %}
+        <p>
+          Insertion des snapshots 
+          pour la période du <strong> {{ config.startDate }} </strong> 
+          au <strong> {{ config.endDate }} </strong> 
+          sur l'index <strong> {{ config.index }} </strong> 
+        </p>
+      {% endif %}
+
+    </mj-text>
+
+    <mj-text>
+      <p>Cordialement,</p>
+      <p>L'équipe ezMESURE.</p>
+    </mj-text>
+
+    <mj-text>
+      <i>
+        <font size="1">
+          Ce message est envoyé automatiquement par l'application ezunpaywall,
+          vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
+        </font>
+      </i>
+    </mj-text>
+
+  </mj-column>
+</mj-section>
+
+{% endblock %}

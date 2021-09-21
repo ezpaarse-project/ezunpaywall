@@ -31,8 +31,14 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.status(200).json({ name, version });
+app.get('/', async (req, res) => {
+  let redis = await pingRedis();
+  if (redis) {
+    redis = 'Alive';
+  } else {
+    redis = 'Error';
+  }
+  res.status(200).json({ name, version, redis });
 });
 
 pingRedis();

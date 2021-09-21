@@ -106,7 +106,7 @@
         "type": "keyword"
       },
       "title": {
-        "type": "keyword"
+        "type": "text"
       },
       "updated": {
         "type": "date",

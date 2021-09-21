@@ -51,7 +51,7 @@ server {
   }
 
   location ^~ /api/auth/ {
-    proxy_pass http://auth:6000/;
+    proxy_pass http://auth:7000/;
   }
 
   ## Diffie-Hellman

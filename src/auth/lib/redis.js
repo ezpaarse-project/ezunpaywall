@@ -23,6 +23,8 @@ const redisClient = redis.createClient({
   password: config.get('redis.password'),
 });
 
+redisClient.ping = util.promisify(redisClient.ping);
+
 redisClient.on('error', (err) => {
   logger.error(`Error in redis ${err}`);
 });

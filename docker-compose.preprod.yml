@@ -14,6 +14,7 @@ services:
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
       - https_proxy
@@ -44,6 +45,7 @@ services:
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
        # unpaywall
       - API_KEY_UPW
       - UNPAYWALL_URL=http://api.unpaywall.org/feed/changefiles
@@ -52,6 +54,7 @@ services:
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
       - https_proxy
@@ -114,7 +117,7 @@ services:
       - ./src/auth:/auth
     command: "npm start"
     ports:
-      - 6000:6000
+      - 7000:7000
     depends_on:
       - redis
     restart: unless-stopped

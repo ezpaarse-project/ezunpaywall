@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 const path = require('path');
@@ -16,6 +17,7 @@ const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 const unpaywallMapping = require('../mapping/unpaywall.json');
 
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
+const indexAlias = config.get('elasticsearch.indexAlias');
 
 const {
   getState,
@@ -28,44 +30,33 @@ const {
 
 /**
  * check if index exit
- * @param {string} name Name of index
+ * @param {String} index Name of index
  * @returns {boolean} if exist
  */
-const checkIfIndexExist = async (name) => {
-  let res;
-  try {
-    res = await elasticClient.indices.exists({
-      index: name,
-    });
-  } catch (err) {
-    console.error(`indices.exists in checkIfIndexExist: ${err}`);
-  }
-  return res.body;
+const checkIfIndexExist = async (index) => {
+  const { body } = await elasticClient.indices.exists({ index });
+  return body;
 };
 
 /**
  * create index if it doesn't exist
- * @param {string} name Name of index
+ * @param {String} index Name of index
  * @param {JSON} mapping mapping in JSON format
  */
-const createIndex = async (name, mapping) => {
-  const exist = await checkIfIndexExist(name);
+const createIndex = async (index, mapping) => {
+  const exist = await checkIfIndexExist(index);
   if (!exist) {
-    try {
-      await elasticClient.indices.create({
-        index: name,
-        body: mapping,
-      });
-    } catch (err) {
-      console.error(`indices.create in createIndex: ${err}`);
-    }
+    await elasticClient.indices.create({
+      index,
+      body: mapping,
+    });
   }
 };
 
 /**
  * insert data on elastic with request
  * @param {Array} data array of unpaywall data
- * @param {string} stateName - state filename
+ * @param {String} stateName - state filename
  */
 const insertDataInElastic = async (data, stateName) => {
   let res;
@@ -74,28 +65,69 @@ const insertDataInElastic = async (data, stateName) => {
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
+    await fail(stateName, 'Cannot bulk on elastic');
+    return false;
   }
+
   if (res?.body?.errors) {
+    const errors = [];
     const { items } = res?.body;
-    logger.error(JSON.stringify(items));
-    await fail(stateName);
+    items.forEach((e) => {
+      if (e?.index?.error !== undefined) {
+        errors.push(e?.index?.error);
+      }
+    });
+    logger.error(JSON.stringify(errors, null, 2));
+    await fail(stateName, errors);
+    return false;
   }
+  return true;
 };
 
 /**
  * Inserts the contents of an unpaywall data update file
- * @param {string} stateName - state filename
- * @param {string} filename - snapshot filename which the data will be inserted
- * @param {string} indexname name of the index to which the data will be saved
- * @param {number} offset - offset
- * @param {number} limit - limit
+ * @param {String} stateName - state filename
+ * @param {String} index name of the index to which the data will be saved
+ * @param {String} filename - snapshot filename which the data will be inserted
+ * @param {Integer} offset - offset
+ * @param {Integer} limit - limit
  */
-const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit) => {
-  await createIndex(indexname, unpaywallMapping);
+const insertDataUnpaywall = async (jobConfig) => {
+  const { stateName } = jobConfig;
+  const { index } = jobConfig;
+  const { filename } = jobConfig;
+  const { offset } = jobConfig;
+  const { limit } = jobConfig;
+
+  try {
+    await createIndex(index, unpaywallMapping);
+  } catch (err) {
+    logger.error(`Cannot create index [${index}]`);
+    logger.error(err);
+    await fail(stateName, err);
+    return false;
+  }
+
+  try {
+    const { body: aliasExists } = await elasticClient.indices.existsAlias({ name: indexAlias });
+
+    if (aliasExists) {
+      logger.info(`Alias [${indexAlias}] already exists`);
+    } else {
+      logger.info(`Creating alias [${indexAlias}] pointing to index [${index}]`);
+      await elasticClient.indices.putAlias({ index, name: indexAlias });
+    }
+  } catch (err) {
+    logger.error(`Cannot create alias [${indexAlias}] pointing to index [${index}]`);
+    logger.error(err);
+    await fail(stateName, err);
+    return false;
+  }
+
   // step initiation in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
-  const state = await getState(stateName);
+  let state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
 
   const filePath = path.resolve(snapshotsDir, filename);
@@ -107,8 +139,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   } catch (err) {
     logger.error(`Cannot stat ${filePath}`);
     logger.error(err);
-    await fail(stateName);
-    // TODO throw Error
+    await fail(stateName, err);
+    return false;
   }
 
   // read file with stream
@@ -118,8 +150,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   } catch (err) {
     logger.error(`Cannot read ${filePath}`);
     logger.error(err);
-    await fail(stateName);
-    // TODO throw Error
+    await fail(stateName, err);
+    return false;
   }
 
   // get information "loaded" for state
@@ -134,8 +166,8 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   } catch (err) {
     logger.error(`Cannot pipe ${readStream?.filename}`);
     logger.error(err);
-    await fail(stateName);
-    // TODO throw Error
+    await fail(stateName, err);
+    return false;
   }
 
   const rl = readline.createInterface({
@@ -145,6 +177,10 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
 
   // array that will contain the packet of 1000 unpaywall data
   let bulkOps = [];
+
+  let success;
+
+  logger.info(`Start insert with ${filename}`);
 
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
@@ -161,20 +197,27 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
       // fill the array
       try {
         const doc = JSON.parse(line);
-        bulkOps.push({ index: { _index: indexname, _id: doc.doi } });
+        bulkOps.push({ index: { _index: index, _id: doc.doi } });
         bulkOps.push(doc);
       } catch (err) {
         logger.error(`Cannot parse "${line}" in json format`);
         logger.error(err);
-        await fail(stateName);
-        // TODO throw Error
+        await fail(stateName, err);
+        return false;
       }
     }
     // bulk insertion
     if (bulkOps.length >= maxBulkSize) {
       const dataToInsert = bulkOps.slice();
       bulkOps = [];
-      await insertDataInElastic(dataToInsert, stateName);
+      success = await insertDataInElastic(dataToInsert, stateName);
+      if (!success) {
+        state = await getState(stateName);
+        step.status = 'error';
+        state.steps[state.steps.length - 1] = step;
+        await updateStateInFile(state, stateName);
+        return false;
+      }
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       state.steps[state.steps.length - 1] = step;
@@ -182,18 +225,27 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
     }
     if (step.linesRead % 100000 === 0) {
       logger.info(`${step.linesRead} Lines reads`);
+      state.steps[state.steps.length - 1] = step;
+      await updateStateInFile(state, stateName);
     }
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    await insertDataInElastic(bulkOps, stateName);
+    success = await insertDataInElastic(bulkOps, stateName);
+    if (!success) {
+      state = await getState(stateName);
+      step.status = 'error';
+      state.steps[state.steps.length - 1] = step;
+      await updateStateInFile(state, stateName);
+      return false;
+    }
     bulkOps = [];
   }
 
   logger.info('step - end insertion');
 
   try {
-    await elasticClient.indices.refresh({ index: indexname });
+    await elasticClient.indices.refresh({ index });
   } catch (e) {
     logger.warn(`step - failed to refresh the index: ${e.message}`);
   }
@@ -204,15 +256,16 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   step.percent = 100;
   state.steps[state.steps.length - 1] = step;
   await updateStateInFile(state, stateName);
+  return true;
 };
 
 /**
  * Update the step the percentage in download regularly until the download is complete
- * @param {string} filepath - path where the file is downloaded
- * @param {object} info - info of file
- * @param {string} stateName - state filename
- * @param {object} state - state in JSON format
- * @param {date} start - download start date
+ * @param {String} filepath - path where the file is downloaded
+ * @param {Object} info - info of file
+ * @param {String} stateName - state filename
+ * @param {Object} state - state in JSON format
+ * @param {Date} start - download start date
  */
 async function updatePercentStepDownload(filepath, info, stateName, start) {
   const state = await getState(stateName);
@@ -240,8 +293,8 @@ async function updatePercentStepDownload(filepath, info, stateName, start) {
 
 /**
  * Start the download of the update file from unpaywall
- * @param {string} stateName - state filename
- * @param {string} info - information of the file to download
+ * @param {String} stateName - state filename
+ * @param {String} info - information of the file to download
  */
 const downloadFileFromUnpaywall = async (stateName, info) => {
   let stats;
@@ -253,8 +306,8 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   } catch (err) {
     logger.error(`Cannot verify if ${filepath} exist`);
     logger.error(err);
-    await fail(stateName);
-    // TODO thown Error;
+    await fail(stateName, err);
+    return false;
   }
 
   if (alreadyInstalled) stats = await fs.stat(filepath);
@@ -262,7 +315,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   // if snapshot already exist and download completely, past
   if (alreadyInstalled && stats.size === info.size) {
     logger.info(`file [${info.filename}] already installed`);
-    return;
+    return true;
   }
 
   await addStepDownload(stateName);
@@ -281,8 +334,8 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   } catch (err) {
     logger.error(`Cannot request ${info.url}`);
     logger.error(err);
-    await fail(stateName);
-    // TODO throw Error
+    await fail(stateName, err);
+    return false;
   }
 
   const filePath = path.resolve(snapshotsDir, info.filename);
@@ -304,6 +357,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
       writeStream.on('finish', async () => {
         stats = await fs.stat(filepath);
         if (stats.size !== info.size) {
+          logger.error(`${stats.size} !== ${info.size}`);
           await fail();
           return reject();
         }
@@ -318,12 +372,12 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
       writeStream.on('error', async (err) => {
         logger.error(err);
-        await fail(stateName);
+        await fail(stateName, err);
         return reject(err);
       });
     });
   } else {
-    const writeStream = fs.createWriteStream(filePath);
+    const writeStream = await fs.createWriteStream(filePath);
     writeStream.write(res.data);
     writeStream.end();
   }
@@ -331,22 +385,38 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
 /**
  * ask unpaywall to get information and download links for snapshots files
- * @param {string} stateName - state filename
- * @param {string} url - url to call for the list of update files
- * @param {date} startDate - start date of the period
- * @param {date} endDate - end date of the period
+ * @param {String} stateName - state filename
+ * @param {String} url - url to request for the list of update files
+ * @param {String} apikey - apikey to request for the list of update files
+ * @param {String} interval - interval of snapshot update, day or week
+ * @param {Date} startDate - start date of the period
+ * @param {Date} endDate - end date of the period
  * @returns {array<object>} information about snapshots files
  */
-const askUnpaywall = async (stateName, url, startDate, endDate) => {
+const askUnpaywall = async (jobConfig) => {
   const start = new Date();
+  const {
+    stateName,
+    url,
+    apikey,
+    interval,
+    startDate,
+    endDate,
+  } = jobConfig;
+
   await addStepAskUnpaywall(stateName);
   const state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
   let res;
+
   try {
     res = await axios({
       method: 'get',
       url,
+      params: {
+        apikey,
+        interval,
+      },
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
@@ -355,19 +425,31 @@ const askUnpaywall = async (stateName, url, startDate, endDate) => {
   } catch (err) {
     logger.error(`Cannot request ${url}`);
     logger.error(err);
-    // TODO thow error
+    await fail(stateName, err);
+    return false;
   }
 
   if (res?.status !== 200 || !res?.data?.list?.length) {
-    // TODO thow error
+    await fail(stateName, `code: ${res?.status} - liss lenght: ${!res?.data?.list?.length}`);
+    return false;
   }
 
   let snapshotsInfo = res.data.list;
   snapshotsInfo = snapshotsInfo
     .reverse()
-    .filter((file) => file.filetype === 'jsonl')
-    .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
-    .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
+    .filter((file) => file.filetype === 'jsonl');
+
+  if (interval === 'week') {
+    snapshotsInfo = snapshotsInfo
+      .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
+      .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
+  }
+
+  if (interval === 'day') {
+    snapshotsInfo = snapshotsInfo
+      .filter((file) => new Date(file.date).getTime() >= new Date(startDate).getTime())
+      .filter((file) => new Date(file.date).getTime() <= new Date(endDate).getTime());
+  }
 
   step.status = 'success';
   step.took = (new Date() - start) / 1000;

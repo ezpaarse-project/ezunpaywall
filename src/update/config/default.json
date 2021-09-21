@@ -12,13 +12,15 @@
   },
   "notifications": {
     "sender": "ezunpaywall",
-    "receivers": []
+    "receivers": ["me.me@org.fr"],
+    "machine": "dev"
   },
   "elasticsearch": {
     "port": 9200,
     "host": "elastic",
     "user": "elastic",
     "password": "changeme",
-    "maxBulkSize": 4000
+    "maxBulkSize": 4000,
+    "indexAlias": "upw"
   }
 }

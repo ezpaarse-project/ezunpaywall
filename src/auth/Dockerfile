@@ -9,5 +9,5 @@ COPY package*.json /usr/src/auth/
 RUN npm ci --only=production
 COPY . /usr/src/auth
 
-EXPOSE 6000
+EXPOSE 7000
 CMD [ "npm", "start" ]

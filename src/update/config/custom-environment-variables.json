@@ -12,13 +12,15 @@
   },
   "notifications": {
     "sender": "EZUNPAYWALL_NOTIFICATIONS_SENDER",
-    "receivers": "EZUNPAYWALL_NOTIFICATIONS_RECEIVERS"
+    "receivers": "EZUNPAYWALL_NOTIFICATIONS_RECEIVERS",
+    "machine": "EZUNPAYWALL_NOTIFICATIONS_MACHINE"
   },
   "elasticsearch": {
     "port": "ELASTICSEARCH_PORT",
     "host": "ELASTICSEARCH_HOST",
     "user": "ELASTICSEARCH_USERNAME",
     "password": "ELASTICSEARCH_PASSWORD",
-    "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE"
+    "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
+    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS"
   }
 }

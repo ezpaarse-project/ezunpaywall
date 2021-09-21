@@ -2,13 +2,16 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 const ping = require('./utils/ping');
+
+chai.use(chaiHttp);
+
 const {
   redisClient,
   pingRedis,
   load,
 } = require('./utils/redis');
 
-const authURL = process.env.AUTH_URL || 'http://localhost:6000';
+const authURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 describe('Test: auth service', () => {
   before(async function () {
@@ -49,12 +52,11 @@ describe('Test: auth service', () => {
   });
 
   describe('Test: Create apikey', () => {
-    let id;
     before(async () => {
       // TODO
     });
     it('Should create apikey', async () => {
-      const res = await chai
+      await chai
         .request(authURL)
         .post('/key/create')
         .set('X-API-KEY', 'admin');
@@ -62,7 +64,6 @@ describe('Test: auth service', () => {
       // TODO
 
       // expect(res).have.status(200);
-      id = res.body;
     });
 
     it('Shouldn\'t create apikey because it\'s already exist', async () => {

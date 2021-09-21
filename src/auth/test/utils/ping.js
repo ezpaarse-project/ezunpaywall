@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const authURL = process.env.AUTH_URL || 'http://localhost:6000';
+const authURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 /**
  * ping auth service to see if they are available

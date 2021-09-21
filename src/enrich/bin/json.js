@@ -20,7 +20,7 @@ const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 
 /**
  * getter of all the unpaywall attributes that can be used for enrichment in graphql format
- * @returns {string} all attributs in graphql format
+ * @returns {String} all attributs in graphql format
  */
 const allArgs = () => `
 {
@@ -92,8 +92,8 @@ const allArgs = () => `
 
 /**
  * add attribute doi to args to be used with Map
- * @param {string} args graphql args
- * @returns {string} args with doi
+ * @param {String} args graphql args
+ * @returns {String} args with doi
  */
 const addDOItoGraphqlRequest = (args) => {
   args = args.replace(/\s/g, '');
@@ -103,11 +103,11 @@ const addDOItoGraphqlRequest = (args) => {
 /**
  * ask ezunpaywall to get informations of unpaywall to enrich a file
  * @param {array<string>} data - array of line that we will enrich
- * @param {string} args - attributes that we will enrich
- * @param {string} stateName  state filename
+ * @param {String} args - attributes that we will enrich
+ * @param {String} stateName  state filename
  * @param {String} index - index name of mapping
  * @param {String} apikey - apikey of user
- * @return {array} ezunpaywall response
+ * @return {Array} ezunpaywall response
  */
 const askEzunpaywall = async (data, args, stateName, index, apikey) => {
   let dois = [];
@@ -143,8 +143,8 @@ const askEzunpaywall = async (data, args, stateName, index, apikey) => {
 
 /**
  * concat data from file and response from unpaywall
- * @param {array} data - array of line that we will enrich
- * @param {object} response - response from ezunpaywall
+ * @param {Array} data - array of line that we will enrich
+ * @param {Object} response - response from ezunpaywall
  * @returns {Map} map of enrich
  */
 const enrichTab = (data, response) => {
@@ -175,8 +175,8 @@ const enrichTab = (data, response) => {
 
 /**
  * write the array of line enriched in a out file JSON
- * @param {array} data - array of line enriched
- * @param {string} stateName  state filename
+ * @param {Array} data - array of line enriched
+ * @param {String} stateName  state filename
  */
 const writeInFileJSON = async (data, enrichedFile, stateName) => {
   const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
@@ -192,8 +192,8 @@ const writeInFileJSON = async (data, enrichedFile, stateName) => {
 /**
  * starts the enrichment process for files JSON
  * @param {readable} readStream - readstream of the file you want to enrich
- * @param {string} args - attributes will be add
- * @param {string} id - id of process
+ * @param {String} args - attributes will be add
+ * @param {String} id - id of process
  * @param {String} index - index name of mapping
  * @param {String} apikey - apikey of user
  */

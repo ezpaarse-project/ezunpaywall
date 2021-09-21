@@ -15,8 +15,11 @@
       </p>
     </mj-text>
 
-    <mj-text align="center" color="#55575d" font-size="24px" line-height="22px" padding="10px 25px">
-      <p>Rapport - {{status}}</p>
+    <mj-text align="center" ; color="#55575d" font-size="24px" line-height="22px" padding="10px 25px">
+      <div style="display: inline-flex">
+        <div>Rapport -</div> 
+        <div style="color:{{ "#4CAF50" if status == 'success' else "#d11b1b" }}">&nbsp;{{status}}</div>
+      </div>
     </mj-text>
 
     <mj-text>
@@ -28,12 +31,12 @@
       <table style="border-collapse: collapse; width: 100%; margin-bottom: 20px">
         <thead>
           <tr style="border: 1px solid #ddd; padding: 8px;">
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">task</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">took</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">percent</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">file</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">linesRead</th>
-            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4CAF50; color: white;">status</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4D4D4D; color: white;">task</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4D4D4D; color: white;">took</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4D4D4D; color: white;">percent</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4D4D4D; color: white;">file</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4D4D4D; color: white;">linesRead</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: left; background-color: #4D4D4D; color: white;">status</th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +48,9 @@
               <td style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;"></td>
               <td style="border: 1px solid #ddd; padding: 8px;"></td>
               <td style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;"></td>
-              <td style="border: 1px solid #ddd; padding: 8px; ">{{ item.status }}</td>
+              <td style="border: 1px solid #ddd; padding: 8px; ">
+                <p style="color:{{ "#4CAF50" if item.status == 'success' else "#d11b1b" }}">{{item.status}}</p>
+              </td>
             </tr>
           {% endif %}
 
@@ -56,7 +61,9 @@
               <td style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">{{ item.percent }}%</td>
               <td style="border: 1px solid #ddd; padding: 8px;">{{ item.file }}</td>
               <td style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">{{ item.linesRead }}</td>
-              <td style="border: 1px solid #ddd; padding: 8px;">{{ item.status }}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">
+                <p style="color:{{ "#4CAF50" if item.status == 'success' else "#d11b1b" }}">{{item.status}}</p>
+              </td>
             </tr>
           {% endif %}
       
@@ -67,7 +74,9 @@
               <td style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">{{ item.percent }}%</td>
               <td style="border: 1px solid #ddd; padding: 8px;">{{ item.file }}</td>
               <td style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;"></td>
-              <td style="border: 1px solid #ddd; padding: 8px;">{{ item.status }}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;"> 
+                <p style="color:{{ "#4CAF50" if item.status == 'success' else "#d11b1b" }}">{{item.status}}</p>
+              </td>
             </tr>
           {% endif %}
         {% endfor %}
@@ -76,16 +85,25 @@
       </table>
     </mj-text>
 
+    {% if status == 'error' %}
     <mj-text>
-      <p>
-        Ce message est envoyé automatiquement par l'application ezunpaywall,
-        vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
-      </p>
+      <strong> Stacktrace : </strong>
+      <p> {{ state.stackTrace[0].reason }} </p>
     </mj-text>
+    {% endif %}
 
     <mj-text>
       <p>Cordialement,</p>
       <p>L'équipe ezMESURE.</p>
+    </mj-text>
+
+    <mj-text>
+      <i>
+        <font size="1">
+          Ce message est envoyé automatiquement par l'application ezunpaywall,
+          vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
+        </font>
+      </i>
     </mj-text>
 
   </mj-column>

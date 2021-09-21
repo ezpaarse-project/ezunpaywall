@@ -6,7 +6,7 @@
    "license": "CeCILL",
    "scripts": {
       "prepare": "husky install",
-      "install:auth": "cd src/enrich; npm auth",
+      "install:auth": "cd src/auth; npm auth",
       "install:enrich": "cd src/enrich; npm install",
       "install:fakeUnpaywall": "cd src/fakeUnpaywall; npm install",
       "install:frontend": "cd src/frontend; npm install",
@@ -17,7 +17,7 @@
       "test:enrich": "cd src/enrich && npm run test",
       "test:graphql": "cd src/graphql && npm run test",
       "test:update": "cd src/update && npm run test",
-      "test": "npm run test:auth; npm run test:update; npm run test:graphql; npm run test:enrich"
+      "test": "npm run test:update; npm run test:graphql; npm run test:enrich"
    },
    "devDependencies": {
       "chai": "^4.3.4",

@@ -3,51 +3,51 @@
     {
       "filename": "fake1.jsonl.gz",
       "filetype": "jsonl",
-      "from_date": "2021-09-09",
-      "last_modified": "2021-09-16T11:45:40",
+      "from_date": "",
+      "last_modified": "",
       "lines": 50,
       "size": 19896,
-      "to_date": "2021-09-16",
+      "to_date": "",
       "url": "http://fakeUnpaywall:12000/snapshots/fake1.jsonl.gz"
     },
     {
       "filename": "fake2.jsonl.gz",
       "filetype": "jsonl",
-      "from_date": "2021-09-02",
-      "last_modified": "2021-09-09T11:45:40",
+      "from_date": "",
+      "last_modified": "",
       "lines": 100,
       "size": 44137,
-      "to_date": "2021-09-09",
+      "to_date": "",
       "url": "http://fakeUnpaywall:12000/snapshots/fake2.jsonl.gz"
     },
     {
       "filename": "fake3.jsonl.gz",
       "filetype": "jsonl",
-      "from_date": "2021-08-26",
-      "last_modified": "2021-09-02T11:45:40",
+      "from_date": "",
+      "last_modified": "",
       "lines": 2000,
       "size": 877494,
-      "to_date": "2021-09-02",
+      "to_date": "",
       "url": "http://fakeUnpaywall:12000/snapshots/fake3.jsonl.gz"
     },
     {
       "filename": "fake1-error.jsonl.gz",
       "filetype": "jsonl",
-      "from_date": "2020-09-09",
-      "last_modified": "2020-09-16T11:45:40",
+      "from_date": "",
+      "last_modified": "",
       "lines": 50,
       "size": 19918,
-      "to_date": "2020-09-16",
+      "to_date": "",
       "url": "http://fakeUnpaywall:12000/snapshots/fake1-error.jsonl.gz"
     },
     {
       "filename": "fake1.jsonl.gz",
       "filetype": "jsonl",
-      "from_date": "2020-09-02",
-      "last_modified": "2020-09-09T11:45:40",
+      "from_date": "",
+      "last_modified": "",
       "lines": 50,
       "size": 19896,
-      "to_date": "2020-09-09",
+      "to_date": "",
       "url": "http://fakeUnpaywall:12000/snapshots/fake1.jsonl.gz"
     }
   ]

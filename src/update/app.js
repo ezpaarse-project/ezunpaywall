@@ -32,9 +32,20 @@ app.get('/', async (req, res) => {
     await elasticClient.ping();
     elasticStatus = 'Alive';
   } catch (err) {
+    logger.error(`Cannot ping elastic ${err}`);
     elasticStatus = 'Error';
   }
-  res.status(200).json({ name, version, elastic: elasticStatus });
+
+  let redis = await pingRedis();
+  if (redis) {
+    redis = 'Alive';
+  } else {
+    redis = 'Error';
+  }
+
+  res.status(200).json({
+    name, version, elastic: elasticStatus, redis,
+  });
 });
 
 app.use(routerJob);
