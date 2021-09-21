@@ -52,7 +52,7 @@ router.post('/key/create', checkAuth, async (req, res, next) => {
     return res.status(400).json({ message: 'Attributes expected' });
   }
 
-  if (!Array.isArray(config?.access) || config.access.length !== 0) {
+  if (!Array.isArray(config?.access) || config?.access?.length === 0) {
     return res.status(400).json({ message: 'Access expected' });
   }
 
@@ -62,7 +62,7 @@ router.post('/key/create', checkAuth, async (req, res, next) => {
     }
   });
 
-  if (config.access.some()) {
+  if (config?.access?.some()) {
     
   }
 

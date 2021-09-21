@@ -34,7 +34,7 @@ const checkAuth = async (req, res, next) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 
-  if (config.name !== 'admin' || !config.access.includes('auth') || !config.allowed) {
+  if (config.name !== 'admin' || !config?.access?.includes('auth') || !config?.allowed) {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
