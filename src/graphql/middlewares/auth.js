@@ -38,6 +38,8 @@ const checkAuth = async (req, res, next) => {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
+  req.user = config.name;
+
   req.attributes = config.attributes;
   return next();
 };

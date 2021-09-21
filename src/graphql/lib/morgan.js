@@ -5,7 +5,6 @@ const path = require('path');
 const accessLogDir = path.resolve(__dirname, '..', 'out', 'logs');
 
 function formatDate(d) {
-  // TODO see padStart
   let month = `${d.getMonth() + 1}`;
   let day = `${d.getDate()}`;
   const year = d.getFullYear();
@@ -27,4 +26,11 @@ const accessLogStream = rfs.createStream(logFilename(new Date()), {
   path: accessLogDir,
 });
 
-module.exports = morgan('combined', { stream: accessLogStream });
+morgan.token('ip', (req) => req.headers['x-forwarded-for'] || req.connection.remoteAddress);
+
+morgan.token('user', (req) => {
+  if (req.user) return req.user;
+  return 'no user info';
+});
+
+module.exports = morgan(':ip :user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ', { stream: accessLogStream });
