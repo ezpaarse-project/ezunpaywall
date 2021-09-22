@@ -102,11 +102,13 @@ const askEzunpaywall = async (data, args, stateName, index, apikey) => {
   // contain array of doi to request ezunpaywall
   dois = await map1.filter((elem) => elem !== undefined);
   dois = dois.join('","');
-  // TODO put index
+
+  const url = process.env.GRAPHQL_URL || 'http://graphql:3000';
+
   try {
     res = await axios({
       method: 'POST',
-      url: `${process.env.GRAPHQL_URL || 'http://localhost:3000'}/graphql`,
+      url: `${url}/graphql`,
       data:
       {
         query: `{ GetByDOI(dois: ["${dois}"]) ${args.toString()} }`,
@@ -118,7 +120,7 @@ const askEzunpaywall = async (data, args, stateName, index, apikey) => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request graphql service at ${process.env.GRAPHQL_URL || 'http://localhost:3000'}`);
+    logger.error(`Cannot request graphql service at ${url}/graphql`);
     logger.error(JSON.stringify(err?.response?.data?.errors));
     await fail(stateName);
   }
