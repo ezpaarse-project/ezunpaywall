@@ -133,7 +133,6 @@ const askEzunpaywall = async (data, args, stateName, index, apikey) => {
         index,
       },
     });
-    console.log(res?.data?.data?.GetByDOI);
   } catch (err) {
     logger.error(`Cannot request graphql service at ${process.env.GRAPHQL_URL || 'http://localhost:3000'}`);
     logger.error(JSON.stringify(err?.response?.data?.errors));

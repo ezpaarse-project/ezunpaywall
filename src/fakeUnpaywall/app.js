@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs-extra');
 const cors = require('cors');
 
+const checkAuth = require('./middlewares/auth');
+
 const { name, version } = require('./package.json');
 
 // start server
@@ -29,7 +31,7 @@ app.get('/snapshots/:file', async (req, res) => {
   res.sendFile(path.resolve(__dirname, 'snapshots', file));
 });
 
-app.get('/feed/changefiles', async (req, res) => {
+app.get('/feed/changefiles', checkAuth, async (req, res) => {
   const { interval } = req.query;
 
   
