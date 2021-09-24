@@ -487,39 +487,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Day: Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .send({
-          index: 'unpaywall-test',
-          startDate: date2,
-          interval: 'day',
-        })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
-    });
-
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .send({
-          index: 'unpaywall-test',
-          startDate: date2,
-          interval: 'day',
-        })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong X-API-KEY');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
-    });
-  });
-
   after(async () => {
     await deleteIndex('unpaywall-test');
     await deleteSnapshot('fake1.jsonl.gz');
