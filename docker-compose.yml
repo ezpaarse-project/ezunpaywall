@@ -80,9 +80,6 @@ services:
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
-      # proxy
-      - http_proxy
-      - https_proxy
       # redis
       - REDIS_PASSWORD
       # URL services
