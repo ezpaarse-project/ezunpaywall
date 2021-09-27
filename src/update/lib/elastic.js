@@ -31,16 +31,7 @@ const pingElastic = async () => {
   return true;
 };
 
-const indexRefresh = async (index) => {
-  try {
-    await elasticClient.indices.refresh({ index });
-  } catch (e) {
-    logger.warn(`step - failed to refresh the index: ${e.message}`);
-  }
-};
-
 module.exports = {
   elasticClient,
   pingElastic,
-  indexRefresh,
 };

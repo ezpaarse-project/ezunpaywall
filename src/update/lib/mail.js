@@ -59,15 +59,10 @@ const sendMailReport = async (state) => {
   }
 
   let insertedDocs = 0;
-  state.steps.forEach((step) => {
-    if (step.task === 'insert') {
-      insertedDocs += step.insertedDocs;
-    }
-  });
-
   let updatedDocs = 0;
   state.steps.forEach((step) => {
     if (step.task === 'insert') {
+      insertedDocs += step.insertedDocs;
       updatedDocs += step.updatedDocs;
     }
   });

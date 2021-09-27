@@ -11,7 +11,6 @@ const config = require('config');
 
 const {
   elasticClient,
-  indexRefresh,
 } = require('../lib/elastic');
 
 const logger = require('../lib/logger');
@@ -263,7 +262,11 @@ const insertDataUnpaywall = async (jobConfig) => {
 
   logger.info('step - end insertion');
 
-  await indexRefresh(index);
+  try {
+    await elasticClient.indices.refresh({ index });
+  } catch (e) {
+    logger.warn(`step - failed to refresh the index: ${e.message}`);
+  }
 
   // last update of step
   step.status = 'success';
