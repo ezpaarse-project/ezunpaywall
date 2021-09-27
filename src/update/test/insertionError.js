@@ -96,6 +96,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(true);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('stackTrace').to.be.an('array');
+
+      expect(state.stackTrace[0]).have.property('type').equal('mapper_parsing_exception');
 
       expect(state.steps[0]).have.property('task').equal('insert');
       expect(state.steps[0]).have.property('index').equal('unpaywall-test');
@@ -116,6 +119,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(true);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('stackTrace').to.be.an('array');
+
+      expect(report.stackTrace[0]).have.property('type').equal('mapper_parsing_exception');
 
       expect(report.steps[0]).have.property('task').equal('insert');
       expect(report.steps[0]).have.property('index').equal('unpaywall-test');
@@ -180,6 +186,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(true);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('stackTrace').to.be.an('array');
+
+      expect(state.stackTrace[0]).have.property('type').equal('mapper_parsing_exception');
 
       expect(state.steps[0]).have.property('task').equal('askUnpaywall');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
@@ -224,6 +233,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(true);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('stackTrace').to.be.an('array');
+
+      expect(report.stackTrace[0]).have.property('type').equal('mapper_parsing_exception');
 
       expect(report.steps[0]).have.property('task').equal('askUnpaywall');
       expect(report.steps[0]).have.property('took').to.not.equal(undefined);
