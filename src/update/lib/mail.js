@@ -88,7 +88,9 @@ const sendMailReport = async (state) => {
   } catch (err) {
     logger.error(`Cannot send mail ${err}`);
     logger.error(err);
+    return;
   }
+  logger.error('send update end email');
 };
 
 const sendMailStarted = async (config) => {
@@ -105,7 +107,9 @@ const sendMailStarted = async (config) => {
   } catch (err) {
     logger.error(`Cannot send mail ${err}`);
     logger.error(err);
+    return;
   }
+  logger.error('send update start email');
 };
 
 module.exports = {
