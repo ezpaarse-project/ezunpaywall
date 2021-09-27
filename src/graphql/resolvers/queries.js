@@ -3,6 +3,7 @@
 const graphql = require('graphql');
 const graphqlFields = require('graphql-fields');
 
+const config = require('config');
 const unpaywallType = require('../models/unpaywall');
 const { elasticClient } = require('../lib/elastic');
 const { oaLocationInput } = require('../models/oalocation');
@@ -48,9 +49,9 @@ function flatten(obj) {
  * args = { dois: [ '10.1186/s40510-015-0109-6' ], best_oa_location: { license: 'cc-by' } }
  * return { terms: { 'best_oa_location.license': [ 'cc-by' ] } }
  *
- * @param {string} attr name of attribute
- * @param {object} args graphql arguments
- * @returns {object} elatic readable object
+ * @param {String} attr name of attribute
+ * @param {Object} args graphql arguments
+ * @returns {Object} elatic readable object
  */
 const parseTerms = (attr, args) => {
   const subAttr = args[attr];
@@ -116,7 +117,7 @@ module.exports = {
     const { attributes } = req;
 
     if (!index) {
-      index = 'unpaywall';
+      index = config.get('elasticsearch.indexAlias');
     }
 
     if (attributes !== '*') {
@@ -130,7 +131,14 @@ module.exports = {
       });
     }
 
-    const filter = [{ terms: { doi: args.dois } }];
+    const dois = [];
+
+    // normalize request
+    args.dois.forEach((doi) => {
+      dois.push(doi.toLowerCase());
+    });
+
+    const filter = [{ terms: { doi: dois } }];
     const matchRange = /(range)/i;
 
     for (const attr in args) {
@@ -175,7 +183,7 @@ module.exports = {
     try {
       res = await elasticClient.search({
         index,
-        size: args.dois.length || 1000,
+        size: dois.length || 1000,
         body: {
           query,
           _source: attributes,

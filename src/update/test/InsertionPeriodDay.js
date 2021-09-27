@@ -41,22 +41,21 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   const dateNow = new Date(now).toISOString().slice(0, 10);
   // yersterday
   const date1 = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
-  // yersterday - one week
-  const date2 = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
-  // yersterday - two weeks
-  const date3 = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
-  // theses dates are for test between a short period
-  const date4 = new Date(now - (4 * oneDay)).toISOString().slice(0, 10);
-  const date5 = new Date(now - (5 * oneDay)).toISOString().slice(0, 10);
+  // 2 days before
+  const date2 = new Date(now - (2 * oneDay)).toISOString().slice(0, 10);
+
+  // these dates are for test with dates on which no update file has been published from unpaywall
+  const date3 = new Date(now - (6 * oneDay)).toISOString().slice(0, 10);
+  const date4 = new Date(now - (7 * oneDay)).toISOString().slice(0, 10);
   const tomorrow = new Date(now + (1 * oneDay)).toISOString().slice(0, 10);
 
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile();
+    await updateChangeFile('day');
   });
 
-  describe(`Do a download and insert between ${date2} and now`, async () => {
+  describe(`Day: Do a download and insert between ${date1} and now`, async () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -70,14 +69,15 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post('/job')
         .send({
           index: 'unpaywall-test',
-          startDate: date2,
+          startDate: date1,
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date1} and ${dateNow}`);
     });
 
     // test insertion
@@ -117,9 +117,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(state.steps[2]).have.property('file').equal('fake2.jsonl.gz');
       expect(state.steps[2]).have.property('percent').equal(100);
       expect(state.steps[2]).have.property('linesRead').equal(100);
-      expect(state.steps[2]).have.property('insertedDocs').equal(100);
-      expect(state.steps[2]).have.property('updatedDocs').equal(0);
-      expect(state.steps[2]).have.property('failedDocs').equal(0);
       expect(state.steps[2]).have.property('took').to.not.equal(undefined);
       expect(state.steps[2]).have.property('status').equal('success');
 
@@ -133,9 +130,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(state.steps[4]).have.property('file').equal('fake1.jsonl.gz');
       expect(state.steps[4]).have.property('percent').equal(100);
       expect(state.steps[4]).have.property('linesRead').equal(50);
-      expect(state.steps[4]).have.property('insertedDocs').equal(50);
-      expect(state.steps[4]).have.property('updatedDocs').equal(0);
-      expect(state.steps[4]).have.property('failedDocs').equal(0);
       expect(state.steps[4]).have.property('took').to.not.equal(undefined);
       expect(state.steps[4]).have.property('status').equal('success');
     });
@@ -165,9 +159,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[2]).have.property('file').equal('fake2.jsonl.gz');
       expect(report.steps[2]).have.property('percent').equal(100);
       expect(report.steps[2]).have.property('linesRead').equal(100);
-      expect(report.steps[2]).have.property('insertedDocs').equal(100);
-      expect(report.steps[2]).have.property('updatedDocs').equal(0);
-      expect(report.steps[2]).have.property('failedDocs').equal(0);
       expect(report.steps[2]).have.property('took').to.not.equal(undefined);
       expect(report.steps[2]).have.property('status').equal('success');
 
@@ -193,7 +184,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Do a download and insert between ${date3} and ${date2}`, () => {
+  describe(`Day: Do a download and insert between ${date2} and ${date1}`, () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
@@ -207,15 +198,16 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post('/job')
         .send({
           index: 'unpaywall-test',
-          startDate: date3,
-          endDate: date2,
+          startDate: date2,
+          endDate: date1,
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date3} and ${date2}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date2} and ${date1}`);
     });
 
     // test insertion
@@ -255,9 +247,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(state.steps[2]).have.property('file').equal('fake3.jsonl.gz');
       expect(state.steps[2]).have.property('percent').equal(100);
       expect(state.steps[2]).have.property('linesRead').equal(2000);
-      expect(state.steps[2]).have.property('insertedDocs').equal(2000);
-      expect(state.steps[2]).have.property('updatedDocs').equal(0);
-      expect(state.steps[2]).have.property('failedDocs').equal(0);
       expect(state.steps[2]).have.property('took').to.not.equal(undefined);
       expect(state.steps[2]).have.property('status').equal('success');
 
@@ -271,9 +260,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(state.steps[4]).have.property('file').equal('fake2.jsonl.gz');
       expect(state.steps[4]).have.property('percent').equal(100);
       expect(state.steps[4]).have.property('linesRead').equal(100);
-      expect(state.steps[4]).have.property('insertedDocs').equal(100);
-      expect(state.steps[4]).have.property('updatedDocs').equal(0);
-      expect(state.steps[4]).have.property('failedDocs').equal(0);
       expect(state.steps[4]).have.property('took').to.not.equal(undefined);
       expect(state.steps[4]).have.property('status').equal('success');
     });
@@ -303,9 +289,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[2]).have.property('file').equal('fake3.jsonl.gz');
       expect(report.steps[2]).have.property('percent').equal(100);
       expect(report.steps[2]).have.property('linesRead').equal(2000);
-      expect(report.steps[2]).have.property('insertedDocs').equal(2000);
-      expect(report.steps[2]).have.property('updatedDocs').equal(0);
-      expect(report.steps[2]).have.property('failedDocs').equal(0);
       expect(report.steps[2]).have.property('took').to.not.equal(undefined);
       expect(report.steps[2]).have.property('status').equal('success');
 
@@ -319,9 +302,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(report.steps[4]).have.property('file').equal('fake2.jsonl.gz');
       expect(report.steps[4]).have.property('percent').equal(100);
       expect(report.steps[4]).have.property('linesRead').equal(100);
-      expect(report.steps[4]).have.property('insertedDocs').equal(100);
-      expect(report.steps[4]).have.property('updatedDocs').equal(0);
-      expect(report.steps[4]).have.property('failedDocs').equal(0);
       expect(report.steps[4]).have.property('took').to.not.equal(undefined);
       expect(report.steps[4]).have.property('status').equal('success');
     });
@@ -333,7 +313,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert between ${date5} and ${date4} because there is no file between these dates in ezunpaywall`, () => {
+  describe(`Day: Don't download and insert between ${date4} and ${date3} because there is no file between these dates in ezunpaywall`, () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
@@ -347,15 +327,16 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .post('/job')
         .send({
           index: 'unpaywall-test',
-          startDate: date5,
-          endDate: date4,
+          startDate: date4,
+          endDate: date3,
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date5} and ${date4}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date4} and ${date3}`);
     });
 
     // test insertion
@@ -394,12 +375,16 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't do a download and insert with endDate=${date1} only`, () => {
+  describe(`Day: Don't do a download and insert with endDate=${date1} only`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
-        .send({ index: 'unpaywall-test', endDate: date1 })
+        .send({
+          index: 'unpaywall-test',
+          endDate: date1,
+          interval: 'day',
+        })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
@@ -409,7 +394,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe('Don\'t do a download and insert with startDate in the wrong format', () => {
+  describe('Day: Don\'t do a download and insert with startDate in the wrong format', () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -418,6 +403,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: 'doen\'t exist',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -434,6 +420,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: '01-01-2000',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -450,6 +437,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: '2000-50-50',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -460,7 +448,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
+  describe(`Day: Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -469,6 +457,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           index: 'unpaywall-test',
           startDate: date2,
           endDate: date3,
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -479,7 +468,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
   });
 
-  describe(`Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
+  describe(`Day: Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
     // test return message
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
@@ -487,6 +476,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .send({
           index: 'unpaywall-test',
           startDate: tomorrow,
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -494,37 +484,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate cannot be in the futur');
-    });
-  });
-
-  describe(`Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .send({
-          index: 'unpaywall-test',
-          startDate: date2,
-        })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
-    });
-
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .send({
-          index: 'unpaywall-test',
-          startDate: date2,
-        })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong X-API-KEY');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 

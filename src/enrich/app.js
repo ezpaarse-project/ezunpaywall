@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 const { pingRedis } = require('./lib/redis');
+const morgan = require('./lib/morgan');
 
 const { name, version } = require('./package.json');
 
@@ -21,6 +22,7 @@ fs.ensureDir(path.resolve(outDir, 'upload'));
 fs.ensureDir(path.resolve(outDir, 'enriched'));
 
 const app = express();
+app.use(morgan);
 
 app.use(cors({
   origin: '*',

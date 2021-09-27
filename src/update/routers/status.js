@@ -3,7 +3,7 @@ const router = require('express').Router();
 const { getStatus } = require('../bin/status');
 
 /**
- * @apiSuccess status
+ * @return status
  */
 router.get('/status', (req, res) => res.status(200).json({ inUpdate: getStatus() }));
 

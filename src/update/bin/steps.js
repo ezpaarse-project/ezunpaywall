@@ -30,7 +30,7 @@ const {
 
 /**
  * check if index exit
- * @param {string} index Name of index
+ * @param {String} index Name of index
  * @returns {boolean} if exist
  */
 const checkIfIndexExist = async (index) => {
@@ -40,12 +40,11 @@ const checkIfIndexExist = async (index) => {
 
 /**
  * create index if it doesn't exist
- * @param {string} index Name of index
+ * @param {String} index Name of index
  * @param {JSON} mapping mapping in JSON format
  */
 const createIndex = async (index, mapping) => {
   const exist = await checkIfIndexExist(index);
-
   if (!exist) {
     await elasticClient.indices.create({
       index,
@@ -57,7 +56,7 @@ const createIndex = async (index, mapping) => {
 /**
  * insert data on elastic with request
  * @param {Array} data array of unpaywall data
- * @param {string} stateName - state filename
+ * @param {String} stateName - state filename
  */
 const insertDataInElastic = async (data, stateName, step) => {
   let res;
@@ -101,17 +100,23 @@ const insertDataInElastic = async (data, stateName, step) => {
 
 /**
  * Inserts the contents of an unpaywall data update file
- * @param {string} stateName - state filename
- * @param {string} filename - snapshot filename which the data will be inserted
- * @param {string} indexname name of the index to which the data will be saved
- * @param {number} offset - offset
- * @param {number} limit - limit
+ * @param {String} stateName - state filename
+ * @param {String} index name of the index to which the data will be saved
+ * @param {String} filename - snapshot filename which the data will be inserted
+ * @param {Integer} offset - offset
+ * @param {Integer} limit - limit
  */
-const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit) => {
+const insertDataUnpaywall = async (jobConfig) => {
+  const { stateName } = jobConfig;
+  const { index } = jobConfig;
+  const { filename } = jobConfig;
+  const { offset } = jobConfig;
+  const { limit } = jobConfig;
+
   try {
-    await createIndex(indexname, unpaywallMapping);
+    await createIndex(index, unpaywallMapping);
   } catch (err) {
-    logger.error(`Cannot create index [${indexname}]`);
+    logger.error(`Cannot create index [${index}]`);
     logger.error(err);
     await fail(stateName, err);
     return false;
@@ -123,11 +128,11 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
     if (aliasExists) {
       logger.info(`Alias [${indexAlias}] already exists`);
     } else {
-      logger.info(`Creating alias [${indexAlias}] pointing to index [${indexname}]`);
-      await elasticClient.indices.putAlias({ index: indexname, name: indexAlias });
+      logger.info(`Creating alias [${indexAlias}] pointing to index [${index}]`);
+      await elasticClient.indices.putAlias({ index, name: indexAlias });
     }
   } catch (err) {
-    logger.error(`Cannot create alias [${indexAlias}] pointing to index [${indexname}]`);
+    logger.error(`Cannot create alias [${indexAlias}] pointing to index [${index}]`);
     logger.error(err);
     await fail(stateName, err);
     return false;
@@ -206,7 +211,7 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
       // fill the array
       try {
         const doc = JSON.parse(line);
-        bulkOps.push({ index: { _index: indexname, _id: doc.doi } });
+        bulkOps.push({ index: { _index: index, _id: doc.doi } });
         bulkOps.push(doc);
       } catch (err) {
         logger.error(`Cannot parse "${line}" in json format`);
@@ -254,7 +259,7 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
   logger.info('step - end insertion');
 
   try {
-    await elasticClient.indices.refresh({ index: indexname });
+    await elasticClient.indices.refresh({ index });
   } catch (e) {
     logger.warn(`step - failed to refresh the index: ${e.message}`);
   }
@@ -270,11 +275,11 @@ const insertDataUnpaywall = async (stateName, filename, indexname, offset, limit
 
 /**
  * Update the step the percentage in download regularly until the download is complete
- * @param {string} filepath - path where the file is downloaded
- * @param {object} info - info of file
- * @param {string} stateName - state filename
- * @param {object} state - state in JSON format
- * @param {date} start - download start date
+ * @param {String} filepath - path where the file is downloaded
+ * @param {Object} info - info of file
+ * @param {String} stateName - state filename
+ * @param {Object} state - state in JSON format
+ * @param {Date} start - download start date
  */
 async function updatePercentStepDownload(filepath, info, stateName, start) {
   const state = await getState(stateName);
@@ -302,8 +307,8 @@ async function updatePercentStepDownload(filepath, info, stateName, start) {
 
 /**
  * Start the download of the update file from unpaywall
- * @param {string} stateName - state filename
- * @param {string} info - information of the file to download
+ * @param {String} stateName - state filename
+ * @param {String} info - information of the file to download
  */
 const downloadFileFromUnpaywall = async (stateName, info) => {
   let stats;
@@ -323,7 +328,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
   // if snapshot already exist and download completely, past
   if (alreadyInstalled && stats.size === info.size) {
-    logger.info('file already installed');
+    logger.info(`file [${info.filename}] already installed`);
     return true;
   }
 
@@ -394,22 +399,38 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
 /**
  * ask unpaywall to get information and download links for snapshots files
- * @param {string} stateName - state filename
- * @param {string} url - url to call for the list of update files
- * @param {date} startDate - start date of the period
- * @param {date} endDate - end date of the period
+ * @param {String} stateName - state filename
+ * @param {String} url - url to request for the list of update files
+ * @param {String} apikey - apikey to request for the list of update files
+ * @param {String} interval - interval of snapshot update, day or week
+ * @param {Date} startDate - start date of the period
+ * @param {Date} endDate - end date of the period
  * @returns {array<object>} information about snapshots files
  */
-const askUnpaywall = async (stateName, url, startDate, endDate) => {
+const askUnpaywall = async (jobConfig) => {
   const start = new Date();
+  const {
+    stateName,
+    url,
+    apikey,
+    interval,
+    startDate,
+    endDate,
+  } = jobConfig;
+
   await addStepAskUnpaywall(stateName);
   const state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
   let res;
+
   try {
     res = await axios({
       method: 'get',
       url,
+      params: {
+        api_key: apikey,
+        interval,
+      },
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
@@ -430,9 +451,19 @@ const askUnpaywall = async (stateName, url, startDate, endDate) => {
   let snapshotsInfo = res.data.list;
   snapshotsInfo = snapshotsInfo
     .reverse()
-    .filter((file) => file.filetype === 'jsonl')
-    .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
-    .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
+    .filter((file) => file.filetype === 'jsonl');
+
+  if (interval === 'week') {
+    snapshotsInfo = snapshotsInfo
+      .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
+      .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
+  }
+
+  if (interval === 'day') {
+    snapshotsInfo = snapshotsInfo
+      .filter((file) => new Date(file.date).getTime() >= new Date(startDate).getTime())
+      .filter((file) => new Date(file.date).getTime() <= new Date(endDate).getTime());
+  }
 
   step.status = 'success';
   step.took = (new Date() - start) / 1000;

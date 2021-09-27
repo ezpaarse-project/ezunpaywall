@@ -39,7 +39,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     await ping();
   });
 
-  describe('Do a classic insertion of a file already installed', () => {
+  describe('Do insertion of a file already installed', () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -129,7 +129,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
   });
 
-  describe('Do a classic insertion of a file already installed with parameter limit=10', () => {
+  describe('Do insertion of a file already installed with parameter limit=10', () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -220,7 +220,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
   });
 
-  describe('Do a classic insertion of a file already installed with parameter offset=40', () => {
+  describe('Do insertion of a file already installed with parameter offset=40', () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -310,7 +310,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
   });
 
-  describe('Do a classic insertion of a file already installed with parameter offset=10 and limit=20', () => {
+  describe('Do insertion of a file already installed with parameter offset=10 and limit=20', () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');

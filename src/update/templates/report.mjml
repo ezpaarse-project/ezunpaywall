@@ -93,15 +93,17 @@
     {% endif %}
 
     <mj-text>
-      <p>
-        Ce message est envoyé automatiquement par l'application ezunpaywall,
-        vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
-      </p>
+      <p>Cordialement,</p>
+      <p>L'équipe ezMESURE.</p>
     </mj-text>
 
     <mj-text>
-      <p>Cordialement,</p>
-      <p>L'équipe ezMESURE.</p>
+      <i>
+        <font size="1">
+          Ce message est envoyé automatiquement par l'application ezunpaywall,
+          vous le recevez parce que vous faites partie d'une liste de diffusion de rapports.
+        </font>
+      </i>
     </mj-text>
 
   </mj-column>

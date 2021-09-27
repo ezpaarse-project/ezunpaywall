@@ -7,6 +7,7 @@ const logger = require('./lib/logger');
 const { elasticClient, pingElastic } = require('./lib/elastic');
 const { pingRedis } = require('./lib/redis');
 const { name, version } = require('./package.json');
+const morgan = require('./lib/morgan');
 
 const routerJob = require('./routers/job');
 const routerReport = require('./routers/report');
@@ -23,8 +24,10 @@ fs.ensureDir(path.resolve(outDir, 'states'));
 fs.ensureDir(path.resolve(outDir, 'snapshots'));
 
 const app = express();
+
 app.use(express.json());
 app.use(cors());
+app.use(morgan);
 
 app.get('/', async (req, res) => {
   let elasticStatus;

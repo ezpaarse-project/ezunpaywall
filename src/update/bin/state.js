@@ -7,7 +7,7 @@ const statesDir = path.resolve(__dirname, '..', 'out', 'states');
 
 /**
  * create a new file on folder "out/update/state" containing the update state
- * @return {string} name of the file where the state is saved
+ * @return {String} name of the file where the state is saved
  */
 const createState = async () => {
   const state = {
@@ -29,8 +29,8 @@ const createState = async () => {
 
 /**
  * get state from the folder "out/enrich/state"
- * @param {string} filename - state filename
- * @returns {object} - state in JSON format
+ * @param {String} filename - state filename
+ * @returns {Object} - state in JSON format
  */
 const getState = async (filename) => {
   let state = await fs.readFile(path.resolve(statesDir, filename), 'utf-8');
@@ -45,8 +45,8 @@ const getState = async (filename) => {
 
 /**
  * write the latest version of the state to the file
- * @param {object} state - state in JSON format
- * @param {object} filename - name of the file where the state is saved
+ * @param {Object} state - state in JSON format
+ * @param {Object} filename - name of the file where the state is saved
  */
 const updateStateInFile = async (state, filename) => {
   const filepath = path.resolve(statesDir, filename);
@@ -60,7 +60,7 @@ const updateStateInFile = async (state, filename) => {
 
 /**
  * add step "askUnpaywall" in steps attributes of state
- * @param {string} filename - name of the file where the state is saved
+ * @param {String} filename - name of the file where the state is saved
  */
 const addStepAskUnpaywall = async (filename) => {
   const state = await getState(filename);
@@ -76,8 +76,8 @@ const addStepAskUnpaywall = async (filename) => {
 
 /**
  * add step "download" in steps attributes of state
- * @param {string} filename - name of the file where the state is saved
- * @param {string} downloadFile - unpaywall data update file name
+ * @param {String} filename - name of the file where the state is saved
+ * @param {String} downloadFile - unpaywall data update file name
  */
 const addStepDownload = async (filename, downloadFile) => {
   const state = await getState(filename);
@@ -95,8 +95,8 @@ const addStepDownload = async (filename, downloadFile) => {
 
 /**
  * add step "download" in steps attributes of state
- * @param {string} filename - name of the file where the state is saved
- * @param {string} downloadFile - unpaywall data update file name
+ * @param {String} filename - name of the file where the state is saved
+ * @param {String} downloadFile - unpaywall data update file name
  */
 const addStepInsert = async (filename, downloadFile) => {
   const state = await getState(filename);
@@ -118,7 +118,7 @@ const addStepInsert = async (filename, downloadFile) => {
 
 /**
  * update the state when there is an error
- * @param {string} filename - name of the file where the state is saved
+ * @param {String} filename - name of the file where the state is saved
  * @param {Array<String>} stackTrace - log of error
  */
 const fail = async (filename, stackTrace) => {
@@ -133,7 +133,7 @@ const fail = async (filename, stackTrace) => {
 
 /**
  * update the state when the process is finished
- * @param {string} filename - name of the file where the state is saved
+ * @param {String} filename - name of the file where the state is saved
  */
 const endState = async (filename) => {
   const state = await getState(filename);

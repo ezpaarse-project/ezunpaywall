@@ -10,6 +10,7 @@ services:
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_INDEX_ALIAS=upw
       # proxy
       - http_proxy
       - https_proxy
@@ -33,15 +34,16 @@ services:
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
       # unpaywall
       - API_KEY_UPW
-      - UNPAYWALL_URL=http://fakeunpaywall:12000/snapshots/changefiles.json
+      - UNPAYWALL_URL=http://fakeunpaywall:12000/feed/changefiles
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
-      - ELASTICSEARCH_INDEX_ALIAS
+      - ELASTICSEARCH_INDEX_ALIAS=upw
       # proxy
       - http_proxy
       - https_proxy

@@ -48,10 +48,10 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile();
+    await updateChangeFile('week');
   });
 
-  describe('Do a classic insertion of a corrupted file already installed', () => {
+  describe('Do insertion of a corrupted file already installed', () => {
     before(async () => {
       await addSnapshot('fake1-error.jsonl.gz');
       await deleteIndex('unpaywall-test');
@@ -146,13 +146,14 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .send({
           index: 'unpaywall-test',
           startDate: date1,
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal(`Dowload and insert snapshot from unpaywall from ${date1} and ${dateNow}`);
+      expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date1} and ${dateNow}`);
     });
 
     // test insertion

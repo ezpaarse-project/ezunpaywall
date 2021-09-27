@@ -34,14 +34,14 @@ chai.use(chaiHttp);
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 
-describe('Test: weekly update route test', () => {
+describe('Test: daily update route test', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile();
+    await updateChangeFile('day');
   });
 
-  describe('Do a classic weekly update', () => {
+  describe('Day: Do daily update', () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -55,13 +55,14 @@ describe('Test: weekly update route test', () => {
         .post('/job')
         .send({
           index: 'unpaywall-test',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('Weekly update started');
+      expect(res.body.message).be.equal('Daily update started');
     });
 
     // test insertion
@@ -76,7 +77,7 @@ describe('Test: weekly update route test', () => {
     });
 
     // test state
-    it('Should get state with all informations from the weekly update', async () => {
+    it('Should get state with all informations from the daily update', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -110,7 +111,7 @@ describe('Test: weekly update route test', () => {
     });
 
     // test report
-    it('Should get report with all informations from the weekly update', async () => {
+    it('Should get report with all informations from the daily update', async () => {
       const report = await getReport();
 
       expect(report).have.property('done');
@@ -149,7 +150,7 @@ describe('Test: weekly update route test', () => {
     });
   });
 
-  describe('Do a classic weekly update 2 time', () => {
+  describe('Day: daily update 2 times', () => {
     before(async () => {
       await deleteSnapshot('fake1.jsonl.gz');
       await deleteSnapshot('fake2.jsonl.gz');
@@ -169,7 +170,7 @@ describe('Test: weekly update route test', () => {
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('Weekly update started');
+      expect(res.body.message).be.equal('Daily update started');
     });
 
     // test insertion
@@ -261,7 +262,7 @@ describe('Test: weekly update route test', () => {
         .set('X-API-KEY', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('Weekly update started');
+      expect(res.body.message).be.equal('Daily update started');
     });
 
     // test insertion
@@ -337,7 +338,7 @@ describe('Test: weekly update route test', () => {
     });
   });
 
-  describe('Do a weekly update but the file is already installed', () => {
+  describe('Day: Do a daily update but the file is already installed', () => {
     before(async () => {
       await deleteIndex('unpaywall-test');
       await deleteSnapshot('fake1.jsonl.gz');
@@ -352,6 +353,7 @@ describe('Test: weekly update route test', () => {
         .post('/job')
         .send({
           index: 'unpaywall-test',
+          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -359,7 +361,7 @@ describe('Test: weekly update route test', () => {
 
       // test response
       expect(res).have.status(200);
-      expect(res.body).have.property('message').equal('Weekly update started');
+      expect(res.body).have.property('message').equal('Daily update started');
     });
 
     // test insertion
@@ -374,7 +376,7 @@ describe('Test: weekly update route test', () => {
     });
 
     // test state
-    it('Should get state with all informations from the weekly update', async () => {
+    it('Should get state with all informations from the daily update', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -400,7 +402,7 @@ describe('Test: weekly update route test', () => {
     });
 
     // test Report
-    it('Should get report with all informations from the weekly update', async () => {
+    it('Should get report with all informations from the daily update', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);
@@ -433,7 +435,7 @@ describe('Test: weekly update route test', () => {
     });
   });
 
-  describe('Don\'t a classic weekly update because wrong X-API-KEY', () => {
+  describe('Day: Don\'t daily update because wrong X-API-KEY', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')

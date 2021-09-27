@@ -19,7 +19,7 @@ const enriched = path.resolve(__dirname, '..', 'out', 'enriched');
 
 /**
  * getter of all the unpaywall attributes that can be used for enrichment in graphql format
- * @returns {string} all attributs in graphql format
+ * @returns {String} all attributs in graphql format
  */
 const allArgs = () => `
 {
@@ -77,8 +77,8 @@ const allArgs = () => `
 
 /**
  * add attribute doi to args to be used with Map
- * @param {string} args graphql args
- * @returns {string} args with doi
+ * @param {String} args graphql args
+ * @returns {String} args with doi
  */
 const addDOItoGraphqlRequest = (args) => {
   args = args.replace(/\s/g, '');
@@ -88,11 +88,11 @@ const addDOItoGraphqlRequest = (args) => {
 /**
   * ask ezunpaywall to get informations of unpaywall to enrich a file
   * @param {array<string>} data array of line that we will enrich
-  * @param {string} args attributes that we will enrich
-  * @param {string} stateName - state filename
+  * @param {String} args attributes that we will enrich
+  * @param {String} stateName - state filename
   * @param {String} index - index name of mapping
   * @param {String} apikey - apikey of user
-  * @return {array} ezunpaywal response
+  * @return {Array} ezunpaywal response
   */
 const askEzunpaywall = async (data, args, stateName, index, apikey) => {
   let dois = [];
@@ -102,11 +102,13 @@ const askEzunpaywall = async (data, args, stateName, index, apikey) => {
   // contain array of doi to request ezunpaywall
   dois = await map1.filter((elem) => elem !== undefined);
   dois = dois.join('","');
-  // TODO put index
+
+  const url = process.env.GRAPHQL_URL || 'http://graphql:3000';
+
   try {
     res = await axios({
       method: 'POST',
-      url: `${process.env.GRAPHQL_URL || 'http://localhost:3000'}/graphql`,
+      url: `${url}/graphql`,
       data:
       {
         query: `{ GetByDOI(dois: ["${dois}"]) ${args.toString()} }`,
@@ -118,7 +120,7 @@ const askEzunpaywall = async (data, args, stateName, index, apikey) => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request graphql service at ${process.env.GRAPHQL_URL || 'http://localhost:3000'}`);
+    logger.error(`Cannot request graphql service at ${url}/graphql`);
     logger.error(JSON.stringify(err?.response?.data?.errors));
     await fail(stateName);
   }
@@ -187,10 +189,10 @@ const enrichTab = (data, response) => {
 /**
  * write enriched date in enriched file
  * @param {array<object>} data array of line enriched
- * @param {string} headers headers
+ * @param {String} headers headers
  * @param {char} separator separator of enriched file
- * @param {string} enrichedFile filepath of enriched file
- * @param {string} stateName - state filename
+ * @param {String} enrichedFile filepath of enriched file
+ * @param {String} stateName - state filename
  */
 const writeInFileCSV = async (data, headers, separator, enrichedFile, stateName) => {
   const parsedTab = JSON.stringify(data);
@@ -212,7 +214,7 @@ const writeInFileCSV = async (data, headers, separator, enrichedFile, stateName)
 /**
  * enrich header with graphql args
  * @param {array<string>} header - header
- * @param {string} args - graphql args
+ * @param {String} args - graphql args
  * @returns {array<string>} header enriched
  */
 const enrichHeaderCSV = (header, args) => {
@@ -254,7 +256,7 @@ const enrichHeaderCSV = (header, args) => {
  * write header in the enriched file
  * @param {array<string>} header - header enriched
  * @param {char} separator - separator of file
- * @param {string} enrichedFile - pathfile of enriched file
+ * @param {String} enrichedFile - pathfile of enriched file
  */
 const writeHeaderCSV = async (header, separator, enrichedFile) => {
   try {
@@ -268,9 +270,9 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
 /**
  * starts the enrichment process for files CSV
  * @param {readable} readStream - readstream of the file you want to enrich
- * @param {string} args - attributes will be add
- * @param {string} separator - separator of enriched file
- * @param {string} id - id of process
+ * @param {String} args - attributes will be add
+ * @param {String} separator - separator of enriched file
+ * @param {String} id - id of process
  * @param {String} index - index name of mapping
  * @param {String} apikey - apikey of user
  */
