@@ -90,7 +90,7 @@ const sendMailReport = async (state) => {
     logger.error(err);
     return;
   }
-  logger.error('send update end email');
+  logger.info('send update end email');
 };
 
 const sendMailStarted = async (config) => {
@@ -109,7 +109,7 @@ const sendMailStarted = async (config) => {
     logger.error(err);
     return;
   }
-  logger.error('send update start email');
+  logger.info('send update start email');
 };
 
 module.exports = {
