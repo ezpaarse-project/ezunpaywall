@@ -355,10 +355,10 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
   const filePath = path.resolve(snapshotsDir, info.filename);
 
-  logger.info(`file : ${info.filename}`);
-  logger.info(`lines : ${info.lines}`);
-  logger.info(`size : ${info.size}`);
-  logger.info(`to_date : ${info.to_date}`);
+  logger.info(`file - ${info.filename}`);
+  logger.info(`lines - ${info.lines}`);
+  logger.info(`size - ${info.size}`);
+  logger.info(`to_date - ${info.to_date}`);
 
   if (res?.data instanceof Readable) {
     await new Promise((resolve, reject) => {
