@@ -57,6 +57,21 @@ const sendMailReport = async (state) => {
   } else {
     status = 'success';
   }
+
+  let insertedDocs = 0;
+  state.steps.forEach((step) => {
+    if (step.task === 'insert') {
+      insertedDocs += step.insertedDocs;
+    }
+  });
+
+  let updatedDocs = 0;
+  state.steps.forEach((step) => {
+    if (step.task === 'insert') {
+      updatedDocs += step.updatedDocs;
+    }
+  });
+
   try {
     await sendMail({
       from: notifications.sender,
@@ -65,6 +80,8 @@ const sendMailReport = async (state) => {
       ...generateMail('report', {
         state,
         status,
+        insertedDocs,
+        updatedDocs,
         date: format(new Date(), 'dd-MM-yyyy'),
       }),
     });

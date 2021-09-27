@@ -103,6 +103,7 @@ const addStepInsert = async (filename, downloadFile) => {
   logger.info('step - insert file');
   const step = {
     task: 'insert',
+    index: 'default',
     file: downloadFile,
     linesRead: 0,
     insertedDocs: 0,

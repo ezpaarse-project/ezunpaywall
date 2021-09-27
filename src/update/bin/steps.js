@@ -9,7 +9,11 @@ const { Readable } = require('stream');
 const axios = require('axios');
 const config = require('config');
 
-const { elasticClient } = require('../lib/elastic');
+const {
+  elasticClient,
+  indexRefresh,
+} = require('../lib/elastic');
+
 const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
@@ -138,11 +142,12 @@ const insertDataUnpaywall = async (jobConfig) => {
     return false;
   }
 
-  // step initiation in the state
+  // step insertion in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
   let state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
+  step.index = index;
 
   const filePath = path.resolve(snapshotsDir, filename);
 
@@ -258,11 +263,7 @@ const insertDataUnpaywall = async (jobConfig) => {
 
   logger.info('step - end insertion');
 
-  try {
-    await elasticClient.indices.refresh({ index });
-  } catch (e) {
-    logger.warn(`step - failed to refresh the index: ${e.message}`);
-  }
+  await indexRefresh(index);
 
   // last update of step
   step.status = 'success';

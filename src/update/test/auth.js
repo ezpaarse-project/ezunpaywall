@@ -3,8 +3,13 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const {
+  deleteSnapshot,
   updateChangeFile,
 } = require('./utils/snapshot');
+
+const {
+  deleteIndex,
+} = require('./utils/elastic');
 
 const {
   ping,
@@ -23,6 +28,10 @@ describe('Test: auth service in update service', () => {
     this.timeout(30000);
     await ping();
     await updateChangeFile('week');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
+    await deleteIndex('unpaywall-test');
   });
 
   describe('Test with update API key', () => {
@@ -133,5 +142,11 @@ describe('Test: auth service in update service', () => {
       expect(res).have.status(401);
       expect(res?.body).have.property('message').eq('Not authorized');
     });
+  });
+  after(async () => {
+    await deleteIndex('unpaywall-test');
+    await deleteSnapshot('fake1.jsonl.gz');
+    await deleteSnapshot('fake2.jsonl.gz');
+    await deleteSnapshot('fake3.jsonl.gz');
   });
 });

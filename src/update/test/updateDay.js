@@ -98,6 +98,7 @@ describe('Test: daily update route test', () => {
       expect(state.steps[1]).have.property('status').be.equal('success');
 
       expect(state.steps[2]).have.property('task').be.equal('insert');
+      expect(state.steps[2]).have.property('index').equal('unpaywall-test');
       expect(state.steps[2]).have.property('file').be.equal('fake1.jsonl.gz');
       expect(state.steps[2]).have.property('percent').be.equal(100);
       expect(state.steps[2]).have.property('linesRead').be.equal(50);
@@ -132,6 +133,7 @@ describe('Test: daily update route test', () => {
       expect(report.steps[1]).have.property('status').be.equal('success');
 
       expect(report.steps[2]).have.property('task').be.equal('insert');
+      expect(report.steps[2]).have.property('index').equal('unpaywall-test');
       expect(report.steps[2]).have.property('file').be.equal('fake1.jsonl.gz');
       expect(report.steps[2]).have.property('percent').be.equal(100);
       expect(report.steps[2]).have.property('linesRead').be.equal(50);
@@ -206,6 +208,7 @@ describe('Test: daily update route test', () => {
       expect(state.steps[1]).have.property('status').be.equal('success');
 
       expect(state.steps[2]).have.property('task').be.equal('insert');
+      expect(state.steps[2]).have.property('index').equal('unpaywall-test');
       expect(state.steps[2]).have.property('file').be.equal('fake1.jsonl.gz');
       expect(state.steps[2]).have.property('percent').be.equal(100);
       expect(state.steps[2]).have.property('linesRead').be.equal(50);
@@ -240,6 +243,7 @@ describe('Test: daily update route test', () => {
       expect(report.steps[1]).have.property('status').be.equal('success');
 
       expect(report.steps[2]).have.property('task').be.equal('insert');
+      expect(report.steps[2]).have.property('index').equal('unpaywall-test');
       expect(report.steps[2]).have.property('file').be.equal('fake1.jsonl.gz');
       expect(report.steps[2]).have.property('percent').be.equal(100);
       expect(report.steps[2]).have.property('linesRead').be.equal(50);
@@ -292,6 +296,7 @@ describe('Test: daily update route test', () => {
       expect(state.steps[0]).have.property('status').be.equal('success');
 
       expect(state.steps[1]).have.property('task').be.equal('insert');
+      expect(state.steps[1]).have.property('index').equal('unpaywall-test');
       expect(state.steps[1]).have.property('file').be.equal('fake1.jsonl.gz');
       expect(state.steps[1]).have.property('percent').be.equal(100);
       expect(state.steps[1]).have.property('linesRead').be.equal(50);
@@ -320,6 +325,7 @@ describe('Test: daily update route test', () => {
       expect(report.steps[0]).have.property('status').be.equal('success');
 
       expect(report.steps[1]).have.property('task').be.equal('insert');
+      expect(report.steps[1]).have.property('index').equal('unpaywall-test');
       expect(report.steps[1]).have.property('file').be.equal('fake1.jsonl.gz');
       expect(report.steps[1]).have.property('percent').be.equal(100);
       expect(report.steps[1]).have.property('linesRead').be.equal(50);
@@ -391,6 +397,7 @@ describe('Test: daily update route test', () => {
       expect(state.steps[0]).have.property('status').equal('success');
 
       expect(state.steps[1]).have.property('task').equal('insert');
+      expect(state.steps[1]).have.property('index').equal('unpaywall-test');
       expect(state.steps[1]).have.property('file').equal('fake1.jsonl.gz');
       expect(state.steps[1]).have.property('percent').equal(100);
       expect(state.steps[1]).have.property('linesRead').equal(50);
@@ -417,6 +424,7 @@ describe('Test: daily update route test', () => {
       expect(report.steps[0]).have.property('status').equal('success');
 
       expect(report.steps[1]).have.property('task').equal('insert');
+      expect(report.steps[1]).have.property('index').equal('unpaywall-test');
       expect(report.steps[1]).have.property('file').equal('fake1.jsonl.gz');
       expect(report.steps[1]).have.property('percent').equal(100);
       expect(report.steps[1]).have.property('linesRead').equal(50);

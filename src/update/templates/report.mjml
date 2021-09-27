@@ -15,7 +15,7 @@
       </p>
     </mj-text>
 
-    <mj-text align="center" ; color="#55575d" font-size="24px" line-height="22px" padding="10px 25px">
+    <mj-text align="center" color="#55575d" font-size="24px" line-height="22px" padding="10px 25px">
       <div style="display: inline-flex">
         <div>Rapport -</div> 
         <div style="color:{{ "#4CAF50" if status == 'success' else "#d11b1b" }}">&nbsp;{{status}}</div>
@@ -83,6 +83,20 @@
 
         </tbody> 
       </table>
+    </mj-text>
+
+    <mj-text>
+      <div style="display: inline-flex">
+        <div> Nouvelles lignes ajoutées:&nbsp;</div>
+        <div> {{ insertedDocs }} </div>
+      </div>
+    </mj-text>
+
+    <mj-text>
+      <div style="display: inline-flex">
+        <div> Lignes mises à jour:&nbsp;</div>
+        <div> {{ updatedDocs }} </div>
+      </div>
     </mj-text>
 
     {% if status == 'error' %}
