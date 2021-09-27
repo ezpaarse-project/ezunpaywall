@@ -96,8 +96,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(true);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('stackTrace').to.be.an('array');
+
+      expect(state.stackTrace[0]).have.property('type').equal('mapper_parsing_exception');
 
       expect(state.steps[0]).have.property('task').equal('insert');
+      expect(state.steps[0]).have.property('index').equal('unpaywall-test');
       expect(state.steps[0]).have.property('file').equal('fake1-error.jsonl.gz');
       expect(state.steps[0]).have.property('linesRead').equal(50);
       expect(state.steps[0]).have.property('percent').equal(0);
@@ -115,8 +119,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(true);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('stackTrace').to.be.an('array');
+
+      expect(report.stackTrace[0]).have.property('type').equal('mapper_parsing_exception');
 
       expect(report.steps[0]).have.property('task').equal('insert');
+      expect(report.steps[0]).have.property('index').equal('unpaywall-test');
       expect(report.steps[0]).have.property('file').equal('fake1-error.jsonl.gz');
       expect(report.steps[0]).have.property('linesRead').equal(50);
       expect(report.steps[0]).have.property('percent').equal(0);
@@ -178,6 +186,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(true);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('stackTrace').to.be.an('array');
+
+      expect(state.stackTrace[0]).have.property('type').equal('mapper_parsing_exception');
 
       expect(state.steps[0]).have.property('task').equal('askUnpaywall');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
@@ -190,6 +201,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state.steps[1]).have.property('status').equal('success');
 
       expect(state.steps[2]).have.property('task').equal('insert');
+      expect(state.steps[2]).have.property('index').equal('unpaywall-test');
       expect(state.steps[2]).have.property('file').equal('fake1.jsonl.gz');
       expect(state.steps[2]).have.property('percent').equal(100);
       expect(state.steps[2]).have.property('linesRead').equal(50);
@@ -203,6 +215,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state.steps[3]).have.property('status').equal('success');
 
       expect(state.steps[4]).have.property('task').equal('insert');
+      expect(state.steps[4]).have.property('index').equal('unpaywall-test');
       expect(state.steps[4]).have.property('file').equal('fake1-error.jsonl.gz');
       expect(state.steps[4]).have.property('percent').equal(0);
       expect(state.steps[4]).have.property('linesRead').equal(50);
@@ -220,6 +233,9 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(true);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('stackTrace').to.be.an('array');
+
+      expect(report.stackTrace[0]).have.property('type').equal('mapper_parsing_exception');
 
       expect(report.steps[0]).have.property('task').equal('askUnpaywall');
       expect(report.steps[0]).have.property('took').to.not.equal(undefined);
@@ -232,6 +248,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report.steps[1]).have.property('status').equal('success');
 
       expect(report.steps[2]).have.property('task').equal('insert');
+      expect(report.steps[2]).have.property('index').equal('unpaywall-test');
       expect(report.steps[2]).have.property('file').equal('fake1.jsonl.gz');
       expect(report.steps[2]).have.property('percent').equal(100);
       expect(report.steps[2]).have.property('linesRead').equal(50);
@@ -245,18 +262,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(report.steps[3]).have.property('status').equal('success');
 
       expect(report.steps[4]).have.property('task').equal('insert');
+      expect(report.steps[4]).have.property('index').equal('unpaywall-test');
       expect(report.steps[4]).have.property('file').equal('fake1-error.jsonl.gz');
       expect(report.steps[4]).have.property('percent').equal(0);
       expect(report.steps[4]).have.property('linesRead').equal(50);
       expect(report.steps[4]).have.property('took').to.not.equal(undefined);
       expect(report.steps[4]).have.property('status').equal('error');
-    });
-
-    after(async () => {
-      await deleteIndex('unpaywall-test');
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteSnapshot('fake3.jsonl.gz');
     });
   });
 

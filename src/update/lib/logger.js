@@ -39,8 +39,8 @@ const processConfiguration = [
 ];
 
 function devFormat() {
-  const formatMessage = (info) => `${info.timestamp} ${info.level} - ${info.message}`;
-  const formatError = (info) => `${info.timestamp} ${info.level} - ${info.message}\n\n${info.stack}\n`;
+  const formatMessage = (info) => `${info.timestamp} ${info.level}: ${info.message}`;
+  const formatError = (info) => `${info.timestamp} ${info.level}: ${info.message}\n\n${info.stack}\n`;
   const form = (info) => (info instanceof Error ? formatError(info) : formatMessage(info));
   return combine(colorize(), timestamp(), printf(form));
 }

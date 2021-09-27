@@ -9,7 +9,10 @@ const { Readable } = require('stream');
 const axios = require('axios');
 const config = require('config');
 
-const { elasticClient } = require('../lib/elastic');
+const {
+  elasticClient,
+} = require('../lib/elastic');
+
 const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
@@ -58,7 +61,7 @@ const createIndex = async (index, mapping) => {
  * @param {Array} data array of unpaywall data
  * @param {String} stateName - state filename
  */
-const insertDataInElastic = async (data, stateName) => {
+const insertDataInElastic = async (data, stateName, step) => {
   let res;
   try {
     res = await elasticClient.bulk({ body: data });
@@ -69,18 +72,32 @@ const insertDataInElastic = async (data, stateName) => {
     return false;
   }
 
-  if (res?.body?.errors) {
-    const errors = [];
-    const { items } = res?.body;
-    items.forEach((e) => {
-      if (e?.index?.error !== undefined) {
-        errors.push(e?.index?.error);
-      }
-    });
+  const errors = [];
+  const items = Array.isArray(res?.body?.items) ? res?.body?.items : [];
+
+  items.forEach((i) => {
+    if (i?.index?.result === 'created') {
+      step.insertedDocs += 1;
+      return;
+    }
+    if (i?.index?.result === 'updated') {
+      step.updatedDocs += 1;
+      return;
+    }
+
+    if (i?.index?.error !== undefined) {
+      errors.push(i?.index?.error);
+    }
+
+    step.failedDocs += 1;
+  });
+
+  if (errors.length > 0) {
     logger.error(JSON.stringify(errors, null, 2));
     await fail(stateName, errors);
     return false;
   }
+
   return true;
 };
 
@@ -124,11 +141,12 @@ const insertDataUnpaywall = async (jobConfig) => {
     return false;
   }
 
-  // step initiation in the state
+  // step insertion in the state
   const start = new Date();
   await addStepInsert(stateName, filename);
   let state = await getState(stateName);
   const step = state.steps[state.steps.length - 1];
+  step.index = index;
 
   const filePath = path.resolve(snapshotsDir, filename);
 
@@ -210,7 +228,7 @@ const insertDataUnpaywall = async (jobConfig) => {
     if (bulkOps.length >= maxBulkSize) {
       const dataToInsert = bulkOps.slice();
       bulkOps = [];
-      success = await insertDataInElastic(dataToInsert, stateName);
+      success = await insertDataInElastic(dataToInsert, stateName, step);
       if (!success) {
         state = await getState(stateName);
         step.status = 'error';
@@ -231,7 +249,7 @@ const insertDataUnpaywall = async (jobConfig) => {
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    success = await insertDataInElastic(bulkOps, stateName);
+    success = await insertDataInElastic(bulkOps, stateName, step);
     if (!success) {
       state = await getState(stateName);
       step.status = 'error';
@@ -340,10 +358,10 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
   const filePath = path.resolve(snapshotsDir, info.filename);
 
-  logger.info(`file : ${info.filename}`);
-  logger.info(`lines : ${info.lines}`);
-  logger.info(`size : ${info.size}`);
-  logger.info(`to_date : ${info.to_date}`);
+  logger.info(`file - ${info.filename}`);
+  logger.info(`lines - ${info.lines}`);
+  logger.info(`size - ${info.size}`);
+  logger.info(`to_date - ${info.to_date}`);
 
   if (res?.data instanceof Readable) {
     await new Promise((resolve, reject) => {

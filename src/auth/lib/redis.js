@@ -50,7 +50,7 @@ const pingRedis = async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   } while (redisStatus !== 'PONG');
-  logger.info(`ping: ${config.get('redis.host')}:${config.get('redis.port')} ok`);
+  logger.info(`ping - ${config.get('redis.host')}:${config.get('redis.port')} ok`);
   return true;
 };
 
