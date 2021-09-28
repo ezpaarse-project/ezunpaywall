@@ -5,11 +5,11 @@ const { format } = require('date-fns');
 
 const accessLogDir = path.resolve(__dirname, '..', 'out', 'logs');
 
-function logFilename(time) {
-  return [time, 'access.log'].join('-');
+function logFilename() {
+  return `${format(new Date(), 'yyyy-MM-dd')}-access.log`;
 }
 
-const accessLogStream = rfs.createStream(logFilename(format(new Date(), 'yyyy-MM-dd')), {
+const accessLogStream = rfs.createStream(logFilename, {
   interval: '1d', // rotate daily
   path: accessLogDir,
 });
