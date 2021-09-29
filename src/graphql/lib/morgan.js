@@ -2,8 +2,9 @@ const morgan = require('morgan');
 const rfs = require('rotating-file-stream');
 const path = require('path');
 const { format } = require('date-fns');
+const homedir = require('os').homedir();
 
-let accessLogDir = '~/var/log/ezunpaywall/graphql/%DATE%.log';
+let accessLogDir = path.resolve(homedir, 'var', 'log', 'ezunpaywall', 'graphql');
 if (process.env.NODE_ENV === 'development') {
   accessLogDir = path.resolve(__dirname, '..', 'log');
 }
