@@ -27,7 +27,7 @@ const {
 //   return combine(label({ name: 'ssr server log' }), format.json({ replacer }));
 // }
 
-let filename = '/var/log/ezunpaywall/update/%DATE%.log';
+let filename = '~/var/log/ezunpaywall/update/%DATE%.log';
 if (process.env.NODE_ENV === 'development') {
   filename = path.resolve(__dirname, '..', 'log', '%DATE%.log');
 }

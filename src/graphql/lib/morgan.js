@@ -3,7 +3,7 @@ const rfs = require('rotating-file-stream');
 const path = require('path');
 const { format } = require('date-fns');
 
-let accessLogDir = '/var/log/ezunpaywall/graphql/%DATE%.log';
+let accessLogDir = '~/var/log/ezunpaywall/graphql/%DATE%.log';
 if (process.env.NODE_ENV === 'development') {
   accessLogDir = path.resolve(__dirname, '..', 'log');
 }
