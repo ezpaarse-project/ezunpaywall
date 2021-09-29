@@ -27,11 +27,16 @@ const {
 //   return combine(label({ name: 'ssr server log' }), format.json({ replacer }));
 // }
 
+let filename = '/var/log/ezunpaywall/update/%DATE%.log';
+if (process.env.NODE_ENV === 'development') {
+  filename = path.resolve(__dirname, '..', 'log', '%DATE%.log');
+}
+
 // logger configuration
 const processConfiguration = [
   new transports.DailyRotateFile({
     name: 'file',
-    filename: path.resolve(__dirname, '..', 'out', 'logs', '%DATE%.log'),
+    filename,
     datePattern: 'yyyy-MM-DD',
     level: 'info',
   }),
