@@ -1,5 +1,4 @@
 const path = require('path');
-const homedir = require('os').homedir();
 
 const {
   createLogger,
@@ -28,16 +27,11 @@ const {
 //   return combine(label({ name: 'ssr server log' }), format.json({ replacer }));
 // }
 
-let filename = path.resolve(homedir, 'var', 'log', 'ezunpaywall', 'update', '%DATE%.log');
-if (process.env.NODE_ENV === 'development') {
-  filename = path.resolve(__dirname, '..', 'log', '%DATE%.log');
-}
-
 // logger configuration
 const processConfiguration = [
   new transports.DailyRotateFile({
     name: 'file',
-    filename,
+    filename: path.resolve(__dirname, '..', 'log', '%DATE%.log'),
     datePattern: 'yyyy-MM-DD',
     level: 'info',
   }),
