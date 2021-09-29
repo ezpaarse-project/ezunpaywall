@@ -47,7 +47,7 @@ import NoInUpdate from '~/components/home/NoInUpdate.vue'
 import Status from '~/components/home/Status.vue'
 
 export default {
-  name: 'Ezpaywall',
+  name: 'Ezunpaywall',
   components: {
     InUpdate,
     NoInUpdate,
@@ -56,6 +56,9 @@ export default {
   transition: 'slide-x-transition',
   data: () => {
     return {
+      snackbar: false,
+      text: 'My timeout is set to 2000.',
+      timeout: 2000,
       show: false,
       inUpdate: false,
       state: {}
@@ -73,7 +76,7 @@ export default {
           url: '/update/status'
         })
       } catch (err) {
-        console.log(err)
+        this.$store.dispatch('snacks/error', err)
       }
       if (res?.data?.inUpdate) {
         this.inUpdate = true
