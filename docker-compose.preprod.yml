@@ -21,7 +21,7 @@ services:
       # redis
       - REDIS_PASSWORD
     volumes:
-      - ./src/graphql/out:/usr/src/graphql/out
+      - /var/logs/ezunpaywall/graphql:/usr/src/graphql/out
     command: "npm start"
     ports:
       - 3000:3000
@@ -61,7 +61,7 @@ services:
       # redis
       - REDIS_PASSWORD
     volumes:
-      - ./src/update/out:/usr/src/update/out
+      - /var/logs/ezunpaywall/update:/usr/src/update/out
     command: "npm start"
     ports:
       - 4000:4000
@@ -89,7 +89,7 @@ services:
       # URL services
       - GRAPHQL_URL
     volumes:
-      - ./src/enrich/out:/usr/src/enrich/out
+      - /var/logs/ezunpaywall/enrich:/usr/src/enrich/out
     command: "npm start"
     ports:
       - 5000:5000
