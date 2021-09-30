@@ -19,4 +19,9 @@ morgan.token('user', (req) => {
   return '-';
 });
 
-module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ', { stream: accessLogStream });
+morgan.token('countDOI', (req) => {
+  if (req.countDOI) return req.countDOI;
+  return '-';
+});
+
+module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":countDOI"', { stream: accessLogStream });
