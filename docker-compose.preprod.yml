@@ -21,7 +21,7 @@ services:
       # redis
       - REDIS_PASSWORD
     volumes:
-      - ~/var/log/ezunpaywall/graphql:/usr/src/graphql/log
+      - $HOME/var/log/ezunpaywall/graphql:/usr/src/graphql/log
     command: "npm start"
     ports:
       - 3000:3000
