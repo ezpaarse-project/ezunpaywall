@@ -16,7 +16,6 @@ const routerState = require('./routers/state');
 const outDir = path.resolve(__dirname, 'out');
 
 fs.ensureDir(path.resolve(outDir));
-fs.ensureDir(path.resolve(outDir, 'logs'));
 fs.ensureDir(path.resolve(outDir, 'states'));
 fs.ensureDir(path.resolve(outDir, 'upload'));
 fs.ensureDir(path.resolve(outDir, 'enriched'));
