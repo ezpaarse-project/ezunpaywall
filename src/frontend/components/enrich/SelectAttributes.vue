@@ -1,29 +1,16 @@
 <template>
   <div>
     <v-container fluid>
-      <v-select
+      <v-autocomplete
         v-model="tab"
         :label="label"
         :items="items"
         item-text="name"
+        small-chips
+        clearable
+        deletable-chips
         multiple
       >
-        <template #prepend-item>
-          <v-list-item ripple @click="toggle">
-            <v-list-item-action>
-              <v-icon :color="tab.length > 0 ? 'indigo darken-4' : ''">
-                {{ icon }}
-              </v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title> Tout séléctionner </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-divider class="mt-2" />
-        </template>
-        <template slot="selection" slot-scope="{ item }">
-          {{ item.name }}
-        </template>
         <template slot="item" slot-scope="{ item }">
           {{ item.name }}
           <v-spacer />
@@ -36,7 +23,7 @@
             <span>{{ item.info }}</span>
           </v-tooltip>
         </template>
-      </v-select>
+      </v-autocomplete>
     </v-container>
   </div>
 </template>
