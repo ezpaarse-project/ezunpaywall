@@ -3,22 +3,18 @@
     <SelectAttributes
       :items="unpaywallAttr"
       :label="'simple'"
-      @tab="getTab"
     />
     <SelectAttributes
       :items="oa_location"
       :label="'best_oa_location'"
-      @tab="getTab"
     />
     <SelectAttributes
       :items="oa_location"
       :label="'first_oa_location'"
-      @tab="getTab"
     />
     <SelectAttributes
       :items="oa_location"
       :label="'oa_locations'"
-      @tab="getTab"
     />
   </div>
 </template>
@@ -73,32 +69,6 @@ export default {
         { name: 'url_for_pdf', info: this.$t('ui.components.enrich.Settings.info.oa_location.url_for_pdf') },
         { name: 'version', info: this.$t('ui.components.enrich.Settings.info.oa_location.version') }
       ]
-    }
-  },
-  methods: {
-    /**
-     * give setting to parent
-     */
-    getSetting () {
-      let bestOaLocation = ''
-      let firstOaLocation = ''
-      let oaLocation = ''
-
-      if (this.best_oa_location.length) {
-        bestOaLocation = `,best_oa_location { ${this.best_oa_location.join(',')} }`
-      }
-      if (this.first_oa_location.length) {
-        firstOaLocation = `,first_oa_location { ${this.first_oa_location.join(',')} }`
-      }
-      if (this.oa_locations.length) {
-        oaLocation = `,oa_locations { ${this.oa_locations.join(',')} }`
-      }
-      const setting = `{ ${this.simple.join(',')} ${bestOaLocation} ${firstOaLocation} ${oaLocation} }`
-      this.$emit('setting', setting)
-    },
-    getTab (event) {
-      this[event.label] = event.tab
-      this.getSetting()
     }
   }
 }

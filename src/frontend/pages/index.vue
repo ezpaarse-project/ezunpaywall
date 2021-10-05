@@ -56,9 +56,6 @@ export default {
   transition: 'slide-x-transition',
   data: () => {
     return {
-      snackbar: false,
-      text: 'My timeout is set to 2000.',
-      timeout: 2000,
       show: false,
       inUpdate: false,
       state: {}

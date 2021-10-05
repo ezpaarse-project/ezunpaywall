@@ -1,15 +1,13 @@
 <template>
   <div>
-    <SelectAttributes :items="unpaywallAttr" :label="'simple'" @tab="getTab" />
+    <SelectAttributes :items="unpaywallAttr" :label="'simple'" />
     <SelectAttributes
       :items="oa_location"
       :label="'best_oa_location'"
-      @tab="getTab"
     />
     <SelectAttributes
       :items="oa_location"
       :label="'first_oa_location'"
-      @tab="getTab"
     />
   </div>
 </template>
@@ -176,28 +174,6 @@ export default {
           )
         }
       ]
-    }
-  },
-  methods: {
-    /**
-     * give setting to parent
-     */
-    getSetting () {
-      let bestOaLocation = ''
-      let firstOaLocation = ''
-
-      if (this.best_oa_location.length) {
-        bestOaLocation = `,best_oa_location { ${this.best_oa_location.join(',')} }`
-      }
-      if (this.first_oa_location.length) {
-        firstOaLocation = `,first_oa_location { ${this.first_oa_location.join(',')} }`
-      }
-      const setting = `{ ${this.simple.join(',')} ${bestOaLocation} ${firstOaLocation} }`
-      this.$emit('setting', setting)
-    },
-    getTab (event) {
-      this[event.label] = event.tab
-      this.getSetting()
     }
   }
 }

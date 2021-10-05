@@ -19,27 +19,17 @@
       </v-list-item>
     </v-list>
 
-    <v-list-group
-      no-action
-      append-icon="mdi-chevron-down"
-      prepend-icon="mdi-code-json"
-    >
-      <template #activator>
-        <v-list-item-title class="body-2" v-text="$t('ui.drawer.enrich')" />
-      </template>
+    <v-list>
+      <v-list-item link router :to="{ path: '/enrich' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-code-json</v-icon>
+        </v-list-item-icon>
 
-      <v-list-item link router :to="{ path: '/enrich/csv' }">
-        <v-list-item-title class="body-2">
-          CSV <v-list-item-title />
-        </v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title> {{ $t("ui.drawer.enrich") }} </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
-
-      <v-list-item link router :to="{ path: '/enrich/jsonl' }">
-        <v-list-item-title class="body-2">
-          JSONL <v-list-item-title />
-        </v-list-item-title>
-      </v-list-item>
-    </v-list-group>
+    </v-list>
 
     <v-list-group
       no-action

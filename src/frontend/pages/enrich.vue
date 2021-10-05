@@ -106,7 +106,7 @@
               <v-btn
                 class="body-2"
                 color="primary"
-                :disabled="!hasLogFiles || !setting.length"
+                :disabled="!hasLogFiles || !setting"
                 @click="
                   process();
                   step = 3;
@@ -115,13 +115,36 @@
               />
             </v-layout>
           </v-container>
-          <v-text-field v-model="apiKey" label="api key" />
+
           <v-toolbar class="secondary" dark dense flat>
             <v-toolbar-title>
               {{ $t("ui.pages.enrich.settings.title") }}
             </v-toolbar-title>
           </v-toolbar>
-          <Settings @setting="getSetting($event)" />
+
+          <v-text-field
+            v-model="apiKey"
+            :append-icon="apiKeyVisible ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[apiKeyRules.required]"
+            :type="apiKeyVisible ? 'text' : 'password'"
+            label="api key"
+            filled
+            @click:append="apiKeyVisible = !apiKeyVisible"
+          />
+
+          <v-select
+            v-model="extensionSelected"
+            :items="extension"
+            label="file extension"
+            filled
+          />
+
+          <SettingsCSV
+            v-if="extensionSelected === 'csv'"
+          />
+          <SettingsJSONL
+            v-if="extensionSelected === 'jsonl'"
+          />
         </v-stepper-content>
 
         <v-stepper-content step="3">
@@ -161,14 +184,16 @@
 
 <script>
 import LogFiles from '~/components/enrich/LogFiles.vue'
-import Settings from '~/components/enrich/SettingsCSV.vue'
+import SettingsCSV from '~/components/enrich/SettingsCSV.vue'
+import SettingsJSONL from '~/components/enrich/SettingsJSONL.vue'
 import Report from '~/components/enrich/Report.vue'
 
 export default {
-  name: 'CSV',
+  name: 'Enrich',
   components: {
     LogFiles,
-    Settings,
+    SettingsCSV,
+    SettingsJSONL,
     Report
   },
   transition: 'slide-x-transition',
@@ -184,7 +209,13 @@ export default {
       inProcess: false,
       fileSelectionHelp: false,
       logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
-      apiKey: ''
+      apiKey: '',
+      apiKeyVisible: false,
+      apiKeyRules: {
+        required: value => !!value || 'Required.'
+      },
+      extension: ['csv', 'jsonl'],
+      extensionSelected: ''
     }
   },
   computed: {
@@ -289,8 +320,23 @@ export default {
       // done
       this.inProcess = false
     },
+    getSetting () {
+      console.log('test')
+      const { simple } = this.$store.state
+      let { best_oa_location } = this.$store.state
+      let { first_oa_location } = this.$store.state
+      let { oa_location } = this.$store.state
 
-    getSetting (setting) {
+      if (this.best_oa_location.length) {
+        best_oa_location = `,best_oa_location { ${this.best_oa_location.join(',')} }`
+      }
+      if (this.first_oa_location.length) {
+        first_oa_location = `,first_oa_location { ${this.first_oa_location.join(',')} }`
+      }
+      if (this.oa_locations.length) {
+        oa_location = `,oa_locations { ${this.oa_locations.join(',')} }`
+      }
+      const setting = `{ ${simple.join(',')} ${best_oa_location} ${first_oa_location} ${oa_location} }`
       this.setting = setting
     },
     getFiles (files) {
