@@ -8,7 +8,7 @@
       <v-stepper-header>
         <v-stepper-step
           edit-icon="mdi-check"
-          :editable="!jobInProgress"
+          :editable="!inProcess"
           :complete="hasLogFiles"
           step="1"
         >
@@ -19,16 +19,16 @@
 
         <v-stepper-step
           edit-icon="mdi-check"
-          :editable="!jobInProgress"
+          :editable="!inProcess"
           :complete="step > 2"
           step="2"
         >
           {{ $t("ui.pages.enrich.stepper.settings") }}
         </v-stepper-step>
 
-        <v-divider :color="hasJob && step > 2 ? 'primary' : ''" />
+        <v-divider :color="inProcess && step > 2 ? 'primary' : ''" />
 
-        <v-stepper-step :editable="hasJob" step="3">
+        <v-stepper-step :editable="inProcess" step="3">
           {{ $t("ui.pages.enrich.stepper.enrich") }}
         </v-stepper-step>
       </v-stepper-header>
@@ -106,9 +106,9 @@
               <v-btn
                 class="body-2"
                 color="primary"
-                :disabled="!hasLogFiles || !setting"
+                :disabled="!hasLogFiles || !getSetting"
                 @click="
-                  process();
+                  enrich();
                   step = 3;
                 "
                 v-text="$t('ui.pages.enrich.settings.startProcess')"
@@ -134,17 +134,13 @@
 
           <v-select
             v-model="extensionSelected"
-            :items="extension"
+            :items="extensions"
             label="file extension"
             filled
           />
 
-          <SettingsCSV
-            v-if="extensionSelected === 'csv'"
-          />
-          <SettingsJSONL
-            v-if="extensionSelected === 'jsonl'"
-          />
+          <SettingsCSV v-if="extensionSelected === 'csv'" />
+          <SettingsJSONL v-if="extensionSelected === 'jsonl'" />
         </v-stepper-content>
 
         <v-stepper-content step="3">
@@ -199,63 +195,87 @@ export default {
   transition: 'slide-x-transition',
   data: () => {
     return {
+      // stepper
       step: 1,
+      // config
       files: [],
-      enrichedFile: '',
-      setting: [],
-      status: null,
-      state: {},
-      time: 0,
-      inProcess: false,
-      fileSelectionHelp: false,
-      logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
       apiKey: '',
       apiKeyVisible: false,
       apiKeyRules: {
         required: value => !!value || 'Required.'
       },
-      extension: ['csv', 'jsonl'],
-      extensionSelected: ''
+      extensions: ['csv', 'jsonl'],
+      // help
+      fileSelectionHelp: false,
+      logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
+      // process
+      state: {},
+      time: 0,
+      inProcess: false,
+      id: ''
     }
   },
   computed: {
+    // config
     hasLogFiles () {
       return Array.isArray(this.files) && this.files.length > 0
     },
-    jobInProgress () {
-      return this.status === 'progress' || this.status === 'finalization'
+    extensionSelected () {
+      if (this.files.length !== 0) {
+        const [, ext] = this.files[0].file.name.split('.')
+        return ext
+      }
+      return ''
     },
-    hasJob () {
-      return this.status !== null
+    getSetting () {
+      const { simple } = this.$store.state.enrichArgs
+      let {
+        best_oa_location,
+        first_oa_location,
+        oa_locations
+      } = this.$store.state.enrichArgs
+
+      if (!simple.length && !best_oa_location.length && !first_oa_location.length && !oa_locations.length) {
+        return null
+      }
+
+      if (best_oa_location.length) {
+        best_oa_location = `,best_oa_location { ${best_oa_location.join(',')} }`
+      }
+      if (first_oa_location.length) {
+        first_oa_location = `,first_oa_location { ${first_oa_location.join(',')} }`
+      }
+      if (oa_locations.length) {
+        oa_locations = `,oa_locations { ${oa_locations.join(',')} }`
+      }
+      return `{ ${simple.join(',')} ${best_oa_location} ${first_oa_location} ${oa_locations} }`
     },
-    jobIsCancelable () {
-      return this.$store.getters['process/cancelable']
-    },
+    // process
     resultUrl () {
-      return `${this.$enrich}/enriched/${this.enrichedFile}`
+      return `${this.$enrich.baseURL}/enriched/${this.id}.${this.extensionSelected}`
     }
   },
   methods: {
-    async process () {
-      this.inProcess = true
-      const id = this.enrich()
-      await this.poll(id)
-    },
-
     async enrich () {
+      this.inProcess = true
+
       const data = {
-        // TODO type,
+        type: this.extensionSelected,
+        args: this.getSetting,
         separator: ','
       }
+
+      const formData = new FormData()
+      formData.append('file', this.files[0].file)
 
       let upload
 
       // upload
       try {
-        await this.$enrich({
+        upload = await this.$enrich({
           method: 'POST',
-          url: '/api/enrich/upload',
-          data: this.files[0].file,
+          url: '/upload',
+          data: formData,
           headers: {
             'Content-Type': 'text/csv',
             'X-API-KEY': this.apiKey
@@ -263,10 +283,8 @@ export default {
           responseType: 'json'
         })
       } catch (err) {
-        this.$store.dispatch(
-          'snacks/error',
-          `Cannot request ${this.$enrich.baseURL}/api/enrich/upload`
-        )
+        this.$store.dispatch('snacks/error', 'Cannot upload file')
+        return this.reset()
       }
 
       const id = upload?.data?.id
@@ -276,7 +294,7 @@ export default {
       try {
         await this.$enrich({
           method: 'POST',
-          url: '/api/enrich/job',
+          url: '/job',
           data,
           headers: {
             'Content-length': this.files[0].size,
@@ -285,10 +303,8 @@ export default {
           responseType: 'json'
         })
       } catch (err) {
-        this.$store.dispatch(
-          'snacks/error',
-          `Cannot request ${this.$enrich.baseURL}/api/enrich/job`
-        )
+        this.$store.dispatch('snacks/error', 'Cannot enrich file')
+        return this.reset()
       }
 
       let state
@@ -298,7 +314,7 @@ export default {
         try {
           state = await this.$enrich({
             method: 'GET',
-            url: `/api/enrich/state/${id}.json`,
+            url: `/state/${id}.json`,
             responseType: 'json'
           })
           this.state = state?.data?.state
@@ -308,37 +324,25 @@ export default {
           } else {
             this.time = 0
           }
-          await new Promise(resolve => setTimeout(resolve, 100))
         } catch (err) {
-          this.$store.dispatch(
-            'snacks/error',
-            `Cannot request ${this.$enrich.baseURL}/api/enrich/state/${id}.json`
-          )
+          this.$store.dispatch('snacks/error', 'Cannot get state of enrich')
+          return this.reset()
         }
+        await new Promise(resolve => setTimeout(resolve, 1000))
       } while (!state?.data?.state?.done)
 
       // done
       this.inProcess = false
+      this.id = id
     },
-    getSetting () {
-      console.log('test')
-      const { simple } = this.$store.state
-      let { best_oa_location } = this.$store.state
-      let { first_oa_location } = this.$store.state
-      let { oa_location } = this.$store.state
 
-      if (this.best_oa_location.length) {
-        best_oa_location = `,best_oa_location { ${this.best_oa_location.join(',')} }`
-      }
-      if (this.first_oa_location.length) {
-        first_oa_location = `,first_oa_location { ${this.first_oa_location.join(',')} }`
-      }
-      if (this.oa_locations.length) {
-        oa_location = `,oa_locations { ${this.oa_locations.join(',')} }`
-      }
-      const setting = `{ ${simple.join(',')} ${best_oa_location} ${first_oa_location} ${oa_location} }`
-      this.setting = setting
+    reset () {
+      this.inProcess = false
+      this.state = {}
+      this.time = 0
+      this.id = ''
     },
+
     getFiles (files) {
       this.files = files
     }

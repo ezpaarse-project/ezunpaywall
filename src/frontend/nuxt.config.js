@@ -1,7 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  env: {
+  publicRuntimeConfig: {
     GRAPHQL_URL: process.env.GRAPHQL_URL || 'http://localhost:3000',
     UPDATE_URL: process.env.UPDATE_URL || 'http://localhost:4000',
     ENRICH_URL: process.env.ENRICH_URL || 'http://localhost:5000'

@@ -3,7 +3,7 @@ export default {
     simple: [],
     best_oa_location: [],
     first_oa_location: [],
-    oa_location: [],
+    oa_locations: [],
     z_authors: []
   }),
   actions: {

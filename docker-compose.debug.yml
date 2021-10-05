@@ -113,9 +113,9 @@ services:
     ports:
       - "8080:3000"
     environment:
-      - GRAPHQL_URL=http://ezunpaywall.dev/api
-      - UPDATE_URL=http://ezunpaywall.dev/api/update
-      - ENRICH_URL=http://ezunpaywall.dev/api/enrich
+      - GRAPHQL_URL=http://localhost:3000
+      - UPDATE_URL=http://localhost:4000
+      - ENRICH_URL=http://localhost:5000
       - HOST=0.0.0.0
       - PORT=8080
 
