@@ -70,7 +70,7 @@ export default {
       try {
         res = await this.$update({
           method: 'get',
-          url: '/update/status'
+          url: '/status'
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', err)
@@ -89,10 +89,13 @@ export default {
       try {
         res = await this.$axios({
           method: 'get',
-          url: '/update/state'
+          url: '/state',
+          params: {
+            latest: true
+          }
         })
       } catch (err) {
-        console.log(err)
+        this.$store.dispatch('snacks/error', err)
       }
       this.state = res?.data?.state
     }
