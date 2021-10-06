@@ -1,4 +1,5 @@
 export default {
+  namespaced: true,
   state: () => ({
     simple: [],
     best_oa_location: [],

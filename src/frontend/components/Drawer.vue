@@ -105,8 +105,8 @@ export default {
   },
   computed: {
     drawer: {
-      get () { return this.$store.state.drawer },
-      set (newVal) { this.$store.dispatch('SET_DRAWER', newVal) }
+      get () { return this.$store.state.drawer.status },
+      set (newVal) { this.$store.dispatch('drawer/setDrawer', newVal) }
     }
   }
 }

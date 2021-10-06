@@ -296,7 +296,7 @@ export default {
           url: '/job',
           data,
           headers: {
-            'Content-length': this.files[0].size,
+            'Content-file-length': this.files[0].size,
             'X-API-KEY': this.apiKey
           },
           responseType: 'json'
