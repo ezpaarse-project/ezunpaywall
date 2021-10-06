@@ -287,8 +287,7 @@ export default {
         return this.reset()
       }
 
-      const id = upload?.data?.id
-      data.id = id
+      data.id = upload?.data?.id
 
       // enrich
       try {
@@ -314,7 +313,7 @@ export default {
         try {
           state = await this.$enrich({
             method: 'GET',
-            url: `/state/${id}.json`,
+            url: `/state/${data.id}.json`,
             responseType: 'json'
           })
           this.state = state?.data?.state
@@ -333,7 +332,7 @@ export default {
 
       // done
       this.inProcess = false
-      this.id = id
+      this.id = data.id
     },
 
     reset () {

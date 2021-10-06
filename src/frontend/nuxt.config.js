@@ -2,9 +2,9 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   publicRuntimeConfig: {
-    GRAPHQL_URL: process.env.GRAPHQL_URL || 'http://localhost:3000',
-    UPDATE_URL: process.env.UPDATE_URL || 'http://localhost:4000',
-    ENRICH_URL: process.env.ENRICH_URL || 'http://localhost:5000'
+    grapqlURL: process.env.GRAPHQL_URL || 'http://localhost:3000',
+    updateURL: process.env.UPDATE_URL || 'http://localhost:4000',
+    enrichURL: process.env.ENRICH_URL || 'http://localhost:5000'
   },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
