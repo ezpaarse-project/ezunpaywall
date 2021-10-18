@@ -1,13 +1,5 @@
 {
   "ui": {
-    "header": {
-
-    },
-    "drawer": {
-      "home": "Accueil",
-      "enrich": "Enrichissement",
-      "language": "Langue"
-    },
     "pages": {
       "home": {
         
@@ -34,11 +26,17 @@
         "process": {
           "download": "Télécharger le fichier enrichi",
           "inProcess": "Enrichissement en cours",
-          "end": "Enrichissement terminé"
+          "end": "Enrichissement terminé",
+          "error": "Une erreur est survenu"
         }
       }
     },
     "components": {
+      "Drawer": {
+        "home": "Accueil",
+        "enrich": "Enrichissement",
+        "language": "Langue"
+      },
       "enrich": {
         "LogFiles": {
           "filename": "Nom des fichiers",
@@ -80,6 +78,12 @@
               "url_for_landing_page": "L'URL d'une page de destination décrivant cette copie OA",
               "url_for_pdf": "L'URL avec une version PDF de cette copie OA",
               "version": "La version du contenu accessible à cet emplacement"
+            },
+            "z_authors": {
+              "family": "Nom de famille",
+              "given": "Prénom",
+              "ORCID": " URL d'un identifiant ORCID",
+              "authenticated-orcid": "Si vrai, le propriétaire de l'enregistrement affirme que l'utilisateur ORCID a terminé l'authentification ORCID OAuth"
             }
           }
         },
@@ -89,14 +93,13 @@
           "treatmentDuration": "Temps de traitement (en seconde)"
         }
       },
-      "home": {
-        "InUpdate": {
-          "status": "Une mise à jour des données unpaywall est en cours"
-        },
-        "NoInUpdate": {
-          "status": "Aucune mise à jour des données unpaywall n'est en cours"
-        },
+      "header": {
         "Status": {
+          "inUpdate": "Mise à jour en cours",
+          "noInUpdate": "Les données sont à jour",
+          "close": "Fermer"
+        },
+        "State": {
           "createdAt": "Créé le",
           "tasks": "Tâches",
           "task": "Tâche",

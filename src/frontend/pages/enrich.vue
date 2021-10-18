@@ -146,7 +146,7 @@
         <v-stepper-content step="3">
           <v-container>
             <v-layout row justify-end class="mb-3">
-              <v-btn :href="resultUrl" :disabled="inProcess">
+              <v-btn :href="resultUrl" :disabled="inProcess || error">
                 <v-icon left>
                   mdi-download
                 </v-icon>
@@ -164,10 +164,14 @@
             <div v-text="$t('ui.pages.enrich.process.inProcess')" />
           </v-container>
           <v-container v-else class="text-center">
-            <v-icon size="70" color="green darken-2">
+            <v-icon v-if="error" size="70" color="orange darken-2">
+              mdi-alert-circle
+            </v-icon>
+            <v-icon v-else size="70" color="green darken-2">
               mdi-check
             </v-icon>
-            <div v-text="$t('ui.pages.enrich.process.end')" />
+            <div v-if="error" v-text="$t('ui.pages.enrich.process.error')" />
+            <div v-else v-text="$t('ui.pages.enrich.process.end')" />
           </v-container>
           <v-container>
             <Report :time="time" :state="state" />
@@ -212,6 +216,7 @@ export default {
       state: {},
       time: 0,
       inProcess: false,
+      error: false,
       id: ''
     }
   },
@@ -228,35 +233,45 @@ export default {
       return ''
     },
     getSetting () {
-      const { simple } = this.$store.state.enrichArgs
-      let {
+      const {
+        simple,
         best_oa_location,
         first_oa_location,
-        oa_locations
+        oa_locations,
+        z_authors
       } = this.$store.state.enrichArgs
 
-      if (!simple.length && !best_oa_location.length && !first_oa_location.length && !oa_locations.length) {
-        return null
+      if (!simple.length && !best_oa_location.length && !first_oa_location.length && !oa_locations.length && !z_authors.length) {
+        return ''
       }
 
+      const attrs = []
+
+      if (simple.length) {
+        attrs.push(simple.join(', '))
+      }
       if (best_oa_location.length) {
-        best_oa_location = `,best_oa_location { ${best_oa_location.join(',')} }`
+        attrs.push(`best_oa_location { ${best_oa_location.join(', ')} }`)
       }
       if (first_oa_location.length) {
-        first_oa_location = `,first_oa_location { ${first_oa_location.join(',')} }`
+        attrs.push(`first_oa_location { ${first_oa_location.join(', ')} }`)
       }
       if (oa_locations.length) {
-        oa_locations = `,oa_locations { ${oa_locations.join(',')} }`
+        attrs.push(`oa_locations { ${oa_locations.join(', ')} }`)
       }
-      return `{ ${simple.join(',')} ${best_oa_location} ${first_oa_location} ${oa_locations} }`
+      if (z_authors.length) {
+        attrs.push(`z_authors { ${z_authors.join(', ')} }`)
+      }
+      return `{ ${attrs.join(', ')} }`
     },
     // process
     resultUrl () {
-      return `${this.$enrich.baseURL}/enriched/${this.id}.${this.extensionSelected}`
+      return `${this.$enrich.defaults.baseURL}/enriched/${this.id}.${this.extensionSelected}`
     }
   },
   methods: {
     async enrich () {
+      this.error = false
       this.inProcess = true
 
       const data = {
@@ -284,7 +299,7 @@ export default {
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', 'Cannot upload file')
-        return this.reset()
+        return this.errored()
       }
 
       data.id = upload?.data?.id
@@ -296,14 +311,13 @@ export default {
           url: '/job',
           data,
           headers: {
-            'Content-file-length': this.files[0].size,
             'X-API-KEY': this.apiKey
           },
           responseType: 'json'
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', 'Cannot enrich file')
-        return this.reset()
+        return this.errored()
       }
 
       let state
@@ -325,7 +339,7 @@ export default {
           }
         } catch (err) {
           this.$store.dispatch('snacks/error', 'Cannot get state of enrich')
-          return this.reset()
+          return this.errored()
         }
         await new Promise(resolve => setTimeout(resolve, 1000))
       } while (!state?.data?.state?.done)
@@ -335,11 +349,13 @@ export default {
       this.id = data.id
     },
 
-    reset () {
+    errored () {
+      this.error = true
       this.inProcess = false
       this.state = {}
       this.time = 0
       this.id = ''
+      console.log('coucou')
     },
 
     getFiles (files) {

@@ -14,7 +14,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title> {{ $t("ui.drawer.home") }} </v-list-item-title>
+          <v-list-item-title> {{ $t("ui.components.Drawer.home") }} </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -26,7 +26,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title> {{ $t("ui.drawer.enrich") }} </v-list-item-title>
+          <v-list-item-title> {{ $t("ui.components.Drawer.enrich") }} </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -37,7 +37,7 @@
       prepend-icon="mdi-translate"
     >
       <template #activator>
-        <v-list-item-title class="body-2" v-text="$t('ui.drawer.language')" />
+        <v-list-item-title class="body-2" v-text="$t('ui.components.Drawer.language')" />
       </template>
 
       <v-list-item

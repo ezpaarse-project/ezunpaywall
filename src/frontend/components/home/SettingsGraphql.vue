@@ -2,23 +2,23 @@
   <div>
     <SelectAttributes
       :items="unpaywallAttr"
-      label="simple"
+      :label="'simple'"
     />
     <SelectAttributes
       :items="oa_location"
-      label="best_oa_location"
+      :label="'best_oa_location'"
     />
     <SelectAttributes
       :items="oa_location"
-      label="first_oa_location"
+      :label="'first_oa_location'"
     />
     <SelectAttributes
       :items="oa_location"
-      label="oa_locations"
+      :label="'oa_locations'"
     />
     <SelectAttributes
       :items="z_authors"
-      label="z_authors"
+      :label="'z_authors'"
     />
   </div>
 </template>

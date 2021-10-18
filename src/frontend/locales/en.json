@@ -1,13 +1,5 @@
 {
   "ui": {
-    "header": {
-
-    },
-    "drawer": {
-      "home": "Home",
-      "enrich": "Enrich",
-      "language": "Language"
-    },
     "pages": {
       "home": {
         
@@ -34,11 +26,17 @@
         "process": {
           "download": "Download the enriched file",
           "inProcess": "Enrichment in progress",
-          "end": "Enrichment complete !"
+          "end": "Enrichment complete",
+          "error": "An error occured"
         }
       }
     },
     "components": {
+      "Drawer": {
+        "home": "Home",
+        "enrich": "Enrich",
+        "language": "Language"
+      },
       "enrich": {
         "LogFiles": {
           "filename": "Filename",
@@ -80,6 +78,12 @@
               "url_for_landing_page": "The URL for a landing page describing this OA copy",
               "url_for_pdf": "The URL with a PDF version of this OA copy",
               "version": "The content version accessible at this location"
+            },
+            "z_authors": {
+              "family": "Family name",
+              "given": "Given name",
+              "ORCID": "URL-form of an ORCID identifier",
+              "authenticated-orcid": "If true, record owner asserts that the ORCID user completed ORCID OAuth authentication"
             }
           }
         },
@@ -89,14 +93,13 @@
           "treatmentDuration": "Processing duration (in second)"
         }
       },
-      "home": {
-        "InUpdate": {
-          "status": "Unpaywall data Update is in progress"
-        },
-        "NoInUpdate": {
-          "status": "No unpaywall data update is in progress"
-        },
+      "header": {
         "Status": {
+          "inUpdate": "Update in progress",
+          "noInUpdate": "The data is up to date",
+          "close": "Close"
+        },
+        "State": {
           "createdAt": "Created at",
           "tasks": "Tasks",
           "task": "Task",
