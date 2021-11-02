@@ -31,9 +31,9 @@ redisClient.on('error', (err) => {
 
 const load = async () => {
   if (process.env.NODE_ENV === 'production') {
-    apiKeys = await fs.readFile(path.resolve(__dirname, '..', 'apikey.json'), 'utf8');
+    apiKeys = await fs.readFile(path.resolve(__dirname, '..', 'apikey.json'));
   } else {
-    apiKeys = await fs.readFile(path.resolve(__dirname, '..', 'apikey-dev.json'), 'utf8');
+    apiKeys = await fs.readFile(path.resolve(__dirname, '..', 'apikey-dev.json'));
   }
   apiKeys = JSON.parse(apiKeys);
 

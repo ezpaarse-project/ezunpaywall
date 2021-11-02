@@ -1,4 +1,7 @@
+const isEqual = require('lodash.isequal');
+const path = require('path');
 const chai = require('chai');
+const fs = require('fs-extra');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -30,6 +33,23 @@ describe('Test: Get config of apikey', () => {
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body).have.property('attributes').equal('*');
     expect(res.body).have.property('allowed').equal(true);
+  });
+
+  it('Should get all apikey', async () => {
+    const res = await chai
+      .request(authURL)
+      .get('/all')
+      .set('redis-password', 'changeme');
+
+    expect(res).have.status(200);
+
+    const { keys } = res.body;
+    let apikeyDev = await fs.readFile(path.resolve(__dirname, '..', 'apikey-dev.json'));
+    apikeyDev = JSON.parse(apikeyDev);
+
+    const equal = isEqual(keys, apikeyDev);
+
+    expect(equal).equal(true);
   });
 
   it('Shouldn\'t get config of apikey because this apikey doesn\'t exist', async () => {

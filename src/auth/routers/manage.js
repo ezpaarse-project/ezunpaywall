@@ -109,6 +109,24 @@ router.get('/config', async (req, res) => {
 });
 
 /**
+ * get config of apikey
+ */
+router.get('/all', checkAuth, async (req, res) => {
+  const keys = await redisClient.keys('*');
+
+  const allKeys = {};
+
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i];
+    let config = await redisClient.get(key);
+    config = JSON.parse(config);
+    allKeys[key] = config;
+  }
+
+  return res.status(200).json({ keys: allKeys });
+});
+
+/**
  * create new apikey
  */
 router.post('/create', checkAuth, async (req, res, next) => {
@@ -170,8 +188,6 @@ router.post('/create', checkAuth, async (req, res, next) => {
   try {
     id = await createAuth(name, access, attributes, allowed);
   } catch (err) {
-    logger.error('Cannot create apikey on redis');
-    logger.error(`${err}`);
     return next(err);
   }
 

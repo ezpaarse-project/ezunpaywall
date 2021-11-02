@@ -26,10 +26,7 @@ describe('Test: auth service', () => {
   it('Should access apikey', async () => {
     const res = await chai
       .request(authURL)
-      .delete('/delete')
-      .send({
-        id: 'user',
-      })
+      .get('/all')
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
@@ -38,10 +35,7 @@ describe('Test: auth service', () => {
   it('Shouldn`t access apikey because wrong api key', async () => {
     const res = await chai
       .request(authURL)
-      .delete('/delete')
-      .send({
-        id: 'user',
-      })
+      .get('/all')
       .set('redis-password', 'hello');
 
     expect(res).have.status(401);
@@ -50,10 +44,7 @@ describe('Test: auth service', () => {
   it('Shouldn`t access apikey because no api key', async () => {
     const res = await chai
       .request(authURL)
-      .delete('/delete')
-      .send({
-        id: 'user',
-      });
+      .get('/all');
 
     expect(res).have.status(401);
   });

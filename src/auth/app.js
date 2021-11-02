@@ -39,10 +39,4 @@ app.listen(7000, async () => {
   logger.info('ezunpaywall auth service listening on 7000');
   pingRedis();
   await load();
-  // try {
-  //   await redisClient.flushall();
-  // } catch (err) {
-  //   console.log(err);
-  // }
-  // console.log(await redisClient.keys('*'));
 });
