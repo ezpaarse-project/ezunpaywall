@@ -226,7 +226,7 @@ export default {
           data: this.files[0].file,
           headers: {
             'Content-Type': 'application/json',
-            'X-API-KEY': this.apiKey
+            'x-api-key': this.apiKey
           },
           responseType: 'json'
         })

@@ -5,7 +5,7 @@ SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
 
 # unpaywall
-export API_KEY_UPW="X-API-KEY"
+export API_KEY_UPW="x-api-key"
 
 # redis
 export REDIS_PASSWORD="changeme"

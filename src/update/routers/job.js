@@ -32,7 +32,7 @@ const {
  * @apiParam BODY offset - first line insertion, by default, we start with the first
  * @apiParam BODY limit - last line insertion by default, we have no limit
  *
- * @apiHeader HEADER X-API-KEY - admin apikey
+ * @apiHeader HEADER x-api-key - admin apikey
  *
  * @return message informing the start of the process
  *

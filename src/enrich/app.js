@@ -26,7 +26,7 @@ app.use(morgan);
 
 app.use(cors({
   origin: '*',
-  allowedHeaders: ['Content-Type', 'X-API-KEY'],
+  allowedHeaders: ['Content-Type', 'x-api-key'],
   method: ['GET', 'POST'],
 }));
 

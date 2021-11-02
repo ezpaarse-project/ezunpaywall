@@ -1,3 +1,4 @@
+const path = require('path');
 const redis = require('redis');
 const util = require('util');
 const config = require('config');
@@ -11,29 +12,40 @@ if (!fs.pathExists('../apikey.json')) {
   logger.warn('No API key are set');
 }
 
-if (process.env.NODE_ENV === 'production') {
-  apiKeys = require('../apikey.json');
-} else {
-  apiKeys = require('../apikey-dev.json');
-}
-
 const redisClient = redis.createClient({
   host: config.get('redis.host'),
   port: config.get('redis.port'),
   password: config.get('redis.password'),
 });
 
+redisClient.get = util.promisify(redisClient.get);
+redisClient.del = util.promisify(redisClient.del);
 redisClient.ping = util.promisify(redisClient.ping);
+redisClient.set = util.promisify(redisClient.set);
+redisClient.keys = util.promisify(redisClient.keys);
+redisClient.flushall = util.promisify(redisClient.flushall);
 
 redisClient.on('error', (err) => {
   logger.error(`Error in redis ${err}`);
 });
 
-const apiKeysJSON = Object.keys(apiKeys);
+const load = async () => {
+  if (process.env.NODE_ENV === 'production') {
+    apiKeys = await fs.readFile(path.resolve(__dirname, '..', 'apikey.json'), 'utf8');
+  } else {
+    apiKeys = await fs.readFile(path.resolve(__dirname, '..', 'apikey-dev.json'), 'utf8');
+  }
+  apiKeys = JSON.parse(apiKeys);
 
-const load = () => {
-  apiKeysJSON.forEach((key) => {
-    redisClient.set(key, `${JSON.stringify(apiKeys[key])}`, redis.print);
+  const apiKeysJSON = Object.keys(apiKeys);
+
+  apiKeysJSON.forEach(async (key) => {
+    try {
+      await redisClient.set(key, `${JSON.stringify(apiKeys[key])}`);
+    } catch (err) {
+      logger.error(`Cannot load ${key} with ${JSON.stringify(apiKeys[key])} on redis`);
+      logger.error(err);
+    }
   });
 };
 
@@ -53,10 +65,6 @@ const pingRedis = async () => {
   logger.info(`ping - ${config.get('redis.host')}:${config.get('redis.port')} ok`);
   return true;
 };
-
-redisClient.get = util.promisify(redisClient.get);
-redisClient.del = util.promisify(redisClient.del);
-redisClient.ping = util.promisify(redisClient.ping);
 
 module.exports = {
   redisClient,

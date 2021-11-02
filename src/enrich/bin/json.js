@@ -131,7 +131,7 @@ const askEzunpaywall = async (data, args, stateName, index, apikey) => {
       },
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'X-API-KEY': apikey,
+        'x-api-key': apikey,
         index,
       },
     });

@@ -34,7 +34,7 @@ describe('Test: auth service in graphql service', () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{GetByDOI(dois:["${doi1}"]){doi, is_oa}}` })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -46,7 +46,7 @@ describe('Test: auth service in graphql service', () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{GetByDOI(dois:["${doi1}"]){doi, is_oa}}` })
-        .set('X-API-KEY', 'graphql')
+        .set('x-api-key', 'graphql')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -70,7 +70,7 @@ describe('Test: auth service in graphql service', () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{GetByDOI(dois:["${doi1}"]){doi, is_oa}}` })
-        .set('X-API-KEY', 'wrong apikey')
+        .set('x-api-key', 'wrong apikey')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(401);
@@ -83,7 +83,7 @@ describe('Test: auth service in graphql service', () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{GetByDOI(dois:["${doi1}"]){doi, is_oa}}` })
-        .set('X-API-KEY', 'enrich')
+        .set('x-api-key', 'enrich')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(401);
@@ -96,7 +96,7 @@ describe('Test: auth service in graphql service', () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{GetByDOI(dois:["${doi1}"]){doi, is_oa}}` })
-        .set('X-API-KEY', 'update')
+        .set('x-api-key', 'update')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(401);
@@ -109,7 +109,7 @@ describe('Test: auth service in graphql service', () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{GetByDOI(dois:["${doi1}"]){doi, is_oa}}` })
-        .set('X-API-KEY', 'notAllowed')
+        .set('x-api-key', 'notAllowed')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(401);
@@ -122,7 +122,7 @@ describe('Test: auth service in graphql service', () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{GetByDOI(dois:["${doi1}"]){doi, is_oa, oa_status}}` })
-        .set('X-API-KEY', 'userRestricted')
+        .set('x-api-key', 'userRestricted')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);

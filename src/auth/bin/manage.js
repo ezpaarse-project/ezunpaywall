@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const redis = require('redis');
-const redisClient = require('../lib/redis');
+const { redisClient } = require('../lib/redis');
+const logger = require('../lib/logger');
 
 const createAuth = async (name, access, attributes, allowed) => {
   const currentDate = (new Date()).valueOf().toString();
@@ -14,25 +15,34 @@ const createAuth = async (name, access, attributes, allowed) => {
     allowed,
   };
 
-  await redisClient.set(id, `${JSON.stringify(config)}`, redis.print);
+  try {
+    await redisClient.set(id, `${JSON.stringify(config)}`);
+  } catch (err) {
+    logger.error(`Cannot create apikey [${id}] for [${name}]`);
+    logger.error(err);
+  }
   return id;
 };
 
 const updateAuth = async (id, name, access, attributes, allowed) => {
-  const config = {
-    name,
-    access,
-    attributes,
-    allowed,
-  };
+  let config = await redisClient.get(id);
+  config = JSON.parse(config);
 
-  await redisClient.set(id, `${JSON.stringify(config)}`, redis.print);
-  return id;
+  if (name) config.name = name;
+  if (access) config.access = access;
+  if (attributes) config.attributes = attributes;
+  if (typeof allowed === 'boolean') config.allowed = allowed;
+
+  try {
+    await redisClient.set(id, `${JSON.stringify(config)}`);
+  } catch (err) {
+    logger.error(`Cannot update apikey [${id}] for [${name}]`);
+    logger.error(err);
+  }
 };
 
 const deleteAuth = async (id) => {
   await redisClient.del(id, redis.print);
-  return id;
 };
 
 module.exports = {

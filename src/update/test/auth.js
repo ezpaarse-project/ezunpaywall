@@ -44,7 +44,7 @@ describe('Test: auth service in update service', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       // test insertion
       let isUpdate = true;
@@ -86,7 +86,7 @@ describe('Test: auth service in update service', () => {
         .query({ index: 'unpaywall-test' })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong apikey');
+        .set('x-api-key', 'wrong apikey');
 
       expect(res).have.status(401);
       expect(res?.body).have.property('message').eq('Not authorized');
@@ -103,7 +103,7 @@ describe('Test: auth service in update service', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'enrich');
+        .set('x-api-key', 'enrich');
 
       expect(res).have.status(401);
       expect(res?.body).have.property('message').eq('Not authorized');
@@ -120,7 +120,7 @@ describe('Test: auth service in update service', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'graphql');
+        .set('x-api-key', 'graphql');
 
       expect(res).have.status(401);
       expect(res?.body).have.property('message').eq('Not authorized');
@@ -137,7 +137,7 @@ describe('Test: auth service in update service', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'notAllowed');
+        .set('x-api-key', 'notAllowed');
 
       expect(res).have.status(401);
       expect(res?.body).have.property('message').eq('Not authorized');

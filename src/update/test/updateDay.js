@@ -59,7 +59,7 @@ describe('Test: daily update route test', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Daily update started');
@@ -169,7 +169,7 @@ describe('Test: daily update route test', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Daily update started');
@@ -263,7 +263,7 @@ describe('Test: daily update route test', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Daily update started');
@@ -363,7 +363,7 @@ describe('Test: daily update route test', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       // test response
       expect(res).have.status(200);
@@ -443,13 +443,13 @@ describe('Test: daily update route test', () => {
     });
   });
 
-  describe('Day: Don\'t daily update because wrong X-API-KEY', () => {
+  describe('Day: Don\'t daily update because wrong x-api-key', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong X-API-KEY');
+        .set('x-api-key', 'wrong x-api-key');
 
       expect(res).have.status(401);
       expect(res?.body).have.property('message').eq('Not authorized');
@@ -460,7 +460,7 @@ describe('Test: daily update route test', () => {
         .post('/job')
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'wrong X-API-KEY');
+        .set('x-api-key', 'wrong x-api-key');
 
       expect(res).have.status(401);
       expect(res?.body).have.property('message').eq('Not authorized');
