@@ -17,9 +17,17 @@
           <v-list-item-title> {{ $t("ui.components.Drawer.home") }} </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-    </v-list>
 
-    <v-list>
+      <v-list-item link router :to="{ path: '/graphql' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-api</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title> graphql </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item link router :to="{ path: '/enrich' }" ripple>
         <v-list-item-icon>
           <v-icon>mdi-code-json</v-icon>
@@ -29,6 +37,30 @@
           <v-list-item-title> {{ $t("ui.components.Drawer.enrich") }} </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
+      <!--
+
+      <v-list-item link router :to="{ path: '/doc' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-file-document-outline</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title> doc </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link router :to="{ path: '/contact' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-email</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title> contact us </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      -->
     </v-list>
 
     <v-list-group

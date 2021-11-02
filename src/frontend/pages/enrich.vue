@@ -355,7 +355,6 @@ export default {
       this.state = {}
       this.time = 0
       this.id = ''
-      console.log('coucou')
     },
 
     getFiles (files) {
