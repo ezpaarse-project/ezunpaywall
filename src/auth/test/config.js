@@ -68,6 +68,6 @@ describe('Test: Get config of apikey', () => {
       .get('/config');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('id expected');
+    expect(res.body).have.property('message').equal('apikey expected');
   });
 });

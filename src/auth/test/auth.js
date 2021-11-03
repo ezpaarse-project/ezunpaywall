@@ -51,5 +51,6 @@ describe('Test: auth service', () => {
 
   after(async () => {
     await deleteAll();
+    await load();
   });
 });

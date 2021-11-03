@@ -27,7 +27,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           name: 'new-name',
         },
@@ -50,7 +50,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           access: ['update'],
         },
@@ -72,7 +72,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           attributes: 'doi',
         },
@@ -95,7 +95,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           name: 'new-user',
           access: ['update'],
@@ -118,7 +118,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           allowed: false,
         },
@@ -141,7 +141,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           access: 'hello',
         },
@@ -157,7 +157,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           access: ['hello'],
         },
@@ -173,7 +173,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           attributes: 1,
         },
@@ -189,7 +189,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           attributes: 'test',
         },
@@ -205,7 +205,7 @@ describe('Test: Update apikey', () => {
       .request(authURL)
       .put('/update')
       .send({
-        id: 'user',
+        apikey: 'user',
         config: {
           allowed: 1,
         },
@@ -218,5 +218,6 @@ describe('Test: Update apikey', () => {
 
   after(async () => {
     await deleteAll();
+    await load();
   });
 });

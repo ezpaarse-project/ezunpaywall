@@ -80,7 +80,7 @@ router.get('/config', async (req, res) => {
   const apikey = req.get('x-api-key');
 
   if (!apikey) {
-    return res.status(400).json({ message: 'id expected' });
+    return res.status(400).json({ message: 'apikey expected' });
   }
 
   let key;
@@ -164,14 +164,12 @@ router.post('/create', checkAuth, async (req, res, next) => {
       return res.status(400).json({ message: `argument "attributes" [${attributes}] is in wrong format` });
     }
 
-    if (attributes) {
-      const attrs = attributes.split(',');
-      attrs.forEach((attr) => {
-        if (!unpaywallAttrs.includes(attr)) {
-          return res.status(400).json({ message: `argument "attributes" [${attr}] doesn't exist` });
-        }
-      });
-    }
+    const attrs = attributes.split(',');
+    attrs.forEach((attr) => {
+      if (!unpaywallAttrs.includes(attr)) {
+        return res.status(400).json({ message: `argument "attributes" [${attr}] doesn't exist` });
+      }
+    });
   }
 
   const keys = await redisClient.keys('*');
@@ -184,28 +182,28 @@ router.post('/create', checkAuth, async (req, res, next) => {
     }
   });
 
-  let id;
+  let apikey;
 
   try {
-    id = await createAuth(name, access, attributes, allowed);
+    apikey = await createAuth(name, access, attributes, allowed);
   } catch (err) {
     return next(err);
   }
 
-  let config = await redisClient.get(id);
+  let config = await redisClient.get(apikey);
   config = JSON.parse(config);
 
-  return res.status(200).json({ apikey: id, config });
+  return res.status(200).json({ apikey: apikey, config });
 });
 
 /**
  * update apikey
  */
 router.put('/update', checkAuth, async (req, res, next) => {
-  const { config, id } = req.body;
+  const { config, apikey } = req.body;
 
-  if (!id) {
-    return res.status(400).json({ message: 'id expected' });
+  if (!apikey) {
+    return res.status(400).json({ message: 'apikey expected' });
   }
 
   const availableAccess = ['update', 'enrich', 'graphql', 'auth'];
@@ -234,71 +232,69 @@ router.put('/update', checkAuth, async (req, res, next) => {
       return res.status(400).json({ message: `argument "attributes" [${config.attributes}] is in wrong format` });
     }
 
-    if (config.attributes) {
-      const attrs = config.attributes.split(',');
-      attrs.forEach((attr) => {
-        if (!unpaywallAttrs.includes(attr)) {
-          return res.status(400).json({ message: `argument "attributes" [${attr}] doesn't exist` });
-        }
-      });
-    }
+    const attrs = config.attributes.split(',');
+    attrs.forEach((attr) => {
+      if (!unpaywallAttrs.includes(attr)) {
+        return res.status(400).json({ message: `argument "attributes" [${attr}] doesn't exist` });
+      }
+    });
   }
 
   let key;
   try {
-    key = await redisClient.get(id);
+    key = await redisClient.get(apikey);
   } catch (err) {
-    logger.error(`Cannot get ${id} on redis`);
+    logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 
   if (!key) {
-    return res.status(404).json({ message: `[${id}] apikey doesn't exist` });
+    return res.status(404).json({ message: `[${apikey}] apikey doesn't exist` });
   }
 
   try {
-    await updateAuth(id, config.name, config.access, config.attributes, config.allowed);
+    await updateAuth(apikey, config.name, config.access, config.attributes, config.allowed);
   } catch (err) {
     return next(err);
   }
 
-  let configApiKey = await redisClient.get(id);
+  let configApiKey = await redisClient.get(apikey);
   configApiKey = JSON.parse(configApiKey);
 
-  return res.status(200).json({ apikey: id, config: configApiKey });
+  return res.status(200).json({ apikey, config: configApiKey });
 });
 
 /**
  * delete apikey
  */
 router.delete('/delete', checkAuth, async (req, res, next) => {
-  const { id } = req.body;
+  const { apikey } = req.body;
 
-  if (!id) {
-    return res.status(400).json({ message: 'id expected' });
+  if (!apikey) {
+    return res.status(400).json({ message: 'apikey expected' });
   }
 
   let key;
   try {
-    key = await redisClient.get(id);
+    key = await redisClient.get(apikey);
   } catch (err) {
-    logger.error(`Cannot get ${id} on redis`);
+    logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
     return res.status(500).json({ message: 'Internal server error' });
   }
 
   if (!key) {
-    return res.status(404).json({ message: `[${id}] apikey doesn't exist` });
+    return res.status(404).json({ message: `[${apikey}] apikey doesn't exist` });
   }
 
   try {
-    await deleteAuth(id);
+    await deleteAuth(apikey);
   } catch (err) {
     return next(err);
   }
 
-  return res.status(200).json({ id });
+  return res.status(200).json({ apikey });
 });
 
 /**

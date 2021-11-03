@@ -50,7 +50,6 @@ describe('Test: Create apikey', () => {
       })
       .set('redis-password', 'changeme');
 
-    console.log(res.body)
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').to.not.equal(undefined);
@@ -155,5 +154,10 @@ describe('Test: Create apikey', () => {
 
     expect(res).have.status(400);
     expect(res.body).have.property('message').equal('argument "allowed" [1] is in wrong format');
+  });
+
+  after(async () => {
+    await deleteAll();
+    await load();
   });
 });

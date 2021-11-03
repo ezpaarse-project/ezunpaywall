@@ -24,12 +24,12 @@ describe('Test: Delete apikey', () => {
       .request(authURL)
       .delete('/delete')
       .send({
-        id: 'user',
+        apikey: 'user',
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
-    expect(res.body).have.property('id').equal('user');
+    expect(res.body).have.property('apikey').equal('user');
   });
 
   it('Shouldn\'t delete apikey because it\'s doesn\'t exist', async () => {
@@ -37,7 +37,7 @@ describe('Test: Delete apikey', () => {
       .request(authURL)
       .delete('/delete')
       .send({
-        id: 'user-test',
+        apikey: 'user-test',
       })
       .set('redis-password', 'changeme');
 
@@ -52,10 +52,11 @@ describe('Test: Delete apikey', () => {
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('id expected');
+    expect(res.body).have.property('message').equal('apikey expected');
   });
 
   after(async () => {
     await deleteAll();
+    await load();
   });
 });
