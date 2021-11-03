@@ -10,7 +10,7 @@ const {
 
 chai.use(chaiHttp);
 
-const authURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 describe('Test: Delete apikey', () => {
   before(async () => {
@@ -21,7 +21,7 @@ describe('Test: Delete apikey', () => {
 
   it('Should delete apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .delete('/delete')
       .send({
         apikey: 'user',
@@ -33,7 +33,7 @@ describe('Test: Delete apikey', () => {
 
   it('Shouldn\'t delete apikey because hello apikey doesn\'t exist', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .delete('/delete')
       .send({
         apikey: 'hello',
@@ -46,7 +46,7 @@ describe('Test: Delete apikey', () => {
 
   it('Shouldn\'t delete apikey because are not send', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .delete('/delete')
       .set('redis-password', 'changeme');
 

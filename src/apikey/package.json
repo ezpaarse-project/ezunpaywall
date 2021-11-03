@@ -1,5 +1,5 @@
 {
-  "name": "ezunpaywall-auth",
+  "name": "ezunpaywall-apikey",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",

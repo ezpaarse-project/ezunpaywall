@@ -81,15 +81,15 @@ services:
       - redis
     restart: unless-stopped
 
-  auth:
+  apikey:
     image: node:14.15.5-alpine3.13
     environment:
       # proxy
       - http_proxy
       - https_proxy
-    working_dir: /auth
+    working_dir: /apikey
     volumes:
-      - ./src/auth:/auth
+      - ./src/apikey:/apikey
     command: "npm run dev"
     ports:
       - 7000:7000
@@ -100,8 +100,10 @@ services:
   redis:
     image: "redis:6.2.5-alpine3.14"
     command: redis-server --requirepass changeme
+    volumes:
+      - ./redis:/data
     ports:
-     - "6379:6379"
+      - "6379:6379"
     restart: unless-stopped
 
   frontend:
@@ -177,7 +179,7 @@ services:
       - enrich
       - update
       - graphql
-      - auth
+      - apikey
 
   maildev:
     image: djfarrelly/maildev

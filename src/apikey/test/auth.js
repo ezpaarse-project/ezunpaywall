@@ -10,7 +10,7 @@ const {
 
 chai.use(chaiHttp);
 
-const authURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 describe('Test: auth service', () => {
   before(async () => {
@@ -25,7 +25,7 @@ describe('Test: auth service', () => {
 
   it('Should access apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .get('/all')
       .set('redis-password', 'changeme');
 
@@ -34,7 +34,7 @@ describe('Test: auth service', () => {
 
   it('Shouldn`t access apikey because wrong api key', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .get('/all')
       .set('redis-password', 'hello');
 
@@ -43,7 +43,7 @@ describe('Test: auth service', () => {
 
   it('Shouldn`t access apikey because no api key', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .get('/all');
 
     expect(res).have.status(401);

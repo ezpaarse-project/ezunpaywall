@@ -10,7 +10,7 @@ const {
 
 chai.use(chaiHttp);
 
-const authURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 describe('Test: Update apikey', () => {
   before(async () => {
@@ -24,7 +24,7 @@ describe('Test: Update apikey', () => {
 
   it('Should update config.name of apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -45,7 +45,7 @@ describe('Test: Update apikey', () => {
 
   it('Should update config.access of apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -67,7 +67,7 @@ describe('Test: Update apikey', () => {
 
   it('Should update config.attributes of apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -88,7 +88,7 @@ describe('Test: Update apikey', () => {
 
   it('Should update config.allowed to false of apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -109,7 +109,7 @@ describe('Test: Update apikey', () => {
 
   it('Should update config.allowed to true of apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'notAllowed',
@@ -130,7 +130,7 @@ describe('Test: Update apikey', () => {
 
   it('Should update config.name and config.access of apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -152,7 +152,7 @@ describe('Test: Update apikey', () => {
 
   it('Shouldn\'t update config.access because wrong format', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -168,7 +168,7 @@ describe('Test: Update apikey', () => {
 
   it('Shouldn\'t update config.access because "hello" doesn\'t exist', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -184,7 +184,7 @@ describe('Test: Update apikey', () => {
 
   it('Shouldn\'t update config.attributes because wrong format', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -200,7 +200,7 @@ describe('Test: Update apikey', () => {
 
   it('Shouldn\'t update config.attributes because "hello" doesn\'t exist', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
@@ -216,7 +216,7 @@ describe('Test: Update apikey', () => {
 
   it('Shouldn\'t update config.allowed because "1" doesn\'t exist', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',

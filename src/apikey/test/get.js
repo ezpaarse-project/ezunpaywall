@@ -13,7 +13,7 @@ const {
 
 chai.use(chaiHttp);
 
-const authURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 describe('Test: Get config of apikey', () => {
   before(async () => {
@@ -24,7 +24,7 @@ describe('Test: Get config of apikey', () => {
 
   it('Should get config of apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .get('/config')
       .set('x-api-key', 'user');
 
@@ -37,7 +37,7 @@ describe('Test: Get config of apikey', () => {
 
   it('Should get all apikey', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .get('/all')
       .set('redis-password', 'changeme');
 
@@ -54,7 +54,7 @@ describe('Test: Get config of apikey', () => {
 
   it('Shouldn\'t get config of apikey because this apikey doesn\'t exist', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .get('/config')
       .set('x-api-key', 'hello');
 
@@ -64,7 +64,7 @@ describe('Test: Get config of apikey', () => {
 
   it('Shouldn\'t get config of apikey because no apikey are send', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .get('/config');
 
     expect(res).have.status(400);

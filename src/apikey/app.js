@@ -36,7 +36,7 @@ app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method
 app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
 app.listen(7000, async () => {
-  logger.info('ezunpaywall auth service listening on 7000');
+  logger.info('ezunpaywall apikey service listening on 7000');
   pingRedis();
   await load();
 });

@@ -10,7 +10,7 @@ const {
 
 chai.use(chaiHttp);
 
-const authURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 describe('Test: Create apikey', () => {
   before(async () => {
@@ -21,7 +21,7 @@ describe('Test: Create apikey', () => {
 
   it('Should create apikey with all config', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user1',
@@ -42,7 +42,7 @@ describe('Test: Create apikey', () => {
 
   it('Should create apikey with only name', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user2',
@@ -60,7 +60,7 @@ describe('Test: Create apikey', () => {
 
   it('Shouldn\'t create apikey because it\'s already exist', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user1',
@@ -76,7 +76,7 @@ describe('Test: Create apikey', () => {
 
   it('Shouldn\'t create apikey because config.access are in wrong format', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user1',
@@ -92,7 +92,7 @@ describe('Test: Create apikey', () => {
 
   it('Shouldn\'t create apikey because config.access "hello" doesn\'t exist', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user1',
@@ -108,7 +108,7 @@ describe('Test: Create apikey', () => {
 
   it('Shouldn\'t create apikey because config.attributes are in wrong format', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user1',
@@ -124,7 +124,7 @@ describe('Test: Create apikey', () => {
 
   it('Shouldn\'t create apikey because config.attributes "hello" doesn\'t exist', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user1',
@@ -140,7 +140,7 @@ describe('Test: Create apikey', () => {
 
   it('Shouldn\'t create apikey because config.allowed are in wrong format', async () => {
     const res = await chai
-      .request(authURL)
+      .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user1',

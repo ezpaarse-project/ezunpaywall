@@ -11,7 +11,7 @@ env:
 before_script:
   - docker-compose -f docker-compose.debug.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/
   - docker-compose -f docker-compose.debug.yml up -d elastic fakeunpaywall maildev
-  - docker-compose -f docker-compose.debug.yml up -d auth redis
+  - docker-compose -f docker-compose.debug.yml up -d apikey redis
   - docker-compose -f docker-compose.debug.yml up -d graphql update enrich 
 script: "npm run test"
 notifications:
