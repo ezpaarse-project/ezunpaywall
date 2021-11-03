@@ -304,7 +304,11 @@ router.delete('/delete', checkAuth, async (req, res, next) => {
  * delete all apikey
  */
 router.delete('/all', checkAuth, async (req, res, next) => {
-  await redisClient.flushall();
+  try {
+    await redisClient.flushall();
+  } catch (err) {
+    return next(err);
+  }
   return res.status(200).json({ message: 'flushall' });
 });
 
@@ -312,7 +316,11 @@ router.delete('/all', checkAuth, async (req, res, next) => {
  * load apikey
  */
 router.post('/load', checkAuth, async (req, res, next) => {
-  await load();
+  try {
+    await load();
+  } catch (err) {
+    return next(err);
+  }
   return res.status(200).json({ message: 'load' });
 });
 
@@ -320,7 +328,12 @@ router.post('/load', checkAuth, async (req, res, next) => {
  * ping redis
  */
 router.get('/ping', async (req, res, next) => {
-  const ping = await pingRedis();
+  let ping;
+  try {
+    ping = await pingRedis();
+  } catch (err) {
+    return next(err);
+  }
   if (ping) {
     return res.status(200).json({ message: 'OK' });
   }
