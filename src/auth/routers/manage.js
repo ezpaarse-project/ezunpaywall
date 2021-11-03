@@ -175,6 +175,7 @@ router.post('/create', checkAuth, async (req, res, next) => {
   }
 
   const keys = await redisClient.keys('*');
+
   keys.filter(async (key) => {
     let config = await redisClient.get(key);
     config = JSON.parse(config);

@@ -8,12 +8,17 @@ const createAuth = async (name, access, attributes, allowed) => {
   const random = Math.random().toString();
   const hash = crypto.createHash('sha256').update(`${currentDate}${random}`).digest('hex');
   const id = hash;
+
   const config = {
     name,
     access,
     attributes,
     allowed,
   };
+
+  if (!config?.access) config.access = ['graphql'];
+  if (!config?.attributes) config.attributes = '*';
+  if (!config?.allowed) config.allowed = true;
 
   try {
     await redisClient.set(id, `${JSON.stringify(config)}`);

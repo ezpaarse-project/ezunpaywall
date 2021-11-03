@@ -19,7 +19,7 @@ describe('Test: Create apikey', () => {
     await load();
   });
 
-  it('Should create apikey', async () => {
+  it('Should create apikey with all config', async () => {
     const res = await chai
       .request(authURL)
       .post('/create')
@@ -35,6 +35,26 @@ describe('Test: Create apikey', () => {
 
     expect(res.body).have.property('apikey').to.not.equal(undefined);
     expect(res.body.config).have.property('name').equal('test-user1');
+    expect(res.body.config).have.property('access').to.be.an('array');
+    expect(res.body.config.access[0]).equal('graphql');
+    expect(res.body.config).have.property('attributes').equal('*');
+    expect(res.body.config).have.property('allowed').equal(true);
+  });
+
+  it('Should create apikey with only name', async () => {
+    const res = await chai
+      .request(authURL)
+      .post('/create')
+      .send({
+        name: 'test-user2',
+      })
+      .set('redis-password', 'changeme');
+
+    console.log(res.body)
+    expect(res).have.status(200);
+
+    expect(res.body).have.property('apikey').to.not.equal(undefined);
+    expect(res.body.config).have.property('name').equal('test-user2');
     expect(res.body.config).have.property('access').to.be.an('array');
     expect(res.body.config.access[0]).equal('graphql');
     expect(res.body.config).have.property('attributes').equal('*');
