@@ -193,7 +193,7 @@ router.post('/create', checkAuth, async (req, res, next) => {
   let config = await redisClient.get(apikey);
   config = JSON.parse(config);
 
-  return res.status(200).json({ apikey: apikey, config });
+  return res.status(200).json({ apikey, config });
 });
 
 /**

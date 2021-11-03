@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 const { name, version } = require('./package.json');
-const { load, pingRedis, redisClient } = require('./lib/redis');
+const { load, pingRedis } = require('./lib/redis');
 
 const routerManage = require('./routers/manage');
 
