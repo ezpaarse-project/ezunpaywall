@@ -19,7 +19,7 @@ const createAuth = async (name, access, attributes, allowed) => {
     await redisClient.set(id, `${JSON.stringify(config)}`);
   } catch (err) {
     logger.error(`Cannot create apikey [${id}] for [${name}]`);
-    throw err;
+    return Promise.reject(err);
   }
   return id;
 };
@@ -37,7 +37,7 @@ const updateAuth = async (id, name, access, attributes, allowed) => {
     await redisClient.set(id, `${JSON.stringify(config)}`);
   } catch (err) {
     logger.error(`Cannot update apikey [${id}] for [${name}]`);
-    throw err;
+    return Promise.reject(err);
   }
 };
 
