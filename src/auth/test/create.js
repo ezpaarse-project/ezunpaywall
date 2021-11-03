@@ -35,8 +35,7 @@ describe('Test: Create apikey', () => {
 
     expect(res.body).have.property('apikey').to.not.equal(undefined);
     expect(res.body.config).have.property('name').equal('test-user1');
-    expect(res.body.config).have.property('access').to.be.an('array');
-    expect(res.body.config.access[0]).equal('graphql');
+    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body.config).have.property('attributes').equal('*');
     expect(res.body.config).have.property('allowed').equal(true);
   });
@@ -54,8 +53,7 @@ describe('Test: Create apikey', () => {
 
     expect(res.body).have.property('apikey').to.not.equal(undefined);
     expect(res.body.config).have.property('name').equal('test-user2');
-    expect(res.body.config).have.property('access').to.be.an('array');
-    expect(res.body.config.access[0]).equal('graphql');
+    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body.config).have.property('attributes').equal('*');
     expect(res.body.config).have.property('allowed').equal(true);
   });

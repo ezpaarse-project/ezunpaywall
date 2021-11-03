@@ -31,17 +31,17 @@ describe('Test: Delete apikey', () => {
     expect(res).have.status(204);
   });
 
-  it('Shouldn\'t delete apikey because it\'s doesn\'t exist', async () => {
+  it('Shouldn\'t delete apikey because hello apikey doesn\'t exist', async () => {
     const res = await chai
       .request(authURL)
       .delete('/delete')
       .send({
-        apikey: 'user-test',
+        apikey: 'hello',
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(404);
-    expect(res.body).have.property('message').equal('[user-test] apikey doesn\'t exist');
+    expect(res.body).have.property('message').equal('[hello] apikey doesn\'t exist');
   });
 
   it('Shouldn\'t delete apikey because are not send', async () => {

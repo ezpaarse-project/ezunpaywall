@@ -36,11 +36,9 @@ describe('Test: Update apikey', () => {
 
     expect(res).have.status(200);
 
-    expect(res.body).have.property('apikey').to.not.equal(undefined);
+    expect(res.body).have.property('apikey').equal('user');
     expect(res.body.config).have.property('name').equal('new-name');
-    expect(res.body.config).have.property('access').to.be.an('array');
-    expect(res.body.config.access[0]).equal('graphql');
-    expect(res.body.config.access[1]).equal('enrich');
+    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body.config).have.property('attributes').equal('*');
     expect(res.body.config).have.property('allowed').equal(true);
   });
@@ -59,9 +57,9 @@ describe('Test: Update apikey', () => {
 
     expect(res).have.status(200);
 
-    expect(res.body).have.property('apikey').to.not.equal(undefined);
+    expect(res.body).have.property('apikey').equal('user');
     expect(res.body.config).have.property('name').equal('user');
-    expect(res.body.config).have.property('access').to.be.an('array');
+    expect(res.body.config).have.property('access').to.be.an('array').eql(['update']);
     expect(res.body.config.access[0]).equal('update');
     expect(res.body.config).have.property('attributes').equal('*');
     expect(res.body.config).have.property('allowed').equal(true);
@@ -81,16 +79,14 @@ describe('Test: Update apikey', () => {
 
     expect(res).have.status(200);
 
-    expect(res.body).have.property('apikey').to.not.equal(undefined);
+    expect(res.body).have.property('apikey').equal('user');
     expect(res.body.config).have.property('name').equal('user');
-    expect(res.body.config).have.property('access').to.be.an('array');
-    expect(res.body.config.access[0]).equal('graphql');
-    expect(res.body.config.access[1]).equal('enrich');
+    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body.config).have.property('attributes').equal('doi');
     expect(res.body.config).have.property('allowed').equal(true);
   });
 
-  it('Should update config.allowed of apikey', async () => {
+  it('Should update config.allowed to false of apikey', async () => {
     const res = await chai
       .request(authURL)
       .put('/update')
@@ -104,13 +100,32 @@ describe('Test: Update apikey', () => {
 
     expect(res).have.status(200);
 
-    expect(res.body).have.property('apikey').to.not.equal(undefined);
+    expect(res.body).have.property('apikey').equal('user');
     expect(res.body.config).have.property('name').equal('user');
-    expect(res.body.config).have.property('access').to.be.an('array');
-    expect(res.body.config.access[0]).equal('graphql');
-    expect(res.body.config.access[1]).equal('enrich');
+    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body.config).have.property('attributes').equal('*');
     expect(res.body.config).have.property('allowed').equal(false);
+  });
+
+  it('Should update config.allowed to true of apikey', async () => {
+    const res = await chai
+      .request(authURL)
+      .put('/update')
+      .send({
+        apikey: 'notAllowed',
+        config: {
+          allowed: true,
+        },
+      })
+      .set('redis-password', 'changeme');
+
+    expect(res).have.status(200);
+
+    expect(res.body).have.property('apikey').equal('notAllowed');
+    expect(res.body.config).have.property('name').equal('notAllowed');
+    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql', 'enrich', 'update']);
+    expect(res.body.config).have.property('attributes').equal('*');
+    expect(res.body.config).have.property('allowed').equal(true);
   });
 
   it('Should update config.name and config.access of apikey', async () => {
@@ -128,10 +143,9 @@ describe('Test: Update apikey', () => {
 
     expect(res).have.status(200);
 
-    expect(res.body).have.property('apikey').to.not.equal(undefined);
+    expect(res.body).have.property('apikey').equal('user');
     expect(res.body.config).have.property('name').equal('new-user');
-    expect(res.body.config).have.property('access').to.be.an('array');
-    expect(res.body.config.access[0]).equal('update');
+    expect(res.body.config).have.property('access').to.be.an('array').eql(['update']);
     expect(res.body.config).have.property('attributes').equal('*');
     expect(res.body.config).have.property('allowed').equal(true);
   });
