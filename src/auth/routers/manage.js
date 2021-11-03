@@ -178,7 +178,7 @@ router.post('/create', checkAuth, async (req, res, next) => {
     let config = await redisClient.get(key);
     config = JSON.parse(config);
     if (config.name === name) {
-      return res.status(400).json({ message: `Name [${name}] already exist` });
+      return res.status(403).json({ message: `Name [${name}] already exist` });
     }
   });
 

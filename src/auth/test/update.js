@@ -90,29 +90,6 @@ describe('Test: Update apikey', () => {
     expect(res.body.config).have.property('allowed').equal(true);
   });
 
-  it('Should update config.name and config.access of apikey', async () => {
-    const res = await chai
-      .request(authURL)
-      .put('/update')
-      .send({
-        apikey: 'user',
-        config: {
-          name: 'new-user',
-          access: ['update'],
-        },
-      })
-      .set('redis-password', 'changeme');
-
-    expect(res).have.status(200);
-
-    expect(res.body).have.property('apikey').to.not.equal(undefined);
-    expect(res.body.config).have.property('name').equal('new-user');
-    expect(res.body.config).have.property('access').to.be.an('array');
-    expect(res.body.config.access[0]).equal('update');
-    expect(res.body.config).have.property('attributes').equal('*');
-    expect(res.body.config).have.property('allowed').equal(true);
-  });
-
   it('Should update config.allowed of apikey', async () => {
     const res = await chai
       .request(authURL)
@@ -136,6 +113,29 @@ describe('Test: Update apikey', () => {
     expect(res.body.config).have.property('allowed').equal(false);
   });
 
+  it('Should update config.name and config.access of apikey', async () => {
+    const res = await chai
+      .request(authURL)
+      .put('/update')
+      .send({
+        apikey: 'user',
+        config: {
+          name: 'new-user',
+          access: ['update'],
+        },
+      })
+      .set('redis-password', 'changeme');
+
+    expect(res).have.status(200);
+
+    expect(res.body).have.property('apikey').to.not.equal(undefined);
+    expect(res.body.config).have.property('name').equal('new-user');
+    expect(res.body.config).have.property('access').to.be.an('array');
+    expect(res.body.config.access[0]).equal('update');
+    expect(res.body.config).have.property('attributes').equal('*');
+    expect(res.body.config).have.property('allowed').equal(true);
+  });
+
   it('Shouldn\'t update config.access because wrong format', async () => {
     const res = await chai
       .request(authURL)
@@ -152,7 +152,7 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('message').equal('argument "access" [hello] is in wrong format');
   });
 
-  it('Shouldn\'t update config.access because "user" doesn\'t exist', async () => {
+  it('Shouldn\'t update config.access because "hello" doesn\'t exist', async () => {
     const res = await chai
       .request(authURL)
       .put('/update')
@@ -184,20 +184,20 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('message').equal('argument "attributes" [1] is in wrong format');
   });
 
-  it('Shouldn\'t update config.attributes because "test" doesn\'t exist', async () => {
+  it('Shouldn\'t update config.attributes because "hello" doesn\'t exist', async () => {
     const res = await chai
       .request(authURL)
       .put('/update')
       .send({
         apikey: 'user',
         config: {
-          attributes: 'test',
+          attributes: 'hello',
         },
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "attributes" [test] doesn\'t exist');
+    expect(res.body).have.property('message').equal('argument "attributes" [hello] doesn\'t exist');
   });
 
   it('Shouldn\'t update config.allowed because "1" doesn\'t exist', async () => {

@@ -72,7 +72,7 @@ describe('Test: Create apikey', () => {
       })
       .set('redis-password', 'changeme');
 
-    expect(res).have.status(400);
+    expect(res).have.status(403);
     expect(res.body).have.property('message').equal('Name [test-user1] already exist');
   });
 
