@@ -28,8 +28,7 @@ describe('Test: Delete apikey', () => {
       })
       .set('redis-password', 'changeme');
 
-    expect(res).have.status(200);
-    expect(res.body).have.property('apikey').equal('user');
+    expect(res).have.status(204);
   });
 
   it('Shouldn\'t delete apikey because it\'s doesn\'t exist', async () => {

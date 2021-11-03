@@ -294,7 +294,7 @@ router.delete('/delete', checkAuth, async (req, res, next) => {
     return next(err);
   }
 
-  return res.status(200).json({ apikey });
+  return res.status(204).json({});
 });
 
 /**
