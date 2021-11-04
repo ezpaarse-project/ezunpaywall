@@ -115,7 +115,7 @@ services:
     image: "redis:6.2.5-alpine3.14"
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
-      - redis_data:/data
+      - ./redis:/data
     ports:
       - "6379:6379"
     restart: unless-stopped
