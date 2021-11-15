@@ -58,9 +58,6 @@ app.use(routerState);
 app.use(routerStatus);
 app.use(routerUnpaywall);
 
-pingElastic();
-pingRedis();
-
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
 
@@ -68,4 +65,6 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(4000, () => {
   logger.info('ezunpaywall update service listening on 4000');
+  pingElastic();
+  pingRedis();
 });

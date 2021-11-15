@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 const { name, version } = require('./package.json');
-const { load, pingRedis } = require('./lib/redis');
+const { pingRedis } = require('./lib/redis');
 
 const routerManage = require('./routers/manage');
 
@@ -38,5 +38,4 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 app.listen(7000, async () => {
   logger.info('ezunpaywall apikey service listening on 7000');
   pingRedis();
-  await load();
 });
