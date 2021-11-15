@@ -186,7 +186,7 @@ module.exports = {
         size: dois.length || 1000,
         body: {
           query,
-          _source: attributes,
+          _source: attributes.split(','),
         },
 
       });
@@ -195,6 +195,7 @@ module.exports = {
       logger.error(err);
       return null;
     }
+
     // eslint-disable-next-line no-underscore-dangle
     return res.body.hits.hits.map((hit) => hit._source);
   },

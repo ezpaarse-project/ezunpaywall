@@ -306,19 +306,34 @@ router.delete('/all', checkAuth, async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-  return res.status(200).json({ message: 'flushall' });
+  return res.status(204).json();
 });
 
 /**
  * load apikey
  */
 router.post('/load', checkAuth, async (req, res, next) => {
-  try {
-    await load();
-  } catch (err) {
-    return next(err);
+  const { dev } = req.query;
+  const { keys } = req.body;
+  if (dev) {
+    try {
+      await load();
+    } catch (err) {
+      return next(err);
+    }
+    return res.status(204).json();
   }
-  return res.status(200).json({ message: 'load' });
+
+  const apiKeysJSON = Object.keys(keys);
+
+  apiKeysJSON.forEach(async (key) => {
+    try {
+      await redisClient.set(key, `${JSON.stringify(keys[key])}`);
+    } catch (err) {
+      logger.error(`Cannot load ${key} with ${JSON.stringify(keys[key])} on redis`);
+      logger.error(err);
+    }
+  });
 });
 
 /**

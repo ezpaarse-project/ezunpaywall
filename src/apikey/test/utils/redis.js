@@ -11,7 +11,7 @@ const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 const load = async () => {
   try {
     await chai.request(apikeyURL)
-      .post('/load')
+      .post('/load?dev=true')
       .set('redis-password', 'changeme');
   } catch (err) {
     console.error('Cannot request apikey service');

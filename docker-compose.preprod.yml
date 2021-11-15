@@ -12,8 +12,8 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
@@ -52,8 +52,8 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
@@ -82,8 +82,8 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       # redis
       - REDIS_PASSWORD
       # URL services
@@ -122,12 +122,12 @@ services:
       - elastic
 
   redis:
-    image: "redis:6.2.5-alpine3.14"
+    image: redis:6.2.5-alpine3.14
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
-      - ./redis:/data
+      - ./data/redis:/data
     ports:
-      - "6379:6379"
+      - 6379:6379
     restart: unless-stopped
     networks:
       - elastic
