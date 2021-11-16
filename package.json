@@ -28,8 +28,12 @@
     "pop-stash"
   ],
   "lint-staged": {
-    "enirch": [
-      "cd src/enrich; npm run lint"
+    "*.js": [
+      "cd src/apikey; npm run lint",
+      "cd src/enrich; npm run lint",
+      "cd src/frontend; npm run lint",
+      "cd src/graphql; npm run lint",
+      "cd src/update; npm run lint"
     ]
   },
   "devDependencies": {
