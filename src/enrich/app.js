@@ -55,4 +55,4 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 app.listen(5000, () => {
   logger.info('ezunpaywall enrich service listening on 5000');
   pingRedis();
-}); 
+});

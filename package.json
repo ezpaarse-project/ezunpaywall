@@ -28,8 +28,8 @@
     "pop-stash"
   ],
   "lint-staged": {
-    "*.js": [
-      "eslint"
+    "enirch": [
+      "cd src/enrich; npm run lint"
     ]
   },
   "devDependencies": {
