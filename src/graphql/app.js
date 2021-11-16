@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
+const responseTime = require('response-time');
 
 const { name, version } = require('./package.json');
 
@@ -14,9 +15,9 @@ const schema = require('./graphql');
 
 const app = express();
 
-app.use(morgan);
-
 // middleware
+app.use(morgan);
+app.use(responseTime());
 app.use(cors({
   origin: '*',
   allowedHeaders: ['Content-Type', 'x-api-key'],
