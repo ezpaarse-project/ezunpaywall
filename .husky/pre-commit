@@ -1,4 +1,37 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx lint-staged
+cd src/apikey
+npm run lint
+
+if [ $? -ne 0 ]
+then 
+  exit $?
+fi
+
+cd ../../src/enrich
+npm run lint
+
+if [ $? -ne 0 ]
+then 
+  exit $?
+fi
+
+cd ../../src/frontend
+npm run lint
+
+if [ $? -ne 0 ]
+then 
+  exit $?
+fi
+
+cd ../../src/graphql
+npm run lint
+
+if [ $? -ne 0 ]
+then 
+  exit $?
+fi
+
+cd ../../src/update
+npm run lint
