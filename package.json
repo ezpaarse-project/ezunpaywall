@@ -6,7 +6,7 @@
   "license": "CeCILL",
   "scripts": {
     "prepare": "husky install",
-    "install:apikey": "cd src/apikey; npm apikey",
+    "install:apikey": "cd src/apikey; npm install",
     "install:enrich": "cd src/enrich; npm install",
     "install:fakeUnpaywall": "cd src/fakeUnpaywall; npm install",
     "install:frontend": "cd src/frontend; npm install",
