@@ -5,8 +5,9 @@ const { format } = require('date-fns');
 
 const accessLogDir = path.resolve(__dirname, '..', 'out', 'logs');
 
-function logFilename() {
-  return `${format(new Date(), 'yyyy-MM-dd')}-access.log`;
+function logFilename(time) {
+  if (!time) return 'access.log';
+  return `${format(time, 'yyyy-MM-dd')}-access.log`;
 }
 
 const accessLogStream = rfs.createStream(logFilename, {
