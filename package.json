@@ -1,41 +1,41 @@
 {
-   "name": "ezunpaywall",
-   "version": "1.0.0",
-   "description": "",
-   "author": "felixleo22",
-   "license": "CeCILL",
-   "scripts": {
-      "prepare": "husky install",
-      "install:apikey": "cd src/apikey; npm apikey",
-      "install:enrich": "cd src/enrich; npm install",
-      "install:fakeUnpaywall": "cd src/fakeUnpaywall; npm install",
-      "install:frontend": "cd src/frontend; npm install",
-      "install:graphql": "cd src/graphql; npm install",
-      "install:update": "cd src/update; npm install",
-      "postinstall": "npm run install:apikey && npm run install:enrich && npm run install:fakeUnpaywall && npm run install:frontend && npm run install:graphql && npm run install:update",
-      "test:apikey": "cd src/apikey && npm run test",
-      "test:enrich": "cd src/enrich && npm run test",
-      "test:graphql": "cd src/graphql && npm run test",
-      "test:update": "cd src/update && npm run test",
-      "test": "npm run test:apikey; npm run test:update; npm run test:graphql; npm run test:enrich",
-      "lint-staged": "lint-staged || (npm run pop-stash >> /dev/null && exit 1)",
-      "stash-unstaged": "git stash save -k 'pre-linting-stash' >> /dev/null",
-      "pop-stash": "git stash && git stash pop stash@{1} && git read-tree stash && git stash drop",
-   },
-   "pre-commit": [
-      "stash-unstaged",
-      "lint-staged",
-      "pop-stash"
-   ],
-   "lint-staged": {
+  "name": "ezunpaywall",
+  "version": "1.0.0",
+  "description": "",
+  "author": "felixleo22",
+  "license": "CeCILL",
+  "scripts": {
+    "prepare": "husky install",
+    "install:apikey": "cd src/apikey; npm apikey",
+    "install:enrich": "cd src/enrich; npm install",
+    "install:fakeUnpaywall": "cd src/fakeUnpaywall; npm install",
+    "install:frontend": "cd src/frontend; npm install",
+    "install:graphql": "cd src/graphql; npm install",
+    "install:update": "cd src/update; npm install",
+    "postinstall": "npm run install:apikey && npm run install:enrich && npm run install:fakeUnpaywall && npm run install:frontend && npm run install:graphql && npm run install:update",
+    "test:apikey": "cd src/apikey && npm run test",
+    "test:enrich": "cd src/enrich && npm run test",
+    "test:graphql": "cd src/graphql && npm run test",
+    "test:update": "cd src/update && npm run test",
+    "test": "npm run test:apikey; npm run test:update; npm run test:graphql; npm run test:enrich",
+    "lint-staged": "lint-staged || (npm run pop-stash >> /dev/null && exit 1)",
+    "stash-unstaged": "git stash save -k 'pre-linting-stash' >> /dev/null",
+    "pop-stash": "git stash && git stash pop stash@{1} && git read-tree stash && git stash drop"
+  },
+  "pre-commit": [
+    "stash-unstaged",
+    "lint-staged",
+    "pop-stash"
+  ],
+  "lint-staged": {
     "*.js": [
       "eslint"
     ]
   },
-   "devDependencies": {
-      "husky": "^6.0.0"
-   },
-   "dependencies": {
-      "lint-staged": "^12.0.2"
-   }
+  "devDependencies": {
+    "husky": "^6.0.0"
+  },
+  "dependencies": {
+    "lint-staged": "^12.0.2"
+  }
 }
