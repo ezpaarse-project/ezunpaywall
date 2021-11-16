@@ -39,3 +39,4 @@ app.listen(7000, async () => {
   logger.info('ezunpaywall apikey service listening on 7000');
   pingRedis();
 });
+
