@@ -45,6 +45,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       await deleteSnapshot('fake2.jsonl.gz');
       await deleteSnapshot('fake3.jsonl.gz');
       await addSnapshot('fake1.jsonl.gz');
+      
       await deleteIndex('unpaywall-test');
     });
 

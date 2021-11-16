@@ -1,37 +1,17 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-cd src/apikey
-npm run lint
+# Defaults to .git
+unset GIT_DIR
 
-if [ $? -ne 0 ]
-then 
-  exit $?
+ROOT_DIR=$(git rev-parse --show-toplevel)
+LINT="${ROOT_DIR}/node_modules/eslint/bin/eslint.js --ext .js --no-ignore"
+
+cd $ROOT_DIR
+
+JSFILES=`git diff --name-only --cached --relative --diff-filter=ACM | grep '\.js$' || :`
+
+if [ -n "$JSFILES" ]; then
+  echo "$JSFILES" | xargs node $LINT
+  if [ $? -ne 0 ]; then exit 1; fi
 fi
-
-cd ../../src/enrich
-npm run lint
-
-if [ $? -ne 0 ]
-then 
-  exit $?
-fi
-
-cd ../../src/frontend
-npm run lint
-
-if [ $? -ne 0 ]
-then 
-  exit $?
-fi
-
-cd ../../src/graphql
-npm run lint
-
-if [ $? -ne 0 ]
-then 
-  exit $?
-fi
-
-cd ../../src/update
-npm run lint
