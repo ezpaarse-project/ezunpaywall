@@ -84,9 +84,6 @@ services:
   auth:
     image: node:14.15.5-alpine3.13
     environment:
-      # proxy
-      - http_proxy
-      - https_proxy
     working_dir: /auth
     volumes:
       - ./src/auth:/auth
@@ -95,6 +92,24 @@ services:
       - 7000:7000
     depends_on:
       - redis
+    restart: unless-stopped
+
+  mail:
+    image: node:14.15.5-alpine3.13
+    environment:
+      # mail
+      - NODE_CONFIG
+      - EZUNPAYWALL_SMTP_HOST=maildev
+      - EZUNPAYWALL_SMTP_PORT
+      - EZUNPAYWALL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+    working_dir: /mail
+    volumes:
+      - ./src/mail:/mail
+    command: "npm run dev"
+    ports:
+      - 8000:8000
     restart: unless-stopped
 
   redis:
@@ -178,6 +193,7 @@ services:
       - update
       - graphql
       - auth
+      - mail
 
   maildev:
     image: djfarrelly/maildev

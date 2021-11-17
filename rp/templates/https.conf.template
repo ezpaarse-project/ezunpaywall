@@ -54,6 +54,10 @@ server {
     proxy_pass http://auth:7000/;
   }
 
+  location ^~ /api/mail/ {
+    proxy_pass http://mail:8000/;
+  }
+
   ## Diffie-Hellman
   ssl_ecdh_curve secp384r1;
 
