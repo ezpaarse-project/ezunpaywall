@@ -4,7 +4,8 @@ export default {
   publicRuntimeConfig: {
     grapqlURL: process.env.GRAPHQL_URL || 'http://localhost:3000',
     updateURL: process.env.UPDATE_URL || 'http://localhost:4000',
-    enrichURL: process.env.ENRICH_URL || 'http://localhost:5000'
+    enrichURL: process.env.ENRICH_URL || 'http://localhost:5000',
+    mailURL: process.env.MAIL_URL || 'http://localhost:8000'
   },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,

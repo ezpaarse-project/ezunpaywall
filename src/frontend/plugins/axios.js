@@ -21,4 +21,11 @@ export default (ctx, inject) => {
   })
 
   inject('enrich', enrich)
+
+  const mail = axios.create({
+    baseURL: ctx.$config.mailURL,
+    timeout: 3000
+  })
+
+  inject('mail', mail)
 }

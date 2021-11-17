@@ -1,4 +1,19 @@
 {
+  "contact": {
+    "contactUs": "Contact us",
+    "email": "Email address",
+    "subject": "Subject",
+    "content": "Message content",
+    "sendNavigatorVersion": "Send my browser version",
+    "emailSent": "Your contact request has just been sent to the team.",
+    "failed": "Sending the contact form failed.",
+    "requestInformation": "Information request",
+    "bugReport": "Bug report",
+    "emailIsRequired": "The email address is required",
+    "emailMustBeValid": "The email address must be valid",
+    "contentIsRequired": "A message is required",
+    "subjectIsRequired": "Subject is required"
+  },
   "ui": {
     "pages": {
       "home": {

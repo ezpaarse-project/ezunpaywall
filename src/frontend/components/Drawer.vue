@@ -14,7 +14,9 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title> {{ $t("ui.components.Drawer.home") }} </v-list-item-title>
+          <v-list-item-title>
+            {{ $t("ui.components.Drawer.home") }}
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -34,7 +36,9 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title> {{ $t("ui.components.Drawer.enrich") }} </v-list-item-title>
+          <v-list-item-title>
+            {{ $t("ui.components.Drawer.enrich") }}
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -49,6 +53,7 @@
           <v-list-item-title> doc </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+       -->
 
       <v-list-item link router :to="{ path: '/contact' }" ripple>
         <v-list-item-icon>
@@ -59,8 +64,6 @@
           <v-list-item-title> contact us </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-
-      -->
     </v-list>
 
     <v-list-group
@@ -69,7 +72,10 @@
       prepend-icon="mdi-translate"
     >
       <template #activator>
-        <v-list-item-title class="body-2" v-text="$t('ui.components.Drawer.language')" />
+        <v-list-item-title
+          class="body-2"
+          v-text="$t('ui.components.Drawer.language')"
+        />
       </template>
 
       <v-list-item
@@ -103,8 +109,8 @@
               </v-icon>
             </v-btn>
           </template>
-          <span v-if="$vuetify.theme.dark"> {{ $t('ui.theme.light') }}</span>
-          <span v-else>{{ $t('ui.theme.dark') }}</span>
+          <span v-if="$vuetify.theme.dark"> {{ $t("ui.theme.light") }}</span>
+          <span v-else>{{ $t("ui.theme.dark") }}</span>
         </v-tooltip>
 
         <v-spacer />
@@ -137,8 +143,12 @@ export default {
   },
   computed: {
     drawer: {
-      get () { return this.$store.state.drawer.status },
-      set (newVal) { this.$store.dispatch('drawer/setDrawer', newVal) }
+      get () {
+        return this.$store.state.drawer.status
+      },
+      set (newVal) {
+        this.$store.dispatch('drawer/setDrawer', newVal)
+      }
     }
   }
 }

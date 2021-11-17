@@ -18,12 +18,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn :loading="loading" @click="graphqlRequest">
+        <v-btn :loading="loading" :disabled="!getSetting" @click="graphqlRequest">
           Lancement de la requête
         </v-btn>
       </v-card-actions>
       <v-expand-transition>
-        <div v-show="show">
+        <div v-show="show" ref="graphqlResponse">
           <v-card-title>Résultat</v-card-title>
           <v-card-text>
             <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
@@ -75,7 +75,7 @@ export default {
       } = this.$store.state.enrichArgs
 
       if (!simple.length && !best_oa_location.length && !first_oa_location.length && !oa_locations.length && !z_authors.length) {
-        return ''
+        return false
       }
 
       const attrs = []
@@ -129,6 +129,9 @@ export default {
       }
       this.loading = false
       this.show = true
+
+      const element = this.$refs.graphqlResponse
+      element.scrollIntoView({ behavior: 'smooth' })
     }
   }
 }

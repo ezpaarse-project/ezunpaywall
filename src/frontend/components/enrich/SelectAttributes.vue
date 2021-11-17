@@ -12,16 +12,10 @@
         @input="updateModel"
       >
         <template slot="item" slot-scope="{ item }">
-          {{ item.name }}
-          <v-spacer />
-          <v-tooltip top>
-            <template #activator="{ on, attrs }">
-              <v-icon color="primary" dark v-bind="attrs" v-on="on">
-                mdi-information
-              </v-icon>
-            </template>
-            <span>{{ item.info }}</span>
-          </v-tooltip>
+          <v-list-item-content>
+            <v-list-item-title v-html="item.name" />
+            <v-list-item-subtitle v-html="item.info" />
+          </v-list-item-content>
         </template>
       </v-autocomplete>
     </v-container>
@@ -29,16 +23,20 @@
 </template>
 
 <script>
-
 export default {
   props: {
     label: String,
     items: Array
   },
-  data: () => { return {} },
+  data: () => {
+    return {}
+  },
   methods: {
     updateModel (value) {
-      this.$store.dispatch('enrichArgs/update', { source: this.label, attrs: value })
+      this.$store.dispatch('enrichArgs/update', {
+        source: this.label,
+        attrs: value
+      })
     }
   }
 }
