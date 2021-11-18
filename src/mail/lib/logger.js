@@ -11,21 +11,10 @@ require('winston-daily-rotate-file');
 const {
   combine,
   timestamp,
-  // label,
   printf,
   colorize,
 } = format;
 
-// TODO log for prod
-// function prodFormat() {
-//   const replaceError = ({
-//     name, level, message, stack,
-//   }) => ({
-//     name, level, message, stack,
-//   });
-//   const replacer = (key, value) => (value instanceof Error ? replaceError(value) : value);
-//   return combine(label({ name: 'ssr server log' }), format.json({ replacer }));
-// }
 
 // logger configuration
 const processConfiguration = [

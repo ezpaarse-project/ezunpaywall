@@ -18,7 +18,7 @@ const app = express();
 
 app.use(cors({
   origin: '*',
-  method: ['POST'],
+  method: ['GET', 'POST'],
 }));
 
 app.use(express.urlencoded({ extended: true }));

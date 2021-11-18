@@ -110,7 +110,7 @@ services:
 
   mail:
     build:
-      context: ./src/auth
+      context: ./src/mail
       args:
         - http_proxy
         - https_proxy

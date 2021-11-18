@@ -193,7 +193,6 @@ services:
       - update
       - graphql
       - auth
-      - mail
 
   maildev:
     image: djfarrelly/maildev
