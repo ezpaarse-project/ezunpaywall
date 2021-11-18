@@ -1,4 +1,7 @@
 {
+  "home": {
+    "intro": "le serveur unpaywall est ..."
+  },
   "contact": {
     "contactUs": "Nous contacter",
     "email": "Adresse électronique",
@@ -14,121 +17,106 @@
     "contentIsRequired": "Un message est requis",
     "subjectIsRequired": "L'objet est requis"
   },
-  "ui": {
-    "pages": {
-      "home": {
-        
-      },
-      "enrich": {
-        "title": "Enrichir votre fichier",
-        "stepper": {
-          "filesSelection": "Sélection des fichiers",
-          "settings": "Paramètres",
-          "enrich": "Enrichissement"
-        },
-        "filesSelection": {
-          "continue": "Continuer",
-          "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezunpaywall. La seul condition est qu'il faut qu'ils aient un champ DOI.",
-          "explainationTestsLogs": "Besoin de fichiers à enrichir pour valider votre installation ? Nous en <a href=\"{url}\" target=\"_blank\">mettons à disposition sur GitHub</a>.",
-          "close": "fermer"
-        },
-        "settings": {
-          "title": "Paramètres",
-          "attributes" : "Attributs unpaywall",
-          "filesSelection": "Sélection des fichiers",
-          "startProcess": "Lancer l'enrichissement"
-        },
-        "process": {
-          "download": "Télécharger le fichier enrichi",
-          "inProcess": "Enrichissement en cours",
-          "end": "Enrichissement terminé",
-          "error": "Une erreur est survenu"
-        }
-      }
+  "enrich": {
+    "enrichFile": "Enrichir votre fichier",
+    "filesSelection": "Sélection des fichiers",
+    "settings": "Paramètres",
+    "enrich": "Enrichissement",
+    "continue": "Continuer",
+    "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezunpaywall. La seul condition est qu'il faut qu'ils aient un champ DOI.",
+    "explainationTestsLogs": "Besoin de fichiers à enrichir pour valider votre installation ? Nous en <a href=\"{url}\" target=\"_blank\">mettons à disposition sur GitHub</a>.",
+    "close": "fermer",
+    "apiKey": "API Key",
+    "fileExtension": "Extension de fichier",
+    "unpaywallAttributes": "Attributs unpaywall",
+    "startProcess": "Start enrichment",
+    "download": "Télécharger le fichier enrichi",
+    "inProcess": "Enrichissement en cours",
+    "end": "Enrichissement terminé",
+    "error": "Une erreur est survenu",
+    "readLines": "Lignes lues",
+    "enrichedLines": "Lignes enrichies",
+    "duration": "Temps de traitement (en seconde)"
+  },
+  "graphql": {
+    "constructor": "Constructeur de requête graphql",
+    "apiKey": "clé d'API",
+    "settings": "Attributs unpaywall",
+    "request": "Requête graphql",
+    "start": "Lancement de la requête",
+    "result": "Résultat"
+  },
+  "unpaywallArgs": {
+    "title": "Paramètres",
+    "general": {
+      "data_standard": "Indique les approches de collecte de données utilisées pour cette ressource",
+      "doi_url": "Le DOI sous forme de lien hypertexte",
+      "genre": "Le type de ressource",
+      "is_oa": "S'il existe une copie OA de cette ressource",
+      "is_paratext": "Si l'élément est-il une partie auxiliaire d'un journal, comme une table des matières",
+      "journal_is_in_doaj": "Si cette ressource est-elle publiée dans une revue indexée par le DOAJ",
+      "journal_is_oa": "Si cette ressource est-elle publiée dans une revue entièrement en libre accès",
+      "journal_issn_l": "Un seul ISSN pour la revue qui publie cette ressource",
+      "journal_issns": "Tous les ISSN attribués à la revue publiant cette ressource",
+      "journal_name": "Le nom de la revue qui publie cette ressource",
+      "oa_status": "Le statut OA, ou la couleur, de cette ressource",
+      "published_date": "La date à laquelle cette ressource a été publiée",
+      "publisher": "Le nom de l'éditeur de cette ressource",
+      "title": "Le titre de cette ressource",
+      "updated": "Heure de la dernière mise à jour des données de cette ressource",
+      "year": "L'année de publication de cette ressource"
     },
-    "components": {
-      "Drawer": {
-        "home": "Accueil",
-        "enrich": "Enrichissement",
-        "language": "Langue"
-      },
-      "enrich": {
-        "LogFiles": {
-          "filename": "Nom des fichiers",
-          "size": "Taille",
-          "clickToAdd": "Cliquez ou déposez pour ajouter",
-          "removeList": "Supprimer la liste",
-          "selectedFiles": "fichiers sélectionnés",
-          "total": "au total"
-        },
-        "Settings": {
-          "title": "Paramètres",
-          "info": {
-            "general": {
-              "data_standard": "Indique les approches de collecte de données utilisées pour cette ressource",
-              "doi_url": "Le DOI sous forme de lien hypertexte",
-              "genre": "Le type de ressource",
-              "is_oa": "S'il existe une copie OA de cette ressource",
-              "is_paratext": "Si l'élément est-il une partie auxiliaire d'un journal, comme une table des matières",
-              "journal_is_in_doaj": "Si cette ressource est-elle publiée dans une revue indexée par le DOAJ",
-              "journal_is_oa": "Si cette ressource est-elle publiée dans une revue entièrement en libre accès",
-              "journal_issn_l": "Un seul ISSN pour la revue qui publie cette ressource",
-              "journal_issns": "Tous les ISSN attribués à la revue publiant cette ressource",
-              "journal_name": "Le nom de la revue qui publie cette ressource",
-              "oa_status": "Le statut OA, ou la couleur, de cette ressource",
-              "published_date": "La date à laquelle cette ressource a été publiée",
-              "publisher": "Le nom de l'éditeur de cette ressource",
-              "title": "Le titre de cette ressource",
-              "updated": "Heure de la dernière mise à jour des données de cette ressource",
-              "year": "L'année de publication de cette ressource"
-            },
-            "oa_location": {
-              "evidence": "Comment Unpaywall a trouvé cet emplacement OA",
-              "host_type": "Le type d'hôte qui dessert cet emplacement OA",
-              "is_best": "Si cet emplacement est-il le meilleur_oa_location pour sa ressource",
-              "license": "La licence sous laquelle cette copie est publiée",
-              "pmh_id": "Point de terminaison OAI-PMH où nous avons trouvé cet emplacement",
-              "updated": "Heure de la dernière mise à jour des données de cet emplacement",
-              "url": "L'URL d'une page de destination décrivant cette copie OA",
-              "url_for_landing_page": "L'URL d'une page de destination décrivant cette copie OA",
-              "url_for_pdf": "L'URL avec une version PDF de cette copie OA",
-              "version": "La version du contenu accessible à cet emplacement"
-            },
-            "z_authors": {
-              "family": "Nom de famille",
-              "given": "Prénom",
-              "ORCID": " URL d'un identifiant ORCID",
-              "authenticated-orcid": "Si vrai, le propriétaire de l'enregistrement affirme que l'utilisateur ORCID a terminé l'authentification ORCID OAuth"
-            }
-          }
-        },
-        "Metric": {
-          "linesRead": "Lignes lues",
-          "linesEnriched": "Lignes enrichies",
-          "treatmentDuration": "Temps de traitement (en seconde)"
-        }
-      },
-      "header": {
-        "Status": {
-          "inUpdate": "Mise à jour en cours",
-          "noInUpdate": "Les données sont à jour",
-          "close": "Fermer"
-        },
-        "State": {
-          "createdAt": "Créé le",
-          "tasks": "Tâches",
-          "task": "Tâche",
-          "took": "Temps",
-          "percent": "Pourcentage",
-          "file": "Fichier",
-          "linesRead": "Lignes lues",
-          "status": "Status"
-        }
-      }
+    "oa_location": {
+      "evidence": "Comment Unpaywall a trouvé cet emplacement OA",
+      "host_type": "Le type d'hôte qui dessert cet emplacement OA",
+      "is_best": "Si cet emplacement est-il le meilleur_oa_location pour sa ressource",
+      "license": "La licence sous laquelle cette copie est publiée",
+      "pmh_id": "Point de terminaison OAI-PMH où nous avons trouvé cet emplacement",
+      "updated": "Heure de la dernière mise à jour des données de cet emplacement",
+      "url": "L'URL d'une page de destination décrivant cette copie OA",
+      "url_for_landing_page": "L'URL d'une page de destination décrivant cette copie OA",
+      "url_for_pdf": "L'URL avec une version PDF de cette copie OA",
+      "version": "La version du contenu accessible à cet emplacement"
     },
-    "theme": {
-      "dark": "Thème sombre",
-      "light": "Thème clair"
+    "z_authors": {
+      "family": "Nom de famille",
+      "given": "Prénom",
+      "ORCID": " URL d'un identifiant ORCID",
+      "authenticated-orcid": "Si vrai, le propriétaire de l'enregistrement affirme que l'utilisateur ORCID a terminé l'authentification ORCID OAuth"
     }
+  },
+  "fileSelector": {
+    "filename": "Nom des fichiers",
+    "size": "Taille",
+    "clickToAdd": "Cliquez ou déposez pour ajouter",
+    "removeList": "Supprimer la liste",
+    "selectedFiles": "fichiers sélectionnés",
+    "total": "au total"
+  },
+  "status": {
+    "inUpdate": "Mise à jour en cours",
+    "noInUpdate": "Les données sont à jour",
+    "close": "Fermer"
+  },
+  "state": {
+    "createdAt": "Créé le",
+    "tasks": "Tâches",
+    "task": "Tâche",
+    "took": "Temps",
+    "percent": "Pourcentage",
+    "file": "Fichier",
+    "linesRead": "Lignes lues",
+    "status": "Status"
+  },
+  "drawer": {
+    "home": "Accueil",
+    "enrich": "Enrichissement",
+    "graphql": "Graphql",
+    "language": "Langue",
+    "contact": "Nous contacter"
+  },
+  "theme": {
+    "dark": "Thème sombre",
+    "light": "Thème clair"
   }
 }

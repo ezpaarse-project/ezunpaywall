@@ -1,13 +1,24 @@
 <template>
   <div>
-    <SelectAttributes :items="unpaywallAttr" label="simple" />
     <SelectAttributes
-      :items="oa_location"
-      label="best_oa_location"
+      :items="unpaywallAttr"
+      :label="'simple'"
     />
     <SelectAttributes
       :items="oa_location"
-      label="first_oa_location"
+      :label="'best_oa_location'"
+    />
+    <SelectAttributes
+      :items="oa_location"
+      :label="'first_oa_location'"
+    />
+    <SelectAttributes
+      :items="oa_location"
+      :label="'oa_locations'"
+    />
+    <SelectAttributes
+      :items="z_authors"
+      :label="'z_authors'"
     />
   </div>
 </template>
@@ -24,7 +35,8 @@ export default {
       simple: [],
 
       best_oa_location: [],
-      first_oa_location: []
+      first_oa_location: [],
+      oa_locations: []
     }
   },
   computed: {

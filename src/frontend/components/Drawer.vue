@@ -14,9 +14,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title>
-            {{ $t("ui.components.Drawer.home") }}
-          </v-list-item-title>
+          <v-list-item-title v-text="$t('drawer.home')" />
         </v-list-item-content>
       </v-list-item>
 
@@ -26,7 +24,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title> graphql </v-list-item-title>
+          <v-list-item-title v-text="$t('drawer.graphql')" />
         </v-list-item-content>
       </v-list-item>
 
@@ -36,9 +34,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title>
-            {{ $t("ui.components.Drawer.enrich") }}
-          </v-list-item-title>
+          <v-list-item-title v-text="$t('drawer.enrich')" />
         </v-list-item-content>
       </v-list-item>
 
@@ -61,7 +57,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title> contact us </v-list-item-title>
+          <v-list-item-title v-text="$t('drawer.contact')" />
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -74,7 +70,7 @@
       <template #activator>
         <v-list-item-title
           class="body-2"
-          v-text="$t('ui.components.Drawer.language')"
+          v-text="$t('drawer.language')"
         />
       </template>
 
@@ -109,8 +105,8 @@
               </v-icon>
             </v-btn>
           </template>
-          <span v-if="$vuetify.theme.dark"> {{ $t("ui.theme.light") }}</span>
-          <span v-else>{{ $t("ui.theme.dark") }}</span>
+          <span v-if="$vuetify.theme.dark" v-text="$t('theme.light')" />
+          <span v-else v-text="$t('theme.dark')" />
         </v-tooltip>
 
         <v-spacer />

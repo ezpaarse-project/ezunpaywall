@@ -54,12 +54,12 @@ export default {
     },
     headers () {
       return [
-        { text: this.$t('ui.components.header.State.task'), value: 'task' },
-        { text: this.$t('ui.components.header.State.took'), value: 'took' },
-        { text: this.$t('ui.components.header.State.percent'), value: 'percent' },
-        { text: this.$t('ui.components.header.State.file'), value: 'file' },
-        { text: this.$t('ui.components.header.State.linesRead'), value: 'linesRead' },
-        { text: this.$t('ui.components.header.State.status'), value: 'status' }
+        { text: this.$t('state.task'), value: 'task' },
+        { text: this.$t('state.took'), value: 'took' },
+        { text: this.$t('state.percent'), value: 'percent' },
+        { text: this.$t('state.file'), value: 'file' },
+        { text: this.$t('state.linesRead'), value: 'linesRead' },
+        { text: this.$t('state.status'), value: 'status' }
       ]
     },
     steps () {

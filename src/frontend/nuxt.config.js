@@ -59,13 +59,17 @@ export default {
     theme: {
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: '#4caf50',
           accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
+          secondary: colors.grey.darken4,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
+        },
+        light: {
+          primary: '#4caf50',
+          secondary: colors.grey.darken3
         }
       }
     }

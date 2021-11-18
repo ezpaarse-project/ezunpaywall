@@ -1,48 +1,64 @@
 <template>
-  <div>
-    <v-text-field v-model="apikey" label="clé d'api" />
-    <v-text-field v-model="doi" label="DOI" />
-    <SettingsGraphql />
-    <v-card class="mx-auto">
-      <v-card-title>requête graphql</v-card-title>
-      <v-card-text>
-        <v-textarea
-          outlined
-          readonly
-          label="query"
-          :value="query"
-          rows="4"
-          append-icon="mdi-content-copy"
-          @click:append="copyText()"
-        />
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn :loading="loading" :disabled="!getSetting" @click="graphqlRequest">
-          Lancement de la requête
-        </v-btn>
-      </v-card-actions>
-      <v-expand-transition>
-        <div v-show="show" ref="graphqlResponse">
-          <v-card-title>Résultat</v-card-title>
-          <v-card-text>
-            <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn @click="show = false">
-              <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </div>
-      </v-expand-transition>
-    </v-card>
-  </div>
+  <v-card>
+    <v-toolbar color="secondary" dark flat dense>
+      <v-toolbar-title v-text="$t('graphql.constructor')" />
+      <v-spacer />
+      <v-icon>mdi-api</v-icon>
+    </v-toolbar>
+    <v-container>
+      <v-text-field v-model="apikey" label="clé d'api" />
+      <v-text-field v-model="doi" label="DOI" />
+
+      <v-toolbar class="secondary" dark dense flat>
+        <v-toolbar-title v-text="$t('graphql.settings')" />
+      </v-toolbar>
+      <SettingsGraphql />
+
+      <v-card class="mx-auto">
+        <v-card-title v-text="$t('graphql.request')" />
+        <v-card-text>
+          <v-textarea
+            outlined
+            readonly
+            label="query"
+            :value="query"
+            rows="4"
+            append-icon="mdi-content-copy"
+            @click:append="copyText()"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            :loading="loading"
+            :disabled="!getSetting"
+            @click="graphqlRequest"
+            v-text="$t('graphql.start')"
+          />
+        </v-card-actions>
+        <v-expand-transition>
+          <div v-show="show" ref="graphqlResponse">
+            <v-card-title v-text="$t('graphql.result')" />
+            <v-card-text>
+              <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn @click="show = false">
+                <v-icon>
+                  {{ show ? "mdi-chevron-up" : "mdi-chevron-down" }}
+                </v-icon>
+              </v-btn>
+            </v-card-actions>
+          </div>
+        </v-expand-transition>
+      </v-card>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
-
-import SettingsGraphql from '~/components/home/SettingsGraphql.vue'
+import SettingsGraphql from '~/components/unpaywallArgs/SettingsGraphql.vue'
 
 export default {
   name: 'Home',
@@ -74,8 +90,14 @@ export default {
         z_authors
       } = this.$store.state.enrichArgs
 
-      if (!simple.length && !best_oa_location.length && !first_oa_location.length && !oa_locations.length && !z_authors.length) {
-        return false
+      if (
+        !simple.length &&
+        !best_oa_location.length &&
+        !first_oa_location.length &&
+        !oa_locations.length &&
+        !z_authors.length
+      ) {
+        return ''
       }
 
       const attrs = []
@@ -107,7 +129,10 @@ export default {
         navigator.clipboard.writeText(this.query)
         this.$store.dispatch('snacks/info', 'request copied')
       } catch (err) {
-        this.$store.dispatch('snacks/error', 'impossible to save graphql request')
+        this.$store.dispatch(
+          'snacks/error',
+          'impossible to save graphql request'
+        )
       }
     },
     async graphqlRequest () {
@@ -137,11 +162,10 @@ export default {
 }
 </script>
 <style>
-
 pre {
- tab-width: 4;
- display: block;
- padding: 12px;
- color: #F60;
+  tab-width: 4;
+  display: block;
+  padding: 12px;
+  color: #f60;
 }
 </style>

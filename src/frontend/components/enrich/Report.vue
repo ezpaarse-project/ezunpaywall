@@ -40,19 +40,19 @@ export default {
     metrics () {
       return [
         {
-          label: 'linesRead',
+          label: 'readLines',
           icon: 'mdi-file-search-outline',
           iconColor: 'amber',
           value: this.state.linesRead
         },
         {
-          label: 'linesEnriched',
+          label: 'enrichedLines',
           icon: 'mdi-file-search-outline',
           iconColor: 'light-green',
           value: this.state.enrichedLines
         },
         {
-          label: 'treatmentDuration',
+          label: 'duration',
           icon: 'mdi-timer',
           iconColor: 'blue-grey',
           value: this.time

@@ -1,4 +1,7 @@
 {
+  "home": {
+    "intro": "serveur unpaywall is ..."
+  },
   "contact": {
     "contactUs": "Contact us",
     "email": "Email address",
@@ -14,121 +17,106 @@
     "contentIsRequired": "A message is required",
     "subjectIsRequired": "Subject is required"
   },
-  "ui": {
-    "pages": {
-      "home": {
-        
-      },
-      "enrich": {
-        "title": "Enrich your file",
-        "stepper": {
-          "filesSelection": "Select files",
-          "settings": "Settings",
-          "enrich": "Enrich"
-        },
-        "filesSelection": {
-          "continue": "Continue",
-          "explainationLogs": "Indicate here the files you want to enrich by ezunpaywall. The only condition is that they must have a DOI field.",
-          "explainationTestsLogs": "Need files to enrich to validate your installation? <a href=\"{url}\" target=\"_blank\">We provide some on GitHub</a>.",
-          "close": "close"
-        },
-        "settings": {
-          "title": "Settings",
-          "attributes" : "Unpaywall attributes",
-          "filesSelection": "Select files",
-          "startProcess": "Start enrichment"
-        },
-        "process": {
-          "download": "Download the enriched file",
-          "inProcess": "Enrichment in progress",
-          "end": "Enrichment complete",
-          "error": "An error occured"
-        }
-      }
+  "enrich": {
+    "enrichFile": "Enrich your file",
+    "filesSelection": "Select files",
+    "settings": "Settings",
+    "enrich": "Enrich",
+    "continue": "Continue",
+    "explainationLogs": "Indicate here the files you want to enrich by ezunpaywall. The only condition is that they must have a DOI field.",
+    "explainationTestsLogs": "Need files to enrich to validate your installation? <a href=\"{url}\" target=\"_blank\">We provide some on GitHub</a>.",
+    "close": "close",
+    "apiKey": "API Key",
+    "fileExtension": "File extension",
+    "unpaywallAttributes": "Unpaywall attributes",
+    "startProcess": "Start enrichment",
+    "download": "Download the enriched file",
+    "inProcess": "Enrichment in progress",
+    "end": "Enrichment complete",
+    "error": "An error occured",
+    "readLines": "Read lines",
+    "enrichedLines": "Enriched lines",
+    "duration": "Processing time (in seconds)"
+  },
+  "graphql": {
+    "constructor": "Constructor of graphql request",
+    "apiKey": "API key",
+    "settings": "Unpaywall attributes",
+    "request": "Graphql request",
+    "start": "Launch of the request",
+    "result": "Result"
+  },
+  "unpaywallArgs": {
+    "title": "Settings",
+    "general": {
+      "data_standard": "Indicates the data collection approaches used for this resource",
+      "doi_url": "The DOI in hyperlink form",
+      "genre": "The type of resource",
+      "is_oa": "Is there an OA copy of this resource",
+      "is_paratext": "Is the item an ancillary part of a journal, like a table of contents",
+      "journal_is_in_doaj": "Is this resource published in a DOAJ-indexed journal",
+      "journal_is_oa": "Is this resource published in a completely OA journal",
+      "journal_issn_l": "A single ISSN for the journal publishing this resource",
+      "journal_issns": "Any ISSNs assigned to the journal publishing this resource",
+      "journal_name": "The name of the journal publishing this resource",
+      "oa_status": "The OA status, or color, of this resource",
+      "published_date": "The date this resource was published",
+      "publisher": "The name of this resource's publisher",
+      "title": "The title of this resource",
+      "updated": "Time when the data for this resource was last updated",
+      "year": "The year this resource was published"
     },
-    "components": {
-      "Drawer": {
-        "home": "Home",
-        "enrich": "Enrich",
-        "language": "Language"
-      },
-      "enrich": {
-        "LogFiles": {
-          "filename": "Filename",
-          "size": "Size",
-          "clickToAdd": "Click or Drop to add",
-          "removeList": "Delete list",
-          "selectedFiles": "Selected files",
-          "total": "Total"
-        },
-        "Settings": {
-          "title": "Settings",
-          "info": {
-            "general": {
-              "data_standard": "Indicates the data collection approaches used for this resource",
-              "doi_url": "The DOI in hyperlink form",
-              "genre": "The type of resource",
-              "is_oa": "Is there an OA copy of this resource",
-              "is_paratext": "Is the item an ancillary part of a journal, like a table of contents",
-              "journal_is_in_doaj": "Is this resource published in a DOAJ-indexed journal",
-              "journal_is_oa": "Is this resource published in a completely OA journal",
-              "journal_issn_l": "A single ISSN for the journal publishing this resource",
-              "journal_issns": "Any ISSNs assigned to the journal publishing this resource",
-              "journal_name": "The name of the journal publishing this resource",
-              "oa_status": "The OA status, or color, of this resource",
-              "published_date": "The date this resource was published",
-              "publisher": "The name of this resource's publisher",
-              "title": "The title of this resource",
-              "updated": "Time when the data for this resource was last updated",
-              "year": "The year this resource was published"
-            },
-            "oa_location": {
-              "evidence": "How unpaywall found this OA location",
-              "host_type": "The type of host that serves this OA location",
-              "is_best": "Is this location the best_oa_location for its resource",
-              "license": "The license under which this copy is published",
-              "pmh_id": "OAI-PMH endpoint where we found this location",
-              "updated": "Time when the data for this location was last updated",
-              "url": "The url_for_pdf if there is one; otherwise landing page URL",
-              "url_for_landing_page": "The URL for a landing page describing this OA copy",
-              "url_for_pdf": "The URL with a PDF version of this OA copy",
-              "version": "The content version accessible at this location"
-            },
-            "z_authors": {
-              "family": "Family name",
-              "given": "Given name",
-              "ORCID": "URL-form of an ORCID identifier",
-              "authenticated-orcid": "If true, record owner asserts that the ORCID user completed ORCID OAuth authentication"
-            }
-          }
-        },
-        "Metric": {
-          "linesRead": "Lines read",
-          "linesEnriched": "Lines enriched",
-          "treatmentDuration": "Processing duration (in second)"
-        }
-      },
-      "header": {
-        "Status": {
-          "inUpdate": "Update in progress",
-          "noInUpdate": "The data is up to date",
-          "close": "Close"
-        },
-        "State": {
-          "createdAt": "Created at",
-          "tasks": "Tasks",
-          "task": "Task",
-          "took": "Took",
-          "percent": "Percent",
-          "file": "File",
-          "linesRead": "Lines read",
-          "status": "Status"
-        }
-      }
+    "oa_location": {
+      "evidence": "How unpaywall found this OA location",
+      "host_type": "The type of host that serves this OA location",
+      "is_best": "Is this location the best_oa_location for its resource",
+      "license": "The license under which this copy is published",
+      "pmh_id": "OAI-PMH endpoint where we found this location",
+      "updated": "Time when the data for this location was last updated",
+      "url": "The url_for_pdf if there is one; otherwise landing page URL",
+      "url_for_landing_page": "The URL for a landing page describing this OA copy",
+      "url_for_pdf": "The URL with a PDF version of this OA copy",
+      "version": "The content version accessible at this location"
     },
-    "theme": {
-      "dark": "Dark theme",
-      "light": "Light theme"
+    "z_authors": {
+      "family": "Family name",
+      "given": "Given name",
+      "ORCID": "URL-form of an ORCID identifier",
+      "authenticated-orcid": "If true, record owner asserts that the ORCID user completed ORCID OAuth authentication"
     }
+  },
+  "fileSelector": {
+    "filename": "Filename",
+    "size": "Size",
+    "clickToAdd": "Click or Drop to add",
+    "removeList": "Delete list",
+    "selectedFiles": "Selected files",
+    "total": "Total"
+  },
+  "status": {
+    "inUpdate": "Update in progress",
+    "noInUpdate": "The data is up to date",
+    "close": "Close"
+  },
+  "state": {
+    "createdAt": "Created at",
+    "tasks": "Tasks",
+    "task": "Task",
+    "took": "Took",
+    "percent": "Percent",
+    "file": "File",
+    "linesRead": "Lines read",
+    "status": "Status"
+  },
+  "drawer": {
+    "home": "Home",
+    "enrich": "Enrich",
+    "graphql": "Graphql",
+    "language": "Language",
+    "contact": "Contact us"
+  },
+  "theme": {
+    "dark": "Dark theme",
+    "light": "Light theme"
   }
 }

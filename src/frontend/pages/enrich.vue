@@ -1,7 +1,9 @@
 <template>
   <v-card>
     <v-toolbar class="secondary" dark dense flat>
-      <v-toolbar-title> {{ $t("ui.pages.enrich.title") }} </v-toolbar-title>
+      <v-toolbar-title v-text="$t('enrich.enrichFile')" />
+      <v-spacer />
+      <v-icon>mdi-code-json</v-icon>
     </v-toolbar>
 
     <v-stepper v-model="step">
@@ -12,7 +14,7 @@
           :complete="hasLogFiles"
           step="1"
         >
-          {{ $t("ui.pages.enrich.stepper.filesSelection") }}
+          {{ $t("enrich.filesSelection") }}
         </v-stepper-step>
 
         <v-divider :color="hasLogFiles && step > 1 ? 'primary' : ''" />
@@ -23,13 +25,13 @@
           :complete="step > 2"
           step="2"
         >
-          {{ $t("ui.pages.enrich.stepper.settings") }}
+          {{ $t("enrich.settings") }}
         </v-stepper-step>
 
         <v-divider :color="inProcess && step > 2 ? 'primary' : ''" />
 
         <v-stepper-step :editable="inProcess" step="3">
-          {{ $t("ui.pages.enrich.stepper.enrich") }}
+          {{ $t("enrich.enrich") }}
         </v-stepper-step>
       </v-stepper-header>
 
@@ -54,14 +56,14 @@
                 <v-card class="text-justify">
                   <v-card-text
                     v-html="
-                      $t('ui.pages.enrich.filesSelection.explainationLogs')
+                      $t('enrich.explainationLogs')
                     "
                   />
                   <v-divider />
                   <v-card-text
                     v-html="
                       $t(
-                        'ui.pages.enrich.filesSelection.explainationTestsLogs',
+                        'enrich.explainationTestsLogs',
                         {
                           url: logSamplesUrl,
                         }
@@ -75,7 +77,7 @@
                       class="body-2"
                       text
                       @click="fileSelectionHelp = false"
-                      v-text="$t('ui.pages.enrich.filesSelection.close')"
+                      v-text="$t('enrich.close')"
                     />
                   </v-card-actions>
                 </v-card>
@@ -85,7 +87,7 @@
                 class="body-2"
                 color="primary"
                 @click="step = 2"
-                v-text="$t('ui.pages.enrich.filesSelection.continue')"
+                v-text="$t('enrich.continue')"
               />
             </v-layout>
           </v-container>
@@ -100,7 +102,7 @@
                 class="body-2"
                 color="primary"
                 @click="step = 1"
-                v-text="$t('ui.pages.enrich.settings.filesSelection')"
+                v-text="$t('enrich.settings')"
               />
               <v-spacer />
               <v-btn
@@ -111,15 +113,13 @@
                   enrich();
                   step = 3;
                 "
-                v-text="$t('ui.pages.enrich.settings.startProcess')"
+                v-text="$t('enrich.startProcess')"
               />
             </v-layout>
           </v-container>
 
           <v-toolbar class="secondary" dark dense flat>
-            <v-toolbar-title>
-              {{ $t("ui.pages.enrich.settings.title") }}
-            </v-toolbar-title>
+            <v-toolbar-title v-text="$t('enrich.settings')" />
           </v-toolbar>
 
           <v-text-field
@@ -127,7 +127,7 @@
             :append-icon="apiKeyVisible ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[apiKeyRules.required]"
             :type="apiKeyVisible ? 'text' : 'password'"
-            label="api key"
+            :label="$t('enrich.apiKey')"
             filled
             @click:append="apiKeyVisible = !apiKeyVisible"
           />
@@ -135,7 +135,7 @@
           <v-select
             v-model="extensionSelected"
             :items="extensions"
-            label="file extension"
+            :label="$t('enrich.fileExtension')"
             filled
           />
 
@@ -150,7 +150,7 @@
                 <v-icon left>
                   mdi-download
                 </v-icon>
-                {{ $t("ui.pages.enrich.process.download") }}
+                {{ $t("enrich.download") }}
               </v-btn>
             </v-layout>
           </v-container>
@@ -161,7 +161,7 @@
               indeterminate
               color="green"
             />
-            <div v-text="$t('ui.pages.enrich.process.inProcess')" />
+            <div v-text="$t('enrich.inProcess')" />
           </v-container>
           <v-container v-else class="text-center">
             <v-icon v-if="error" size="70" color="orange darken-2">
@@ -170,8 +170,8 @@
             <v-icon v-else size="70" color="green darken-2">
               mdi-check
             </v-icon>
-            <div v-if="error" v-text="$t('ui.pages.enrich.process.error')" />
-            <div v-else v-text="$t('ui.pages.enrich.process.end')" />
+            <div v-if="error" v-text="$t('enrich.error')" />
+            <div v-else v-text="$t('enrich.end')" />
           </v-container>
           <v-container>
             <Report :time="time" :state="state" />
