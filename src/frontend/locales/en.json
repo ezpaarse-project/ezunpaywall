@@ -33,10 +33,14 @@
     "download": "Download the enriched file",
     "inProcess": "Enrichment in progress",
     "end": "Enrichment complete",
-    "error": "An error occured",
     "readLines": "Read lines",
     "enrichedLines": "Enriched lines",
-    "duration": "Processing time (in seconds)"
+    "duration": "Processing time (in seconds)",
+    "error": "An error occured",
+    "errorUploadFile": "only .csv and.jsonl file are allowed",
+    "errorUpload": "Cannot upload file",
+    "errorEnrich": "Cannot enrich file",
+    "errorState": "Cannot get state of enrich"
   },
   "graphql": {
     "constructor": "Constructor of graphql request",
@@ -44,7 +48,12 @@
     "settings": "Unpaywall attributes",
     "request": "Graphql request",
     "start": "Launch of the request",
-    "result": "Result"
+    "result": "Result",
+    "copyRequest": "Copy graphql request",
+    "copyResult": "Copy result",
+    "errorRequest": "Cannot do graphql request",
+    "errorCopyRequest": "Impossible to save graphql request",
+    "errorCopyResult": "Impossible to save response"
   },
   "unpaywallArgs": {
     "title": "Settings",
@@ -96,7 +105,9 @@
   "status": {
     "inUpdate": "Update in progress",
     "noInUpdate": "The data is up to date",
-    "close": "Close"
+    "close": "Close",
+    "errorState": "Cannot get state of enrich",
+    "errorStatus": "Cannot get state of enrich"
   },
   "state": {
     "createdAt": "Created at",

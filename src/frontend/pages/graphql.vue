@@ -1,60 +1,58 @@
 <template>
-  <v-card>
-    <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title v-text="$t('graphql.constructor')" />
-      <v-spacer />
-      <v-icon>mdi-api</v-icon>
-    </v-toolbar>
-    <v-container>
-      <v-text-field v-model="apikey" label="clé d'api" />
-      <v-text-field v-model="doi" label="DOI" />
+  <section>
+    <v-card class="my-3">
+      <v-toolbar color="secondary" dark flat dense>
+        <v-toolbar-title v-text="$t('graphql.constructor')" />
+        <v-spacer />
+        <v-icon>mdi-api</v-icon>
+      </v-toolbar>
+      <v-container>
+        <v-text-field v-model="apikey" :label="$t('graphql.apiKey')" filled />
+        <v-text-field v-model="doi" label="DOI" filled />
+      </v-container>
+    </v-card>
 
+    <v-card class="my-3">
       <v-toolbar class="secondary" dark dense flat>
         <v-toolbar-title v-text="$t('graphql.settings')" />
       </v-toolbar>
-      <SettingsGraphql />
 
-      <v-card class="mx-auto">
-        <v-card-title v-text="$t('graphql.request')" />
+      <v-container>
+        <SettingsGraphql />
+      </v-container>
+    </v-card>
+    <v-card class="mx-auto">
+      <v-toolbar class="secondary" dark dense flat>
+        <v-toolbar-title v-text="$t('graphql.request')" />
+      </v-toolbar>
+      <v-card-text>
+        <v-textarea
+          outlined
+          readonly
+          label="query"
+          :value="query"
+          rows="4"
+          append-icon="mdi-content-copy"
+          @click:append="copyText()"
+        />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          :loading="loading"
+          :disabled="!getSetting"
+          @click="graphqlRequest"
+          v-text="$t('graphql.start')"
+        />
+      </v-card-actions>
+      <div id="graphqlResponse">
+        <v-card-title v-text="$t('graphql.result')" />
         <v-card-text>
-          <v-textarea
-            outlined
-            readonly
-            label="query"
-            :value="query"
-            rows="4"
-            append-icon="mdi-content-copy"
-            @click:append="copyText()"
-          />
+          <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            :loading="loading"
-            :disabled="!getSetting"
-            @click="graphqlRequest"
-            v-text="$t('graphql.start')"
-          />
-        </v-card-actions>
-        <v-expand-transition>
-          <div v-show="show" ref="graphqlResponse">
-            <v-card-title v-text="$t('graphql.result')" />
-            <v-card-text>
-              <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn @click="show = false">
-                <v-icon>
-                  {{ show ? "mdi-chevron-up" : "mdi-chevron-down" }}
-                </v-icon>
-              </v-btn>
-            </v-card-actions>
-          </div>
-        </v-expand-transition>
-      </v-card>
-    </v-container>
-  </v-card>
+      </div>
+    </v-card>
+  </section>
 </template>
 
 <script>
@@ -72,8 +70,7 @@ export default {
       apikey: 'example',
       doi: '10.1111/jvp.12137',
       loading: false,
-      response: '',
-      show: false
+      response: ''
     }
   },
   computed: {
@@ -131,7 +128,7 @@ export default {
       } catch (err) {
         this.$store.dispatch(
           'snacks/error',
-          'impossible to save graphql request'
+          this.$t('graphql.errorCopyRequest')
         )
       }
     },
@@ -150,20 +147,17 @@ export default {
           }
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', 'Cannot do graphql request')
+        this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
       }
       this.loading = false
-      this.show = true
 
-      const element = this.$refs.graphqlResponse
-      element.scrollIntoView({ behavior: 'smooth' })
+      this.$vuetify.goTo('#graphqlResponse')
     }
   }
 }
 </script>
 <style>
 pre {
-  tab-width: 4;
   display: block;
   padding: 12px;
   color: #f60;

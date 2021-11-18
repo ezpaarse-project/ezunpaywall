@@ -21,7 +21,7 @@
 
         <v-stepper-step
           edit-icon="mdi-check"
-          :editable="!inProcess"
+          :editable="hasLogFiles"
           :complete="step > 2"
           step="2"
         >
@@ -132,12 +132,16 @@
             @click:append="apiKeyVisible = !apiKeyVisible"
           />
 
-          <v-select
+          <v-text-field
             v-model="extensionSelected"
-            :items="extensions"
             :label="$t('enrich.fileExtension')"
             filled
+            readonly
           />
+
+          <v-toolbar class="secondary" dark dense flat>
+            <v-toolbar-title v-text="$t('enrich.unpaywallAttributes')" />
+          </v-toolbar>
 
           <SettingsCSV v-if="extensionSelected === 'csv'" />
           <SettingsJSONL v-if="extensionSelected === 'jsonl'" />
@@ -208,7 +212,6 @@ export default {
       apiKeyRules: {
         required: value => !!value || 'Required.'
       },
-      extensions: ['csv', 'jsonl'],
       // help
       fileSelectionHelp: false,
       logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
@@ -298,7 +301,7 @@ export default {
           responseType: 'json'
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', 'Cannot upload file')
+        this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
         return this.errored()
       }
 
@@ -316,7 +319,7 @@ export default {
           responseType: 'json'
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', 'Cannot enrich file')
+        this.$store.dispatch('snacks/error', this.$t('enrich.errorEnrich'))
         return this.errored()
       }
 
@@ -338,7 +341,7 @@ export default {
             this.time = 0
           }
         } catch (err) {
-          this.$store.dispatch('snacks/error', 'Cannot get state of enrich')
+          this.$store.dispatch('snacks/error', this.$t('enrich.errorState'))
           return this.errored()
         }
         await new Promise(resolve => setTimeout(resolve, 1000))

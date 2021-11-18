@@ -113,7 +113,7 @@ export default {
       Array.from(this.$refs.filesLoaded.files).forEach((file) => {
         const [, ext] = file.name.split('.')
         if (!['csv', 'jsonl'].includes(ext)) {
-          this.$store.dispatch('snacks/error', 'Your file is in bad format')
+          this.$store.dispatch('snacks/error', this.$t('enrich.errorUploadFile'))
           return
         }
         this.files.push({ id: this.fileId, file })

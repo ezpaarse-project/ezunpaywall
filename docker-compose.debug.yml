@@ -83,7 +83,6 @@ services:
 
   auth:
     image: node:14.15.5-alpine3.13
-    environment:
     working_dir: /auth
     volumes:
       - ./src/auth:/auth

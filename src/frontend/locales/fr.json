@@ -25,7 +25,7 @@
     "continue": "Continuer",
     "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezunpaywall. La seul condition est qu'il faut qu'ils aient un champ DOI.",
     "explainationTestsLogs": "Besoin de fichiers à enrichir pour valider votre installation ? Nous en <a href=\"{url}\" target=\"_blank\">mettons à disposition sur GitHub</a>.",
-    "close": "fermer",
+    "close": "Fermer",
     "apiKey": "API Key",
     "fileExtension": "Extension de fichier",
     "unpaywallAttributes": "Attributs unpaywall",
@@ -33,10 +33,14 @@
     "download": "Télécharger le fichier enrichi",
     "inProcess": "Enrichissement en cours",
     "end": "Enrichissement terminé",
-    "error": "Une erreur est survenu",
     "readLines": "Lignes lues",
     "enrichedLines": "Lignes enrichies",
-    "duration": "Temps de traitement (en seconde)"
+    "duration": "Temps de traitement (en seconde)",
+    "error": "Une erreur est survenu",
+    "errorUploadFile": "Seul les fichiers .csv et .jsonl sont autorisé",
+    "errorUpload": "Erreur lors de l'envoie du fichier",
+    "errorEnrich": "Erreur dans l'enrichissement",
+    "errorState": "Impossible d'obtenir l'état"
   },
   "graphql": {
     "constructor": "Constructeur de requête graphql",
@@ -44,7 +48,12 @@
     "settings": "Attributs unpaywall",
     "request": "Requête graphql",
     "start": "Lancement de la requête",
-    "result": "Résultat"
+    "result": "Résultat",
+    "copyRequest": "Requête graphql copié",
+    "copyResult": "Résultat copié",
+    "errorRequest": "Impossible de faire la requête graphql",
+    "errorCopyRequest": "Impossible de sauvegarder la requête graphql",
+    "errorCopyResult": "Impossible de sauvegarder la réponse"
   },
   "unpaywallArgs": {
     "title": "Paramètres",
@@ -96,7 +105,9 @@
   "status": {
     "inUpdate": "Mise à jour en cours",
     "noInUpdate": "Les données sont à jour",
-    "close": "Fermer"
+    "close": "Fermer",
+    "errorState": "Impossible d'obtenir l'état",
+    "errorStatus": "Impossible d'obtenir le status"
   },
   "state": {
     "createdAt": "Créé le",
