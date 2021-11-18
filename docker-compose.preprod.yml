@@ -99,16 +99,13 @@ services:
     networks:
       - elastic
 
-  auth: 
+  auth:
     build:
       context: ./src/auth
       args:
         - http_proxy
         - https_proxy
     environment:
-      # proxy
-      - http_proxy
-      - https_proxy
       - REDIS_PASSWORD
     volumes:
       - ./src/auth:/auth
@@ -120,6 +117,27 @@ services:
     restart: unless-stopped
     networks:
       - elastic
+    
+  mail:
+    build:
+      context: ./src/mail
+      args:
+        - http_proxy
+        - https_proxy
+    environment:
+      # mail
+      - NODE_CONFIG
+      - EZUNPAYWALL_SMTP_HOST
+      - EZUNPAYWALL_SMTP_PORT
+      - EZUNPAYWALL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+    volumes:
+      - ./src/mail:/mail
+    command: "npm start"
+    ports:
+      - 8000:8000
+    restart: unless-stopped
 
   redis:
     image: "redis:6.2.5-alpine3.14"
@@ -129,7 +147,6 @@ services:
     restart: unless-stopped
     networks:
       - elastic
-
 
   rp:
     build:
