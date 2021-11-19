@@ -4,7 +4,7 @@ const logger = require('../lib/logger');
 
 const metricsType = require('../models/metrics');
 
-module.exports = {
+const metrics = {
   type: metricsType,
   resolve: async (parent, args, req) => {
     let index = req?.get('index');
@@ -163,3 +163,5 @@ module.exports = {
     };
   },
 };
+
+module.exports = metrics;

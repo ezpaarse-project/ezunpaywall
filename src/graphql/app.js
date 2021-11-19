@@ -4,11 +4,12 @@ const { graphqlHTTP } = require('express-graphql');
 
 const { name, version } = require('./package.json');
 
+const auth = require('./middlewares/auth');
+
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 const { pingRedis } = require('./lib/redis');
 const { elasticClient, pingElastic } = require('./lib/elastic');
-const { checkAuth } = require('./middlewares/auth');
 
 const schema = require('./graphql');
 
@@ -47,9 +48,9 @@ app.get('/', async (req, res) => {
   });
 });
 
-app.use('/graphql', checkAuth, graphqlHTTP({
+app.use('/graphql', auth, graphqlHTTP({
   schema,
-  graphiql: true,
+  graphiql: false,
 }));
 
 pingElastic();

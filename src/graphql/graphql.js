@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 
-const GetByDOI = require('./resolvers/queries');
+const GetByDOI = require('./resolvers/getByDOI');
 const Metrics = require('./resolvers/metrics');
 
 const {
@@ -9,13 +9,15 @@ const {
 } = graphql;
 
 const RootQuery = new GraphQLObjectType({
-  name: 'RootQueryType',
+  name: 'graphql',
   fields: () => ({
     GetByDOI,
     Metrics,
   }),
 });
 
-module.exports = new GraphQLSchema({
+const schema = new GraphQLSchema({
   query: RootQuery,
 });
+
+module.exports = schema;

@@ -4,6 +4,7 @@ const graphql = require('graphql');
 const graphqlFields = require('graphql-fields');
 
 const config = require('config');
+const { redisClient } = require('../lib/redis');
 const { elasticClient } = require('../lib/elastic');
 const logger = require('../lib/logger');
 
@@ -60,7 +61,7 @@ const parseTerms = (attr, args) => {
   return filters;
 };
 
-module.exports = {
+const getByDOI = {
   type: new GraphQLList(unpaywallType),
   args: {
     dois: { type: new GraphQLList(GraphQLID) },
@@ -113,6 +114,34 @@ module.exports = {
   },
   // attr info give informations about graphql request
   resolve: async (parent, args, req, info) => {
+    const apikey = req.get('X-API-KEY');
+
+    if (!apikey) {
+      throw Error('Not authorized');
+    }
+
+    let key;
+    try {
+      key = await redisClient.get(apikey);
+    } catch (err) {
+      logger.error(`Cannot get ${apikey} on redis`);
+      logger.error(err);
+      throw Error('Internal server error');
+    }
+
+    let apiKeyConfig;
+    try {
+      apiKeyConfig = JSON.parse(key);
+    } catch (err) {
+      logger.error(`Cannot parse ${key}`);
+      logger.error(err);
+      throw Error('Internal server error');
+    }
+
+    if (!Array.isArray(apiKeyConfig?.access) || !apiKeyConfig?.access?.includes('graphql') || !apiKeyConfig?.allowed) {
+      throw Error('Not authorized');
+    }
+
     let index = req?.get('index');
 
     const { attributes } = req;
@@ -200,3 +229,5 @@ module.exports = {
     return res.body.hits.hits.map((hit) => hit._source);
   },
 };
+
+module.exports = getByDOI;
