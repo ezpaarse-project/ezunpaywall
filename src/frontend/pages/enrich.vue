@@ -12,6 +12,7 @@
           edit-icon="mdi-check"
           :editable="!inProcess"
           :complete="hasLogFiles"
+          @click="resetArgs"
           step="1"
         >
           {{ $t("enrich.filesSelection") }}
@@ -358,6 +359,10 @@ export default {
       this.state = {}
       this.time = 0
       this.id = ''
+    },
+
+    resetArgs () {
+      this.$store.dispatch('enrichArgs/resetAll')
     },
 
     getFiles (files) {

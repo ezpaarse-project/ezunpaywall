@@ -16,6 +16,9 @@ export default {
     },
     del ({ commit }, value) {
       commit('del', { source: value.source, attrs: value.attrs })
+    },
+    resetAll ({ commit }) {
+      commit('resetAll')
     }
   },
   mutations: {
@@ -27,6 +30,13 @@ export default {
     },
     del (state, value) {
       state[value.source] = state[value.source].filter(e => e === value)
+    },
+    resetAll (state) {
+      state.simple = []
+      state.best_oa_location = []
+      state.first_oa_location = []
+      state.oa_locations = []
+      state.z_authors = []
     }
   }
 }
