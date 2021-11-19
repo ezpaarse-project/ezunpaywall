@@ -4,11 +4,12 @@ const graphql = require('graphql');
 const graphqlFields = require('graphql-fields');
 
 const config = require('config');
-const unpaywallType = require('../models/unpaywall');
 const { elasticClient } = require('../lib/elastic');
+const logger = require('../lib/logger');
+
+const unpaywallType = require('../models/unpaywall');
 const { oaLocationInput } = require('../models/oalocation');
 const { authorInput } = require('../models/author');
-const logger = require('../lib/logger');
 
 const {
   GraphQLList,

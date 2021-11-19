@@ -6,7 +6,7 @@ const {
   GraphQLString,
 } = graphql;
 
-exports.authorType = new GraphQLObjectType({
+const authorType = new GraphQLObjectType({
   name: 'authorType',
   fields: {
     family: { type: GraphQLString },
@@ -15,7 +15,7 @@ exports.authorType = new GraphQLObjectType({
   },
 });
 
-exports.authorInput = new GraphQLInputObjectType({
+const authorInput = new GraphQLInputObjectType({
   name: 'authorInput',
   fields: {
     family: { type: GraphQLString },
@@ -23,3 +23,8 @@ exports.authorInput = new GraphQLInputObjectType({
     sequence: { type: GraphQLString },
   },
 });
+
+module.exports = {
+  authorType,
+  authorInput,
+};
