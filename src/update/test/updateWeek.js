@@ -59,7 +59,7 @@ describe('Week: Test: weekly update route test', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Weekly update started');
@@ -171,7 +171,7 @@ describe('Week: Test: weekly update route test', () => {
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       // test response
       expect(res).have.status(200);

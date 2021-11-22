@@ -12,8 +12,8 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
@@ -50,8 +50,8 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
@@ -79,8 +79,8 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       # redis
       - REDIS_PASSWORD
       # URL services
@@ -95,9 +95,9 @@ services:
       - redis
     restart: unless-stopped
 
-  auth:
+  apikey:
     build:
-      context: ./src/auth
+      context: ./src/apikey
       args:
         - http_proxy
         - https_proxy
@@ -115,9 +115,11 @@ services:
 
   redis:
     image: "redis:6.2.5-alpine3.14"
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme}
+    volumes:
+      - ./data-redis:/home/data
     ports:
-     - "6379:6379"
+      - "6379:6379"
     restart: unless-stopped
 
   rp:
@@ -141,4 +143,4 @@ services:
       - enrich
       - update
       - graphql
-      - auth
+      - apikey

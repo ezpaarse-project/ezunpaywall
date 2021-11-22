@@ -39,7 +39,7 @@ describe('test graphqlRequest POST', () => {
             dois: [doi1],
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -60,7 +60,7 @@ describe('test graphqlRequest POST', () => {
             dois: ['Coin coin'],
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -83,7 +83,7 @@ describe('test graphqlRequest POST', () => {
             dois: [majDOI],
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -105,7 +105,7 @@ describe('test graphqlRequest POST', () => {
             dois: [doi1, doi2],
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -125,7 +125,7 @@ describe('test graphqlRequest POST', () => {
             dois: [doi1, 'Coin Coin'],
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -144,7 +144,7 @@ describe('test graphqlRequest POST', () => {
             dois: ['Coin Coin', 'Coin Coin2'],
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -165,7 +165,7 @@ describe('test graphqlRequest POST', () => {
             year: '2015',
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -187,7 +187,7 @@ describe('test graphqlRequest POST', () => {
             year: '2015',
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -209,7 +209,7 @@ describe('test graphqlRequest POST', () => {
             year: '2016',
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -232,7 +232,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -256,7 +256,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -277,7 +277,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -301,7 +301,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -325,7 +325,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -347,7 +347,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -372,7 +372,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -395,7 +395,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -419,7 +419,7 @@ describe('test graphqlRequest POST', () => {
             },
           },
         })
-        .set('X-API-KEY', 'user')
+        .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);

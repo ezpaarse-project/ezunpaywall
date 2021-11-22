@@ -4,9 +4,10 @@ const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 const fs = require('fs-extra');
 const path = require('path');
-const mappingUnpaywall = require('./mapping/unpaywall.json');
 
 chai.use(chaiHttp);
+
+const mappingUnpaywall = require('./mapping/unpaywall.json');
 
 const {
   binaryParser,
@@ -24,10 +25,11 @@ const {
   ping,
 } = require('./utils/ping');
 
-const enrichURL = process.env.ENRICH_URL || 'http://localhost:5000';
+const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
+
 const enrichDir = path.resolve(__dirname, 'sources');
 
-describe('Test: enrich service csv', () => {
+describe('Test: enrich service jsonl', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
@@ -38,18 +40,18 @@ describe('Test: enrich service csv', () => {
     expect(ndData).eq(50);
   });
 
-  describe('Test: enrichment with a csv file', () => {
-    describe('Do a enrichment of a csv file with all unpaywall attributes', () => {
+  describe('Test: enrichment with a jsonl file', () => {
+    describe('Do a enrichment of a jsonl file with all unpaywall attributes', () => {
       let id;
       let enrichedFile;
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
-          .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .set('Content-Type', 'application/x-ndjson')
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -59,14 +61,14 @@ describe('Test: enrich service csv', () => {
       it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
         // start enrich process
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/job')
           .send({
             id,
-            type: 'csv',
+            type: 'jsonl',
             index: 'unpaywall-test',
           })
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         expect(res2).have.status(200);
       });
@@ -75,7 +77,7 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
+            .request(enrichService)
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -94,12 +96,12 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
-          .get(`/enriched/${id}.csv`)
+          .request(enrichService)
+          .get(`/enriched/${id}.jsonl`)
           .buffer()
           .parse(binaryParser);
 
-        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
           await fs.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
@@ -108,24 +110,24 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file1.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file1.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
     });
 
-    describe('Do a enrichment of a csv file with all unpaywall attributes', () => {
+    describe('Do a enrichment of a jsonl file with all unpaywall attributes', () => {
       let id;
       let enrichedFile;
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file2.csv'), 'file2.csv')
-          .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file2.jsonl'), 'file2.jsonl')
+          .set('Content-Type', 'application/x-ndjson')
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -133,14 +135,14 @@ describe('Test: enrich service csv', () => {
       });
       it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/job')
           .send({
             id,
-            type: 'csv',
+            type: 'jsonl',
             index: 'unpaywall-test',
           })
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         expect(res2).have.status(200);
       });
@@ -150,7 +152,7 @@ describe('Test: enrich service csv', () => {
 
         do {
           res3 = await chai
-            .request(enrichURL)
+            .request(enrichService)
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -169,13 +171,13 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
-          .get(`/enriched/${id}.csv`)
+          .request(enrichService)
+          .get(`/enriched/${id}.jsonl`)
           .buffer()
           .parse(binaryParser)
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
-        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
           await fs.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
@@ -184,23 +186,23 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file2.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file2.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
     });
 
-    describe('Do a enrichment of a csv file with some unpaywall attributes (is_oa, best_oa_location.license, z_authors.family)', () => {
+    describe('Do a enrichment of a jsonl file with some unpaywall attributes (is_oa, best_oa_location.license, z_authors.family)', () => {
       let id;
       let enrichedFile;
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
-          .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .set('Content-Type', 'application/x-ndjson')
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -209,15 +211,15 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/job')
           .send({
             id,
-            type: 'csv',
+            type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         expect(res2).have.status(200);
       });
@@ -227,7 +229,7 @@ describe('Test: enrich service csv', () => {
 
         do {
           res3 = await chai
-            .request(enrichURL)
+            .request(enrichService)
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -246,12 +248,12 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
-          .get(`/enriched/${id}.csv`)
+          .request(enrichService)
+          .get(`/enriched/${id}.jsonl`)
           .buffer()
           .parse(binaryParser);
 
-        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
           await fs.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
@@ -260,23 +262,23 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file3.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file3.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
     });
 
-    describe('Do a enrichment of a csv file with some unpaywall attributes best_oa_location.license', () => {
+    describe('Do a enrichment of a jsonl file with some unpaywall attributes best_oa_location.license', () => {
       let id;
       let enrichedFile;
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
-          .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .set('Content-Type', 'application/x-ndjson')
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -285,15 +287,15 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with args { best_oa_location { license } } and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/job')
           .send({
             id,
-            type: 'csv',
+            type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ best_oa_location { license } }',
           })
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         expect(res2).have.status(200);
       });
@@ -302,7 +304,7 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
+            .request(enrichService)
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -321,12 +323,12 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
-          .get(`/enriched/${id}.csv`)
+          .request(enrichService)
+          .get(`/enriched/${id}.jsonl`)
           .buffer()
           .parse(binaryParser);
 
-        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
           await fs.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
@@ -335,24 +337,24 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file4.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file4.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
     });
 
-    describe('Do a enrichment of a csv file with some unpaywall attributes z_authors.given', () => {
+    describe('Do a enrichment of a jsonl file with some unpaywall attributes z_authors.given', () => {
       let id;
       let enrichedFile;
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
-          .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .set('Content-Type', 'application/x-ndjson')
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -361,15 +363,15 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with args { z_authors { given } } and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/job')
           .send({
             id,
-            type: 'csv',
+            type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ z_authors { given } }',
           })
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         expect(res2).have.status(200);
       });
@@ -378,7 +380,7 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
+            .request(enrichService)
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -397,12 +399,12 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
-          .get(`/enriched/${id}.csv`)
+          .request(enrichService)
+          .get(`/enriched/${id}.jsonl`)
           .buffer()
           .parse(binaryParser);
 
-        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
           await fs.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
@@ -411,24 +413,23 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file5.csv');
-
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file5.jsonl');
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
     });
 
-    describe('Do a enrichment of a csv file with some unpaywall attributes is_oa, best_oa_location.license, z_authors.family', () => {
+    describe('Do a enrichment of a jsonl file with some unpaywall attributes is_oa, best_oa_location.license, z_authors.family', () => {
       let id;
       let enrichedFile;
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
-          .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .set('Content-Type', 'application/x-ndjson')
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -437,15 +438,15 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors{ family } } and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/job')
           .send({
             id,
-            type: 'csv',
+            type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa, best_oa_location { license }, z_authors { family } }',
           })
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         expect(res2).have.status(200);
       });
@@ -454,7 +455,7 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
+            .request(enrichService)
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -473,12 +474,12 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
-          .get(`/enriched/${id}.csv`)
+          .request(enrichService)
+          .get(`/enriched/${id}.jsonl`)
           .buffer()
           .parse(binaryParser);
 
-        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
           await fs.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
@@ -487,99 +488,23 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file6.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file6.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
     });
 
-    describe('Do a enrichment of a csv file with all unpaywall attributes and with semi colomn separator', () => {
-      let id;
-      let enrichedFile;
-
-      it('Should upload the file', async () => {
-        const res1 = await chai
-          .request(enrichURL)
-          .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
-          .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
-
-        expect(res1).have.status(200);
-
-        id = res1?.body?.id;
-      });
-
-      it('Should enrich the file on 3 lines with all unpaywall attributes with ";" separator', async () => {
-        const res2 = await chai
-          .request(enrichURL)
-          .post('/job')
-          .send({
-            id,
-            type: 'csv',
-            index: 'unpaywall-test',
-            separator: ';',
-          })
-          .set('X-API-KEY', 'user');
-
-        expect(res2).have.status(200);
-      });
-
-      it('Should get the state of enrich', async () => {
-        let res3;
-        do {
-          res3 = await chai
-            .request(enrichURL)
-            .get(`/state/${id}.json`);
-          expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        } while (!res3?.body?.state?.done);
-
-        const { state } = res3?.body;
-
-        expect(state).have.property('done').equal(true);
-        expect(state).have.property('loaded').to.not.equal(undefined);
-        expect(state).have.property('linesRead').equal(3);
-        expect(state).have.property('enrichedLines').equal(3);
-        expect(state).have.property('createdAt').to.not.equal(undefined);
-        expect(state).have.property('endAt').to.not.equal(undefined);
-        expect(state).have.property('error').equal(false);
-      });
-
-      it('Should download the enrichedfile', async () => {
-        const res4 = await chai
-          .request(enrichURL)
-          .get(`/enriched/${id}.csv`)
-          .buffer()
-          .parse(binaryParser);
-
-        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
-        try {
-          await fs.writeFile(enrichedFile, res4.body.toString());
-        } catch (err) {
-          console.error(`writeFile: ${err}`);
-        }
-      });
-
-      it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file7.csv');
-
-        const same = await compareFile(reference, enrichedFile);
-        expect(same).to.be.equal(true);
-      });
-    });
-
-    describe('Don\'t do a enrichment of a csv file because the arguments doesn\'t exist on ezunpaywall index', () => {
+    describe('Don\'t do a enrichment of a jsonl file because the arguments doesn\'t exist on ezunpaywall index', () => {
       let id;
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
-          .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .set('Content-Type', 'application/x-ndjson')
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -588,15 +513,15 @@ describe('Test: enrich service csv', () => {
 
       it('Should return a error message', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/job')
           .send({
             id,
-            type: 'csv',
+            type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ coin }',
           })
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         // TODO mettre une erreur 401
         expect(res2).have.status(200);

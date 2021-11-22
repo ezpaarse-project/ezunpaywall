@@ -58,7 +58,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Update with fake1.jsonl.gz');
@@ -151,7 +151,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Update with fake1.jsonl.gz');
@@ -243,7 +243,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Update with fake1.jsonl.gz');
@@ -336,7 +336,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Update with fake1.jsonl.gz');
@@ -420,7 +420,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('Only ".gz" files are accepted');
@@ -438,7 +438,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(404);
       expect(res.body.message).be.equal('File not found');
@@ -466,7 +466,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('Limit cannot be low than offset or 0');

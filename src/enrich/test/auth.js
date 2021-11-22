@@ -42,7 +42,7 @@ describe('Test: auth service in enrich service', () => {
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -57,7 +57,7 @@ describe('Test: auth service in enrich service', () => {
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
-          .set('X-API-KEY', 'enrich');
+          .set('x-api-key', 'enrich');
 
         expect(res1).have.status(200);
 
@@ -93,7 +93,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'wrong apikey');
+          .set('x-api-key', 'wrong apikey');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -111,7 +111,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'graphql');
+          .set('x-api-key', 'graphql');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -129,7 +129,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'update');
+          .set('x-api-key', 'update');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -147,7 +147,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'notAllowed');
+          .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -165,7 +165,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa, oa_status }',
           })
-          .set('X-API-KEY', 'userRestricted');
+          .set('x-api-key', 'userRestricted');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');
@@ -180,7 +180,7 @@ describe('Test: auth service in enrich service', () => {
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
           .set('Content-Type', 'application/x-ndjson')
-          .set('X-API-KEY', 'user');
+          .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
 
@@ -195,7 +195,7 @@ describe('Test: auth service in enrich service', () => {
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
           .set('Content-Type', 'application/x-ndjson')
-          .set('X-API-KEY', 'enrich');
+          .set('x-api-key', 'enrich');
 
         expect(res1).have.status(200);
 
@@ -231,7 +231,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'wrong apikey');
+          .set('x-api-key', 'wrong apikey');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -249,7 +249,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'update');
+          .set('x-api-key', 'update');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -267,7 +267,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'graphql');
+          .set('x-api-key', 'graphql');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -285,7 +285,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'notAllowed');
+          .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -303,7 +303,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa }',
           })
-          .set('X-API-KEY', 'notAllowed');
+          .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('Not authorized');
@@ -321,7 +321,7 @@ describe('Test: auth service in enrich service', () => {
             index: 'unpaywall-test',
             args: '{ is_oa, oa_status }',
           })
-          .set('X-API-KEY', 'userRestricted');
+          .set('x-api-key', 'userRestricted');
 
         expect(res).have.status(401);
         expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');

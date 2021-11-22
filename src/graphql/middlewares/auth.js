@@ -10,7 +10,7 @@ const logger = require('../lib/logger');
  */
 const checkAuth = async (req, res, next) => {
   // TODO check in query
-  const apikey = req.get('X-API-KEY');
+  const apikey = req.get('x-api-key');
 
   if (!apikey) {
     return res.status(401).json({ message: 'Not authorized' });
