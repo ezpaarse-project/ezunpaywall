@@ -59,7 +59,7 @@
 import SettingsGraphql from '~/components/unpaywallArgs/SettingsGraphql.vue'
 
 export default {
-  name: 'Home',
+  name: 'Graphql',
   components: {
     SettingsGraphql
   },

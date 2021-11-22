@@ -12,7 +12,7 @@ const {
 const { oaLocationType } = require('./oalocation');
 const { authorType } = require('./author');
 
-module.exports = new GraphQLObjectType({
+const unpaywallType = new GraphQLObjectType({
   name: 'unpaywallType',
   fields: () => ({
     best_oa_location: { type: oaLocationType },
@@ -39,3 +39,5 @@ module.exports = new GraphQLObjectType({
     z_authors: { type: new GraphQLList(authorType) },
   }),
 });
+
+module.exports = unpaywallType;

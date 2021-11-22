@@ -12,8 +12,8 @@
           edit-icon="mdi-check"
           :editable="!inProcess"
           :complete="hasLogFiles"
-          @click="resetArgs"
           step="1"
+          @click="resetArgs"
         >
           {{ $t("enrich.filesSelection") }}
         </v-stepper-step>

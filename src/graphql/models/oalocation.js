@@ -8,7 +8,7 @@ const {
   GraphQLID,
 } = graphql;
 
-exports.oaLocationInput = new GraphQLInputObjectType({
+const oaLocationInput = new GraphQLInputObjectType({
   name: 'oaLocationInput',
   fields: {
     endpoint_id: { type: GraphQLID },
@@ -26,7 +26,7 @@ exports.oaLocationInput = new GraphQLInputObjectType({
   },
 });
 
-exports.oaLocationType = new GraphQLObjectType({
+const oaLocationType = new GraphQLObjectType({
   name: 'oaLocationType',
   fields: {
     endpoint_id: { type: GraphQLID },
@@ -43,3 +43,8 @@ exports.oaLocationType = new GraphQLObjectType({
     version: { type: GraphQLString },
   },
 });
+
+module.exports = {
+  oaLocationInput,
+  oaLocationType,
+};

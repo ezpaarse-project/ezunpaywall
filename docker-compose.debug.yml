@@ -34,9 +34,9 @@ services:
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE=dev
       # unpaywall
-      - API_KEY_UPW
+      - API_KEY_UPW=default
       - UNPAYWALL_URL=http://fakeunpaywall:12000/feed/changefiles
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
@@ -84,6 +84,8 @@ services:
   auth:
     image: node:14.15.5-alpine3.13
     working_dir: /auth
+    environment:
+      - REDIS_PASSWORD=changeme
     volumes:
       - ./src/auth:/auth
     command: "npm run dev"
@@ -99,10 +101,10 @@ services:
       # mail
       - NODE_CONFIG
       - EZUNPAYWALL_SMTP_HOST=maildev
-      - EZUNPAYWALL_SMTP_PORT
+      - EZUNPAYWALL_SMTP_PORT=25
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE=dev
     working_dir: /mail
     volumes:
       - ./src/mail:/mail
