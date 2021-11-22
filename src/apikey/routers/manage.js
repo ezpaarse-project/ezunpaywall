@@ -111,15 +111,23 @@ router.get('/config', async (req, res) => {
 /**
  * get config of apikey
  */
-router.get('/all', checkAuth, async (req, res) => {
+router.get('/all', checkAuth, async (req, res, next) => {
   const keys = await redisClient.keys('*');
 
   const allKeys = {};
 
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i];
-    let config = await redisClient.get(key);
-    config = JSON.parse(config);
+
+    let config;
+
+    try {
+      config = await redisClient.get(key);
+      config = JSON.parse(config);
+    } catch (err) {
+      return next(err);
+    }
+
     allKeys[key] = config;
   }
 
@@ -175,8 +183,15 @@ router.post('/create', checkAuth, async (req, res, next) => {
   const keys = await redisClient.keys('*');
 
   keys.filter(async (key) => {
-    let config = await redisClient.get(key);
-    config = JSON.parse(config);
+    let config;
+
+    try {
+      config = await redisClient.get(key);
+      config = JSON.parse(config);
+    } catch (err) {
+      return next(err);
+    }
+
     if (config.name === name) {
       return res.status(403).json({ message: `Name [${name}] already exist` });
     }
@@ -190,8 +205,13 @@ router.post('/create', checkAuth, async (req, res, next) => {
     return next(err);
   }
 
-  let config = await redisClient.get(apikey);
-  config = JSON.parse(config);
+  let config;
+  try {
+    config = await redisClient.get(apikey);
+    config = JSON.parse(config);
+  } catch (err) {
+    return next(err);
+  }
 
   return res.status(200).json({ apikey, config });
 });
@@ -259,8 +279,13 @@ router.put('/update', checkAuth, async (req, res, next) => {
     return next(err);
   }
 
-  let configApiKey = await redisClient.get(apikey);
-  configApiKey = JSON.parse(configApiKey);
+  let configApiKey;
+  try {
+    configApiKey = await redisClient.get(apikey);
+    configApiKey = JSON.parse(configApiKey);
+  } catch (err) {
+    return next(err);
+  }
 
   return res.status(200).json({ apikey, config: configApiKey });
 });
@@ -324,16 +349,16 @@ router.post('/load', checkAuth, async (req, res, next) => {
     return res.status(204).json();
   }
 
-  const apiKeysJSON = Object.keys(keys);
-
-  apiKeysJSON.forEach(async (key) => {
-    try {
-      await redisClient.set(key, `${JSON.stringify(keys[key])}`);
-    } catch (err) {
-      logger.error(`Cannot load ${key} with ${JSON.stringify(keys[key])} on redis`);
-      logger.error(err);
-    }
-  });
+  await Promise.all(
+    Object.entries(keys).map(async ([keyId, keyValue]) => {
+      try {
+        await redisClient.set(keyId, `${JSON.stringify(keyValue)}`);
+      } catch (err) {
+        logger.error(`Cannot load ${keyId} with ${JSON.stringify(keyValue)} on redis`);
+        logger.error(err);
+      }
+    }),
+  );
 });
 
 /**

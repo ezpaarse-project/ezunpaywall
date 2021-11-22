@@ -30,23 +30,20 @@ redisClient.on('error', (err) => {
 });
 
 const load = async () => {
-  if (process.env.NODE_ENV === 'production') {
-    apiKeys = await fs.readFile(path.resolve(__dirname, '..', 'apikey.json'));
-  } else {
-    apiKeys = await fs.readFile(path.resolve(__dirname, '..', 'apikey-dev.json'));
-  }
+  const filename = process.env.NODE_ENV === 'production' ? 'apikey.json' : 'apikey-dev.json';
+  apiKeys = await fs.readFile(path.resolve(__dirname, '..', filename), 'utf8');
   apiKeys = JSON.parse(apiKeys);
 
-  const apiKeysJSON = Object.keys(apiKeys);
-
-  apiKeysJSON.forEach(async (key) => {
-    try {
-      await redisClient.set(key, `${JSON.stringify(apiKeys[key])}`);
-    } catch (err) {
-      logger.error(`Cannot load ${key} with ${JSON.stringify(apiKeys[key])} on redis`);
-      logger.error(err);
-    }
-  });
+  await Promise.all(
+    Object.entries(apiKeys).map(async ([keyId, keyValue]) => {
+      try {
+        await redisClient.set(keyId, `${JSON.stringify(keyValue)}`);
+      } catch (err) {
+        logger.error(`Cannot load ${keyId} with ${JSON.stringify(keyValue)} on redis`);
+        logger.error(err);
+      }
+    }),
+  );
 };
 
 const pingRedis = async () => {

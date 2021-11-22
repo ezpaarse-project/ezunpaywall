@@ -11,10 +11,6 @@ const checkAuth = async (req, res, next) => {
   // TODO check in query
   const apikey = req.get('redis-password');
 
-  if (!apikey) {
-    return res.status(401).json({ message: 'Not authorized' });
-  }
-
   if (apikey !== config.get('redis.password')) {
     return res.status(401).json({ message: 'Not authorized' });
   }

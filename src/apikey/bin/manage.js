@@ -4,7 +4,7 @@ const { redisClient } = require('../lib/redis');
 const logger = require('../lib/logger');
 
 const createAuth = async (name, access, attributes, allowed) => {
-  const currentDate = (new Date()).valueOf().toString();
+  const currentDate = Date.now();
   const random = Math.random().toString();
   const hash = crypto.createHash('sha256').update(`${currentDate}${random}`).digest('hex');
   const id = hash;
@@ -18,7 +18,7 @@ const createAuth = async (name, access, attributes, allowed) => {
 
   if (!config?.access) config.access = ['graphql'];
   if (!config?.attributes) config.attributes = '*';
-  if (!config?.allowed) config.allowed = true;
+  if (typeof config?.allowed !== 'boolean') config.allowed = true;
 
   try {
     await redisClient.set(id, `${JSON.stringify(config)}`);

@@ -126,6 +126,7 @@ module.exports = {
 
       requestedField.forEach((field) => {
         if (!attributes.includes(field)) {
+          console.log(field);
           throw Error(`You don't have access to ${field}`);
         }
       });
