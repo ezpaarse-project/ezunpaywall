@@ -134,6 +134,8 @@ module.exports = {
 
     const dois = [];
 
+    req.countDOI = args?.dois?.length;
+
     // normalize request
     args.dois.forEach((doi) => {
       dois.push(doi.toLowerCase());
