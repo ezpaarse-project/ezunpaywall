@@ -45,13 +45,13 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-btn color="error" @click="$router.go(-1)" v-text="$t('cancel')" />
+      <v-btn color="error" @click="$router.go(-1)" v-text="$t('contact.cancel')" />
       <v-btn
         :disabled="!valid"
         :loading="loading"
         color="primary"
         @click="validate"
-        v-text="$t('send')"
+        v-text="$t('contact.send')"
       />
     </v-card-actions>
   </v-card>

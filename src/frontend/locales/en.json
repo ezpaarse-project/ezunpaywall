@@ -1,6 +1,12 @@
 {
   "home": {
-    "intro": "serveur unpaywall is ..."
+    "title" : "What is ezunpaywall?",
+    "intro": "The ezunpaywall server is an unpaywall mirror hosted at Inist-CNRS and developed by ezTEAM.",
+    "metrics": "Metrics",
+    "globalMetrics": "Global metrics",
+    "referencedResources": "referenced resources",
+    "openAccess": "Open access",
+    "openAccessStatus": "Statut d'accès libre"
   },
   "contact": {
     "contactUs": "Contact us",
@@ -15,7 +21,9 @@
     "emailIsRequired": "The email address is required",
     "emailMustBeValid": "The email address must be valid",
     "contentIsRequired": "A message is required",
-    "subjectIsRequired": "Subject is required"
+    "subjectIsRequired": "Subject is required",
+    "send": "Send",
+    "cancel": "Cancel"
   },
   "enrich": {
     "enrichFile": "Enrich your file",
@@ -118,6 +126,10 @@
     "file": "File",
     "linesRead": "Lines read",
     "status": "Status"
+  },
+  "header": {
+    "help": "The unpaywall mirror data is updated daily at 12:30 p.m.",
+    "close": "Close"
   },
   "drawer": {
     "home": "Home",

@@ -1,6 +1,12 @@
 {
   "home": {
-    "intro": "le serveur unpaywall est ..."
+    "title" : "Qu'est-ce qu'est ezunpaywall ?",
+    "intro": "Le serveur ezunpaywall est un miroir unpaywall hebergé à l'Inist-CNRS et développer par l'ezTEAM. ",
+    "metrics": "Métriques",
+    "globalMetrics": "Métriques globales",
+    "referencedResources": "Ressources référencées",
+    "openAccess": "Accès ouvert",
+    "openAccessStatus": "Open access status"
   },
   "contact": {
     "contactUs": "Nous contacter",
@@ -15,7 +21,9 @@
     "emailIsRequired": "L'adresse électronique est requise",
     "emailMustBeValid": "L'adresse électronique doit être valide",
     "contentIsRequired": "Un message est requis",
-    "subjectIsRequired": "L'objet est requis"
+    "subjectIsRequired": "L'objet est requis",
+    "send": "Envoyer",
+    "cancel": "Annuler"
   },
   "enrich": {
     "enrichFile": "Enrichir votre fichier",
@@ -118,6 +126,10 @@
     "file": "Fichier",
     "linesRead": "Lignes lues",
     "status": "Status"
+  },
+  "header": {
+    "help": "Les données du miroir unpaywall sont mit à jour quotidiennement à 12:30",
+    "close": "Close"
   },
   "drawer": {
     "home": "Accueil",
