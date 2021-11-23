@@ -1,190 +1,185 @@
 <template>
-  <v-card>
-    <v-toolbar class="secondary" dark dense flat>
-      <v-toolbar-title v-text="$t('enrich.enrichFile')" />
-      <v-spacer />
-      <v-icon>mdi-code-json</v-icon>
-    </v-toolbar>
+  <section>
+    <v-card>
+      <v-toolbar class="secondary" dark dense flat>
+        <v-toolbar-title v-text="$t('enrich.enrichFile')" />
+        <v-spacer />
+        <v-icon>mdi-code-json</v-icon>
+      </v-toolbar>
 
-    <v-stepper v-model="step">
-      <v-stepper-header>
-        <v-stepper-step
-          edit-icon="mdi-check"
-          :editable="!inProcess"
-          :complete="hasLogFiles"
-          step="1"
-          @click="resetArgs"
-        >
-          {{ $t("enrich.filesSelection") }}
-        </v-stepper-step>
+      <v-stepper v-model="step">
+        <v-stepper-header>
+          <v-stepper-step
+            edit-icon="mdi-check"
+            :editable="!inProcess"
+            :complete="hasLogFiles"
+            step="1"
+            @click="resetArgs"
+          >
+            {{ $t("enrich.filesSelection") }}
+          </v-stepper-step>
 
-        <v-divider :color="hasLogFiles && step > 1 ? 'primary' : ''" />
+          <v-divider :color="hasLogFiles && step > 1 ? 'primary' : ''" />
 
-        <v-stepper-step
-          edit-icon="mdi-check"
-          :editable="hasLogFiles"
-          :complete="step > 2"
-          step="2"
-        >
-          {{ $t("enrich.settings") }}
-        </v-stepper-step>
+          <v-stepper-step
+            edit-icon="mdi-check"
+            :editable="hasLogFiles"
+            :complete="step > 2"
+            step="2"
+          >
+            {{ $t("enrich.settings") }}
+          </v-stepper-step>
 
-        <v-divider :color="inProcess && step > 2 ? 'primary' : ''" />
+          <v-divider :color="inProcess && step > 2 ? 'primary' : ''" />
 
-        <v-stepper-step :editable="inProcess" step="3">
-          {{ $t("enrich.enrich") }}
-        </v-stepper-step>
-      </v-stepper-header>
+          <v-stepper-step :editable="inProcess" step="3">
+            {{ $t("enrich.enrich") }}
+          </v-stepper-step>
+        </v-stepper-header>
 
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <v-container>
-            <v-layout row justify-end class="mb-3">
-              <v-menu
-                v-model="fileSelectionHelp"
-                :close-on-content-click="false"
-                :nudge-width="200"
-                max-width="500"
-                offset-x
-                transition="slide-x-transition"
-              >
-                <template #activator="{ on }">
-                  <v-btn class="mr-5" icon v-on="on">
-                    <v-icon>mdi-help-circle</v-icon>
-                  </v-btn>
-                </template>
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-container>
+              <v-layout row justify-end class="mb-3">
+                <v-menu
+                  v-model="fileSelectionHelp"
+                  :close-on-content-click="false"
+                  :nudge-width="200"
+                  max-width="500"
+                  offset-x
+                  transition="slide-x-transition"
+                >
+                  <template #activator="{ on }">
+                    <v-btn class="mr-5" icon v-on="on">
+                      <v-icon>mdi-help-circle</v-icon>
+                    </v-btn>
+                  </template>
 
-                <v-card class="text-justify">
-                  <v-card-text
-                    v-html="
-                      $t('enrich.explainationLogs')
-                    "
-                  />
-                  <v-divider />
-                  <v-card-text
-                    v-html="
-                      $t(
-                        'enrich.explainationTestsLogs',
-                        {
+                  <v-card class="text-justify">
+                    <v-card-text v-html="$t('enrich.explainationLogs')" />
+                    <v-divider />
+                    <v-card-text
+                      v-html="
+                        $t('enrich.explainationTestsLogs', {
                           url: logSamplesUrl,
-                        }
-                      )
-                    "
-                  />
-
-                  <v-card-actions>
-                    <v-spacer />
-                    <v-btn
-                      class="body-2"
-                      text
-                      @click="fileSelectionHelp = false"
-                      v-text="$t('enrich.close')"
+                        })
+                      "
                     />
-                  </v-card-actions>
-                </v-card>
-              </v-menu>
 
-              <v-btn
-                class="body-2"
-                color="primary"
-                @click="step = 2"
-                v-text="$t('enrich.continue')"
-              />
-            </v-layout>
-          </v-container>
+                    <v-card-actions>
+                      <v-spacer />
+                      <v-btn
+                        class="body-2"
+                        text
+                        @click="fileSelectionHelp = false"
+                        v-text="$t('enrich.close')"
+                      />
+                    </v-card-actions>
+                  </v-card>
+                </v-menu>
 
-          <LogFiles class="ma-1" @files="getFiles($event)" />
-        </v-stepper-content>
+                <v-btn
+                  class="body-2"
+                  color="primary"
+                  @click="step = 2"
+                  v-text="$t('enrich.continue')"
+                />
+              </v-layout>
+            </v-container>
 
-        <v-stepper-content step="2">
-          <v-container>
-            <v-layout row align-center class="mb-3">
-              <v-btn
-                class="body-2"
-                color="primary"
-                @click="step = 1"
-                v-text="$t('enrich.settings')"
-              />
-              <v-spacer />
-              <v-btn
-                class="body-2"
-                color="primary"
-                :disabled="!hasLogFiles || !getSetting"
-                @click="
-                  enrich();
-                  step = 3;
-                "
-                v-text="$t('enrich.startProcess')"
-              />
-            </v-layout>
-          </v-container>
+            <LogFiles class="ma-1" @files="getFiles($event)" />
+          </v-stepper-content>
 
-          <v-toolbar class="secondary" dark dense flat>
-            <v-toolbar-title v-text="$t('enrich.settings')" />
-          </v-toolbar>
+          <v-stepper-content step="2">
+            <v-container>
+              <v-layout row align-center class="mb-3">
+                <v-btn
+                  class="body-2"
+                  color="primary"
+                  @click="step = 1"
+                  v-text="$t('enrich.settings')"
+                />
+                <v-spacer />
+                <v-btn
+                  class="body-2"
+                  color="primary"
+                  :disabled="!hasLogFiles || !getSetting"
+                  @click="
+                    enrich();
+                    step = 3;
+                  "
+                  v-text="$t('enrich.startProcess')"
+                />
+              </v-layout>
+            </v-container>
 
-          <v-text-field
-            v-model="apiKey"
-            :append-icon="apiKeyVisible ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[apiKeyRules.required]"
-            :type="apiKeyVisible ? 'text' : 'password'"
-            :label="$t('enrich.apiKey')"
-            filled
-            @click:append="apiKeyVisible = !apiKeyVisible"
-          />
+            <v-toolbar class="secondary" dark dense flat>
+              <v-toolbar-title v-text="$t('enrich.settings')" />
+            </v-toolbar>
 
-          <v-text-field
-            v-model="extensionSelected"
-            :label="$t('enrich.fileExtension')"
-            filled
-            readonly
-          />
-
-          <v-toolbar class="secondary" dark dense flat>
-            <v-toolbar-title v-text="$t('enrich.unpaywallAttributes')" />
-          </v-toolbar>
-
-          <SettingsCSV v-if="extensionSelected === 'csv'" />
-          <SettingsJSONL v-if="extensionSelected === 'jsonl'" />
-        </v-stepper-content>
-
-        <v-stepper-content step="3">
-          <v-container>
-            <v-layout row justify-end class="mb-3">
-              <v-btn :href="resultUrl" :disabled="inProcess || error">
-                <v-icon left>
-                  mdi-download
-                </v-icon>
-                {{ $t("enrich.download") }}
-              </v-btn>
-            </v-layout>
-          </v-container>
-          <v-container v-if="inProcess" class="text-center">
-            <v-progress-circular
-              :size="70"
-              :width="7"
-              indeterminate
-              color="green"
+            <v-text-field
+              v-model="apiKey"
+              :append-icon="apiKeyVisible ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[apiKeyRules.required]"
+              :type="apiKeyVisible ? 'text' : 'password'"
+              :label="$t('enrich.apiKey')"
+              filled
+              @click:append="apiKeyVisible = !apiKeyVisible"
             />
-            <div v-text="$t('enrich.inProcess')" />
-          </v-container>
-          <v-container v-else class="text-center">
-            <v-icon v-if="error" size="70" color="orange darken-2">
-              mdi-alert-circle
-            </v-icon>
-            <v-icon v-else size="70" color="green darken-2">
-              mdi-check
-            </v-icon>
-            <div v-if="error" v-text="$t('enrich.error')" />
-            <div v-else v-text="$t('enrich.end')" />
-          </v-container>
-          <v-container>
-            <Report :time="time" :state="state" />
-          </v-container>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
-  </v-card>
+
+            <v-text-field
+              v-model="extensionSelected"
+              :label="$t('enrich.fileExtension')"
+              filled
+              readonly
+            />
+
+            <v-toolbar class="secondary" dark dense flat>
+              <v-toolbar-title v-text="$t('enrich.unpaywallAttributes')" />
+            </v-toolbar>
+
+            <SettingsCSV v-if="extensionSelected === 'csv'" />
+            <SettingsJSONL v-if="extensionSelected === 'jsonl'" />
+          </v-stepper-content>
+
+          <v-stepper-content step="3">
+            <v-container>
+              <v-layout row justify-end class="mb-3">
+                <v-btn :href="resultUrl" :disabled="inProcess || error">
+                  <v-icon left>
+                    mdi-download
+                  </v-icon>
+                  {{ $t("enrich.download") }}
+                </v-btn>
+              </v-layout>
+            </v-container>
+            <v-container v-if="inProcess" class="text-center">
+              <v-progress-circular
+                :size="70"
+                :width="7"
+                indeterminate
+                color="green"
+              />
+              <div v-text="$t('enrich.inProcess')" />
+            </v-container>
+            <v-container v-else class="text-center">
+              <v-icon v-if="error" size="70" color="orange darken-2">
+                mdi-alert-circle
+              </v-icon>
+              <v-icon v-else size="70" color="green darken-2">
+                mdi-check
+              </v-icon>
+              <div v-if="error" v-text="$t('enrich.error')" />
+              <div v-else v-text="$t('enrich.end')" />
+            </v-container>
+            <v-container>
+              <Report :time="time" :state="state" />
+            </v-container>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </v-card>
+  </section>
 </template>
 
 <script>
@@ -245,7 +240,13 @@ export default {
         z_authors
       } = this.$store.state.enrichArgs
 
-      if (!simple.length && !best_oa_location.length && !first_oa_location.length && !oa_locations.length && !z_authors.length) {
+      if (
+        !simple.length &&
+        !best_oa_location.length &&
+        !first_oa_location.length &&
+        !oa_locations.length &&
+        !z_authors.length
+      ) {
         return ''
       }
 

@@ -1,64 +1,71 @@
 <template>
-  <v-card>
-    <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title v-text="$t('contact.contactUs')" />
-      <v-spacer />
-      <v-icon>mdi-email-edit</v-icon>
-    </v-toolbar>
+  <section>
+    <v-card>
+      <v-toolbar color="secondary" dark flat dense>
+        <v-toolbar-title v-text="$t('contact.contactUs')" />
+        <v-spacer />
+        <v-icon>mdi-email-edit</v-icon>
+      </v-toolbar>
 
-    <v-card-text>
-      <v-form ref="form" v-model="valid">
-        <v-text-field
-          v-model="email"
-          :rules="emailRules"
-          label="Email"
-          name="email"
-          outlined
-          clearable
-          required
-        />
-        <v-select
-          v-model="subject"
-          :items="subjects"
-          :rules="subjectRules"
-          :label="$t('contact.subject')"
-          name="subject"
-          outlined
-          required
-          return-object
-        />
-        <v-textarea
-          v-model="message"
-          :rules="messageRules"
-          :label="$t('contact.content')"
-          name="message"
-          outlined
-          required
-        />
-        <v-checkbox
-          v-if="subject.value === 'bugs'"
-          v-model="sendBrowser"
-          :label="$t('contact.sendNavigatorVersion')"
-        />
-      </v-form>
-    </v-card-text>
+      <v-card-text>
+        <v-form ref="form" v-model="valid">
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            label="Email"
+            name="email"
+            outlined
+            clearable
+            required
+          />
+          <v-select
+            v-model="subject"
+            :items="subjects"
+            :rules="subjectRules"
+            :label="$t('contact.subject')"
+            name="subject"
+            outlined
+            required
+            return-object
+          />
+          <v-textarea
+            v-model="message"
+            :rules="messageRules"
+            :label="$t('contact.content')"
+            name="message"
+            outlined
+            required
+          />
+          <v-checkbox
+            v-if="subject.value === 'bugs'"
+            v-model="sendBrowser"
+            :label="$t('contact.sendNavigatorVersion')"
+          />
+        </v-form>
+      </v-card-text>
 
-    <v-card-actions>
-      <v-spacer />
-      <v-btn color="error" @click="$router.go(-1)" v-text="$t('contact.cancel')" />
-      <v-btn
-        :disabled="!valid"
-        :loading="loading"
-        color="primary"
-        @click="validate"
-        v-text="$t('contact.send')"
-      />
-    </v-card-actions>
-  </v-card>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="error"
+          @click="$router.go(-1)"
+          v-text="$t('contact.cancel')"
+        />
+        <v-btn
+          :disabled="!valid"
+          :loading="loading"
+          color="primary"
+          @click="validate"
+          v-text="$t('contact.send')"
+        />
+      </v-card-actions>
+    </v-card>
+  </section>
 </template>
 
 <script>
 export default {
+  transition: 'slide-x-transition',
   data: () => ({
     email: '',
     message: '',
@@ -117,7 +124,6 @@ export default {
           this.$refs.form.resetValidation()
           this.loading = false
         } catch (e) {
-          console.log(e)
           this.$store.dispatch('snacks/error', this.$t('contact.failed'))
           this.loading = false
         }

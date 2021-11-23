@@ -16,8 +16,12 @@
       <v-container>
         <v-card-title v-text="$t('home.globalMetrics')" />
         <v-card-text>
-          <v-chip color="grey darken-2" text-color="white">{{ $t('home.referencedResources') }} : {{ metrics.doi }}</v-chip>
-          <v-chip color="grey darken-2" text-color="white">{{ $t('home.openAccess') }} : {{ metrics.isOA }}</v-chip>
+          <v-chip color="grey darken-2" text-color="white">
+            {{ $t('home.referencedResources') }} : {{ metrics.doi }}
+          </v-chip>
+          <v-chip color="grey darken-2" text-color="white">
+            {{ $t('home.openAccess') }} : {{ metrics.isOA }}
+          </v-chip>
         </v-card-text>
       </v-container>
 
@@ -26,39 +30,11 @@
         <v-card-title v-text="$t('home.openAccessStatus')" />
         <v-card-text>
           <v-chip-group active-class="deep-purple accent-4 white--text" column>
-            <v-chip color="#FFC000" text-color="white">
+            <v-chip v-for="chip in metricsChips" :key="chip.name" :color="chip.color" text-color="white">
               <v-icon left color="white">
                 mdi-lock-open
               </v-icon>
-              gold : {{ metrics.goldOA }}
-            </v-chip>
-
-            <v-chip color="#DD7931" text-color="white">
-              <v-icon left color="white">
-                mdi-lock-open
-              </v-icon>
-              hybrid : {{ metrics.hybridOA }}
-            </v-chip>
-
-            <v-chip color="#DD7931" text-color="white">
-              <v-icon left color="white">
-                mdi-lock-open
-              </v-icon>
-              bronze : {{ metrics.bronzeOA }}
-            </v-chip>
-
-            <v-chip color="#00F765" text-color="white">
-              <v-icon left color="white">
-                mdi-lock-open
-              </v-icon>
-              green : {{ metrics.greenOA }}
-            </v-chip>
-
-            <v-chip color="#BBBBBB" text-color="white">
-              <v-icon left color="white">
-                mdi-lock-open
-              </v-icon>
-              locked : {{ metrics.closedOA }}
+              {{ chip.name }} : {{ metrics[chip.name] }}
             </v-chip>
           </v-chip-group>
         </v-card-text>
@@ -74,7 +50,29 @@ export default {
   data: () => {
     return {
       loaded: false,
-      metrics: ''
+      metrics: '',
+      metricsChips: [
+        {
+          name: 'goldOA',
+          color: '#FFC000'
+        },
+        {
+          name: 'hybridOA',
+          color: '#DD7931'
+        },
+        {
+          name: 'bronzeOA',
+          color: '#DD7931'
+        },
+        {
+          name: 'greenOA',
+          color: '#00F765'
+        },
+        {
+          name: 'closedOA',
+          color: '#BBBBBB'
+        }
+      ]
     }
   },
   mounted () {
@@ -83,9 +81,9 @@ export default {
   methods: {
     async graphqlRequest () {
       this.loading = true
-      let response
+      let res
       try {
-        response = await this.$graphql({
+        res = await this.$graphql({
           method: 'GET',
           url: '/graphql',
           params: {
@@ -96,8 +94,7 @@ export default {
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
       }
-
-      this.metrics = response?.data?.data.Metrics
+      this.metrics = res?.data?.data?.Metrics
       this.loaded = false
     }
   }

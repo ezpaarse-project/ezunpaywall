@@ -38,19 +38,6 @@
         </v-list-item-content>
       </v-list-item>
 
-      <!--
-
-      <v-list-item link router :to="{ path: '/doc' }" ripple>
-        <v-list-item-icon>
-          <v-icon>mdi-file-document-outline</v-icon>
-        </v-list-item-icon>
-
-        <v-list-item-content>
-          <v-list-item-title> doc </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-       -->
-
       <v-list-item link router :to="{ path: '/contact' }" ripple>
         <v-list-item-icon>
           <v-icon>mdi-email</v-icon>

@@ -64,7 +64,6 @@ export default {
     SettingsGraphql
   },
   transition: 'slide-x-transition',
-
   data: () => {
     return {
       apikey: 'example',

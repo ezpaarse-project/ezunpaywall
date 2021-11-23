@@ -16,13 +16,16 @@
             mdi-check
           </v-icon>
         </div>
-        <div v-else>
+        <div v-else-if="item.status === 'inProgress'">
           <v-progress-circular
             :size="70"
             :width="7"
             indeterminate
             color="green"
           />
+        </div>
+        <div v-if="item.status === 'error'">
+          <p>Oh noooo !</p>
         </div>
       </template>
 

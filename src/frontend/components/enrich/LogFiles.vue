@@ -111,7 +111,7 @@ export default {
   methods: {
     handleFilesUpload () {
       Array.from(this.$refs.filesLoaded.files).forEach((file) => {
-        const [, ext] = file.name.split('.')
+        const ext = file.name.split('.').pop()
         if (!['csv', 'jsonl'].includes(ext)) {
           this.$store.dispatch('snacks/error', this.$t('enrich.errorUploadFile'))
           return

@@ -23,13 +23,19 @@ export default {
   },
   mutations: {
     add (state, value) {
-      state[value.source].push(value.attrs)
+      if (Array.isArray(state) && value) {
+        state[value?.source].push(value?.attrs)
+      }
     },
     update (state, value) {
-      state[value.source] = value.attrs
+      if (Array.isArray(state) && value) {
+        state[value?.source] = value?.attrs
+      }
     },
     del (state, value) {
-      state[value.source] = state[value.source].filter(e => e === value)
+      if (Array.isArray(state) && value) {
+        state[value?.source] = state[value?.source].filter(e => e === value)
+      }
     },
     resetAll (state) {
       state.simple = []

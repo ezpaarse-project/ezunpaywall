@@ -17,26 +17,30 @@
 export default {
   data: () => {
     return {
+      timeout: '',
       inUpdate: false,
       state: null
     }
   },
   computed: {
-    latestTask () {
-      if (this.state) {
-        return this.state.steps[this.state.steps.length - 1].task
+    latestStep () {
+      if (Array.isArray(this.state?.steps)) {
+        return this.state.steps[this.state.steps.length - 1]
       }
       return null
     },
+    latestTask () {
+      return this.latestStep?.task
+    },
     percent () {
-      if (this.state) {
-        return this.state.steps[this.state.steps.length - 1].percent
-      }
-      return null
+      return this.latestStep?.percent
     }
   },
   mounted () {
     this.checkIfUpdate()
+  },
+  destroyed () {
+    clearTimeout(this.timeout)
   },
   methods: {
     async checkIfUpdate () {
@@ -55,7 +59,7 @@ export default {
       } else {
         this.inUpdate = false
       }
-      await new Promise(resolve => setTimeout(resolve, 10000))
+      this.timeout = await new Promise(resolve => setTimeout(resolve, 10000))
       await this.checkIfUpdate()
     },
     async getState () {
