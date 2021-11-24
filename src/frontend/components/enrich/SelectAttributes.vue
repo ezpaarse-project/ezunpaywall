@@ -43,7 +43,6 @@ export default {
         source: this.label,
         attrs: value
       })
-      console.log(this.$store.state.enrich.simple);
     }
   }
 }
