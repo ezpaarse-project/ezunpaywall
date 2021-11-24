@@ -109,7 +109,6 @@ describe('Test: enrich service csv', () => {
 
       it('Should be the same', async () => {
         const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file1.csv');
-
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
