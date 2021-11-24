@@ -28,116 +28,36 @@ const metrics = {
     const doi = res.body.count;
 
     try {
-      res = await elasticClient.count({
+      res = await elasticClient.search({
         index,
         body: {
-          query: {
-            bool: {
+          aggs: {
+            isOA: {
               filter: {
                 term: { is_oa: true },
               },
             },
-          },
-        },
-      });
-    } catch (err) {
-      logger.error('Cannot request elastic');
-      logger.error(err);
-      return null;
-    }
-
-    const isOA = res.body.count;
-
-    try {
-      res = await elasticClient.count({
-        index,
-        body: {
-          query: {
-            bool: {
+            goldOA: {
               filter: {
                 term: { oa_status: 'gold' },
               },
             },
-          },
-        },
-      });
-    } catch (err) {
-      logger.error('Cannot request elastic');
-      logger.error(err);
-      return null;
-    }
-
-    const goldOA = res.body.count;
-
-    try {
-      res = await elasticClient.count({
-        index,
-        body: {
-          query: {
-            bool: {
+            hybridOA: {
               filter: {
                 term: { oa_status: 'hybrid' },
               },
             },
-          },
-        },
-      });
-    } catch (err) {
-      logger.error('Cannot request elastic');
-      logger.error(err);
-      return null;
-    }
-
-    const hybridOA = res.body.count;
-
-    try {
-      res = await elasticClient.count({
-        index,
-        body: {
-          query: {
-            bool: {
+            bronzeOA: {
               filter: {
                 term: { oa_status: 'bronze' },
               },
             },
-          },
-        },
-      });
-    } catch (err) {
-      logger.error('Cannot request elastic');
-      logger.error(err);
-      return null;
-    }
-
-    const bronzeOA = res.body.count;
-
-    try {
-      res = await elasticClient.count({
-        index,
-        body: {
-          query: {
-            bool: {
+            greenOA: {
               filter: {
                 term: { oa_status: 'green' },
               },
             },
-          },
-        },
-      });
-    } catch (err) {
-      logger.error('Cannot request elastic');
-      logger.error(err);
-      return null;
-    }
-
-    const greenOA = res.body.count;
-
-    try {
-      res = await elasticClient.count({
-        index,
-        body: {
-          query: {
-            bool: {
+            closedOA: {
               filter: {
                 term: { oa_status: 'closed' },
               },
@@ -151,7 +71,14 @@ const metrics = {
       return null;
     }
 
-    const closedOA = res.body.count;
+    const { aggregations } = res.body;
+    const isOA = aggregations.isOA.doc_count;
+    const goldOA = aggregations.goldOA.doc_count;
+    const hybridOA = aggregations.hybridOA.doc_count;
+    const bronzeOA = aggregations.bronzeOA.doc_count;
+    const greenOA = aggregations.greenOA.doc_count;
+    const closedOA = aggregations.closedOA.doc_count;
+
     return {
       doi,
       isOA,
