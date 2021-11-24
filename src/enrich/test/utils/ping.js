@@ -6,7 +6,7 @@ const { client } = require('./elastic');
 chai.use(chaiHttp);
 
 const enrichURL = process.env.ENRICH_URL || 'http://localhost:3000';
-const authURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 /**
  * ping all services to see if they are available
@@ -46,7 +46,7 @@ const ping = async () => {
   let res4;
   do {
     try {
-      res4 = await chai.request(authURL).get('/');
+      res4 = await chai.request(apikeyURL).get('/');
     } catch (err) {
       console.error(`auth ping : ${err}`);
     }
@@ -61,7 +61,7 @@ const ping = async () => {
   let res5;
   do {
     try {
-      res5 = await chai.request(authURL).get('/');
+      res5 = await chai.request(apikeyURL).get('/');
     } catch (err) {
       console.error(`redis ping : ${err}`);
     }

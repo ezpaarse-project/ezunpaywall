@@ -32,7 +32,7 @@ const sendMailContact = async (email, subject, text) => {
     logger.error(err);
     return;
   }
-  logger.info('send update end email');
+  logger.info('send contact mail');
 };
 
 module.exports = {

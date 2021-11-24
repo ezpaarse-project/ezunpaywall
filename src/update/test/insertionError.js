@@ -67,7 +67,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal('Update with fake1-error.jsonl.gz');
@@ -158,7 +158,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date1} and ${dateNow}`);

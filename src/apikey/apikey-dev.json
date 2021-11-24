@@ -8,12 +8,12 @@
   "userRestricted": {
     "name": "userRestricted",
     "access": ["graphql", "enrich"],
-    "attributes": "doi, is_oa",
+    "attributes": "doi, is_oa, best_oa_location.license",
     "allowed": true
   },
   "admin": {
     "name": "admin",
-    "access": ["graphql", "enrich", "update", "auth"],
+    "access": ["graphql", "enrich", "update"],
     "attributes": "*",
     "allowed": true
   },

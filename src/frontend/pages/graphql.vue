@@ -84,7 +84,7 @@ export default {
         first_oa_location,
         oa_locations,
         z_authors
-      } = this.$store.state.enrichArgs
+      } = this.$store.state.enrich
 
       if (
         !simple.length &&

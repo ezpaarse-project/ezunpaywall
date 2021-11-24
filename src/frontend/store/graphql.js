@@ -20,17 +20,17 @@ export default {
   },
   mutations: {
     add (state, value) {
-      if (Array.isArray(state) && value) {
+      if (Array.isArray(value?.attrs)) {
         state[value?.source].push(value?.attrs)
       }
     },
     update (state, value) {
-      if (Array.isArray(state) && value) {
+      if (Array.isArray(value?.attrs)) {
         state[value?.source] = value?.attrs
       }
     },
     del (state, value) {
-      if (Array.isArray(state) && value) {
+      if (Array.isArray(value?.attrs)) {
         state[value?.source] = state[value?.source].filter(e => e === value)
       }
     }

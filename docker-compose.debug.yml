@@ -81,13 +81,14 @@ services:
       - redis
     restart: unless-stopped
 
-  auth:
+  apikey:
     image: node:14.15.5-alpine3.13
-    working_dir: /auth
     environment:
+      # proxy
       - REDIS_PASSWORD=changeme
+    working_dir: /apikey
     volumes:
-      - ./src/auth:/auth
+      - ./src/apikey:/apikey
     command: "npm run dev"
     ports:
       - 7000:7000
@@ -114,10 +115,12 @@ services:
     restart: unless-stopped
 
   redis:
-    image: "redis:6.2.5-alpine3.14"
-    command: redis-server --requirepass changeme
+    image: redis:6.2.5-alpine3.14
+    command: redis-server --save 60 1 --requirepass changeme
+    volumes:
+      - ./data/redis:/data
     ports:
-     - "6379:6379"
+      - 6379:6379
     restart: unless-stopped
 
   frontend:
@@ -162,7 +165,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - "./data:/usr/share/elasticsearch/data"
+      - "./data/elastic:/usr/share/elasticsearch/data"
     ports:
       - 9200:9200
     restart: unless-stopped
@@ -193,7 +196,7 @@ services:
       - enrich
       - update
       - graphql
-      - auth
+      - apikey
 
   maildev:
     image: djfarrelly/maildev

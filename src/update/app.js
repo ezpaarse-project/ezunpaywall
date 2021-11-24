@@ -20,7 +20,6 @@ const routerUnpaywall = require('./routers/unpaywall');
 
 const outDir = path.resolve(__dirname, 'out');
 fs.ensureDir(path.resolve(outDir));
-fs.ensureDir(path.resolve(outDir, 'logs'));
 fs.ensureDir(path.resolve(outDir, 'reports'));
 fs.ensureDir(path.resolve(outDir, 'states'));
 fs.ensureDir(path.resolve(outDir, 'snapshots'));
@@ -69,6 +68,5 @@ app.listen(4000, async () => {
   logger.info('ezunpaywall update service listening on 4000');
   pingElastic();
   pingRedis();
-
   await initAlias('unpaywall', unpaywallMapping, 'upw');
 });

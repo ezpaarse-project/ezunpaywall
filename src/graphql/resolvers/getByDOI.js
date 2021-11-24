@@ -163,6 +163,8 @@ const getByDOI = {
 
     const dois = [];
 
+    req.countDOI = args?.dois?.length;
+
     // normalize request
     args.dois.forEach((doi) => {
       dois.push(doi.toLowerCase());
@@ -216,7 +218,7 @@ const getByDOI = {
         size: dois.length || 1000,
         body: {
           query,
-          _source: attributes,
+          _source: attributes.split(','),
         },
 
       });
@@ -225,6 +227,7 @@ const getByDOI = {
       logger.error(err);
       return null;
     }
+
     // eslint-disable-next-line no-underscore-dangle
     return res.body.hits.hits.map((hit) => hit._source);
   },

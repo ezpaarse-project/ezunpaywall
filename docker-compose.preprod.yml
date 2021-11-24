@@ -12,8 +12,8 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
@@ -21,7 +21,7 @@ services:
       # redis
       - REDIS_PASSWORD
     volumes:
-      - ./src/graphql/out:/usr/src/graphql/out
+      - $HOME/var/log/ezunpaywall/graphql:/usr/src/graphql/log
     command: "npm start"
     ports:
       - 3000:3000
@@ -52,8 +52,8 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
@@ -61,6 +61,7 @@ services:
       # redis
       - REDIS_PASSWORD
     volumes:
+      - ~/var/log/ezunpaywall/update:/usr/src/update/log
       - ./src/update/out:/usr/src/update/out
     command: "npm start"
     ports:
@@ -82,13 +83,14 @@ services:
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       # redis
       - REDIS_PASSWORD
       # URL services
       - GRAPHQL_URL
     volumes:
+      - ~/var/log/ezunpaywall/enrich:/usr/src/enrich/log
       - ./src/enrich/out:/usr/src/enrich/out
     command: "npm start"
     ports:
@@ -99,16 +101,16 @@ services:
     networks:
       - elastic
 
-  auth:
+  apikey:
     build:
-      context: ./src/auth
+      context: ./src/apikey
       args:
         - http_proxy
         - https_proxy
     environment:
       - REDIS_PASSWORD
     volumes:
-      - ./src/auth:/auth
+      - ./src/apikey:/apikey
     command: "npm start"
     ports:
       - 7000:7000
@@ -140,10 +142,12 @@ services:
     restart: unless-stopped
 
   redis:
-    image: "redis:6.2.5-alpine3.14"
+    image: redis:6.2.5-alpine3.14
     command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - ./data/redis:/data
     ports:
-      - "6379:6379"
+      - 6379:6379
     restart: unless-stopped
     networks:
       - elastic
@@ -169,7 +173,7 @@ services:
       - enrich
       - update
       - graphql
-      - auth
+      - apikey
     networks:
       - elastic
   

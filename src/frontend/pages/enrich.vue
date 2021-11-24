@@ -238,7 +238,7 @@ export default {
         first_oa_location,
         oa_locations,
         z_authors
-      } = this.$store.state.enrichArgs
+      } = this.$store.state.enrich
 
       if (
         !simple.length &&
@@ -363,7 +363,7 @@ export default {
     },
 
     resetArgs () {
-      this.$store.dispatch('enrichArgs/resetAll')
+      this.$store.dispatch('enrich/resetAll')
     },
 
     getFiles (files) {

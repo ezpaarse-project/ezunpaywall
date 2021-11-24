@@ -75,7 +75,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date2} and ${dateNow}`);
@@ -218,7 +218,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date3} and ${date2}`);
@@ -363,7 +363,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date5} and ${date4}`);
@@ -418,7 +418,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate is missing');
@@ -441,7 +441,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
@@ -458,7 +458,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
@@ -475,7 +475,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
@@ -495,7 +495,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('endDate cannot be lower than startDate');
@@ -514,14 +514,14 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate cannot be in the futur');
     });
   });
 
-  describe(`Week: Do a download and insert between ${date2} and now because wrong X-API-KEY`, () => {
+  describe(`Week: Do a download and insert between ${date2} and now because wrong x-api-key`, () => {
     it('Should return a error message', async () => {
       const res = await chai.request(updateURL)
         .post('/job')

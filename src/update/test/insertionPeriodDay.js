@@ -74,7 +74,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date1} and ${dateNow}`);
@@ -219,7 +219,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date2} and ${date1}`);
@@ -364,7 +364,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
       expect(res.body.message).be.equal(`Download and insert snapshot from unpaywall from ${date4} and ${date3}`);
@@ -418,7 +418,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate is missing');
@@ -438,7 +438,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
@@ -455,7 +455,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
@@ -472,7 +472,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
@@ -492,7 +492,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('endDate cannot be lower than startDate');
@@ -511,7 +511,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('X-API-KEY', 'admin');
+        .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
       expect(res.body.message).be.equal('startDate cannot be in the futur');

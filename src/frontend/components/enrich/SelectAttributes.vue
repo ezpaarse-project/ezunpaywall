@@ -13,8 +13,8 @@
       >
         <template slot="item" slot-scope="{ item }">
           <v-list-item-content>
-            <v-list-item-title v-html="item.name" />
-            <v-list-item-subtitle v-html="item.info" />
+            <v-list-item-title v-text="item.name" />
+            <v-list-item-subtitle v-text="item.info" />
           </v-list-item-content>
         </template>
       </v-autocomplete>
@@ -25,18 +25,25 @@
 <script>
 export default {
   props: {
-    label: String,
-    items: Array
+    label: {
+      type: String,
+      default: () => ('')
+    },
+    items: {
+      type: Array,
+      default: () => ([])
+    }
   },
   data: () => {
     return {}
   },
   methods: {
     updateModel (value) {
-      this.$store.dispatch('enrichArgs/update', {
+      this.$store.dispatch('enrich/update', {
         source: this.label,
         attrs: value
       })
+      console.log(this.$store.state.enrich.simple);
     }
   }
 }
