@@ -50,7 +50,15 @@ export default {
   data: () => {
     return {
       loaded: false,
-      metrics: '',
+      metrics: {
+        doi: 0,
+        isOA: 0,
+        goldOA: 0,
+        hybridOA: 0,
+        bronzeOA: 0,
+        greenOA: 0,
+        closedOA: 0
+      },
       metricsChips: [
         {
           name: 'goldOA',
@@ -94,7 +102,9 @@ export default {
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
       }
-      this.metrics = res?.data?.data?.Metrics
+      if (res?.data?.data?.Metrics) {
+        this.metrics = res?.data?.data?.Metrics
+      }
       this.loaded = false
     }
   }
