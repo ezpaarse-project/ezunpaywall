@@ -1,17 +1,16 @@
-import Vue from 'vue'
-
 export default {
+  namespaced: true,
   state: () => ({
-    drawer: null
+    status: true
   }),
   actions: {
-    SET_DRAWER ({ commit }, value) {
-      commit('SET_DRAWER', value)
+    setDrawer ({ commit }, value) {
+      commit('setDrawer', value)
     }
   },
   mutations: {
-    SET_DRAWER (state, value) {
-      Vue.set(state, 'drawer', value)
+    setDrawer (state, value) {
+      state.status = value
     }
   }
 }

@@ -9,9 +9,9 @@ const {
 const logger = require('../lib/logger');
 
 const {
-  createAuth,
-  updateAuth,
-  deleteAuth,
+  createApiKey,
+  updateApiKey,
+  deleteApiKey,
 } = require('../bin/manage');
 
 const unpaywallAttrs = [
@@ -152,12 +152,10 @@ router.post('/create', checkAuth, async (req, res, next) => {
     if (!Array.isArray(access)) {
       return res.status(400).json({ message: `argument "access" [${access}] is in wrong format` });
     }
-    if (access) {
-      access.forEach((e) => {
-        if (!availableAccess.includes(e)) {
-          return res.status(400).json({ message: `argument "access" [${e}] doesn't exist` });
-        }
-      });
+
+    const unexistingAccess = access.find((e) => !availableAccess.includes(e));
+    if (unexistingAccess) {
+      return res.status(400).json({ message: `argument "access" [${unexistingAccess}] doesn't exist` });
     }
   }
 
@@ -173,34 +171,37 @@ router.post('/create', checkAuth, async (req, res, next) => {
     }
 
     const attrs = attributes.split(',');
-    attrs.forEach((attr) => {
-      if (!unpaywallAttrs.includes(attr)) {
-        return res.status(400).json({ message: `argument "attributes" [${attr}] doesn't exist` });
-      }
-    });
+    const unexistingAttr = attrs.find((attr) => !unpaywallAttrs.includes(attr));
+    if (unexistingAttr) {
+      return res.status(400).json({ message: `argument "attributes" [${unexistingAttr}] doesn't exist` });
+    }
   }
 
-  const keys = await redisClient.keys('*');
+  let keys;
 
-  keys.filter(async (key) => {
+  try {
+    keys = await redisClient.keys('*');
+  } catch (err) {
+    return next(err);
+  }
+
+  for (let i = 0; i < keys.length; i += 1) {
     let config;
-
     try {
-      config = await redisClient.get(key);
+      config = await redisClient.get(keys[i]);
       config = JSON.parse(config);
     } catch (err) {
       return next(err);
     }
-
     if (config.name === name) {
       return res.status(403).json({ message: `Name [${name}] already exist` });
     }
-  });
+  }
 
   let apikey;
 
   try {
-    apikey = await createAuth(name, access, attributes, allowed);
+    apikey = await createApiKey(name, access, attributes, allowed);
   } catch (err) {
     return next(err);
   }
@@ -222,42 +223,43 @@ router.post('/create', checkAuth, async (req, res, next) => {
 router.put('/update', checkAuth, async (req, res, next) => {
   const { config, apikey } = req.body;
 
+  const {
+    attributes, access, allowed,
+  } = config;
+
   if (!apikey) {
     return res.status(400).json({ message: 'apikey expected' });
   }
 
   const availableAccess = ['update', 'enrich', 'graphql', 'auth'];
 
-  if (config.access) {
-    if (!Array.isArray(config.access)) {
-      return res.status(400).json({ message: `argument "access" [${config.access}] is in wrong format` });
+  if (access) {
+    if (!Array.isArray(access)) {
+      return res.status(400).json({ message: `argument "access" [${access}] is in wrong format` });
     }
-    if (config?.access) {
-      config.access.forEach((e) => {
-        if (!availableAccess.includes(e)) {
-          return res.status(400).json({ message: `argument "access" [${e}] doesn't exist` });
-        }
-      });
+
+    const unexistingAccess = access.find((e) => !availableAccess.includes(e));
+    if (unexistingAccess) {
+      return res.status(400).json({ message: `argument "access" [${unexistingAccess}] doesn't exist` });
     }
   }
 
-  if (config.allowed) {
-    if (typeof config.allowed !== 'boolean') {
-      return res.status(400).json({ message: `argument "allowed" [${config.allowed}] is in wrong format` });
+  if (allowed) {
+    if (typeof allowed !== 'boolean') {
+      return res.status(400).json({ message: `argument "allowed" [${allowed}] is in wrong format` });
     }
   }
 
-  if (config.attributes) {
-    if (typeof config.attributes !== 'string') {
-      return res.status(400).json({ message: `argument "attributes" [${config.attributes}] is in wrong format` });
+  if (attributes) {
+    if (typeof attributes !== 'string') {
+      return res.status(400).json({ message: `argument "attributes" [${attributes}] is in wrong format` });
     }
 
-    const attrs = config.attributes.split(',');
-    attrs.forEach((attr) => {
-      if (!unpaywallAttrs.includes(attr)) {
-        return res.status(400).json({ message: `argument "attributes" [${attr}] doesn't exist` });
-      }
-    });
+    const attrs = attributes.split(',');
+    const unexistingAttr = attrs.find((attr) => !unpaywallAttrs.includes(attr));
+    if (unexistingAttr) {
+      return res.status(400).json({ message: `argument "attributes" [${unexistingAttr}] doesn't exist` });
+    }
   }
 
   let key;
@@ -274,7 +276,7 @@ router.put('/update', checkAuth, async (req, res, next) => {
   }
 
   try {
-    await updateAuth(apikey, config.name, config.access, config.attributes, config.allowed);
+    await updateApiKey(apikey, config.name, config.access, config.attributes, config.allowed);
   } catch (err) {
     return next(err);
   }
@@ -314,7 +316,7 @@ router.delete('/delete', checkAuth, async (req, res, next) => {
   }
 
   try {
-    await deleteAuth(apikey);
+    await deleteApiKey(apikey);
   } catch (err) {
     return next(err);
   }
@@ -349,16 +351,22 @@ router.post('/load', checkAuth, async (req, res, next) => {
     return res.status(204).json();
   }
 
-  await Promise.all(
-    Object.entries(keys).map(async ([keyId, keyValue]) => {
-      try {
-        await redisClient.set(keyId, `${JSON.stringify(keyValue)}`);
-      } catch (err) {
-        logger.error(`Cannot load ${keyId} with ${JSON.stringify(keyValue)} on redis`);
-        logger.error(err);
-      }
-    }),
-  );
+  try {
+    await Promise.all(
+      Object.entries(keys).map(async ([keyId, keyValue]) => {
+        try {
+          await redisClient.set(keyId, `${JSON.stringify(keyValue)}`);
+        } catch (err) {
+          logger.error(`Cannot load ${keyId} with ${JSON.stringify(keyValue)} on redis`);
+          logger.error(err);
+        }
+      }),
+    );
+  } catch (err) {
+    next(err);
+  }
+
+  return res.status(204).json();
 });
 
 /**

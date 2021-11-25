@@ -1,100 +1,111 @@
 <template>
-  <div>
-    <p>
-      Le serveur ezunpaywall est une API en graphql qui intérroge une base de
-      données ouverte de plus de 26 000 000 d'articles scientifiques disponible
-      en open-acess. Ce projet découle d'un besoin pour le projet ezPAARSE, il
-      permet entre autre de faire des requêtes par lot de DOI. Cette base de
-      données est mise à jour hedbomadairement le mercredi grâce aux fichiers de
-      mise à jour fournit par unpaywall.
-    </p>
-    <v-card v-if="inUpdate">
-      <v-card-title class="justify-center">
-        Status
-      </v-card-title>
-      <v-card-text>
-        <InUpdate />
-      </v-card-text>
-      <v-card-actions @click="show = !show">
-        <v-btn color="orange lighten-2" text>
-          Details
-        </v-btn>
-        <v-spacer />
-        <v-btn icon>
-          <v-icon>{{ show ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
-        </v-btn>
-      </v-card-actions>
-      <v-expand-transition>
-        <div v-show="show">
-          <Status :status="state" />
-        </div>
-      </v-expand-transition>
+  <section>
+    <v-card class="my-3">
+      <v-toolbar color="secondary" dark flat dense>
+        <v-toolbar-title v-text="$t('home.title')" />
+      </v-toolbar>
+      <v-container>
+        {{ $t("home.intro") }}
+      </v-container>
     </v-card>
-    <v-card v-else>
-      <v-card-title class="justify-center">
-        Status
-      </v-card-title>
-      <v-card-text>
-        <NoInUpdate />
-      </v-card-text>
+
+    <v-card class="my-3">
+      <v-toolbar color="secondary" dark flat dense>
+        <v-toolbar-title v-text="$t('home.metrics')" />
+      </v-toolbar>
+      <v-container>
+        <v-card-title v-text="$t('home.globalMetrics')" />
+        <v-card-text>
+          <v-chip color="grey darken-2" text-color="white">
+            {{ $t('home.referencedResources') }} : {{ metrics.doi }}
+          </v-chip>
+          <v-chip color="grey darken-2" text-color="white">
+            {{ $t('home.openAccess') }} : {{ metrics.isOA }}
+          </v-chip>
+        </v-card-text>
+      </v-container>
+
+      <v-divider />
+      <v-container>
+        <v-card-title v-text="$t('home.openAccessStatus')" />
+        <v-card-text>
+          <v-chip-group active-class="deep-purple accent-4 white--text" column>
+            <v-chip v-for="chip in metricsChips" :key="chip.name" :color="chip.color" text-color="white">
+              <v-icon left color="white">
+                mdi-lock-open
+              </v-icon>
+              {{ chip.name }} : {{ metrics[chip.name] }}
+            </v-chip>
+          </v-chip-group>
+        </v-card-text>
+      </v-container>
     </v-card>
-  </div>
+  </section>
 </template>
 
 <script>
-import InUpdate from '~/components/home/InUpdate.vue'
-import NoInUpdate from '~/components/home/NoInUpdate.vue'
-import Status from '~/components/home/Status.vue'
-
 export default {
-  name: 'Ezpaywall',
-  components: {
-    InUpdate,
-    NoInUpdate,
-    Status
-  },
+  name: 'Home',
   transition: 'slide-x-transition',
   data: () => {
     return {
-      show: false,
-      inUpdate: false,
-      state: {}
+      loaded: false,
+      metrics: {
+        doi: 0,
+        isOA: 0,
+        goldOA: 0,
+        hybridOA: 0,
+        bronzeOA: 0,
+        greenOA: 0,
+        closedOA: 0
+      },
+      metricsChips: [
+        {
+          name: 'goldOA',
+          color: '#FFC000'
+        },
+        {
+          name: 'hybridOA',
+          color: '#DD7931'
+        },
+        {
+          name: 'bronzeOA',
+          color: '#DD7931'
+        },
+        {
+          name: 'greenOA',
+          color: '#00F765'
+        },
+        {
+          name: 'closedOA',
+          color: '#BBBBBB'
+        }
+      ]
     }
   },
   mounted () {
-    this.checkIfUpdate()
+    this.graphqlRequest()
   },
   methods: {
-    async checkIfUpdate () {
+    async graphqlRequest () {
+      this.loading = true
       let res
       try {
-        res = await this.$update({
-          method: 'get',
-          url: '/update/status'
+        res = await this.$graphql({
+          method: 'GET',
+          url: '/graphql',
+          params: {
+            query:
+              '{ Metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }'
+          }
         })
       } catch (err) {
-        console.log(err)
+        this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
       }
-      if (res?.data?.inUpdate) {
-        this.inUpdate = true
-        await this.getState()
-      } else {
-        this.inUpdate = false
+      if (res?.data?.data?.Metrics) {
+        this.metrics = res?.data?.data?.Metrics
       }
-      await new Promise(resolve => setTimeout(resolve, 10000))
-      await this.checkIfUpdate()
-    },
-    async getState () {
-      let res
-      try {
-        res = await this.$axios({
-          method: 'get',
-          url: '/update/state'
-        })
-      } catch (err) {
-        console.log(err)
-      }
-      this.state = res?.data?.state
+      this.loaded = false
     }
   }
 }

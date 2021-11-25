@@ -13,7 +13,7 @@ const checkAuth = async (req, res, next) => {
   const apikey = req.get('x-api-key');
 
   if (!apikey) {
-    return res.status(401).json({ message: 'Not authorized' });
+    return next();
   }
 
   let key;
@@ -22,7 +22,7 @@ const checkAuth = async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
-    return res.status(500).json({ message: 'Internal server error' });
+    return next();
   }
 
   let config;
@@ -31,11 +31,11 @@ const checkAuth = async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot parse ${key}`);
     logger.error(err);
-    return res.status(500).json({ message: 'Internal server error' });
+    return next();
   }
 
   if (!Array.isArray(config?.access) || !config?.access?.includes('graphql') || !config?.allowed) {
-    return res.status(401).json({ message: 'Not authorized' });
+    return next();
   }
 
   req.user = config.name;
@@ -44,6 +44,4 @@ const checkAuth = async (req, res, next) => {
   return next();
 };
 
-module.exports = {
-  checkAuth,
-};
+module.exports = checkAuth;

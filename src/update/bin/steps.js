@@ -11,6 +11,7 @@ const config = require('config');
 
 const {
   elasticClient,
+  createIndex,
 } = require('../lib/elastic');
 
 const logger = require('../lib/logger');
@@ -30,31 +31,6 @@ const {
   addStepInsert,
   fail,
 } = require('./state');
-
-/**
- * check if index exit
- * @param {String} index Name of index
- * @returns {boolean} if exist
- */
-const checkIfIndexExist = async (index) => {
-  const { body } = await elasticClient.indices.exists({ index });
-  return body;
-};
-
-/**
- * create index if it doesn't exist
- * @param {String} index Name of index
- * @param {JSON} mapping mapping in JSON format
- */
-const createIndex = async (index, mapping) => {
-  const exist = await checkIfIndexExist(index);
-  if (!exist) {
-    await elasticClient.indices.create({
-      index,
-      body: mapping,
-    });
-  }
-};
 
 /**
  * insert data on elastic with request

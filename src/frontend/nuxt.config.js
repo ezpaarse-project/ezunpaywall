@@ -1,10 +1,11 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  env: {
-    GRAPHQL_URL: process.env.GRAPHQL_URL || 'http://localhost:3000',
-    UPDATE_URL: process.env.UPDATE_URL || 'http://localhost:4000',
-    ENRICH_URL: process.env.ENRICH_URL || 'http://localhost:5000'
+  publicRuntimeConfig: {
+    grapqlURL: process.env.GRAPHQL_URL || 'http://localhost:3000',
+    updateURL: process.env.UPDATE_URL || 'http://localhost:4000',
+    enrichURL: process.env.ENRICH_URL || 'http://localhost:5000',
+    mailURL: process.env.MAIL_URL || 'http://localhost:8000'
   },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -32,7 +33,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/axios.js' }
+    { src: '~/plugins/axios.js' },
+    { src: '~/plugins/dateFns.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -57,13 +59,17 @@ export default {
     theme: {
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: '#4caf50',
           accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
+          secondary: colors.grey.darken4,
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
+        },
+        light: {
+          primary: '#4caf50',
+          secondary: colors.grey.darken3
         }
       }
     }

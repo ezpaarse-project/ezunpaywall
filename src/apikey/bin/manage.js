@@ -3,7 +3,7 @@ const redis = require('redis');
 const { redisClient } = require('../lib/redis');
 const logger = require('../lib/logger');
 
-const createAuth = async (name, access, attributes, allowed) => {
+const createApiKey = async (name, access, attributes, allowed) => {
   const currentDate = Date.now();
   const random = Math.random().toString();
   const hash = crypto.createHash('sha256').update(`${currentDate}${random}`).digest('hex');
@@ -29,7 +29,7 @@ const createAuth = async (name, access, attributes, allowed) => {
   return id;
 };
 
-const updateAuth = async (id, name, access, attributes, allowed) => {
+const updateApiKey = async (id, name, access, attributes, allowed) => {
   let config = await redisClient.get(id);
   config = JSON.parse(config);
 
@@ -46,12 +46,12 @@ const updateAuth = async (id, name, access, attributes, allowed) => {
   }
 };
 
-const deleteAuth = async (id) => {
+const deleteApiKey = async (id) => {
   await redisClient.del(id, redis.print);
 };
 
 module.exports = {
-  createAuth,
-  updateAuth,
-  deleteAuth,
+  createApiKey,
+  updateApiKey,
+  deleteApiKey,
 };

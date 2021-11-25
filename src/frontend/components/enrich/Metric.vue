@@ -15,7 +15,7 @@
 
       <v-list-item-content class="text-right">
         <v-list-item-title class="headline mb-1" v-text="value" />
-        <v-list-item-subtitle v-text="$t(`ui.components.enrich.Metric.${label}`)" />
+        <v-list-item-subtitle v-text="$t(`enrich.${label}`)" />
       </v-list-item-content>
     </v-list-item>
   </v-card>

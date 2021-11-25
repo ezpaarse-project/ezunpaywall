@@ -12,7 +12,7 @@ chai.use(chaiHttp);
 
 const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
-describe('Test: auth service', () => {
+describe('Test: apikey service', () => {
   before(async () => {
     await ping();
   });

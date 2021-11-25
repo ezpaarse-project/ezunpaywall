@@ -34,9 +34,9 @@ services:
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE=dev
       # unpaywall
-      - API_KEY_UPW
+      - API_KEY_UPW=default
       - UNPAYWALL_URL=http://fakeunpaywall:12000/feed/changefiles
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
@@ -85,8 +85,7 @@ services:
     image: node:14.15.5-alpine3.13
     environment:
       # proxy
-      - http_proxy
-      - https_proxy
+      - REDIS_PASSWORD=changeme
     working_dir: /apikey
     volumes:
       - ./src/apikey:/apikey
@@ -95,6 +94,24 @@ services:
       - 7000:7000
     depends_on:
       - redis
+    restart: unless-stopped
+
+  mail:
+    image: node:14.15.5-alpine3.13
+    environment:
+      # mail
+      - NODE_CONFIG
+      - EZUNPAYWALL_SMTP_HOST=maildev
+      - EZUNPAYWALL_SMTP_PORT=25
+      - EZUNPAYWALL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE=dev
+    working_dir: /mail
+    volumes:
+      - ./src/mail:/mail
+    command: "npm run dev"
+    ports:
+      - 8000:8000
     restart: unless-stopped
 
   redis:
@@ -115,9 +132,9 @@ services:
     ports:
       - "8080:3000"
     environment:
-      - GRAPHQL_URL=http://ezunpaywall.dev/api
-      - UPDATE_URL=http://ezunpaywall.dev/api/update
-      - ENRICH_URL=http://ezunpaywall.dev/api/enrich
+      - GRAPHQL_URL=http://localhost:3000
+      - UPDATE_URL=http://localhost:4000
+      - ENRICH_URL=http://localhost:5000
       - HOST=0.0.0.0
       - PORT=8080
 

@@ -2,26 +2,30 @@ import axios from 'axios'
 
 export default (ctx, inject) => {
   const graphql = axios.create({
-    baseURL: ctx.env.GRAPHQL_URL,
+    baseURL: ctx.$config.grapqlURL,
     timeout: 3000
   })
 
-  const update = axios.create({
-    baseURL: ctx.env.UPDATE_URL,
-    timeout: 3000
-  })
-
-  const enrich = axios.create({
-    baseURL: ctx.env.ENRICH_URL,
-    timeout: 3000
-  })
-
-  ctx.$graphql = graphql
   inject('graphql', graphql)
 
-  ctx.$update = update
+  const update = axios.create({
+    baseURL: ctx.$config.updateURL,
+    timeout: 3000
+  })
+
   inject('update', update)
 
-  ctx.$enrich = enrich
+  const enrich = axios.create({
+    baseURL: ctx.$config.enrichURL,
+    timeout: 3000
+  })
+
   inject('enrich', enrich)
+
+  const mail = axios.create({
+    baseURL: ctx.$config.mailURL,
+    timeout: 3000
+  })
+
+  inject('mail', mail)
 }

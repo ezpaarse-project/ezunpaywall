@@ -111,9 +111,8 @@ npm i
 Before you start ezunpaywall, make sure all necessary environment variables are set.
 
 ```bash
-# Build ezunpaywall 
+# Execute this one time
 docker-compose -f docker-compose.debug.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/ 
-docker-compose -f docker-compose.debug.yml build
 
 # Start ezunpaywall as daemon
 docker-compose -f docker-compose.debug.yml up -d

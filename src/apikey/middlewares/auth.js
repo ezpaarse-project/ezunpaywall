@@ -7,7 +7,7 @@ const config = require('config');
  * @param {function} next - do the following
  * @returns {Object|function} res or next
  */
-const checkAuth = async (req, res, next) => {
+const checkAuth = (req, res, next) => {
   // TODO check in query
   const apikey = req.get('redis-password');
 

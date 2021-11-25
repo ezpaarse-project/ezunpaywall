@@ -17,7 +17,7 @@
       <v-flex
         class="headline grey--text text-center"
       >
-        {{ $t('ui.components.enrich.LogFiles.clickToAdd') }}
+        {{ $t('fileSelector.clickToAdd') }}
         <v-flex />
       </v-flex>
     </v-layout>
@@ -49,14 +49,14 @@
             <v-icon left>
               mdi-delete-forever
             </v-icon>
-            <span> {{ $t('ui.components.enrich.LogFiles.removeList') }} </span>
+            <span> {{ $t('fileSelector.removeList') }} </span>
           </v-btn>
 
           <v-spacer />
 
           <span>
-            {{ files.length }} {{ $t('ui.components.enrich.LogFiles.selectedFiles') }}
-            ({{ totalFileSize }}) {{ $t('ui.components.enrich.LogFiles.total') }}
+            {{ files.length }} {{ $t('fileSelector.selectedFiles') }}
+            ({{ totalFileSize }}) {{ $t('fileSelector.total') }}
           </span>
         </v-toolbar>
       </template>
@@ -90,13 +90,13 @@ export default {
           width: 10
         },
         {
-          text: this.$t('ui.components.enrich.LogFiles.filename'),
+          text: this.$t('fileSelector.filename'),
           align: 'left',
           sortable: false,
           value: 'name'
         },
         {
-          text: this.$t('ui.components.enrich.LogFiles.size'),
+          text: this.$t('fileSelector.size'),
           align: 'right',
           sortable: false,
           value: 'size'
@@ -111,6 +111,11 @@ export default {
   methods: {
     handleFilesUpload () {
       Array.from(this.$refs.filesLoaded.files).forEach((file) => {
+        const ext = file.name.split('.').pop()
+        if (!['csv', 'jsonl'].includes(ext)) {
+          this.$store.dispatch('snacks/error', this.$t('enrich.errorUploadFile'))
+          return
+        }
         this.files.push({ id: this.fileId, file })
         this.fileId += 1
       })

@@ -4,6 +4,8 @@
   >
     <AppDrawer />
     <AppHeader />
+    <Snackbar />
+
     <v-main>
       <v-container fluid>
         <nuxt />
@@ -13,13 +15,15 @@
 </template>
 
 <script>
+import Snackbar from '~/components/Snackbar.vue'
 import AppHeader from '~/components/Header.vue'
 import AppDrawer from '~/components/Drawer.vue'
 
 export default {
   components: {
     AppHeader,
-    AppDrawer
+    AppDrawer,
+    Snackbar
   }
 }
 </script>

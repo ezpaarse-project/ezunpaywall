@@ -1,0 +1,11 @@
+{
+  "smtp": {
+    "host": "localhost",
+    "port": 25
+  },
+  "notifications": {
+    "sender": "ezunpaywall",
+    "receivers": ["ezunpaywallTeam@org.fr"],
+    "machine": "dev"
+  }
+}

@@ -72,8 +72,8 @@ describe('Test: auth service in graphql service', () => {
         .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa } }` })
         .set('index', 'unpaywall-test');
 
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
+      expect(res).have.status(200);
+      expect(res?.body.errors[0].message).eq('Not authorized');
     });
   });
 
@@ -85,8 +85,8 @@ describe('Test: auth service in graphql service', () => {
         .set('x-api-key', 'wrong apikey')
         .set('index', 'unpaywall-test');
 
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
+      expect(res).have.status(200);
+      expect(res?.body.errors[0].message).eq('Not authorized');
     });
   });
 
@@ -98,8 +98,8 @@ describe('Test: auth service in graphql service', () => {
         .set('x-api-key', 'enrich')
         .set('index', 'unpaywall-test');
 
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
+      expect(res).have.status(200);
+      expect(res?.body.errors[0].message).eq('Not authorized');
     });
   });
 
@@ -111,8 +111,8 @@ describe('Test: auth service in graphql service', () => {
         .set('x-api-key', 'update')
         .set('index', 'unpaywall-test');
 
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
+      expect(res).have.status(200);
+      expect(res?.body.errors[0].message).eq('Not authorized');
     });
   });
 
@@ -124,8 +124,8 @@ describe('Test: auth service in graphql service', () => {
         .set('x-api-key', 'notAllowed')
         .set('index', 'unpaywall-test');
 
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
+      expect(res).have.status(200);
+      expect(res?.body.errors[0].message).eq('Not authorized');
     });
   });
 

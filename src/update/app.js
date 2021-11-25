@@ -3,11 +3,13 @@ const fs = require('fs-extra');
 const path = require('path');
 const cors = require('cors');
 
+const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
-const { elasticClient, pingElastic } = require('./lib/elastic');
+
+const { elasticClient, pingElastic, initAlias } = require('./lib/elastic');
 const { pingRedis } = require('./lib/redis');
 const { name, version } = require('./package.json');
-const morgan = require('./lib/morgan');
+const unpaywallMapping = require('./mapping/unpaywall.json');
 
 const routerJob = require('./routers/job');
 const routerReport = require('./routers/report');
@@ -62,8 +64,9 @@ app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method
 
 app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
-app.listen(4000, () => {
+app.listen(4000, async () => {
   logger.info('ezunpaywall update service listening on 4000');
   pingElastic();
   pingRedis();
+  await initAlias('unpaywall', unpaywallMapping, 'upw');
 });

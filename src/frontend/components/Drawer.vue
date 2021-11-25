@@ -14,7 +14,37 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title> {{ $t("ui.drawer.home") }} </v-list-item-title>
+          <v-list-item-title v-text="$t('drawer.home')" />
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link router :to="{ path: '/graphql' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-api</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="$t('drawer.graphql')" />
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link router :to="{ path: '/enrich' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-code-json</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="$t('drawer.enrich')" />
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link router :to="{ path: '/contact' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-email</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="$t('drawer.contact')" />
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -22,32 +52,13 @@
     <v-list-group
       no-action
       append-icon="mdi-chevron-down"
-      prepend-icon="mdi-code-json"
-    >
-      <template #activator>
-        <v-list-item-title class="body-2" v-text="$t('ui.drawer.enrich')" />
-      </template>
-
-      <v-list-item link router :to="{ path: '/enrich/csv' }">
-        <v-list-item-title class="body-2">
-          CSV <v-list-item-title />
-        </v-list-item-title>
-      </v-list-item>
-
-      <v-list-item link router :to="{ path: '/enrich/jsonl' }">
-        <v-list-item-title class="body-2">
-          JSONL <v-list-item-title />
-        </v-list-item-title>
-      </v-list-item>
-    </v-list-group>
-
-    <v-list-group
-      no-action
-      append-icon="mdi-chevron-down"
       prepend-icon="mdi-translate"
     >
       <template #activator>
-        <v-list-item-title class="body-2" v-text="$t('ui.drawer.language')" />
+        <v-list-item-title
+          class="body-2"
+          v-text="$t('drawer.language')"
+        />
       </template>
 
       <v-list-item
@@ -81,8 +92,8 @@
               </v-icon>
             </v-btn>
           </template>
-          <span v-if="$vuetify.theme.dark"> {{ $t('ui.theme.light') }}</span>
-          <span v-else>{{ $t('ui.theme.dark') }}</span>
+          <span v-if="$vuetify.theme.dark" v-text="$t('theme.light')" />
+          <span v-else v-text="$t('theme.dark')" />
         </v-tooltip>
 
         <v-spacer />
@@ -115,8 +126,12 @@ export default {
   },
   computed: {
     drawer: {
-      get () { return this.$store.state.drawer },
-      set (newVal) { this.$store.dispatch('SET_DRAWER', newVal) }
+      get () {
+        return this.$store.state.drawer.status
+      },
+      set (newVal) {
+        this.$store.dispatch('drawer/setDrawer', newVal)
+      }
     }
   }
 }
