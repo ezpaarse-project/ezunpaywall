@@ -9,7 +9,7 @@ const snapshotsDir = path.resolve(__dirname, '..', 'snapshots');
 
 router.use('/snapshots', express.static(path.resolve(snapshotsDir)));
 
-router.get('/snapshots/:file', async (req, res) => {
+router.get('/feed/changefiles/:file', async (req, res) => {
   const { file } = req.params;
   if (!file) {
     return res.status(400).json({ message: 'name of snapshot file expected' });
@@ -35,5 +35,7 @@ router.get('/feed/changefiles', checkAuth, async (req, res) => {
   const file = `changefiles-${interval}.json`;
   return res.sendFile(path.resolve(snapshotsDir, file));
 });
+
+router.get('/snapshots', checkAuth, async (req, res) => res.sendFile(path.resolve(snapshotsDir, 'snapshot.jsonl.gz')));
 
 module.exports = router;
