@@ -138,8 +138,24 @@ const getByDOI = {
       throw Error('Internal server error');
     }
 
+    console.log(apiKeyConfig);
+
     if (!Array.isArray(apiKeyConfig?.access) || !apiKeyConfig?.access?.includes('graphql') || !apiKeyConfig?.allowed) {
       throw Error('Not authorized');
+    }
+
+    // Demo apikey
+    if (apikey === 'demo') {
+      if (apiKeyConfig.count < 0 || (apiKeyConfig.count - args?.dois?.length) < 0) {
+        throw Error('Not authorized');
+      }
+      apiKeyConfig.count -= args?.dois?.length;
+      try {
+        await redisClient.set(apikey, `${JSON.stringify(apiKeyConfig)}`);
+      } catch (err) {
+        logger.error(`Cannot update apikey [${apikey}] for [count]`);
+        return Promise.reject(err);
+      }
     }
 
     let index = req?.get('index');

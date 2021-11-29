@@ -66,7 +66,7 @@ export default {
   transition: 'slide-x-transition',
   data: () => {
     return {
-      apikey: 'example',
+      apikey: 'demo',
       doi: '10.1111/jvp.12137',
       loading: false,
       response: ''

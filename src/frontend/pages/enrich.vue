@@ -203,7 +203,7 @@ export default {
       step: 1,
       // config
       files: [],
-      apiKey: '',
+      apiKey: 'demo',
       apiKeyVisible: false,
       apiKeyRules: {
         required: value => !!value || 'Required.'

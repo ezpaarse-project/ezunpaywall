@@ -1,4 +1,11 @@
 {
+  "demo": {
+    "name": "demo",
+    "access": ["graphql", "enrich"],
+    "attributes": "*",
+    "allowed": true,
+    "count": 100000
+  },
   "user": {
     "name": "user",
     "access": ["graphql", "enrich"],
