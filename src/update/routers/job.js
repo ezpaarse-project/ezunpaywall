@@ -1,17 +1,14 @@
 const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
-const config = require('config');
 const { format } = require('date-fns');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
-const url = config.get('unpaywallURL');
-const apikey = config.get('apikeyupw');
-
 const {
   insertion,
   insertSnapshotBetweenDates,
+  insertBigSnapshot,
 } = require('../bin/update');
 
 const {
@@ -52,7 +49,9 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     index, offset, limit, interval,
   } = req.body;
 
-  const { startDate, filename, endDate } = req.body;
+  const {
+    startDate, filename, endDate, snapshot,
+  } = req.body;
 
   if (!interval) {
     interval = 'day';
@@ -93,8 +92,11 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     return res.status(200).json({ message: `Update with ${filename}` });
   }
 
-  jobConfig.url = url;
-  jobConfig.apikey = apikey;
+  if (snapshot) {
+    insertBigSnapshot(jobConfig);
+    return res.status(200).json({ message: 'Big update started' });
+  }
+
   jobConfig.interval = interval;
   jobConfig.startDate = startDate;
   jobConfig.endDate = endDate;

@@ -99,6 +99,8 @@ const addStepDownload = async (filename, downloadFile) => {
  * @param {String} downloadFile - unpaywall data update file name
  */
 const addStepInsert = async (filename, downloadFile) => {
+  console.log(filename);
+  console.log(downloadFile);
   const state = await getState(filename);
   logger.info('step - insert file');
   const step = {

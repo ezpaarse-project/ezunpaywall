@@ -8,7 +8,7 @@ const snapshotsDir = path.resolve(__dirname, '..', 'sources');
 
 // TODO put it in config
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
-const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:12000';
+const fakeUnpaywall = process.env.FAKEUNPAYWALL_HOST || 'http://localhost:12000';
 
 /**
  * delete a snapshot in ezunpaywall
