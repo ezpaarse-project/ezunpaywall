@@ -70,9 +70,7 @@ router.post('/job', checkStatus, checkAuth, async (req, res, next) => {
   jobConfig.index = index;
 
   if (filename) {
-    try {
-      await fs.stat(path.resolve(snapshotsDir, filename));
-    } catch (err) {
+    if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
       return next(boom.notFound('File not found'));
     }
 

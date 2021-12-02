@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
+const boom = require('@hapi/boom');
+const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
   getMostRecentFile,
@@ -17,21 +19,32 @@ const statesDir = path.resolve(__dirname, '..', 'out', 'states');
  * @return state
  */
 router.get('/state', async (req, res, next) => {
-  const { latest } = req.query;
+  const schema = joi.object({
+    latest: joi.boolean().default(false),
+  });
+
+  const { error, value } = schema.validate(req.query);
+
+  if (error) {
+    return next(boom.badRequest(error.details[0].message));
+  }
+
+  const { latest } = value;
+
   if (latest) {
     let latestFile;
     try {
       latestFile = await getMostRecentFile(statesDir);
     } catch (err) {
-      return next(err);
+      return next(err.isBoom());
     }
     let state;
     try {
       state = await getState(latestFile?.filename);
     } catch (err) {
-      return next(err);
+      return next(err.isBoom());
     }
-    return res.status(200).json({ state });
+    return res.status(200).json(state);
   }
   const states = await fs.readdir(statesDir);
   return res.status(200).json(states);
@@ -46,22 +59,29 @@ router.get('/state', async (req, res, next) => {
  * @return state
  */
 router.get('/state/:filename', async (req, res, next) => {
-  const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ message: 'filename expected' });
+  const schema = joi.object({
+    filename: joi.string().required(),
+  });
+
+  const { error, value } = schema.validate(req.query);
+
+  if (error) {
+    return next(boom.badRequest(error.details[0].message));
   }
-  const fileExist = await fs.pathExists(path.resolve(statesDir, filename));
-  if (!fileExist) {
-    return res.status(404).json({ message: 'File not found' });
+
+  const { filename } = value;
+
+  if (await fs.pathExists(path.resolve(statesDir, filename))) {
+    return next(boom.notFound('File not found'));
   }
 
   let state;
   try {
     state = await getState(filename);
   } catch (err) {
-    return next(err);
+    return next(err.isBoom());
   }
-  return res.status(200).json({ state });
+  return res.status(200).json(state);
 });
 
 module.exports = router;

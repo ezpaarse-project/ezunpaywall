@@ -1,22 +1,23 @@
 const router = require('express').Router();
 const axios = require('axios');
 const config = require('config');
-
-const logger = require('../lib/logger');
+const joi = require('joi');
+const boom = require('@hapi/boom');
 
 const unpaywallHost = `${config.get('unpaywall.host')}`;
 
 router.get('/unpaywall/snapshot', async (req, res, next) => {
-  let { interval } = req.query;
+  const schema = joi.object({
+    interval: joi.string().trim().valid('week', 'day').default('day'),
+  });
 
-  if (!interval) {
-    interval = 'day';
+  const { error, value } = schema.validate(req.body);
+
+  if (error) {
+    return next(boom.badRequest(error.details[0].message));
   }
 
-  const intervals = ['week', 'day'];
-  if (!intervals.includes(interval)) {
-    return res.status(400).json({ message: `${interval} is not accepted, only 'week' and 'day' are accepted` });
-  }
+  const { interval } = value;
 
   let snapshotsInfo;
   try {
@@ -33,9 +34,7 @@ router.get('/unpaywall/snapshot', async (req, res, next) => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request ${unpaywallHost}`);
-    logger.error(err);
-    return res.status(403).json({ message: `Cannot request ${unpaywallHost}` });
+    return next(boom.unauthorized());
   }
 
   snapshotsInfo = snapshotsInfo.data.list;

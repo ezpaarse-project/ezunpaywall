@@ -2,7 +2,7 @@ const router = require('express').Router();
 const path = require('path');
 const fs = require('fs-extra');
 const boom = require('@hapi/boom');
-const joi = require('joi');
+const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
   getMostRecentFile,
@@ -21,11 +21,11 @@ const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
  */
 router.get('/report', async (req, res, next) => {
   const schema = joi.object({
-    latest: joi.boolean(),
+    latest: joi.boolean().default(false),
     date: joi.date().format('YYYY-MM-DD'),
   });
 
-  const { error, value } = schema.validate(req.quey);
+  const { error, value } = schema.validate(req.query);
 
   if (error) {
     return next(boom.badRequest(error.details[0].message));
