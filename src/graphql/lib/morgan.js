@@ -25,4 +25,4 @@ morgan.token('countDOI', (req) => {
   return '-';
 });
 
-module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":countDOI"', { stream: accessLogStream });
+module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time ms" ":user-agent" ":countDOI"', { stream: accessLogStream });

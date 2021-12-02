@@ -423,7 +423,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('Only ".gz" files are accepted');
     });
   });
 
@@ -469,7 +468,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('Limit cannot be low than offset or 0');
     });
 
     after(async () => {

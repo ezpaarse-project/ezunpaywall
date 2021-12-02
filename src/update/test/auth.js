@@ -53,12 +53,11 @@ describe('Test: auth service in update service', () => {
         isUpdate = await checkIfInUpdate();
       }
       expect(res).have.status(200);
-      expect(res?.body).have.property('message').eq('Daily update started');
     });
   });
 
   describe('Test without API key', () => {
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 401', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -70,12 +69,11 @@ describe('Test: auth service in update service', () => {
         .set('Content-Type', 'application/json');
 
       expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 
   describe('Test with wrong API key', () => {
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 401', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -89,12 +87,11 @@ describe('Test: auth service in update service', () => {
         .set('x-api-key', 'wrong apikey');
 
       expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 
   describe('Test with enrich API key', () => {
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 401', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -106,12 +103,11 @@ describe('Test: auth service in update service', () => {
         .set('x-api-key', 'enrich');
 
       expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 
   describe('Test with graphql API key', () => {
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 401', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -123,12 +119,11 @@ describe('Test: auth service in update service', () => {
         .set('x-api-key', 'graphql');
 
       expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 
   describe('Test with notAllowed API key', () => {
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 401', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -140,7 +135,6 @@ describe('Test: auth service in update service', () => {
         .set('x-api-key', 'notAllowed');
 
       expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
   after(async () => {

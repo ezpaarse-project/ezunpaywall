@@ -58,7 +58,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     // test return message
-    it('Should return the process start', async () => {
+    it('Should return a statusCode 200', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -70,7 +70,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .set('x-api-key', 'admin');
 
       expect(res).have.status(200);
-      expect(res.body.message).be.equal('Update with fake1-error.jsonl.gz');
     });
 
     // test insertion

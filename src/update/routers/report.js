@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const path = require('path');
 const fs = require('fs-extra');
+const boom = require('@hapi/boom');
+const joi = require('joi');
 
 const {
   getMostRecentFile,
@@ -18,19 +20,29 @@ const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
  * @return report
  */
 router.get('/report', async (req, res, next) => {
-  const { latest } = req.query;
-  const { date } = req.query;
+  const schema = joi.object({
+    latest: joi.boolean(),
+    date: joi.date().format('YYYY-MM-DD'),
+  });
+
+  const { error, value } = schema.validate(req.quey);
+
+  if (error) {
+    return next(boom.badRequest(error.details[0].message));
+  }
+
+  const { latest, date } = value;
 
   if (latest) {
     let latestFile;
     try {
       latestFile = await getMostRecentFile(reportsDir);
     } catch (err) {
-      return next(err);
+      return next(err.isBoom());
     }
 
     if (!latestFile) {
-      return res.status(404).json({ message: 'File not found' });
+      return next(boom.notFound('File not found'));
     }
 
     let report;
@@ -45,12 +57,6 @@ router.get('/report', async (req, res, next) => {
     if (new Date(date).getTime() > Date.now()) {
       return res.status(400).json({ message: 'date cannot be in the futur' });
     }
-    const pattern = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
-
-    if (!pattern.test(date)) {
-      return res.status(400).json({ message: 'date are in wrong format, required YYYY-mm-dd' });
-    }
-
     const files = await fs.readdir(reportsDir);
     const file = files.find((filename) => {
       const datefile = filename.split('.')[0];
@@ -58,7 +64,7 @@ router.get('/report', async (req, res, next) => {
     });
 
     if (!file) {
-      return res.status(404).json({ message: 'File not found' });
+      return next(boom.notFound('File not found'));
     }
 
     let report;
@@ -66,7 +72,7 @@ router.get('/report', async (req, res, next) => {
     try {
       report = await getReport(file);
     } catch (err) {
-      return next(err);
+      return next(err.isBoom());
     }
 
     return res.status(200).json(report);
@@ -84,20 +90,29 @@ router.get('/report', async (req, res, next) => {
  * @return report
  */
 router.get('/report/:filename', async (req, res, next) => {
-  const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ message: 'filename expected' });
+  const schema = joi.object({
+    filename: joi.string().trim().required(),
+  });
+
+  const { error, value } = schema.validate(req.params);
+
+  if (error) {
+    return next(boom.badRequest(error.details[0].message));
   }
-  const fileExist = await fs.pathExists(path.resolve(reportsDir, filename));
-  if (!fileExist) {
-    return res.status(404).json({ message: 'File not found' });
+
+  const { filename } = value;
+
+  try {
+    await fs.stat(path.resolve(reportsDir, filename));
+  } catch (err) {
+    return next(boom.notFound('File not found'));
   }
 
   let report;
   try {
     report = await getReport(filename);
   } catch (err) {
-    return next(err);
+    return next(err.isBoom());
   }
   return res.status(200).json({ report });
 });

@@ -408,7 +408,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   describe(`Day: Don't do a download and insert with endDate=${date1} only`, () => {
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -421,19 +421,18 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate is missing');
     });
   });
 
   describe('Day: Don\'t do a download and insert with startDate in the wrong format', () => {
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .query({ index: 'unpaywall-test', startDate: 'doen\'t exist' })
         .send({
           index: 'unpaywall-test',
-          startDate: 'doen\'t exist',
+          startDate: 'doesn\'t exist',
           interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
@@ -441,11 +440,10 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
 
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -458,11 +456,10 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
 
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -475,13 +472,12 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
   });
 
   describe(`Day: Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -495,13 +491,12 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('endDate cannot be lower than startDate');
     });
   });
 
   describe(`Day: Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return a statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -514,7 +509,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate cannot be in the futur');
     });
   });
 

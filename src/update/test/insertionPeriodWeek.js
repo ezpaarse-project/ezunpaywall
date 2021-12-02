@@ -407,7 +407,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
 
   describe(`Week: Don't do a download and insert with endDate=${date1} only`, () => {
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -421,13 +421,12 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate is missing');
     });
   });
 
   describe('Week: Don\'t do a download and insert with startDate in the wrong format', () => {
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .query({
@@ -444,11 +443,10 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
 
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -461,11 +459,10 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
 
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -478,13 +475,12 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate are in wrong format, required YYYY-mm-dd');
     });
   });
 
   describe(`Week: Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -498,13 +494,12 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('endDate cannot be lower than startDate');
     });
   });
 
   describe(`Week: Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
     // test return message
-    it('Should return a error message', async () => {
+    it('Should return statusCode 400', async () => {
       const res = await chai.request(updateURL)
         .post('/job')
         .send({
@@ -517,24 +512,6 @@ describe('Week: Test: download and insert file from unpaywall between a period',
         .set('x-api-key', 'admin');
 
       expect(res).have.status(400);
-      expect(res.body.message).be.equal('startDate cannot be in the futur');
-    });
-  });
-
-  describe(`Week: Do a download and insert between ${date2} and now because wrong x-api-key`, () => {
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .send({
-          index: 'unpaywall-test',
-          startDate: date2,
-          interval: 'week',
-        })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
     });
   });
 
