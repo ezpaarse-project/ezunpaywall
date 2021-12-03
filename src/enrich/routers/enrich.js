@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs-extra');
 const multer = require('multer');
 const uuid = require('uuid');
+const joi = require('joi');
+const boom = require('@hapi/boom');
 
 const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
@@ -28,40 +30,22 @@ router.get('/upload', async (req, res) => {
   res.status(200).json(files);
 });
 
-/**
- * get enriched file
- *
- * @apiParam PARAMS args - filename
- *
- * @apiError 400 filename expected
- * @apiError 404 File not found
- *
- * @return enriched file
- */
-router.get('/enriched/:filename', async (req, res) => {
+router.get('/enriched/:filename', async (req, res, next) => {
   const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ message: 'filename expected' });
+  const { error } = joi.string().trim().required().validate(filename);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  if (!await fs.pathExists(path.resolve(enrichedDir, filename))) {
+    return next(boom.notFound(`"${filename}" not found`));
   }
-  const fileExist = await fs.pathExists(path.resolve(enrichedDir, filename));
-  if (!fileExist) {
-    return res.status(404).json({ message: 'File not found' });
-  }
+
   return res.sendFile(path.resolve(enrichedDir, filename));
 });
 
-/**
- * @apiError 500 internal server error
- * @apiError 403 file not send
- *
- * @return 200 file added
- */
-router.post('/upload', upload.single('file'), async (req, res) => {
-  if (!req?.file) {
-    return res.status(403).json({ messsage: 'file not send' });
-  }
+router.post('/upload', upload.single('file'), async (req, res, next) => {
+  if (!req?.file) return next(boom.badRequest('File not send'));
   const { filename } = req?.file;
-  // TODO return name of file
   return res.status(200).json({ messsage: 'file added', filename, id: path.parse(filename).name });
 });
 

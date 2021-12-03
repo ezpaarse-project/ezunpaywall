@@ -79,9 +79,9 @@ describe('Test: enrich service csv', () => {
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
-        } while (!res3?.body?.state?.done);
+        } while (!res3?.body?.done);
 
-        const { state } = res3?.body;
+        const state = res3?.body;
 
         expect(state).have.property('done').equal(true);
         expect(state).have.property('loaded').to.not.equal(undefined);
@@ -153,9 +153,9 @@ describe('Test: enrich service csv', () => {
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
-        } while (!res3?.body?.state?.done);
+        } while (!res3?.body?.done);
 
-        const { state } = res3?.body;
+        const state = res3?.body;
 
         expect(state).have.property('done').equal(true);
         expect(state).have.property('loaded').to.not.equal(undefined);
@@ -230,9 +230,9 @@ describe('Test: enrich service csv', () => {
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
-        } while (!res3?.body?.state?.done);
+        } while (!res3?.body?.done);
 
-        const { state } = res3?.body;
+        const state = res3?.body;
 
         expect(state).have.property('done').equal(true);
         expect(state).have.property('loaded').to.not.equal(undefined);
@@ -305,9 +305,9 @@ describe('Test: enrich service csv', () => {
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
-        } while (!res3?.body?.state?.done);
+        } while (!res3?.body?.done);
 
-        const { state } = res3?.body;
+        const state = res3?.body;
 
         expect(state).have.property('done').equal(true);
         expect(state).have.property('loaded').to.not.equal(undefined);
@@ -381,9 +381,9 @@ describe('Test: enrich service csv', () => {
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
-        } while (!res3?.body?.state?.done);
+        } while (!res3?.body?.done);
 
-        const { state } = res3?.body;
+        const state = res3?.body;
 
         expect(state).have.property('done').equal(true);
         expect(state).have.property('loaded').to.not.equal(undefined);
@@ -457,9 +457,9 @@ describe('Test: enrich service csv', () => {
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
-        } while (!res3?.body?.state?.done);
+        } while (!res3?.body?.done);
 
-        const { state } = res3?.body;
+        const state = res3?.body;
 
         expect(state).have.property('done').equal(true);
         expect(state).have.property('loaded').to.not.equal(undefined);
@@ -533,9 +533,9 @@ describe('Test: enrich service csv', () => {
             .get(`/state/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
-        } while (!res3?.body?.state?.done);
+        } while (!res3?.body?.done);
 
-        const { state } = res3?.body;
+        const state = res3?.body;
 
         expect(state).have.property('done').equal(true);
         expect(state).have.property('loaded').to.not.equal(undefined);
