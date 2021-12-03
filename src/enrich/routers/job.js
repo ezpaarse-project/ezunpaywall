@@ -2,7 +2,6 @@ const router = require('express').Router();
 const boom = require('@hapi/boom');
 const joi = require('joi');
 
-const logger = require('../lib/logger');
 const {
   enrichJSON,
   enrichCSV,

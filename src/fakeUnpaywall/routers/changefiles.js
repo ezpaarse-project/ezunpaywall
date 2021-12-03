@@ -1,5 +1,8 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 const router = require('express').Router();
 const fs = require('fs-extra');
+const boom = require('@hapi/boom');
 
 const updateChangefilesExample = require('../bin/changefiles');
 
@@ -22,7 +25,7 @@ router.patch('/changefiles', async (req, res, next) => {
     await fs.ensureFile(changefilesPath);
   } catch (err) {
     console.error(err);
-    return next(err);
+    return next(boom.boomify(err));
   }
 
   try {
@@ -30,14 +33,14 @@ router.patch('/changefiles', async (req, res, next) => {
   } catch (err) {
     console.error(`Cannot write ${JSON.stringify(changefilesExample, null, 2)} in file "${changefilesPath}"`);
     console.error(err);
-    return next(err);
+    return next(boom.boomify(err));
   }
 
   try {
     await updateChangefilesExample(interval);
   } catch (err) {
     console.error(err);
-    return next(err);
+    return next(boom.boomify(err));
   }
 
   return res.set('Location', changefilesPath).status(200).end();
