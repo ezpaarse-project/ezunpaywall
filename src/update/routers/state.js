@@ -19,30 +19,23 @@ const statesDir = path.resolve(__dirname, '..', 'out', 'states');
  * @return state
  */
 router.get('/state', async (req, res, next) => {
-  const schema = joi.object({
-    latest: joi.boolean().default(false),
-  });
+  const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
+  if (error) return next(boom.badRequest(error.details[0].message));
 
-  const { error, value } = schema.validate(req.query);
-
-  if (error) {
-    return next(boom.badRequest(error.details[0].message));
-  }
-
-  const { latest } = value;
+  const latest = value;
 
   if (latest) {
     let latestFile;
     try {
       latestFile = await getMostRecentFile(statesDir);
     } catch (err) {
-      return next(err.isBoom());
+      return next(boom.boomify(err));
     }
     let state;
     try {
       state = await getState(latestFile?.filename);
     } catch (err) {
-      return next(err.isBoom());
+      return next(boom.boomify(err));
     }
     return res.status(200).json(state);
   }
@@ -59,17 +52,11 @@ router.get('/state', async (req, res, next) => {
  * @return state
  */
 router.get('/state/:filename', async (req, res, next) => {
-  const schema = joi.object({
-    filename: joi.string().required(),
-  });
+  const { error, value } = joi.string().required().validate(req.params.filename);
 
-  const { error, value } = schema.validate(req.query);
+  if (error) return next(boom.badRequest(error.details[0].message));
 
-  if (error) {
-    return next(boom.badRequest(error.details[0].message));
-  }
-
-  const { filename } = value;
+  const filename = value;
 
   if (await fs.pathExists(path.resolve(statesDir, filename))) {
     return next(boom.notFound('File not found'));
@@ -79,7 +66,7 @@ router.get('/state/:filename', async (req, res, next) => {
   try {
     state = await getState(filename);
   } catch (err) {
-    return next(err.isBoom());
+    return next(boom.boomify(err));
   }
   return res.status(200).json(state);
 });

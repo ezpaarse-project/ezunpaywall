@@ -7,17 +7,12 @@ const boom = require('@hapi/boom');
 const unpaywallHost = `${config.get('unpaywall.host')}`;
 
 router.get('/unpaywall/snapshot', async (req, res, next) => {
-  const schema = joi.object({
-    interval: joi.string().trim().valid('week', 'day').default('day'),
-  });
+  const { error, value } = joi.string().trim().valid('week', 'day').default('day')
+    .validate(req.body.interval);
 
-  const { error, value } = schema.validate(req.body);
+  if (error) return next(boom.badRequest(error.details[0].message));
 
-  if (error) {
-    return next(boom.badRequest(error.details[0].message));
-  }
-
-  const { interval } = value;
+  const interval = value;
 
   let snapshotsInfo;
   try {

@@ -20,16 +20,12 @@ const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
  * @return report
  */
 router.get('/report', async (req, res, next) => {
-  const schema = joi.object({
+  const { error, value } = joi.object({
     latest: joi.boolean().default(false),
     date: joi.date().format('YYYY-MM-DD'),
-  });
+  }).validate(req.query);
 
-  const { error, value } = schema.validate(req.query);
-
-  if (error) {
-    return next(boom.badRequest(error.details[0].message));
-  }
+  if (error) return next(boom.badRequest(error.details[0].message));
 
   const { latest, date } = value;
 
@@ -38,7 +34,7 @@ router.get('/report', async (req, res, next) => {
     try {
       latestFile = await getMostRecentFile(reportsDir);
     } catch (err) {
-      return next(err.isBoom());
+      return next(boom.boomify(err));
     }
 
     if (!latestFile) {
@@ -49,7 +45,7 @@ router.get('/report', async (req, res, next) => {
     try {
       report = await getReport(latestFile?.filename);
     } catch (err) {
-      return next(err);
+      return next(boom.boomify(err));
     }
     return res.status(200).json({ report });
   }
@@ -72,7 +68,7 @@ router.get('/report', async (req, res, next) => {
     try {
       report = await getReport(file);
     } catch (err) {
-      return next(err.isBoom());
+      return next(boom.boomify(err));
     }
 
     return res.status(200).json(report);
@@ -90,17 +86,11 @@ router.get('/report', async (req, res, next) => {
  * @return report
  */
 router.get('/report/:filename', async (req, res, next) => {
-  const schema = joi.object({
-    filename: joi.string().trim().required(),
-  });
+  const { error, value } = joi.string().trim().required().validate(req.params.filename);
 
-  const { error, value } = schema.validate(req.params);
+  if (error) return next(boom.badRequest(error.details[0].message));
 
-  if (error) {
-    return next(boom.badRequest(error.details[0].message));
-  }
-
-  const { filename } = value;
+  const filename = value;
 
   try {
     await fs.stat(path.resolve(reportsDir, filename));
@@ -112,7 +102,7 @@ router.get('/report/:filename', async (req, res, next) => {
   try {
     report = await getReport(filename);
   } catch (err) {
-    return next(err.isBoom());
+    return next(boom.boomify(err));
   }
   return res.status(200).json({ report });
 });

@@ -39,7 +39,7 @@ const {
 router.post('/job', checkStatus, checkAuth, async (req, res, next) => {
   const snapshotPattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
 
-  const schema = joi.object({
+  const { error, value } = joi.object({
     index: joi.string().trim().default('unpaywall'),
     offset: joi.number().greater(-1).default(0),
     limit: joi.number().greater(joi.ref('offset')).default(-1),
@@ -48,13 +48,9 @@ router.post('/job', checkStatus, checkAuth, async (req, res, next) => {
     startDate: joi.date().format('YYYY-MM-DD'),
     endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')),
     snapshot: joi.boolean(),
-  }).with('endDate', 'startDate');
+  }).with('endDate', 'startDate').validate(req.body);
 
-  const { error, value } = schema.validate(req.body);
-
-  if (error) {
-    return next(boom.badRequest(error.details[0].message));
-  }
+  if (error) return next(boom.badRequest(error.details[0].message));
 
   let { startDate, endDate } = value;
 
