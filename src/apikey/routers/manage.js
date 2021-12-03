@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const boom = require('@hapi/boom');
+const joi = require('joi');
 
 const checkAuth = require('../middlewares/auth');
 const {
@@ -6,6 +8,7 @@ const {
   load,
   pingRedis,
 } = require('../lib/redis');
+
 const logger = require('../lib/logger');
 
 const {
@@ -13,6 +16,8 @@ const {
   updateApiKey,
   deleteApiKey,
 } = require('../bin/manage');
+
+const availableAccess = ['update', 'enrich', 'graphql'];
 
 const unpaywallAttrs = [
   '*',
@@ -76,12 +81,11 @@ const unpaywallAttrs = [
 /**
  * get config of apikey
  */
-router.get('/config', async (req, res) => {
-  const apikey = req.get('x-api-key');
+router.get('/config/:apikey', async (req, res, next) => {
+  const { apikey } = req.params;
+  const { error } = joi.string().trim().required().validate(apikey);
 
-  if (!apikey) {
-    return res.status(400).json({ message: 'apikey expected' });
-  }
+  if (error) return next(boom.badRequest(error.details[0].message));
 
   let key;
   try {
@@ -89,11 +93,11 @@ router.get('/config', async (req, res) => {
   } catch (err) {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
-    return res.status(500).json({ message: 'Internal server error' });
+    return next(boom.boomify(err));
   }
 
   if (!key) {
-    return res.status(404).json({ message: `[${apikey}] apikey doesn't exist` });
+    return next(boom.notFound(`"${key}" not found`));
   }
 
   let config;
@@ -102,7 +106,7 @@ router.get('/config', async (req, res) => {
   } catch (err) {
     logger.error(`Cannot parse ${key}`);
     logger.error(err);
-    return res.status(500).json({ message: 'Internal server error' });
+    return next(boom.boomify(err));
   }
 
   return res.status(200).json(config);
@@ -125,7 +129,7 @@ router.get('/all', checkAuth, async (req, res, next) => {
       config = await redisClient.get(key);
       config = JSON.parse(config);
     } catch (err) {
-      return next(err);
+      return next(boom.boomify(err));
     }
 
     allKeys[key] = config;
@@ -138,51 +142,25 @@ router.get('/all', checkAuth, async (req, res, next) => {
  * create new apikey
  */
 router.post('/create', checkAuth, async (req, res, next) => {
+  const { error, value } = joi.object({
+    name: joi.string().trim().required(),
+    attributes: joi.string().trim().valid(...unpaywallAttrs).default('*'),
+    access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql']),
+    allowed: joi.boolean().default(true),
+  }).validate(req.body);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
+
   const {
     name, attributes, access, allowed,
-  } = req.body;
-
-  if (!name) {
-    return res.status(400).json({ message: 'Name expected' });
-  }
-
-  const availableAccess = ['update', 'enrich', 'graphql', 'auth'];
-
-  if (access) {
-    if (!Array.isArray(access)) {
-      return res.status(400).json({ message: `argument "access" [${access}] is in wrong format` });
-    }
-
-    const unexistingAccess = access.find((e) => !availableAccess.includes(e));
-    if (unexistingAccess) {
-      return res.status(400).json({ message: `argument "access" [${unexistingAccess}] doesn't exist` });
-    }
-  }
-
-  if (allowed) {
-    if (typeof allowed !== 'boolean') {
-      return res.status(400).json({ message: `argument "allowed" [${allowed}] is in wrong format` });
-    }
-  }
-
-  if (attributes) {
-    if (typeof attributes !== 'string') {
-      return res.status(400).json({ message: `argument "attributes" [${attributes}] is in wrong format` });
-    }
-
-    const attrs = attributes.split(',');
-    const unexistingAttr = attrs.find((attr) => !unpaywallAttrs.includes(attr));
-    if (unexistingAttr) {
-      return res.status(400).json({ message: `argument "attributes" [${unexistingAttr}] doesn't exist` });
-    }
-  }
+  } = value;
 
   let keys;
 
   try {
     keys = await redisClient.keys('*');
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
 
   for (let i = 0; i < keys.length; i += 1) {
@@ -191,10 +169,10 @@ router.post('/create', checkAuth, async (req, res, next) => {
       config = await redisClient.get(keys[i]);
       config = JSON.parse(config);
     } catch (err) {
-      return next(err);
+      return next(boom.boomify(err));
     }
     if (config.name === name) {
-      return res.status(403).json({ message: `Name [${name}] already exist` });
+      return next(boom.conflict(`Name [${name}] already exist`));
     }
   }
 
@@ -203,7 +181,7 @@ router.post('/create', checkAuth, async (req, res, next) => {
   try {
     apikey = await createApiKey(name, access, attributes, allowed);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
 
   let config;
@@ -211,7 +189,7 @@ router.post('/create', checkAuth, async (req, res, next) => {
     config = await redisClient.get(apikey);
     config = JSON.parse(config);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
 
   return res.status(200).json({ apikey, config });
@@ -221,46 +199,19 @@ router.post('/create', checkAuth, async (req, res, next) => {
  * update apikey
  */
 router.put('/update', checkAuth, async (req, res, next) => {
-  const { config, apikey } = req.body;
+  const { error, value } = joi.object({
+    apikey: joi.string().required(),
+    name: joi.string().trim(),
+    attributes: joi.string().trim().valid(...unpaywallAttrs).default('*'),
+    access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql', 'enrich']),
+    allowed: joi.boolean().default(true),
+  }).validate(req.body);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
 
   const {
-    attributes, access, allowed,
-  } = config;
-
-  if (!apikey) {
-    return res.status(400).json({ message: 'apikey expected' });
-  }
-
-  const availableAccess = ['update', 'enrich', 'graphql', 'auth'];
-
-  if (access) {
-    if (!Array.isArray(access)) {
-      return res.status(400).json({ message: `argument "access" [${access}] is in wrong format` });
-    }
-
-    const unexistingAccess = access.find((e) => !availableAccess.includes(e));
-    if (unexistingAccess) {
-      return res.status(400).json({ message: `argument "access" [${unexistingAccess}] doesn't exist` });
-    }
-  }
-
-  if (allowed) {
-    if (typeof allowed !== 'boolean') {
-      return res.status(400).json({ message: `argument "allowed" [${allowed}] is in wrong format` });
-    }
-  }
-
-  if (attributes) {
-    if (typeof attributes !== 'string') {
-      return res.status(400).json({ message: `argument "attributes" [${attributes}] is in wrong format` });
-    }
-
-    const attrs = attributes.split(',');
-    const unexistingAttr = attrs.find((attr) => !unpaywallAttrs.includes(attr));
-    if (unexistingAttr) {
-      return res.status(400).json({ message: `argument "attributes" [${unexistingAttr}] doesn't exist` });
-    }
-  }
+    apikey, name, attributes, access, allowed,
+  } = value;
 
   let key;
   try {
@@ -268,17 +219,17 @@ router.put('/update', checkAuth, async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
-    return res.status(500).json({ message: 'Internal server error' });
+    return next(boom.boomify(err));
   }
 
   if (!key) {
-    return res.status(404).json({ message: `[${apikey}] apikey doesn't exist` });
+    return next(boom.notFound(`"${key}" not found`));
   }
 
   try {
-    await updateApiKey(apikey, config.name, config.access, config.attributes, config.allowed);
+    await updateApiKey(apikey, name, access, attributes, allowed);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
 
   let configApiKey;
@@ -286,21 +237,24 @@ router.put('/update', checkAuth, async (req, res, next) => {
     configApiKey = await redisClient.get(apikey);
     configApiKey = JSON.parse(configApiKey);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
 
-  return res.status(200).json({ apikey, config: configApiKey });
+  const updateApikey = { apikey, ...configApiKey };
+
+  return res.status(200).json(updateApikey);
 });
 
 /**
  * delete apikey
  */
-router.delete('/delete', checkAuth, async (req, res, next) => {
-  const { apikey } = req.body;
+router.delete('/delete/:apikey', checkAuth, async (req, res, next) => {
+  const { error, value } = joi.string().trim().required().validate(req.params.apikey);
+  console.log(value);
+  console.log(error);
+  if (error) return next(boom.badRequest(error.details[0].message));
 
-  if (!apikey) {
-    return res.status(400).json({ message: 'apikey expected' });
-  }
+  const apikey = value;
 
   let key;
   try {
@@ -308,20 +262,20 @@ router.delete('/delete', checkAuth, async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
-    return res.status(500).json({ message: 'Internal server error' });
+    return next(boom.boomify(err));
   }
 
   if (!key) {
-    return res.status(404).json({ message: `[${apikey}] apikey doesn't exist` });
+    return next(boom.notFound(`"${apikey}" not found`));
   }
 
   try {
     await deleteApiKey(apikey);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
 
-  return res.status(204).json({});
+  return res.status(204).json();
 });
 
 /**
@@ -331,7 +285,7 @@ router.delete('/all', checkAuth, async (req, res, next) => {
   try {
     await redisClient.flushall();
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
   return res.status(204).json();
 });
@@ -346,7 +300,7 @@ router.post('/load', checkAuth, async (req, res, next) => {
     try {
       await load();
     } catch (err) {
-      return next(err);
+      return next(boom.boomify(err));
     }
     return res.status(204).json();
   }
@@ -363,7 +317,7 @@ router.post('/load', checkAuth, async (req, res, next) => {
       }),
     );
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
 
   return res.status(204).json();
@@ -377,12 +331,12 @@ router.get('/ping', async (req, res, next) => {
   try {
     ping = await pingRedis();
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
   if (ping) {
-    return res.status(200).json({ message: 'OK' });
+    return res.status(200).json('OK');
   }
-  return res.status(400).json({ message: 'Cannot ping Redis' });
+  return next(boom.serverUnavailable());
 });
 
 module.exports = router;
