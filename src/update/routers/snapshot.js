@@ -6,7 +6,7 @@ const boom = require('@hapi/boom');
 const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
-  deleteSnapshot,
+  deleteFile,
 } = require('../bin/snapshot');
 
 const {
@@ -75,7 +75,7 @@ router.delete('/snapshot/:filename', async (req, res, next) => {
   }
 
   try {
-    await deleteSnapshot(filename);
+    await deleteFile(filename);
   } catch (err) {
     return next(boom.boomify(err));
   }

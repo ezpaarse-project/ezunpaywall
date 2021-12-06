@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 
+const logger = require('./lib/logger');
+
 const { name, version } = require('./package.json');
 
 const updateChangefilesExample = require('./bin/changefiles');
@@ -26,7 +28,7 @@ app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${re
 app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
 app.listen(12000, async () => {
-  console.log('fakeUnpaywall service listening on 12000');
+  logger.info('fakeUnpaywall service listening on 12000');
   await updateChangefilesExample('day');
   await updateChangefilesExample('week');
 });

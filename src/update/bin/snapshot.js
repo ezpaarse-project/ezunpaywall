@@ -6,7 +6,7 @@ const logger = require('../lib/logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
-const deleteSnapshot = async (filename) => {
+const deleteFile = async (filename) => {
   const filepath = path.resolve(snapshotsDir, filename);
   try {
     await fs.remove(filepath);
@@ -17,5 +17,5 @@ const deleteSnapshot = async (filename) => {
 };
 
 module.exports = {
-  deleteSnapshot,
+  deleteFile,
 };

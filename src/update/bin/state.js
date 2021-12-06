@@ -1,6 +1,18 @@
 const path = require('path');
 const fs = require('fs-extra');
 
+const {
+  createReport,
+} = require('./report');
+
+const {
+  sendMailReport,
+} = require('../lib/mail');
+
+const {
+  setInUpdate,
+} = require('./status');
+
 const logger = require('../lib/logger');
 
 const statesDir = path.resolve(__dirname, '..', 'out', 'states');
@@ -33,7 +45,13 @@ const createState = async () => {
  * @returns {Object} - state in JSON format
  */
 const getState = async (filename) => {
-  let state = await fs.readFile(path.resolve(statesDir, filename), 'utf-8');
+  let state;
+  try {
+    state = await fs.readFile(path.resolve(statesDir, filename), 'utf-8');
+  } catch (err) {
+    logger.error(`Cannot read "${path.resolve(statesDir, filename)}"`);
+  }
+
   try {
     state = JSON.parse(state);
   } catch (err) {
@@ -59,14 +77,14 @@ const updateStateInFile = async (state, filename) => {
 };
 
 /**
- * add step "askUnpaywall" in steps attributes of state
+ * add step "getChangefiles" in steps attributes of state
  * @param {String} filename - name of the file where the state is saved
  */
-const addStepAskUnpaywall = async (filename) => {
+const addStepGetChangefiles = async (filename) => {
   const state = await getState(filename);
   logger.info('step - ask unpaywall');
   const step = {
-    task: 'askUnpaywall',
+    task: 'getChangefiles',
     took: 0,
     status: 'inProgress',
   };
@@ -103,7 +121,7 @@ const addStepInsert = async (filename, downloadFile) => {
   logger.info('step - insert file');
   const step = {
     task: 'insert',
-    index: 'default',
+    index: 'unpaywall',
     file: downloadFile,
     linesRead: 0,
     insertedDocs: 0,
@@ -115,6 +133,22 @@ const addStepInsert = async (filename, downloadFile) => {
   };
   state.steps.push(step);
   await updateStateInFile(state, filename);
+};
+
+/**
+ * get the latest step in state
+ * @param {String} filename - name of the file where the state is saved
+ */
+const getLatestStep = async (filename) => {
+  const state = await getState(filename);
+  return state.steps[state.steps.length - 1];
+};
+
+const updateLatestStep = async (filename, step) => {
+  const state = await getState(filename);
+  state.steps[state.steps.length - 1] = step;
+  await updateStateInFile(state, filename);
+  return step;
 };
 
 /**
@@ -130,6 +164,9 @@ const fail = async (filename, stackTrace) => {
   state.error = true;
   state.stackTrace = stackTrace;
   await updateStateInFile(state, filename);
+  await createReport(state);
+  setInUpdate(false);
+  await sendMailReport(state);
 };
 
 /**
@@ -142,15 +179,20 @@ const endState = async (filename) => {
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
   await updateStateInFile(state, filename);
+  await createReport(state);
+  await sendMailReport(state);
+  setInUpdate(false);
 };
 
 module.exports = {
   createState,
   getState,
   updateStateInFile,
-  addStepAskUnpaywall,
+  addStepGetChangefiles,
   addStepDownload,
   addStepInsert,
+  getLatestStep,
+  updateLatestStep,
   fail,
   endState,
 };

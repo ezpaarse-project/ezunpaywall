@@ -36,7 +36,7 @@
         </thead>
         <tbody>
         {% for item in state.steps %}
-          {% if item.task == 'askUnpaywall' %}
+          {% if item.task == 'getChangefiles' %}
             <tr style="border: 1px solid #ddd; padding: 8px;">
               <td style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">{{ item.task }}</td>
               <td style="border: 1px solid #ddd; padding: 8px;">{{ item.took }} sec</td>
