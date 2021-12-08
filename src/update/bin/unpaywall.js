@@ -2,12 +2,6 @@ const config = require('config');
 const unpaywall = require('../lib/unpaywall');
 const logger = require('../lib/logger');
 
-const {
-  addStepGetChangefiles,
-  updateLatestStep,
-  getLatestStep,
-} = require('./state');
-
 const apiKey = config.get('unpaywall.apikey');
 /**
  * get the latest snapshot
@@ -38,10 +32,7 @@ const getSnapshot = async () => {
  * @param {Date} endDate
  * @returns {Object}
  */
-const getChangefiles = async (stateName, interval, startDate, endDate) => {
-  const start = new Date();
-  await addStepGetChangefiles(stateName);
-  const step = await getLatestStep(stateName);
+const getChangefiles = async (interval, startDate, endDate) => {
   let res;
   try {
     res = await unpaywall({
@@ -78,9 +69,6 @@ const getChangefiles = async (stateName, interval, startDate, endDate) => {
       .filter((file) => new Date(file.date).getTime() <= new Date(endDate).getTime());
   }
 
-  step.took = (new Date() - start) / 1000;
-  step.status = 'success';
-  await updateLatestStep(stateName, step);
   return snapshotsInfo;
 };
 

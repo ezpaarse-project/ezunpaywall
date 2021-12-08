@@ -17,7 +17,7 @@ const checkIfInUpdate = async () => {
   } catch (err) {
     console.error(`checkIfInUpdate : ${err}`);
   }
-  return res?.body?.inUpdate;
+  return res?.body;
 };
 
 module.exports = {

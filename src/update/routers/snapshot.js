@@ -27,7 +27,7 @@ const storage = multer.diskStorage(
 const upload = multer({ storage });
 
 router.get('/snapshot', async (req, res, next) => {
-  const { error, value } = joi.boolean().default(false).validate(req.query);
+  const { error, value } = joi.boolean().default(false).validate(req.query.latest);
 
   if (error) return next(boom.badRequest(error.details[0].message));
 

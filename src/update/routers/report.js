@@ -22,12 +22,11 @@ const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
 router.get('/report', async (req, res, next) => {
   const { error, value } = joi.object({
     latest: joi.boolean().default(false),
-    date: joi.date().format('YYYY-MM-DD'),
   }).validate(req.query);
 
   if (error) return next(boom.badRequest(error.details[0].message));
 
-  const { latest, date } = value;
+  const { latest } = value;
 
   if (latest) {
     let latestFile;
@@ -47,30 +46,6 @@ router.get('/report', async (req, res, next) => {
     } catch (err) {
       return next(boom.boomify(err));
     }
-    return res.status(200).json({ report });
-  }
-  if (date) {
-    if (new Date(date).getTime() > Date.now()) {
-      return res.status(400).json({ message: 'date cannot be in the futur' });
-    }
-    const files = await fs.readdir(reportsDir);
-    const file = files.find((filename) => {
-      const datefile = filename.split('.')[0];
-      return date === datefile;
-    });
-
-    if (!file) {
-      return next(boom.notFound('File not found'));
-    }
-
-    let report;
-
-    try {
-      report = await getReport(file);
-    } catch (err) {
-      return next(boom.boomify(err));
-    }
-
     return res.status(200).json(report);
   }
   const reports = await fs.readdir(reportsDir);
@@ -104,7 +79,7 @@ router.get('/report/:filename', async (req, res, next) => {
   } catch (err) {
     return next(boom.boomify(err));
   }
-  return res.status(200).json({ report });
+  return res.status(200).json(report);
 });
 
 module.exports = router;
