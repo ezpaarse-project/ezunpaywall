@@ -4,9 +4,9 @@ const chaiHttp = require('chai-http');
 
 const ping = require('./utils/ping');
 const {
-  load,
-  deleteAll,
-} = require('./utils/redis');
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
 
 chai.use(chaiHttp);
 
@@ -18,8 +18,8 @@ describe('Test: Update apikey', () => {
   });
 
   beforeEach(async () => {
-    await deleteAll();
-    await load();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 
   it('Should update config.name to "new-name" for the apikey "user"', async () => {
@@ -196,7 +196,7 @@ describe('Test: Update apikey', () => {
   });
 
   after(async () => {
-    await deleteAll();
-    await load();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

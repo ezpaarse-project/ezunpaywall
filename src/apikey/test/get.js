@@ -7,9 +7,9 @@ const chaiHttp = require('chai-http');
 
 const ping = require('./utils/ping');
 const {
-  load,
-  deleteAll,
-} = require('./utils/redis');
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
 
 chai.use(chaiHttp);
 
@@ -18,8 +18,8 @@ const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 describe('Test: Get config of apikey', () => {
   before(async () => {
     await ping();
-    await deleteAll();
-    await load();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 
   it('Should get config of apikey', async () => {
@@ -30,7 +30,7 @@ describe('Test: Get config of apikey', () => {
     expect(res).have.status(200);
     expect(res.body).have.property('name').equal('user');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
-    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('attributes').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
 
@@ -42,7 +42,7 @@ describe('Test: Get config of apikey', () => {
 
     expect(res).have.status(200);
 
-    const { keys } = res.body;
+    const keys = res.body;
     let apikeyDev = await fs.readFile(path.resolve(__dirname, '..', 'apikey-dev.json'));
     apikeyDev = JSON.parse(apikeyDev);
 

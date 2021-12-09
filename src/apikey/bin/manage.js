@@ -17,7 +17,7 @@ const createApiKey = async (name, access, attributes, allowed) => {
   };
 
   if (!config?.access) config.access = ['graphql'];
-  if (!config?.attributes) config.attributes = '*';
+  if (!config?.attributes) config.attributes = ['*'];
   if (typeof config?.allowed !== 'boolean') config.allowed = true;
 
   try {

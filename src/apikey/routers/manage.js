@@ -135,7 +135,7 @@ router.get('/all', checkAuth, async (req, res, next) => {
     allKeys[key] = config;
   }
 
-  return res.status(200).json({ keys: allKeys });
+  return res.status(200).json(allKeys);
 });
 
 /**
@@ -144,7 +144,7 @@ router.get('/all', checkAuth, async (req, res, next) => {
 router.post('/create', checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
     name: joi.string().trim().required(),
-    attributes: joi.string().trim().valid(...unpaywallAttrs).default('*'),
+    attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql']),
     allowed: joi.boolean().default(true),
   }).validate(req.body);

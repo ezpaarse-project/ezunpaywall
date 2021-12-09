@@ -3,10 +3,11 @@ const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
 const ping = require('./utils/ping');
+
 const {
-  load,
-  deleteAll,
-} = require('./utils/redis');
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
 
 chai.use(chaiHttp);
 
@@ -19,8 +20,8 @@ describe('Test: apikey service', () => {
 
   before(async () => {
     await ping();
-    await deleteAll();
-    await load();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 
   it('Should access apikey', async () => {
@@ -50,7 +51,7 @@ describe('Test: apikey service', () => {
   });
 
   after(async () => {
-    await deleteAll();
-    await load();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

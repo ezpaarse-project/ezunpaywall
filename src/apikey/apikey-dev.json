@@ -2,43 +2,43 @@
   "user": {
     "name": "user",
     "access": ["graphql", "enrich"],
-    "attributes": "*",
+    "attributes": ["*"],
     "allowed": true
   },
   "userRestricted": {
     "name": "userRestricted",
     "access": ["graphql", "enrich"],
-    "attributes": "doi, is_oa, best_oa_location.license",
+    "attributes": ["doi", "is_oa", "best_oa_location.license"],
     "allowed": true
   },
   "admin": {
     "name": "admin",
     "access": ["graphql", "enrich", "update"],
-    "attributes": "*",
+    "attributes": ["*"],
     "allowed": true
   },
   "graphql": {
     "name": "graphql",
     "access": ["graphql"],
-    "attributes": "*",
+    "attributes": ["*"],
     "allowed": true
   },
   "enrich": {
     "name": "enrich",
     "access": ["enrich"],
-    "attributes": "*",
+    "attributes": ["*"],
     "allowed": true
   },
   "update": {
     "name": "update",
     "access": ["update"],
-    "attributes": "*",
+    "attributes": ["*"],
     "allowed": true
   },
   "notAllowed": {
     "name": "notAllowed",
     "access": ["graphql", "enrich", "update"],
-    "attributes": "*",
+    "attributes": ["*"],
     "allowed": false
   }
 }
