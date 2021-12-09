@@ -25,6 +25,11 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
 
 const enrichDir = path.resolve(__dirname, 'sources');
@@ -33,6 +38,8 @@ describe('Test: enrich service jsonl', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);
     await insertDataUnpaywall();
@@ -531,6 +538,7 @@ describe('Test: enrich service jsonl', () => {
   });
 
   after(async () => {
-    await deleteIndex('unpaywall-test');
+    // await deleteIndex('unpaywall-test');
+    await deleteAllAPIKey();
   });
 });
