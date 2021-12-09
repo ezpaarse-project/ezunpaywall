@@ -56,11 +56,11 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
 };
 
 const insertChangefile = async (jobConfig) => {
-  const config = jobConfig;
   setInUpdate(true);
-
-  await insertDataUnpaywall(jobConfig);
-  await endState(config.stateName);
+  const success = await insertDataUnpaywall(jobConfig);
+  if (success) {
+    await endState(jobConfig.stateName);
+  }
 };
 
 module.exports = {

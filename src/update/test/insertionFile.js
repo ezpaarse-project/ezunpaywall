@@ -65,6 +65,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       } while (isUpdate);
 
       const count = await countDocuments('unpaywall-test');
+
       expect(count).to.equal(50);
     });
 
