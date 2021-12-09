@@ -14,6 +14,11 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 chai.use(chaiHttp);
 
 const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
@@ -24,6 +29,8 @@ describe('test graphqlRequest POST', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);
     await insertDataUnpaywall();
@@ -425,5 +432,9 @@ describe('test graphqlRequest POST', () => {
       const data = res?.body?.data?.GetByDOI;
       expect(data).be.a('array').eql([]);
     });
+  });
+  after(async () => {
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

@@ -150,7 +150,7 @@ const getByDOI = {
       index = config.get('elasticsearch.indexAlias');
     }
 
-    if (attributes !== '*') {
+    if (!attributes.includes('*')) {
       const test = graphqlFields(info);
       const requestedField = flatten(test);
 
@@ -218,7 +218,7 @@ const getByDOI = {
         size: dois.length || 1000,
         body: {
           query,
-          _source: attributes.split(','),
+          _source: attributes.join(','),
         },
 
       });
@@ -227,7 +227,6 @@ const getByDOI = {
       logger.error(err);
       return null;
     }
-
     // eslint-disable-next-line no-underscore-dangle
     return res.body.hits.hits.map((hit) => hit._source);
   },
