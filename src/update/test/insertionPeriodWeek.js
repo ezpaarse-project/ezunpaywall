@@ -27,6 +27,11 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 const reset = require('./utils/reset');
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
@@ -460,5 +465,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
 
   after(async () => {
     await reset();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

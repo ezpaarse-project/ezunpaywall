@@ -24,6 +24,11 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
@@ -34,6 +39,8 @@ describe('Test: download and insert snapshot from unpaywall', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 
   describe('Do a download and a insertion of snapshot', () => {
@@ -122,6 +129,8 @@ describe('Test: download and insert snapshot from unpaywall', () => {
 
     after(async () => {
       await reset();
+      await deleteAllAPIKey();
+      await loadDevAPIKey();
     });
   });
 });

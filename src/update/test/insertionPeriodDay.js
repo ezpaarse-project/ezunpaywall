@@ -29,6 +29,11 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 const reset = require('./utils/reset');
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
@@ -459,6 +464,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   after(async () => {
     await deleteIndex('unpaywall-test');
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz');
     await deleteFile('fake3.jsonl.gz');

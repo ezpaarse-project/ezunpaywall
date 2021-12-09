@@ -27,6 +27,11 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
@@ -37,6 +42,8 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 
   describe('Do insertion of a file already installed', () => {
@@ -408,5 +415,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
   after(async () => {
     await reset();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

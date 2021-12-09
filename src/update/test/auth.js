@@ -19,6 +19,11 @@ const {
   checkIfInUpdate,
 } = require('./utils/status');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 chai.use(chaiHttp);
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
@@ -27,6 +32,8 @@ describe('Test: auth service in update service', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await updateChangeFile('week');
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz');
@@ -133,5 +140,7 @@ describe('Test: auth service in update service', () => {
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz');
     await deleteFile('fake3.jsonl.gz');
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });
