@@ -202,7 +202,7 @@ router.put('/update', checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
     apikey: joi.string().required(),
     name: joi.string().trim(),
-    attributes: joi.string().trim().valid(...unpaywallAttrs).default('*'),
+    attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql', 'enrich']),
     allowed: joi.boolean().default(true),
   }).validate(req.body);

@@ -22,7 +22,7 @@ describe('Test: Update apikey', () => {
     await load();
   });
 
-  it('Should update config.name of apikey', async () => {
+  it('Should update config.name to "new-name" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
@@ -37,11 +37,11 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('new-name');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
-    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Should update config.access of apikey', async () => {
+  it('Should update config.access to "update" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
@@ -56,18 +56,17 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
     expect(res.body).have.property('access').to.be.an('array').eql(['update']);
-    expect(res.body.access[0]).equal('update');
-    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Should update config.attributes of apikey', async () => {
+  it('Should update config.attributes to "doi" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
-        attributes: 'doi',
+        attributes: ['doi'],
       })
       .set('redis-password', 'changeme');
 
@@ -76,11 +75,30 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
-    expect(res.body).have.property('attributes').equal('doi');
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['doi']);
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Should update config.allowed to false of apikey', async () => {
+  it('Should update config.attributes to "doi,is_oa" for the apikey "user"', async () => {
+    const res = await chai
+      .request(apikeyURL)
+      .put('/update')
+      .send({
+        apikey: 'user',
+        attributes: ['doi', 'is_oa'],
+      })
+      .set('redis-password', 'changeme');
+
+    expect(res).have.status(200);
+
+    expect(res.body).have.property('apikey').equal('user');
+    expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['doi', 'is_oa']);
+    expect(res.body).have.property('allowed').equal(true);
+  });
+
+  it('Should update config.allowed to "false" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
@@ -95,11 +113,11 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
-    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(false);
   });
 
-  it('Should update config.allowed to true of apikey', async () => {
+  it('Should update config.allowed to "true" for the apikey "notAllowed"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
@@ -114,11 +132,11 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('apikey').equal('notAllowed');
     expect(res.body).have.property('name').equal('notAllowed');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
-    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Should update config.name and config.access of apikey', async () => {
+  it('Should update config.name to "new-user" and config.access to "update" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
@@ -134,24 +152,11 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('new-user');
     expect(res.body).have.property('access').to.be.an('array').eql(['update']);
-    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Shouldn\'t update config.access because wrong format', async () => {
-    const res = await chai
-      .request(apikeyURL)
-      .put('/update')
-      .send({
-        apikey: 'user',
-        access: 'hello',
-      })
-      .set('redis-password', 'changeme');
-
-    expect(res).have.status(400);
-  });
-
-  it('Shouldn\'t update config.access because "hello" doesn\'t exist', async () => {
+  it('Shouldn\'t update config.access for the apikey "user" because "hello" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
@@ -164,39 +169,26 @@ describe('Test: Update apikey', () => {
     expect(res).have.status(400);
   });
 
-  it('Shouldn\'t update config.attributes because wrong format', async () => {
+  it('Shouldn\'t update config.attributes for the apikey "user" because "hello" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
-        attributes: 1,
+        attributes: ['hello'],
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
   });
 
-  it('Shouldn\'t update config.attributes because "hello" doesn\'t exist', async () => {
+  it('Shouldn\'t update config.allowed for the apikey "user" because "maybe" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/update')
       .send({
         apikey: 'user',
-        attributes: 'hello',
-      })
-      .set('redis-password', 'changeme');
-
-    expect(res).have.status(400);
-  });
-
-  it('Shouldn\'t update config.allowed because "1" doesn\'t exist', async () => {
-    const res = await chai
-      .request(apikeyURL)
-      .put('/update')
-      .send({
-        apikey: 'user',
-        allowed: 1,
+        allowed: 'maybe',
       })
       .set('redis-password', 'changeme');
 
