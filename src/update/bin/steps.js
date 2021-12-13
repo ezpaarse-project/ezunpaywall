@@ -511,9 +511,12 @@ const downloadBigSnapshot = async (stateName, info) => {
       });
     });
   } else {
-    const writeStream = await fs.createWriteStream(filepath);
-    writeStream.write(res.data);
-    writeStream.end();
+    try {
+      await fs.writeFile(filepath, res.data);
+    } catch (err) {
+      await fail(stateName, err);
+      return false;
+    }
   }
 };
 

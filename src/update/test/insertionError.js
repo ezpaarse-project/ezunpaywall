@@ -32,7 +32,7 @@ const {
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.EZUNPAYWALL_HOST || 'http://localhost:4000';
+const updateURL = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
 
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   const now = Date.now();
