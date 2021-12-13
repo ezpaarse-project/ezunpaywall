@@ -1,4 +1,6 @@
 /* eslint-disable no-param-reassign */
+const config = require('config');
+const { format } = require('date-fns');
 
 const {
   createState,
@@ -10,6 +12,7 @@ const {
   askUnpaywall,
   downloadFileFromUnpaywall,
   insertDataUnpaywall,
+  downloadBigSnapshot,
 } = require('./steps');
 
 const {
@@ -24,6 +27,9 @@ const {
   sendMailReport,
   sendMailStarted,
 } = require('../lib/mail');
+
+const unpaywallHost = config.get('unpaywall.host');
+const apikey = config.get('unpaywall.apikey');
 
 /**
  * start an update process of unpaywall data with a file present in ezunpaywall
@@ -58,6 +64,8 @@ const insertion = async (jobConfig) => {
  */
 const insertSnapshotBetweenDates = async (jobConfig) => {
   setInUpdate(true);
+  jobConfig.url = unpaywallHost;
+  jobConfig.apikey = apikey;
   jobConfig.type = 'period';
   await sendMailStarted(jobConfig);
   const stateName = await createState();
@@ -83,7 +91,34 @@ const insertSnapshotBetweenDates = async (jobConfig) => {
   await sendMailReport(await getState(stateName));
 };
 
+const insertBigSnapshot = async (jobConfig) => {
+  setInUpdate(true);
+  jobConfig.url = unpaywallHost;
+  jobConfig.apikey = apikey;
+  jobConfig.type = 'big';
+  await sendMailStarted(jobConfig);
+  const stateName = await createState();
+  jobConfig.stateName = stateName;
+  jobConfig.filename = `unpaywall-${format(Date.now(), 'yyyy-MM-dd')}.jsonl.gz`;
+  jobConfig.offset = -1;
+  jobConfig.limit = -1;
+  await downloadBigSnapshot(stateName, jobConfig);
+  const success = await insertDataUnpaywall(jobConfig);
+  if (!success) {
+    await endState(stateName);
+    await createReport(stateName);
+    setInUpdate(false);
+    await sendMailReport(await getState(stateName));
+    return;
+  }
+  await endState(stateName);
+  await createReport(stateName);
+  setInUpdate(false);
+  await sendMailReport(await getState(stateName));
+};
+
 module.exports = {
   insertion,
   insertSnapshotBetweenDates,
+  insertBigSnapshot,
 };

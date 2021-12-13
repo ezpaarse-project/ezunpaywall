@@ -1,6 +1,8 @@
 {
-  "apikeyupw": "API_KEY_UPW",
-  "unpaywallURL": "UNPAYWALL_URL",
+  "unpaywall": {
+    "host": "UNPAYWALL_URL",
+    "apikey": "UNPAYWALL_APIKEY"
+  },
   "redis":  {
     "password": "REDIS_PASSWORD",
     "host": "REDIS_HOST",

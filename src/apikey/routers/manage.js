@@ -363,7 +363,7 @@ router.post('/load', checkAuth, async (req, res, next) => {
       }),
     );
   } catch (err) {
-    next(err);
+    return next(err);
   }
 
   return res.status(204).json();

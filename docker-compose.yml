@@ -45,8 +45,8 @@ services:
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       - EZUNPAYWALL_NOTIFICATIONS_MACHINE
        # unpaywall
-      - API_KEY_UPW
-      - UNPAYWALL_URL=http://api.unpaywall.org/feed/changefiles
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_URL=http://api.unpaywall.org
       # elastic
       - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
       - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}

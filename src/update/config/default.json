@@ -1,6 +1,8 @@
 {
-  "apikeyupw": "default",
-  "unpaywallURL": "http://api.unpaywall.org/feed/changefiles",
+  "unpaywall": {
+    "host": "http://api.unpaywall.org",
+    "apikey": "changeme"
+  },
   "redis":  {
     "password": "changeme",
     "host": "redis",

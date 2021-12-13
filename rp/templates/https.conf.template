@@ -20,6 +20,8 @@ server {
 server {
   server_name ${NGINX_HOST};
 
+  client_max_body_size 50M;
+
   listen 443 ssl;
   listen [::]:443 ssl;
 

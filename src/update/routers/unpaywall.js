@@ -4,7 +4,7 @@ const config = require('config');
 
 const logger = require('../lib/logger');
 
-const url = `${config.get('unpaywallURL')}`;
+const unpaywallHost = `${config.get('unpaywall.host')}`;
 
 router.get('/unpaywall/snapshot', async (req, res, next) => {
   let { interval } = req.query;
@@ -22,9 +22,9 @@ router.get('/unpaywall/snapshot', async (req, res, next) => {
   try {
     snapshotsInfo = await axios({
       method: 'get',
-      url,
+      url: unpaywallHost,
       params: {
-        apikey: config.get('apikeyupw'),
+        api_key: config.get('unpaywall.apikey'),
         interval,
       },
       headers: {
@@ -33,9 +33,9 @@ router.get('/unpaywall/snapshot', async (req, res, next) => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request ${url}`);
+    logger.error(`Cannot request ${unpaywallHost}`);
     logger.error(err);
-    return res.status(403).json({ message: `Cannot request ${url}` });
+    return res.status(403).json({ message: `Cannot request ${unpaywallHost}` });
   }
 
   snapshotsInfo = snapshotsInfo.data.list;
