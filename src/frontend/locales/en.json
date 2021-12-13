@@ -1,12 +1,12 @@
 {
   "home": {
-    "title" : "What is ezunpaywall?",
-    "intro": "The ezunpaywall server is an unpaywall mirror hosted at Inist-CNRS and developed by ezTEAM.",
+    "title" : "What is ezUnpaywall?",
+    "intro": "The ezUnpaywall server is an <a href=\"https://unpaywall.org\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM.",
     "metrics": "Metrics",
     "globalMetrics": "Global metrics",
-    "referencedResources": "referenced resources",
-    "openAccess": "Open access",
-    "openAccessStatus": "Statut d'accès libre"
+    "referencedResources": "Referenced resources",
+    "openAccess": "Open Access",
+    "openAccessStatus": "Open Access Status"
   },
   "contact": {
     "contactUs": "Contact us",
@@ -31,9 +31,9 @@
     "settings": "Settings",
     "enrich": "Enrich",
     "continue": "Continue",
-    "explainationLogs": "Indicate here the files you want to enrich by ezunpaywall. The only condition is that they must have a DOI field.",
-    "explainationTestsLogs": "Need files to enrich to validate your installation? <a href=\"{url}\" target=\"_blank\">We provide some on GitHub</a>.",
-    "close": "close",
+    "explainationLogs": "Files you want to be enriched by ezUnpaywall. The only condition is that they contain a DOI field.",
+    "explainationTestsLogs": "Need files to test this service? We provide some on <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
+    "close": "Close",
     "apiKey": "API Key",
     "fileExtension": "File extension",
     "unpaywallAttributes": "Unpaywall attributes",
@@ -45,55 +45,55 @@
     "enrichedLines": "Enriched lines",
     "duration": "Processing time (in seconds)",
     "error": "An error occured",
-    "errorUploadFile": "only .csv and.jsonl file are allowed",
+    "errorUploadFile": "only .csv and.jsonl files are allowed",
     "errorUpload": "Cannot upload file",
     "errorEnrich": "Cannot enrich file",
-    "errorState": "Cannot get state of enrich"
+    "errorState": "Cannot get state of enrichment"
   },
   "graphql": {
-    "constructor": "Constructor of graphql request",
+    "constructor": "GraphQL request builder",
     "apiKey": "API key",
     "settings": "Unpaywall attributes",
-    "request": "Graphql request",
-    "start": "Launch of the request",
+    "request": "GraphQL request",
+    "start": "Launch request",
     "result": "Result",
-    "copyRequest": "Copy graphql request",
+    "copyRequest": "Copy GraphQL request",
     "copyResult": "Copy result",
-    "errorRequest": "Cannot do graphql request",
-    "errorCopyRequest": "Impossible to save graphql request",
-    "errorCopyResult": "Impossible to save response"
+    "errorRequest": "Cannot do GraphQL request",
+    "errorCopyRequest": "Error while saving GraphQL request",
+    "errorCopyResult": "Error while to saving response"
   },
   "unpaywallArgs": {
     "title": "Settings",
     "general": {
-      "data_standard": "Indicates the data collection approaches used for this resource",
-      "doi_url": "The DOI in hyperlink form",
-      "genre": "The type of resource",
+      "data_standard": "Data collection approaches used for this resource",
+      "doi_url": "DOI in hyperlink form",
+      "genre": "Type of resource",
       "is_oa": "Is there an OA copy of this resource",
       "is_paratext": "Is the item an ancillary part of a journal, like a table of contents",
       "journal_is_in_doaj": "Is this resource published in a DOAJ-indexed journal",
       "journal_is_oa": "Is this resource published in a completely OA journal",
       "journal_issn_l": "A single ISSN for the journal publishing this resource",
       "journal_issns": "Any ISSNs assigned to the journal publishing this resource",
-      "journal_name": "The name of the journal publishing this resource",
-      "oa_status": "The OA status, or color, of this resource",
-      "published_date": "The date this resource was published",
-      "publisher": "The name of this resource's publisher",
-      "title": "The title of this resource",
+      "journal_name": "Name of the journal publishing this resource",
+      "oa_status": "OA status, or color, of this resource",
+      "published_date": "Date this resource was published",
+      "publisher": "Name of this resource's publisher",
+      "title": "Title of this resource",
       "updated": "Time when the data for this resource was last updated",
-      "year": "The year this resource was published"
+      "year": "Year this resource was published"
     },
     "oa_location": {
       "evidence": "How unpaywall found this OA location",
-      "host_type": "The type of host that serves this OA location",
+      "host_type": "Type of host that serves this OA location",
       "is_best": "Is this location the best_oa_location for its resource",
-      "license": "The license under which this copy is published",
+      "license": "License under which this copy is published",
       "pmh_id": "OAI-PMH endpoint where we found this location",
       "updated": "Time when the data for this location was last updated",
       "url": "The url_for_pdf if there is one; otherwise landing page URL",
-      "url_for_landing_page": "The URL for a landing page describing this OA copy",
-      "url_for_pdf": "The URL with a PDF version of this OA copy",
-      "version": "The content version accessible at this location"
+      "url_for_landing_page": "URL for a landing page describing this OA copy",
+      "url_for_pdf": "URL with a PDF version of this OA copy",
+      "version": "Content version accessible at this location"
     },
     "z_authors": {
       "family": "Family name",
@@ -114,8 +114,8 @@
     "inUpdate": "Update in progress",
     "noInUpdate": "The data is up to date",
     "close": "Close",
-    "errorState": "Cannot get state of enrich",
-    "errorStatus": "Cannot get state of enrich"
+    "errorState": "Cannot get state of enrichment",
+    "errorStatus": "Cannot get state of enrichment"
   },
   "state": {
     "createdAt": "Created at",
