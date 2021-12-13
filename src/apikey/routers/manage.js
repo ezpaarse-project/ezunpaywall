@@ -250,8 +250,6 @@ router.put('/update', checkAuth, async (req, res, next) => {
  */
 router.delete('/delete/:apikey', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.apikey);
-  console.log(value);
-  console.log(error);
   if (error) return next(boom.badRequest(error.details[0].message));
 
   const apikey = value;

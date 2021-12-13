@@ -53,7 +53,7 @@ router.get('/snapshot', async (req, res, next) => {
  * @return 200 file added
  */
 router.post('/snapshot', upload.single('file'), async (req, res, next) => {
-  if (!req?.file) return next(boom.badRequest('File not send'));
+  if (!req?.file) return next(boom.badRequest('File not sent'));
   return res.status(200).json({ messsage: 'file added' });
 });
 
