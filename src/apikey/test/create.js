@@ -30,7 +30,6 @@ describe('Test: Create apikey', () => {
         allowed: true,
       })
       .set('redis-password', 'changeme');
-
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').to.not.equal(undefined);
@@ -70,8 +69,7 @@ describe('Test: Create apikey', () => {
       })
       .set('redis-password', 'changeme');
 
-    expect(res).have.status(403);
-    expect(res.body).have.property('message').equal('Name [test-user1] already exist');
+    expect(res).have.status(409);
   });
 
   it('Shouldn\'t create apikey because config.access are in wrong format', async () => {
@@ -87,23 +85,21 @@ describe('Test: Create apikey', () => {
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "access" [hello] is in wrong format');
   });
 
-  it('Shouldn\'t create apikey because config.access "hello" doesn\'t exist', async () => {
+  it('Shouldn\'t create apikey because config.access "test" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
       .post('/create')
       .send({
         name: 'test-user1',
-        access: ['hello'],
+        access: ['test'],
         attributes: '*',
         allowed: true,
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "access" [hello] doesn\'t exist');
   });
 
   it('Shouldn\'t create apikey because config.attributes are in wrong format', async () => {
@@ -119,10 +115,9 @@ describe('Test: Create apikey', () => {
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "attributes" [1] is in wrong format');
   });
 
-  it('Shouldn\'t create apikey because config.attributes "hello" doesn\'t exist', async () => {
+  it('Shouldn\'t create apikey because config.attributes "test" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
       .post('/create')
@@ -135,7 +130,6 @@ describe('Test: Create apikey', () => {
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "attributes" [test] doesn\'t exist');
   });
 
   it('Shouldn\'t create apikey because config.allowed are in wrong format', async () => {
@@ -151,7 +145,6 @@ describe('Test: Create apikey', () => {
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "allowed" [1] is in wrong format');
   });
 
   after(async () => {

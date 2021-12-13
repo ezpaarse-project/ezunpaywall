@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs-extra');
 const path = require('path');
 const cors = require('cors');
+const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
 const { pingRedis } = require('./lib/redis');
@@ -19,6 +20,8 @@ fs.ensureDir(path.resolve(outDir));
 fs.ensureDir(path.resolve(outDir, 'states'));
 fs.ensureDir(path.resolve(outDir, 'upload'));
 fs.ensureDir(path.resolve(outDir, 'enriched'));
+
+const isDev = process.env.NODE_ENV === 'development';
 
 const app = express();
 app.use(morgan);
@@ -49,7 +52,15 @@ app.use(routerState);
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
 
-app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
+app.use((err, req, res, next) => {
+  const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
+
+  if (isDev && error.isServer) {
+    error.output.payload.stack = error.stack;
+  }
+
+  res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
+});
 
 app.listen(5000, () => {
   logger.info('ezunpaywall enrich service listening on 5000');

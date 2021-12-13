@@ -443,30 +443,6 @@ describe('Test: daily update route test', () => {
     });
   });
 
-  describe('Day: Don\'t daily update because wrong x-api-key', () => {
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-        .set('x-api-key', 'wrong x-api-key');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
-    });
-
-    it('Should return a error message', async () => {
-      const res = await chai.request(updateURL)
-        .post('/job')
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
-        .set('x-api-key', 'wrong x-api-key');
-
-      expect(res).have.status(401);
-      expect(res?.body).have.property('message').eq('Not authorized');
-    });
-  });
-
   after(async () => {
     await deleteIndex('unpaywall-test');
     await deleteSnapshot('fake1.jsonl.gz');

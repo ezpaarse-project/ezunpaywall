@@ -22,36 +22,19 @@ describe('Test: Delete apikey', () => {
   it('Should delete apikey', async () => {
     const res = await chai
       .request(apikeyURL)
-      .delete('/delete')
-      .send({
-        apikey: 'user',
-      })
+      .delete('/delete/user')
       .set('redis-password', 'changeme');
 
     expect(res).have.status(204);
   });
 
-  it('Shouldn\'t delete apikey because hello apikey doesn\'t exist', async () => {
+  it('Shouldn\'t delete apikey because test apikey doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .delete('/delete')
-      .send({
-        apikey: 'hello',
-      })
+      .delete('/delete/test')
       .set('redis-password', 'changeme');
 
     expect(res).have.status(404);
-    expect(res.body).have.property('message').equal('[hello] apikey doesn\'t exist');
-  });
-
-  it('Shouldn\'t delete apikey because are not send', async () => {
-    const res = await chai
-      .request(apikeyURL)
-      .delete('/delete')
-      .set('redis-password', 'changeme');
-
-    expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('apikey expected');
   });
 
   after(async () => {

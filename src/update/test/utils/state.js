@@ -19,7 +19,7 @@ const getState = async () => {
   } catch (err) {
     console.error(`getState: ${err}`);
   }
-  return res?.body?.state;
+  return res?.body;
 };
 
 module.exports = {

@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
+const boom = require('@hapi/boom');
+const joi = require('joi').extend(require('@hapi/joi-date'));
 const { format } = require('date-fns');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
@@ -33,60 +35,44 @@ const {
  *
  * @return message informing the start of the process
  *
- * @apiError 400 interval cannot be different than [week] and [day]
- * @apiError 400 start date is missing
- * @apiError 400 end date is lower than start date
- * @apiError 400 start date or end are date in bad format, dates in format YYYY-mm-dd
- * @apiError 400 filename is in bad format (accepted [a-zA-Z0-9_.-] patern)
- * @apiError 400 limit can't be lower than offset or 0
- * @apiError 404 File not found
- *
  */
-router.post('/job', checkStatus, checkAuth, async (req, res) => {
-  const jobConfig = {};
+router.post('/job', checkStatus, checkAuth, async (req, res, next) => {
+  const snapshotPattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
 
-  let {
-    index, offset, limit, interval,
-  } = req.body;
+  const { error, value } = joi.object({
+    index: joi.string().trim().default('unpaywall'),
+    offset: joi.number().greater(-1).default(0),
+    limit: joi.number().greater(joi.ref('offset')).default(-1),
+    interval: joi.string().trim().valid('day', 'week').default('day'),
+    filename: joi.string().trim().regex(snapshotPattern),
+    startDate: joi.date().format('YYYY-MM-DD'),
+    endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')),
+    snapshot: joi.boolean(),
+  }).with('endDate', 'startDate').validate(req.body);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  let { startDate, endDate } = value;
 
   const {
-    startDate, filename, endDate, snapshot,
-  } = req.body;
+    index, offset, limit, interval, filename, snapshot,
+  } = value;
 
-  if (!interval) {
-    interval = 'day';
-  }
+  if (startDate) startDate = format(new Date(startDate), 'yyyy-MM-dd');
+  if (endDate) endDate = format(new Date(endDate), 'yyyy-MM-dd');
 
-  const intervals = ['week', 'day'];
-  if (!intervals.includes(interval)) {
-    return res.status(400).json({ message: `${interval} is not accepted, only 'week' and 'day' are accepted` });
-  }
-
-  if (!index) {
-    index = 'unpaywall';
-  }
+  const jobConfig = {};
 
   jobConfig.index = index;
 
   if (filename) {
-    const pattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
-    if (!pattern.test(filename)) {
-      return res.status(400).json({ message: 'Only ".gz" files are accepted' });
+    if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
+      return next(boom.notFound('File not found'));
     }
-    const fileExist = await fs.pathExists(path.resolve(snapshotsDir, filename));
-    if (!fileExist) {
-      return res.status(404).json({ message: 'File not found' });
-    }
-    if (Number(limit) <= Number(offset)) {
-      return res.status(400).json({ message: 'Limit cannot be low than offset or 0' });
-    }
-
-    if (!offset) { offset = 0; }
-    if (!limit) { limit = -1; }
 
     jobConfig.filename = filename;
-    jobConfig.offset = Number(offset);
-    jobConfig.limit = Number(limit);
+    jobConfig.offset = offset;
+    jobConfig.limit = limit;
     insertion(jobConfig);
 
     return res.status(200).json({ message: `Update with ${filename}` });
@@ -120,29 +106,13 @@ router.post('/job', checkStatus, checkAuth, async (req, res) => {
     return res.status(400).json({ message: 'startDate cannot be in the futur' });
   }
 
-  if (endDate && !startDate) {
-    return res.status(400).json({ message: 'startDate is missing' });
-  }
-
   if (startDate && endDate) {
     if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
       return res.status(400).json({ message: 'endDate cannot be lower than startDate' });
     }
   }
 
-  const pattern = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
-
-  if (startDate && !pattern.test(startDate)) {
-    return res.status(400).json({ message: 'startDate are in wrong format, required YYYY-mm-dd' });
-  }
-
-  if (endDate && !pattern.test(endDate)) {
-    return res.status(400).json({ message: 'endDate are in wrong format, required YYYY-mm-dd' });
-  }
-
-  if (startDate && !endDate) {
-    jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
-  }
+  if (startDate && !endDate) jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
 
   insertSnapshotBetweenDates(jobConfig);
 
