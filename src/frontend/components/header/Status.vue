@@ -51,7 +51,7 @@ export default {
           url: '/status'
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error.errorStatus'))
+        this.$store.dispatch('snacks/error', this.$t('status.errorStatus'))
       }
       if (res?.data?.inUpdate) {
         this.inUpdate = true
@@ -73,7 +73,7 @@ export default {
           }
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error.errorState'))
+        this.$store.dispatch('snacks/error', this.$t('status.errorState'))
       }
       this.state = res?.data?.state
     }

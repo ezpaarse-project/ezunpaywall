@@ -1,6 +1,6 @@
 {
   "unpaywall": {
-    "host": "UNPAYWALL_HOST",
+    "host": "UNPAYWALL_URL",
     "apikey": "UNPAYWALL_APIKEY"
   },
   "redis":  {

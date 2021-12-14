@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
-const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_HOST || 'http://localhost:12000';
+const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:12000';
 
 /**
  * ping all services to see if they are available

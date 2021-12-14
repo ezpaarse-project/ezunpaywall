@@ -37,7 +37,7 @@ services:
       - EZUNPAYWALL_NOTIFICATIONS_MACHINE=dev
       # unpaywall
       - UNPAYWALL_APIKEY=default
-      - UNPAYWALL_HOST=http://fakeUnpaywall:12000
+      - UNPAYWALL_URL=http://fakeUnpaywall:12000
       # elastic
       - ELASTICSEARCH_HOST=http://elastic
       - ELASTICSEARCH_PORT=9200

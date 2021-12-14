@@ -33,7 +33,7 @@ const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.EZUNPAYWALL_HOST || 'http://localhost:4000';
+const updateURL = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
 
 describe('Test: download and insert snapshot from unpaywall', () => {
   before(async function () {
