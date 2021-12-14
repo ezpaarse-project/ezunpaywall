@@ -1,12 +1,12 @@
 {
   "home": {
-    "title" : "Qu'est-ce qu'est ezunpaywall ?",
-    "intro": "Le serveur ezunpaywall est un miroir unpaywall hebergé à l'Inist-CNRS et développer par l'ezTEAM. ",
+    "title" : "ezUnpaywall, qu'est-ce que c'est ?",
+    "intro": "Le serveur ezUnpaywall est un miroir <a href=\"https://unpaywall.org/\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM.",
     "metrics": "Métriques",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
     "openAccess": "Accès ouvert",
-    "openAccessStatus": "Open access status"
+    "openAccessStatus": "Statuts Open Access"
   },
   "contact": {
     "contactUs": "Nous contacter",
@@ -17,7 +17,7 @@
     "emailSent": "Votre demande de contact vient d'être envoyée à l'équipe.",
     "failed": "L'envoi du formulaire de contact a échoué.",
     "requestInformation": "Demande d'information",
-    "bugReport": "Rapporter un bug",
+    "bugReport": "Signaler un bug",
     "emailIsRequired": "L'adresse électronique est requise",
     "emailMustBeValid": "L'adresse électronique doit être valide",
     "contentIsRequired": "Un message est requis",
@@ -31,69 +31,69 @@
     "settings": "Paramètres",
     "enrich": "Enrichissement",
     "continue": "Continuer",
-    "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezunpaywall. La seul condition est qu'il faut qu'ils aient un champ DOI.",
-    "explainationTestsLogs": "Besoin de fichiers à enrichir pour valider votre installation ? Nous en <a href=\"{url}\" target=\"_blank\">mettons à disposition sur GitHub</a>.",
+    "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezUnpaywall. Ils doivent simplement contenir un champ DOI.",
+    "explainationTestsLogs": "Besoin de fichiers à enrichir pour tester ce service ? Nous en mettons à disposition sur <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
     "close": "Fermer",
-    "apiKey": "API Key",
+    "apiKey": "Clé d'API",
     "fileExtension": "Extension de fichier",
     "unpaywallAttributes": "Attributs unpaywall",
-    "startProcess": "Start enrichment",
+    "startProcess": "Démarrer l'enrichissement",
     "download": "Télécharger le fichier enrichi",
     "inProcess": "Enrichissement en cours",
     "end": "Enrichissement terminé",
     "readLines": "Lignes lues",
     "enrichedLines": "Lignes enrichies",
-    "duration": "Temps de traitement (en seconde)",
-    "error": "Une erreur est survenu",
-    "errorUploadFile": "Seul les fichiers .csv et .jsonl sont autorisé",
-    "errorUpload": "Erreur lors de l'envoie du fichier",
+    "duration": "Temps de traitement (en secondes)",
+    "error": "Une erreur est survenue",
+    "errorUploadFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
+    "errorUpload": "Erreur lors de l'envoi du fichier",
     "errorEnrich": "Erreur dans l'enrichissement",
     "errorState": "Impossible d'obtenir l'état"
   },
   "graphql": {
-    "constructor": "Constructeur de requête graphql",
+    "constructor": "Constructeur de requête GraphQL",
     "apiKey": "clé d'API",
     "settings": "Attributs unpaywall",
-    "request": "Requête graphql",
+    "request": "Requête GraphQL",
     "start": "Lancement de la requête",
     "result": "Résultat",
-    "copyRequest": "Requête graphql copié",
+    "copyRequest": "Requête GraphQL copié",
     "copyResult": "Résultat copié",
-    "errorRequest": "Impossible de faire la requête graphql",
-    "errorCopyRequest": "Impossible de sauvegarder la requête graphql",
+    "errorRequest": "Impossible de lancer la requête graphql",
+    "errorCopyRequest": "Impossible de sauvegarder la requête GraphQL",
     "errorCopyResult": "Impossible de sauvegarder la réponse"
   },
   "unpaywallArgs": {
     "title": "Paramètres",
     "general": {
-      "data_standard": "Indique les approches de collecte de données utilisées pour cette ressource",
-      "doi_url": "Le DOI sous forme de lien hypertexte",
-      "genre": "Le type de ressource",
-      "is_oa": "S'il existe une copie OA de cette ressource",
-      "is_paratext": "Si l'élément est-il une partie auxiliaire d'un journal, comme une table des matières",
-      "journal_is_in_doaj": "Si cette ressource est-elle publiée dans une revue indexée par le DOAJ",
-      "journal_is_oa": "Si cette ressource est-elle publiée dans une revue entièrement en libre accès",
+      "data_standard": "Approches de collectes de données utilisées pour cette ressource",
+      "doi_url": "DOI sous forme de lien hypertexte",
+      "genre": "Type de ressource",
+      "is_oa": "Existe-t-il une version OA de cette ressource",
+      "is_paratext": "Cet élément est-il une partie auxiliaire d'un journal, comme une table des matières",
+      "journal_is_in_doaj": "Cette ressource est-elle publiée dans une revue indexée par le DOAJ",
+      "journal_is_oa": "Cette ressource est-elle publiée dans une revue entièrement en libre accès",
       "journal_issn_l": "Un seul ISSN pour la revue qui publie cette ressource",
       "journal_issns": "Tous les ISSN attribués à la revue publiant cette ressource",
-      "journal_name": "Le nom de la revue qui publie cette ressource",
-      "oa_status": "Le statut OA, ou la couleur, de cette ressource",
-      "published_date": "La date à laquelle cette ressource a été publiée",
-      "publisher": "Le nom de l'éditeur de cette ressource",
-      "title": "Le titre de cette ressource",
-      "updated": "Heure de la dernière mise à jour des données de cette ressource",
-      "year": "L'année de publication de cette ressource"
+      "journal_name": "Nom de la revue qui publie cette ressource",
+      "oa_status": "Statut OA, ou la couleur, de cette ressource",
+      "published_date": "Date à laquelle cette ressource a été publiée",
+      "publisher": "Nom de l'éditeur de cette ressource",
+      "title": "Titre de cette ressource",
+      "updated": "Heure de la dernière mise à jour des données pour cette ressource",
+      "year": "Année de publication de cette ressource"
     },
     "oa_location": {
       "evidence": "Comment Unpaywall a trouvé cet emplacement OA",
-      "host_type": "Le type d'hôte qui dessert cet emplacement OA",
-      "is_best": "Si cet emplacement est-il le meilleur_oa_location pour sa ressource",
-      "license": "La licence sous laquelle cette copie est publiée",
+      "host_type": "Type d'hôte qui dessert cet emplacement OA",
+      "is_best": "Cet emplacement est-il le best_oa_location pour la ressource",
+      "license": "Licence sous laquelle cette copie est publiée",
       "pmh_id": "Point de terminaison OAI-PMH où nous avons trouvé cet emplacement",
       "updated": "Heure de la dernière mise à jour des données de cet emplacement",
-      "url": "L'URL d'une page de destination décrivant cette copie OA",
-      "url_for_landing_page": "L'URL d'une page de destination décrivant cette copie OA",
-      "url_for_pdf": "L'URL avec une version PDF de cette copie OA",
-      "version": "La version du contenu accessible à cet emplacement"
+      "url": "URL d'une page de destination décrivant cette copie OA",
+      "url_for_landing_page": "URL d'une page de destination décrivant cette copie OA",
+      "url_for_pdf": "URL avec une version PDF de cette copie OA",
+      "version": "Version du contenu accessible à cet emplacement"
     },
     "z_authors": {
       "family": "Nom de famille",
@@ -105,7 +105,7 @@
   "fileSelector": {
     "filename": "Nom des fichiers",
     "size": "Taille",
-    "clickToAdd": "Cliquez ou déposez pour ajouter",
+    "clickToAdd": "Cliquer ou déposer pour ajouter",
     "removeList": "Supprimer la liste",
     "selectedFiles": "fichiers sélectionnés",
     "total": "au total"
@@ -115,7 +115,7 @@
     "noInUpdate": "Les données sont à jour",
     "close": "Fermer",
     "errorState": "Impossible d'obtenir l'état",
-    "errorStatus": "Impossible d'obtenir le status"
+    "errorStatus": "Impossible d'obtenir le statut"
   },
   "state": {
     "createdAt": "Créé le",
@@ -125,16 +125,16 @@
     "percent": "Pourcentage",
     "file": "Fichier",
     "linesRead": "Lignes lues",
-    "status": "Status"
+    "status": "Statut"
   },
   "header": {
-    "help": "Les données du miroir unpaywall sont mit à jour quotidiennement à 12:30",
+    "help": "Les données du miroir Unpaywall sont mis à jour quotidiennement à 12:30",
     "close": "Close"
   },
   "drawer": {
     "home": "Accueil",
     "enrich": "Enrichissement",
-    "graphql": "Graphql",
+    "graphql": "GraphQL",
     "language": "Langue",
     "contact": "Nous contacter"
   },
