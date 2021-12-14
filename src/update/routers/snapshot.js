@@ -2,6 +2,8 @@ const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
 const multer = require('multer');
+const boom = require('@hapi/boom');
+const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
   deleteSnapshot,
@@ -25,13 +27,18 @@ const storage = multer.diskStorage(
 const upload = multer({ storage });
 
 router.get('/snapshot', async (req, res, next) => {
-  const { latest } = req.query;
+  const { error, value } = joi.boolean().default(false).validate(req.query);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  const latest = value;
+
   if (latest) {
     let latestSnapshot;
     try {
       latestSnapshot = await getMostRecentFile(snapshotsDir);
     } catch (err) {
-      return next(err);
+      return next(boom.boomify(err));
     }
     return res.status(200).json(latestSnapshot?.filename);
   }
@@ -45,11 +52,8 @@ router.get('/snapshot', async (req, res, next) => {
  *
  * @return 200 file added
  */
-router.post('/snapshot', upload.single('file'), async (req, res) => {
-  if (!req?.file) {
-    return res.status(403).json({ messsage: 'file not send' });
-  }
-  // TODO return name of file
+router.post('/snapshot', upload.single('file'), async (req, res, next) => {
+  if (!req?.file) return next(boom.badRequest('File not sent'));
   return res.status(200).json({ messsage: 'file added' });
 });
 
@@ -60,19 +64,22 @@ router.post('/snapshot', upload.single('file'), async (req, res) => {
  * @return 200 <filename> deleted
  */
 router.delete('/snapshot/:filename', async (req, res, next) => {
-  const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ message: 'filename expected' });
+  const { error, value } = joi.string().required().validate(req.params.filename);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  const filename = value;
+
+  if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
+    return next(boom.notFound('File not found'));
   }
-  const fileExist = await fs.pathExists(path.resolve(snapshotsDir, filename));
-  if (!fileExist) {
-    return res.status(404).json({ message: 'File not found' });
-  }
+
   try {
     await deleteSnapshot(filename);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
+
   return res.status(200).json({ messsage: `${filename} deleted` });
 });
 

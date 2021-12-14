@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const path = require('path');
+const boom = require('@hapi/boom');
+const joi = require('joi');
 const fs = require('fs-extra');
 
 const {
@@ -31,65 +33,60 @@ async function orderRecentFiles(dir) {
     .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
 }
 
-/**
-* get the most recent file in a dir
-* @param {String} dir - dir path
-* @returns {String} most recent file path
-*/
 const getMostRecentFile = async (dir) => {
   const files = await orderRecentFiles(dir);
   return Array.isArray(files) ? files[0] : undefined;
 };
 
-/**
- * get the most recent state in JSON format
- *
- * @return state
- */
 router.get('/state', async (req, res, next) => {
-  let latestFile;
-  try {
-    latestFile = await getMostRecentFile(statesDir);
-  } catch (err) {
-    return next(err);
+  const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  const latest = value;
+
+  if (latest) {
+    let latestFile;
+    try {
+      latestFile = await getMostRecentFile(statesDir);
+    } catch (err) {
+      return next(boom.boomify(err));
+    }
+    let state;
+    try {
+      state = await getState(latestFile?.filename);
+    } catch (err) {
+      return next(boom.boomify(err));
+    }
+    return res.status(200).json(state);
   }
-  let state;
+  let states;
+
   try {
-    state = await getState(latestFile?.filename);
+    states = await fs.readdir(statesDir);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
 
-  return res.status(200).json({ state });
+  return res.status(200).json(states);
 });
 
-/**
- * get state in JSON format
- *
- * @apiParam PARAMS filename - state
- *
- * @apiError 400 id expected
- * @apiError 404 File not found
- *
- * @return state
- */
 router.get('/state/:filename', async (req, res, next) => {
   const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ message: 'filename expected' });
-  }
-  const fileExist = await fs.pathExists(path.resolve(statesDir, filename));
-  if (!fileExist) {
-    return res.status(404).json({ message: 'File not found' });
+  const { error } = joi.string().trim().required().validate(filename);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  if (!await fs.pathExists(path.resolve(statesDir, filename))) {
+    return next(boom.notFound(`"${filename}" not found`));
   }
 
   let state;
   try {
     state = await getState(filename);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
-  return res.status(200).json({ state });
+  return res.status(200).json(state);
 });
 
 module.exports = router;

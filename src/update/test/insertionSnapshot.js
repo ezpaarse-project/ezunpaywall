@@ -2,6 +2,7 @@
 const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const { format } = require('date-fns');
 
 const {
   countDocuments,
@@ -91,11 +92,11 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(state.steps[0]).have.property('percent').equal(100);
       expect(state.steps[1]).have.property('took').to.not.equal(undefined);
       expect(state.steps[1]).have.property('status').equal('success');
-      expect(state.steps[1]).have.property('file').equal('unpaywall-2021-11-30.jsonl.gz');
+      expect(state.steps[1]).have.property('file').equal(`unpaywall-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
 
       expect(state.steps[1]).have.property('task').equal('insert');
       expect(state.steps[1]).have.property('index').equal('unpaywall-test');
-      expect(state.steps[1]).have.property('file').equal('unpaywall-2021-11-30.jsonl.gz');
+      expect(state.steps[1]).have.property('file').equal(`unpaywall-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
       expect(state.steps[1]).have.property('percent').equal(100);
       expect(state.steps[1]).have.property('linesRead').equal(2150);
       expect(state.steps[1]).have.property('insertedDocs').equal(2150);
@@ -120,11 +121,11 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(report.steps[0]).have.property('percent').equal(100);
       expect(report.steps[1]).have.property('took').to.not.equal(undefined);
       expect(report.steps[1]).have.property('status').equal('success');
-      expect(report.steps[1]).have.property('file').equal('unpaywall-2021-11-30.jsonl.gz');
+      expect(report.steps[1]).have.property('file').equal(`unpaywall-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
 
       expect(report.steps[1]).have.property('task').equal('insert');
       expect(report.steps[1]).have.property('index').equal('unpaywall-test');
-      expect(report.steps[1]).have.property('file').equal('unpaywall-2021-11-30.jsonl.gz');
+      expect(report.steps[1]).have.property('file').equal(`unpaywall-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
       expect(report.steps[1]).have.property('percent').equal(100);
       expect(report.steps[1]).have.property('linesRead').equal(2150);
       expect(report.steps[1]).have.property('insertedDocs').equal(2150);

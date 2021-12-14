@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const boom = require('@hapi/boom');
 
 const { sendMailContact } = require('../bin/mail');
 
@@ -28,7 +29,7 @@ router.post('/contact', async (req, res, next) => {
   try {
     sendMailContact(email, subject, message);
   } catch (err) {
-    return next(err);
+    return next(boom.boomify(err));
   }
   return res.status(202).json({});
 });

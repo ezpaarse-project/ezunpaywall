@@ -25,8 +25,7 @@ describe('Test: Get config of apikey', () => {
   it('Should get config of apikey', async () => {
     const res = await chai
       .request(apikeyURL)
-      .get('/config')
-      .set('x-api-key', 'user');
+      .get('/config/user');
 
     expect(res).have.status(200);
     expect(res.body).have.property('name').equal('user');
@@ -52,22 +51,11 @@ describe('Test: Get config of apikey', () => {
     expect(equal).equal(true);
   });
 
-  it('Shouldn\'t get config of apikey because this apikey doesn\'t exist', async () => {
+  it('Shouldn\'t get config of apikey because apikey "test" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .get('/config')
-      .set('x-api-key', 'hello');
+      .get('/config/test');
 
     expect(res).have.status(404);
-    expect(res.body).have.property('message').equal('[hello] apikey doesn\'t exist');
-  });
-
-  it('Shouldn\'t get config of apikey because no apikey are send', async () => {
-    const res = await chai
-      .request(apikeyURL)
-      .get('/config');
-
-    expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('apikey expected');
   });
 });

@@ -28,19 +28,17 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          name: 'new-name',
-        },
+        name: 'new-name',
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').equal('user');
-    expect(res.body.config).have.property('name').equal('new-name');
-    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
-    expect(res.body.config).have.property('attributes').equal('*');
-    expect(res.body.config).have.property('allowed').equal(true);
+    expect(res.body).have.property('name').equal('new-name');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('allowed').equal(true);
   });
 
   it('Should update config.access of apikey', async () => {
@@ -49,20 +47,18 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          access: ['update'],
-        },
+        access: ['update'],
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').equal('user');
-    expect(res.body.config).have.property('name').equal('user');
-    expect(res.body.config).have.property('access').to.be.an('array').eql(['update']);
-    expect(res.body.config.access[0]).equal('update');
-    expect(res.body.config).have.property('attributes').equal('*');
-    expect(res.body.config).have.property('allowed').equal(true);
+    expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('access').to.be.an('array').eql(['update']);
+    expect(res.body.access[0]).equal('update');
+    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('allowed').equal(true);
   });
 
   it('Should update config.attributes of apikey', async () => {
@@ -71,19 +67,17 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          attributes: 'doi',
-        },
+        attributes: 'doi',
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').equal('user');
-    expect(res.body.config).have.property('name').equal('user');
-    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
-    expect(res.body.config).have.property('attributes').equal('doi');
-    expect(res.body.config).have.property('allowed').equal(true);
+    expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').equal('doi');
+    expect(res.body).have.property('allowed').equal(true);
   });
 
   it('Should update config.allowed to false of apikey', async () => {
@@ -92,19 +86,17 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          allowed: false,
-        },
+        allowed: false,
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').equal('user');
-    expect(res.body.config).have.property('name').equal('user');
-    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
-    expect(res.body.config).have.property('attributes').equal('*');
-    expect(res.body.config).have.property('allowed').equal(false);
+    expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('allowed').equal(false);
   });
 
   it('Should update config.allowed to true of apikey', async () => {
@@ -113,19 +105,17 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'notAllowed',
-        config: {
-          allowed: true,
-        },
+        allowed: true,
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').equal('notAllowed');
-    expect(res.body.config).have.property('name').equal('notAllowed');
-    expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql', 'enrich', 'update']);
-    expect(res.body.config).have.property('attributes').equal('*');
-    expect(res.body.config).have.property('allowed').equal(true);
+    expect(res.body).have.property('name').equal('notAllowed');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('allowed').equal(true);
   });
 
   it('Should update config.name and config.access of apikey', async () => {
@@ -134,20 +124,18 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          name: 'new-user',
-          access: ['update'],
-        },
+        name: 'new-user',
+        access: ['update'],
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').equal('user');
-    expect(res.body.config).have.property('name').equal('new-user');
-    expect(res.body.config).have.property('access').to.be.an('array').eql(['update']);
-    expect(res.body.config).have.property('attributes').equal('*');
-    expect(res.body.config).have.property('allowed').equal(true);
+    expect(res.body).have.property('name').equal('new-user');
+    expect(res.body).have.property('access').to.be.an('array').eql(['update']);
+    expect(res.body).have.property('attributes').equal('*');
+    expect(res.body).have.property('allowed').equal(true);
   });
 
   it('Shouldn\'t update config.access because wrong format', async () => {
@@ -156,14 +144,11 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          access: 'hello',
-        },
+        access: 'hello',
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "access" [hello] is in wrong format');
   });
 
   it('Shouldn\'t update config.access because "hello" doesn\'t exist', async () => {
@@ -172,14 +157,11 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          access: ['hello'],
-        },
+        access: ['hello'],
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "access" [hello] doesn\'t exist');
   });
 
   it('Shouldn\'t update config.attributes because wrong format', async () => {
@@ -188,14 +170,11 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          attributes: 1,
-        },
+        attributes: 1,
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "attributes" [1] is in wrong format');
   });
 
   it('Shouldn\'t update config.attributes because "hello" doesn\'t exist', async () => {
@@ -204,14 +183,11 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          attributes: 'hello',
-        },
+        attributes: 'hello',
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "attributes" [hello] doesn\'t exist');
   });
 
   it('Shouldn\'t update config.allowed because "1" doesn\'t exist', async () => {
@@ -220,14 +196,11 @@ describe('Test: Update apikey', () => {
       .put('/update')
       .send({
         apikey: 'user',
-        config: {
-          allowed: 1,
-        },
+        allowed: 1,
       })
       .set('redis-password', 'changeme');
 
     expect(res).have.status(400);
-    expect(res.body).have.property('message').equal('argument "allowed" [1] is in wrong format');
   });
 
   after(async () => {
