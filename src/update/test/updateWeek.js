@@ -5,12 +5,10 @@ const chaiHttp = require('chai-http');
 
 const {
   countDocuments,
-  deleteIndex,
 } = require('./utils/elastic');
 
 const {
   addSnapshot,
-  deleteSnapshot,
   updateChangeFile,
 } = require('./utils/snapshot');
 
@@ -30,6 +28,13 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
+const reset = require('./utils/reset');
+
 chai.use(chaiHttp);
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
@@ -38,34 +43,29 @@ describe('Week: Test: weekly update route test', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await updateChangeFile('week');
   });
 
   describe('Do weekly update', () => {
     before(async () => {
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteSnapshot('fake3.jsonl.gz');
-      await deleteIndex('unpaywall-test');
+      await reset();
     });
 
     // test response
-    it('Should return the process start', async () => {
+    it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/period')
         .send({
           index: 'unpaywall-test',
           interval: 'week',
         })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
         .set('x-api-key', 'admin');
 
-      expect(res).have.status(200);
-      expect(res.body.message).be.equal('Weekly update started');
+      expect(res).have.status(202);
     });
 
-    // test insertion
     it('Should insert 50 data', async () => {
       let isUpdate = true;
       while (isUpdate) {
@@ -76,7 +76,6 @@ describe('Week: Test: weekly update route test', () => {
       expect(count).to.equal(50);
     });
 
-    // test state
     it('Should get state with all informations from the weekly update', async () => {
       const state = await getState();
 
@@ -87,7 +86,7 @@ describe('Week: Test: weekly update route test', () => {
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
 
-      expect(state.steps[0]).have.property('task').be.equal('askUnpaywall');
+      expect(state.steps[0]).have.property('task').be.equal('getChangefiles');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
       expect(state.steps[0]).have.property('status').be.equal('success');
 
@@ -111,7 +110,6 @@ describe('Week: Test: weekly update route test', () => {
       expect(state.done).be.equal(true);
     });
 
-    // test report
     it('Should get report with all informations from the weekly update', async () => {
       const report = await getReport();
 
@@ -122,7 +120,7 @@ describe('Week: Test: weekly update route test', () => {
       expect(report).have.property('error').equal(false);
       expect(report).have.property('took').to.not.equal(undefined);
 
-      expect(report.steps[0]).have.property('task').be.equal('askUnpaywall');
+      expect(report.steps[0]).have.property('task').be.equal('getChangefiles');
       expect(report.steps[0]).have.property('took').to.not.equal(undefined);
       expect(report.steps[0]).have.property('status').be.equal('success');
 
@@ -145,40 +143,28 @@ describe('Week: Test: weekly update route test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall-test');
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteSnapshot('fake3.jsonl.gz');
+      await reset();
     });
   });
 
   describe('Week: Do a weekly update but the file is already installed', () => {
     before(async () => {
-      await deleteIndex('unpaywall-test');
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteSnapshot('fake3.jsonl.gz');
+      await reset();
       await addSnapshot('fake1.jsonl.gz');
     });
 
-    // test return message
-    it('Should return the process start', async () => {
+    it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/period')
         .send({
           index: 'unpaywall-test',
           interval: 'week',
         })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
         .set('x-api-key', 'admin');
 
-      // test response
-      expect(res).have.status(200);
-      expect(res.body).have.property('message').equal('Weekly update started');
+      expect(res).have.status(202);
     });
 
-    // test insertion
     it('should insert 50 data', async () => {
       let isUpdate = true;
       while (isUpdate) {
@@ -189,7 +175,6 @@ describe('Week: Test: weekly update route test', () => {
       expect(count).to.equal(50);
     });
 
-    // test state
     it('Should get state with all informations from the weekly update', async () => {
       const state = await getState();
 
@@ -200,7 +185,7 @@ describe('Week: Test: weekly update route test', () => {
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
 
-      expect(state.steps[0]).have.property('task').equal('askUnpaywall');
+      expect(state.steps[0]).have.property('task').equal('getChangefiles');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
       expect(state.steps[0]).have.property('status').equal('success');
 
@@ -215,7 +200,6 @@ describe('Week: Test: weekly update route test', () => {
       expect(state.steps[1]).have.property('status').equal('success');
     });
 
-    // test Report
     it('Should get report with all informations from the weekly update', async () => {
       const report = await getReport();
 
@@ -226,7 +210,7 @@ describe('Week: Test: weekly update route test', () => {
       expect(report).have.property('error').equal(false);
       expect(report).have.property('took').to.not.equal(undefined);
 
-      expect(report.steps[0]).have.property('task').equal('askUnpaywall');
+      expect(report.steps[0]).have.property('task').equal('getChangefiles');
       expect(report.steps[0]).have.property('took').to.not.equal(undefined);
       expect(report.steps[0]).have.property('status').equal('success');
 
@@ -243,17 +227,13 @@ describe('Week: Test: weekly update route test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall-test');
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteSnapshot('fake3.jsonl.gz');
+      await reset();
     });
   });
 
   after(async () => {
-    await deleteIndex('unpaywall-test');
-    await deleteSnapshot('fake1.jsonl.gz');
-    await deleteSnapshot('fake2.jsonl.gz');
-    await deleteSnapshot('fake3.jsonl.gz');
+    await reset();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

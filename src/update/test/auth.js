@@ -3,7 +3,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const {
-  deleteSnapshot,
+  deleteFile,
   updateChangeFile,
 } = require('./utils/snapshot');
 
@@ -19,6 +19,11 @@ const {
   checkIfInUpdate,
 } = require('./utils/status');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 chai.use(chaiHttp);
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
@@ -27,43 +32,41 @@ describe('Test: auth service in update service', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await updateChangeFile('week');
-    await deleteSnapshot('fake1.jsonl.gz');
-    await deleteSnapshot('fake2.jsonl.gz');
-    await deleteSnapshot('fake3.jsonl.gz');
+    await deleteFile('fake1.jsonl.gz');
+    await deleteFile('fake2.jsonl.gz');
+    await deleteFile('fake3.jsonl.gz');
     await deleteIndex('unpaywall-test');
   });
 
   describe('Test with update API key', () => {
-    it('Should return a succes message', async () => {
+    it('Should return status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/period')
         .send({
           index: 'unpaywall-test',
-          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
         .set('x-api-key', 'admin');
 
-      // test insertion
       let isUpdate = true;
       while (isUpdate) {
         await new Promise((resolve) => setTimeout(resolve, 100));
         isUpdate = await checkIfInUpdate();
       }
-      expect(res).have.status(200);
+      expect(res).have.status(202);
     });
   });
 
   describe('Test without API key', () => {
-    it('Should return a statusCode 401', async () => {
+    it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/period')
         .send({
-          filename: 'fake1.jsonl.gz',
           index: 'unpaywall-test',
-          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json');
@@ -73,13 +76,11 @@ describe('Test: auth service in update service', () => {
   });
 
   describe('Test with wrong API key', () => {
-    it('Should return a statusCode 401', async () => {
+    it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/period')
         .send({
-          filename: 'fake1.jsonl.gz',
           index: 'unpaywall-test',
-          interval: 'day',
         })
         .query({ index: 'unpaywall-test' })
         .set('Access-Control-Allow-Origin', '*')
@@ -91,12 +92,11 @@ describe('Test: auth service in update service', () => {
   });
 
   describe('Test with enrich API key', () => {
-    it('Should return a statusCode 401', async () => {
+    it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/period')
         .send({
           index: 'unpaywall-test',
-          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -107,12 +107,11 @@ describe('Test: auth service in update service', () => {
   });
 
   describe('Test with graphql API key', () => {
-    it('Should return a statusCode 401', async () => {
+    it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/period')
         .send({
           index: 'unpaywall-test',
-          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -123,12 +122,11 @@ describe('Test: auth service in update service', () => {
   });
 
   describe('Test with notAllowed API key', () => {
-    it('Should return a statusCode 401', async () => {
+    it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/period')
         .send({
           index: 'unpaywall-test',
-          interval: 'day',
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
@@ -139,8 +137,10 @@ describe('Test: auth service in update service', () => {
   });
   after(async () => {
     await deleteIndex('unpaywall-test');
-    await deleteSnapshot('fake1.jsonl.gz');
-    await deleteSnapshot('fake2.jsonl.gz');
-    await deleteSnapshot('fake3.jsonl.gz');
+    await deleteFile('fake1.jsonl.gz');
+    await deleteFile('fake2.jsonl.gz');
+    await deleteFile('fake3.jsonl.gz');
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

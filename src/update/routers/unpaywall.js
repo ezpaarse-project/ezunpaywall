@@ -1,12 +1,10 @@
 const router = require('express').Router();
-const axios = require('axios');
-const config = require('config');
 const joi = require('joi');
 const boom = require('@hapi/boom');
 
-const unpaywallHost = `${config.get('unpaywall.host')}`;
+const { getChangefiles } = require('../bin/unpaywall');
 
-router.get('/unpaywall/snapshot', async (req, res, next) => {
+router.get('/unpaywall/changefiles', async (req, res, next) => {
   const { error, value } = joi.string().trim().valid('week', 'day').default('day')
     .validate(req.body.interval);
 
@@ -15,26 +13,12 @@ router.get('/unpaywall/snapshot', async (req, res, next) => {
   const interval = value;
 
   let snapshotsInfo;
-  try {
-    snapshotsInfo = await axios({
-      method: 'get',
-      url: unpaywallHost,
-      params: {
-        api_key: config.get('unpaywall.apikey'),
-        interval,
-      },
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch (err) {
-    return next(boom.unauthorized());
-  }
 
-  snapshotsInfo = snapshotsInfo.data.list;
-  snapshotsInfo = snapshotsInfo
-    .filter((file) => file.filetype === 'jsonl');
+  try {
+    snapshotsInfo = await getChangefiles(interval, new Date(0), new Date());
+  } catch (err) {
+    return next(boom.boomify(err));
+  }
 
   const { latest } = req.query;
   if (latest) {

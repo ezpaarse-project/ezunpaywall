@@ -19,7 +19,7 @@ const getReport = async () => {
   } catch (err) {
     console.error(`getReport: ${err}`);
   }
-  return res?.body?.report;
+  return res?.body;
 };
 
 module.exports = {

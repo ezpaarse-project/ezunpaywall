@@ -4,6 +4,8 @@ const router = require('express').Router();
 const fs = require('fs-extra');
 const boom = require('@hapi/boom');
 
+const logger = require('../lib/logger');
+
 const updateChangefilesExample = require('../bin/changefiles');
 
 router.patch('/changefiles', async (req, res, next) => {
@@ -24,22 +26,22 @@ router.patch('/changefiles', async (req, res, next) => {
   try {
     await fs.ensureFile(changefilesPath);
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     return next(boom.boomify(err));
   }
 
   try {
     await fs.writeFile(changefilesPath, JSON.stringify(changefilesExample, null, 2), 'utf8');
   } catch (err) {
-    console.error(`Cannot write ${JSON.stringify(changefilesExample, null, 2)} in file "${changefilesPath}"`);
-    console.error(err);
+    logger.error(`Cannot write ${JSON.stringify(changefilesExample, null, 2)} in file "${changefilesPath}"`);
+    logger.error(err);
     return next(boom.boomify(err));
   }
 
   try {
     await updateChangefilesExample(interval);
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     return next(boom.boomify(err));
   }
 

@@ -335,7 +335,7 @@ export default {
             url: `/state/${data.id}.json`,
             responseType: 'json'
           })
-          this.state = state?.data?.state
+          this.state = state?.data
           // TODO use computed
           if (Number.isInteger(this.state?.createdAt)) {
             this.time = Math.round((Date.now() - this.state?.createdAt) / 1000)
@@ -347,7 +347,7 @@ export default {
           return this.errored()
         }
         await new Promise(resolve => setTimeout(resolve, 1000))
-      } while (!state?.data?.state?.done)
+      } while (!state?.data?.done)
 
       // done
       this.inProcess = false

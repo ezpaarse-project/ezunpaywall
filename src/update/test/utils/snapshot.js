@@ -14,12 +14,12 @@ const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:12000';
  * delete a snapshot in ezunpaywall
  * @param {String} filename name of file needed to be delete on ezunpaywall
  */
-const deleteSnapshot = async (filename) => {
+const deleteFile = async (filename) => {
   try {
     await chai.request(updateURL)
       .delete(`/snapshot/${filename}`);
   } catch (err) {
-    console.error(`deleteSnapshot: ${err}`);
+    console.error(`Cannot request: DELETE ${updateURL}/snapshot/${filename}`);
   }
 };
 
@@ -52,6 +52,6 @@ const updateChangeFile = async (interval) => {
 
 module.exports = {
   addSnapshot,
-  deleteSnapshot,
+  deleteFile,
   updateChangeFile,
 };

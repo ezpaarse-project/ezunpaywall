@@ -8,6 +8,11 @@ const mappingUnpaywall = require('./mapping/unpaywall.json');
 chai.use(chaiHttp);
 
 const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
+const {
   createIndex,
   deleteIndex,
   insertDataUnpaywall,
@@ -27,6 +32,8 @@ describe('Test: auth service in enrich service', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);
     await insertDataUnpaywall();
@@ -330,5 +337,6 @@ describe('Test: auth service in enrich service', () => {
   });
   after(async () => {
     await deleteIndex('unpaywall-test');
+    await deleteAllAPIKey();
   });
 });

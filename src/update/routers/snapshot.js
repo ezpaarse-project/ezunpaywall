@@ -6,7 +6,7 @@ const boom = require('@hapi/boom');
 const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
-  deleteSnapshot,
+  deleteFile,
 } = require('../bin/snapshot');
 
 const {
@@ -27,7 +27,7 @@ const storage = multer.diskStorage(
 const upload = multer({ storage });
 
 router.get('/snapshot', async (req, res, next) => {
-  const { error, value } = joi.boolean().default(false).validate(req.query);
+  const { error, value } = joi.boolean().default(false).validate(req.query.latest);
 
   if (error) return next(boom.badRequest(error.details[0].message));
 
@@ -75,7 +75,7 @@ router.delete('/snapshot/:filename', async (req, res, next) => {
   }
 
   try {
-    await deleteSnapshot(filename);
+    await deleteFile(filename);
   } catch (err) {
     return next(boom.boomify(err));
   }

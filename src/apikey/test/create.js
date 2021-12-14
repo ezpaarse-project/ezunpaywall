@@ -3,10 +3,11 @@ const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
 const ping = require('./utils/ping');
+
 const {
-  load,
-  deleteAll,
-} = require('./utils/redis');
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
 
 chai.use(chaiHttp);
 
@@ -15,8 +16,8 @@ const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 describe('Test: Create apikey', () => {
   before(async () => {
     await ping();
-    await deleteAll();
-    await load();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 
   it('Should create apikey with all config', async () => {
@@ -26,7 +27,7 @@ describe('Test: Create apikey', () => {
       .send({
         name: 'test-user1',
         access: ['graphql'],
-        attributes: '*',
+        attributes: ['*'],
         allowed: true,
       })
       .set('redis-password', 'changeme');
@@ -35,7 +36,7 @@ describe('Test: Create apikey', () => {
     expect(res.body).have.property('apikey').to.not.equal(undefined);
     expect(res.body.config).have.property('name').equal('test-user1');
     expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql']);
-    expect(res.body.config).have.property('attributes').equal('*');
+    expect(res.body.config).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body.config).have.property('allowed').equal(true);
   });
 
@@ -53,7 +54,7 @@ describe('Test: Create apikey', () => {
     expect(res.body).have.property('apikey').to.not.equal(undefined);
     expect(res.body.config).have.property('name').equal('test-user2');
     expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql']);
-    expect(res.body.config).have.property('attributes').equal('*');
+    expect(res.body.config).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body.config).have.property('allowed').equal(true);
   });
 
@@ -64,7 +65,7 @@ describe('Test: Create apikey', () => {
       .send({
         name: 'test-user1',
         access: ['graphql'],
-        attributes: '*',
+        attributes: ['*'],
         allowed: true,
       })
       .set('redis-password', 'changeme');
@@ -79,7 +80,7 @@ describe('Test: Create apikey', () => {
       .send({
         name: 'test-user1',
         access: 'hello',
-        attributes: '*',
+        attributes: ['*'],
         allowed: true,
       })
       .set('redis-password', 'changeme');
@@ -94,7 +95,7 @@ describe('Test: Create apikey', () => {
       .send({
         name: 'test-user1',
         access: ['test'],
-        attributes: '*',
+        attributes: ['*'],
         allowed: true,
       })
       .set('redis-password', 'changeme');
@@ -139,7 +140,7 @@ describe('Test: Create apikey', () => {
       .send({
         name: 'test-user1',
         access: ['graphql'],
-        attributes: '*',
+        attributes: ['*'],
         allowed: 1,
       })
       .set('redis-password', 'changeme');
@@ -148,7 +149,7 @@ describe('Test: Create apikey', () => {
   });
 
   after(async () => {
-    await deleteAll();
-    await load();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

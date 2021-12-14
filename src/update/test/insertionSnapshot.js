@@ -6,12 +6,7 @@ const { format } = require('date-fns');
 
 const {
   countDocuments,
-  deleteIndex,
 } = require('./utils/elastic');
-
-const {
-  deleteSnapshot,
-} = require('./utils/snapshot');
 
 const {
   getState,
@@ -29,6 +24,13 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
+const reset = require('./utils/reset');
+
 chai.use(chaiHttp);
 
 const updateURL = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
@@ -37,34 +39,26 @@ describe('Test: download and insert snapshot from unpaywall', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 
   describe('Do a download and a insertion of snapshot', () => {
     before(async () => {
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteSnapshot('fake3.jsonl.gz');
-      await deleteSnapshot('snapshot.jsonl.gz');
-      await deleteIndex('unpaywall-test');
+      await reset();
     });
 
-    // test return message
-    it('Should return the process start', async () => {
+    it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job')
+        .post('/job/snapshot')
         .send({
           index: 'unpaywall-test',
-          snapshot: true,
         })
-        .set('Access-Control-Allow-Origin', '*')
-        .set('Content-Type', 'application/json')
         .set('x-api-key', 'admin');
 
-      expect(res).have.status(200);
-      expect(res.body.message).be.equal('Big update started');
+      expect(res).have.status(202);
     });
 
-    // test insertion
     it('Should insert 2150 data', async () => {
       // wait for the update to finish
       let isUpdate = true;
@@ -77,7 +71,6 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(count).to.equal(2150);
     });
 
-    // test state
     it('Should get state with all informations from the insertion', async () => {
       const state = await getState();
 
@@ -92,11 +85,11 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(state.steps[0]).have.property('percent').equal(100);
       expect(state.steps[1]).have.property('took').to.not.equal(undefined);
       expect(state.steps[1]).have.property('status').equal('success');
-      expect(state.steps[1]).have.property('file').equal(`unpaywall-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
+      expect(state.steps[1]).have.property('file').equal(`snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
 
       expect(state.steps[1]).have.property('task').equal('insert');
       expect(state.steps[1]).have.property('index').equal('unpaywall-test');
-      expect(state.steps[1]).have.property('file').equal(`unpaywall-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
+      expect(state.steps[1]).have.property('file').equal(`snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
       expect(state.steps[1]).have.property('percent').equal(100);
       expect(state.steps[1]).have.property('linesRead').equal(2150);
       expect(state.steps[1]).have.property('insertedDocs').equal(2150);
@@ -106,7 +99,6 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(state.steps[1]).have.property('status').equal('success');
     });
 
-    // test Report
     it('Should get report with all informations from the insertion', async () => {
       const report = await getReport();
 
@@ -121,11 +113,11 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(report.steps[0]).have.property('percent').equal(100);
       expect(report.steps[1]).have.property('took').to.not.equal(undefined);
       expect(report.steps[1]).have.property('status').equal('success');
-      expect(report.steps[1]).have.property('file').equal(`unpaywall-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
+      expect(report.steps[1]).have.property('file').equal(`snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
 
       expect(report.steps[1]).have.property('task').equal('insert');
       expect(report.steps[1]).have.property('index').equal('unpaywall-test');
-      expect(report.steps[1]).have.property('file').equal(`unpaywall-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
+      expect(report.steps[1]).have.property('file').equal(`snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`);
       expect(report.steps[1]).have.property('percent').equal(100);
       expect(report.steps[1]).have.property('linesRead').equal(2150);
       expect(report.steps[1]).have.property('insertedDocs').equal(2150);
@@ -136,11 +128,9 @@ describe('Test: download and insert snapshot from unpaywall', () => {
     });
 
     after(async () => {
-      await deleteSnapshot('fake1.jsonl.gz');
-      await deleteSnapshot('fake2.jsonl.gz');
-      await deleteSnapshot('fake3.jsonl.gz');
-      await deleteSnapshot('snapshot.jsonl.gz');
-      await deleteIndex('unpaywall-test');
+      await reset();
+      await deleteAllAPIKey();
+      await loadDevAPIKey();
     });
   });
 });

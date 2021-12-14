@@ -6,9 +6,8 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const zlib = require('zlib');
 const { Readable } = require('stream');
+const axios = require('axios');
 const config = require('config');
-
-const unpaywall = require('../lib/unpaywall');
 
 const {
   elasticClient,
@@ -21,7 +20,6 @@ const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
 const unpaywallMapping = require('../mapping/unpaywall.json');
 
-const apiKey = config.get('unpaywall.apikey');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 const indexAlias = config.get('elasticsearch.indexAlias');
 
@@ -322,20 +320,19 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
 
   let res;
   try {
-    res = await unpaywall({
+    res = await axios({
       method: 'get',
-      url: `/feed/changefile/${info.filename}`,
+      url: info.url,
       responseType: 'stream',
-      params: {
-        api_key: apiKey,
-      },
     });
   } catch (err) {
-    logger.error(`Cannot request ${unpaywall.baseURL}/feed/changefile/${info.filename}&api_key=${apiKey}`);
+    logger.error(`Cannot request ${info.url}`);
     logger.error(err);
     await fail(stateName, err);
     return false;
   }
+
+  const filePath = path.resolve(snapshotsDir, info.filename);
 
   logger.info(`file - ${info.filename}`);
   logger.info(`lines - ${info.lines}`);
@@ -345,11 +342,11 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
   if (res?.data instanceof Readable) {
     await new Promise((resolve, reject) => {
       // download unpaywall file with stream
-      const writeStream = res.data.pipe(fs.createWriteStream(filepath));
+      const writeStream = res.data.pipe(fs.createWriteStream(filePath));
 
       const start = new Date();
       // update the percentage of the download step in parallel
-      updatePercentStepDownload(filepath, info, stateName, start);
+      updatePercentStepDownload(filePath, info, stateName, start);
 
       writeStream.on('finish', async () => {
         stats = await fs.stat(filepath);
@@ -374,9 +371,12 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
       });
     });
   } else {
-    const writeStream = await fs.createWriteStream(filepath);
-    writeStream.write(res.data);
-    writeStream.end();
+    try {
+      await fs.writeFile(filepath, stateName);
+    } catch (err) {
+      await fail(stateName, err);
+      return false;
+    }
   }
 };
 
@@ -384,6 +384,7 @@ const downloadFileFromUnpaywall = async (stateName, info) => {
  * ask unpaywall to get information and download links for snapshots files
  * @param {String} stateName - state filename
  * @param {String} url - url to request for the list of update files
+ * @param {String} apikey - apikey to request for the list of update files
  * @param {String} interval - interval of snapshot update, day or week
  * @param {Date} startDate - start date of the period
  * @param {Date} endDate - end date of the period
@@ -393,6 +394,8 @@ const askUnpaywall = async (jobConfig) => {
   const start = new Date();
   const {
     stateName,
+    url,
+    apikey,
     interval,
     startDate,
     endDate,
@@ -404,12 +407,12 @@ const askUnpaywall = async (jobConfig) => {
   let res;
 
   try {
-    res = await unpaywall({
+    res = await axios({
       method: 'get',
-      url: '/feed/changefile',
+      url,
       params: {
+        api_key: apikey,
         interval,
-        api_key: apiKey,
       },
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -417,14 +420,14 @@ const askUnpaywall = async (jobConfig) => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request ${unpaywall.baseURL}/feed/changefile?interval=${interval}&api_key=${apiKey}`);
+    logger.error(`Cannot request ${url}`);
     logger.error(err);
     await fail(stateName, err);
     return false;
   }
 
   if (res?.status !== 200 || !res?.data?.list?.length) {
-    await fail(stateName, `code: ${res?.status} - list length: ${!res?.data?.list?.length}`);
+    await fail(stateName, `code: ${res?.status} - liss lenght: ${!res?.data?.list?.length}`);
     return false;
   }
 
@@ -452,77 +455,8 @@ const askUnpaywall = async (jobConfig) => {
   return snapshotsInfo;
 };
 
-/**
- * Start the download of the big file from unpaywall
- * @param {String} stateName - state filename
- * @param {String} info - information of the file to download
- */
-const downloadBigSnapshot = async (stateName, info) => {
-  const { filename } = info;
-
-  const filepath = path.resolve(snapshotsDir, filename);
-
-  await addStepDownload(stateName);
-  const state = await getState(stateName);
-  const step = state.steps[state.steps.length - 1];
-  step.file = filename;
-  await updateStateInFile(state, stateName);
-
-  let res;
-  try {
-    res = await unpaywall({
-      method: 'get',
-      url: '/feed/snapshot/',
-      responseType: 'stream',
-      params: {
-        api_key: apiKey,
-      },
-    });
-  } catch (err) {
-    logger.error(`Cannot request ${unpaywall.baseURL}/feed/snapshot&api_key=${apiKey}`);
-    logger.error(err);
-    await fail(stateName, err);
-    return false;
-  }
-
-  info.size = res.headers['content-length'];
-
-  if (res?.data instanceof Readable) {
-    await new Promise((resolve, reject) => {
-      const writeStream = res.data.pipe(fs.createWriteStream(filepath));
-
-      const start = new Date();
-      updatePercentStepDownload(filepath, info, stateName, start);
-
-      writeStream.on('finish', async () => {
-        step.status = 'success';
-        step.took = (new Date() - start) / 1000;
-        step.percent = 100;
-        state.steps[state.steps.length - 1] = step;
-        await updateStateInFile(state, stateName);
-        logger.info('step - end download');
-        return resolve();
-      });
-
-      writeStream.on('error', async (err) => {
-        logger.error(err);
-        await fail(stateName, err);
-        return reject(err);
-      });
-    });
-  } else {
-    try {
-      await fs.writeFile(filepath, res.data);
-    } catch (err) {
-      await fail(stateName, err);
-      return false;
-    }
-  }
-};
-
 module.exports = {
   insertDataUnpaywall,
   downloadFileFromUnpaywall,
   askUnpaywall,
-  downloadBigSnapshot,
 };

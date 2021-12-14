@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+
 const { elasticClient } = require('./elastic');
 
 chai.use(chaiHttp);
@@ -23,8 +24,6 @@ const ping = async () => {
     }
     if (res1?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } else {
-      console.log('update ping : OK');
     }
   } while (res1?.status !== 200);
 
@@ -38,8 +37,6 @@ const ping = async () => {
     }
     if (res2?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } else {
-      console.log('fakeUnpaywall ping : OK');
     }
   } while (res2?.status !== 200);
 
@@ -53,8 +50,6 @@ const ping = async () => {
     }
     if (res3?.statusCode !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } else {
-      console.log('elastic ping : OK');
     }
   } while (res3?.statusCode !== 200);
 
@@ -68,8 +63,6 @@ const ping = async () => {
     }
     if (res4?.statusCode !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } else {
-      console.log('auth ping : OK');
     }
   } while (res4?.statusCode !== 200);
 
@@ -83,8 +76,6 @@ const ping = async () => {
     }
     if (res5?.body.redis !== 'Alive') {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } else {
-      console.log('redis ping : OK');
     }
   } while (res5?.body.redis !== 'Alive');
 };
