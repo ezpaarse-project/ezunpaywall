@@ -63,8 +63,26 @@ const pingRedis = async () => {
   return true;
 };
 
+const loadDemoAPIKey = async () => {
+  const configAPIKey = {
+    name: 'demo',
+    access: ['graphql', 'enrich'],
+    attributes: '*',
+    allowed: true,
+    count: 100000,
+  };
+  try {
+    await redisClient.set('demo', `${JSON.stringify(configAPIKey)}`);
+  } catch (err) {
+    logger.error('Cannot create [demo] apikey');
+    return Promise.reject(err);
+  }
+  logger.info('Demo apikey are loaded');
+};
+
 module.exports = {
   redisClient,
   pingRedis,
   load,
+  loadDemoAPIKey,
 };
