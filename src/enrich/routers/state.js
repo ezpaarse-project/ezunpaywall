@@ -59,7 +59,14 @@ router.get('/state', async (req, res, next) => {
     }
     return res.status(200).json(state);
   }
-  const states = await fs.readdir(statesDir);
+  let states;
+
+  try {
+    states = await fs.readdir(statesDir);
+  } catch (err) {
+    return next(boom.boomify(err));
+  }
+
   return res.status(200).json(states);
 });
 

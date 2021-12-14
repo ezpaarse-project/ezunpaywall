@@ -44,7 +44,7 @@ router.get('/enriched/:filename', async (req, res, next) => {
 });
 
 router.post('/upload', upload.single('file'), async (req, res, next) => {
-  if (!req?.file) return next(boom.badRequest('File not send'));
+  if (!req?.file) return next(boom.badRequest('File not sent'));
   const { filename } = req?.file;
   return res.status(200).json({ messsage: 'file added', filename, id: path.parse(filename).name });
 });
