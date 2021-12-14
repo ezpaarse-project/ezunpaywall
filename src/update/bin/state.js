@@ -144,11 +144,15 @@ const getLatestStep = async (filename) => {
   return state.steps[state.steps.length - 1];
 };
 
+/**
+ * update latest step in state
+ * @param {*} filename - name of the file where the state is saved
+ * @param {*} step - latest step
+ */
 const updateLatestStep = async (filename, step) => {
   const state = await getState(filename);
   state.steps[state.steps.length - 1] = step;
   await updateStateInFile(state, filename);
-  return step;
 };
 
 /**
