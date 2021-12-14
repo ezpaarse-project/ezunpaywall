@@ -8,10 +8,12 @@ const { format } = require('date-fns');
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
 const {
-  insertion,
-  insertSnapshotBetweenDates,
-  insertBigSnapshot,
-} = require('../bin/update');
+  downloadAndInsertSnapshot,
+  insertChangefilesOnPeriod,
+  insertChangefile,
+} = require('../bin/job');
+
+const { createState } = require('../bin/state');
 
 const {
   checkStatus,
@@ -21,86 +23,42 @@ const {
   checkAuth,
 } = require('../middlewares/auth');
 
-/**
- *
- * @apiParam BODY index - name of the index to which the data will be saved
- * @apiParam BODY interval - interval of snapshot update, day or week
- * @apiParam BODY startDate - start date at format YYYY-mm-dd
- * @apiParam BODY endDate - end date at format YYYY-mm-dd
- * @apiParam BODY filename - filename of a file found in ezunpaywall
- * @apiParam BODY offset - first line insertion, by default, we start with the first
- * @apiParam BODY limit - last line insertion by default, we have no limit
- *
- * @apiHeader HEADER x-api-key - admin apikey
- *
- * @return message informing the start of the process
- *
- */
-router.post('/job', checkStatus, checkAuth, async (req, res, next) => {
-  const snapshotPattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
+router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
+  const { error, value } = joi.string().trim().default('unpaywall').validate(req.body.index);
 
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  const index = value;
+
+  const stateName = await createState();
+
+  const jobConfig = {
+    index,
+    offset: 0,
+    limit: -1,
+    stateName,
+  };
+
+  downloadAndInsertSnapshot(jobConfig);
+  return res.status(202).json();
+});
+
+router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
     index: joi.string().trim().default('unpaywall'),
-    offset: joi.number().greater(-1).default(0),
-    limit: joi.number().greater(joi.ref('offset')).default(-1),
     interval: joi.string().trim().valid('day', 'week').default('day'),
-    filename: joi.string().trim().regex(snapshotPattern),
     startDate: joi.date().format('YYYY-MM-DD'),
     endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')),
-    snapshot: joi.boolean(),
   }).with('endDate', 'startDate').validate(req.body);
 
   if (error) return next(boom.badRequest(error.details[0].message));
 
-  let { startDate, endDate } = value;
-
   const {
-    index, offset, limit, interval, filename, snapshot,
+    startDate,
+    endDate,
+    index,
+    interval,
   } = value;
-
-  if (startDate) startDate = format(new Date(startDate), 'yyyy-MM-dd');
-  if (endDate) endDate = format(new Date(endDate), 'yyyy-MM-dd');
-
-  const jobConfig = {};
-
-  jobConfig.index = index;
-
-  if (filename) {
-    if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
-      return next(boom.notFound('File not found'));
-    }
-
-    jobConfig.filename = filename;
-    jobConfig.offset = offset;
-    jobConfig.limit = limit;
-    insertion(jobConfig);
-
-    return res.status(200).json({ message: `Update with ${filename}` });
-  }
-
-  if (snapshot) {
-    insertBigSnapshot(jobConfig);
-    return res.status(200).json({ message: 'Big update started' });
-  }
-
-  jobConfig.interval = interval;
-  jobConfig.startDate = startDate;
-  jobConfig.endDate = endDate;
-
-  // if no dates are send, do weekly / daily update
-  if (!startDate && !endDate) {
-    jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
-    if (interval === 'week') {
-      jobConfig.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
-      insertSnapshotBetweenDates(jobConfig);
-      return res.status(200).json({ message: 'Weekly update started' });
-    }
-    if (interval === 'day') {
-      jobConfig.startDate = format(new Date(), 'yyyy-MM-dd');
-      insertSnapshotBetweenDates(jobConfig);
-      return res.status(200).json({ message: 'Daily update started' });
-    }
-  }
 
   if (new Date(startDate).getTime() > Date.now()) {
     return res.status(400).json({ message: 'startDate cannot be in the futur' });
@@ -112,13 +70,70 @@ router.post('/job', checkStatus, checkAuth, async (req, res, next) => {
     }
   }
 
+  const stateName = await createState();
+
+  const jobConfig = {
+    index,
+    interval,
+    startDate,
+    endDate,
+    stateName,
+    offset: 0,
+    litmit: -1,
+  };
+
+  if (!startDate && !endDate) {
+    jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
+    if (interval === 'week') jobConfig.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
+    if (interval === 'day') jobConfig.startDate = format(new Date(), 'yyyy-MM-dd');
+
+    insertChangefilesOnPeriod(jobConfig);
+    return res.status(202).json();
+  }
+
   if (startDate && !endDate) jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
 
-  insertSnapshotBetweenDates(jobConfig);
+  insertChangefilesOnPeriod(jobConfig);
+  return res.status(202).json();
+});
 
-  return res.status(200).json({
-    message: `Download and insert snapshot from unpaywall from ${jobConfig.startDate} and ${jobConfig.endDate}`,
-  });
+router.post('/job/changefile/:filename', checkStatus, checkAuth, async (req, res, next) => {
+  const { filename } = req.params;
+
+  const snapshotPattern = /^[a-zA-Z0-9_.-]+(.gz)$/;
+
+  const { error } = joi.string().trim().regex(snapshotPattern).required()
+    .validate(filename);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  const checkBody = joi.object({
+    index: joi.string().trim().default('unpaywall'),
+    offset: joi.number().greater(-1).default(0),
+    limit: joi.number().greater(joi.ref('offset')).default(-1),
+  }).validate(req.body);
+
+  if (checkBody.error) return next(boom.badRequest(checkBody.error.details[0].message));
+
+  const { index, offset, limit } = checkBody.value;
+
+  if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
+    return next(boom.notFound(`${filename} not found`));
+  }
+
+  const stateName = await createState();
+
+  const jobConfig = {
+    filename,
+    index,
+    offset,
+    limit,
+    stateName,
+  };
+
+  insertChangefile(jobConfig);
+
+  return res.status(202).json();
 });
 
 module.exports = router;

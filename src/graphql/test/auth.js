@@ -14,16 +14,23 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 chai.use(chaiHttp);
 
 const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
 
-const doi1 = '10.1186/s40510-015-0109-6'; // ligne 1 of fake1.jsonl
+const doi1 = '10.1186/s40510-015-0109-6'; // line 1 of fake1.jsonl
 
 describe('Test: auth service in graphql service', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);
     await insertDataUnpaywall();
@@ -153,5 +160,10 @@ describe('Test: auth service in graphql service', () => {
       expect(res).have.status(200);
       expect(res?.body.errors[0].message).eq('You don\'t have access to first_oa_location.license');
     });
+  });
+
+  after(async () => {
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

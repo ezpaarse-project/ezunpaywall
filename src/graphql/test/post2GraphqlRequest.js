@@ -14,6 +14,11 @@ const {
   ping,
 } = require('./utils/ping');
 
+const {
+  loadDevAPIKey,
+  deleteAllAPIKey,
+} = require('./utils/apikey');
+
 chai.use(chaiHttp);
 
 const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
@@ -24,13 +29,15 @@ describe('test graphqlRequest POST', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);
     await insertDataUnpaywall();
   });
 
   describe('POST: get unpaywall data with one DOI', () => {
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}} - variables : { dois: [${doi1}] }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}}' })
@@ -51,7 +58,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('is_oa').eq(true);
     });
 
-    it('It should get empty tab because doi not found on database', async () => {
+    it('It should get empty tab - query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}} - variable : { dois: [\'Coin coin\'] }', async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}}' })
@@ -72,15 +79,13 @@ describe('test graphqlRequest POST', () => {
   });
 
   describe('POST: get unpaywall data with one DOI nor normalized', () => {
-    it('should get unpaywall data', async () => {
-      const majDOI = '10.1186/S40510-015-0109-6';
-
+    it(`should get unpaywall data - query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}} - variables : { dois : ['${doi1.toUpperCase()}'] }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}}' })
         .send({
           variables: {
-            dois: [majDOI],
+            dois: [doi1.toUpperCase()],
           },
         })
         .set('x-api-key', 'user')
@@ -96,7 +101,7 @@ describe('test graphqlRequest POST', () => {
   });
 
   describe('POST: get unpaywall data with two DOI', () => {
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}} - variables : { dois : ${[doi1, doi2]} }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}}' })
@@ -116,7 +121,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[1]).have.property('is_oa').eq(false);
     });
 
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}} - variables : { dois : ${[doi1, 'Coin coin']} }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}}' })
@@ -135,7 +140,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('is_oa').eq(true);
     });
 
-    it('It should get empty tab', async () => {
+    it(`It should get empty tab - query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}}  - variables : { dois : ${['Coin coin', 'Coin coin2']} }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]!) {GetByDOI(dois: $dois) {doi, is_oa}}' })
@@ -155,7 +160,7 @@ describe('test graphqlRequest POST', () => {
   });
 
   describe('POST: get unpaywall data with one DOI and year', () => {
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]! $year: [String!]) {GetByDOI(dois: $dois, year: $year) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year: 2015 }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year: [String!]) {GetByDOI(dois: $dois, year: $year) {doi, is_oa, year}}' })
@@ -177,7 +182,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('year').eq('2015');
     });
 
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]! $year: [String!]) {GetByDOI(dois: $dois, year: $year) {doi, is_oa, year}} - variables : { dois : ${[doi1, doi2]}, year: 2015 }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year: [String!]) {GetByDOI(dois: $dois, year: $year) {doi, is_oa, year}}' })
@@ -199,7 +204,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('year').eq('2015');
     });
 
-    it('It should get empty tab', async () => {
+    it(`It should get empty tab - query ($dois: [ID!]! $year: [String!]) {GetByDOI(dois: $dois, year: $year) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year: 2016 }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year: [String!]) {GetByDOI(dois: $dois, year: $year) {doi, is_oa, year}}' })
@@ -220,7 +225,7 @@ describe('test graphqlRequest POST', () => {
   });
 
   describe('POST: get unpaywall data with one DOI and range_year', () => {
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year_range: { gte: 2015 } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}}' })
@@ -244,7 +249,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('year').eq('2015');
     });
 
-    it('It should get empty tab', async () => {
+    it(`It should get empty tab - query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year_range: { gte: 2016 } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}}' })
@@ -265,7 +270,7 @@ describe('test graphqlRequest POST', () => {
       expect(data).be.a('array').eql([]);
     });
 
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year_range: { lte: 2016 } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}}' })
@@ -289,7 +294,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('year').eq('2015');
     });
 
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year_range: { lte: 2015 } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}}' })
@@ -313,7 +318,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('year').eq('2015');
     });
 
-    it('It should get empty tab', async () => {
+    it(`It should get empty tab - query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year_range: { lte: 2014 } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}}' })
@@ -334,7 +339,7 @@ describe('test graphqlRequest POST', () => {
       expect(data).be.a('array').eql([]);
     });
 
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year_range: { gte: 2016, lte: 2014 } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}}' })
@@ -359,7 +364,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('year').eq('2015');
     });
 
-    it('It should get empty tab', async () => {
+    it(`It should get empty tab - query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}} - variables : { dois : ${[doi1]}, year_range: { gte: 2016, lte: 2018 } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $year_range: year_range) {GetByDOI(dois: $dois, year_range: $year_range) {doi, is_oa, year}}' })
@@ -383,7 +388,7 @@ describe('test graphqlRequest POST', () => {
   });
 
   describe('POST: get unpaywall data with one DOI and best_oa_location:{licence}', () => {
-    it('should get unpaywall data', async () => {
+    it(`should get unpaywall data - query ($dois: [ID!]! $best_oa_location: oaLocationInput) {GetByDOI(dois: $dois, best_oa_location: $best_oa_location) {doi, is_oa, best_oa_location { license }}} - variables : { dois : ${[doi1]}, best_oa_location: { license: 'cc-by' }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $best_oa_location: oaLocationInput) {GetByDOI(dois: $dois, best_oa_location: $best_oa_location) {doi, is_oa, best_oa_location { license }}}' })
@@ -407,7 +412,7 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('best_oa_location').have.property('license').eq('cc-by');
     });
 
-    it('It should get empty tab', async () => {
+    it(`It should get empty tab - query ($dois: [ID!]! $best_oa_location: oaLocationInput) {GetByDOI(dois: $dois, best_oa_location: $best_oa_location) {doi, is_oa, best_oa_location { license }}} - variables : { dois : ${[doi1]}, best_oa_location: { license: 'Coin coin' }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: 'query ($dois: [ID!]! $best_oa_location: oaLocationInput) {GetByDOI(dois: $dois, best_oa_location: $best_oa_location) {doi, is_oa, best_oa_location { license }}}' })
@@ -427,5 +432,9 @@ describe('test graphqlRequest POST', () => {
       const data = res?.body?.data?.GetByDOI;
       expect(data).be.a('array').eql([]);
     });
+  });
+  after(async () => {
+    await deleteAllAPIKey();
+    await loadDevAPIKey();
   });
 });

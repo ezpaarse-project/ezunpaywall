@@ -135,7 +135,7 @@ router.get('/all', checkAuth, async (req, res, next) => {
     allKeys[key] = config;
   }
 
-  return res.status(200).json({ keys: allKeys });
+  return res.status(200).json(allKeys);
 });
 
 /**
@@ -144,7 +144,7 @@ router.get('/all', checkAuth, async (req, res, next) => {
 router.post('/create', checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
     name: joi.string().trim().required(),
-    attributes: joi.string().trim().valid(...unpaywallAttrs).default('*'),
+    attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql']),
     allowed: joi.boolean().default(true),
   }).validate(req.body);
@@ -202,7 +202,7 @@ router.put('/update', checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
     apikey: joi.string().required(),
     name: joi.string().trim(),
-    attributes: joi.string().trim().valid(...unpaywallAttrs).default('*'),
+    attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql', 'enrich']),
     allowed: joi.boolean().default(true),
   }).validate(req.body);
@@ -250,6 +250,7 @@ router.put('/update', checkAuth, async (req, res, next) => {
  */
 router.delete('/delete/:apikey', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.apikey);
+
   if (error) return next(boom.badRequest(error.details[0].message));
 
   const apikey = value;

@@ -8,7 +8,7 @@ const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 /**
  * load default dev apikey
  */
-const load = async () => {
+const loadDevAPIKey = async () => {
   try {
     await chai.request(apikeyURL)
       .post('/load?dev=true')
@@ -22,7 +22,7 @@ const load = async () => {
 /**
  * delete all apikey from redis
  */
-const deleteAll = async () => {
+const deleteAllAPIKey = async () => {
   try {
     await chai.request(apikeyURL)
       .delete('/all')
@@ -34,6 +34,6 @@ const deleteAll = async () => {
 };
 
 module.exports = {
-  load,
-  deleteAll,
+  loadDevAPIKey,
+  deleteAllAPIKey,
 };

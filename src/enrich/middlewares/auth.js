@@ -40,7 +40,7 @@ const checkAuth = async (req, res, next) => {
 
   let { args } = req.body;
 
-  if (config.attributes !== '*') {
+  if (!config.attributes?.includes('*')) {
     if (!args) {
       return res.status(401).json({ message: 'Not authorized' });
     }
@@ -52,8 +52,9 @@ const checkAuth = async (req, res, next) => {
     args = args.replace(/}/g, '');
     args = args.replace(/ /g, '');
     args = args.split(',');
+
     args.forEach((attribute) => {
-      if (!config.attributes.includes(attribute)) {
+      if (!config?.attributes?.includes(attribute)) {
         error = true;
         errors.push(attribute);
       }
