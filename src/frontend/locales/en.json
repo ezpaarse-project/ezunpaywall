@@ -1,7 +1,7 @@
 {
   "home": {
     "title" : "What is ezUnpaywall?",
-    "intro": "The ezUnpaywall server is an <a href=\"https://unpaywall.org\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM.",
+    "intro": "The ezUnpaywall server is an <a href=\"{url}\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM.",
     "metrics": "Metrics",
     "globalMetrics": "Global metrics",
     "referencedResources": "Referenced resources",

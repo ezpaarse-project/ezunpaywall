@@ -4,9 +4,10 @@
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('home.title')" />
       </v-toolbar>
-      <v-container>
-        {{ $t("home.intro") }}
-      </v-container>
+      <v-container
+        v-html="
+          $t('home.intro', { url: unpaywallURL, })"
+      />
     </v-card>
 
     <v-card class="my-3">
@@ -50,6 +51,7 @@ export default {
   data: () => {
     return {
       loaded: false,
+      unpaywallURL: 'https://unpaywall.org/',
       metrics: {
         doi: 0,
         isOA: 0,
