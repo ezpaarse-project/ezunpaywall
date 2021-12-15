@@ -46,7 +46,7 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
   step.status = 'success';
   await updateLatestStep(stateName, step);
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
-    success = await downloadChangefile(jobConfig.stateName, snapshotsInfo[i]);
+    success = await downloadChangefile(jobConfig.stateName, snapshotsInfo[i], interval);
     if (!success) return;
     jobConfig.filename = snapshotsInfo[i].filename;
     success = await insertDataUnpaywall(jobConfig);

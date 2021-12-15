@@ -25,6 +25,20 @@ router.get('/feed/changefile/:file', async (req, res, next) => {
   return res.sendFile(path.resolve(snapshotsDir, file));
 });
 
+router.get('/daily-feed/changefile/:file', async (req, res, next) => {
+  const { error, value } = joi.string().trim().validate(req.params.file);
+
+  if (error) return next(boom.badRequest(error.details[0].message));
+
+  const file = value;
+
+  const fileExist = await fs.pathExists(path.resolve(snapshotsDir, file));
+  if (!fileExist) {
+    return next(boom.notFound(`${file} not found`));
+  }
+  return res.sendFile(path.resolve(snapshotsDir, file));
+});
+
 router.get('/feed/changefiles', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().valid('day', 'week').default('day')
     .validate(req.query.interval);
