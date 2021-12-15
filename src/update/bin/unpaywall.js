@@ -74,7 +74,8 @@ const getChangefiles = async (interval, startDate, endDate) => {
 
 /**
  * get changefile from unpaywall with his filename
- * @param {String} filename
+ * @param {String} filename filename of changefile
+ * @param {String} interval type of changefile (day or week)
  * @returns Readable
  */
 const getChangefile = async (filename, interval) => {
