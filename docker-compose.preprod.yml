@@ -161,7 +161,8 @@ services:
         - https_proxy
         - GRAPHQL_URL=${GRAPHQL_URL:-http://graphql}
         - UPDATE_URL=${UPDATE_URL:-http://update}
-        - ENRICH_URL=${ENRICH_URL:-http://enrich}  
+        - ENRICH_URL=${ENRICH_URL:-http://enrich}
+        - MAIL_URL=${MAIL_URL:-http://mail}  
     ports: 
       - 59700:80
     environment:
