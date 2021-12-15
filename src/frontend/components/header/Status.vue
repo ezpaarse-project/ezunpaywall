@@ -53,7 +53,7 @@ export default {
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('status.errorStatus'))
       }
-      if (res?.data?.inUpdate) {
+      if (res?.data) {
         this.inUpdate = true
         await this.getState()
       } else {
@@ -75,7 +75,7 @@ export default {
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('status.errorState'))
       }
-      this.state = res?.data?.state
+      this.state = res?.data
     }
   }
 }
