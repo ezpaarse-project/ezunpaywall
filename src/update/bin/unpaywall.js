@@ -19,7 +19,7 @@ const getSnapshot = async () => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request ${unpaywall.baseURL}/feed/snapshot?api_key=${apiKey} : ${err.response.statusCode}`);
+    logger.errorRequest(err);
     return false;
   }
   return res;
@@ -48,7 +48,7 @@ const getChangefiles = async (interval, startDate, endDate) => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request ${unpaywall.baseURL}/feed/changefiles?interval=${interval}&api_key=${apiKey} : ${err.response.statusCode}`);
+    logger.errorRequest(err);
     return false;
   }
 
@@ -97,7 +97,7 @@ const getChangefile = async (filename, interval) => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request ${unpaywall.baseURL}/${feed}/changefile/${filename}&api_key=${apiKey} : ${err.response.statusCode}`);
+    logger.errorRequest(err);
     return false;
   }
   return res;
