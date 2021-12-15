@@ -89,8 +89,9 @@ const download = async (file, filepath, size, stateName) => {
  * Start the download of the update file from unpaywall
  * @param {String} stateName - state filename
  * @param {String} info - information of the file to download
+ * @param {String} interval - type of changefile (day or week)
  */
-const downloadChangefile = async (stateName, info) => {
+const downloadChangefile = async (stateName, info, interval) => {
   let stats;
 
   const filepath = path.resolve(snapshotsDir, info.filename);
@@ -108,7 +109,7 @@ const downloadChangefile = async (stateName, info) => {
   step.file = info.filename;
   await updateStateInFile(state, stateName);
 
-  const res = await getChangefile(info.filename);
+  const res = await getChangefile(info.filename, interval);
   if (!res) {
     return false;
   }

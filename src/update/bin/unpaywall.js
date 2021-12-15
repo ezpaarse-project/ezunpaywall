@@ -19,7 +19,7 @@ const getSnapshot = async () => {
       },
     });
   } catch (err) {
-    logger.error(`Cannot request ${unpaywall.baseURL}/feed/snapshot&api_key=${apiKey} : ${err.response.statusCode}`);
+    logger.error(`Cannot request ${unpaywall.baseURL}/feed/snapshot?api_key=${apiKey} : ${err.response.statusCode}`);
     return false;
   }
   return res;
@@ -74,22 +74,30 @@ const getChangefiles = async (interval, startDate, endDate) => {
 
 /**
  * get changefile from unpaywall with his filename
- * @param {String} filename
+ * @param {String} filename filename of changefile
+ * @param {String} interval type of changefile (day or week)
  * @returns Readable
  */
-const getChangefile = async (filename) => {
+const getChangefile = async (filename, interval) => {
   let res;
+
+  let feed = 'feed';
+
+  if (interval === 'day') {
+    feed = 'daily-feed';
+  }
+
   try {
     res = await unpaywall({
       method: 'get',
-      url: `/feed/changefile/${filename}`,
+      url: `/${feed}/changefile/${filename}`,
       responseType: 'stream',
       params: {
         api_key: apiKey,
       },
     });
   } catch (err) {
-    logger.error(`Cannot request ${unpaywall.baseURL}/feed/changefile/${filename}&api_key=${apiKey} : ${err.response.statusCode}`);
+    logger.error(`Cannot request ${unpaywall.baseURL}/${feed}/changefile/${filename}&api_key=${apiKey} : ${err.response.statusCode}`);
     return false;
   }
   return res;
