@@ -294,7 +294,8 @@ router.delete('/all', checkAuth, async (req, res, next) => {
  */
 router.post('/load', checkAuth, async (req, res, next) => {
   const { dev } = req.query;
-  const { keys } = req.body;
+  const keys = req.body;
+
   if (dev) {
     try {
       await load();
