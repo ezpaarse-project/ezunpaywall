@@ -35,14 +35,14 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', async (req, res) => {
-  let redis = await pingRedis();
-  if (redis) {
-    redis = 'Alive';
-  } else {
-    redis = 'Error';
+app.get('/', async (req, res, next) => {
+  let redis;
+  try {
+    redis = await pingRedis();
+  } catch (err) {
+    return next(boom.boomify(err));
   }
-  res.status(200).json({ name, version, redis });
+  return res.status(200).json({ name, version, redis: !!redis });
 });
 
 app.use(routerJob);
@@ -59,7 +59,7 @@ app.use((err, req, res, next) => {
     error.output.payload.stack = error.stack;
   }
 
-  res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
+  return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });
 
 app.listen(5000, () => {

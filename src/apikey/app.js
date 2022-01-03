@@ -23,14 +23,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/', async (req, res) => {
-  let redis = await pingRedis();
-  if (redis) {
-    redis = 'Alive';
-  } else {
-    redis = 'Error';
+app.get('/', async (req, res, next) => {
+  let redis;
+  try {
+    redis = await pingRedis();
+  } catch (err) {
+    return next(boom.boomify(err));
   }
-  res.status(200).json({ name, version, redis });
+  return res.status(200).json({ name, version, redis: !!redis });
 });
 
 app.use(routerManage);
@@ -44,7 +44,7 @@ app.use((err, req, res, next) => {
     error.output.payload.stack = error.stack;
   }
 
-  res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
+  return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });
 
 app.listen(7000, async () => {

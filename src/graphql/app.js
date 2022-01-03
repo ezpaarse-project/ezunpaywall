@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 const responseTime = require('response-time');
+const boom = require('@hapi/boom');
 
 const { name, version } = require('./package.json');
 
@@ -28,24 +29,22 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', async (req, res) => {
-  let elasticStatus;
+app.get('/', async (req, res, next) => {
+  let elastic;
   try {
-    await elasticClient.ping();
-    elasticStatus = 'Alive';
+    elastic = await elasticClient.ping();
   } catch (err) {
-    elasticStatus = 'Error';
+    return next(boom.boomify(err));
   }
 
-  let redis = await pingRedis();
-
-  if (redis) {
-    redis = 'Alive';
-  } else {
-    redis = 'Error';
+  let redis;
+  try {
+    redis = await pingRedis();
+  } catch (err) {
+    return next(boom.boomify(err));
   }
-  res.status(200).json({
-    name, version, elastic: elasticStatus, redis,
+  return res.status(200).json({
+    name, version, elastic: !!elastic, redis: !!redis,
   });
 });
 
