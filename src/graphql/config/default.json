@@ -3,10 +3,9 @@
     "host": "redis",
     "port": "6379",
     "password": "changeme"
-
   },
   "elasticsearch": {
-    "host": "elastic",
+    "host": "http://elastic",
     "port": 9200,
     "user": "elastic",
     "password": "changeme",
