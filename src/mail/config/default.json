@@ -5,7 +5,7 @@
   },
   "notifications": {
     "sender": "ezunpaywall",
-    "receivers": ["ezunpaywallTeam@org.fr"],
+    "receivers": ["ezunpaywall@example.fr"],
     "machine": "dev"
   }
 }

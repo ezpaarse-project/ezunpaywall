@@ -1,7 +1,7 @@
 {
   "unpaywall": {
     "host": "http://fakeUnpaywall:12000",
-    "apikey": "changeme"
+    "apikey": "default"
   },
   "redis":  {
     "password": "changeme",

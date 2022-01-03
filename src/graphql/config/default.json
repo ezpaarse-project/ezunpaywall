@@ -1,12 +1,13 @@
 {
   "redis":  {
-    "password": "changeme",
     "host": "redis",
-    "port": "6379"
+    "port": "6379",
+    "password": "changeme"
+
   },
   "elasticsearch": {
-    "port": 9200,
     "host": "elastic",
+    "port": 9200,
     "user": "elastic",
     "password": "changeme",
     "indexAlias": "upw"

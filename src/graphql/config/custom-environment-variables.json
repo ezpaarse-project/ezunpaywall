@@ -1,8 +1,8 @@
 { 
   "redis":  {
-    "password": "REDIS_PASSWORD",
     "host": "REDIS_HOST",
-    "port": "REDIS_PORT"
+    "port": "REDIS_PORT",
+    "password": "REDIS_PASSWORD"
   },
   "elasticsearch": {
     "host": "ELASTICSEARCH_HOST",
