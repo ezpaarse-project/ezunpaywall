@@ -11,7 +11,8 @@ const {
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.APIKEY_URL || 'http://localhost:7000';
+console.log(process.env.APIKEY_URL);
 
 describe('Test: Create apikey', () => {
   before(async () => {

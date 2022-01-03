@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   graphql:
-    image: node:14.15.5-alpine3.13
+    image: node:14.15.5
     environment:
       - NODE_ENV=development
       # elastic
@@ -25,7 +25,7 @@ services:
     restart: unless-stopped
 
   update:
-    image: node:14.15.5-alpine3.13
+    image: node:14.15.5
     environment:
       - NODE_ENV=development
       # mail
@@ -58,7 +58,7 @@ services:
     restart: unless-stopped
 
   enrich:
-    image: node:14.15.5-alpine3.13
+    image: node:14.15.5
     environment:
       - NODE_ENV=development
       # elastic
@@ -82,8 +82,9 @@ services:
     restart: unless-stopped
 
   apikey:
-    image: node:14.15.5-alpine3.13
+    image: node:14.15.5
     environment:
+      - NODE_ENV=development
       # proxy
       - REDIS_PASSWORD=changeme
     working_dir: /apikey
@@ -97,7 +98,7 @@ services:
     restart: unless-stopped
 
   mail:
-    image: node:14.15.5-alpine3.13
+    image: node:14.15.5
     environment:
       # mail
       - NODE_CONFIG
@@ -115,7 +116,7 @@ services:
     restart: unless-stopped
 
   redis:
-    image: redis:6.2.5-alpine3.14
+    image: redis:6.2.5
     command: redis-server --save 60 1 --requirepass changeme
     volumes:
       - ./data/redis:/data
@@ -124,7 +125,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: node:14.15.5-alpine3.13
+    image: node:14.15.5
     working_dir: /frontend
     volumes:
       - ./src/frontend:/frontend
@@ -139,7 +140,7 @@ services:
       - PORT=8080
 
   fakeunpaywall:
-    image: node:14.15.5-alpine3.13
+    image: node:14.15.5
     environment:
       - http_proxy
       - https_proxy
@@ -184,7 +185,7 @@ services:
     restart: unless-stopped
 
   rp:
-    image: nginx:1.20.1-alpine
+    image: nginx:1.20.1
     ports:
       - 80:80
     environment:
