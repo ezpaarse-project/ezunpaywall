@@ -19,6 +19,8 @@ services:
       - http_proxy
       - https_proxy
       # redis
+      - REDIS_HOST
+      - REDIS_PORT
       - REDIS_PASSWORD
     volumes:
       - $HOME/var/log/ezunpaywall/graphql:/usr/src/graphql/log
@@ -55,11 +57,13 @@ services:
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
       - ELASTICSEARCH_INDEX_ALIAS
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
       # proxy
       - http_proxy
       - https_proxy
-      # redis
-      - REDIS_PASSWORD
     volumes:
       - ~/var/log/ezunpaywall/update:/usr/src/update/log
       - ./src/update/out:/usr/src/update/out
@@ -86,6 +90,8 @@ services:
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
       # redis
+      - REDIS_HOST
+      - REDIS_PORT
       - REDIS_PASSWORD
       # URL services
       - GRAPHQL_URL
