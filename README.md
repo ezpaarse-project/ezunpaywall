@@ -172,7 +172,7 @@ You can also use intervals
 ### Examples
 #### GET
 
-```json
+```js
 headers: {
     "x-api-key": "<YOUR_API_KEY>"
 }
@@ -184,7 +184,7 @@ headers: {
 
 `POST "<HOST>/api/graphql"`
 
-```json
+```js
 headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
@@ -195,7 +195,7 @@ body: {
 
 `POST "<HOST>/api/graphql"`
 
-```json
+```js
 headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
