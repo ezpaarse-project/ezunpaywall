@@ -2,6 +2,8 @@
 
 ezunpaywall is an API and database that queries the Unpaywall database containing free scholarly articles
 
+![Structure](/template/structure.png)
+
 **Table of content**
 - [Prerequisites](#prerequisites)
 - [Deployment](#Deployment)
