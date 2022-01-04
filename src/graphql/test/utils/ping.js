@@ -64,12 +64,12 @@ const ping = async () => {
     } catch (err) {
       console.error(`redis ping : ${err}`);
     }
-    if (res4?.body.redis !== 'Alive') {
+    if (!res4?.body.redis) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } else {
       console.log('redis ping : OK');
     }
-  } while (res4?.body.redis !== 'Alive');
+  } while (!res4?.body.redis);
 };
 
 module.exports = {

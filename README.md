@@ -4,6 +4,8 @@ ezunpaywall is an API and database that queries the Unpaywall database containin
 
 **Table of content**
 - [Prerequisites](#prerequisites)
+- [Installation](#Installation)
+- [Structure](#Structure)
 - [Deployment](#Deployment)
 - [Developement](#Development)
 - [Data update](#Data-update)
@@ -23,6 +25,11 @@ The tools you need to let ezunpaywall run are :
 ```bash
 git clone https://github.com/ezpaarse-project/ezunpaywall 
 ```
+## Structure
+
+unpaywall is made up of several services which are distributed in several docker containers
+
+![Structure](/template/structure.png)
 ## Deployment
 ### Setup environment
 
@@ -165,7 +172,7 @@ You can also use intervals
 ### Examples
 #### GET
 
-```json
+```js
 headers: {
     "x-api-key": "<YOUR_API_KEY>"
 }
@@ -177,7 +184,7 @@ headers: {
 
 `POST "<HOST>/api/graphql"`
 
-```json
+```js
 headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
@@ -188,7 +195,7 @@ body: {
 
 `POST "<HOST>/api/graphql"`
 
-```json
+```js
 headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },

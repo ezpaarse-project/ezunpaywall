@@ -7,7 +7,7 @@
         <v-icon>mdi-api</v-icon>
       </v-toolbar>
       <v-container>
-        <v-text-field v-model="apikey" :label="$t('graphql.apiKey')" filled />
+        <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" filled />
         <v-text-field v-model="doi" label="DOI" filled />
       </v-container>
     </v-card>
@@ -66,7 +66,7 @@ export default {
   transition: 'slide-x-transition',
   data: () => {
     return {
-      apikey: 'demo',
+      apiKey: 'demo',
       doi: '10.1111/jvp.12137',
       loading: false,
       response: ''
@@ -142,7 +142,7 @@ export default {
             query: this.query
           },
           headers: {
-            'X-API-KEY': this.apiKey || 'admin'
+            'x-api-key': this.apiKey
           }
         })
       } catch (err) {

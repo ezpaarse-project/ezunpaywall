@@ -34,16 +34,20 @@ services:
       - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE=dev
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
       # unpaywall
-      - UNPAYWALL_APIKEY=default
-      - UNPAYWALL_URL=http://fakeUnpaywall:12000
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_URL
       # elastic
-      - ELASTICSEARCH_HOST=http://elastic
-      - ELASTICSEARCH_PORT=9200
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=changeme
-      - ELASTICSEARCH_INDEX_ALIAS=upw
+      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
       # proxy
       - http_proxy
       - https_proxy
@@ -61,14 +65,13 @@ services:
     image: node:14.15.5
     environment:
       - NODE_ENV=development
-      # elastic
-      - ELASTICSEARCH_HOST=http://elastic
-      - ELASTICSEARCH_PORT=9200
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=changeme
       # proxy
       - http_proxy
       - https_proxy
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
       # URL service
       - GRAPHQL_URL=http://graphql:3000
     working_dir: /enrich
@@ -85,8 +88,10 @@ services:
     image: node:14.15.5
     environment:
       - NODE_ENV=development
-      # proxy
-      - REDIS_PASSWORD=changeme
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
     working_dir: /apikey
     volumes:
       - ./src/apikey:/apikey
@@ -103,10 +108,10 @@ services:
       # mail
       - NODE_CONFIG
       - EZUNPAYWALL_SMTP_HOST=maildev
-      - EZUNPAYWALL_SMTP_PORT=25
+      - EZUNPAYWALL_SMTP_PORT
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE=dev
+      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
     working_dir: /mail
     volumes:
       - ./src/mail:/mail
@@ -133,9 +138,10 @@ services:
     ports:
       - "8080:3000"
     environment:
-      - GRAPHQL_URL=http://localhost:3000
-      - UPDATE_URL=http://localhost:4000
-      - ENRICH_URL=http://localhost:5000
+      - GRAPHQL_URL
+      - UPDATE_URL
+      - ENRICH_URL
+      - MAIL_URL
       - HOST=0.0.0.0
       - PORT=8080
 
