@@ -17,7 +17,7 @@ const {
   deleteApiKey,
 } = require('../bin/manage');
 
-const availableAccess = ['admin', 'update', 'enrich', 'graphql'];
+const availableAccess = ['update', 'enrich', 'graphql'];
 
 const unpaywallAttrs = [
   '*',
