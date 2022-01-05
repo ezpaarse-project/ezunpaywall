@@ -1,7 +1,7 @@
 {
   "unpaywall": {
     "host": "http://fakeUnpaywall:12000",
-    "apikey": "changeme"
+    "apikey": "default"
   },
   "redis":  {
     "password": "changeme",
@@ -18,8 +18,8 @@
     "machine": "dev"
   },
   "elasticsearch": {
-    "port": 9200,
     "host": "http://elastic",
+    "port": 9200,
     "user": "elastic",
     "password": "changeme",
     "maxBulkSize": 4000,

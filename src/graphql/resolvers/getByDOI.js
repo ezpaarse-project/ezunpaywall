@@ -232,7 +232,7 @@ const getByDOI = {
         size: dois.length || 1000,
         body: {
           query,
-          _source: attributes.join(','),
+          _source: attributes,
         },
 
       });

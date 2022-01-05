@@ -33,25 +33,22 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan);
 
-app.get('/', async (req, res) => {
-  let elasticStatus;
+app.get('/', async (req, res, next) => {
+  let elastic;
   try {
-    await elasticClient.ping();
-    elasticStatus = 'Alive';
+    elastic = await elasticClient.ping();
   } catch (err) {
-    logger.error(`Cannot ping elastic ${err}`);
-    elasticStatus = 'Error';
+    return next(boom.boomify(err));
   }
 
-  let redis = await pingRedis();
-  if (redis) {
-    redis = 'Alive';
-  } else {
-    redis = 'Error';
+  let redis;
+  try {
+    redis = await pingRedis();
+  } catch (err) {
+    return next(boom.boomify(err));
   }
-
-  res.status(200).json({
-    name, version, elastic: elasticStatus, redis,
+  return res.status(200).json({
+    name, version, elastic: !!elastic, redis: !!redis,
   });
 });
 

@@ -10,10 +10,10 @@ services:
     environment:
       - NODE_ENV=production
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
-      - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
-      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
       - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
@@ -48,10 +48,10 @@ services:
       - UNPAYWALL_APIKEY
       - UNPAYWALL_URL=http://api.unpaywall.org
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
-      - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
-      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
       - ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
@@ -77,10 +77,10 @@ services:
     environment:
       - NODE_ENV=production
       # elastic
-      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-http://elastic}
-      - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
-      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
-      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
       # redis
       - REDIS_PASSWORD
       # URL services
@@ -133,7 +133,7 @@ services:
 
   redis:
     image: "redis:6.2.5-alpine3.14"
-    command: redis-server --requirepass ${REDIS_PASSWORD:-changeme}
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - ./data-redis:/home/data
     ports:
@@ -147,9 +147,9 @@ services:
       args:
         - http_proxy
         - https_proxy
-        - GRAPHQL_URL=${GRAPHQL_URL:-http://graphql}
-        - UPDATE_URL=${UPDATE_URL:-http://update}
-        - ENRICH_URL=${ENRICH_URL:-http://enrich}
+        - GRAPHQL_URL
+        - UPDATE_URL
+        - ENRICH_URL
     ports:
       - 59700:80
     environment:
