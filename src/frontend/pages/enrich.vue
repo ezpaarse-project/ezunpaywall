@@ -40,7 +40,19 @@
         <v-stepper-items>
           <v-stepper-content step="1">
             <v-container>
-              <v-layout row justify-end class="mb-3">
+              <v-layout row class="mb-3 ml-1">
+                <v-row align="center">
+                  <div class="mr-1" v-text="$t('enrich.authorizedFile')" />
+                  <v-chip-group
+                    v-for="extension in authorizedFile"
+                    :key="extension.name"
+                  >
+                    <v-chip :color="extension.color" label text-color="white">
+                      {{ extension.name }}
+                    </v-chip>
+                  </v-chip-group>
+                </v-row>
+                <v-spacer />
                 <v-menu
                   v-model="fileSelectionHelp"
                   :close-on-content-click="false"
@@ -77,7 +89,6 @@
                     </v-card-actions>
                   </v-card>
                 </v-menu>
-
                 <v-btn
                   class="body-2"
                   color="primary"
@@ -86,7 +97,6 @@
                 />
               </v-layout>
             </v-container>
-
             <LogFiles class="ma-1" @files="getFiles($event)" />
           </v-stepper-content>
 
@@ -126,13 +136,16 @@
               filled
               @click:append="apiKeyVisible = !apiKeyVisible"
             />
-
-            <v-text-field
-              v-model="extensionSelected"
-              :label="$t('enrich.fileExtension')"
-              filled
-              readonly
-            />
+            <v-row class="mb-3 ml-1">
+              <div class="mr-1" v-text="$t('enrich.fileExtension')" />
+              <v-chip
+                label
+                text-color="white"
+                :color="getColorExtensionFile(extensionSelected)"
+              >
+                {{ extensionSelected }}
+              </v-chip>
+            </v-row>
 
             <v-toolbar class="secondary" dark dense flat>
               <v-toolbar-title v-text="$t('enrich.unpaywallAttributes')" />
@@ -201,6 +214,10 @@ export default {
     return {
       // stepper
       step: 1,
+      authorizedFile: [
+        { name: 'csv', color: 'green' },
+        { name: 'jsonl', color: 'orange' }
+      ],
       // config
       files: [],
       apiKey: 'demo',
@@ -226,8 +243,8 @@ export default {
     },
     extensionSelected () {
       if (this.files.length !== 0) {
-        const [, ext] = this.files[0].file.name.split('.')
-        return ext
+        const ext = this.files[0].file.name.split('.')
+        return ext[ext.length - 1]
       }
       return ''
     },
@@ -352,6 +369,13 @@ export default {
       // done
       this.inProcess = false
       this.id = data.id
+    },
+
+    getColorExtensionFile (extensionSelected) {
+      const extension = this.authorizedFile.find(
+        file => file.name === extensionSelected
+      )
+      return extension?.color || 'gray'
     },
 
     errored () {
