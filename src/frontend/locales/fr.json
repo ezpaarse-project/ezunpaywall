@@ -1,8 +1,8 @@
 {
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
-    "intro": "Le serveur ezUnpaywall est un miroir <a href=\"{url}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM.",
-    "metrics": "Métriques",
+    "intro": "Le serveur ezUnpaywall est un miroir <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. Cette interface est sert de démonstrateur, elle permet de tester les fonctionnalités du miroir (API graphql et enrichissement de fichier). Pour plus d'informations, regarder <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
+    "metrics": "Métriques - {origin}",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
     "openAccess": "Accès ouvert",
@@ -34,7 +34,6 @@
     "continue": "Continuer",
     "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezUnpaywall. Ils doivent simplement contenir un champ DOI.",
     "explainationTestsLogs": "Besoin de fichiers à enrichir pour tester ce service ? Nous en mettons à disposition sur <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
-    "close": "Fermer",
     "apiKey": "Clé d'API",
     "fileExtension": "Extension de fichier reconnu :",
     "unpaywallAttributes": "Attributs unpaywall",
@@ -55,7 +54,8 @@
   "graphql": {
     "constructor": "Constructeur de requête GraphQL",
     "apiKey": "clé d'API",
-    "settings": "Attributs unpaywall",
+    "settings": "Attributs unpaywall à récuperer",
+    "help": "Dans cette partie, vous pouvez séléctionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
     "request": "Requête GraphQL",
     "start": "Lancement de la requête",
     "result": "Résultat",
@@ -115,7 +115,6 @@
   "status": {
     "inUpdate": "Mise à jour en cours",
     "noInUpdate": "Les données sont à jour",
-    "close": "Fermer",
     "errorState": "Impossible d'obtenir l'état",
     "errorStatus": "Impossible d'obtenir le statut"
   },
@@ -130,8 +129,7 @@
     "status": "Statut"
   },
   "header": {
-    "help": "Les données du miroir Unpaywall sont mis à jour quotidiennement à 12:30",
-    "close": "Close"
+    "help": "Les données du miroir Unpaywall sont mis à jour quotidiennement à 12:30"
   },
   "drawer": {
     "home": "Accueil",
@@ -143,5 +141,6 @@
   "theme": {
     "dark": "Thème sombre",
     "light": "Thème clair"
-  }
+  },
+  "close": "Fermer"
 }

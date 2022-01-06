@@ -3,27 +3,32 @@
     <SelectAttributes
       :items="unpaywallAttr"
       label="simple"
+      source="enrich"
     />
     <SelectAttributes
       :items="oa_location"
       label="best_oa_location"
+      source="enrich"
     />
     <SelectAttributes
       :items="oa_location"
       label="first_oa_location"
+      source="enrich"
     />
     <SelectAttributes
       :items="oa_location"
       label="oa_locations"
+      source="enrich"
     />
     <SelectAttributes
       :items="z_authors"
       label="z_authors"
+      source="enrich"
     />
   </div>
 </template>
 <script>
-import SelectAttributes from '~/components/enrich/SelectAttributes.vue'
+import SelectAttributes from '~/components/unpaywallArgs/SelectAttributes.vue'
 
 export default {
   components: {
@@ -31,12 +36,6 @@ export default {
   },
   data: () => {
     return {
-      enrichedFile: '',
-      simple: [],
-
-      best_oa_location: [],
-      first_oa_location: [],
-      oa_locations: []
     }
   },
   computed: {

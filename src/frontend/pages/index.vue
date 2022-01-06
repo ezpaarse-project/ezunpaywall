@@ -6,13 +6,13 @@
       </v-toolbar>
       <v-container
         v-html="
-          $t('home.intro', { url: unpaywallURL, })"
+          $t('home.intro', { unpaywallURL, blogURL })"
       />
     </v-card>
 
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title v-text="$t('home.metrics')" />
+        <v-toolbar-title v-text="$t('home.metrics', { origin: getElasticOrigin()})" />
       </v-toolbar>
       <v-container>
         <v-card-title v-text="$t('home.globalMetrics')" />
@@ -51,6 +51,7 @@ export default {
   data: () => {
     return {
       loaded: false,
+      blogURL: 'https://blog.ezpaarse.org/2021/05/communication-unpaywall-un-miroir-et-une-api-a-linist-cnrs/',
       unpaywallURL: 'https://unpaywall.org/',
       metrics: {
         doi: 0,
@@ -108,6 +109,9 @@ export default {
         this.metrics = res?.data?.data?.Metrics
       }
       this.loaded = false
+    },
+    getElasticOrigin () {
+      return this.$config.elasticOrigin
     }
   }
 }

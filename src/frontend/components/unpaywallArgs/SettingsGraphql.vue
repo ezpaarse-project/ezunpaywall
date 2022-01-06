@@ -3,27 +3,33 @@
     <SelectAttributes
       :items="unpaywallAttr"
       :label="'simple'"
+      source="graphql"
+      :selected="defaultSelected"
     />
     <SelectAttributes
       :items="oa_location"
       :label="'best_oa_location'"
+      source="graphql"
     />
     <SelectAttributes
       :items="oa_location"
       :label="'first_oa_location'"
+      source="graphql"
     />
     <SelectAttributes
       :items="oa_location"
       :label="'oa_locations'"
+      source="graphql"
     />
     <SelectAttributes
       :items="z_authors"
       :label="'z_authors'"
+      source="graphql"
     />
   </div>
 </template>
 <script>
-import SelectAttributes from '~/components/enrich/SelectAttributes.vue'
+import SelectAttributes from '~/components/unpaywallArgs/SelectAttributes.vue'
 
 export default {
   components: {
@@ -31,17 +37,13 @@ export default {
   },
   data: () => {
     return {
-      enrichedFile: '',
-      simple: [],
-
-      best_oa_location: [],
-      first_oa_location: [],
-      oa_locations: []
+      defaultSelected: ['doi']
     }
   },
   computed: {
     unpaywallAttr () {
       return [
+        { name: 'doi', info: this.$t('unpaywallArgs.general.doi') },
         { name: 'data_standard', info: this.$t('unpaywallArgs.general.data_standard') },
         { name: 'doi_url', info: this.$t('unpaywallArgs.general.doi_url') },
         { name: 'genre', info: this.$t('unpaywallArgs.general.genre') },
@@ -78,7 +80,7 @@ export default {
       return [
         { name: 'family', info: this.$t('unpaywallArgs.z_authors.family') },
         { name: 'given', info: this.$t('unpaywallArgs.z_authors.given') },
-        { name: 'ORCID', info: this.$t('unpaywallArgs.z_authors.ORCID') },
+        { name: 'ORCID', info: this.$t('unpaywallArgs.z_authors.ORCID') }
       ]
     }
   }

@@ -4,15 +4,17 @@
     <SelectAttributes
       :items="oa_location"
       label="best_oa_location"
+      source="enrich"
     />
     <SelectAttributes
       :items="oa_location"
       label="first_oa_location"
+      source="enrich"
     />
   </div>
 </template>
 <script>
-import SelectAttributes from '~/components/enrich/SelectAttributes.vue'
+import SelectAttributes from '~/components/unpaywallArgs/SelectAttributes.vue'
 
 export default {
   components: {
@@ -20,11 +22,6 @@ export default {
   },
   data: () => {
     return {
-      enrichedFile: '',
-      simple: [],
-
-      best_oa_location: [],
-      first_oa_location: []
     }
   },
   computed: {
@@ -66,7 +63,7 @@ export default {
       return [
         { name: 'family', info: this.$t('unpaywallArgs.z_authors.family') },
         { name: 'given', info: this.$t('unpaywallArgs.z_authors.given') },
-        { name: 'ORCID', info: this.$t('unpaywallArgs.z_authors.ORCID') },
+        { name: 'ORCID', info: this.$t('unpaywallArgs.z_authors.ORCID') }
       ]
     }
   }

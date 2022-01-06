@@ -10,15 +10,45 @@
         <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" filled />
         <v-text-field v-model="doi" label="DOI" filled />
       </v-container>
-    </v-card>
-
-    <v-card class="my-3">
-      <v-toolbar class="secondary" dark dense flat>
-        <v-toolbar-title v-text="$t('graphql.settings')" />
-      </v-toolbar>
 
       <v-container>
-        <SettingsGraphql />
+        <v-toolbar class="secondary" dark dense flat>
+          <v-toolbar-title v-text="$t('graphql.settings')" />
+
+          <v-menu
+            v-model="graphqlHelp"
+            :close-on-content-click="false"
+            :nudge-width="200"
+            max-width="500"
+            offset-x
+            transition="slide-x-transition"
+          >
+            <template #activator="{ on }">
+              <v-btn class="mr-5" icon v-on="on">
+                <v-icon>mdi-help-circle</v-icon>
+              </v-btn>
+            </template>
+
+            <v-card class="text-justify">
+              <v-card-text
+                v-html="$t('graphql.help', { url: dataFormatURL })"
+              />
+              <v-card-actions>
+                <v-spacer />
+                <v-btn
+                  class="body-2"
+                  text
+                  @click="graphqlHelp = false"
+                  v-text="$t('close')"
+                />
+              </v-card-actions>
+            </v-card>
+          </v-menu>
+        </v-toolbar>
+
+        <v-container>
+          <SettingsGraphql />
+        </v-container>
       </v-container>
     </v-card>
     <v-card class="mx-auto">
@@ -69,7 +99,10 @@ export default {
       apiKey: 'demo',
       doi: '10.1111/jvp.12137',
       loading: false,
-      response: ''
+      response: '',
+      // help
+      graphqlHelp: false,
+      dataFormatURL: 'https://unpaywall.org/data-format'
     }
   },
   computed: {
@@ -84,7 +117,7 @@ export default {
         first_oa_location,
         oa_locations,
         z_authors
-      } = this.$store.state.enrich
+      } = this.$store.state.graphql
 
       if (
         !simple.length &&

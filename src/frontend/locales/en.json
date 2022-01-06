@@ -1,8 +1,8 @@
 {
   "home": {
     "title" : "What is ezUnpaywall?",
-    "intro": "The ezUnpaywall server is an <a href=\"{url}\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM.",
-    "metrics": "Metrics",
+    "intro": "The ezUnpaywall server is an <a href=\"{url}\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM. This interface is used as a demonstrator, it allows to test the mirror features (graphql API and file enrichment). For more information, see the <a href=\"{blogURL}\" target=\"_blank\">blog post</a>.",
+    "metrics": "Metrics - {origin}",
     "globalMetrics": "Global metrics",
     "referencedResources": "Referenced resources",
     "openAccess": "Open Access",
@@ -34,7 +34,6 @@
     "continue": "Continue",
     "explainationLogs": "Files you want to be enriched by ezUnpaywall. The only condition is that they contain a DOI field.",
     "explainationTestsLogs": "Need files to test this service? We provide some on <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
-    "close": "Close",
     "apiKey": "API Key",
     "fileExtension": "File extension recognized :",
     "unpaywallAttributes": "Unpaywall attributes",
@@ -55,7 +54,8 @@
   "graphql": {
     "constructor": "GraphQL request builder",
     "apiKey": "API key",
-    "settings": "Unpaywall attributes",
+    "settings": "Unpaywall attributes to retrieve",
+    "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
     "request": "GraphQL request",
     "start": "Launch request",
     "result": "Result",
@@ -115,7 +115,6 @@
   "status": {
     "inUpdate": "Update in progress",
     "noInUpdate": "The data is up to date",
-    "close": "Close",
     "errorState": "Cannot get state of enrichment",
     "errorStatus": "Cannot get state of enrichment"
   },
@@ -130,8 +129,7 @@
     "status": "Status"
   },
   "header": {
-    "help": "The unpaywall mirror data is updated daily at 12:30 p.m.",
-    "close": "Close"
+    "help": "The unpaywall mirror data is updated daily at 12:30 p.m."
   },
   "drawer": {
     "home": "Home",
@@ -143,5 +141,6 @@
   "theme": {
     "dark": "Dark theme",
     "light": "Light theme"
-  }
+  },
+  "close": "Close"
 }

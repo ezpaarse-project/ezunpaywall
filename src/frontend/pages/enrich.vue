@@ -84,7 +84,7 @@
                         class="body-2"
                         text
                         @click="fileSelectionHelp = false"
-                        v-text="$t('enrich.close')"
+                        v-text="$t('close')"
                       />
                     </v-card-actions>
                   </v-card>

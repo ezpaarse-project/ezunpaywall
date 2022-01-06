@@ -2,6 +2,7 @@
   <div>
     <v-container fluid>
       <v-autocomplete
+        :value="selectedComputed"
         :label="label"
         :items="items"
         item-text="name"
@@ -27,19 +28,33 @@ export default {
   props: {
     label: {
       type: String,
-      default: () => ('')
+      default: () => ''
     },
     items: {
       type: Array,
-      default: () => ([])
+      default: () => []
+    },
+    selected: {
+      type: Array,
+      default: () => []
+    },
+    source: {
+      type: String,
+      default: () => ''
     }
   },
   data: () => {
     return {}
   },
+  computed: {
+    selectedComputed () {
+      return this.selected
+    }
+  },
+
   methods: {
     updateModel (value) {
-      this.$store.dispatch('enrich/update', {
+      this.$store.dispatch(`${this.source}/update`, {
         source: this.label,
         attrs: value
       })

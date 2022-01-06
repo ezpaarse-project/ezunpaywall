@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: () => ({
-    simple: [],
+    simple: ['doi'],
     best_oa_location: [],
     first_oa_location: [],
     oa_locations: [],
