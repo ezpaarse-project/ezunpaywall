@@ -1,6 +1,10 @@
 <template>
   <div>
-    <SelectAttributes :items="unpaywallAttr" label="simple" />
+    <SelectAttributes
+      :items="unpaywallAttr"
+      label="simple"
+      source="enrich"
+    />
     <SelectAttributes
       :items="oa_location"
       label="best_oa_location"
@@ -21,24 +25,47 @@ export default {
     SelectAttributes
   },
   data: () => {
-    return {
-    }
+    return {}
   },
   computed: {
     unpaywallAttr () {
       return [
-        { name: 'data_standard', info: this.$t('unpaywallArgs.general.data_standard') },
+        {
+          name: 'data_standard',
+          info: this.$t('unpaywallArgs.general.data_standard')
+        },
         { name: 'doi_url', info: this.$t('unpaywallArgs.general.doi_url') },
         { name: 'genre', info: this.$t('unpaywallArgs.general.genre') },
         { name: 'is_oa', info: this.$t('unpaywallArgs.general.is_oa') },
-        { name: 'is_paratext', info: this.$t('unpaywallArgs.general.is_paratext') },
-        { name: 'journal_is_in_doaj', info: this.$t('unpaywallArgs.general.journal_is_in_doaj') },
-        { name: 'journal_is_oa', info: this.$t('unpaywallArgs.general.journal_is_oa') },
-        { name: 'journal_issn_l', info: this.$t('unpaywallArgs.general.journal_issn_l') },
-        { name: 'journal_issns', info: this.$t('unpaywallArgs.general.journal_issns') },
-        { name: 'journal_name', info: this.$t('unpaywallArgs.general.journal_name') },
+        {
+          name: 'is_paratext',
+          info: this.$t('unpaywallArgs.general.is_paratext')
+        },
+        {
+          name: 'journal_is_in_doaj',
+          info: this.$t('unpaywallArgs.general.journal_is_in_doaj')
+        },
+        {
+          name: 'journal_is_oa',
+          info: this.$t('unpaywallArgs.general.journal_is_oa')
+        },
+        {
+          name: 'journal_issn_l',
+          info: this.$t('unpaywallArgs.general.journal_issn_l')
+        },
+        {
+          name: 'journal_issns',
+          info: this.$t('unpaywallArgs.general.journal_issns')
+        },
+        {
+          name: 'journal_name',
+          info: this.$t('unpaywallArgs.general.journal_name')
+        },
         { name: 'oa_status', info: this.$t('unpaywallArgs.general.oa_status') },
-        { name: 'published_date', info: this.$t('unpaywallArgs.general.published_date') },
+        {
+          name: 'published_date',
+          info: this.$t('unpaywallArgs.general.published_date')
+        },
         { name: 'publisher', info: this.$t('unpaywallArgs.general.publisher') },
         { name: 'title', info: this.$t('unpaywallArgs.general.title') },
         { name: 'updated', info: this.$t('unpaywallArgs.general.updated') },
@@ -47,15 +74,27 @@ export default {
     },
     oa_location () {
       return [
-        { name: 'evidence', info: this.$t('unpaywallArgs.oa_location.evidence') },
-        { name: 'host_type', info: this.$t('unpaywallArgs.oa_location.host_type') },
+        {
+          name: 'evidence',
+          info: this.$t('unpaywallArgs.oa_location.evidence')
+        },
+        {
+          name: 'host_type',
+          info: this.$t('unpaywallArgs.oa_location.host_type')
+        },
         { name: 'is_best', info: this.$t('unpaywallArgs.oa_location.is_best') },
         { name: 'license', info: this.$t('unpaywallArgs.oa_location.license') },
         { name: 'pmh_id', info: this.$t('unpaywallArgs.oa_location.pmh_id') },
         { name: 'updated', info: this.$t('unpaywallArgs.oa_location.updated') },
         { name: 'url', info: this.$t('unpaywallArgs.oa_location.url') },
-        { name: 'url_for_landing_page', info: this.$t('unpaywallArgs.oa_location.url_for_landing_page') },
-        { name: 'url_for_pdf', info: this.$t('unpaywallArgs.oa_location.url_for_pdf') },
+        {
+          name: 'url_for_landing_page',
+          info: this.$t('unpaywallArgs.oa_location.url_for_landing_page')
+        },
+        {
+          name: 'url_for_pdf',
+          info: this.$t('unpaywallArgs.oa_location.url_for_pdf')
+        },
         { name: 'version', info: this.$t('unpaywallArgs.oa_location.version') }
       ]
     },

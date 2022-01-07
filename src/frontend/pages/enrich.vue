@@ -256,7 +256,6 @@ export default {
         oa_locations,
         z_authors
       } = this.$store.state.enrich
-
       if (
         !simple.length &&
         !best_oa_location.length &&
@@ -284,6 +283,7 @@ export default {
       if (z_authors.length) {
         attrs.push(`z_authors { ${z_authors.join(', ')} }`)
       }
+
       return `{ ${attrs.join(', ')} }`
     },
     // process

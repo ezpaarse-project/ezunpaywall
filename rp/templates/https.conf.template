@@ -2,7 +2,7 @@
 server {
   server_name ${NGINX_HOST};
 
-  client_max_body_size 50M;
+  client_max_body_size 100M;
 
   listen 80;
   listen [::]:80;
@@ -20,7 +20,7 @@ server {
 server {
   server_name ${NGINX_HOST};
 
-  client_max_body_size 50M;
+  client_max_body_size 100M;
 
   listen 443 ssl;
   listen [::]:443 ssl;
