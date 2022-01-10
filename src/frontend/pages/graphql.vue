@@ -1,5 +1,6 @@
 <template>
   <section>
+    <div v-html="$t('graphql.general', { url })" />
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />
@@ -16,7 +17,7 @@
           <v-toolbar-title v-text="$t('graphql.settings')" />
 
           <v-menu
-            v-model="graphqlHelp"
+            v-model="attrsHelp"
             :close-on-content-click="false"
             :nudge-width="200"
             max-width="500"
@@ -31,14 +32,14 @@
 
             <v-card class="text-justify">
               <v-card-text
-                v-html="$t('graphql.help', { url: dataFormatURL })"
+                v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
               />
               <v-card-actions>
                 <v-spacer />
                 <v-btn
                   class="body-2"
                   text
-                  @click="graphqlHelp = false"
+                  @click="attrsHelp = false"
                   v-text="$t('close')"
                 />
               </v-card-actions>
@@ -101,7 +102,7 @@ export default {
       loading: false,
       response: '',
       // help
-      graphqlHelp: false,
+      attrsHelp: false,
       dataFormatURL: 'https://unpaywall.org/data-format'
     }
   },

@@ -1,6 +1,7 @@
 <template>
   <section>
-    <v-card>
+    <div v-html="$t('enrich.general')" />
+    <v-card class="my-3">
       <v-toolbar class="secondary" dark dense flat>
         <v-toolbar-title v-text="$t('enrich.enrichFile')" />
         <v-spacer />
@@ -149,6 +150,35 @@
 
             <v-toolbar class="secondary" dark dense flat>
               <v-toolbar-title v-text="$t('enrich.unpaywallAttributes')" />
+              <v-menu
+                v-model="graphqlHelp"
+                :close-on-content-click="false"
+                :nudge-width="200"
+                max-width="500"
+                offset-x
+                transition="slide-x-transition"
+              >
+                <template #activator="{ on }">
+                  <v-btn class="mr-5" icon v-on="on">
+                    <v-icon>mdi-help-circle</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-card class="text-justify">
+                  <v-card-text
+                    v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
+                  />
+                  <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                      class="body-2"
+                      text
+                      @click="graphqlHelp = false"
+                      v-text="$t('close')"
+                    />
+                  </v-card-actions>
+                </v-card>
+              </v-menu>
             </v-toolbar>
 
             <SettingsCSV v-if="extensionSelected === 'csv'" />
@@ -228,6 +258,8 @@ export default {
       // help
       fileSelectionHelp: false,
       logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
+      attrsHelp: false,
+      dataFormatURL: 'https://unpaywall.org/data-format',
       // process
       state: {},
       time: 0,

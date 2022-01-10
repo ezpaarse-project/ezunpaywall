@@ -26,6 +26,7 @@
     "cancel": "Cancel"
   },
   "enrich": {
+    "general": "This page allows you to test the enrichment function of jsonl and csv files with unpaywall attributes.",
     "enrichFile": "Enrich your file",
     "filesSelection": "Select files",
     "settings": "Settings",
@@ -52,10 +53,10 @@
     "errorState": "Cannot get state of enrichment"
   },
   "graphql": {
+    "general": "This page allows you to test the graphql API available on the URL <a href=\"{url}\" target=\"_blank\">{url}</a>. To be able to query the mirror, it is necessary to indicate an API key, some must and some unpaywall attributes. A graphql request builder is available to help you request the API.",
     "constructor": "GraphQL request builder",
     "apiKey": "API key",
     "settings": "Unpaywall attributes to retrieve",
-    "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
     "request": "GraphQL request",
     "start": "Launch request",
     "result": "Result",
@@ -67,6 +68,7 @@
   },
   "unpaywallArgs": {
     "title": "Settings",
+    "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
     "general": {
       "data_standard": "Data collection approaches used for this resource",
       "doi_url": "DOI in hyperlink form",
