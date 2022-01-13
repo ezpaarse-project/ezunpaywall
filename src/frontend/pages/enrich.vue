@@ -349,7 +349,8 @@ export default {
             'Content-Type': 'text/csv',
             'X-API-KEY': this.apiKey
           },
-          responseType: 'json'
+          responseType: 'json',
+          timeout: 0
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
