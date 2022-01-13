@@ -81,6 +81,14 @@
         <v-card-text>
           <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
         </v-card-text>
+        <v-card-actions v-if="response.data">
+          <v-spacer />
+          <v-btn
+            :href="linkGraphql"
+            target="_blank"
+            v-text="$t('graphql.linkAPI')"
+          />
+        </v-card-actions>
       </div>
     </v-card>
   </section>
@@ -151,6 +159,9 @@ export default {
     },
     query () {
       return `{ GetByDOI(dois: [${this.formatDOIs}]) ${this.getSetting} }`
+    },
+    linkGraphql () {
+      return `${this.$graphql.defaults.baseURL}/graphql?query=${this.query}&apikey=demo`
     }
   },
   methods: {

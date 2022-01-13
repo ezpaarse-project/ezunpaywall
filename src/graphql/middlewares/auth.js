@@ -10,11 +10,14 @@ const logger = require('../lib/logger');
  */
 const checkAuth = async (req, res, next) => {
   // TODO check in query
-  const apikey = req.get('x-api-key');
+  let apikey = req.get('x-api-key');
 
-  if (!apikey) {
-    return next();
+  if (req.query.apikey && !apikey) {
+    apikey = req.query.apikey;
+    req.headers['x-api-key'] = req.query.apikey;
   }
+
+  if (!apikey) return next();
 
   let key;
   try {

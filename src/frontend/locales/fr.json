@@ -60,6 +60,7 @@
     "request": "Requête GraphQL",
     "start": "Lancement de la requête",
     "result": "Résultat",
+    "linkAPI": "Voir sur l'API",
     "copyRequest": "Requête GraphQL copié",
     "copyResult": "Résultat copié",
     "errorRequest": "Impossible de lancer la requête graphql",
