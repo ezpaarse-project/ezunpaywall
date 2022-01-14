@@ -151,7 +151,7 @@
             <v-toolbar class="secondary" dark dense flat>
               <v-toolbar-title v-text="$t('enrich.unpaywallAttributes')" />
               <v-menu
-                v-model="graphqlHelp"
+                v-model="unpaywallArgsHelp"
                 :close-on-content-click="false"
                 :nudge-width="200"
                 max-width="500"
@@ -173,7 +173,7 @@
                     <v-btn
                       class="body-2"
                       text
-                      @click="graphqlHelp = false"
+                      @click="unpaywallArgsHelp = false"
                       v-text="$t('close')"
                     />
                   </v-card-actions>
@@ -203,7 +203,7 @@
                 indeterminate
                 color="green"
               />
-              <div v-text="$t('enrich.inProcess')" />
+              <div v-text="stepTitle" />
             </v-container>
             <v-container v-else class="text-center">
               <v-icon v-if="error" size="70" color="orange darken-2">
@@ -257,11 +257,14 @@ export default {
       },
       // help
       fileSelectionHelp: false,
+      unpaywallArgsHelp: false,
       logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
       attrsHelp: false,
       dataFormatURL: 'https://unpaywall.org/data-format',
       // process
       state: {},
+      stepTitle: '',
+      timer: undefined,
       time: 0,
       inProcess: false,
       error: false,
@@ -325,7 +328,9 @@ export default {
   },
   methods: {
     async enrich () {
+      this.time = 0
       this.error = false
+      this.startTimer()
       this.inProcess = true
 
       const data = {
@@ -339,7 +344,7 @@ export default {
 
       let upload
 
-      // upload
+      this.stepTitle = this.$t('enrich.stepUpload')
       try {
         upload = await this.$enrich({
           method: 'POST',
@@ -359,7 +364,7 @@ export default {
 
       data.id = upload?.data?.id
 
-      // enrich
+      this.stepTitle = this.$t('enrich.stepEnrich')
       try {
         await this.$enrich({
           method: 'POST',
@@ -386,12 +391,6 @@ export default {
             responseType: 'json'
           })
           this.state = state?.data
-          // TODO use computed
-          if (Number.isInteger(this.state?.createdAt)) {
-            this.time = Math.round((Date.now() - this.state?.createdAt) / 1000)
-          } else {
-            this.time = 0
-          }
         } catch (err) {
           this.$store.dispatch('snacks/error', this.$t('enrich.errorState'))
           return this.errored()
@@ -399,9 +398,20 @@ export default {
         await new Promise(resolve => setTimeout(resolve, 1000))
       } while (!state?.data?.done)
 
+      this.stopTimer()
       // done
       this.inProcess = false
       this.id = data.id
+    },
+
+    startTimer () {
+      this.timer = setInterval(() => {
+        this.time += 1
+      }, 1000)
+    },
+
+    stopTimer () {
+      clearInterval(this.timer)
     },
 
     getColorExtensionFile (extensionSelected) {
@@ -412,10 +422,10 @@ export default {
     },
 
     errored () {
+      this.stopTimer()
       this.error = true
       this.inProcess = false
       this.state = {}
-      this.time = 0
       this.id = ''
     },
 
