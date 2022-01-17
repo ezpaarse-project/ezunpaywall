@@ -39,7 +39,7 @@
     "fileExtension": "Extension de fichier reconnu :",
     "unpaywallAttributes": "Attributs unpaywall",
     "startProcess": "Démarrer l'enrichissement",
-    "stepUpload": "Envoie du fichier en cours",
+    "stepUpload": "Envoi du fichier en cours",
     "stepEnrich": "Enrichissement en cours",
     "download": "Télécharger le fichier enrichi",
     "end": "Enrichissement terminé",
