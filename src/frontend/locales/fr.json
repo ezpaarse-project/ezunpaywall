@@ -26,17 +26,17 @@
     "cancel": "Annuler"
   },
   "enrich": {
-    "general": "Cette page vous permet d'enrichir de tester la fonction d'enrichissement de fichiers jsonl et csv avec des attributs unpaywall.",
+    "general": "Cette page vous permet de tester la fonction d'enrichissement de fichiers jsonl et csv avec des attributs unpaywall.",
     "enrichFile": "Enrichir votre fichier",
     "filesSelection": "Sélection des fichiers",
     "settings": "Paramètres",
     "enrich": "Enrichissement",
-    "authorizedFile": "Types de fichier autorisé :",
+    "authorizedFile": "Types de fichier autorisés :",
     "continue": "Continuer",
     "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezUnpaywall. Ils doivent simplement contenir un champ DOI.",
     "explainationTestsLogs": "Besoin de fichiers à enrichir pour tester ce service ? Nous en mettons à disposition sur <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
     "apiKey": "Clé d'API",
-    "fileExtension": "Extension de fichier reconnu :",
+    "fileExtension": "Extension de fichier reconnue :",
     "unpaywallAttributes": "Attributs unpaywall",
     "startProcess": "Démarrer l'enrichissement",
     "stepUpload": "Envoi du fichier en cours",
@@ -54,7 +54,7 @@
     "errorState": "Impossible d'obtenir l'état"
   },
   "graphql": {
-    "general": "Cette page permet de tester l'API graphql mis à disposition sur l'URL <a href=\"{url}\" target=\"_blank\">{url}</a>. Pour pouvoir requêter le miroir, il est nécessaire d'indiqué une clé d'API, des dois et des attributs unpaywall voulus. Un constructeur de requête graphql est à votre disposition pour vous aidez à requeter l'API.",
+    "general": "Cette page permet de tester l'API GraphQL mise à disposition à l'adresse <a href=\"{url}\" target=\"_blank\">{url}</a>. Pour pouvoir requêter le miroir, il est nécessaire d'indiquer une clé d'API, des DOIs et des attributs unpaywall voulus. Un constructeur de requête GraphQL est à votre disposition pour vous aider à requeter l'API.",
     "constructor": "Constructeur de requête GraphQL",
     "apiKey": "clé d'API",
     "settings": "Attributs unpaywall à récuperer",
@@ -133,7 +133,7 @@
     "status": "Statut"
   },
   "header": {
-    "help": "Les données du miroir Unpaywall sont mis à jour quotidiennement à 12:30"
+    "help": "Les données du miroir Unpaywall sont mises à jour quotidiennement à 12:30"
   },
   "drawer": {
     "home": "Accueil",

@@ -142,7 +142,7 @@
               <v-chip
                 label
                 text-color="white"
-                :color="getColorExtensionFile(extensionSelected)"
+                color="extensionFileColor(extensionSelected)"
               >
                 {{ extensionSelected }}
               </v-chip>
@@ -324,6 +324,13 @@ export default {
     // process
     resultUrl () {
       return `${this.$enrich.defaults.baseURL}/enriched/${this.id}.${this.extensionSelected}`
+    },
+
+    extensionFileColor (extensionSelected) {
+      const extension = this.authorizedFile.find(
+        file => file.name === extensionSelected
+      )
+      return extension?.color || 'gray'
     }
   },
   methods: {
@@ -412,13 +419,6 @@ export default {
 
     stopTimer () {
       clearInterval(this.timer)
-    },
-
-    getColorExtensionFile (extensionSelected) {
-      const extension = this.authorizedFile.find(
-        file => file.name === extensionSelected
-      )
-      return extension?.color || 'gray'
     },
 
     errored () {

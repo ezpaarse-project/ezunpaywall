@@ -2,28 +2,28 @@
   <div>
     <SelectAttributes
       :items="unpaywallAttr"
-      :label="'simple'"
+      label="simple"
       source="graphql"
       :selected="defaultSelected"
     />
     <SelectAttributes
       :items="oa_location"
-      :label="'best_oa_location'"
+      label="best_oa_location"
       source="graphql"
     />
     <SelectAttributes
       :items="oa_location"
-      :label="'first_oa_location'"
+      label="first_oa_location"
       source="graphql"
     />
     <SelectAttributes
       :items="oa_location"
-      :label="'oa_locations'"
+      label="oa_locations"
       source="graphql"
     />
     <SelectAttributes
       :items="z_authors"
-      :label="'z_authors'"
+      label="z_authors"
       source="graphql"
     />
   </div>

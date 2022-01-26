@@ -8,9 +8,9 @@ const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 const statesDir = path.resolve(__dirname, '..', 'out', 'states');
 const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
 
-const deleteFilesInDir = async (directory, day) => {
-  const time = 1 * 24 * 60 * 60 * 1000 * day;
-  const yerteday = Date.now() - time;
+const deleteFilesInDir = async (directory, maxAgeInDays) => {
+  const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;
+  const thershold = Date.now() - time;
 
   let files;
   try {
@@ -23,7 +23,7 @@ const deleteFilesInDir = async (directory, day) => {
   for (const file of files) {
     try {
       const stat = await fs.stat(path.join(directory, file));
-      if (stat.mtime < yerteday) {
+      if (stat.mtime < thershold) {
         await fs.unlink(path.join(directory, file));
       }
     } catch (err) {
