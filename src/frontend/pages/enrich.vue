@@ -142,7 +142,7 @@
               <v-chip
                 label
                 text-color="white"
-                color="extensionFileColor(extensionSelected)"
+                :color="extensionFileColor"
               >
                 {{ extensionSelected }}
               </v-chip>
@@ -326,9 +326,9 @@ export default {
       return `${this.$enrich.defaults.baseURL}/enriched/${this.id}.${this.extensionSelected}`
     },
 
-    extensionFileColor (extensionSelected) {
+    extensionFileColor () {
       const extension = this.authorizedFile.find(
-        file => file.name === extensionSelected
+        file => file.name === this.extensionSelected
       )
       return extension?.color || 'gray'
     }
@@ -337,7 +337,7 @@ export default {
     async enrich () {
       this.time = 0
       this.error = false
-      this.startTimer()
+      this.startTimer(Date.now())
       this.inProcess = true
 
       const data = {
@@ -411,10 +411,10 @@ export default {
       this.id = data.id
     },
 
-    startTimer () {
+    startTimer (startTime) {
       this.timer = setInterval(() => {
-        this.time += 1
-      }, 1000)
+        this.time = Math.ceil((Date.now() - startTime) / 1000)
+      }, 500)
     },
 
     stopTimer () {
