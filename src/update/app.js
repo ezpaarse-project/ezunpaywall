@@ -6,6 +6,7 @@ const boom = require('@hapi/boom');
 
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
+const cronDeleteOutFiles = require('./lib/cron');
 
 const { elasticClient, pingElastic, initAlias } = require('./lib/elastic');
 const { pingRedis } = require('./lib/redis');
@@ -76,4 +77,5 @@ app.listen(4000, async () => {
   pingElastic();
   pingRedis();
   await initAlias('unpaywall', unpaywallMapping, 'upw');
+  await cronDeleteOutFiles.start();
 });

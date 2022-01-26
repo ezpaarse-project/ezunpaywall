@@ -1,8 +1,8 @@
 {
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
-    "intro": "Le serveur ezUnpaywall est un miroir <a href=\"{url}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM.",
-    "metrics": "Métriques",
+    "intro": "Le serveur ezUnpaywall est un miroir <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. Cette interface est sert de démonstrateur, elle permet de tester les fonctionnalités du miroir (API graphql et enrichissement de fichier). Pour plus d'informations, regarder <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
+    "metrics": "Métriques - {origin}",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
     "openAccess": "Accès ouvert",
@@ -26,37 +26,42 @@
     "cancel": "Annuler"
   },
   "enrich": {
+    "general": "Cette page vous permet de tester la fonction d'enrichissement de fichiers jsonl et csv avec des attributs unpaywall.",
     "enrichFile": "Enrichir votre fichier",
     "filesSelection": "Sélection des fichiers",
     "settings": "Paramètres",
     "enrich": "Enrichissement",
+    "authorizedFile": "Types de fichier autorisés :",
     "continue": "Continuer",
     "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezUnpaywall. Ils doivent simplement contenir un champ DOI.",
     "explainationTestsLogs": "Besoin de fichiers à enrichir pour tester ce service ? Nous en mettons à disposition sur <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
-    "close": "Fermer",
     "apiKey": "Clé d'API",
-    "fileExtension": "Extension de fichier",
+    "fileExtension": "Extension de fichier reconnue :",
     "unpaywallAttributes": "Attributs unpaywall",
     "startProcess": "Démarrer l'enrichissement",
+    "stepUpload": "Envoi du fichier en cours",
+    "stepEnrich": "Enrichissement en cours",
     "download": "Télécharger le fichier enrichi",
-    "inProcess": "Enrichissement en cours",
     "end": "Enrichissement terminé",
     "readLines": "Lignes lues",
     "enrichedLines": "Lignes enrichies",
     "duration": "Temps de traitement (en secondes)",
     "error": "Une erreur est survenue",
+    "errorManyFile": "Le nombre de fichier autorisé est de 1",
     "errorUploadFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
     "errorUpload": "Erreur lors de l'envoi du fichier",
     "errorEnrich": "Erreur dans l'enrichissement",
     "errorState": "Impossible d'obtenir l'état"
   },
   "graphql": {
+    "general": "Cette page permet de tester l'API GraphQL mise à disposition à l'adresse <a href=\"{url}\" target=\"_blank\">{url}</a>. Pour pouvoir requêter le miroir, il est nécessaire d'indiquer une clé d'API, des DOIs et des attributs unpaywall voulus. Un constructeur de requête GraphQL est à votre disposition pour vous aider à requeter l'API.",
     "constructor": "Constructeur de requête GraphQL",
     "apiKey": "clé d'API",
-    "settings": "Attributs unpaywall",
+    "settings": "Attributs unpaywall à récuperer",
     "request": "Requête GraphQL",
     "start": "Lancement de la requête",
     "result": "Résultat",
+    "linkAPI": "Voir sur l'API",
     "copyRequest": "Requête GraphQL copié",
     "copyResult": "Résultat copié",
     "errorRequest": "Impossible de lancer la requête graphql",
@@ -65,6 +70,7 @@
   },
   "unpaywallArgs": {
     "title": "Paramètres",
+    "help": "Dans cette partie, vous pouvez séléctionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
     "general": {
       "data_standard": "Approches de collectes de données utilisées pour cette ressource",
       "doi_url": "DOI sous forme de lien hypertexte",
@@ -113,7 +119,6 @@
   "status": {
     "inUpdate": "Mise à jour en cours",
     "noInUpdate": "Les données sont à jour",
-    "close": "Fermer",
     "errorState": "Impossible d'obtenir l'état",
     "errorStatus": "Impossible d'obtenir le statut"
   },
@@ -128,8 +133,7 @@
     "status": "Statut"
   },
   "header": {
-    "help": "Les données du miroir Unpaywall sont mis à jour quotidiennement à 12:30",
-    "close": "Close"
+    "help": "Les données du miroir Unpaywall sont mises à jour quotidiennement à 12:30"
   },
   "drawer": {
     "home": "Accueil",
@@ -141,5 +145,6 @@
   "theme": {
     "dark": "Thème sombre",
     "light": "Thème clair"
-  }
+  },
+  "close": "Fermer"
 }

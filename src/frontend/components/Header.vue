@@ -28,7 +28,7 @@
             class="body-2"
             text
             @click="help = false"
-            v-text="$t('header.close')"
+            v-text="$t('close')"
           />
         </v-card-actions>
       </v-card>

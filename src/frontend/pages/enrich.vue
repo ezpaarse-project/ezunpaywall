@@ -1,6 +1,7 @@
 <template>
   <section>
-    <v-card>
+    <div v-html="$t('enrich.general')" />
+    <v-card class="my-3">
       <v-toolbar class="secondary" dark dense flat>
         <v-toolbar-title v-text="$t('enrich.enrichFile')" />
         <v-spacer />
@@ -40,7 +41,19 @@
         <v-stepper-items>
           <v-stepper-content step="1">
             <v-container>
-              <v-layout row justify-end class="mb-3">
+              <v-layout row class="mb-3 ml-1">
+                <v-row align="center">
+                  <div class="mr-1" v-text="$t('enrich.authorizedFile')" />
+                  <v-chip-group
+                    v-for="extension in authorizedFile"
+                    :key="extension.name"
+                  >
+                    <v-chip :color="extension.color" label text-color="white">
+                      {{ extension.name }}
+                    </v-chip>
+                  </v-chip-group>
+                </v-row>
+                <v-spacer />
                 <v-menu
                   v-model="fileSelectionHelp"
                   :close-on-content-click="false"
@@ -72,12 +85,11 @@
                         class="body-2"
                         text
                         @click="fileSelectionHelp = false"
-                        v-text="$t('enrich.close')"
+                        v-text="$t('close')"
                       />
                     </v-card-actions>
                   </v-card>
                 </v-menu>
-
                 <v-btn
                   class="body-2"
                   color="primary"
@@ -86,7 +98,6 @@
                 />
               </v-layout>
             </v-container>
-
             <LogFiles class="ma-1" @files="getFiles($event)" />
           </v-stepper-content>
 
@@ -126,16 +137,48 @@
               filled
               @click:append="apiKeyVisible = !apiKeyVisible"
             />
-
-            <v-text-field
-              v-model="extensionSelected"
-              :label="$t('enrich.fileExtension')"
-              filled
-              readonly
-            />
+            <v-row class="mb-3 ml-1">
+              <div class="mr-1" v-text="$t('enrich.fileExtension')" />
+              <v-chip
+                label
+                text-color="white"
+                :color="extensionFileColor"
+              >
+                {{ extensionSelected }}
+              </v-chip>
+            </v-row>
 
             <v-toolbar class="secondary" dark dense flat>
               <v-toolbar-title v-text="$t('enrich.unpaywallAttributes')" />
+              <v-menu
+                v-model="unpaywallArgsHelp"
+                :close-on-content-click="false"
+                :nudge-width="200"
+                max-width="500"
+                offset-x
+                transition="slide-x-transition"
+              >
+                <template #activator="{ on }">
+                  <v-btn class="mr-5" icon v-on="on">
+                    <v-icon>mdi-help-circle</v-icon>
+                  </v-btn>
+                </template>
+
+                <v-card class="text-justify">
+                  <v-card-text
+                    v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
+                  />
+                  <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                      class="body-2"
+                      text
+                      @click="unpaywallArgsHelp = false"
+                      v-text="$t('close')"
+                    />
+                  </v-card-actions>
+                </v-card>
+              </v-menu>
             </v-toolbar>
 
             <SettingsCSV v-if="extensionSelected === 'csv'" />
@@ -160,7 +203,7 @@
                 indeterminate
                 color="green"
               />
-              <div v-text="$t('enrich.inProcess')" />
+              <div v-text="stepTitle" />
             </v-container>
             <v-container v-else class="text-center">
               <v-icon v-if="error" size="70" color="orange darken-2">
@@ -201,6 +244,10 @@ export default {
     return {
       // stepper
       step: 1,
+      authorizedFile: [
+        { name: 'csv', color: 'green' },
+        { name: 'jsonl', color: 'orange' }
+      ],
       // config
       files: [],
       apiKey: 'demo',
@@ -210,9 +257,14 @@ export default {
       },
       // help
       fileSelectionHelp: false,
+      unpaywallArgsHelp: false,
       logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
+      attrsHelp: false,
+      dataFormatURL: 'https://unpaywall.org/data-format',
       // process
       state: {},
+      stepTitle: '',
+      timer: undefined,
       time: 0,
       inProcess: false,
       error: false,
@@ -226,8 +278,8 @@ export default {
     },
     extensionSelected () {
       if (this.files.length !== 0) {
-        const [, ext] = this.files[0].file.name.split('.')
-        return ext
+        const ext = this.files[0].file.name.split('.')
+        return ext[ext.length - 1]
       }
       return ''
     },
@@ -239,7 +291,6 @@ export default {
         oa_locations,
         z_authors
       } = this.$store.state.enrich
-
       if (
         !simple.length &&
         !best_oa_location.length &&
@@ -267,16 +318,26 @@ export default {
       if (z_authors.length) {
         attrs.push(`z_authors { ${z_authors.join(', ')} }`)
       }
+
       return `{ ${attrs.join(', ')} }`
     },
     // process
     resultUrl () {
       return `${this.$enrich.defaults.baseURL}/enriched/${this.id}.${this.extensionSelected}`
+    },
+
+    extensionFileColor () {
+      const extension = this.authorizedFile.find(
+        file => file.name === this.extensionSelected
+      )
+      return extension?.color || 'gray'
     }
   },
   methods: {
     async enrich () {
+      this.time = 0
       this.error = false
+      this.startTimer(Date.now())
       this.inProcess = true
 
       const data = {
@@ -290,7 +351,7 @@ export default {
 
       let upload
 
-      // upload
+      this.stepTitle = this.$t('enrich.stepUpload')
       try {
         upload = await this.$enrich({
           method: 'POST',
@@ -300,7 +361,8 @@ export default {
             'Content-Type': 'text/csv',
             'X-API-KEY': this.apiKey
           },
-          responseType: 'json'
+          responseType: 'json',
+          timeout: 0
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
@@ -309,7 +371,7 @@ export default {
 
       data.id = upload?.data?.id
 
-      // enrich
+      this.stepTitle = this.$t('enrich.stepEnrich')
       try {
         await this.$enrich({
           method: 'POST',
@@ -336,12 +398,6 @@ export default {
             responseType: 'json'
           })
           this.state = state?.data
-          // TODO use computed
-          if (Number.isInteger(this.state?.createdAt)) {
-            this.time = Math.round((Date.now() - this.state?.createdAt) / 1000)
-          } else {
-            this.time = 0
-          }
         } catch (err) {
           this.$store.dispatch('snacks/error', this.$t('enrich.errorState'))
           return this.errored()
@@ -349,16 +405,27 @@ export default {
         await new Promise(resolve => setTimeout(resolve, 1000))
       } while (!state?.data?.done)
 
+      this.stopTimer()
       // done
       this.inProcess = false
       this.id = data.id
     },
 
+    startTimer (startTime) {
+      this.timer = setInterval(() => {
+        this.time = Math.ceil((Date.now() - startTime) / 1000)
+      }, 500)
+    },
+
+    stopTimer () {
+      clearInterval(this.timer)
+    },
+
     errored () {
+      this.stopTimer()
       this.error = true
       this.inProcess = false
       this.state = {}
-      this.time = 0
       this.id = ''
     },
 

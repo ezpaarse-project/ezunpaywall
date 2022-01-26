@@ -75,7 +75,7 @@
                       class="body-2"
                       text
                       @click="fileSelectionHelp = false"
-                      v-text="$t('ui.pages.enrich.filesSelection.close')"
+                      v-text="$t('close')"
                     />
                   </v-card-actions>
                 </v-card>

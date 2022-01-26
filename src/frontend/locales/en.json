@@ -1,8 +1,8 @@
 {
   "home": {
     "title" : "What is ezUnpaywall?",
-    "intro": "The ezUnpaywall server is an <a href=\"{url}\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM.",
-    "metrics": "Metrics",
+    "intro": "The ezUnpaywall server is an <a href=\"{url}\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM. This interface is used as a demonstrator, it allows to test the mirror features (graphql API and file enrichment). For more information, see the <a href=\"{blogURL}\" target=\"_blank\">blog post</a>.",
+    "metrics": "Metrics - {origin}",
     "globalMetrics": "Global metrics",
     "referencedResources": "Referenced resources",
     "openAccess": "Open Access",
@@ -26,37 +26,42 @@
     "cancel": "Cancel"
   },
   "enrich": {
+    "general": "This page allows you to test the enrichment function of jsonl and csv files with unpaywall attributes.",
     "enrichFile": "Enrich your file",
     "filesSelection": "Select files",
     "settings": "Settings",
     "enrich": "Enrich",
+    "authorizedFile": "Allowed types of file :",
     "continue": "Continue",
     "explainationLogs": "Files you want to be enriched by ezUnpaywall. The only condition is that they contain a DOI field.",
     "explainationTestsLogs": "Need files to test this service? We provide some on <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
-    "close": "Close",
     "apiKey": "API Key",
-    "fileExtension": "File extension",
+    "fileExtension": "File extension recognized :",
     "unpaywallAttributes": "Unpaywall attributes",
     "startProcess": "Start enrichment",
+    "stepUpload": "Sending the current file",
+    "stepEnrich": "Enrichment in progress",
     "download": "Download the enriched file",
-    "inProcess": "Enrichment in progress",
     "end": "Enrichment complete",
     "readLines": "Read lines",
     "enrichedLines": "Enriched lines",
     "duration": "Processing time (in seconds)",
     "error": "An error occured",
-    "errorUploadFile": "only .csv and.jsonl files are allowed",
+    "errorManyFile": "The number of files allowed is 1",
+    "errorUploadFile": "only .csv and. jsonl files are allowed",
     "errorUpload": "Cannot upload file",
     "errorEnrich": "Cannot enrich file",
     "errorState": "Cannot get state of enrichment"
   },
   "graphql": {
+    "general": "This page allows you to test the GraphQL API available at <a href=\"{url}\" target=\"_blank\">{url}</a>. To be able to query the mirror, it is necessary to indicate an API key, a list of DOIs and some unpaywall attributes. A GraphQL request builder is available to help you request the API.",
     "constructor": "GraphQL request builder",
     "apiKey": "API key",
-    "settings": "Unpaywall attributes",
+    "settings": "Unpaywall attributes to retrieve",
     "request": "GraphQL request",
     "start": "Launch request",
     "result": "Result",
+    "linkAPI": "See on the API",
     "copyRequest": "Copy GraphQL request",
     "copyResult": "Copy result",
     "errorRequest": "Cannot do GraphQL request",
@@ -65,6 +70,7 @@
   },
   "unpaywallArgs": {
     "title": "Settings",
+    "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
     "general": {
       "data_standard": "Data collection approaches used for this resource",
       "doi_url": "DOI in hyperlink form",
@@ -113,7 +119,6 @@
   "status": {
     "inUpdate": "Update in progress",
     "noInUpdate": "The data is up to date",
-    "close": "Close",
     "errorState": "Cannot get state of enrichment",
     "errorStatus": "Cannot get state of enrichment"
   },
@@ -128,8 +133,7 @@
     "status": "Status"
   },
   "header": {
-    "help": "The unpaywall mirror data is updated daily at 12:30 p.m.",
-    "close": "Close"
+    "help": "The unpaywall mirror data is updated daily at 12:30 p.m."
   },
   "drawer": {
     "home": "Home",
@@ -141,5 +145,6 @@
   "theme": {
     "dark": "Dark theme",
     "light": "Light theme"
-  }
+  },
+  "close": "Close"
 }

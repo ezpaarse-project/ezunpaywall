@@ -7,6 +7,7 @@ const boom = require('@hapi/boom');
 const logger = require('./lib/logger');
 const { pingRedis } = require('./lib/redis');
 const morgan = require('./lib/morgan');
+const cronDeleteOutFiles = require('./lib/cron');
 
 const { name, version } = require('./package.json');
 
@@ -65,4 +66,5 @@ app.use((err, req, res, next) => {
 app.listen(5000, () => {
   logger.info('ezunpaywall enrich service listening on 5000');
   pingRedis();
+  cronDeleteOutFiles.start();
 });

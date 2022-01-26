@@ -116,6 +116,10 @@ export default {
           this.$store.dispatch('snacks/error', this.$t('enrich.errorUploadFile'))
           return
         }
+        if (this.files.length >= 1) {
+          this.$store.dispatch('snacks/error', this.$t('enrich.errorManyFile'))
+          return
+        }
         this.files.push({ id: this.fileId, file })
         this.fileId += 1
       })
@@ -123,7 +127,7 @@ export default {
       this.$emit('files', this.files)
     },
     removeLogsFile (id) {
-      this.files.filter(file => file.id !== id)
+      this.files = this.files.filter(file => file.id !== id)
       this.$emit('files', this.files)
     },
     clearList () {

@@ -1,5 +1,6 @@
 <template>
   <section>
+    <div v-html="$t('graphql.general', { url })" />
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />
@@ -10,15 +11,45 @@
         <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" filled />
         <v-text-field v-model="doi" label="DOI" filled />
       </v-container>
-    </v-card>
-
-    <v-card class="my-3">
-      <v-toolbar class="secondary" dark dense flat>
-        <v-toolbar-title v-text="$t('graphql.settings')" />
-      </v-toolbar>
 
       <v-container>
-        <SettingsGraphql />
+        <v-toolbar class="secondary" dark dense flat>
+          <v-toolbar-title v-text="$t('graphql.settings')" />
+
+          <v-menu
+            v-model="attrsHelp"
+            :close-on-content-click="false"
+            :nudge-width="200"
+            max-width="500"
+            offset-x
+            transition="slide-x-transition"
+          >
+            <template #activator="{ on }">
+              <v-btn class="mr-5" icon v-on="on">
+                <v-icon>mdi-help-circle</v-icon>
+              </v-btn>
+            </template>
+
+            <v-card class="text-justify">
+              <v-card-text
+                v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
+              />
+              <v-card-actions>
+                <v-spacer />
+                <v-btn
+                  class="body-2"
+                  text
+                  @click="attrsHelp = false"
+                  v-text="$t('close')"
+                />
+              </v-card-actions>
+            </v-card>
+          </v-menu>
+        </v-toolbar>
+
+        <v-container>
+          <SettingsGraphql />
+        </v-container>
       </v-container>
     </v-card>
     <v-card class="mx-auto">
@@ -50,6 +81,14 @@
         <v-card-text>
           <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
         </v-card-text>
+        <v-card-actions v-if="response.data">
+          <v-spacer />
+          <v-btn
+            :href="linkGraphql"
+            target="_blank"
+            v-text="$t('graphql.linkAPI')"
+          />
+        </v-card-actions>
       </div>
     </v-card>
   </section>
@@ -69,7 +108,10 @@ export default {
       apiKey: 'demo',
       doi: '10.1111/jvp.12137',
       loading: false,
-      response: ''
+      response: '',
+      // help
+      attrsHelp: false,
+      dataFormatURL: 'https://unpaywall.org/data-format'
     }
   },
   computed: {
@@ -84,7 +126,7 @@ export default {
         first_oa_location,
         oa_locations,
         z_authors
-      } = this.$store.state.enrich
+      } = this.$store.state.graphql
 
       if (
         !simple.length &&
@@ -117,6 +159,9 @@ export default {
     },
     query () {
       return `{ GetByDOI(dois: [${this.formatDOIs}]) ${this.getSetting} }`
+    },
+    linkGraphql () {
+      return `${this.$graphql.defaults.baseURL}/graphql?query=${this.query}&apikey=demo`
     }
   },
   methods: {

@@ -43,7 +43,7 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 
 | name | description |
 | --- | --- |
-| NODE_CONFIG | make tls and secure of mail (only in developement) |
+| NODE_CONFIG | make tls and secure of mail (only in developement) |
 | EZUNPAYWALL_SMTP_HOST | host of the SMTP server |
 | EZUNPAYWALL_SMTP_PORT | port of the SMTP server |
 | EZUNPAYWALL_NOTIFICATIONS_SENDER | the sender for emails issued by ezunpaywall |
