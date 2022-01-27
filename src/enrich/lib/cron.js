@@ -10,7 +10,7 @@ const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
 
 const deleteFilesInDir = async (directory, maxAgeInDays) => {
   const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;
-  const thershold = Date.now() - time;
+  const threshold = Date.now() - time;
 
   let files;
   try {
@@ -23,7 +23,7 @@ const deleteFilesInDir = async (directory, maxAgeInDays) => {
   for (const file of files) {
     try {
       const stat = await fs.stat(path.join(directory, file));
-      if (stat.mtime < thershold) {
+      if (stat.mtime < threshold) {
         await fs.unlink(path.join(directory, file));
       }
     } catch (err) {
