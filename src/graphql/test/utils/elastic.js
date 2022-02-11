@@ -27,7 +27,7 @@ const checkIfIndexExist = async (name) => {
       index: name,
     });
   } catch (err) {
-    console.error(`indices.exists in checkIfIndexExist: ${err}`);
+    console.error(`Cannot check if index [${name}] exist : ${err}`);
   }
   return res.body;
 };
@@ -75,7 +75,7 @@ const createIndex = async (name, index) => {
         body: index,
       });
     } catch (err) {
-      console.error(`indices.create in createIndex: ${err}`);
+      console.error(`Cannot create index [${name}]: ${err}`);
     }
   }
 };
@@ -92,7 +92,7 @@ const deleteIndex = async (name) => {
         index: name,
       });
     } catch (err) {
-      console.error(`deleteIndex: ${err}`);
+      console.error(`Cannot delete index [${name}]: ${err}`);
     }
   }
 };
