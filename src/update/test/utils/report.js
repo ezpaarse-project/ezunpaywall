@@ -17,7 +17,8 @@ const getReport = async () => {
       .get('/report')
       .query({ latest: true });
   } catch (err) {
-    console.error(`getReport: ${err}`);
+    console.error(`Cannot GET ${updateURL}/report`);
+    process.exit(1);
   }
   return res?.body;
 };

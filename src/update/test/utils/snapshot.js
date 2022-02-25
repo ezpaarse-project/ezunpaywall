@@ -19,7 +19,8 @@ const deleteFile = async (filename) => {
     await chai.request(updateURL)
       .delete(`/snapshot/${filename}`);
   } catch (err) {
-    console.error(`Cannot request: DELETE ${updateURL}/snapshot/${filename}`);
+    console.error(`Cannot DELETE ${updateURL}/snapshot/${filename}`);
+    process.exit(1);
   }
 };
 
@@ -33,7 +34,8 @@ const addSnapshot = async (filename) => {
       .post('/snapshot')
       .attach('file', path.resolve(snapshotsDir, filename), filename);
   } catch (err) {
-    console.error(`addSnapshot: ${err}`);
+    console.error(`Cannot POST ${updateURL}/snapshot ${err}`);
+    process.exit(1);
   }
 };
 
@@ -46,7 +48,8 @@ const updateChangeFile = async (interval) => {
       .patch('/changefiles')
       .query({ interval });
   } catch (err) {
-    console.error(`updateChangeFile: ${err}`);
+    console.error(`Cannot PATCH ${updateURL}/changefiles ${err}`);
+    process.exit(1);
   }
 };
 

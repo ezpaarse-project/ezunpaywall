@@ -17,7 +17,8 @@ const getState = async () => {
       .get('/state')
       .query({ latest: true });
   } catch (err) {
-    console.error(`getState: ${err}`);
+    console.error(`Cannot GET state: ${err}`);
+    process.exit(1);
   }
   return res?.body;
 };

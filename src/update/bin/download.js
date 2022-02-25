@@ -6,15 +6,16 @@ const logger = require('../lib/logger');
 
 const {
   getState,
-  updateStateInFile,
+  getLatestStep,
   addStepDownload,
   fail,
+  updateLatestStep,
 } = require('./state');
 
 const {
   getSnapshot,
   getChangefile,
-} = require('./unpaywall');
+} = require('../lib/unpaywall');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 
@@ -22,16 +23,16 @@ const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
  * Update the step the percentage in download regularly until the download is complete
  * @param {String} filepath - path where the file is downloaded
  * @param {Object} size - size of file
- * @param {String} stateName - state filename
+ * @param {String}  - state filename
  * @param {Object} state - state in JSON format
  * @param {Date} start - download start date
  */
-async function updatePercentStepDownload(filepath, size, stateName, start) {
-  const state = await getState(stateName);
+async function updatePercentStepDownload(filepath, size, start) {
+  const state = getState();
   if (state.error) {
     return;
   }
-  const step = state.steps[state.steps.length - 1];
+  const step = getLatestStep();
   let bytes;
   try {
     bytes = await fs.stat(filepath);
@@ -44,15 +45,13 @@ async function updatePercentStepDownload(filepath, size, stateName, start) {
   }
   step.took = (new Date() - start) / 1000;
   step.percent = ((bytes.size / size) * 100).toFixed(2);
-  state.steps[state.steps.length - 1] = step;
-  await updateStateInFile(state, stateName);
+  updateLatestStep(step);
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  updatePercentStepDownload(filepath, size, stateName, start);
+  updatePercentStepDownload(filepath, size, start);
 }
 
-const download = async (file, filepath, size, stateName) => {
-  const state = await getState(stateName);
-  const step = state.steps[state.steps.length - 1];
+const download = async (file, filepath, size) => {
+  const step = getLatestStep();
   if (file instanceof Readable) {
     await new Promise((resolve, reject) => {
       // download unpaywall file with stream
@@ -60,21 +59,20 @@ const download = async (file, filepath, size, stateName) => {
 
       const start = new Date();
       // update the percentage of the download step in parallel
-      updatePercentStepDownload(filepath, size, stateName, start);
+      updatePercentStepDownload(filepath, size, start);
 
       writeStream.on('finish', async () => {
         step.status = 'success';
         step.took = (new Date() - start) / 1000;
         step.percent = 100;
-        state.steps[state.steps.length - 1] = step;
-        await updateStateInFile(state, stateName);
+        updateLatestStep(step);
         logger.info('step - end download');
         return resolve();
       });
 
       writeStream.on('error', async (err) => {
         logger.error(err);
-        await fail(stateName, err);
+        await fail(err);
         return reject(err);
       });
     });
@@ -87,11 +85,11 @@ const download = async (file, filepath, size, stateName) => {
 
 /**
  * Start the download of the update file from unpaywall
- * @param {String} stateName - state filename
+ * @param {String}  - state filename
  * @param {String} info - information of the file to download
  * @param {String} interval - type of changefile (day or week)
  */
-const downloadChangefile = async (stateName, info, interval) => {
+const downloadChangefile = async (info, interval) => {
   let stats;
 
   const filepath = path.resolve(snapshotsDir, info.filename);
@@ -103,11 +101,10 @@ const downloadChangefile = async (stateName, info, interval) => {
     return true;
   }
 
-  await addStepDownload(stateName);
-  const state = await getState(stateName);
-  const step = state.steps[state.steps.length - 1];
+  addStepDownload();
+  const step = getLatestStep();
   step.file = info.filename;
-  await updateStateInFile(state, stateName);
+  updateLatestStep(step);
 
   const res = await getChangefile(info.filename, interval);
   if (!res) {
@@ -117,31 +114,30 @@ const downloadChangefile = async (stateName, info, interval) => {
   const changefile = res.data;
   const { size } = info;
 
-  await download(changefile, filepath, size, stateName);
+  await download(changefile, filepath, size);
   return true;
 };
 
 /**
  * Start the download of the big file from unpaywall
- * @param {String} stateName - state filename
+ * @param {String}  - state filename
  * @param {String} info - information of the file to download
  */
-const downloadBigSnapshot = async (stateName) => {
+const downloadBigSnapshot = async () => {
   const filename = `snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`;
   const filepath = path.resolve(snapshotsDir, filename);
 
-  await addStepDownload(stateName);
-  const state = await getState(stateName);
-  const step = state.steps[state.steps.length - 1];
+  addStepDownload();
+  const step = getLatestStep();
   step.file = filename;
-  await updateStateInFile(state, stateName);
+  updateLatestStep(step);
 
   const res = await getSnapshot();
 
   const snapshot = res.data;
   const size = res.headers['content-length'];
 
-  await download(snapshot, filepath, size, stateName);
+  await download(snapshot, filepath, size);
   return filename;
 };
 

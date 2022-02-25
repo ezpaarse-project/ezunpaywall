@@ -13,8 +13,6 @@ const {
   insertChangefile,
 } = require('../bin/job');
 
-const { createState } = require('../bin/state');
-
 const {
   checkStatus,
 } = require('../middlewares/status');
@@ -30,13 +28,10 @@ router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
 
   const index = value;
 
-  const stateName = await createState();
-
   const jobConfig = {
     index,
     offset: 0,
     limit: -1,
-    stateName,
   };
 
   downloadAndInsertSnapshot(jobConfig);
@@ -70,14 +65,11 @@ router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
     }
   }
 
-  const stateName = await createState();
-
   const jobConfig = {
     index,
     interval,
     startDate,
     endDate,
-    stateName,
     offset: 0,
     litmit: -1,
   };
@@ -121,14 +113,11 @@ router.post('/job/changefile/:filename', checkStatus, checkAuth, async (req, res
     return next(boom.notFound(`${filename} not found`));
   }
 
-  const stateName = await createState();
-
   const jobConfig = {
     filename,
     index,
     offset,
     limit,
-    stateName,
   };
 
   insertChangefile(jobConfig);
