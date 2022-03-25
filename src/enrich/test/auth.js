@@ -76,9 +76,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -93,9 +92,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -111,9 +109,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -129,9 +126,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -147,9 +143,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -165,9 +160,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa, oa_status }',
@@ -214,9 +208,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -231,9 +224,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -249,9 +241,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -267,9 +258,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -285,9 +275,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -303,9 +292,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -321,9 +309,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa, oa_status }',
