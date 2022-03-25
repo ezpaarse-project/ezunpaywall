@@ -394,7 +394,7 @@ export default {
         try {
           state = await this.$enrich({
             method: 'GET',
-            url: `/state/${data.id}.json`,
+            url: `/states/${data.id}.json`,
             responseType: 'json'
           })
           this.state = state?.data
