@@ -22,7 +22,7 @@ describe('Test: Delete apikey', () => {
   it('Should delete apikey', async () => {
     const res = await chai
       .request(apikeyURL)
-      .delete('/delete/user')
+      .delete('/keys/user')
       .set('redis-password', 'changeme');
 
     expect(res).have.status(204);
@@ -31,7 +31,7 @@ describe('Test: Delete apikey', () => {
   it('Shouldn\'t delete apikey because test apikey doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .delete('/delete/test')
+      .delete('/keys/test')
       .set('redis-password', 'changeme');
 
     expect(res).have.status(404);

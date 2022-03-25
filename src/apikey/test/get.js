@@ -25,7 +25,7 @@ describe('Test: Get config of apikey', () => {
   it('Should get config of apikey', async () => {
     const res = await chai
       .request(apikeyURL)
-      .get('/config/user');
+      .get('/keys/user');
 
     expect(res).have.status(200);
     expect(res.body).have.property('name').equal('user');
@@ -37,7 +37,7 @@ describe('Test: Get config of apikey', () => {
   it('Should get all apikey', async () => {
     const res = await chai
       .request(apikeyURL)
-      .get('/all')
+      .get('/keys')
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
@@ -54,7 +54,7 @@ describe('Test: Get config of apikey', () => {
   it('Shouldn\'t get config of apikey because apikey "test" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .get('/config/test');
+      .get('/keys/test');
 
     expect(res).have.status(404);
   });

@@ -13,7 +13,7 @@ const ping = async () => {
   let res1;
   while (res1?.status !== 200) {
     try {
-      res1 = await chai.request(apikeyURL).get('/');
+      res1 = await chai.request(apikeyURL).get('/ping');
     } catch (err) {
       console.error(`apikey ping : ${err}`);
     }
