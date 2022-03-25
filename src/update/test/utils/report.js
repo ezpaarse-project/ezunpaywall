@@ -14,7 +14,7 @@ const getReport = async () => {
   let res;
   try {
     res = await chai.request(updateURL)
-      .get('/report')
+      .get('/reports')
       .query({ latest: true });
   } catch (err) {
     console.error(`Cannot GET ${updateURL}/report`);

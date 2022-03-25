@@ -17,7 +17,7 @@ const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:12000';
 const deleteFile = async (filename) => {
   try {
     await chai.request(updateURL)
-      .delete(`/snapshot/${filename}`);
+      .delete(`/snapshots/${filename}`);
   } catch (err) {
     console.error(`Cannot DELETE ${updateURL}/snapshot/${filename}`);
     process.exit(1);
@@ -31,7 +31,7 @@ const deleteFile = async (filename) => {
 const addSnapshot = async (filename) => {
   try {
     await chai.request(updateURL)
-      .post('/snapshot')
+      .post('/snapshots')
       .attach('file', path.resolve(snapshotsDir, filename), filename);
   } catch (err) {
     console.error(`Cannot POST ${updateURL}/snapshot ${err}`);
