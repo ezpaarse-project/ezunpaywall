@@ -369,13 +369,13 @@ export default {
         return this.errored()
       }
 
-      data.id = upload?.data?.id
+      const { id } = upload?.data
 
       this.stepTitle = this.$t('enrich.stepEnrich')
       try {
         await this.$enrich({
           method: 'POST',
-          url: '/job',
+          url: `/job/${id}`,
           data,
           headers: {
             'X-API-KEY': this.apiKey
@@ -394,7 +394,7 @@ export default {
         try {
           state = await this.$enrich({
             method: 'GET',
-            url: `/states/${data.id}.json`,
+            url: `/states/${id}.json`,
             responseType: 'json'
           })
           this.state = state?.data
@@ -408,7 +408,7 @@ export default {
       this.stopTimer()
       // done
       this.inProcess = false
-      this.id = data.id
+      this.id = id
     },
 
     startTimer (startTime) {
