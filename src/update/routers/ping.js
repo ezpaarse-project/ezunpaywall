@@ -3,6 +3,8 @@ const boom = require('@hapi/boom');
 const { pingRedis } = require('../lib/redis');
 const { elasticClient } = require('../lib/elastic');
 
+router.get('/', async (req, res) => res.status(200).json('update service'));
+
 router.get('/ping', async (req, res, next) => res.status(200).json(true));
 
 router.get('/ping/redis', async (req, res, next) => {

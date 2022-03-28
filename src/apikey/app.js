@@ -22,6 +22,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+
 app.use(routerPing);
 app.use(routerManage);
 
@@ -33,6 +34,8 @@ app.use((err, req, res, next) => {
   if (isDev && error.isServer) {
     error.output.payload.stack = error.stack;
   }
+
+  console.log(error);
 
   return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });
