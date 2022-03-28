@@ -36,7 +36,7 @@ app.get('/', async (req, res, next) => {
 app.use(routerManage);
 
 /* Errors and unknown routes */
-app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
+app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
 app.use((err, req, res, next) => {
   const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
 

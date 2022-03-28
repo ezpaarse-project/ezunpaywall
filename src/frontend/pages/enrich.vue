@@ -369,7 +369,7 @@ export default {
         return this.errored()
       }
 
-      const { id } = upload?.data
+      const { id } = upload
 
       this.stepTitle = this.$t('enrich.stepEnrich')
       try {

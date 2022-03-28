@@ -84,7 +84,6 @@ describe('Test: auth service in enrich service', () => {
           });
 
         expect(res2).have.status(401);
-        expect(res2?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -101,7 +100,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'wrong apikey');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -118,7 +116,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'graphql');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -135,7 +132,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'update');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -152,7 +148,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -169,7 +164,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'userRestricted');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');
       });
     });
   });
@@ -216,7 +210,6 @@ describe('Test: auth service in enrich service', () => {
           });
 
         expect(res2).have.status(401);
-        expect(res2?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -233,7 +226,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'wrong apikey');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -250,7 +242,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'update');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -267,7 +258,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'graphql');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -284,7 +274,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -301,7 +290,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -318,7 +306,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'userRestricted');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');
       });
     });
   });

@@ -50,7 +50,7 @@ router.post('/job/:filename', checkAuth, async (req, res, next) => {
     enrichCSV(id, index, args, apiKey, separator);
   }
 
-  return res.status(200).json({ id });
+  return res.status(200).json(id);
 });
 
 module.exports = router;
