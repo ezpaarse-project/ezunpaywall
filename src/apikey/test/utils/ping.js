@@ -10,18 +10,29 @@ const apikeyURL = process.env.APIKEY_URL || 'http://localhost:7000';
  * ping apikey service to see if they are available
  */
 const ping = async () => {
-  let res1;
-  while (res1?.status !== 200) {
+  let apikey;
+  while (apikey?.status !== 200) {
     try {
-      res1 = await chai.request(apikeyURL).get('/ping');
+      apikey = await chai.request(apikeyURL).get('/ping');
     } catch (err) {
       console.error(`apikey ping : ${err}`);
     }
-    if (res1?.status !== 200) {
+    if (apikey?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
-  console.log('apikey ping : OK');
+
+  let redis;
+  do {
+    try {
+      redis = await chai.request(apikeyURL).get('/ping/redis');
+    } catch (err) {
+      console.error(`redis ping : ${err}`);
+    }
+    if (!redis?.status) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  } while (!redis?.status);
 };
 
 module.exports = ping;

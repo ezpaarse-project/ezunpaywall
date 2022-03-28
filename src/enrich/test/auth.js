@@ -19,9 +19,7 @@ const {
   countDocuments,
 } = require('./utils/elastic');
 
-const {
-  ping,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
 const enrichDir = path.resolve(__dirname, 'sources');

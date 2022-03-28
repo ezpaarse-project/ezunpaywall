@@ -9,8 +9,7 @@ const { pingRedis } = require('./lib/redis');
 const morgan = require('./lib/morgan');
 const cronDeleteOutFiles = require('./lib/cron');
 
-const { name, version } = require('./package.json');
-
+const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');
 const routerEnrich = require('./routers/enrich');
 const routerState = require('./routers/state');
@@ -35,17 +34,7 @@ app.use(cors({
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-app.get('/', async (req, res, next) => {
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  return res.status(200).json({ name, version, redis: !!redis });
-});
-
+app.use(routerPing);
 app.use(routerJob);
 app.use(routerEnrich);
 app.use(routerState);

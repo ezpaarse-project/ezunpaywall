@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const { elasticClient } = require('./elastic');
 
 chai.use(chaiHttp);
 
@@ -12,66 +11,53 @@ const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
  * ping all services to see if they are available
  */
 const ping = async () => {
-  // graphql
-  let res1;
-  while (res1?.status !== 200) {
+  let graphql;
+  while (graphql?.status !== 200) {
     try {
-      res1 = await chai.request(graphqlURL).get('/');
+      graphql = await chai.request(graphqlURL).get('/ping');
     } catch (err) {
       console.error(`graphql ping : ${err}`);
     }
-    if (res1?.status !== 200) {
+    if (graphql?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } else {
-      console.log('graphql ping : OK');
     }
   }
 
-  // wait elastic started
-  let res2;
-  while (res2?.statusCode !== 200) {
+  let elastic;
+  while (elastic?.status !== 200) {
     try {
-      res2 = await elasticClient.ping();
+      elastic = await chai.request(graphqlURL).get('/ping/elastic');
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    if (res2?.statusCode !== 200) {
+    if (elastic?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
-  console.log('elastic ping : OK');
 
-  // auth
-  let res3;
+  let apikey;
   do {
     try {
-      res3 = await chai.request(apikeyURL).get('/');
+      apikey = await chai.request(apikeyURL).get('/ping');
     } catch (err) {
-      console.error(`auth ping : ${err}`);
+      console.error(`apikey ping : ${err}`);
     }
-    if (res3?.statusCode !== 200) {
+    if (apikey?.statusCode !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } else {
-      console.log('auth ping : OK');
     }
-  } while (res3?.statusCode !== 200);
+  } while (apikey?.statusCode !== 200);
 
-  // redis
-  let res4;
+  let redis;
   do {
     try {
-      res4 = await chai.request(apikeyURL).get('/');
+      redis = await chai.request(graphqlURL).get('/ping/redis');
     } catch (err) {
       console.error(`redis ping : ${err}`);
     }
-    if (!res4?.body.redis) {
+    if (!redis?.status) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } else {
-      console.log('redis ping : OK');
     }
-  } while (!res4?.body.redis);
+  } while (!redis?.status);
 };
 
-module.exports = {
-  ping,
-};
+module.exports = ping;

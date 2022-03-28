@@ -8,11 +8,11 @@ const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 const cronDeleteOutFiles = require('./lib/cron');
 
-const { elasticClient, pingElastic, initAlias } = require('./lib/elastic');
+const { pingElastic, initAlias } = require('./lib/elastic');
 const { pingRedis } = require('./lib/redis');
-const { name, version } = require('./package.json');
 const unpaywallMapping = require('./mapping/unpaywall.json');
 
+const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');
 const routerReport = require('./routers/report');
 const routerSnapshot = require('./routers/snapshot');
@@ -34,25 +34,7 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan);
 
-app.get('/', async (req, res, next) => {
-  let elastic;
-  try {
-    elastic = await elasticClient.ping();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  return res.status(200).json({
-    name, version, elastic: !!elastic, redis: !!redis,
-  });
-});
-
+app.use(routerPing);
 app.use(routerJob);
 app.use(routerReport);
 app.use(routerSnapshot);

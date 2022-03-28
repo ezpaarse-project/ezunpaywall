@@ -4,18 +4,18 @@ const { graphqlHTTP } = require('express-graphql');
 const responseTime = require('response-time');
 const boom = require('@hapi/boom');
 
-const { name, version } = require('./package.json');
-
 const auth = require('./middlewares/auth');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 const { pingRedis } = require('./lib/redis');
-const { elasticClient, pingElastic } = require('./lib/elastic');
+const { pingElastic } = require('./lib/elastic');
 
 const schema = require('./graphql');
 
 const isDev = process.env.NODE_ENV === 'development';
+
+const routerPing = require('./routers/ping');
 
 const app = express();
 
@@ -27,29 +27,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'x-api-key'],
   method: ['GET', 'POST'],
 }));
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', async (req, res, next) => {
-  let elastic;
-  try {
-    elastic = await elasticClient.ping();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  return res.status(200).json({
-    name, version, elastic: !!elastic, redis: !!redis,
-  });
-});
-
+// routers
+app.use(routerPing);
 app.use('/graphql', auth, graphqlHTTP({
   schema,
   graphiql: false,

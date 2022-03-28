@@ -23,9 +23,7 @@ const {
   checkIfInUpdate,
 } = require('./utils/status');
 
-const {
-  ping,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const {
   loadDevAPIKey,

@@ -5,10 +5,10 @@ const cors = require('cors');
 const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
-const { name, version } = require('./package.json');
 const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
 const cronDemo = require('./lib/cron');
 
+const routerPing = require('./routers/ping');
 const routerManage = require('./routers/manage');
 
 const outDir = path.resolve(__dirname, 'out');
@@ -22,17 +22,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-
-app.get('/', async (req, res, next) => {
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  return res.status(200).json({ name, version, redis: !!redis });
-});
-
+app.use(routerPing);
 app.use(routerManage);
 
 /* Errors and unknown routes */

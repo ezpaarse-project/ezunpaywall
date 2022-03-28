@@ -4,10 +4,9 @@ const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
 
-const { name, version } = require('./package.json');
-
 const updateChangefilesExample = require('./bin/changefiles');
 
+const routerPing = require('./routers/ping');
 const routerSnapshots = require('./routers/snapshots');
 const routerChangeFiles = require('./routers/changefiles');
 
@@ -16,11 +15,7 @@ const app = express();
 
 app.use('/snapshots', cors());
 app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.status(200).json({ name, version });
-});
-
+app.use(routerPing);
 app.use(routerSnapshots);
 app.use(routerChangeFiles);
 

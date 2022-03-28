@@ -21,9 +21,7 @@ const {
   countDocuments,
 } = require('./utils/elastic');
 
-const {
-  ping,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const {
   loadDevAPIKey,
