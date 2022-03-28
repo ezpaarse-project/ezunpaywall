@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
 
@@ -24,9 +25,14 @@ app.use(routerSnapshots);
 app.use(routerChangeFiles);
 
 /* Errors and unknown routes */
-app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
-app.use((error, req, res) => res.status(500).json({ message: error.message }));
+app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
+app.use((err, req, res, next) => {
+  const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
 
+  error.output.payload.stack = error.stack;
+
+  return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
+});
 app.listen(12000, async () => {
   logger.info('fakeUnpaywall service listening on 12000');
   await updateChangefilesExample('day');

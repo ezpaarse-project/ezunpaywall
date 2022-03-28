@@ -9,21 +9,21 @@ router.post('/contact', async (req, res, next) => {
   } = req.body;
 
   if (!email) {
-    return res.status(400).json({ message: 'email are expected' });
+    return res.status(400).json(boom.badRequest('email are expected'));
   }
 
   const pattern = /.+@.+\..+/;
 
   if (!pattern.test(email)) {
-    return res.status(400).json({ message: `[${email}] is invalid email` });
+    return res.status(400).json(boom.badRequest(`[${email}] is invalid email`));
   }
 
   if (!subject) {
-    return res.status(400).json({ message: 'subject are expected' });
+    return res.status(400).json(boom.badRequest('subject are expected'));
   }
 
   if (!message) {
-    return res.status(400).json({ message: 'message are expected' });
+    return res.status(400).json(boom.badRequest('message are expected'));
   }
 
   try {

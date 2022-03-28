@@ -1,3 +1,5 @@
+const boom = require('@hapi/boom');
+
 const {
   getStatus,
 } = require('../bin/status');
@@ -12,9 +14,7 @@ const {
 const checkStatus = (req, res, next) => {
   const status = getStatus();
   if (status) {
-    return res.status(409).json({
-      message: 'Update in progress',
-    });
+    return res.status(409).json(boom.conflit('Update in progress'));
   }
   return next();
 };
