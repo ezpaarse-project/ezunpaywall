@@ -16,6 +16,7 @@ const loadDevAPIKey = async () => {
   } catch (err) {
     console.error('Cannot request apikey service');
     console.error(err);
+    process.exit(1);
   }
 };
 
@@ -28,8 +29,8 @@ const deleteAllAPIKey = async () => {
       .delete('/all')
       .set('redis-password', 'changeme');
   } catch (err) {
-    console.error('Cannot request apikey service');
-    console.error(err);
+    console.error(`Cannot DELETE ${apikeyURL}/all ${err}`);
+    process.exit(1);
   }
 };
 

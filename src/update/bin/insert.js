@@ -31,16 +31,17 @@ const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 /**
  * insert data on elastic with elastic bulk request
  * @param {Array} data array of unpaywall data
- * @param {String} stateName - state filename
+ * @param {String}  - state filename
  */
-const insertDataInElastic = async (data, stateName, step) => {
+const insertDataInElastic = async (data) => {
+  const step = getLatestStep();
   let res;
   try {
     res = await elasticClient.bulk({ body: data });
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
-    await fail(stateName, 'Cannot bulk on elastic');
+    await fail(err);
     return false;
   }
 
@@ -69,19 +70,19 @@ const insertDataInElastic = async (data, stateName, step) => {
       logger.error(JSON.stringify(error, null, 2));
     });
     step.status = 'error';
-    await updateLatestStep(stateName, step);
-    await fail(stateName, errors);
+    updateLatestStep(step);
+    await fail(errors);
     return false;
   }
 
-  await updateLatestStep(stateName, step);
+  updateLatestStep(step);
 
   return true;
 };
 
 /**
  * Inserts the contents of an unpaywall data update file
- * @param {String} stateName - state filename
+ * @param {String}  - state filename
  * @param {String} index name of the index to which the data will be saved
  * @param {String} filename - snapshot filename which the data will be inserted
  * @param {Integer} offset - offset
@@ -89,23 +90,23 @@ const insertDataInElastic = async (data, stateName, step) => {
  */
 const insertDataUnpaywall = async (insertConfig) => {
   const {
-    filename, index, offset, limit, stateName,
+    filename, index, offset, limit,
   } = insertConfig;
 
   // step insertion in the state
   const start = new Date();
-  await addStepInsert(stateName, filename);
-  const step = await getLatestStep(stateName);
+  addStepInsert(filename);
+  const step = getLatestStep();
   step.file = filename;
   step.index = index;
-  await updateLatestStep(stateName, step);
+  updateLatestStep(step);
 
   try {
     await createIndex(index, unpaywallMapping);
   } catch (err) {
     logger.error(`Cannot create index [${index}]`);
     logger.error(err);
-    await fail(stateName, err);
+    await fail(err);
     return false;
   }
 
@@ -121,7 +122,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   } catch (err) {
     logger.error(`Cannot create alias [${indexAlias}] pointing to index [${index}]`);
     logger.error(err);
-    await fail(stateName, err);
+    await fail(err);
     return false;
   }
 
@@ -134,7 +135,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   } catch (err) {
     logger.error(`Cannot stat ${filePath}`);
     logger.error(err);
-    await fail(stateName, err);
+    await fail(err);
     return false;
   }
 
@@ -145,7 +146,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   } catch (err) {
     logger.error(`Cannot read ${filePath}`);
     logger.error(err);
-    await fail(stateName, err);
+    await fail(err);
     return false;
   }
 
@@ -161,7 +162,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   } catch (err) {
     logger.error(`Cannot pipe ${readStream?.filename}`);
     logger.error(err);
-    await fail(stateName, err);
+    await fail(err);
     return false;
   }
 
@@ -197,7 +198,7 @@ const insertDataUnpaywall = async (insertConfig) => {
       } catch (err) {
         logger.error(`Cannot parse "${line}" in json format`);
         logger.error(err);
-        await fail(stateName, err);
+        await fail(err);
         return false;
       }
     }
@@ -205,20 +206,20 @@ const insertDataUnpaywall = async (insertConfig) => {
     if (bulkOps.length >= maxBulkSize) {
       const dataToInsert = bulkOps.slice();
       bulkOps = [];
-      success = await insertDataInElastic(dataToInsert, stateName, step);
+      success = await insertDataInElastic(dataToInsert, step);
       if (!success) return false;
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
-      await updateLatestStep(stateName, step);
+      updateLatestStep(step);
     }
     if (step.linesRead % 100000 === 0) {
       logger.info(`${step.linesRead} Lines reads`);
-      await updateLatestStep(stateName, step);
+      updateLatestStep(step);
     }
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    success = await insertDataInElastic(bulkOps, stateName, step);
+    success = await insertDataInElastic(bulkOps, step);
     if (!success) return false;
     bulkOps = [];
   }
@@ -235,7 +236,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   step.status = 'success';
   step.took = (new Date() - start) / 1000;
   step.percent = 100;
-  await updateLatestStep(stateName, step);
+  updateLatestStep(step);
   return true;
 };
 

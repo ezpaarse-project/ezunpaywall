@@ -13,7 +13,7 @@ const checkStatus = (req, res, next) => {
   const status = getStatus();
   if (status) {
     return res.status(409).json({
-      message: 'update in progress',
+      message: 'Update in progress',
     });
   }
   return next();

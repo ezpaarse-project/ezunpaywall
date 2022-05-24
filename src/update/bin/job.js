@@ -13,6 +13,7 @@ const {
 } = require('./download');
 
 const {
+  createState,
   addStepGetChangefiles,
   updateLatestStep,
   getLatestStep,
@@ -22,44 +23,47 @@ const insertDataUnpaywall = require('./insert');
 
 const {
   getChangefiles,
-} = require('./unpaywall');
+} = require('../lib/unpaywall');
 
 const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);
-  const filename = await downloadBigSnapshot(jobConfig.stateName);
+  createState();
+  const filename = await downloadBigSnapshot(jobConfig);
   jobConfig.filename = filename;
   await insertDataUnpaywall(jobConfig);
-  await endState(jobConfig.stateName);
+  await endState();
 };
 
 const insertChangefilesOnPeriod = async (jobConfig) => {
-  let success = true;
   setInUpdate(true);
   const {
-    stateName, interval, startDate, endDate,
+    interval, startDate, endDate,
   } = jobConfig;
+  createState();
   const start = new Date();
-  await addStepGetChangefiles(stateName);
-  const step = await getLatestStep(stateName);
+  addStepGetChangefiles();
+  const step = getLatestStep();
   const snapshotsInfo = await getChangefiles(interval, startDate, endDate);
   step.took = (new Date() - start) / 1000;
   step.status = 'success';
-  await updateLatestStep(stateName, step);
+  updateLatestStep(step);
+  let success = true;
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
-    success = await downloadChangefile(jobConfig.stateName, snapshotsInfo[i], interval);
+    success = await downloadChangefile(snapshotsInfo[i], interval);
     if (!success) return;
     jobConfig.filename = snapshotsInfo[i].filename;
     success = await insertDataUnpaywall(jobConfig);
     if (!success) return;
   }
-  await endState(jobConfig.stateName);
+  await endState();
 };
 
 const insertChangefile = async (jobConfig) => {
   setInUpdate(true);
+  createState();
   const success = await insertDataUnpaywall(jobConfig);
   if (success) {
-    await endState(jobConfig.stateName);
+    await endState();
   }
 };
 

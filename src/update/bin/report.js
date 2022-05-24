@@ -7,7 +7,7 @@ const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
 
 /**
  * create report on the folder "out/update/report" on behalf of the date of treatment
- * @param {String} stateName - state filename
+ * @param {String}  - state filename
  */
 const createReport = async (state) => {
   const pathfile = path.resolve(reportsDir, `${format(new Date(), 'yyyy-MM-dd-HH-mm')}.json`);
