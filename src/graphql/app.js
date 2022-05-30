@@ -11,7 +11,7 @@ const auth = require('./middlewares/auth');
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 const { pingRedis } = require('./lib/redis');
-const { elasticClient, pingElastic } = require('./lib/elastic');
+const { elasticClient, pingElastic } = require('./service/elastic');
 
 const schema = require('./graphql');
 

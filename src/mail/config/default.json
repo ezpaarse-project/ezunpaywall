@@ -7,5 +7,6 @@
     "sender": "ezunpaywall",
     "receivers": ["ezunpaywall@example.fr"],
     "machine": "dev"
-  }
+  },
+  "apikey": "changeme"
 }

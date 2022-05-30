@@ -19,6 +19,4 @@ const checkStatus = (req, res, next) => {
   return next();
 };
 
-module.exports = {
-  checkStatus,
-};
+module.exports = checkStatus;
