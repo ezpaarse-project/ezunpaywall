@@ -1,0 +1,372 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The enrichment service allows to enrich a csv or jsonl file which contains a \"doi\" field with the metadata of the ezunpaywall mirror",
+    "version": "1.0.0",
+    "title": "Enrich service",
+    "contact": {
+      "email": "ezteam@couperin.org",
+      "name": "ezTeam"
+    },
+    "license": {
+      "name": "CeCILL 2.1",
+      "url": "http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "enrich",
+      "description": "Enrich service"
+    }
+  ],
+  "paths": {
+    "/enrich/enriched": {
+      "get": {
+        "tags": [
+          "enrich"
+        ],
+        "summary": "get enriched file",
+        "operationId": "getEnrichEnriched",
+        "description": "get lists of enriched file",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of enriched file",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "default": "file.csv"
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/enrich/uploads": {
+      "get": {
+        "tags": [
+          "enrich"
+        ],
+        "summary": "get upload file",
+        "operationId": "getEnrichUpload",
+        "description": "get lists of upload file",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "list of uploaded file",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "default": "file.csv"
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "enrich"
+        ],
+        "summary": "post upload file",
+        "operationId": "postEnrichUpload",
+        "description": "post a upload file",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "filename of uploaded file",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/enrich/enriched/${filename}": {
+      "get": {
+        "tags": [
+          "enrich"
+        ],
+        "summary": "get enriched file",
+        "operationId": "getEnrichEnrichedFile",
+        "description": "get enriched file",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "enriched file",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/enrich/job/{filename}": {
+      "post": {
+        "tags": [
+          "enrich"
+        ],
+        "summary": "do enrich job",
+        "operationId": "postEnrichJob",
+        "description": "start enrich job with uploaded file",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "keys",
+            "description": "apikeys",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "keys": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "args": {
+                        "type": "string"
+                      },
+                      "index": {
+                        "type": "string"
+                      },
+                      "separator": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "filename of process",
+            "schema": {
+              "type": "string",
+              "default": "id"
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/enrich/states": {
+      "get": {
+        "tags": [
+          "enrich"
+        ],
+        "summary": "get list of state of enrich job",
+        "operationId": "getEnrichStates",
+        "description": "get enriched file",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "latest",
+            "description": "latest",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of states file",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "default": "file.json"
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/enrich/states/${filename}": {
+      "get": {
+        "tags": [
+          "enrich"
+        ],
+        "summary": "Get State",
+        "operationId": "getEnrichState",
+        "description": "Get state with his filename",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "list of uploaded file",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "done": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "loaded": {
+                  "type": "integer",
+                  "default": 150
+                },
+                "linesRead": {
+                  "type": "integer",
+                  "default": 3
+                },
+                "enrichedLines": {
+                  "type": "integer",
+                  "default": 3
+                },
+                "createdAt": {
+                  "type": "string",
+                  "default": "2021-11-30T10:00:00.00Z"
+                },
+                "endAt": {
+                  "type": "string",
+                  "default": "2021-11-30T10:01:00.00Z"
+                },
+                "error": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          },
+          "404": {
+            "description": "File not found",
+            "schema": {
+              "$ref": "#/definitions/FileNotFound"
+            }
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "definitions": {
+    "Unauthorized": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "number",
+          "default": 401
+        },
+        "error": {
+          "type": "string",
+          "default": "Unauthorized"
+        },
+        "message": {
+          "type": "string",
+          "default": "Not authorized"
+        }
+      }
+    },
+    "FileNotFound": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "string",
+          "default": "404"
+        },
+        "error": {
+          "type": "string",
+          "default": "Not Found"
+        },
+        "message": {
+          "type": "string",
+          "default": "\"file\" not found"
+        }
+      }
+    }
+  },
+  "schemes": []
+}

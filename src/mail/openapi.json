@@ -1,0 +1,204 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The mail service allows the sending of mail for the different services",
+    "version": "1.0.0",
+    "title": "Mail service",
+    "contact": {
+      "email": "ezteam@couperin.org",
+      "name": "ezTeam"
+    },
+    "license": {
+      "name": "CeCILL 2.1",
+      "url": "http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html"
+    }
+  },
+  "paths": {
+    "/mail/contact": {
+      "post": {
+        "summary": "",
+        "operationId": "post-mail-contact",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "email expected": {
+                "message": "email are expected"
+              },
+              "invalid email": {
+                "message": "[\"john\"] is invalid email"
+              },
+              "subject expected": {
+                "message": "subject are expected"
+              },
+              "message expected": {
+                "message": "message are expected"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "description": "",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "mail apikey"
+          }
+        ]
+      }
+    },
+    "/mail/update-start": {
+      "post": {
+        "summary": "",
+        "operationId": "post-mail-contact",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "": {
+            "examples": {}
+          }
+        },
+        "description": "",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "mail apikey"
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/mail/update-end": {
+      "post": {
+        "summary": "",
+        "operationId": "post-mail-contact",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "": {
+            "examples": {}
+          }
+        },
+        "description": "",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "mail apikey"
+          }
+        ]
+      },
+      "parameters": []
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "definitions": {
+    "Unauthorized": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "number",
+          "default": 401
+        },
+        "error": {
+          "type": "string",
+          "default": "Unauthorized"
+        },
+        "message": {
+          "type": "string",
+          "default": "Not authorized"
+        }
+      }
+    },
+    "FileNotFound": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "string",
+          "default": "404"
+        },
+        "error": {
+          "type": "string",
+          "default": "Not Found"
+        },
+        "message": {
+          "type": "string",
+          "default": "\"file\" not found"
+        }
+      }
+    }
+  },
+  "schemes": []
+}

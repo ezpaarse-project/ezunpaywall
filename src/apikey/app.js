@@ -10,6 +10,7 @@ const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
 const cronDemo = require('./lib/cron');
 
 const routerManage = require('./routers/manage');
+const routerOpenapi = require('./routers/openapi');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -34,6 +35,7 @@ app.get('/', async (req, res, next) => {
 });
 
 app.use(routerManage);
+app.use(routerOpenapi);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
