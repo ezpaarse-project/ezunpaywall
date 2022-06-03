@@ -18,9 +18,12 @@ const storage = multer.diskStorage(
   },
 );
 
+const checkAuth = require('../middlewares/auth');
+const checkAdmin = require('../middlewares/admin');
+
 const upload = multer({ storage });
 
-router.get('/enriched', async (req, res) => {
+router.get('/enriched', checkAdmin, async (req, res) => {
   const files = await fs.readdir(enrichedDir);
   res.status(200).json(files);
 });
@@ -30,11 +33,15 @@ router.get('/upload', async (req, res) => {
   res.status(200).json(files);
 });
 
-router.get('/enriched/:filename', async (req, res, next) => {
-  const { filename } = req.params;
+router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
+  let { filename } = req.params;
+
   const { error } = joi.string().trim().required().validate(filename);
 
   if (error) return next(boom.badRequest(error.details[0].message));
+
+  const apikey = req.get('x-api-key');
+  filename = `${apikey}-${filename}`;
 
   if (!await fs.pathExists(path.resolve(enrichedDir, filename))) {
     return next(boom.notFound(`"${filename}" not found`));
