@@ -1,0 +1,493 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The update service allows to update the mirror data. This service queries unpaywall to get the snapshots and inserts their content in an elasticsearch index ",
+    "version": "1.0.0",
+    "title": "Update service",
+    "contact": {
+      "email": "ezteam@couperin.org",
+      "name": "ezTeam"
+    },
+    "license": {
+      "name": "CeCILL 2.1",
+      "url": "http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html"
+    }
+  },
+  "paths": {
+    "/update/job/snapshot": {
+      "post": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Strat download and insert the current snapshot from unpaywall",
+        "operationId": "postUpdateSnapshot",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "index",
+            "description": "index where the unpaywall data will be inserted",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "required": [
+                "userName"
+              ],
+              "properties": {
+                "interval": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Process start"
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          },
+          "409": {
+            "description": "Update in progress",
+            "schema": {
+              "type": "string",
+              "default": "changeme"
+            }
+          }
+        }
+      }
+    },
+    "/update/job/period": {
+      "post": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Start download and insert changesfiles from unpaywall bewtween a period",
+        "operationId": "postUpdatePeriod",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "config",
+            "description": "config for process",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "required": [
+                "userName"
+              ],
+              "properties": {
+                "index": {
+                  "type": "string"
+                },
+                "interval": {
+                  "type": "string"
+                },
+                "startDate": {
+                  "type": "string"
+                },
+                "endDate": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Process start"
+          },
+          "400": {
+            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
+            "schema": {
+              "type": "string",
+              "default": "changeme"
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          },
+          "409": {
+            "description": "Update in progress",
+            "schema": {
+              "type": "string",
+              "default": "changeme"
+            }
+          }
+        }
+      }
+    },
+    "/update/job/changefile/{filename}": {
+      "post": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Start insert changesfiles installed on ezunpaywall",
+        "operationId": "postUpdateChangefile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "config",
+            "description": "config for process",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "string"
+                },
+                "offset": {
+                  "type": "integer"
+                },
+                "limit": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Process start"
+          },
+          "400": {
+            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
+            "schema": {
+              "type": "string",
+              "default": "changeme"
+            }
+          },
+          "401": {
+            "description": "Not authorized",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          },
+          "404": {
+            "description": "File not found",
+            "schema": {
+              "$ref": "#/definitions/FileNotFound"
+            }
+          },
+          "409": {
+            "description": "Update in progress",
+            "schema": {
+              "type": "string",
+              "default": "changeme"
+            }
+          }
+        }
+      }
+    },
+    "/update/reports": {
+      "get": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Get reports",
+        "operationId": "getUpdateReports",
+        "description": "Get list of report or latest report",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "latest",
+            "description": "latest",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "report"
+          }
+        }
+      }
+    },
+    "/update/reports/${filename}": {
+      "get": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Get report",
+        "operationId": "getUpdateReport",
+        "description": "Get report with his filename",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "report"
+          },
+          "401": {
+            "description": "File not found",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/update/snapshots": {
+      "get": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Get snapshots",
+        "operationId": "getUpdateSnapshots",
+        "description": "Get list of snapshot or latest snapshot",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "latest",
+            "description": "latest",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "snapshot"
+          }
+        }
+      }
+    },
+    "/update/snapshots/${filename}": {
+      "get": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Get snapshot",
+        "operationId": "getUpdateSnapshot",
+        "description": "Get snapshot with his filename",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "snapshot"
+          },
+          "404": {
+            "description": "File not found",
+            "schema": {
+              "$ref": "#/definitions/FileNotFound"
+            }
+          }
+        }
+      }
+    },
+    "/update/states": {
+      "get": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Get state",
+        "operationId": "getUpdateState",
+        "description": "Get latest state",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "state"
+          }
+        }
+      }
+    },
+    "/update/status": {
+      "get": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Get status",
+        "operationId": "getUpdateStatus",
+        "description": "Get status",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "status"
+          }
+        }
+      }
+    },
+    "/update/unpaywall/changefiles": {
+      "get": {
+        "tags": [
+          "update"
+        ],
+        "summary": "Get changefiles from unpaywall",
+        "operationId": "getUpdateChangeFiles",
+        "description": "Get changefiles from unpaywall",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "interval",
+            "description": "interval of changefiles (\"week\" or \"day\")",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "status"
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "definitions": {
+    "Unauthorized": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "number",
+          "default": 401
+        },
+        "error": {
+          "type": "string",
+          "default": "Unauthorized"
+        },
+        "message": {
+          "type": "string",
+          "default": "Not authorized"
+        }
+      }
+    },
+    "FileNotFound": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "string",
+          "default": "404"
+        },
+        "error": {
+          "type": "string",
+          "default": "Not Found"
+        },
+        "message": {
+          "type": "string",
+          "default": "\"file\" not found"
+        }
+      }
+    }
+  },
+  "schemes": []
+}

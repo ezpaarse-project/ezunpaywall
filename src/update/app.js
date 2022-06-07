@@ -19,6 +19,7 @@ const routerSnapshot = require('./routers/snapshot');
 const routerState = require('./routers/state');
 const routerStatus = require('./routers/status');
 const routerUnpaywall = require('./routers/unpaywall');
+const routerOpenapi = require('./routers/openapi');
 
 const outDir = path.resolve(__dirname, 'out');
 fs.ensureDir(path.resolve(outDir));
@@ -59,6 +60,7 @@ app.use(routerSnapshot);
 app.use(routerState);
 app.use(routerStatus);
 app.use(routerUnpaywall);
+app.use(routerOpenapi);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
