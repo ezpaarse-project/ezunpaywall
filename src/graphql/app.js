@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 const responseTime = require('response-time');
-const boom = require('@hapi/boom');
 
 const { name, version } = require('./package.json');
 
@@ -10,8 +9,11 @@ const auth = require('./middlewares/auth');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
-const { pingRedis } = require('./lib/redis');
-const { elasticClient, pingElastic } = require('./service/elastic');
+
+const { pingElastic } = require('./service/elastic');
+const { pingRedis } = require('./service/redis');
+
+const routerPing = require('./routers/ping');
 
 const schema = require('./graphql');
 
@@ -29,29 +31,16 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', async (req, res, next) => {
-  let elastic;
-  try {
-    elastic = await elasticClient.ping();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  return res.status(200).json({
-    name, version, elastic: !!elastic, redis: !!redis,
-  });
-});
+app.get('/', async (req, res, next) => res.status(200).json({
+  name, version,
+}));
 
 app.use('/graphql', auth, graphqlHTTP({
   schema,
   graphiql: false,
 }));
+
+app.use(routerPing);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

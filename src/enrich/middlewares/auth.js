@@ -1,5 +1,12 @@
-const { redisClient } = require('../lib/redis');
+const fs = require('fs-extra');
+const path = require('path');
+
+const { redisClient } = require('../service/redis');
 const logger = require('../lib/logger');
+
+const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
+const stateDir = path.resolve(__dirname, '..', 'out', 'states');
+const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
 
 /**
  * check the user's api key
@@ -26,6 +33,7 @@ const checkAuth = async (req, res, next) => {
   }
 
   let config;
+
   try {
     config = JSON.parse(key);
   } catch (err) {
@@ -62,6 +70,21 @@ const checkAuth = async (req, res, next) => {
     if (error) {
       return res.status(401).json({ message: `You don't have access to "${errors.join(',')}" attribute(s)` });
     }
+  }
+
+  try {
+    if (!await fs.stat(path.resolve(enrichedDir, apikey))) {
+      await fs.mkdir(path.resolve(enrichedDir, apikey));
+    }
+    if (!await fs.stat(path.resolve(stateDir, apikey))) {
+      await fs.mkdir(path.resolve(stateDir, apikey));
+    }
+    if (!await fs.stat(path.resolve(uploadedDir, apikey))) {
+      await fs.mkdir(path.resolve(uploadedDir, apikey));
+    }
+  } catch (err) {
+    logger.error(`Cannot create dir ${key}`);
+    logger.error(err);
   }
 
   return next();

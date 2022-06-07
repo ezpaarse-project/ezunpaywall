@@ -2,7 +2,7 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
-const ping = require('./utils/ping');
+const pingApikey = require('./utils/ping');
 
 const {
   loadDevAPIKey,
@@ -15,11 +15,11 @@ const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 describe('Test: apikey service', () => {
   before(async () => {
-    await ping();
+    await pingApikey();
   });
 
   before(async () => {
-    await ping();
+    await pingApikey();
     await deleteAllAPIKey();
     await loadDevAPIKey();
   });

@@ -9,6 +9,7 @@ const updateChangefilesExample = require('./bin/changefiles');
 
 const routerSnapshots = require('./routers/snapshots');
 const routerChangeFiles = require('./routers/changefiles');
+const routerPing = require('./routers/ping');
 
 // start server
 const app = express();
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 app.use(routerSnapshots);
 app.use(routerChangeFiles);
+app.use(routerPing);
 
 /* Errors and unknown routes */
 app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

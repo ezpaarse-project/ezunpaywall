@@ -9,19 +9,21 @@ const apikeyURL = process.env.APIKEY_URL || 'http://localhost:7000';
 /**
  * ping apikey service to see if they are available
  */
-const ping = async () => {
-  let res1;
-  while (res1?.status !== 200) {
+async function pingApikey() {
+  let res;
+  let i = 1;
+  for (i; i < 3; i += 1) {
     try {
-      res1 = await chai.request(apikeyURL).get('/');
+      res = await chai.request(apikeyURL).get('/ping');
     } catch (err) {
-      console.error(`apikey ping : ${err}`);
+      console.error(`enrich ping : ${err}`);
     }
-    if (res1?.status !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res.status === 200) {
+      return true;
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-  console.log('apikey ping : OK');
-};
+  return false;
+}
 
-module.exports = ping;
+module.exports = pingApikey;

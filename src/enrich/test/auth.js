@@ -20,7 +20,9 @@ const {
 } = require('./utils/elastic');
 
 const {
-  ping,
+  pingEnrich,
+  pingElastic,
+  pingRedis,
 } = require('./utils/ping');
 
 const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
@@ -31,7 +33,9 @@ describe('Test: auth service in enrich service', () => {
 
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingEnrich();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');

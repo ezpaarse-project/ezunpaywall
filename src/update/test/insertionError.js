@@ -25,7 +25,10 @@ const {
 } = require('./utils/status');
 
 const {
-  ping,
+  pingUpdate,
+  pingFakeUnpaywall,
+  pingElastic,
+  pingRedis,
 } = require('./utils/ping');
 
 const {
@@ -42,7 +45,10 @@ const updateURL = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingUpdate();
+    await pingFakeUnpaywall();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await updateChangeFile('week');

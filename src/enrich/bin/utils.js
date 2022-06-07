@@ -20,9 +20,9 @@ const {
  * @param {String} apikey - apikey of user
  */
 const enrichJSON = async (id, index, args, apikey) => {
-  await createState(`${apikey}-${id}`);
+  await createState(id, apikey);
   await processEnrichJSON(id, index, args, apikey);
-  await endState(`${apikey}-${id}.json`);
+  await endState(id, apikey);
 };
 
 /**
@@ -35,9 +35,9 @@ const enrichJSON = async (id, index, args, apikey) => {
  * @param {String} apikey - apikey of user
  */
 const enrichCSV = async (id, index, args, apikey, separator) => {
-  await createState(`${apikey}-${id}`);
+  await createState(id, apikey);
   await processEnrichCSV(id, index, args, apikey, separator);
-  await endState(`${apikey}-${id}.json`);
+  await endState(id, apikey);
 };
 
 module.exports = {

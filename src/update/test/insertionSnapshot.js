@@ -21,9 +21,11 @@ const {
 } = require('./utils/status');
 
 const {
-  ping,
+  pingUpdate,
+  pingFakeUnpaywall,
+  pingElastic,
+  pingRedis,
 } = require('./utils/ping');
-
 const {
   loadDevAPIKey,
   deleteAllAPIKey,
@@ -38,7 +40,10 @@ const updateURL = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
 describe('Test: download and insert snapshot from unpaywall', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingUpdate();
+    await pingFakeUnpaywall();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
   });

@@ -9,7 +9,7 @@ const stateDir = path.resolve(__dirname, '..', 'out', 'states');
  * create a new file on folder "out/enrich/state" containing the enrich state
  * @param {String} id - id of process
  */
-const createState = async (id) => {
+const createState = async (id, apikey) => {
   const state = {
     done: false,
     loaded: 0,
@@ -18,12 +18,16 @@ const createState = async (id) => {
     createdAt: new Date(),
     endAt: null,
     error: false,
+    apikey,
   };
+
   const filename = `${id}.json`;
+  const filenamePath = path.resolve(stateDir, apikey, filename);
+
   try {
-    await fs.writeFile(path.resolve(stateDir, filename), JSON.stringify(state, null, 2));
+    await fs.writeFile(filenamePath, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${path.resolve(stateDir, filename)}`);
+    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${filenamePath}`);
     logger.error(err);
   }
 };
@@ -33,14 +37,18 @@ const createState = async (id) => {
  * @param {String} filename - state filename
  * @returns {Object} - state in JSON format
  */
-const getState = async (filename) => {
-  let state = await fs.readFile(path.resolve(stateDir, filename), 'utf8');
+const getState = async (filename, apikey) => {
+  const filenamePath = path.resolve(stateDir, apikey, filename);
+
+  let state = await fs.readFile(filenamePath, 'utf8');
+
   try {
     state = JSON.parse(state);
   } catch (err) {
     logger.error(`Cannot parse "${state}" in json format`);
     logger.error(err);
   }
+
   return state;
 };
 
@@ -50,12 +58,15 @@ const getState = async (filename) => {
  * @param {String} filename - state filename
  */
 const updateStateInFile = async (state, filename) => {
-  const pathfile = path.resolve(stateDir, filename);
+  const { apikey } = state;
+  const pathfile = path.resolve(stateDir, apikey, filename);
   const isPathExist = await fs.pathExists(pathfile);
+
   if (!isPathExist) {
     logger.error(`Cannot update state because ${pathfile} doesn't exist`);
     return;
   }
+
   try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   } catch (err) {
@@ -79,11 +90,11 @@ const fail = async (filename) => {
  * update the state when the process is finished
  * @param {String} filename - state filename
  */
-const endState = async (filename) => {
-  const state = await getState(filename);
+const endState = async (id, apikey) => {
+  const state = await getState(`${id}.json`, apikey);
   state.endAt = new Date();
   state.done = true;
-  updateStateInFile(state, filename);
+  updateStateInFile(state, `${id}.json`);
 };
 
 module.exports = {

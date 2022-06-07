@@ -21,7 +21,9 @@ const {
 } = require('./utils/elastic');
 
 const {
-  ping,
+  pingEnrich,
+  pingElastic,
+  pingRedis,
 } = require('./utils/ping');
 
 const {
@@ -35,7 +37,9 @@ const enrichDir = path.resolve(__dirname, 'sources');
 describe('Test: enrich service csv', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingEnrich();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
@@ -83,7 +87,8 @@ describe('Test: enrich service csv', () => {
         do {
           res3 = await chai
             .request(enrichURL)
-            .get(`/state/${id}.json`);
+            .get(`/state/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -103,6 +108,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -157,7 +163,8 @@ describe('Test: enrich service csv', () => {
         do {
           res3 = await chai
             .request(enrichURL)
-            .get(`/state/${id}.json`);
+            .get(`/state/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -177,9 +184,9 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
-          .parse(binaryParser)
-          .set('x-api-key', 'user');
+          .parse(binaryParser);
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
         try {
@@ -234,7 +241,8 @@ describe('Test: enrich service csv', () => {
         do {
           res3 = await chai
             .request(enrichURL)
-            .get(`/state/${id}.json`);
+            .get(`/state/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -254,6 +262,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -309,7 +318,8 @@ describe('Test: enrich service csv', () => {
         do {
           res3 = await chai
             .request(enrichURL)
-            .get(`/state/${id}.json`);
+            .get(`/state/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -329,6 +339,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -385,7 +396,8 @@ describe('Test: enrich service csv', () => {
         do {
           res3 = await chai
             .request(enrichURL)
-            .get(`/state/${id}.json`);
+            .get(`/state/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -405,6 +417,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -461,7 +474,8 @@ describe('Test: enrich service csv', () => {
         do {
           res3 = await chai
             .request(enrichURL)
-            .get(`/state/${id}.json`);
+            .get(`/state/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -481,6 +495,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -537,7 +552,8 @@ describe('Test: enrich service csv', () => {
         do {
           res3 = await chai
             .request(enrichURL)
-            .get(`/state/${id}.json`);
+            .get(`/state/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -557,6 +573,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 

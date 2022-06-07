@@ -6,11 +6,12 @@ const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
 const { name, version } = require('./package.json');
-const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
+const { pingRedis, loadDemoAPIKey } = require('./service/redis');
 const cronDemo = require('./lib/cron');
 
 const routerManage = require('./routers/manage');
 const routerOpenapi = require('./routers/openapi');
+const routerPing = require('./routers/ping');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -24,18 +25,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/', async (req, res, next) => {
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  return res.status(200).json({ name, version, redis: !!redis });
-});
+app.get('/', async (req, res, next) => res.status(200).json({
+  name, version,
+}));
 
 app.use(routerManage);
 app.use(routerOpenapi);
+app.use(routerPing);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

@@ -13,10 +13,10 @@ const {
   fail,
 } = require('../model/state');
 
-const askEzunpaywall = require('../service/graphql');
+const { askEzunpaywall } = require('../service/graphql');
 
-const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
-const enriched = path.resolve(__dirname, '..', 'out', 'enriched');
+const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
+const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 
 /**
  * getter of all the unpaywall attributes that can be used for enrichment in graphql format
@@ -237,12 +237,18 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
 const processEnrichCSV = async (id, index, args, apikey, separator) => {
   const filename = `${id}.csv`;
 
-  const readStream = fs.createReadStream(path.resolve(uploadDir, filename));
+  let readStream;
+  try {
+    readStream = fs.createReadStream(path.resolve(uploadedDir, apikey, `${id}.csv`));
+  } catch (err) {
+    logger.error(`Cannot create readStream in ${path.resolve(uploadedDir, apikey, `${id}.csv`)}`);
+    return;
+  }
 
   const stateName = `${id}.json`;
-  const state = await getState(stateName);
+  const state = await getState(stateName, apikey);
 
-  const enrichedFile = path.resolve(enriched, filename);
+  const enrichedFile = path.resolve(enrichedDir, apikey, filename);
 
   if (!args) {
     args = allArgs();

@@ -35,7 +35,7 @@ router.post('/contact', checkAuth, async (req, res, next) => {
   } catch (err) {
     return next(boom.boomify(err));
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 // auth
@@ -48,7 +48,7 @@ router.post('/update-start', checkAuth, async (req, res, next) => {
   } catch (err) {
     return next(boom.boomify(err));
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 router.post('/update-end', checkAuth, async (req, res, next) => {
@@ -60,7 +60,7 @@ router.post('/update-end', checkAuth, async (req, res, next) => {
   } catch (err) {
     return next(boom.boomify(err));
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 module.exports = router;

@@ -11,7 +11,8 @@ const {
 } = require('./utils/elastic');
 
 const {
-  ping,
+  pingElastic,
+  pingRedis,
 } = require('./utils/ping');
 
 const {
@@ -28,7 +29,8 @@ const doi1 = '10.1186/s40510-015-0109-6'; // line 1 of fake1.jsonl
 describe('Test: auth service in graphql service', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');

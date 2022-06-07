@@ -5,7 +5,7 @@ const cors = require('cors');
 const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
-const { pingRedis } = require('./lib/redis');
+const { pingRedis } = require('./service/redis');
 const morgan = require('./lib/morgan');
 const cronDeleteOutFiles = require('./lib/cron');
 
@@ -15,12 +15,13 @@ const routerJob = require('./routers/job');
 const routerEnrich = require('./routers/enrich');
 const routerState = require('./routers/state');
 const routerOpenapi = require('./routers/openapi');
+const routerPing = require('./routers/ping');
 
 const outDir = path.resolve(__dirname, 'out');
 
 fs.ensureDir(path.resolve(outDir));
 fs.ensureDir(path.resolve(outDir, 'states'));
-fs.ensureDir(path.resolve(outDir, 'upload'));
+fs.ensureDir(path.resolve(outDir, 'uploaded'));
 fs.ensureDir(path.resolve(outDir, 'enriched'));
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -37,20 +38,15 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', async (req, res, next) => {
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  return res.status(200).json({ name, version, redis: !!redis });
-});
+app.get('/', async (req, res, next) => res.status(200).json({
+  name, version,
+}));
 
 app.use(routerJob);
 app.use(routerEnrich);
 app.use(routerState);
 app.use(routerOpenapi);
+app.use(routerPing);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
