@@ -52,12 +52,12 @@ router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
   } = value;
 
   if (new Date(startDate).getTime() > Date.now()) {
-    return res.status(400).json({ message: 'startDate cannot be in the futur' });
+    return res.status(400).json(boom.badRequest('startDate cannot be in the futur'));
   }
 
   if (startDate && endDate) {
     if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
-      return res.status(400).json({ message: 'endDate cannot be lower than startDate' });
+      return res.status(400).json(boom.badRequest('endDate cannot be lower than startDate'));
     }
   }
 

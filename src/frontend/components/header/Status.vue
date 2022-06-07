@@ -67,7 +67,7 @@ export default {
       try {
         res = await this.$update({
           method: 'get',
-          url: '/state',
+          url: '/states',
           params: {
             latest: true
           }

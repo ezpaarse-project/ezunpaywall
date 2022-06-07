@@ -2,8 +2,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const { elasticClient } = require('./elastic');
-
 chai.use(chaiHttp);
 
 const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
@@ -14,72 +12,65 @@ const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:120
  * ping all services to see if they are available
  */
 const ping = async () => {
-  // update
-  let res1;
+  let update;
   do {
     try {
-      res1 = await chai.request(updateURL).get('/');
+      update = await chai.request(updateURL).get('/ping');
     } catch (err) {
       console.error(`update ping : ${err}`);
     }
-    if (res1?.status !== 200) {
+    if (update?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-  } while (res1?.status !== 200);
+  } while (update?.status !== 200);
 
-  // fakeUnpaywall
-  let res2;
+  let fakeUnpaywall;
   do {
     try {
-      res2 = await chai.request(fakeUnpaywallURL).get('/');
+      fakeUnpaywall = await chai.request(fakeUnpaywallURL).get('/ping');
     } catch (err) {
       console.error(`fakeUnpaywall ping : ${err}`);
     }
-    if (res2?.status !== 200) {
+    if (fakeUnpaywall?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-  } while (res2?.status !== 200);
+  } while (fakeUnpaywall?.status !== 200);
 
-  // elastic
-  let res3;
-  do {
+  let elastic;
+  while (elastic?.status !== 200) {
     try {
-      res3 = await elasticClient.ping();
+      elastic = await chai.request(updateURL).get('/ping/elastic');
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    if (res3?.statusCode !== 200) {
+    if (elastic?.status !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-  } while (res3?.statusCode !== 200);
+  }
 
-  // auth
-  let res4;
+  let apikey;
   do {
     try {
-      res4 = await chai.request(apikeyURL).get('/');
+      apikey = await chai.request(apikeyURL).get('/ping');
     } catch (err) {
-      console.error(`auth ping : ${err}`);
+      console.error(`apikey ping : ${err}`);
     }
-    if (res4?.statusCode !== 200) {
+    if (apikey?.statusCode !== 200) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-  } while (res4?.statusCode !== 200);
+  } while (apikey?.statusCode !== 200);
 
-  // redis
-  let res5;
+  let redis;
   do {
     try {
-      res5 = await chai.request(apikeyURL).get('/');
+      redis = await chai.request(updateURL).get('/ping/redis');
     } catch (err) {
       console.error(`redis ping : ${err}`);
     }
-    if (!res5?.body.redis) {
+    if (!redis?.status) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-  } while (!res5?.body.redis);
+  } while (!redis?.status);
 };
 
-module.exports = {
-  ping,
-};
+module.exports = ping;

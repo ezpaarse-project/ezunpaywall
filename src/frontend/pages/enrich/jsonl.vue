@@ -240,7 +240,7 @@ export default {
       try {
         res = await this.$enrich({
           method: 'GET',
-          url: `/state/${id}.json`,
+          url: `/states/${id}.json`,
           responseType: 'json'
         })
       } catch (err) {

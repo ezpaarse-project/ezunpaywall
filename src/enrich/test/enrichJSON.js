@@ -21,9 +21,7 @@ const {
   countDocuments,
 } = require('./utils/elastic');
 
-const {
-  ping,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const {
   loadDevAPIKey,
@@ -69,9 +67,8 @@ describe('Test: enrich service jsonl', () => {
         // start enrich process
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
           })
@@ -85,7 +82,7 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/state/${id}.json`);
+            .get(`/states/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -143,9 +140,8 @@ describe('Test: enrich service jsonl', () => {
       it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
           })
@@ -160,7 +156,7 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/state/${id}.json`);
+            .get(`/states/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -219,9 +215,8 @@ describe('Test: enrich service jsonl', () => {
       it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -237,7 +232,7 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/state/${id}.json`);
+            .get(`/states/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -295,9 +290,8 @@ describe('Test: enrich service jsonl', () => {
       it('Should enrich the file on 3 lines with args { best_oa_location { license } } and download it', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ best_oa_location { license } }',
@@ -312,7 +306,7 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/state/${id}.json`);
+            .get(`/states/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -371,9 +365,8 @@ describe('Test: enrich service jsonl', () => {
       it('Should enrich the file on 3 lines with args { z_authors { given } } and download it', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ z_authors { given } }',
@@ -388,7 +381,7 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/state/${id}.json`);
+            .get(`/states/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -446,9 +439,8 @@ describe('Test: enrich service jsonl', () => {
       it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors{ family } } and download it', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa, best_oa_location { license }, z_authors { family } }',
@@ -463,7 +455,7 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/state/${id}.json`);
+            .get(`/states/${id}.json`);
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -521,9 +513,8 @@ describe('Test: enrich service jsonl', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ coin }',

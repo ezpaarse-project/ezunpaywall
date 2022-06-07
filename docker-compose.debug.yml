@@ -136,7 +136,7 @@ services:
       - ./src/frontend:/frontend
     command: "npm run dev"
     ports:
-      - "8080:3000"
+      - 8080:3000
     environment:
       - GRAPHQL_URL
       - UPDATE_URL
@@ -156,7 +156,7 @@ services:
       - ./src/fakeUnpaywall:/fakeUnpaywall
     command: "npm run dev"
     ports:
-      - "12000:12000"
+      - 12000:12000
     restart: unless-stopped
 
   elastic:
@@ -168,6 +168,11 @@ services:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - ELASTIC_USERNAME=elastic
       - ELASTIC_PASSWORD=changeme
+    healthcheck:
+      test: curl --cacert $CERTS_DIR_ES/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
     ulimits:
       memlock:
         soft: -1
@@ -187,8 +192,8 @@ services:
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=changeme
       - xpack.security.enabled=true
-    depends_on:
-      - "elastic"
+    depends_on: 
+      - elastic
     restart: unless-stopped
 
   rp:

@@ -14,10 +14,14 @@ const checkAuth = require('../middlewares/auth');
  *
  * @return name of enriched file to download it
  */
-router.post('/job', checkAuth, async (req, res, next) => {
+router.post('/job/:filename', checkAuth, async (req, res, next) => {
+  const checkParams = joi.string().trim().required().validate(req.params.filename);
+
+  if (checkParams?.error) return next(boom.badRequest(checkParams?.error?.details[0].message));
+
+  const id = checkParams?.value;
   // TODO check args with graphqlSyntax
   const { error, value } = joi.object({
-    id: joi.string().trim().required(),
     type: joi.string().trim().valid('jsonl', 'csv').required(),
     args: joi.string().trim(),
     index: joi.string().trim().default('unpaywall'),
@@ -27,7 +31,7 @@ router.post('/job', checkAuth, async (req, res, next) => {
   if (error) return next(boom.badRequest(error.details[0].message));
 
   const {
-    id, type, args, index, separator,
+    type, args, index, separator,
   } = value;
 
   const apiKey = req.get('x-api-key');
@@ -40,7 +44,7 @@ router.post('/job', checkAuth, async (req, res, next) => {
     enrichCSV(id, index, args, apiKey, separator);
   }
 
-  return res.status(200).json({ id });
+  return res.status(200).json(id);
 });
 
 module.exports = router;

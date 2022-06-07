@@ -1,3 +1,4 @@
+const boom = require('@hapi/boom');
 const { redisClient } = require('../lib/redis');
 const logger = require('../lib/logger');
 
@@ -13,7 +14,7 @@ const checkAuth = async (req, res, next) => {
   const apikey = req.get('x-api-key');
 
   if (!apikey) {
-    return res.status(401).json({ message: 'Not authorized' });
+    return res.status(401).json(boom.unauthorized('Not Authorized'));
   }
 
   let key;
@@ -22,7 +23,7 @@ const checkAuth = async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
-    return res.status(500).json({ message: 'Internal server error' });
+    return next(boom.boomify(err));
   }
 
   let config;
@@ -31,18 +32,18 @@ const checkAuth = async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot parse ${key}`);
     logger.error(err);
-    return res.status(500).json({ message: 'Internal server error' });
+    return next(boom.boomify(err));
   }
 
   if (!Array.isArray(config?.access) || !config?.access?.includes('enrich') || !config?.allowed) {
-    return res.status(401).json({ message: 'Not authorized' });
+    return res.status(401).json(boom.unauthorized('Not Authorized'));
   }
 
   let { args } = req.body;
 
   if (!config.attributes?.includes('*')) {
     if (!args) {
-      return res.status(401).json({ message: 'Not authorized' });
+      return res.status(401).json(boom.unauthorized('Not Authorized'));
     }
     let error = false;
     const errors = [];
@@ -60,7 +61,7 @@ const checkAuth = async (req, res, next) => {
       }
     });
     if (error) {
-      return res.status(401).json({ message: `You don't have access to "${errors.join(',')}" attribute(s)` });
+      return res.status(401).json(boom.unauthorized(`You don't have access to "${errors.join(',')}" attribute(s)`));
     }
   }
 

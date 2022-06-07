@@ -5,10 +5,10 @@ const cors = require('cors');
 const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
-const { name, version } = require('./package.json');
 const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
 const cronDemo = require('./lib/cron');
 
+const routerPing = require('./routers/ping');
 const routerManage = require('./routers/manage');
 const routerOpenapi = require('./routers/openapi');
 
@@ -24,27 +24,20 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/', async (req, res, next) => {
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  return res.status(200).json({ name, version, redis: !!redis });
-});
-
+app.use(routerPing);
 app.use(routerManage);
 app.use(routerOpenapi);
 
 /* Errors and unknown routes */
-app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
+app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
 app.use((err, req, res, next) => {
   const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
 
   if (isDev && error.isServer) {
     error.output.payload.stack = error.stack;
   }
+
+  console.log(error);
 
   return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });

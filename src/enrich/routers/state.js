@@ -38,7 +38,7 @@ const getMostRecentFile = async (dir) => {
   return Array.isArray(files) ? files[0] : undefined;
 };
 
-router.get('/state', async (req, res, next) => {
+router.get('/states', async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
   if (error) return next(boom.badRequest(error.details[0].message));
 
@@ -70,7 +70,7 @@ router.get('/state', async (req, res, next) => {
   return res.status(200).json(states);
 });
 
-router.get('/state/:filename', async (req, res, next) => {
+router.get('/states/:filename', async (req, res, next) => {
   const { filename } = req.params;
   const { error } = joi.string().trim().required().validate(filename);
 

@@ -19,7 +19,7 @@ const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
  *
  * @return report
  */
-router.get('/report', async (req, res, next) => {
+router.get('/reports', async (req, res, next) => {
   const { error, value } = joi.object({
     latest: joi.boolean().default(false),
   }).validate(req.query);
@@ -60,7 +60,7 @@ router.get('/report', async (req, res, next) => {
  *
  * @return report
  */
-router.get('/report/:filename', async (req, res, next) => {
+router.get('/reports/:filename', async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.filename);
 
   if (error) return next(boom.badRequest(error.details[0].message));

@@ -25,9 +25,8 @@ describe('Test: Update apikey', () => {
   it('Should update config.name to "new-name" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         name: 'new-name',
       })
       .set('redis-password', 'changeme');
@@ -44,9 +43,8 @@ describe('Test: Update apikey', () => {
   it('Should update config.access to "update" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         access: ['update'],
       })
       .set('redis-password', 'changeme');
@@ -63,9 +61,8 @@ describe('Test: Update apikey', () => {
   it('Should update config.attributes to "doi" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         attributes: ['doi'],
       })
       .set('redis-password', 'changeme');
@@ -82,9 +79,8 @@ describe('Test: Update apikey', () => {
   it('Should update config.attributes to "doi,is_oa" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         attributes: ['doi', 'is_oa'],
       })
       .set('redis-password', 'changeme');
@@ -101,9 +97,8 @@ describe('Test: Update apikey', () => {
   it('Should update config.allowed to "false" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         allowed: false,
       })
       .set('redis-password', 'changeme');
@@ -120,9 +115,8 @@ describe('Test: Update apikey', () => {
   it('Should update config.allowed to "true" for the apikey "notAllowed"', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/notAllowed')
       .send({
-        apikey: 'notAllowed',
         allowed: true,
       })
       .set('redis-password', 'changeme');
@@ -139,9 +133,8 @@ describe('Test: Update apikey', () => {
   it('Should update config.name to "new-user" and config.access to "update" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         name: 'new-user',
         access: ['update'],
       })
@@ -159,9 +152,8 @@ describe('Test: Update apikey', () => {
   it('Shouldn\'t update config.access for the apikey "user" because "hello" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         access: ['hello'],
       })
       .set('redis-password', 'changeme');
@@ -172,9 +164,8 @@ describe('Test: Update apikey', () => {
   it('Shouldn\'t update config.attributes for the apikey "user" because "hello" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         attributes: ['hello'],
       })
       .set('redis-password', 'changeme');
@@ -185,9 +176,8 @@ describe('Test: Update apikey', () => {
   it('Shouldn\'t update config.allowed for the apikey "user" because "maybe" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .put('/update')
+      .put('/keys/user')
       .send({
-        apikey: 'user',
         allowed: 'maybe',
       })
       .set('redis-password', 'changeme');

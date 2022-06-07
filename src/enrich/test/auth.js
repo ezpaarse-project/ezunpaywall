@@ -19,9 +19,7 @@ const {
   countDocuments,
 } = require('./utils/elastic');
 
-const {
-  ping,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
 const enrichDir = path.resolve(__dirname, 'sources');
@@ -76,16 +74,14 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
           });
 
         expect(res2).have.status(401);
-        expect(res2?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -93,9 +89,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -103,7 +98,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'wrong apikey');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -111,9 +105,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -121,7 +114,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'graphql');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -129,9 +121,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -139,7 +130,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'update');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -147,9 +137,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -157,7 +146,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -165,9 +153,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa, oa_status }',
@@ -175,7 +162,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'userRestricted');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');
       });
     });
   });
@@ -214,16 +200,14 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
           });
 
         expect(res2).have.status(401);
-        expect(res2?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -231,9 +215,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -241,7 +224,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'wrong apikey');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -249,9 +231,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -259,7 +240,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'update');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -267,9 +247,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -277,7 +256,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'graphql');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -285,9 +263,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -295,7 +272,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -303,9 +279,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -313,7 +288,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -321,9 +295,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa, oa_status }',
@@ -331,7 +304,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'userRestricted');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');
       });
     });
   });
