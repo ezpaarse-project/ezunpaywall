@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div v-html="$t('graphql.general', { url })" />
+    <div v-html="$t('graphql.general', { dataFormatURL })" />
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />

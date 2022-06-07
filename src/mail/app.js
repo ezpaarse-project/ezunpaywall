@@ -9,6 +9,7 @@ const logger = require('./lib/logger');
 const { name, version } = require('./package.json');
 
 const routerMail = require('./routers/mail');
+const routerOpenapi = require('./routers/openapi');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -32,6 +33,7 @@ app.get('/', async (req, res) => {
 });
 
 app.use(routerMail);
+app.use(routerOpenapi);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));

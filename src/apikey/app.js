@@ -10,6 +10,7 @@ const cronDemo = require('./lib/cron');
 
 const routerPing = require('./routers/ping');
 const routerManage = require('./routers/manage');
+const routerOpenapi = require('./routers/openapi');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -25,6 +26,7 @@ app.use(cors());
 
 app.use(routerPing);
 app.use(routerManage);
+app.use(routerOpenapi);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));

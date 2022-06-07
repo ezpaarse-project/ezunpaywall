@@ -1,9 +1,13 @@
 const router = require('express').Router();
 const boom = require('@hapi/boom');
 
-const { sendMailContact } = require('../bin/mail');
+const checkAuth = require('../middlewares/auth');
 
-router.post('/contact', async (req, res, next) => {
+const sendMailContact = require('../bin/contact');
+
+const { sendMailStarted, sendMailReport } = require('../bin/update');
+
+router.post('/contact', checkAuth, async (req, res, next) => {
   const {
     email, subject, message,
   } = req.body;
@@ -34,9 +38,29 @@ router.post('/contact', async (req, res, next) => {
   return res.status(202).json({});
 });
 
-// TODO
-// router.post('/report', async (req, res, next) => {});
+// auth
+router.post('/update-start', checkAuth, async (req, res, next) => {
+  const config = req.body;
+  // TODO test config
 
-// router.post('/update-start', async (req, res, next) => {});
+  try {
+    sendMailStarted(config);
+  } catch (err) {
+    return next(boom.boomify(err));
+  }
+  return res.status(202).json({});
+});
+
+router.post('/update-end', checkAuth, async (req, res, next) => {
+  const state = req.body;
+  // TODO test state
+
+  try {
+    sendMailReport(state);
+  } catch (err) {
+    return next(boom.boomify(err));
+  }
+  return res.status(202).json({});
+});
 
 module.exports = router;

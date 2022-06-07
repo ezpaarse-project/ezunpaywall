@@ -1,14 +1,14 @@
 const {
   createReport,
-} = require('./report');
+} = require('../bin/report');
 
 const {
   sendMailReport,
-} = require('../lib/mail');
+} = require('../service/mail');
 
 const {
   setInUpdate,
-} = require('./status');
+} = require('../bin/status');
 
 const logger = require('../lib/logger');
 

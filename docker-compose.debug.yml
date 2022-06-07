@@ -142,6 +142,7 @@ services:
       - UPDATE_URL
       - ENRICH_URL
       - MAIL_URL
+      - EZUNPAYWALL_MAIL_APIKEY
       - HOST=0.0.0.0
       - PORT=8080
 

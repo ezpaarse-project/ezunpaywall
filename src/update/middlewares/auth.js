@@ -42,6 +42,4 @@ const checkAuth = async (req, res, next) => {
   return next();
 };
 
-module.exports = {
-  checkAuth,
-};
+module.exports = checkAuth;

@@ -16,12 +16,12 @@ const {
   getLatestStep,
   updateLatestStep,
   fail,
-} = require('./state');
+} = require('../model/state');
 
 const {
   elasticClient,
   createIndex,
-} = require('../lib/elastic');
+} = require('../service/elastic');
 
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');

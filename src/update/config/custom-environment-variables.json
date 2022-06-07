@@ -8,14 +8,9 @@
     "port": "REDIS_PORT",
     "password": "REDIS_PASSWORD"
   },
-  "smtp": {
-    "host": "EZUNPAYWALL_SMTP_HOST",
-    "port": "EZUNPAYWALL_SMTP_PORT"
-  },
-  "notifications": {
-    "sender": "EZUNPAYWALL_NOTIFICATIONS_SENDER",
-    "receivers": "EZUNPAYWALL_NOTIFICATIONS_RECEIVERS",
-    "machine": "EZUNPAYWALL_NOTIFICATIONS_MACHINE"
+  "mail": {
+    "baseURL": "EZUNPAYWALL_MAIL_BASEURL",
+    "apikey": "EZUNPAYWALL_MAIL_APIKEY"
   },
   "elasticsearch": {
     "host": "ELASTICSEARCH_HOST",

@@ -1,7 +1,7 @@
 const {
   createState,
   endState,
-} = require('./state');
+} = require('../model/state');
 
 const {
   processEnrichJSON,

@@ -13,6 +13,7 @@ const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');
 const routerEnrich = require('./routers/enrich');
 const routerState = require('./routers/state');
+const routerOpenapi = require('./routers/openapi');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -38,6 +39,7 @@ app.use(routerPing);
 app.use(routerJob);
 app.use(routerEnrich);
 app.use(routerState);
+app.use(routerOpenapi);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));

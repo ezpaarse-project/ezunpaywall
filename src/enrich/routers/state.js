@@ -6,7 +6,7 @@ const fs = require('fs-extra');
 
 const {
   getState,
-} = require('../bin/state');
+} = require('../model/state');
 
 const statesDir = path.resolve(__dirname, '..', 'out', 'states');
 

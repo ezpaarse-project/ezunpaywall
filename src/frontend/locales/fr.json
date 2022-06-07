@@ -139,6 +139,7 @@
     "home": "Accueil",
     "enrich": "Enrichissement",
     "graphql": "GraphQL",
+    "openapi": "Documentation",
     "language": "Langue",
     "contact": "Nous contacter"
   },

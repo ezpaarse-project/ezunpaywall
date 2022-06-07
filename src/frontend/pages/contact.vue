@@ -106,15 +106,10 @@ export default {
       if (this.valid) {
         this.loading = true
         try {
-          // TODO change this
           await this.$mail.post('/contact', {
             email: this.email,
             subject: this.subject?.text,
-            message: this.message,
-            browser:
-              this.sendBrowser && this.subject.value === 'bugs'
-                ? navigator.userAgent
-                : null
+            message: this.message
           })
           this.$store.dispatch('snacks/success', this.$t('contact.emailSent'))
           this.email = ''
