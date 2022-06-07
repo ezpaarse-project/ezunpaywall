@@ -13,13 +13,9 @@ const {
   insertChangefile,
 } = require('../bin/job');
 
-const {
-  checkStatus,
-} = require('../middlewares/status');
+const checkStatus = require('../middlewares/status');
 
-const {
-  checkAuth,
-} = require('../middlewares/auth');
+const checkAuth = require('../middlewares/auth');
 
 router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().default('unpaywall').validate(req.body.index);

@@ -8,7 +8,7 @@ const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 const cronDeleteOutFiles = require('./lib/cron');
 
-const { elasticClient, pingElastic, initAlias } = require('./lib/elastic');
+const { elasticClient, pingElastic, initAlias } = require('./service/elastic');
 const { pingRedis } = require('./lib/redis');
 const { name, version } = require('./package.json');
 const unpaywallMapping = require('./mapping/unpaywall.json');

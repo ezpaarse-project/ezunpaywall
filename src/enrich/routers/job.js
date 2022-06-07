@@ -7,16 +7,10 @@ const {
   enrichCSV,
 } = require('../bin/utils');
 
-const {
-  checkAuth,
-} = require('../middlewares/auth');
+const checkAuth = require('../middlewares/auth');
 
 /**
  *
- *
- * @apiParam QUERY args - graphql attributes for enrichment
- *
- * @apiError 500 internal server error
  *
  * @return name of enriched file to download it
  */

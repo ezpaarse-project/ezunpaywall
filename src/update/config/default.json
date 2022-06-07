@@ -8,14 +8,9 @@
     "host": "redis",
     "port": "6379"
   },
-  "smtp": {
-    "host": "localhost",
-    "port": 25
-  },
-  "notifications": {
-    "sender": "ezunpaywall",
-    "receivers": ["ezunpaywallTeam@org.fr"],
-    "machine": "dev"
+  "mail": {
+    "baseURL": "http://mail:8000",
+    "apikey": "changeme"
   },
   "elasticsearch": {
     "host": "http://elastic",

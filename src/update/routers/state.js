@@ -2,7 +2,7 @@ const router = require('express').Router();
 
 const {
   getState,
-} = require('../bin/state');
+} = require('../model/state');
 
 /**
  * get the most recent state in JSON format

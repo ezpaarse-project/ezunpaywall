@@ -53,12 +53,12 @@ const logger = createLogger({
 });
 
 const errorRequest = (err) => {
-  const url = `${err.config.baseURL}${err.config.url}`;
-  if (!err.response) {
-    logger.error(`Cannot  ${err.config?.method} ${url} - 503`);
+  const url = `${err?.config?.url}`;
+  if (!err?.response) {
+    logger.error(`Cannot ${err?.config?.method} ${url} - 503`);
     return;
   }
-  logger.error(`Cannot ${err.config?.method} ${url} - ${err?.response?.status}`);
+  logger.error(`Cannot ${err?.config?.method} ${url} - ${err?.response?.status}`);
 };
 
 logger.errorRequest = errorRequest;

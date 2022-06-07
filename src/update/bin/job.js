@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 const {
   endState,
-} = require('./state');
+} = require('../model/state');
 
 const {
   setInUpdate,
@@ -17,13 +17,13 @@ const {
   addStepGetChangefiles,
   updateLatestStep,
   getLatestStep,
-} = require('./state');
+} = require('../model/state');
 
 const insertDataUnpaywall = require('./insert');
 
 const {
   getChangefiles,
-} = require('../lib/unpaywall');
+} = require('../service/unpaywall');
 
 const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);

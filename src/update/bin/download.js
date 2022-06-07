@@ -10,12 +10,12 @@ const {
   addStepDownload,
   fail,
   updateLatestStep,
-} = require('./state');
+} = require('../model/state');
 
 const {
   getSnapshot,
   getChangefile,
-} = require('../lib/unpaywall');
+} = require('../service/unpaywall');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
 

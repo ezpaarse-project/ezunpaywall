@@ -15,7 +15,6 @@ const {
   colorize,
 } = format;
 
-
 // logger configuration
 const processConfiguration = [
   new transports.DailyRotateFile({
