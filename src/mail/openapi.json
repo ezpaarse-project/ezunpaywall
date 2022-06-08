@@ -58,7 +58,7 @@
             }
           }
         },
-        "description": "",
+        "description": "send contact mail from interface",
         "parameters": [
           {
             "type": "string",
@@ -72,7 +72,7 @@
     "/mail/update-start": {
       "post": {
         "summary": "",
-        "operationId": "post-mail-contact",
+        "operationId": "post-mail-update-start",
         "responses": {
           "202": {
             "description": "Accepted"
@@ -102,7 +102,7 @@
             "examples": {}
           }
         },
-        "description": "",
+        "description": "send start update process from update service",
         "parameters": [
           {
             "type": "string",
@@ -117,7 +117,7 @@
     "/mail/update-end": {
       "post": {
         "summary": "",
-        "operationId": "post-mail-contact",
+        "operationId": "post-mail-update-end",
         "responses": {
           "202": {
             "description": "Accepted"
@@ -147,7 +147,7 @@
             "examples": {}
           }
         },
-        "description": "",
+        "description": "send end update process from update service",
         "parameters": [
           {
             "type": "string",
@@ -158,6 +158,23 @@
         ]
       },
       "parameters": []
+    },
+    "/mail/ping": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "get-mail-ping",
+        "description": "ping mail service"
+      }
     }
   },
   "externalDocs": {

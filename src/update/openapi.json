@@ -20,7 +20,7 @@
           "update"
         ],
         "summary": "Strat download and insert the current snapshot from unpaywall",
-        "operationId": "postUpdateSnapshot",
+        "operationId": "post-update-job-snapshot",
         "consumes": [
           "application/json"
         ],
@@ -70,7 +70,8 @@
               "default": "changeme"
             }
           }
-        }
+        },
+        "description": "Download and insert snapshot from unpaywall"
       }
     },
     "/update/job/period": {
@@ -79,7 +80,7 @@
           "update"
         ],
         "summary": "Start download and insert changesfiles from unpaywall bewtween a period",
-        "operationId": "postUpdatePeriod",
+        "operationId": "post-update-job-period",
         "consumes": [
           "application/json"
         ],
@@ -145,7 +146,8 @@
               "default": "changeme"
             }
           }
-        }
+        },
+        "description": "Download and insert delta from unpaywall between a period and with a interval"
       }
     },
     "/update/job/changefile/{filename}": {
@@ -154,7 +156,7 @@
           "update"
         ],
         "summary": "Start insert changesfiles installed on ezunpaywall",
-        "operationId": "postUpdateChangefile",
+        "operationId": "post-update-job-changefile-filename",
         "consumes": [
           "application/json"
         ],
@@ -227,7 +229,8 @@
               "default": "changeme"
             }
           }
-        }
+        },
+        "description": "Insert file from installed on ezunpaywall"
       }
     },
     "/update/reports": {
@@ -236,7 +239,7 @@
           "update"
         ],
         "summary": "Get reports",
-        "operationId": "getUpdateReports",
+        "operationId": "get-update-reports",
         "description": "Get list of report or latest report",
         "produces": [
           "application/json"
@@ -270,7 +273,7 @@
           "update"
         ],
         "summary": "Get report",
-        "operationId": "getUpdateReport",
+        "operationId": "get-update-reports-filename",
         "description": "Get report with his filename",
         "produces": [
           "application/json"
@@ -310,7 +313,7 @@
           "update"
         ],
         "summary": "Get snapshots",
-        "operationId": "getUpdateSnapshots",
+        "operationId": "get-update-snapshots",
         "description": "Get list of snapshot or latest snapshot",
         "produces": [
           "application/json"
@@ -344,7 +347,7 @@
           "update"
         ],
         "summary": "Get snapshot",
-        "operationId": "getUpdateSnapshot",
+        "operationId": "get-update-snasphots-filename",
         "description": "Get snapshot with his filename",
         "produces": [
           "application/json"
@@ -384,7 +387,7 @@
           "update"
         ],
         "summary": "Get state",
-        "operationId": "getUpdateState",
+        "operationId": "get-update-states",
         "description": "Get latest state",
         "produces": [
           "application/json"
@@ -402,7 +405,7 @@
           "update"
         ],
         "summary": "Get status",
-        "operationId": "getUpdateStatus",
+        "operationId": "get-update-status",
         "description": "Get status",
         "produces": [
           "application/json"
@@ -420,7 +423,7 @@
           "update"
         ],
         "summary": "Get changefiles from unpaywall",
-        "operationId": "getUpdateChangeFiles",
+        "operationId": "get-update-unpaywall-changefiles",
         "description": "Get changefiles from unpaywall",
         "produces": [
           "application/json"
@@ -446,6 +449,57 @@
             "description": "status"
           }
         }
+      }
+    },
+    "/update/ping": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "get-update-ping",
+        "description": "ping update service"
+      }
+    },
+    "/update/ping/elastic": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "get-update-ping-elastic",
+        "description": "ping elastic service"
+      }
+    },
+    "/update/ping/redis": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "get-update-ping-redis",
+        "description": "ping redis service"
       }
     }
   },
