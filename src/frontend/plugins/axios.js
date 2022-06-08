@@ -24,7 +24,10 @@ export default (ctx, inject) => {
 
   const mail = axios.create({
     baseURL: ctx.$config.mailURL,
-    timeout: 3000
+    timeout: 3000,
+    headers: {
+      'x-api-key': ctx.$config.apikeymail
+    }
   })
 
   inject('mail', mail)
