@@ -550,6 +550,23 @@ describe('Test: enrich service jsonl', () => {
         // expect(JSON.parse(res.body).message).be.equal('args incorrect');
       });
     });
+
+    describe('Don\'t do a enrichment of a jsonl file because the file doesn\'t exist', () => {
+      it('Should upload the file', async () => {
+        const res1 = await chai
+          .request(enrichService)
+          .post('/job')
+          .send({
+            id: 'hello',
+            type: 'jsonl',
+            index: 'unpaywall-test',
+            args: '{ is_oa }',
+          })
+          .set('x-api-key', 'user');
+
+        expect(res1).have.status(404);
+      });
+    });
   });
 
   after(async () => {

@@ -10,7 +10,6 @@ const uuid = require('uuid');
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 
 const checkAuth = require('../middlewares/auth');
-const checkAdmin = require('../middlewares/admin');
 
 const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
 
@@ -34,7 +33,7 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
-router.get('/enriched', checkAdmin, async (req, res) => {
+router.get('/enriched', async (req, res) => {
   const files = await fs.readdir(enrichedDir);
   res.status(200).json(files);
 });
