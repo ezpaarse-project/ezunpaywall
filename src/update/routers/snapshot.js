@@ -26,7 +26,7 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
-router.get('/snapshot', async (req, res, next) => {
+router.get('/snapshots', async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req.query.latest);
 
   if (error) return next(boom.badRequest(error.details[0].message));
@@ -52,7 +52,7 @@ router.get('/snapshot', async (req, res, next) => {
  *
  * @return 200 file added
  */
-router.post('/snapshot', upload.single('file'), async (req, res, next) => {
+router.post('/snapshots', upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next(boom.badRequest('File not sent'));
   return res.status(200).json({ messsage: 'file added' });
 });
@@ -63,7 +63,7 @@ router.post('/snapshot', upload.single('file'), async (req, res, next) => {
  *
  * @return 200 <filename> deleted
  */
-router.delete('/snapshot/:filename', async (req, res, next) => {
+router.delete('/snapshots/:filename', async (req, res, next) => {
   const { error, value } = joi.string().required().validate(req.params.filename);
 
   if (error) return next(boom.badRequest(error.details[0].message));

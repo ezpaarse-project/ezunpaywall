@@ -9,9 +9,9 @@ const { name, version } = require('./package.json');
 const { pingRedis, loadDemoAPIKey } = require('./service/redis');
 const cronDemo = require('./lib/cron');
 
+const routerPing = require('./routers/ping');
 const routerManage = require('./routers/manage');
 const routerOpenapi = require('./routers/openapi');
-const routerPing = require('./routers/ping');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -34,7 +34,7 @@ app.use(routerOpenapi);
 app.use(routerPing);
 
 /* Errors and unknown routes */
-app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
+app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
 app.use((err, req, res, next) => {
   const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
 

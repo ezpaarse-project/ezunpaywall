@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs-extra');
+const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
 
@@ -14,6 +15,8 @@ const outDir = path.resolve(__dirname, 'out');
 
 fs.ensureDir(path.resolve(outDir));
 fs.ensureDir(path.resolve(outDir, 'logs'));
+
+const isDev = process.env.NODE_ENV === 'development';
 
 const app = express();
 
@@ -33,8 +36,16 @@ app.use(routerMail);
 app.use(routerOpenapi);
 
 /* Errors and unknown routes */
-app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
-app.use((error, req, res) => res.status(500).json({ message: error.message }));
+app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
+app.use((err, req, res, next) => {
+  const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
+
+  if (isDev && error.isServer) {
+    error.output.payload.stack = error.stack;
+  }
+
+  return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
+});
 
 app.listen(8000, () => {
   logger.info('ezunpaywall auth service listening on 8000');

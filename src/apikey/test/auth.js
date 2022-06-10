@@ -27,7 +27,7 @@ describe('Test: apikey service', () => {
   it('Should access apikey', async () => {
     const res = await chai
       .request(apikeyURL)
-      .get('/all')
+      .get('/keys')
       .set('redis-password', 'changeme');
 
     expect(res).have.status(200);
@@ -36,7 +36,7 @@ describe('Test: apikey service', () => {
   it('Shouldn`t access apikey because wrong api key', async () => {
     const res = await chai
       .request(apikeyURL)
-      .get('/all')
+      .get('/keys')
       .set('redis-password', 'hello');
 
     expect(res).have.status(401);
@@ -45,7 +45,7 @@ describe('Test: apikey service', () => {
   it('Shouldn`t access apikey because no api key', async () => {
     const res = await chai
       .request(apikeyURL)
-      .get('/all');
+      .get('/keys');
 
     expect(res).have.status(401);
   });

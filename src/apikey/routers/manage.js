@@ -81,7 +81,7 @@ const unpaywallAttrs = [
 /**
  * get config of apikey
  */
-router.get('/config/:apikey', async (req, res, next) => {
+router.get('/keys/:apikey', async (req, res, next) => {
   const { apikey } = req.params;
   const { error } = joi.string().trim().required().validate(apikey);
 
@@ -115,7 +115,7 @@ router.get('/config/:apikey', async (req, res, next) => {
 /**
  * get config of apikey
  */
-router.get('/all', checkAuth, async (req, res, next) => {
+router.get('/keys', checkAuth, async (req, res, next) => {
   const keys = await redisClient.keys('*');
 
   const allKeys = {};
@@ -141,7 +141,7 @@ router.get('/all', checkAuth, async (req, res, next) => {
 /**
  * create new apikey
  */
-router.post('/create', checkAuth, async (req, res, next) => {
+router.post('/keys', checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
     name: joi.string().trim().required(),
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
@@ -198,20 +198,25 @@ router.post('/create', checkAuth, async (req, res, next) => {
 /**
  * update apikey
  */
-router.put('/update', checkAuth, async (req, res, next) => {
-  const { error, value } = joi.object({
-    apikey: joi.string().required(),
+router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
+  const checkParams = joi.string().trim().required().validate(req.params.apikey);
+
+  if (checkParams?.error) return next(boom.badRequest(checkParams?.error?.details[0].message));
+
+  const apikey = checkParams?.value;
+
+  const checkBody = joi.object({
     name: joi.string().trim(),
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql', 'enrich']),
     allowed: joi.boolean().default(true),
   }).validate(req.body);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (checkBody?.error) return next(boom.badRequest(checkBody?.error?.details[0].message));
 
   const {
-    apikey, name, attributes, access, allowed,
-  } = value;
+    name, attributes, access, allowed,
+  } = checkBody.value;
 
   let key;
   try {
@@ -248,7 +253,7 @@ router.put('/update', checkAuth, async (req, res, next) => {
 /**
  * delete apikey
  */
-router.delete('/delete/:apikey', checkAuth, async (req, res, next) => {
+router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.apikey);
 
   if (error) return next(boom.badRequest(error.details[0].message));
@@ -280,7 +285,7 @@ router.delete('/delete/:apikey', checkAuth, async (req, res, next) => {
 /**
  * delete all apikey
  */
-router.delete('/all', checkAuth, async (req, res, next) => {
+router.delete('/keys', checkAuth, async (req, res, next) => {
   try {
     await redisClient.flushall();
   } catch (err) {
@@ -292,7 +297,7 @@ router.delete('/all', checkAuth, async (req, res, next) => {
 /**
  * load apikey
  */
-router.post('/load', checkAuth, async (req, res, next) => {
+router.post('/keys/load', checkAuth, async (req, res, next) => {
   const { dev } = req.query;
   const keys = req.body;
 

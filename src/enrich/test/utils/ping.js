@@ -6,10 +6,6 @@ chai.use(chaiHttp);
 
 const enrichURL = process.env.ENRICH_URL || 'http://localhost:3000';
 
-/**
- * ping all services to see if they are available
- */
-
 async function pingEnrich() {
   let res;
   let i = 1;
@@ -26,7 +22,6 @@ async function pingEnrich() {
   }
   return false;
 }
-
 async function pingElastic() {
   let res;
   let i = 1;

@@ -13,6 +13,7 @@ const { pingRedis } = require('./service/redis');
 const { name, version } = require('./package.json');
 const unpaywallMapping = require('./mapping/unpaywall.json');
 
+const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');
 const routerReport = require('./routers/report');
 const routerSnapshot = require('./routers/snapshot');
@@ -20,7 +21,6 @@ const routerState = require('./routers/state');
 const routerStatus = require('./routers/status');
 const routerUnpaywall = require('./routers/unpaywall');
 const routerOpenapi = require('./routers/openapi');
-const routerPing = require('./routers/ping');
 
 const outDir = path.resolve(__dirname, 'out');
 fs.ensureDir(path.resolve(outDir));
@@ -50,7 +50,7 @@ app.use(routerOpenapi);
 app.use(routerPing);
 
 /* Errors and unknown routes */
-app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
+app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
 app.use((err, req, res, next) => {
   const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
 

@@ -23,7 +23,7 @@ describe('Test: Create apikey', () => {
   it('Should create apikey with all config', async () => {
     const res = await chai
       .request(apikeyURL)
-      .post('/create')
+      .post('/keys')
       .send({
         name: 'test-user1',
         access: ['graphql'],
@@ -43,7 +43,7 @@ describe('Test: Create apikey', () => {
   it('Should create apikey with only name', async () => {
     const res = await chai
       .request(apikeyURL)
-      .post('/create')
+      .post('/keys')
       .send({
         name: 'test-user2',
       })
@@ -61,7 +61,7 @@ describe('Test: Create apikey', () => {
   it('Shouldn\'t create apikey because it\'s already exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .post('/create')
+      .post('/keys')
       .send({
         name: 'test-user1',
         access: ['graphql'],
@@ -76,7 +76,7 @@ describe('Test: Create apikey', () => {
   it('Shouldn\'t create apikey because config.access are in wrong format', async () => {
     const res = await chai
       .request(apikeyURL)
-      .post('/create')
+      .post('/keys')
       .send({
         name: 'test-user1',
         access: 'hello',
@@ -91,7 +91,7 @@ describe('Test: Create apikey', () => {
   it('Shouldn\'t create apikey because config.access "test" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .post('/create')
+      .post('/keys')
       .send({
         name: 'test-user1',
         access: ['test'],
@@ -106,7 +106,7 @@ describe('Test: Create apikey', () => {
   it('Shouldn\'t create apikey because config.attributes are in wrong format', async () => {
     const res = await chai
       .request(apikeyURL)
-      .post('/create')
+      .post('/keys')
       .send({
         name: 'test-user1',
         access: ['graphql'],
@@ -121,7 +121,7 @@ describe('Test: Create apikey', () => {
   it('Shouldn\'t create apikey because config.attributes "test" doesn\'t exist', async () => {
     const res = await chai
       .request(apikeyURL)
-      .post('/create')
+      .post('/keys')
       .send({
         name: 'test-user1',
         access: ['graphql'],
@@ -136,7 +136,7 @@ describe('Test: Create apikey', () => {
   it('Shouldn\'t create apikey because config.allowed are in wrong format', async () => {
     const res = await chai
       .request(apikeyURL)
-      .post('/create')
+      .post('/keys')
       .send({
         name: 'test-user1',
         access: ['graphql'],

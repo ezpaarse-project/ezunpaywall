@@ -26,6 +26,7 @@ const {
   pingElastic,
   pingRedis,
 } = require('./utils/ping');
+
 const {
   loadDevAPIKey,
   deleteAllAPIKey,

@@ -1,3 +1,4 @@
+const boom = require('@hapi/boom');
 const config = require('config');
 
 /**
@@ -8,11 +9,10 @@ const config = require('config');
  * @returns {Object|function} res or next
  */
 const checkAuth = (req, res, next) => {
-  // TODO check in query
   const apikey = req.get('redis-password');
 
   if (apikey !== config.get('redis.password')) {
-    return res.status(401).json({ message: 'Not authorized' });
+    return res.status(401).json(boom.unauthorized('Not Authorized'));
   }
 
   return next();

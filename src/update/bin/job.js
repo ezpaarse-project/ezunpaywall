@@ -27,7 +27,7 @@ const {
 
 const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);
-  createState();
+  await createState();
   const filename = await downloadBigSnapshot(jobConfig);
   jobConfig.filename = filename;
   await insertDataUnpaywall(jobConfig);
@@ -39,7 +39,7 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
   const {
     interval, startDate, endDate,
   } = jobConfig;
-  createState();
+  await createState();
   const start = new Date();
   addStepGetChangefiles();
   const step = getLatestStep();
@@ -60,7 +60,7 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
 
 const insertChangefile = async (jobConfig) => {
   setInUpdate(true);
-  createState();
+  await createState();
   const success = await insertDataUnpaywall(jobConfig);
   if (success) {
     await endState();

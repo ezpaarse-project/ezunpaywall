@@ -22,6 +22,7 @@ const {
 const {
   checkIfInUpdate,
 } = require('./utils/status');
+
 const {
   pingUpdate,
   pingFakeUnpaywall,

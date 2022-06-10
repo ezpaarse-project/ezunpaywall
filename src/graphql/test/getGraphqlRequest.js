@@ -9,6 +9,7 @@ const {
   deleteIndex,
   insertDataUnpaywall,
 } = require('./utils/elastic');
+
 const {
   pingElastic,
   pingRedis,

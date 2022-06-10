@@ -11,5 +11,6 @@
         "ecmaVersion": 13
     },
     "rules": {
+      "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]
     }
 }

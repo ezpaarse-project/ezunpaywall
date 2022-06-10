@@ -11,12 +11,12 @@ const updateChangefilesExample = require('../bin/changefiles');
 router.patch('/changefiles', async (req, res, next) => {
   const { interval } = req.query;
   if (!interval) {
-    return res.status(400).json({ message: 'interval expected' });
+    return res.status(400).json(boom.badRequest('interval expected'));
   }
 
   const intervals = ['week', 'day'];
   if (!intervals.includes(interval)) {
-    return res.status(404).json({ message: `${interval} is not accepted, only week and day are accepted` });
+    return res.status(404).json(boom.badRequest(`${interval} is not accepted, only week and day are accepted`));
   }
 
   const changefilesExample = require(`../snapshots/changefiles-${interval}-example.json`);

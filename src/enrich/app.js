@@ -6,16 +6,16 @@ const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
 const { pingRedis } = require('./service/redis');
+const { name, version } = require('./package.json');
+
 const morgan = require('./lib/morgan');
 const cronDeleteOutFiles = require('./lib/cron');
 
-const { name, version } = require('./package.json');
-
+const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');
 const routerEnrich = require('./routers/enrich');
 const routerState = require('./routers/state');
 const routerOpenapi = require('./routers/openapi');
-const routerPing = require('./routers/ping');
 
 const outDir = path.resolve(__dirname, 'out');
 
@@ -49,8 +49,7 @@ app.use(routerOpenapi);
 app.use(routerPing);
 
 /* Errors and unknown routes */
-app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
-
+app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
 app.use((err, req, res, next) => {
   const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
 

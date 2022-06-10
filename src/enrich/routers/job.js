@@ -18,10 +18,14 @@ const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
  *
  * @return name of enriched file to download it
  */
-router.post('/job', checkAuth, async (req, res, next) => {
+router.post('/job/:filename', checkAuth, async (req, res, next) => {
+  const checkParams = joi.string().trim().required().validate(req.params.filename);
+
+  if (checkParams?.error) return next(boom.badRequest(checkParams?.error?.details[0].message));
+
+  const id = checkParams?.value;
   // TODO check args with graphqlSyntax
   const { error, value } = joi.object({
-    id: joi.string().trim().required(),
     type: joi.string().trim().valid('jsonl', 'csv').required(),
     args: joi.string().trim(),
     index: joi.string().trim().default('unpaywall'),
@@ -33,7 +37,7 @@ router.post('/job', checkAuth, async (req, res, next) => {
   const apikey = req.get('x-api-key');
 
   const {
-    id, type, args, index, separator,
+    type, args, index, separator,
   } = value;
 
   if (!await fs.pathExists(path.resolve(uploadedDir, apikey, `${id}.${type}`))) {
@@ -48,7 +52,7 @@ router.post('/job', checkAuth, async (req, res, next) => {
     enrichCSV(id, index, args, apikey, separator);
   }
 
-  return res.status(200).json({ id });
+  return res.status(200).json(id);
 });
 
 module.exports = router;

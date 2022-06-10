@@ -80,16 +80,14 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
           });
 
         expect(res2).have.status(401);
-        expect(res2?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -97,9 +95,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -107,7 +104,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'wrong apikey');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -115,9 +111,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -125,7 +120,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'graphql');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -133,9 +127,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -143,7 +136,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'update');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
@@ -151,9 +143,8 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -161,17 +152,23 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
-    });
+    });/**
+    * start an enrich process with a file give by user
+    * @param {readStream} readStream - file need to be enriched
+    * @param {String} args - graphql args for enrichment
+    * @param {String} id - id of process
+    * @param {String} separator - separator of enriched file
+    * @param {String} index - index name of mapping
+    * @param {String} apikey - apikey of user
+    */
 
     describe('Test with userRestricted API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
             args: '{ is_oa, oa_status }',
@@ -179,7 +176,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'userRestricted');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');
       });
     });
 
@@ -216,9 +212,8 @@ describe('Test: auth service in enrich service', () => {
         // start enrich process
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'csv',
             index: 'unpaywall-test',
           })
@@ -232,7 +227,7 @@ describe('Test: auth service in enrich service', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/state/${id}.json`)
+            .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
@@ -256,7 +251,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'test');
 
         expect(res4).have.status(401);
-        expect(res4?.body).have.property('message').eq('Not authorized');
       });
     });
   });
@@ -277,7 +271,7 @@ describe('Test: auth service in enrich service', () => {
       });
     });
 
-    describe('Test with enrich API key', () => {
+    describe('Test to upload with enrich API key', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
           .request(enrichService)
@@ -292,30 +286,56 @@ describe('Test: auth service in enrich service', () => {
       });
     });
 
-    describe('Test without API key', () => {
+    describe('Test to upload without apikey', () => {
+      it('Should return a error message', async () => {
+        it('Should upload the file', async () => {
+          const res = await chai
+            .request(enrichService)
+            .post('/upload')
+            .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+            .set('Content-Type', 'application/x-ndjson');
+
+          expect(res).have.status(401);
+        });
+      });
+    });
+
+    describe('Test to upload with a wrong apikey', () => {
+      it('Should return a error message', async () => {
+        it('Should upload the file', async () => {
+          const res = await chai
+            .request(enrichService)
+            .post('/upload')
+            .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+            .set('Content-Type', 'application/x-ndjson')
+            .set('x-api-key', 'wrongapikey');
+
+          expect(res).have.status(401);
+        });
+      });
+    });
+
+    describe('Test to enrich without API key', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
           });
 
         expect(res2).have.status(401);
-        expect(res2?.body).have.property('message').eq('Not authorized');
       });
     });
 
-    describe('Test with a wrong API key that doen\'t exist', () => {
+    describe('Test to enrich with a wrong API key that doen\'t exist', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -323,17 +343,15 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'wrong apikey');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
-    describe('Test with update API key', () => {
+    describe('Test to enrich with update API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -341,17 +359,15 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'update');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
-    describe('Test with graphql API key', () => {
+    describe('Test to enrich with graphql API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -359,17 +375,15 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'graphql');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
-    describe('Test with notAllowed API key', () => {
+    describe('Test to enrich with notAllowed API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -377,17 +391,15 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
-    describe('Test with notAllowed API key', () => {
+    describe('Test to enrich with notAllowed API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa }',
@@ -395,17 +407,15 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'notAllowed');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('Not authorized');
       });
     });
 
-    describe('Test with userRestricted API key', () => {
+    describe('Test to enrich with userRestricted API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
-          .post('/job')
+          .post(`/job/${id}`)
           .send({
-            id,
             type: 'jsonl',
             index: 'unpaywall-test',
             args: '{ is_oa, oa_status }',
@@ -413,7 +423,6 @@ describe('Test: auth service in enrich service', () => {
           .set('x-api-key', 'userRestricted');
 
         expect(res).have.status(401);
-        expect(res?.body).have.property('message').eq('You don\'t have access to "oa_status" attribute(s)');
       });
     });
   });
