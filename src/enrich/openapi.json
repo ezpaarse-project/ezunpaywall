@@ -26,7 +26,7 @@
           "enrich"
         ],
         "summary": "get enriched file",
-        "operationId": "getEnrichEnriched",
+        "operationId": "get-enrich-enriched",
         "description": "get lists of enriched file",
         "produces": [
           "application/json"
@@ -40,6 +40,11 @@
                 "type": "string",
                 "default": "file.csv"
               }
+            },
+            "examples": {
+              "example-1": [
+                "file.csv"
+              ]
             }
           },
           "401": {
@@ -48,7 +53,15 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey"
+          }
+        ]
       }
     },
     "/enrich/uploads": {
@@ -57,7 +70,7 @@
           "enrich"
         ],
         "summary": "get upload file",
-        "operationId": "getEnrichUpload",
+        "operationId": "get-enrich-upload",
         "description": "get lists of upload file",
         "produces": [
           "application/json"
@@ -79,14 +92,22 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey"
+          }
+        ]
       },
       "post": {
         "tags": [
           "enrich"
         ],
         "summary": "post upload file",
-        "operationId": "postEnrichUpload",
+        "operationId": "post-enrich-upload",
         "description": "post a upload file",
         "produces": [
           "application/json"
@@ -105,7 +126,15 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey"
+          }
+        ]
       }
     },
     "/enrich/enriched/${filename}": {
@@ -114,7 +143,7 @@
           "enrich"
         ],
         "summary": "get enriched file",
-        "operationId": "getEnrichEnrichedFile",
+        "operationId": "get-enrich-enriched-filename",
         "description": "get enriched file",
         "produces": [
           "application/json"
@@ -126,6 +155,12 @@
             "description": "filename",
             "required": true,
             "type": "string"
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey"
           }
         ],
         "responses": {
@@ -150,7 +185,7 @@
           "enrich"
         ],
         "summary": "do enrich job",
-        "operationId": "postEnrichJob",
+        "operationId": "post-enrich-job",
         "description": "start enrich job with uploaded file",
         "produces": [
           "application/json"
@@ -196,6 +231,12 @@
                 }
               }
             }
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey"
           }
         ],
         "responses": {
@@ -221,8 +262,8 @@
           "enrich"
         ],
         "summary": "get list of state of enrich job",
-        "operationId": "getEnrichStates",
-        "description": "get enriched file",
+        "operationId": "get-enrich-states",
+        "description": "get states files",
         "produces": [
           "application/json"
         ],
@@ -261,7 +302,7 @@
           "enrich"
         ],
         "summary": "Get State",
-        "operationId": "getEnrichState",
+        "operationId": "get-enrich-states-filename",
         "description": "Get state with his filename",
         "produces": [
           "application/json"
@@ -273,6 +314,12 @@
             "description": "filename",
             "required": true,
             "type": "string"
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "x-api-key",
+            "description": "apikey"
           }
         ],
         "responses": {
@@ -325,6 +372,57 @@
             }
           }
         }
+      }
+    },
+    "/enrich/ping": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "get-enrich-ping",
+        "description": "ping enrich service"
+      }
+    },
+    "/enrich/ping/redis": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "get-enrich-ping-redis",
+        "description": "ping redis service"
+      }
+    },
+    "/enrich/ping/graphql": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "get-enrich-ping-graphql",
+        "description": "ping graphql service"
       }
     }
   },

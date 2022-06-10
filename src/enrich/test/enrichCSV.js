@@ -20,20 +20,26 @@ const {
   countDocuments,
 } = require('./utils/elastic');
 
-const ping = require('./utils/ping');
+const {
+  pingEnrich,
+  pingElastic,
+  pingRedis,
+} = require('./utils/ping');
 
 const {
   loadDevAPIKey,
   deleteAllAPIKey,
 } = require('./utils/apikey');
 
-const enrichURL = process.env.ENRICH_URL || 'http://localhost:5000';
+const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
 const enrichDir = path.resolve(__dirname, 'sources');
 
 describe('Test: enrich service csv', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingEnrich();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
@@ -50,7 +56,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
@@ -64,7 +70,7 @@ describe('Test: enrich service csv', () => {
       it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
         // start enrich process
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -79,8 +85,9 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
-            .get(`/states/${id}.json`);
+            .request(enrichService)
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -98,8 +105,9 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -124,7 +132,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file2.csv'), 'file2.csv')
           .set('Content-Type', 'text/csv')
@@ -136,7 +144,7 @@ describe('Test: enrich service csv', () => {
       });
       it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -152,8 +160,9 @@ describe('Test: enrich service csv', () => {
 
         do {
           res3 = await chai
-            .request(enrichURL)
-            .get(`/states/${id}.json`);
+            .request(enrichService)
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -171,11 +180,11 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
-          .parse(binaryParser)
-          .set('x-api-key', 'user');
+          .parse(binaryParser);
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
         try {
@@ -198,7 +207,7 @@ describe('Test: enrich service csv', () => {
       let enrichedFile;
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
@@ -211,7 +220,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -228,8 +237,9 @@ describe('Test: enrich service csv', () => {
 
         do {
           res3 = await chai
-            .request(enrichURL)
-            .get(`/states/${id}.json`);
+            .request(enrichService)
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -247,8 +257,9 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -273,7 +284,7 @@ describe('Test: enrich service csv', () => {
       let enrichedFile;
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
@@ -286,7 +297,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with args { best_oa_location { license } } and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -302,8 +313,9 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
-            .get(`/states/${id}.json`);
+            .request(enrichService)
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -321,8 +333,9 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -348,7 +361,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
@@ -361,7 +374,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with args { z_authors { given } } and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -377,8 +390,9 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
-            .get(`/states/${id}.json`);
+            .request(enrichService)
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -396,8 +410,9 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -423,7 +438,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
@@ -436,7 +451,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors{ family } } and download it', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -452,8 +467,9 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
-            .get(`/states/${id}.json`);
+            .request(enrichService)
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -471,8 +487,9 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -498,7 +515,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
@@ -511,7 +528,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should enrich the file on 3 lines with all unpaywall attributes with ";" separator', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -527,8 +544,9 @@ describe('Test: enrich service csv', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichURL)
-            .get(`/states/${id}.json`);
+            .request(enrichService)
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -546,8 +564,9 @@ describe('Test: enrich service csv', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -572,7 +591,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
           .set('Content-Type', 'text/csv')
@@ -585,7 +604,7 @@ describe('Test: enrich service csv', () => {
 
       it('Should return a error message', async () => {
         const res2 = await chai
-          .request(enrichURL)
+          .request(enrichService)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -597,6 +616,23 @@ describe('Test: enrich service csv', () => {
         // TODO mettre une erreur 401
         expect(res2).have.status(200);
         // expect(JSON.parse(res.body).message).be.equal('args incorrect');
+      });
+    });
+
+    describe('Don\'t do a enrichment of a csv file because the file doesn\'t exist', () => {
+      const id = 'test';
+      it('Should upload the file', async () => {
+        const res1 = await chai
+          .request(enrichService)
+          .post(`/job/${id}`)
+          .send({
+            type: 'csv',
+            index: 'unpaywall-test',
+            args: '{ is_oa }',
+          })
+          .set('x-api-key', 'user');
+
+        expect(res1).have.status(404);
       });
     });
   });

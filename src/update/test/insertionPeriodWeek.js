@@ -23,7 +23,12 @@ const {
   checkIfInUpdate,
 } = require('./utils/status');
 
-const ping = require('./utils/ping');
+const {
+  pingUpdate,
+  pingFakeUnpaywall,
+  pingElastic,
+  pingRedis,
+} = require('./utils/ping');
 
 const {
   loadDevAPIKey,
@@ -54,7 +59,10 @@ describe('Week: Test: download and insert file from unpaywall between a period',
 
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingUpdate();
+    await pingFakeUnpaywall();
+    await pingElastic();
+    await pingRedis();
     await updateChangeFile('week');
   });
 

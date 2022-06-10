@@ -26,7 +26,7 @@
           "apikey"
         ],
         "summary": "Get config of apikey",
-        "operationId": "getApikeyConfig",
+        "operationId": "get-apikey-keys-apikey",
         "description": "Get config of apikey",
         "produces": [
           "application/json"
@@ -81,7 +81,7 @@
           "apikey"
         ],
         "summary": "Update apikey",
-        "operationId": "putApikey",
+        "operationId": "put-apikey-keys-apikey",
         "description": "Update apikey",
         "produces": [
           "application/json"
@@ -181,7 +181,7 @@
           "apikey"
         ],
         "summary": "delete apikey",
-        "operationId": "deleteApikey",
+        "operationId": "delete-apikey-keys-apikey",
         "description": "Delete apikey",
         "produces": [
           "application/json"
@@ -221,7 +221,7 @@
           "apikey"
         ],
         "summary": "Get all config of all apikey",
-        "operationId": "getApikeyAll",
+        "operationId": "get-apikey",
         "description": "Get all config of all apikey",
         "produces": [
           "application/json"
@@ -285,7 +285,7 @@
           "apikey"
         ],
         "summary": "delete all apikey",
-        "operationId": "deleteApikeyAll",
+        "operationId": "delete-apikey-keys",
         "description": "Delete all apikey",
         "produces": [
           "application/json"
@@ -316,7 +316,7 @@
           "apikey"
         ],
         "summary": "Create apikey",
-        "operationId": "postApikey",
+        "operationId": "post-apikey",
         "description": "Create new apikey",
         "produces": [
           "application/json"
@@ -408,7 +408,7 @@
           "apikey"
         ],
         "summary": "load apikey",
-        "operationId": "postApikeyLoad",
+        "operationId": "post-apikey-keys-load",
         "description": "Load apikey",
         "produces": [
           "application/json"
@@ -481,7 +481,7 @@
           "apikey"
         ],
         "summary": "ping apikey",
-        "operationId": "getApikeyPing",
+        "operationId": "get-apikey-ping",
         "description": "Ping apikey service",
         "produces": [
           "application/json"
@@ -491,6 +491,24 @@
             "description": "OK"
           }
         }
+      }
+    },
+    "/apikey/ping/redis": {
+      "get": {
+        "summary": "Your GET endpoint",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {}
+          }
+        },
+        "operationId": "get-apikey-ping-redis",
+        "description": "Ping redis service"
       }
     }
   },

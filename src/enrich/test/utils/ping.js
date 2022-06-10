@@ -1,64 +1,63 @@
 /* eslint-disable no-await-in-loop */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const { client } = require('./elastic');
 
 chai.use(chaiHttp);
 
 const enrichURL = process.env.ENRICH_URL || 'http://localhost:3000';
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
-/**
- * ping all services to see if they are available
- */
-const ping = async () => {
-  let enrich;
-  while (enrich?.status !== 200) {
+async function pingEnrich() {
+  let res;
+  let i = 1;
+  for (i; i < 3; i += 1) {
     try {
-      enrich = await chai.request(enrichURL).get('/ping');
+      res = await chai.request(enrichURL).get('/ping');
     } catch (err) {
       console.error(`enrich ping : ${err}`);
     }
-    if (enrich?.status !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res.status === 200) {
+      return true;
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-
-  let elastic;
-  while (elastic?.statusCode !== 200) {
+  return false;
+}
+async function pingElastic() {
+  let res;
+  let i = 1;
+  for (i; i < 3; i += 1) {
     try {
-      elastic = await client.ping();
+      res = await chai.request(enrichURL).get('/ping/elastic');
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    if (elastic?.statusCode !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res.status === 200) {
+      return true;
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
+  return false;
+}
 
-  let apikey;
-  do {
+async function pingRedis() {
+  let res;
+  let i = 1;
+  for (i; i < 3; i += 1) {
     try {
-      apikey = await chai.request(apikeyURL).get('/ping');
+      res = await chai.request(enrichURL).get('/ping/redis');
     } catch (err) {
-      console.error(`apikey ping : ${err}`);
+      console.error(`elastic ping : ${err}`);
     }
-    if (apikey?.statusCode !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res.status === 200) {
+      return true;
     }
-  } while (apikey?.statusCode !== 200);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  return false;
+}
 
-  let redis;
-  do {
-    try {
-      redis = await chai.request(apikeyURL).get('/ping/redis');
-    } catch (err) {
-      console.error(`redis ping : ${err}`);
-    }
-    if (!redis?.status) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  } while (!redis?.status);
+module.exports = {
+  pingEnrich,
+  pingElastic,
+  pingRedis,
 };
-
-module.exports = ping;

@@ -11,7 +11,12 @@ const {
   deleteIndex,
 } = require('./utils/elastic');
 
-const ping = require('./utils/ping');
+const {
+  pingUpdate,
+  pingFakeUnpaywall,
+  pingElastic,
+  pingRedis,
+} = require('./utils/ping');
 
 const {
   checkIfInUpdate,
@@ -29,7 +34,10 @@ const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
 describe('Test: auth service in update service', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingUpdate();
+    await pingFakeUnpaywall();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await updateChangeFile('week');

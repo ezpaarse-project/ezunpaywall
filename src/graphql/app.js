@@ -1,22 +1,23 @@
 const express = require('express');
+const boom = require('@hapi/boom');
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 const responseTime = require('response-time');
-const boom = require('@hapi/boom');
 
 const auth = require('./middlewares/auth');
 
+const { name, version } = require('./package.json');
+
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
-const { pingRedis } = require('./lib/redis');
-
 const { pingElastic } = require('./service/elastic');
+const { pingRedis } = require('./service/redis');
+
+const routerPing = require('./routers/ping');
 
 const schema = require('./graphql');
 
 const isDev = process.env.NODE_ENV === 'development';
-
-const routerPing = require('./routers/ping');
 
 const app = express();
 
@@ -31,12 +32,19 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get('/', async (req, res, next) => res.status(200).json({
+  name, version,
+}));
+
 // routers
 app.use(routerPing);
+
 app.use('/graphql', auth, graphqlHTTP({
   schema,
   graphiql: false,
 }));
+
+app.use(routerPing);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));

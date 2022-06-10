@@ -1,5 +1,5 @@
 const boom = require('@hapi/boom');
-const { redisClient } = require('../lib/redis');
+const { redisClient } = require('../service/redis');
 const logger = require('../lib/logger');
 
 /**

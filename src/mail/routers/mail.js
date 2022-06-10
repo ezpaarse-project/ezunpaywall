@@ -31,11 +31,11 @@ router.post('/contact', checkAuth, async (req, res, next) => {
   }
 
   try {
-    sendMailContact(email, subject, message);
+    await sendMailContact(email, subject, message);
   } catch (err) {
     return next(boom.boomify(err));
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 // auth
@@ -44,11 +44,11 @@ router.post('/update-start', checkAuth, async (req, res, next) => {
   // TODO test config
 
   try {
-    sendMailStarted(config);
+    await sendMailStarted(config);
   } catch (err) {
     return next(boom.boomify(err));
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 router.post('/update-end', checkAuth, async (req, res, next) => {
@@ -56,11 +56,11 @@ router.post('/update-end', checkAuth, async (req, res, next) => {
   // TODO test state
 
   try {
-    sendMailReport(state);
+    await sendMailReport(state);
   } catch (err) {
     return next(boom.boomify(err));
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 module.exports = router;

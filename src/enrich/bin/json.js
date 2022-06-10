@@ -14,9 +14,9 @@ const {
   fail,
 } = require('../model/state');
 
-const askEzunpaywall = require('../service/graphql');
+const { askEzunpaywall } = require('../service/graphql');
 
-const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
+const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 
 /**
@@ -157,15 +157,21 @@ const writeInFileJSON = async (data, enrichedFile, stateName) => {
  * @param {String} apikey - apikey of user
  */
 const processEnrichJSON = async (id, index, args, apikey) => {
-  const readStream = fs.createReadStream(path.resolve(uploadDir, `${id}.jsonl`));
+  let readStream;
+  try {
+    readStream = fs.createReadStream(path.resolve(uploadedDir, apikey, `${id}.jsonl`));
+  } catch (err) {
+    logger.error(`Cannot create readStream in ${path.resolve(uploadedDir, apikey, `${id}.jsonl`)}`);
+    return;
+  }
   if (!args) {
     args = allArgs();
   }
   args = addDOItoGraphqlRequest(args);
   const stateName = `${id}.json`;
-  const state = await getState(stateName);
+  const state = await getState(stateName, apikey);
   const file = `${id}.jsonl`;
-  const enrichedFile = path.resolve(enrichedDir, file);
+  const enrichedFile = path.resolve(enrichedDir, apikey, file);
 
   try {
     await fs.ensureFile(enrichedFile);

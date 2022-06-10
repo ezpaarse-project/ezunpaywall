@@ -10,7 +10,10 @@ const {
   insertDataUnpaywall,
 } = require('./utils/elastic');
 
-const ping = require('./utils/ping');
+const {
+  pingElastic,
+  pingRedis,
+} = require('./utils/ping');
 
 const {
   loadDevAPIKey,
@@ -24,7 +27,8 @@ const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
 describe('test graphql metrics request', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');

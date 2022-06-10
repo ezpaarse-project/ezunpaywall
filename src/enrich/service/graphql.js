@@ -1,8 +1,11 @@
 const axios = require('axios');
 const logger = require('../lib/logger');
+
 const {
   fail,
 } = require('../model/state');
+
+const url = process.env.GRAPHQL_URL || 'http://graphql:3000';
 
 /**
  * ask ezunpaywall to get informations of unpaywall to enrich a file
@@ -21,8 +24,6 @@ async function askEzunpaywall(data, args, stateName, index, apikey) {
   // contain array of doi to request ezunpaywall
   dois = await map1.filter((elem) => elem !== undefined);
   dois = dois.join('","');
-
-  const url = process.env.GRAPHQL_URL || 'http://graphql:3000';
 
   try {
     res = await axios({
@@ -46,4 +47,21 @@ async function askEzunpaywall(data, args, stateName, index, apikey) {
   return res?.data?.data?.GetByDOI;
 }
 
-module.exports = askEzunpaywall;
+async function pingGraphql() {
+  try {
+    await axios({
+      method: 'GET',
+      url: `${url}/ping`,
+    });
+  } catch (err) {
+    logger.errorRequest(err);
+    return false;
+  }
+
+  return true;
+}
+
+module.exports = {
+  pingGraphql,
+  askEzunpaywall,
+};

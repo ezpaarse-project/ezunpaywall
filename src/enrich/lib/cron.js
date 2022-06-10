@@ -6,7 +6,7 @@ const logger = require('./logger');
 
 const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
 const statesDir = path.resolve(__dirname, '..', 'out', 'states');
-const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
+const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
 
 const deleteFilesInDir = async (directory, maxAgeInDays) => {
   const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;
@@ -40,7 +40,7 @@ const cronDeleteOutFiles = new CronJob('0 0 0 * * *', async () => {
   await deleteFilesInDir(statesDir, 1);
   logger.info('Delete states file');
 
-  await deleteFilesInDir(uploadDir, 1);
+  await deleteFilesInDir(uploadedDir, 1);
   logger.info('Delete uploaded file');
 }, null, true, 'Europe/Paris');
 

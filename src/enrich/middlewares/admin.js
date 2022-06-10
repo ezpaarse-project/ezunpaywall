@@ -1,14 +1,5 @@
-const fs = require('fs-extra');
-const path = require('path');
-
-const boom = require('@hapi/boom');
 const { redisClient } = require('../service/redis');
-
 const logger = require('../lib/logger');
-
-const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
-const stateDir = path.resolve(__dirname, '..', 'out', 'states');
-const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
 
 /**
  * check the user's api key
@@ -17,12 +8,12 @@ const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
  * @param {function} next - do the following
  * @returns {Object|function} res or next
  */
-const checkAuth = async (req, res, next) => {
+const checkAdmin = async (req, res, next) => {
   // TODO check in query
   const apikey = req.get('x-api-key');
 
   if (!apikey) {
-    return res.status(401).json(boom.unauthorized('Not Authorized'));
+    return res.status(401).json({ message: 'Not authorized' });
   }
 
   let key;
@@ -31,28 +22,27 @@ const checkAuth = async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
-    return next(boom.boomify(err));
+    return res.status(500).json({ message: 'Internal server error' });
   }
 
   let config;
-
   try {
     config = JSON.parse(key);
   } catch (err) {
     logger.error(`Cannot parse ${key}`);
     logger.error(err);
-    return next(boom.boomify(err));
+    return res.status(500).json({ message: 'Internal server error' });
   }
 
   if (!Array.isArray(config?.access) || !config?.access?.includes('enrich') || !config?.allowed) {
-    return res.status(401).json(boom.unauthorized('Not Authorized'));
+    return res.status(401).json({ message: 'Not authorized' });
   }
 
   let { args } = req.body;
 
   if (!config.attributes?.includes('*')) {
     if (!args) {
-      return res.status(401).json(boom.unauthorized('Not Authorized'));
+      return res.status(401).json({ message: 'Not authorized' });
     }
     let error = false;
     const errors = [];
@@ -70,26 +60,11 @@ const checkAuth = async (req, res, next) => {
       }
     });
     if (error) {
-      return res.status(401).json(boom.unauthorized(`You don't have access to "${errors.join(',')}" attribute(s)`));
+      return res.status(401).json({ message: `You don't have access to "${errors.join(',')}" attribute(s)` });
     }
-  }
-
-  try {
-    if (!await fs.stat(path.resolve(enrichedDir, apikey))) {
-      await fs.mkdir(path.resolve(enrichedDir, apikey));
-    }
-    if (!await fs.stat(path.resolve(stateDir, apikey))) {
-      await fs.mkdir(path.resolve(stateDir, apikey));
-    }
-    if (!await fs.stat(path.resolve(uploadedDir, apikey))) {
-      await fs.mkdir(path.resolve(uploadedDir, apikey));
-    }
-  } catch (err) {
-    logger.error(`Cannot create dir ${key}`);
-    logger.error(err);
   }
 
   return next();
 };
 
-module.exports = checkAuth;
+module.exports = checkAdmin;

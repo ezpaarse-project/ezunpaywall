@@ -1,19 +1,40 @@
 const router = require('express').Router();
 const boom = require('@hapi/boom');
-const { pingRedis } = require('../lib/redis');
 
-router.get('/', async (req, res) => res.status(200).json('enrich service'));
+const {
+  pingRedis,
+} = require('../service/redis');
 
-router.get('/ping', async (req, res, next) => res.status(200).json(true));
+const {
+  pingGraphql,
+} = require('../service/redis');
+
+router.get('/ping', async (req, res) => res.status(200).json({}));
 
 router.get('/ping/redis', async (req, res, next) => {
-  let redis;
+  let ping;
   try {
-    redis = await pingRedis();
+    ping = await pingRedis();
   } catch (err) {
     return next(boom.boomify(err));
   }
-  return res.status(200).json(redis);
+  if (ping) {
+    return res.status(200).json('OK');
+  }
+  return next(boom.serverUnavailable());
+});
+
+router.get('/ping/graphql', async (req, res, next) => {
+  let ping;
+  try {
+    ping = await pingGraphql();
+  } catch (err) {
+    return next(boom.boomify(err));
+  }
+  if (ping) {
+    return res.status(200).json('OK');
+  }
+  return next(boom.serverUnavailable());
 });
 
 module.exports = router;

@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const boom = require('@hapi/boom');
 const joi = require('joi');
+const fs = require('fs-extra');
+const path = require('path');
 
 const {
   enrichJSON,
@@ -8,6 +10,8 @@ const {
 } = require('../bin/utils');
 
 const checkAuth = require('../middlewares/auth');
+
+const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
 
 /**
  *
@@ -30,18 +34,22 @@ router.post('/job/:filename', checkAuth, async (req, res, next) => {
 
   if (error) return next(boom.badRequest(error.details[0].message));
 
+  const apikey = req.get('x-api-key');
+
   const {
     type, args, index, separator,
   } = value;
 
-  const apiKey = req.get('x-api-key');
+  if (!await fs.pathExists(path.resolve(uploadedDir, apikey, `${id}.${type}`))) {
+    return next(boom.notFound(`${id}.${type} not found`));
+  }
 
   if (type === 'jsonl') {
-    enrichJSON(id, index, args, apiKey);
+    enrichJSON(id, index, args, apikey);
   }
 
   if (type === 'csv') {
-    enrichCSV(id, index, args, apiKey, separator);
+    enrichCSV(id, index, args, apikey, separator);
   }
 
   return res.status(200).json(id);

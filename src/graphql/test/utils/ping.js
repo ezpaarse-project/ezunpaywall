@@ -5,59 +5,42 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
 const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
-/**
- * ping all services to see if they are available
- */
-const ping = async () => {
-  let graphql;
-  while (graphql?.status !== 200) {
+async function pingElastic() {
+  let res;
+  let i = 1;
+  for (i; i < 3; i += 1) {
     try {
-      graphql = await chai.request(graphqlURL).get('/ping');
-    } catch (err) {
-      console.error(`graphql ping : ${err}`);
-    }
-    if (graphql?.status !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  }
-
-  let elastic;
-  while (elastic?.status !== 200) {
-    try {
-      elastic = await chai.request(graphqlURL).get('/ping/elastic');
+      res = await chai.request(graphqlURL).get('/ping/elastic');
     } catch (err) {
       console.error(`elastic ping : ${err}`);
     }
-    if (elastic?.status !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res.status === 200) {
+      return true;
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
+  return false;
+}
 
-  let apikey;
-  do {
+async function pingRedis() {
+  let res;
+  let i = 1;
+  for (i; i < 3; i += 1) {
     try {
-      apikey = await chai.request(apikeyURL).get('/ping');
+      res = await chai.request(graphqlURL).get('/ping/redis');
     } catch (err) {
-      console.error(`apikey ping : ${err}`);
+      console.error(`elastic ping : ${err}`);
     }
-    if (apikey?.statusCode !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (res.status === 200) {
+      return true;
     }
-  } while (apikey?.statusCode !== 200);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  return false;
+}
 
-  let redis;
-  do {
-    try {
-      redis = await chai.request(graphqlURL).get('/ping/redis');
-    } catch (err) {
-      console.error(`redis ping : ${err}`);
-    }
-    if (!redis?.status) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  } while (!redis?.status);
+module.exports = {
+  pingElastic,
+  pingRedis,
 };
-
-module.exports = ping;

@@ -74,15 +74,17 @@ router.get('/states/:filename', async (req, res, next) => {
   const { filename } = req.params;
   const { error } = joi.string().trim().required().validate(filename);
 
+  const apikey = req.get('x-api-key');
+
   if (error) return next(boom.badRequest(error.details[0].message));
 
-  if (!await fs.pathExists(path.resolve(statesDir, filename))) {
+  if (!await fs.pathExists(path.resolve(statesDir, apikey, filename))) {
     return next(boom.notFound(`"${filename}" not found`));
   }
 
   let state;
   try {
-    state = await getState(filename);
+    state = await getState(filename, apikey);
   } catch (err) {
     return next(boom.boomify(err));
   }

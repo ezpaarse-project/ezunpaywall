@@ -21,7 +21,11 @@ const {
   countDocuments,
 } = require('./utils/elastic');
 
-const ping = require('./utils/ping');
+const {
+  pingEnrich,
+  pingElastic,
+  pingRedis,
+} = require('./utils/ping');
 
 const {
   loadDevAPIKey,
@@ -35,7 +39,9 @@ const enrichDir = path.resolve(__dirname, 'sources');
 describe('Test: enrich service jsonl', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
+    await pingEnrich();
+    await pingElastic();
+    await pingRedis();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
@@ -82,8 +88,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
-          expect(res3).have.status(200);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
 
@@ -102,6 +108,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -156,7 +163,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -176,9 +184,9 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
-          .parse(binaryParser)
-          .set('x-api-key', 'user');
+          .parse(binaryParser);
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
@@ -232,7 +240,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -252,6 +261,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -306,7 +316,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -326,6 +337,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -381,7 +393,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -401,6 +414,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -455,7 +469,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -475,6 +490,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -524,6 +540,23 @@ describe('Test: enrich service jsonl', () => {
         // TODO mettre une erreur 401
         expect(res2).have.status(200);
         // expect(JSON.parse(res.body).message).be.equal('args incorrect');
+      });
+    });
+
+    describe('Don\'t do a enrichment of a jsonl file because the file doesn\'t exist', () => {
+      it('Should upload the file', async () => {
+        const res1 = await chai
+          .request(enrichService)
+          .post('/job')
+          .send({
+            id: 'hello',
+            type: 'jsonl',
+            index: 'unpaywall-test',
+            args: '{ is_oa }',
+          })
+          .set('x-api-key', 'user');
+
+        expect(res1).have.status(404);
       });
     });
   });
