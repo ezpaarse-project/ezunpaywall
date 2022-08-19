@@ -6,8 +6,8 @@ const uuid = require('uuid');
 const joi = require('joi');
 const boom = require('@hapi/boom');
 
-const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
-const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
+const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
 
 const storage = multer.diskStorage(
   {

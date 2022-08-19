@@ -3,10 +3,10 @@ const fs = require('fs-extra');
 const { format } = require('date-fns');
 const logger = require('../lib/logger');
 
-const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
+const reportsDir = path.resolve(__dirname, '..', 'data', 'reports');
 
 /**
- * create report on the folder "out/update/report" on behalf of the date of treatment
+ * create report on the folder "data/update/report" on behalf of the date of treatment
  * @param {String}  - state filename
  */
 const createReport = async (state) => {
@@ -20,7 +20,7 @@ const createReport = async (state) => {
 };
 
 /**-
- * get report from the folder "out/update/report"
+ * get report from the folder "data/update/report"
  * @param {String} filename - report filename
  * @returns {Object} report
  */

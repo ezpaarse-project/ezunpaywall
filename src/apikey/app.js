@@ -1,10 +1,10 @@
 const express = require('express');
-const fs = require('fs-extra');
-const path = require('path');
 const cors = require('cors');
 const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
+const morgan = require('./lib/morgan');
+
 const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
 const cronDemo = require('./lib/cron');
 
@@ -12,15 +12,11 @@ const routerPing = require('./routers/ping');
 const routerManage = require('./routers/manage');
 const routerOpenapi = require('./routers/openapi');
 
-const outDir = path.resolve(__dirname, 'out');
-
-fs.ensureDir(path.resolve(outDir));
-fs.ensureDir(path.resolve(outDir, 'logs'));
-
 const isDev = process.env.NODE_ENV === 'development';
 
 const app = express();
 
+app.use(morgan);
 app.use(express.json());
 app.use(cors());
 

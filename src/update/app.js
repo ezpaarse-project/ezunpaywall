@@ -21,11 +21,11 @@ const routerStatus = require('./routers/status');
 const routerUnpaywall = require('./routers/unpaywall');
 const routerOpenapi = require('./routers/openapi');
 
-const outDir = path.resolve(__dirname, 'out');
-fs.ensureDir(path.resolve(outDir));
-fs.ensureDir(path.resolve(outDir, 'reports'));
-fs.ensureDir(path.resolve(outDir, 'states'));
-fs.ensureDir(path.resolve(outDir, 'snapshots'));
+const dataDir = path.resolve(__dirname, 'data');
+fs.ensureDir(path.resolve(dataDir));
+fs.ensureDir(path.resolve(dataDir, 'reports'));
+fs.ensureDir(path.resolve(dataDir, 'states'));
+fs.ensureDir(path.resolve(dataDir, 'snapshots'));
 
 const isDev = process.env.NODE_ENV === 'development';
 

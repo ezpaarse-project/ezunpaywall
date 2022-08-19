@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 
 const logger = require('../lib/logger');
 
-const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 const deleteFile = async (filename) => {
   const filepath = path.resolve(snapshotsDir, filename);

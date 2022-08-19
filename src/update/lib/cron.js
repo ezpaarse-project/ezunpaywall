@@ -4,9 +4,9 @@ const fs = require('fs-extra');
 const path = require('path');
 const logger = require('./logger');
 
-const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
-const snapshotDir = path.resolve(__dirname, '..', 'out', 'snapshots');
-const states = path.resolve(__dirname, '..', 'out', 'states');
+const reportsDir = path.resolve(__dirname, '..', 'data', 'reports');
+const snapshotDir = path.resolve(__dirname, '..', 'data', 'snapshots');
+const states = path.resolve(__dirname, '..', 'data', 'states');
 
 const deleteFilesInDir = async (directory, maxAgeInDays) => {
   const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;

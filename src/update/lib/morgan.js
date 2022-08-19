@@ -10,7 +10,7 @@ function logFilename(time) {
 
 const accessLogStream = rfs.createStream(logFilename, {
   interval: '1d', // rotate daily
-  path: path.resolve(__dirname, '..', 'log'),
+  path: path.resolve(__dirname, '..', 'log', 'access'),
 });
 
 morgan.token('ip', (req) => req.headers['x-forwarded-for'] || req.connection.remoteAddress);

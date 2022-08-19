@@ -5,7 +5,7 @@ const boom = require('@hapi/boom');
 const joi = require('joi').extend(require('@hapi/joi-date'));
 const { format } = require('date-fns');
 
-const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 const {
   downloadAndInsertSnapshot,

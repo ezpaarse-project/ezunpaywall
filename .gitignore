@@ -5,5 +5,4 @@ certs/instances.yml
 data/
 ssl/
 node_modules/
-out/
 log/

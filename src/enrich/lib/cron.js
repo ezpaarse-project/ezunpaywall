@@ -4,9 +4,9 @@ const fs = require('fs-extra');
 const path = require('path');
 const logger = require('./logger');
 
-const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
-const statesDir = path.resolve(__dirname, '..', 'out', 'states');
-const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
+const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
+const statesDir = path.resolve(__dirname, '..', 'data', 'states');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 
 const deleteFilesInDir = async (directory, maxAgeInDays) => {
   const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;

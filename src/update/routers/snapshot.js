@@ -13,7 +13,7 @@ const {
   getMostRecentFile,
 } = require('../lib/file');
 
-const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 const storage = multer.diskStorage(
   {

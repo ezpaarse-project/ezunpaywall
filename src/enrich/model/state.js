@@ -3,10 +3,10 @@ const fs = require('fs-extra');
 
 const logger = require('../lib/logger');
 
-const stateDir = path.resolve(__dirname, '..', 'out', 'states');
+const stateDir = path.resolve(__dirname, '..', 'data', 'states');
 
 /**
- * create a new file on folder "out/enrich/state" containing the enrich state
+ * create a new file on folder "data/enrich/state" containing the enrich state
  * @param {String} id - id of process
  */
 const createState = async (id) => {
@@ -29,7 +29,7 @@ const createState = async (id) => {
 };
 
 /**
- * get state from the folder "out/enrich/state"
+ * get state from the folder "data/enrich/state"
  * @param {String} filename - state filename
  * @returns {Object} - state in JSON format
  */

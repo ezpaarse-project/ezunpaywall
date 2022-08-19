@@ -5,8 +5,10 @@ const cors = require('cors');
 const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
-const { pingRedis } = require('./lib/redis');
 const morgan = require('./lib/morgan');
+
+const { pingRedis } = require('./lib/redis');
+
 const cronDeleteOutFiles = require('./lib/cron');
 
 const routerPing = require('./routers/ping');
@@ -15,12 +17,12 @@ const routerEnrich = require('./routers/enrich');
 const routerState = require('./routers/state');
 const routerOpenapi = require('./routers/openapi');
 
-const outDir = path.resolve(__dirname, 'out');
+const dataDir = path.resolve(__dirname, 'data');
 
-fs.ensureDir(path.resolve(outDir));
-fs.ensureDir(path.resolve(outDir, 'states'));
-fs.ensureDir(path.resolve(outDir, 'upload'));
-fs.ensureDir(path.resolve(outDir, 'enriched'));
+fs.ensureDir(path.resolve(dataDir));
+fs.ensureDir(path.resolve(dataDir, 'states'));
+fs.ensureDir(path.resolve(dataDir, 'upload'));
+fs.ensureDir(path.resolve(dataDir, 'enriched'));
 
 const isDev = process.env.NODE_ENV === 'development';
 

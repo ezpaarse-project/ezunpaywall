@@ -12,7 +12,7 @@ const {
   getReport,
 } = require('../bin/report');
 
-const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
+const reportsDir = path.resolve(__dirname, '..', 'data', 'reports');
 
 /**
  * get the most recent report in JSON format

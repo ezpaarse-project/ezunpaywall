@@ -22,6 +22,9 @@ services:
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
+      # log
+      - GRAPHQL_LOG_PATH
+      - GRAPHQL_ACCESS_LOG_PATH
     volumes:
       - $HOME/var/log/ezunpaywall/graphql:/usr/src/graphql/log
     command: "npm start"
@@ -64,9 +67,12 @@ services:
       # proxy
       - http_proxy
       - https_proxy
+      # log
+      - UPDATE_LOG_PATH
+      - UPDATE_ACCESS_LOG_PATH
     volumes:
       - ~/var/log/ezunpaywall/update:/usr/src/update/log
-      - ./src/update/out:/usr/src/update/out
+      - ./src/update/data:/usr/src/update/data
     command: "npm start"
     ports:
       - 4000:4000
@@ -93,11 +99,14 @@ services:
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
-      # URL services
+      # graphql
       - GRAPHQL_URL
+      # log
+      - ENRICH_LOG_PATH
+      - ENRICH_ACCESS_LOG_PATH
     volumes:
       - ~/var/log/ezunpaywall/enrich:/usr/src/enrich/log
-      - ./src/enrich/out:/usr/src/enrich/out
+      - ./src/enrich/data:/usr/src/enrich/data
     command: "npm start"
     ports:
       - 5000:5000
@@ -115,6 +124,12 @@ services:
         - https_proxy
     environment:
       - REDIS_PASSWORD
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
+      # log
+      - APIKEY_LOG_PATH
     volumes:
       - ./src/apikey:/apikey
     command: "npm start"
@@ -140,6 +155,8 @@ services:
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+      # log
+      - MAIL_LOG_PATH
     volumes:
       - ./src/mail:/mail
     command: "npm start"
@@ -174,7 +191,7 @@ services:
     environment:
       - NGINX_HOST
     volumes:
-      - "./rp/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
+      - "./src/rp/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
     restart: unless-stopped
     depends_on:
       - enrich
@@ -186,5 +203,5 @@ services:
   
 networks:
   elastic:
-    external : 
+    external: 
       name: ezmeta-single-node_elastic

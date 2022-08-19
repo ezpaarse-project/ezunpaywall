@@ -8,7 +8,7 @@ const {
   getState,
 } = require('../model/state');
 
-const statesDir = path.resolve(__dirname, '..', 'out', 'states');
+const statesDir = path.resolve(__dirname, '..', 'data', 'states');
 
 /**
  * get the files in a dir in order by date

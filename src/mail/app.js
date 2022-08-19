@@ -1,20 +1,14 @@
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
-const fs = require('fs-extra');
 const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
+const morgan = require('./lib/morgan');
 
 const { name, version } = require('./package.json');
 
 const routerMail = require('./routers/mail');
 const routerOpenapi = require('./routers/openapi');
-
-const outDir = path.resolve(__dirname, 'out');
-
-fs.ensureDir(path.resolve(outDir));
-fs.ensureDir(path.resolve(outDir, 'logs'));
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -25,6 +19,7 @@ app.use(cors({
   method: ['GET', 'POST'],
 }));
 
+app.use(morgan);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -48,5 +43,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(8000, () => {
-  logger.info('ezunpaywall auth service listening on 8000');
+  logger.info('ezunpaywall mail service listening on 8000');
 });

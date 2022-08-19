@@ -17,7 +17,7 @@ const {
   getChangefile,
 } = require('../service/unpaywall');
 
-const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 /**
  * Update the step the percentage in download regularly until the download is complete

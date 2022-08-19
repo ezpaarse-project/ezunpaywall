@@ -15,8 +15,8 @@ const {
 
 const askEzunpaywall = require('../service/graphql');
 
-const uploadDir = path.resolve(__dirname, '..', 'out', 'upload');
-const enriched = path.resolve(__dirname, '..', 'out', 'enriched');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
+const enriched = path.resolve(__dirname, '..', 'data', 'enriched');
 
 /**
  * getter of all the unpaywall attributes that can be used for enrichment in graphql format

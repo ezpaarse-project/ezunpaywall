@@ -14,9 +14,18 @@ services:
       # proxy
       - http_proxy
       - https_proxy
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
+      # log
+      - GRAPHQL_LOG_PATH
+      - GRAPHQL_ACCESS_LOG_PATH
     working_dir: /graphql
     volumes:
       - ./src/graphql:/graphql
+      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
+      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
     command: "npm run dev"
     ports:
       - 3000:3000
@@ -51,9 +60,15 @@ services:
       # proxy
       - http_proxy
       - https_proxy
+      # log
+      - UPDATE_LOG_PATH
+      - UPDATE_ACCESS_LOG_PATH
     working_dir: /update
     volumes:
       - ./src/update:/update
+      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
+      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
+      - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
     command: "npm run dev"
     ports:
       - 4000:4000
@@ -72,11 +87,17 @@ services:
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
-      # URL service
+      # graphql
       - GRAPHQL_URL=http://graphql:3000
+      # log
+      - ENRICH_LOG_PATH
+      - ENRICH_ACCESS_LOG_PATH
     working_dir: /enrich
     volumes:
       - ./src/enrich:/enrich
+      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/enrich/log/application
+      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/enrich/log/access
+      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
     command: "npm run dev"
     ports:
       - "5000:5000"
@@ -92,9 +113,12 @@ services:
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
+      # log
+      - APIKEY_LOG_PATH
     working_dir: /apikey
     volumes:
       - ./src/apikey:/apikey
+      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/apikey/log/application
     command: "npm run dev"
     ports:
       - 7000:7000
@@ -112,9 +136,12 @@ services:
       - EZUNPAYWALL_NOTIFICATIONS_SENDER
       - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
       - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+      # log
+      - MAIL_LOG_PATH
     working_dir: /mail
     volumes:
       - ./src/mail:/mail
+      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/mail/log/application
     command: "npm run dev"
     ports:
       - 8000:8000
@@ -124,7 +151,7 @@ services:
     image: redis:6.2.5
     command: redis-server --save 60 1 --requirepass changeme
     volumes:
-      - ./data/redis:/data
+      - ${REDIS_DATA_PATH:-./data/redis}:/data
     ports:
       - 6379:6379
     restart: unless-stopped
@@ -138,11 +165,16 @@ services:
     ports:
       - 8080:3000
     environment:
+      # graphql
       - GRAPHQL_URL
+      # update
       - UPDATE_URL
+      # enrich
       - ENRICH_URL
+      # mail
       - MAIL_URL
       - EZUNPAYWALL_MAIL_APIKEY
+      # frontend
       - HOST=0.0.0.0
       - PORT=8080
 
@@ -203,7 +235,7 @@ services:
     environment:
       - NGINX_HOST
     volumes:
-      - "./rp/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro"
+      - "./src/rp/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro"
     restart: unless-stopped
     depends_on:
       - enrich

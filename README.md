@@ -29,7 +29,7 @@ git clone https://github.com/ezpaarse-project/ezunpaywall
 
 unpaywall is made up of several services which are distributed in several docker containers
 
-![Structure](/template/structure.png)
+![Structure](/doc/structure.png)
 ## Deployment
 ### Setup environment
 
