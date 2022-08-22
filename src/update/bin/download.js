@@ -15,7 +15,7 @@ const {
 const {
   getSnapshot,
   getChangefile,
-} = require('../service/unpaywall');
+} = require('../lib/service/unpaywall');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 

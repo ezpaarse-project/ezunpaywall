@@ -1,7 +1,7 @@
 const { Client } = require('@elastic/elasticsearch');
 const { URL } = require('url');
 const { elasticsearch } = require('config');
-const logger = require('../lib/logger');
+const logger = require('../logger');
 
 const elasticClient = new Client({
   node: {

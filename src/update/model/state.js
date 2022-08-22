@@ -4,7 +4,7 @@ const {
 
 const {
   sendMailReport,
-} = require('../service/mail');
+} = require('../lib/service/mail');
 
 const {
   setInUpdate,

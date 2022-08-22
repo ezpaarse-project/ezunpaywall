@@ -2,7 +2,7 @@ const router = require('express').Router();
 const joi = require('joi');
 const boom = require('@hapi/boom');
 
-const { getChangefiles } = require('../service/unpaywall');
+const { getChangefiles } = require('../lib/service/unpaywall');
 
 router.get('/unpaywall/changefiles', async (req, res, next) => {
   const { error, value } = joi.string().trim().valid('week', 'day').default('day')

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { mail } = require('config');
 
-const logger = require('../lib/logger');
+const logger = require('../logger');
 
 async function sendMailReport(state) {
   let res;

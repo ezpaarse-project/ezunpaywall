@@ -1,6 +1,6 @@
 const axios = require('axios');
 const config = require('config');
-const logger = require('../lib/logger');
+const logger = require('../logger');
 
 const unpaywall = axios.create({
   baseURL: config.get('unpaywall.host'),

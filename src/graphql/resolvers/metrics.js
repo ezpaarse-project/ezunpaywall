@@ -1,5 +1,5 @@
 const config = require('config');
-const { elasticClient } = require('../service/elastic');
+const { elasticClient } = require('../lib/service/elastic');
 const logger = require('../lib/logger');
 
 const metricsType = require('../models/metrics');

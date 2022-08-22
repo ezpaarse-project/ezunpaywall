@@ -21,7 +21,7 @@ const {
 const {
   elasticClient,
   createIndex,
-} = require('../service/elastic');
+} = require('../lib/service/elastic');
 
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');

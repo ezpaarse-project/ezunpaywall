@@ -1,8 +1,8 @@
 const axios = require('axios');
-const logger = require('../lib/logger');
+const logger = require('../logger');
 const {
   fail,
-} = require('../model/state');
+} = require('../../model/state');
 
 /**
  * ask ezunpaywall to get informations of unpaywall to enrich a file

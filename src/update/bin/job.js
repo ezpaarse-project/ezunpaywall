@@ -23,7 +23,7 @@ const insertDataUnpaywall = require('./insert');
 
 const {
   getChangefiles,
-} = require('../service/unpaywall');
+} = require('../lib/service/unpaywall');
 
 const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);

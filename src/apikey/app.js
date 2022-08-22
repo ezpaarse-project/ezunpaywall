@@ -33,8 +33,6 @@ app.use((err, req, res, next) => {
     error.output.payload.stack = error.stack;
   }
 
-  console.log(error);
-
   return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });
 

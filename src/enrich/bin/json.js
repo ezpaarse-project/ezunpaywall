@@ -14,7 +14,7 @@ const {
   fail,
 } = require('../model/state');
 
-const askEzunpaywall = require('../service/graphql');
+const askEzunpaywall = require('../lib/service/graphql');
 
 const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');

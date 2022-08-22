@@ -164,6 +164,31 @@ services:
       - 8000:8000
     restart: unless-stopped
 
+  frontend:
+    build:
+      context: ./src/mail
+      args:
+        - http_proxy
+        - https_proxy
+    volumes:
+      - ./src/frontend:/frontend
+    command: "npm run start"
+    ports:
+      - 8080:3000
+    environment:
+      # graphql
+      - GRAPHQL_URL
+      # update
+      - UPDATE_URL
+      # enrich
+      - ENRICH_URL
+      # mail
+      - MAIL_URL
+      - EZUNPAYWALL_MAIL_APIKEY
+      # frontend
+      - HOST=0.0.0.0
+      - PORT=8080
+
   redis:
     image: redis:6.2.5-alpine3.14
     command: redis-server --requirepass ${REDIS_PASSWORD}

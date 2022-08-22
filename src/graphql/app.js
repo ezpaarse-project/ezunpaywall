@@ -10,7 +10,7 @@ const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 const { pingRedis } = require('./lib/redis');
 
-const { pingElastic } = require('./service/elastic');
+const { pingElastic } = require('./lib/service/elastic');
 
 const schema = require('./graphql');
 
