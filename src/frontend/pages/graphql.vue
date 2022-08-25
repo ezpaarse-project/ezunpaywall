@@ -114,6 +114,11 @@ export default {
       dataFormatURL: 'https://unpaywall.org/data-format'
     }
   },
+  head () {
+    return {
+      title: 'Graphql'
+    }
+  },
   computed: {
     formatDOIs () {
       const dois = this.doi.split(',')

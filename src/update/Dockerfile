@@ -3,11 +3,11 @@ LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
 
-WORKDIR /usr/src/update
+WORKDIR /update
 
-COPY package*.json /usr/src/update/
+COPY package*.json /update/
 RUN npm ci --only=production
-COPY . /usr/src/update
+COPY . /update
 
 EXPOSE 4000
 CMD [ "npm", "start" ]

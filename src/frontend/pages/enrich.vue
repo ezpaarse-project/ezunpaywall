@@ -271,6 +271,11 @@ export default {
       id: ''
     }
   },
+  head () {
+    return {
+      title: 'Enrich'
+    }
+  },
   computed: {
     // config
     hasLogFiles () {

@@ -8,7 +8,7 @@ const auth = require('./middlewares/auth');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
-const { pingRedis } = require('./lib/redis');
+const { pingRedis } = require('./lib/service/redis');
 
 const { pingElastic } = require('./lib/service/elastic');
 

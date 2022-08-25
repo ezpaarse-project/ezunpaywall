@@ -3,11 +3,11 @@ LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
 
-WORKDIR /usr/src/apikey
+WORKDIR /apikey
 
-COPY package*.json /usr/src/apikey/
+COPY package*.json /apikey/
 RUN npm ci --only=production
-COPY . /usr/src/apikey
+COPY . /apikey
 
 EXPOSE 7000
 CMD [ "npm", "start" ]

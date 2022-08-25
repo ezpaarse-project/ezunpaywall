@@ -74,6 +74,11 @@ export default {
     valid: true,
     loading: false
   }),
+  head () {
+    return {
+      title: 'Contact'
+    }
+  },
   computed: {
     subjects () {
       return [

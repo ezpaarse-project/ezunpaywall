@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const boom = require('@hapi/boom');
-const { pingRedis } = require('../lib/redis');
+const { pingRedis } = require('../lib/service/redis');
 
 router.get('/', async (req, res) => res.status(200).json('apikey service'));
 

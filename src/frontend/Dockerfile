@@ -9,11 +9,11 @@ ARG MAIL_URL
 
 ENV NODE_ENV production
 
-WORKDIR /usr/src/frontend
+WORKDIR /frontend
 
-COPY ./src/frontend/package*.json /usr/src/frontend/
+COPY package*.json /frontend/
 RUN npm ci --only=production
-COPY ./src/frontend/ /usr/src/frontend/
+COPY . /frontend
 
 RUN npm run generate
 

@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const redis = require('redis');
-const { redisClient } = require('../lib/redis');
+const { redisClient } = require('../lib/service/redis');
 const logger = require('../lib/logger');
 
 const createApiKey = async (name, access, attributes, allowed) => {

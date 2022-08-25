@@ -7,7 +7,7 @@ const {
   redisClient,
   load,
   pingRedis,
-} = require('../lib/redis');
+} = require('../lib/service/redis');
 
 const logger = require('../lib/logger');
 

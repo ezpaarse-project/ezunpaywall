@@ -9,7 +9,7 @@ const logger = require('./lib/logger');
 const cronDeleteOutFiles = require('./lib/cron');
 
 const { pingElastic, initAlias } = require('./lib/service/elastic');
-const { pingRedis } = require('./lib/redis');
+const { pingRedis } = require('./lib/service/redis');
 const unpaywallMapping = require('./mapping/unpaywall.json');
 
 const routerPing = require('./routers/ping');

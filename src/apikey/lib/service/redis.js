@@ -4,7 +4,7 @@ const util = require('util');
 const config = require('config');
 const fs = require('fs-extra');
 
-const logger = require('./logger');
+const logger = require('../logger');
 
 let apiKeys;
 

@@ -5,7 +5,7 @@ const boom = require('@hapi/boom');
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 
-const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
+const { pingRedis, loadDemoAPIKey } = require('./lib/service/redis');
 const cronDemo = require('./lib/cron');
 
 const routerPing = require('./routers/ping');

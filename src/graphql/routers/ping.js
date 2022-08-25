@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const boom = require('@hapi/boom');
-const { pingRedis } = require('../lib/redis');
+const { pingRedis } = require('../lib/service/redis');
 const { elasticClient } = require('../lib/service/elastic');
 
 router.get('/', async (req, res) => res.status(200).json('graphql service'));

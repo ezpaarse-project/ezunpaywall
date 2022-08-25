@@ -46,7 +46,11 @@ export default {
     Mail
   },
   data: () => ({ value: 0 }),
-
+  head () {
+    return {
+      title: 'Doc'
+    }
+  },
   methods: {
     setValue (value) {
       this.value = value

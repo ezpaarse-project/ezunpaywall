@@ -7,7 +7,7 @@ const boom = require('@hapi/boom');
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 
-const { pingRedis } = require('./lib/redis');
+const { pingRedis } = require('./lib/service/redis');
 
 const cronDeleteOutFiles = require('./lib/cron');
 

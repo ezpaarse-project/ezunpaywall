@@ -86,6 +86,11 @@ export default {
       ]
     }
   },
+  head () {
+    return {
+      title: 'Home'
+    }
+  },
   mounted () {
     this.graphqlRequest()
   },
