@@ -3,6 +3,7 @@ version: "3.3"
 services:
   graphql:
     image: node:14.15.5
+    container_name: graphql-dev
     environment:
       - NODE_ENV=development
       # elastic
@@ -35,6 +36,7 @@ services:
 
   update:
     image: node:14.15.5
+    container_name: update-dev
     environment:
       - NODE_ENV=development
       # mail
@@ -78,6 +80,7 @@ services:
 
   enrich:
     image: node:14.15.5
+    container_name: enrich-dev
     environment:
       - NODE_ENV=development
       # proxy
@@ -107,6 +110,7 @@ services:
 
   apikey:
     image: node:14.15.5
+    container_name: apikey-dev
     environment:
       - NODE_ENV=development
       # redis
@@ -128,6 +132,7 @@ services:
 
   mail:
     image: node:14.15.5
+    container_name: mail-dev
     environment:
       # mail
       - NODE_CONFIG
@@ -149,6 +154,7 @@ services:
 
   frontend:
     image: node:14.15.5
+    container_name: frontend-dev
     working_dir: /frontend
     volumes:
       - ./src/frontend:/frontend
@@ -171,6 +177,7 @@ services:
 
   redis:
     image: redis:6.2.5
+    container_name: redis-dev
     command: redis-server --save 60 1 --requirepass changeme
     volumes:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
@@ -179,6 +186,7 @@ services:
     restart: unless-stopped
 
   fakeunpaywall:
+    container_name: fakeunpaywall-dev
     image: node:14.15.5
     environment:
       - http_proxy
@@ -193,6 +201,7 @@ services:
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: elastic-dev
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -217,6 +226,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
+    container_name: kibana-dev
     ports:
       - 5601:5601
     environment:
@@ -230,6 +240,7 @@ services:
 
   nginx:
     image: nginx:1.20.1
+    container_name: nginx-dev
     ports:
       - 80:80
     environment:
@@ -246,6 +257,7 @@ services:
 
   maildev:
     image: djfarrelly/maildev
+    container_name: maildev
     ports:
       - 1080:80
 
