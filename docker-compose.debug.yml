@@ -100,7 +100,7 @@ services:
       - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
     command: "npm run dev"
     ports:
-      - "5000:5000"
+      - 5000:5000
     depends_on:
       - redis
     restart: unless-stopped
@@ -147,15 +147,6 @@ services:
       - 8000:8000
     restart: unless-stopped
 
-  redis:
-    image: redis:6.2.5
-    command: redis-server --save 60 1 --requirepass changeme
-    volumes:
-      - ${REDIS_DATA_PATH:-./data/redis}:/data
-    ports:
-      - 6379:6379
-    restart: unless-stopped
-
   frontend:
     image: node:14.15.5
     working_dir: /frontend
@@ -163,7 +154,7 @@ services:
       - ./src/frontend:/frontend
     command: "npm run dev"
     ports:
-      - 8080:3000
+      - 8080:8080
     environment:
       # graphql
       - GRAPHQL_URL
@@ -177,6 +168,15 @@ services:
       # frontend
       - HOST=0.0.0.0
       - PORT=8080
+
+  redis:
+    image: redis:6.2.5
+    command: redis-server --save 60 1 --requirepass changeme
+    volumes:
+      - ${REDIS_DATA_PATH:-./data/redis}:/data
+    ports:
+      - 6379:6379
+    restart: unless-stopped
 
   fakeunpaywall:
     image: node:14.15.5
@@ -228,20 +228,21 @@ services:
       - elastic
     restart: unless-stopped
 
-  rp:
+  nginx:
     image: nginx:1.20.1
     ports:
       - 80:80
     environment:
       - NGINX_HOST
     volumes:
-      - "./src/rp/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro"
+      - "./src/nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro"
     restart: unless-stopped
     depends_on:
       - enrich
       - update
       - graphql
       - apikey
+      - frontend
 
   maildev:
     image: djfarrelly/maildev

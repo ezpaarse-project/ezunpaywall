@@ -5,6 +5,7 @@ server {
 
   listen 80;
   listen [::]:80;
+  rewrite ^/(.*)/$ /$1 permanent; 
 
   ## Configuration
   ## proxy_set_header X-Forwarded-Host $host;
@@ -13,23 +14,28 @@ server {
   proxy_hide_header X-Powered-By;
 
   ## client
-  location / {
-    root /usr/share/nginx/html;
+
+  location ^~ / {
+    proxy_pass http://frontend:8080/;
   }
 
-  location ^~ /api/ {
+  location ^~ /api {
+    rewrite ^/api(/.*)$ $1 break;
     proxy_pass http://graphql:3000/;
   }
 
-  location ^~ /api/update/ {
+  location ^~ /api/update {
+    rewrite ^/api/update(/.*)$ $1 break;
     proxy_pass http://update:4000/;
   }
 
-  location ^~ /api/enrich/ {
+  location ^~ /api/enrich {
+    rewrite ^/api/enrich(/.*)$ $1 break;
     proxy_pass http://enrich:5000/;
   }
 
-  location ^~ /api/apikey/ {
+  location ^~ /api/apikey {
+    rewrite ^/api/apikey(/.*)$ $1 break;
     proxy_pass http://apikey:7000/;
   }
 }

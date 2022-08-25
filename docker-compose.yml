@@ -72,7 +72,7 @@ services:
     volumes:
       - ${UPDATE_APPLICATION_LOG_PATH}:/update/log/application
       - ${UPDATE_ACCESS_LOG_PATH}:/update/log/access
-      - ./src/update/data:/usr/src/update/data
+      - ./src/update/data:/update/data
     command: "npm start"
     ports:
       - 4000:4000
@@ -105,7 +105,7 @@ services:
     volumes:
       - ${ENRICH_APPLICATION_LOG_PATH}:/enrich/log/application
       - ${ENRICH_ACCESS_LOG_PATH}:/enrich/log/access
-      - ./src/enrich/data:/usr/src/enrich/data
+      - ./src/enrich/data:/enrich/data
     command: "npm start"
     ports:
       - 5000:5000
@@ -167,10 +167,10 @@ services:
       - 6379:6379
     restart: unless-stopped
 
-  rp:
+  nginx:
     build:
       context: .
-      dockerfile: ./rp/Dockerfile
+      dockerfile: ./nginx/Dockerfile
       args:
         - http_proxy
         - https_proxy
@@ -182,7 +182,7 @@ services:
     environment:
       - NGINX_HOST
     volumes:
-      - "./src/rp/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
+      - "./src/nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
     restart: unless-stopped
     depends_on:
       - enrich
