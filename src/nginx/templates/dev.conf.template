@@ -5,7 +5,6 @@ server {
 
   listen 80;
   listen [::]:80;
-  rewrite ^/(.*)/$ /$1 permanent; 
 
   ## Configuration
   ## proxy_set_header X-Forwarded-Host $host;
@@ -16,6 +15,7 @@ server {
   ## client
 
   location ^~ / {
+    rewrite ^/(/.*)$ $1 break;
     proxy_pass http://frontend:8080/;
   }
 
