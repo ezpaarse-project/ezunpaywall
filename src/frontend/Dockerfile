@@ -15,7 +15,7 @@ COPY package*.json /frontend/
 RUN npm ci --only=production
 COPY . /frontend
 
-RUN npm run generate
+RUN npm run build
 
 
 EXPOSE 8080
