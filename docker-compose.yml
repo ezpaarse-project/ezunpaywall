@@ -11,24 +11,24 @@ services:
     environment:
       - NODE_ENV=production
       # elastic
-      - ELASTICSEARCH_HOST
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
+      - EZMETA_ELASTICSEARCH_HOST
+      - EZMETA_ELASTICSEARCH_PORT
+      - EZMETA_ELASTICSEARCH_USERNAME
+      - EZMETA_ELASTICSEARCH_PASSWORD
+      - EZMETA_ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
       - https_proxy
       # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
+      - EZUNPAYWALL_REDIS_HOST
+      - EZUNPAYWALL_REDIS_PORT
+      - EZUNPAYWALL_REDIS_PASSWORD
       # log
-      - GRAPHQL_LOG_PATH
-      - GRAPHQL_ACCESS_LOG_PATH
+      - EZUNPAYWALL_GRAPHQL_LOG_PATH
+      - EZUNPAYWALL_GRAPHQL_ACCESS_LOG_PATH
     volumes:
-      - ${GRAPHQL_APPLICATION_LOG_PATH}:/graphql/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH}:/graphql/log/access
+      - ${EZUNPAYWALL_GRAPHQL_APPLICATION_LOG_PATH}:/graphql/log/application
+      - ${EZUNPAYWALL_GRAPHQL_ACCESS_LOG_PATH}:/graphql/log/access
     command: "npm start"
     ports:
       - 3000:3000
@@ -47,37 +47,37 @@ services:
       - NODE_ENV=production
       # mail
       - NODE_CONFIG
-      - EZUNPAYWALL_SMTP_HOST
-      - EZUNPAYWALL_SMTP_PORT
-      - EZUNPAYWALL_NOTIFICATIONS_SENDER
-      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+      - EZUNPAYWALL_MAIL_SMTP_HOST
+      - EZUNPAYWALL_MAIL_SMTP_PORT
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_MACHINE
        # unpaywall
-      - UNPAYWALL_APIKEY
-      - UNPAYWALL_URL=http://api.unpaywall.org
+      - EZUNPAYWALL_UPDATE_UNPAYWALL_APIKEY
+      - EZUNPAYWALL_UPDATE_UNPAYWALL_URL=http://api.unpaywall.org
       # elastic
-      - ELASTICSEARCH_HOST
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
+      - EZMETA_ELASTICSEARCH_HOST
+      - EZMETA_ELASTICSEARCH_PORT
+      - EZMETA_ELASTICSEARCH_USERNAME
+      - EZMETA_ELASTICSEARCH_PASSWORD
+      - EZMETA_ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
       - https_proxy
       # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
+      - EZUNPAYWALL_REDIS_HOST
+      - EZUNPAYWALL_REDIS_PORT
+      - EZUNPAYWALL_REDIS_PASSWORD
       # log
-      - UPDATE_LOG_PATH
-      - UPDATE_ACCESS_LOG_PATH
+      - EZUNPAYWALL_UPDATE_LOG_PATH
+      - EZUNPAYWALL_UPDATE_ACCESS_LOG_PATH
     volumes:
-      - ${UPDATE_APPLICATION_LOG_PATH}:/update/log/application
-      - ${UPDATE_ACCESS_LOG_PATH}:/update/log/access
+      - ${EZUNPAYWALL_UPDATE_APPLICATION_LOG_PATH}:/update/log/application
+      - ${EZUNPAYWALL_UPDATE_ACCESS_LOG_PATH}:/update/log/access
       - ./src/update/data:/update/data
     command: "npm start"
     ports:
-      - 4000:4000
+      - 4000:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -92,30 +92,29 @@ services:
     environment:
       - NODE_ENV=production
       # elastic
-      - ELASTICSEARCH_HOST
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
+      - EZMETA_ELASTICSEARCH_HOST
+      - EZMETA_ELASTICSEARCH_PORT
+      - EZMETA_ELASTICSEARCH_USERNAME
+      - EZMETA_ELASTICSEARCH_PASSWORD
       # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
+      - EZUNPAYWALL_REDIS_HOST
+      - EZUNPAYWALL_REDIS_PORT
+      - EZUNPAYWALL_REDIS_PASSWORD
       # graphql
-      - GRAPHQL_URL
+      - EZUNPAYWALL_GRAPHQL_URL
       # log
-      - ENRICH_LOG_PATH
-      - ENRICH_ACCESS_LOG_PATH
+      - EZUNPAYWALL_ENRICH_LOG_PATH
+      - EZUNPAYWALL_ENRICH_ACCESS_LOG_PATH
     volumes:
       - ${ENRICH_APPLICATION_LOG_PATH}:/enrich/log/application
-      - ${ENRICH_ACCESS_LOG_PATH}:/enrich/log/access
+      - ${EZUNPAYWALL_ENRICH_ACCESS_LOG_PATH}:/enrich/log/access
       - ./src/enrich/data:/enrich/data
     command: "npm start"
     ports:
-      - 5000:5000
+      - 5000:3000
     depends_on:
       - redis
     restart: unless-stopped
-
   apikey:
     build:
       context: ./src/apikey
@@ -125,13 +124,13 @@ services:
     container_name: apikey-prod
     environment:
       # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
+      - EZUNPAYWALL_REDIS_HOST
+      - EZUNPAYWALL_REDIS_PORT
+      - EZUNPAYWALL_REDIS_PASSWORD
       # log
-      - APIKEY_LOG_PATH
+      - EZUNPAYWALL_APIKEY_LOG_PATH
     volumes:
-      - ${APIKEY_APPLICATION_LOG_PATH}:/apikey/log/application
+      - ${EZUNPAYWALL_APIKEY_APPLICATION_LOG_PATH}:/apikey/log/application
     command: "npm start"
     ports:
       - 7000:7000
@@ -149,26 +148,47 @@ services:
     environment:
       # mail
       - NODE_CONFIG
-      - EZUNPAYWALL_SMTP_HOST
-      - EZUNPAYWALL_SMTP_PORT
-      - EZUNPAYWALL_NOTIFICATIONS_SENDER
-      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+      - EZUNPAYWALL_MAIL_SMTP_HOST
+      - EZUNPAYWALL_MAIL_SMTP_PORT
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_MACHINE
       # log
       - MAIL_LOG_PATH
     volumes:
       - ${MAIL_APPLICATION_LOG_PATH}:/mail/log/application
     command: "npm start"
     ports:
-      - 8000:8000
+      - 8000:3000
     restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./src/frontend
+      args:
+        - http_proxy
+        - https_proxy
+    container_name: frontend-preprod
+    command: "npm run start"
+    ports:
+      - 8080:8080
+    environment:
+      # graphql
+      - EZUNPAYWALL_GRAPHQL_URL
+      # update
+      - EZUNPAYWALL_UPDATE_URL
+      # enrich
+      - EZUNPAYWALL_ENRICH_URL
+      # mail
+      - EZUNPAYWALL_MAIL_URL
+      - EZUNPAYWALL_MAIL_APIKEY
 
   redis:
     image: redis:6.2.5-alpine3.14
     container_name: redis-prod
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass ${EZUNPAYWALL_REDIS_PASSWORD}
     volumes:
-      - ${REDIS_DATA_PATH}:/home/data
+      - ${EZUNPAYWALL_REDIS_DATA_PATH}:/home/data
     ports:
       - 6379:6379
     restart: unless-stopped
@@ -179,7 +199,7 @@ services:
     ports:
       - 59700:80
     environment:
-      - NGINX_HOST
+      - EZUNPAYWALL_NGINX_HOST
     volumes:
       - "./src/nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
     restart: unless-stopped

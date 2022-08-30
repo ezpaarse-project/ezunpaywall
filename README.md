@@ -38,29 +38,29 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 
 | name | description |
 | --- | --- |
-| UNPAYWALL_APIKEY | api key to access weekly unpaywall updates |
+| EZUNPAYWALL_UPDATE_UNPAYWALL_APIKEY | api key to access weekly unpaywall updates |
 #### Mail
 
 | name | description |
 | --- | --- |
 | NODE_CONFIG | make tls and secure of mail (only in developement) |
-| EZUNPAYWALL_SMTP_HOST | host of the SMTP server |
-| EZUNPAYWALL_SMTP_PORT | port of the SMTP server |
-| EZUNPAYWALL_NOTIFICATIONS_SENDER | the sender for emails issued by ezunpaywall |
-| EZUNPAYWALL_NOTIFICATIONS_RECEIVERS | recipients of the recent activity email |
+| EZUNPAYWALL_MAIL_SMTP_HOST | host of the SMTP server |
+| EZUNPAYWALL_MAIL_SMTP_PORT | port of the SMTP server |
+| EZUNPAYWALL_MAIL_NOTIFICATIONS_SENDER | the sender for emails issued by ezunpaywall |
+| EZUNPAYWALL_MAIL_NOTIFICATIONS_RECEIVERS | recipients of the recent activity email |
 #### Elastic
 
 | name | description |
 | --- | --- |
-| ELASTICSEARCH_PORT | elastic port |
-| ELASTICSEARCH_HOST | elastic url |
-| ELASTICSEARCH_USERNAME | elastic user |
-| ELASTICSEARCH_PASSWORD | elastic password |
+| EZMETA_ELASTICSEARCH_PORT | elastic port |
+| EZMETA_ELASTICSEARCH_HOST | elastic url |
+| EZMETA_ELASTICSEARCH_USERNAME | elastic user |
+| EZMETA_ELASTICSEARCH_PASSWORD | elastic password |
 
 #### Redis
 | name | description |
 | --- | --- |
-| REDIS_PASSWORD | password to access at redis |
+| EZUNPAYWALL_REDIS_PASSWORD | password to access at redis |
 
 ### Configuration (optionnal)
 

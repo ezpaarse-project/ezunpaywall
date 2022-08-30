@@ -7,29 +7,29 @@ services:
     environment:
       - NODE_ENV=development
       # elastic
-      - ELASTICSEARCH_HOST=http://elastic
-      - ELASTICSEARCH_PORT=9200
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=changeme
-      - ELASTICSEARCH_INDEX_ALIAS=upw
+      - EZMETA_ELASTICSEARCH_HOST
+      - EZMETA_ELASTICSEARCH_PORT
+      - EZMETA_ELASTICSEARCH_USERNAME
+      - EZMETA_ELASTICSEARCH_PASSWORD
+      - EZMETA_ELASTICSEARCH_INDEX_ALIAS
       # proxy
       - http_proxy
       - https_proxy
       # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
+      - EZUNPAYWALL_REDIS_HOST
+      - EZUNPAYWALL_REDIS_PORT
+      - EZUNPAYWALL_REDIS_PASSWORD
       # log
-      - GRAPHQL_LOG_PATH
-      - GRAPHQL_ACCESS_LOG_PATH
+      - EZUNPAYWALL_GRAPHQL_APPLICATION_LOG_PATH
+      - EZUNPAYWALL_GRAPHQL_ACCESS_LOG_PATH
     working_dir: /graphql
     volumes:
       - ./src/graphql:/graphql
-      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
+      - ${EZUNPAYWALL_GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
+      - ${EZUNPAYWALL_GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
     command: "npm run dev"
     ports:
-      - 3000:3000
+      - ${EZUNPAYWALL_GRAPHQL_PORT:-3000}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -39,41 +39,36 @@ services:
     container_name: update-dev
     environment:
       - NODE_ENV=development
-      # mail
-      - NODE_CONFIG
-      - EZUNPAYWALL_SMTP_HOST=maildev
-      - EZUNPAYWALL_SMTP_PORT
-      - EZUNPAYWALL_NOTIFICATIONS_SENDER
-      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
       # unpaywall
-      - UNPAYWALL_APIKEY
-      - UNPAYWALL_URL
+      - EZUNPAYWALL_UPDATE_UNPAYWALL_APIKEY
+      - EZUNPAYWALL_UPDATE_UNPAYWALL_URL
       # elastic
-      - ELASTICSEARCH_HOST
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
+      - EZMETA_ELASTICSEARCH_HOST
+      - EZMETA_ELASTICSEARCH_PORT
+      - EZMETA_ELASTICSEARCH_USERNAME
+      - EZMETA_ELASTICSEARCH_PASSWORD
+      - EZMETA_ELASTICSEARCH_INDEX_ALIAS
       # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
+      - EZUNPAYWALL_REDIS_HOST
+      - EZUNPAYWALL_REDIS_PORT
+      - EZUNPAYWALL_REDIS_PASSWORD
       # proxy
       - http_proxy
       - https_proxy
       # log
-      - UPDATE_LOG_PATH
-      - UPDATE_ACCESS_LOG_PATH
+      - EZUNPAYWALL_UPDATE_APPLICATION_LOG_PATH
+      - EZUNPAYWALL_UPDATE_ACCESS_LOG_PATH
+      # data
+      - EZUNPAYWALL_UPDATE_DATA_PATH
     working_dir: /update
     volumes:
       - ./src/update:/update
-      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
-      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
-      - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
+      - ${EZUNPAYWALL_UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
+      - ${EZUNPAYWALL_UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
+      - ${EZUNPAYWALL_UPDATE_DATA_PATH:-./src/update/data}:/update/data
     command: "npm run dev"
     ports:
-      - 4000:4000
+      - ${EZUNPAYWALL_UPDATE_PORT:-4000}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -87,23 +82,25 @@ services:
       - http_proxy
       - https_proxy
       # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
+      - EZUNPAYWALL_REDIS_HOST
+      - EZUNPAYWALL_REDIS_PORT
+      - EZUNPAYWALL_REDIS_PASSWORD
       # graphql
-      - GRAPHQL_URL=http://graphql:3000
+      - EZUNPAYWALL_GRAPHQL_URL=http://graphql:3000
       # log
-      - ENRICH_LOG_PATH
-      - ENRICH_ACCESS_LOG_PATH
+      - EZUNPAYWALL_ENRICH_LOG_PATH
+      - EZUNPAYWALL_ENRICH_ACCESS_LOG_PATH
+      # data
+      - EZUNPAYWALL_ENRICH_DATA_PATH
     working_dir: /enrich
     volumes:
       - ./src/enrich:/enrich
-      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/enrich/log/application
-      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/enrich/log/access
-      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
+      - ${EZUNPAYWALL_ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/enrich/log/application
+      - ${EZUNPAYWALL_ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/enrich/log/access
+      - ${EZUNPAYWALL_ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
     command: "npm run dev"
     ports:
-      - 5000:5000
+      - ${EZUNPAYWALL_ENRICH_PORT:-5000}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -114,18 +111,20 @@ services:
     environment:
       - NODE_ENV=development
       # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
+      - EZUNPAYWALL_REDIS_HOST
+      - EZUNPAYWALL_REDIS_PORT
+      - EZUNPAYWALL_REDIS_PASSWORD
       # log
-      - APIKEY_LOG_PATH
+      - EZUNPAYWALL_APIKEY_LOG_PATH
+      - EZUNPAYWALL_APIKEY_ACCESS_LOG_PATH
     working_dir: /apikey
     volumes:
       - ./src/apikey:/apikey
-      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/apikey/log/application
+      - ${EZUNPAYWALL_APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/apikey/log/application
+      - ${EZUNPAYWALL_APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/apikey/log/access
     command: "npm run dev"
     ports:
-      - 7000:7000
+      - ${EZUNPAYWALL_APIKEY_PORT:-7000}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -136,20 +135,22 @@ services:
     environment:
       # mail
       - NODE_CONFIG
-      - EZUNPAYWALL_SMTP_HOST=maildev
-      - EZUNPAYWALL_SMTP_PORT
-      - EZUNPAYWALL_NOTIFICATIONS_SENDER
-      - EZUNPAYWALL_NOTIFICATIONS_RECEIVERS
-      - EZUNPAYWALL_NOTIFICATIONS_MACHINE
+      - EZUNPAYWALL_MAIL_SMTP_HOST=maildev
+      - EZUNPAYWALL_MAIL_SMTP_PORT
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_SENDER
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_RECEIVERS
+      - EZUNPAYWALL_MAIL_NOTIFICATIONS_MACHINE
       # log
-      - MAIL_LOG_PATH
+      - EZUNPAYWALL_MAIL_APPLICATION_LOG_PATH
+      - EZUNPAYWALL_MAIL_ACCESS_LOG_PATH
     working_dir: /mail
     volumes:
       - ./src/mail:/mail
-      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/mail/log/application
+      - ${EZUNPAYWALL_MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/mail/log/application
+      - ${EZUNPAYWALL_MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/mail/log/access
     command: "npm run dev"
     ports:
-      - 8000:8000
+      - ${EZUNPAYWALL_MAIL_PORT:-8000}:3000
     restart: unless-stopped
 
   frontend:
@@ -160,29 +161,26 @@ services:
       - ./src/frontend:/frontend
     command: "npm run dev"
     ports:
-      - 8080:8080
+     - ${EZUNPAYWALL_FRONTEND_PORT:-8080}:3000
     environment:
       # graphql
-      - GRAPHQL_URL
+      - EZUNPAYWALL_GRAPHQL_URL
       # update
-      - UPDATE_URL
+      - EZUNPAYWALL_UPDATE_URL
       # enrich
-      - ENRICH_URL
+      - EZUNPAYWALL_ENRICH_URL
       # mail
-      - MAIL_URL
+      - EZUNPAYWALL_MAIL_URL
       - EZUNPAYWALL_MAIL_APIKEY
-      # frontend
-      - HOST=0.0.0.0
-      - PORT=8080
 
   redis:
     image: redis:6.2.5
     container_name: redis-dev
-    command: redis-server --save 60 1 --requirepass changeme
+    command: redis-server --requirepass "${EZUNPAYWALL_REDIS_PASSWORD:-changeme}"
     volumes:
-      - ${REDIS_DATA_PATH:-./data/redis}:/data
+      - ${EZUNPAYWALL_REDIS_DATA_PATH:-./data/redis}:/data
     ports:
-      - 6379:6379
+      - ${EZUNPAYWALL_REDIS_PORT:-6379}:6379
     restart: unless-stopped
 
   fakeunpaywall:
@@ -207,8 +205,8 @@ services:
       - bootstrap.memory_lock=true
       - xpack.security.enabled=true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - ELASTIC_USERNAME=elastic
-      - ELASTIC_PASSWORD=changeme
+      - ELASTIC_USERNAME={EZMETA_ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTIC_PASSWORD=${EZMETA_ELASTICSEARCH_PASSWORD:-changeme}
     healthcheck:
       test: curl --cacert $CERTS_DIR_ES/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
       interval: 30s
@@ -231,8 +229,8 @@ services:
       - 5601:5601
     environment:
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_USERNAME=${EZMETA_ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${EZMETA_ELASTICSEARCH_PASSWORD:-changeme}
       - xpack.security.enabled=true
     depends_on: 
       - elastic
@@ -242,9 +240,9 @@ services:
     image: nginx:1.20.1
     container_name: nginx-dev
     ports:
-      - 80:80
+      - ${EZUNPAYWALL_NGINX_PORT:-80}:80
     environment:
-      - NGINX_HOST
+      - EZUNPAYWALL_NGINX_HOST
     volumes:
       - "./src/nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro"
     restart: unless-stopped

@@ -1,7 +1,7 @@
 { 
   "redis":  {
-    "host": "REDIS_HOST",
-    "port": "REDIS_PORT",
-    "password": "REDIS_PASSWORD"
+    "host": "EZUNPAYWALL_REDIS_HOST",
+    "port": "EZUNPAYWALL_REDIS_PORT",
+    "password": "EZUNPAYWALL_REDIS_PASSWORD"
   }
 }

@@ -1,5 +1,5 @@
 server {
-  server_name ${NGINX_HOST};
+  server_name ${EZUNPAYWALL_NGINX_HOST};
 
   client_max_body_size 100M;
 
@@ -16,7 +16,7 @@ server {
 
   location ^~ / {
     rewrite ^/(/.*)$ $1 break;
-    proxy_pass http://frontend:8080/;
+    proxy_pass http://frontend:3000/;
   }
 
   location ^~ /api {
@@ -26,16 +26,16 @@ server {
 
   location ^~ /api/update {
     rewrite ^/api/update(/.*)$ $1 break;
-    proxy_pass http://update:4000/;
+    proxy_pass http://update:3000/;
   }
 
   location ^~ /api/enrich {
     rewrite ^/api/enrich(/.*)$ $1 break;
-    proxy_pass http://enrich:5000/;
+    proxy_pass http://enrich:3000/;
   }
 
   location ^~ /api/apikey {
     rewrite ^/api/apikey(/.*)$ $1 break;
-    proxy_pass http://apikey:7000/;
+    proxy_pass http://apikey:3000/;
   }
 }

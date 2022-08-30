@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
+const graphqlURL = process.env.EZUNPAYWALL_GRAPHQL_URL || 'http://localhost:3000';
 const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 /**

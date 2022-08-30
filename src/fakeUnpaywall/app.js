@@ -28,8 +28,8 @@ app.use((err, req, res, next) => {
 
   return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });
-app.listen(12000, async () => {
-  logger.info('fakeUnpaywall service listening on 12000');
+app.listen(3000, async () => {
+  logger.info('fakeUnpaywall service listening on 3000');
   await updateChangefilesExample('day');
   await updateChangefilesExample('week');
 });

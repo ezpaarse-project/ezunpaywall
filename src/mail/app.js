@@ -42,6 +42,6 @@ app.use((err, req, res, next) => {
   return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });
 
-app.listen(8000, () => {
-  logger.info('ezunpaywall mail service listening on 8000');
+app.listen(3000, () => {
+  logger.info('ezunpaywall mail service listening on 3000');
 });

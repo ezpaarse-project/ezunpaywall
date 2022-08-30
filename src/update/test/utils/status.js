@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
 // TODO put it in config
-const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
+const updateURL = process.env.EZUNPAYWALL_UPDATE_URL || 'http://localhost:4000';
 
 /**
  * checks if an update process is being processed

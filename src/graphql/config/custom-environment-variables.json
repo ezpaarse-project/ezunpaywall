@@ -1,14 +1,14 @@
 { 
   "redis":  {
-    "host": "REDIS_HOST",
-    "port": "REDIS_PORT",
-    "password": "REDIS_PASSWORD"
+    "host": "EZUNPAYWALL_REDIS_HOST",
+    "port": "EZUNPAYWALL_REDIS_PORT",
+    "password": "EZUNPAYWALL_REDIS_PASSWORD"
   },
   "elasticsearch": {
-    "host": "ELASTICSEARCH_HOST",
-    "port": "ELASTICSEARCH_PORT",
-    "user": "ELASTICSEARCH_USERNAME",
-    "password": "ELASTICSEARCH_PASSWORD",
-    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS"
+    "host": "EZMETA_ELASTICSEARCH_HOST",
+    "port": "EZMETA_ELASTICSEARCH_PORT",
+    "user": "EZMETA_ELASTICSEARCH_USERNAME",
+    "password": "EZMETA_ELASTICSEARCH_PASSWORD",
+    "indexAlias": "EZMETA_ELASTICSEARCH_INDEX_ALIAS"
   }
 }

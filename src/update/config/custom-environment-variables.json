@@ -1,23 +1,23 @@
 {
   "unpaywall": {
-    "host": "UNPAYWALL_URL",
-    "apikey": "UNPAYWALL_APIKEY"
+    "host": "EZUNPAYWALL_UPDATE_UNPAYWALL_URL",
+    "apikey": "EZUNPAYWALL_UPDATE_UNPAYWALL_APIKEY"
   },
   "redis":  {
-    "host": "REDIS_HOST",
-    "port": "REDIS_PORT",
-    "password": "REDIS_PASSWORD"
+    "host": "EZUNPAYWALL_REDIS_HOST",
+    "port": "EZUNPAYWALL_REDIS_PORT",
+    "password": "EZUNPAYWALL_REDIS_PASSWORD"
   },
   "mail": {
     "baseURL": "EZUNPAYWALL_MAIL_BASEURL",
     "apikey": "EZUNPAYWALL_MAIL_APIKEY"
   },
   "elasticsearch": {
-    "host": "ELASTICSEARCH_HOST",
-    "port": "ELASTICSEARCH_PORT",
-    "user": "ELASTICSEARCH_USERNAME",
-    "password": "ELASTICSEARCH_PASSWORD",
+    "host": "EZMETA_ELASTICSEARCH_HOST",
+    "port": "EZMETA_ELASTICSEARCH_PORT",
+    "user": "EZMETA_ELASTICSEARCH_USERNAME",
+    "password": "EZMETA_ELASTICSEARCH_PASSWORD",
     "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
-    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS"
+    "indexAlias": "EZMETA_ELASTICSEARCH_INDEX_ALIAS"
   }
 }

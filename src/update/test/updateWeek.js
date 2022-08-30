@@ -35,7 +35,7 @@ const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
+const updateURL = process.env.EZUNPAYWALL_UPDATE_URL || 'http://localhost:4000';
 
 describe('Week: Test: weekly update route test', () => {
   before(async function () {

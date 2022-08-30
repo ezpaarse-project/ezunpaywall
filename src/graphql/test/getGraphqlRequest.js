@@ -19,7 +19,7 @@ const {
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
+const graphqlURL = process.env.EZUNPAYWALL_GRAPHQL_URL || 'http://localhost:3000';
 const doi1 = '10.1186/s40510-015-0109-6'; // ligne 1 of fake1.jsonl
 const doi2 = '10.14393/ufu.di.2018.728'; // line 35 of fake1.jsonl
 

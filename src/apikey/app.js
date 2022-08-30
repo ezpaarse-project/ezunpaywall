@@ -36,8 +36,8 @@ app.use((err, req, res, next) => {
   return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });
 
-app.listen(7000, async () => {
-  logger.info('ezunpaywall apikey service listening on 7000');
+app.listen(3000, async () => {
+  logger.info('ezunpaywall apikey service listening on 3000');
   pingRedis();
   loadDemoAPIKey();
   cronDemo.start();

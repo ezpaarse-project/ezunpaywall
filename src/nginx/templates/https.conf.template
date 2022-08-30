@@ -1,6 +1,6 @@
 ## Redirection to HTTPS
 server {
-  server_name ${NGINX_HOST};
+  server_name ${EZUNPAYWALL_NGINX_HOST};
 
   client_max_body_size 100M;
 
@@ -12,13 +12,13 @@ server {
   }
 
   location / {
-    return 301 https://${NGINX_HOST}$request_uri; 
+    return 301 https://${EZUNPAYWALL_NGINX_HOST}$request_uri; 
   }
 }
 
 ## HTTPS configuration
 server {
-  server_name ${NGINX_HOST};
+  server_name ${EZUNPAYWALL_NGINX_HOST};
 
   client_max_body_size 100M;
 
@@ -26,9 +26,9 @@ server {
   listen [::]:443 ssl;
 
   ## Certificates
-  ssl_certificate /etc/nginx/ssl/${NGINX_HOST}.pem;
-  ssl_certificate_key /etc/nginx/ssl/${NGINX_HOST}-key.pem;
-  ssl_trusted_certificate /etc/nginx/ssl/${NGINX_HOST}.pem;
+  ssl_certificate /etc/nginx/ssl/${EZUNPAYWALL_NGINX_HOST}.pem;
+  ssl_certificate_key /etc/nginx/ssl/${EZUNPAYWALL_NGINX_HOST}-key.pem;
+  ssl_trusted_certificate /etc/nginx/ssl/${EZUNPAYWALL_NGINX_HOST}.pem;
 
   ## Configuration
   proxy_set_header X-Forwarded-Host $host;
@@ -38,24 +38,29 @@ server {
   proxy_hide_header X-Powered-By;
 
   ## client
+
   location / {
-    root /usr/share/nginx/html;
+    proxy_pass http://frontend:3000/;
   }
 
-  location ^~ /api/{
+  location /api {
+    rewrite ^/api(/.*)$ $1 break;
     proxy_pass http://graphql:3000/;
   }
 
-  location ^~ /api/update/ {
-    proxy_pass http://update:4000/;
+  location /api/update {
+    rewrite ^/api/update(/.*)$ $1 break;
+    proxy_pass http://update:3000/;
   }
 
-  location ^~ /api/enrich/ {
-    proxy_pass http://enrich:5000/;
+  location /api/enrich {
+    rewrite ^/api/enrich(/.*)$ $1 break;
+    proxy_pass http://enrich:3000/;
   }
 
-  location ^~ /api/apikey/ {
-    proxy_pass http://apikey:7000/;
+  location /api/apikey {
+    rewrite ^/api/apikey(/.*)$ $1 break;
+    proxy_pass http://apikey:3000/;
   }
 
   ## Diffie-Hellman

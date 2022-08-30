@@ -55,8 +55,8 @@ app.use((err, req, res, next) => {
   return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
 });
 
-app.listen(5000, () => {
-  logger.info('ezunpaywall enrich service listening on 5000');
+app.listen(3000, () => {
+  logger.info('ezunpaywall enrich service listening on 3000');
   pingRedis();
   cronDeleteOutFiles.start();
 });

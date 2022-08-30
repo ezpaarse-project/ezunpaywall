@@ -28,7 +28,7 @@ const {
   deleteAllAPIKey,
 } = require('./utils/apikey');
 
-const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
+const enrichService = process.env.EZUNPAYWALL_ENRICH_URL || 'http://localhost:5000';
 
 const enrichDir = path.resolve(__dirname, 'sources');
 
