@@ -197,6 +197,22 @@ services:
       - 12000:12000
     restart: unless-stopped
 
+  nginx:
+    image: nginx:1.20.1
+    container_name: nginx-dev
+    ports:
+      - ${EZUNPAYWALL_NGINX_PORT:-80}:80
+    environment:
+      - EZUNPAYWALL_NGINX_HOST
+    volumes:
+      - "./src/nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro"
+    restart: unless-stopped
+    depends_on:
+      - enrich
+      - update
+      - graphql
+      - apikey
+      - frontend
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
     container_name: elastic-dev
@@ -236,22 +252,6 @@ services:
       - elastic
     restart: unless-stopped
 
-  nginx:
-    image: nginx:1.20.1
-    container_name: nginx-dev
-    ports:
-      - ${EZUNPAYWALL_NGINX_PORT:-80}:80
-    environment:
-      - EZUNPAYWALL_NGINX_HOST
-    volumes:
-      - "./src/nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro"
-    restart: unless-stopped
-    depends_on:
-      - enrich
-      - update
-      - graphql
-      - apikey
-      - frontend
 
   maildev:
     image: djfarrelly/maildev
