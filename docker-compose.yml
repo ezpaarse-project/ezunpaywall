@@ -198,7 +198,8 @@ services:
     environment:
       - EZUNPAYWALL_NGINX_HOST
     volumes:
-      - "./src/nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro"
+      - ${EZUNPAYWALL_NGINX_CONFIG_PATH:-./src/nginx/templates/http.conf.template}:/etc/nginx/templates/default.conf.template:ro
+      - ${EZUNPAYWALL_NGINX_ACCESS_LOG_PATH:-./src/nginx/log}:/var/log/nginx
     restart: unless-stopped
     depends_on:
       - enrich
