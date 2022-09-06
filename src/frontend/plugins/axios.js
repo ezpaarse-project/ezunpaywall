@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default (ctx, inject) => {
   const graphql = axios.create({
-    baseURL: ctx.$config.grapqlURL,
+    baseURL: ctx.$config.graphqlURL,
     timeout: 3000
   })
 
