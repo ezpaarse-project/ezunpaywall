@@ -1,4 +1,5 @@
 {
+  "node": "development",
   "smtp": {
     "host": "localhost",
     "port": 25

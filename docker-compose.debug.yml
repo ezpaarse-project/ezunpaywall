@@ -27,7 +27,6 @@ services:
       - ./src/graphql:/graphql
       - ${EZUNPAYWALL_GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
       - ${EZUNPAYWALL_GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
-
     command: "npm run dev"
     ports:
       - ${EZUNPAYWALL_GRAPHQL_PORT:-3000}:3000

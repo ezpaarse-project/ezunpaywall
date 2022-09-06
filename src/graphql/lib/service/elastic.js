@@ -1,7 +1,29 @@
+const fs = require('fs-extra');
+const path = require('path');
+
 const { Client } = require('@elastic/elasticsearch');
 const { URL } = require('url');
 const { elasticsearch } = require('config');
+const { node } = require('config');
 const logger = require('../logger');
+
+const isProd = (node === 'production');
+
+let ssl;
+
+if (isProd) {
+  let ca;
+  const caPath = path.resolve(__dirname, '..', '..', 'certs', 'ca.crt');
+  try {
+    ca = fs.readFileSync(caPath, 'utf8');
+  } catch {
+    logger.error(`Cannot read file in ${caPath}`);
+  }
+  ssl = {
+    ca,
+    rejectUnauthorized: true,
+  };
+}
 
 const elasticClient = new Client({
   node: {
@@ -10,10 +32,10 @@ const elasticClient = new Client({
       username: elasticsearch.user,
       password: elasticsearch.password,
     },
+    ssl,
   },
   requestTimeout: 2000,
 });
-
 const pingElastic = async () => {
   let elasticStatus;
   for (let i = 1; i <= 4; i += 1) {

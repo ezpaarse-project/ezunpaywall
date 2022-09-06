@@ -1,4 +1,5 @@
 { 
+  "node": "NODE_ENV",
   "redis":  {
     "host": "EZUNPAYWALL_REDIS_HOST",
     "port": "EZUNPAYWALL_REDIS_PORT",

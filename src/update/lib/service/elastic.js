@@ -7,13 +7,20 @@ const { elasticsearch } = require('config');
 const { node } = require('config');
 const logger = require('../logger');
 
-const isProd = (node === 'development');
+const isProd = (node === 'production');
 
-let tls;
+let ssl;
 
 if (isProd) {
-  tls = {
-    ca: fs.readFileSync(path.resolve()),
+  let ca;
+  const caPath = path.resolve(__dirname, '..', '..', 'certs', 'ca.crt');
+  try {
+    ca = fs.readFileSync(caPath, 'utf8');
+  } catch {
+    logger.error(`Cannot read file in ${caPath}`);
+  }
+  ssl = {
+    ca,
     rejectUnauthorized: true,
   };
 }
@@ -25,7 +32,7 @@ const elasticClient = new Client({
       username: elasticsearch.user,
       password: elasticsearch.password,
     },
-    tls,
+    ssl,
   },
   requestTimeout: 2000,
 });

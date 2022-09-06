@@ -1,5 +1,5 @@
 {
-  "node": "development",
+  "node": "NODE_ENV",
   "unpaywall": {
     "host": "EZUNPAYWALL_UPDATE_UNPAYWALL_URL",
     "apikey": "EZUNPAYWALL_UPDATE_UNPAYWALL_APIKEY"

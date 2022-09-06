@@ -1,4 +1,5 @@
 { 
+  "node": "development",
   "redis": {
     "host": "redis",
     "port": "6379",

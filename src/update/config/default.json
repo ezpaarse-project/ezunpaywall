@@ -1,5 +1,5 @@
 {
-  "node": "NODE_ENV",
+  "node": "development",
   "unpaywall": {
     "host": "http://fakeUnpaywall:12000",
     "apikey": "default"

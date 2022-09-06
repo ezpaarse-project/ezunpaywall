@@ -1,4 +1,5 @@
 {
+  "node": "NODE_ENV",
   "smtp": {
     "host": "EZUNPAYWALL_MAIL_SMTP_HOST",
     "port": "EZUNPAYWALL_MAIL_SMTP_PORT"
