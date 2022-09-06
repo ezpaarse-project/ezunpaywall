@@ -29,6 +29,7 @@ services:
     volumes:
       - ${EZUNPAYWALL_GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
       - ${EZUNPAYWALL_GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
+      - ${EZMETA_CERTS_PATH}:/graphql/certs
     command: "npm start"
     ports:
       - ${EZUNPAYWALL_GRAPHQL_PORT:-3000}:3000
@@ -70,6 +71,7 @@ services:
       - ${EZUNPAYWALL_UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
       - ${EZUNPAYWALL_UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
       - ${EZUNPAYWALL_UPDATE_DATA_PATH:-./src/update/data}:/update/data
+      - ${EZMETA_CERTS_PATH}:/update/certs
     command: "npm start"
     ports:
       - ${EZUNPAYWALL_UPDATE_PORT:-4000}:3000

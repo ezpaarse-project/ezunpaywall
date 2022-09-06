@@ -1,7 +1,22 @@
+const fs = require('fs-extra');
+const path = require('path');
+
 const { Client } = require('@elastic/elasticsearch');
 const { URL } = require('url');
 const { elasticsearch } = require('config');
+const { node } = require('config');
 const logger = require('../logger');
+
+const isProd = (node === 'development');
+
+let tls;
+
+if (isProd) {
+  tls = {
+    ca: fs.readFileSync(path.resolve()),
+    rejectUnauthorized: true,
+  };
+}
 
 const elasticClient = new Client({
   node: {
@@ -10,6 +25,7 @@ const elasticClient = new Client({
       username: elasticsearch.user,
       password: elasticsearch.password,
     },
+    tls,
   },
   requestTimeout: 2000,
 });

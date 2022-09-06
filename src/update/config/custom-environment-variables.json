@@ -1,4 +1,5 @@
 {
+  "node": "development",
   "unpaywall": {
     "host": "EZUNPAYWALL_UPDATE_UNPAYWALL_URL",
     "apikey": "EZUNPAYWALL_UPDATE_UNPAYWALL_APIKEY"
@@ -18,6 +19,7 @@
     "user": "EZMETA_ELASTICSEARCH_USERNAME",
     "password": "EZMETA_ELASTICSEARCH_PASSWORD",
     "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
-    "indexAlias": "EZMETA_ELASTICSEARCH_INDEX_ALIAS"
+    "indexAlias": "EZMETA_ELASTICSEARCH_INDEX_ALIAS",
+    "cert": "EZMETA_CERTS_PATH"
   }
 }

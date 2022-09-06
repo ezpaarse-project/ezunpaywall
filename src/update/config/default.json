@@ -1,4 +1,5 @@
 {
+  "node": "NODE_ENV",
   "unpaywall": {
     "host": "http://fakeUnpaywall:12000",
     "apikey": "default"
@@ -18,6 +19,7 @@
     "user": "elastic",
     "password": "changeme",
     "maxBulkSize": 4000,
-    "indexAlias": "upw"
+    "indexAlias": "upw",
+    "cert": ""
   }
 }
