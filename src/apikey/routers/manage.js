@@ -6,7 +6,6 @@ const checkAuth = require('../middlewares/auth');
 const {
   redisClient,
   load,
-  pingRedis,
 } = require('../lib/service/redis');
 
 const logger = require('../lib/logger');
@@ -326,22 +325,6 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
   }
 
   return res.status(204).json();
-});
-
-/**
- * ping redis
- */
-router.get('/ping', async (req, res, next) => {
-  let ping;
-  try {
-    ping = await pingRedis();
-  } catch (err) {
-    return next(boom.boomify(err));
-  }
-  if (ping) {
-    return res.status(200).json('OK');
-  }
-  return next(boom.serverUnavailable());
 });
 
 module.exports = router;

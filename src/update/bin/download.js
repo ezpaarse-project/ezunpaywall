@@ -135,6 +135,7 @@ const downloadBigSnapshot = async () => {
   const res = await getSnapshot();
 
   const snapshot = res.data;
+  console.log(res.headers['content-length']);
   const size = res.headers['content-length'];
 
   await download(snapshot, filepath, size);
