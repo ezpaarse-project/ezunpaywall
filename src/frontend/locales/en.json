@@ -139,9 +139,14 @@
     "home": "Home",
     "enrich": "Enrich",
     "graphql": "Graphql",
+    "updateHistory": "Update history",
     "openapi": "Documentation",
     "language": "Language",
     "contact": "Contact us"
+  },
+  "weekHistory": {
+    "insertedDocs": "new Lines",
+    "updatedDocs": "updated Lines"
   },
   "theme": {
     "dark": "Dark theme",

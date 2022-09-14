@@ -1,5 +1,6 @@
 <template>
   <section>
+    <week-history />
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('home.title')" />
@@ -45,8 +46,14 @@
 </template>
 
 <script>
+
+import weekHistory from '~/components/update/WeekHistory.vue'
+
 export default {
   name: 'Home',
+  components: {
+    weekHistory
+  },
   transition: 'slide-x-transition',
   data: () => {
     return {

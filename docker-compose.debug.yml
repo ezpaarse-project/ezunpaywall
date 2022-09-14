@@ -211,7 +211,7 @@ services:
       - ./src/fakeUnpaywall:/fakeUnpaywall
     command: "npm run dev"
     ports:
-      - 12000:12000
+      - 12000:3000
     restart: unless-stopped
 
   elastic:
