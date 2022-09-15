@@ -10,7 +10,7 @@ import SwaggerUI from 'swagger-ui'
 export default {
   mounted () {
     SwaggerUI({
-      url: `${this.$config.mailURL}/openapi.json`,
+      url: `${this.$config.mailHost}/openapi.json`,
       dom_id: '#swagger',
       deepLinking: false
     })
