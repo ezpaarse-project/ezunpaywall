@@ -1,5 +1,5 @@
 server {
-  server_name ${EZUNPAYWALL_NGINX_HOST};
+  server_name ${NGINX_HOST};
 
   client_max_body_size 100M;
 

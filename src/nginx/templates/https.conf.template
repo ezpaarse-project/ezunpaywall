@@ -1,6 +1,6 @@
 ## Redirection to HTTPS
 server {
-  server_name ${EZUNPAYWALL_NGINX_HOST};
+  server_name ${NGINX_HOST};
 
   client_max_body_size 100M;
 
@@ -12,13 +12,13 @@ server {
   }
 
   location / {
-    return 301 https://${EZUNPAYWALL_NGINX_HOST}$request_uri; 
+    return 301 https://${NGINX_HOST}$request_uri; 
   }
 }
 
 ## HTTPS configuration
 server {
-  server_name ${EZUNPAYWALL_NGINX_HOST};
+  server_name ${NGINX_HOST};
 
   client_max_body_size 100M;
 
@@ -26,9 +26,9 @@ server {
   listen [::]:443 ssl;
 
   ## Certificates
-  ssl_certificate /etc/nginx/ssl/${EZUNPAYWALL_NGINX_HOST}.pem;
-  ssl_certificate_key /etc/nginx/ssl/${EZUNPAYWALL_NGINX_HOST}-key.pem;
-  ssl_trusted_certificate /etc/nginx/ssl/${EZUNPAYWALL_NGINX_HOST}.pem;
+  ssl_certificate /etc/nginx/ssl/${NGINX_HOST}.pem;
+  ssl_certificate_key /etc/nginx/ssl/${NGINX_HOST}-key.pem;
+  ssl_trusted_certificate /etc/nginx/ssl/${NGINX_HOST}.pem;
 
   ## Configuration
   proxy_set_header X-Forwarded-Host $host;

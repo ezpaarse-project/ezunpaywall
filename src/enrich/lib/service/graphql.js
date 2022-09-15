@@ -22,7 +22,7 @@ async function askEzunpaywall(data, args, stateName, index, apikey) {
   dois = await map1.filter((elem) => elem !== undefined);
   dois = dois.join('","');
 
-  const url = process.env.EZUNPAYWALL_GRAPHQL_URL || 'http://graphql:3000';
+  const url = process.env.GRAPHQL_HOST || 'http://graphql:3000';
 
   try {
     res = await axios({

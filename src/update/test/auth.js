@@ -24,7 +24,7 @@ const {
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.EZUNPAYWALL_UPDATE_URL || 'http://localhost:4000';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:4000';
 
 describe('Test: auth service in update service', () => {
   before(async function () {

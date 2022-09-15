@@ -2,12 +2,12 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   publicRuntimeConfig: {
-    graphqlURL: process.env.EZUNPAYWALL_GRAPHQL_URL || 'http://localhost:3000',
-    updateURL: process.env.EZUNPAYWALL_UPDATE_URL || 'http://localhost:4000',
-    enrichURL: process.env.EZUNPAYWALL_ENRICH_URL || 'http://localhost:5000',
-    mailURL: process.env.EZUNPAYWALL_MAIL_URL || 'http://localhost:8000',
-    apikeyURL: process.env.EZUNPAYWALL_MAIL_URL || 'http://localhost:12000',
-    apikeymail: process.env.EZUNPAYWALL_MAIL_APIKEY || 'changeme',
+    graphqlURL: process.env.GRAPHQL_HOST || 'http://localhost:3000',
+    updateURL: process.env.UPDATE_HOST || 'http://localhost:4000',
+    enrichURL: process.env.ENRICH_HOST || 'http://localhost:5000',
+    mailURL: process.env.MAIL_HOST || 'http://localhost:8000',
+    apikeyURL: process.env.MAIL_HOST || 'http://localhost:12000',
+    apikeymail: process.env.MAIL_APIKEY || 'changeme',
     elasticOrigin: process.env.ELASTICSEARCH_ORIGIN || 'development'
   },
 

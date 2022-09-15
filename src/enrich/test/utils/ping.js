@@ -5,7 +5,7 @@ const { client } = require('./elastic');
 
 chai.use(chaiHttp);
 
-const enrichURL = process.env.EZUNPAYWALL_ENRICH_URL || 'http://localhost:3000';
+const enrichURL = process.env.ENRICH_HOST || 'http://localhost:3000';
 const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 
 /**

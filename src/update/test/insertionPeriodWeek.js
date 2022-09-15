@@ -32,7 +32,7 @@ const {
 
 const reset = require('./utils/reset');
 
-const updateURL = process.env.EZUNPAYWALL_UPDATE_URL || 'http://localhost:4000';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:4000';
 
 chai.use(chaiHttp);
 

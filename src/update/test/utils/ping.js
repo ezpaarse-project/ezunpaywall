@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.EZUNPAYWALL_UPDATE_URL || 'http://localhost:4000';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:4000';
 const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:12000';
 
