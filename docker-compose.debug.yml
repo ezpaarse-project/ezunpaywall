@@ -23,7 +23,7 @@ services:
       - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
     command: "npm run dev"
     ports:
-      - ${GRAPHQL_PORT:-3000}:3000
+      - ${GRAPHQL_PORT:-59701}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -54,7 +54,7 @@ services:
       - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
     command: "npm run dev"
     ports:
-      - ${UPDATE_PORT:-4000}:3000
+      - ${UPDATE_PORT:-59702}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -78,7 +78,7 @@ services:
       - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
     command: "npm run dev"
     ports:
-      - ${ENRICH_PORT:-5000}:3000
+      - ${ENRICH_PORT:-59703}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -99,7 +99,7 @@ services:
       - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/apikey/log/access
     command: "npm run dev"
     ports:
-      - ${APIKEY_PORT:-7000}:3000
+      - ${APIKEY_PORT:-59704}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -122,7 +122,7 @@ services:
       - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/mail/log/access
     command: "npm run dev"
     ports:
-      - ${MAIL_PORT:-8000}:3000
+      - ${MAIL_PORT:-59705}:3000
     restart: unless-stopped
 
   frontend:
@@ -133,7 +133,7 @@ services:
       - ./src/frontend:/frontend
     command: "npm run dev"
     ports:
-     - ${FRONTEND_PORT:-8080}:3000
+     - ${FRONTEND_PORT:-59706}:3000
     environment:
       # graphql
       - GRAPHQL_HOST
@@ -185,7 +185,7 @@ services:
       - ./src/fakeUnpaywall:/fakeUnpaywall
     command: "npm run dev"
     ports:
-      - 12000:3000
+      - 59799:3000
     restart: unless-stopped
 
   elastic:

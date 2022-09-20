@@ -2,11 +2,11 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   publicRuntimeConfig: {
-    graphqlHost: process.env.GRAPHQL_HOST || 'http://localhost:3000',
-    updateHost: process.env.UPDATE_HOST || 'http://localhost:4000',
-    enrichHost: process.env.ENRICH_HOST || 'http://localhost:5000',
-    mailHost: process.env.MAIL_HOST || 'http://localhost:8000',
-    apikeyHost: process.env.APIKEY_HOST || 'http://localhost:12000',
+    graphqlHost: process.env.GRAPHQL_HOST || 'http://localhost:59701',
+    updateHost: process.env.UPDATE_HOST || 'http://localhost:59702',
+    enrichHost: process.env.ENRICH_HOST || 'http://localhost:59703',
+    apikeyHost: process.env.APIKEY_HOST || 'http://localhost:59704',
+    mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
     apikeyMail: process.env.MAIL_APIKEY || 'changeme',
     elasticOrigin: process.env.ELASTICSEARCH_ORIGIN || 'development'
   },
