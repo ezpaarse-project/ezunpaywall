@@ -58,7 +58,7 @@ export default {
         this.$store.dispatch('snacks/error', this.$t('update.reportsError'))
       }
 
-      const filenames = res.data
+      const filenames = res.data.sort((a, b) => b.createdAt - a.createdAt)
 
       let report
 

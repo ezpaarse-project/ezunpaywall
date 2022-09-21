@@ -128,6 +128,9 @@ export default {
 
       const filenames = res.data
 
+      console.log(res.data)
+    console.log(filenames)
+
       let report
 
       const maxIteratore = filenames.length >= 6 ? 6 : filenames.length

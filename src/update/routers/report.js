@@ -49,8 +49,12 @@ router.get('/reports', async (req, res, next) => {
     return res.status(200).json(report);
   }
   let reports = await fs.readdir(reportsDir);
-  reports = reports.sort((a, b) => a - b);
-  return res.status(200).json(reports.reverse());
+  reports = reports.sort((a, b) => {
+    const [date1] = a.split('.');
+    const [date2] = b.split('.');
+    return new Date(date2).getTime() - new Date(date1).getTime();
+  });
+  return res.status(200).json(reports);
 });
 
 /**
