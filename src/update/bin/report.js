@@ -10,7 +10,7 @@ const reportsDir = path.resolve(__dirname, '..', 'data', 'reports');
  * @param {String}  - state filename
  */
 const createReport = async (state) => {
-  const pathfile = path.resolve(reportsDir, `${format(new Date(), 'yyyy-MM-dd-HH-mm')}.json`);
+  const pathfile = path.resolve(reportsDir, `${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}.json`);
   try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   } catch (err) {

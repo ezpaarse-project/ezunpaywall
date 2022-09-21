@@ -5,8 +5,8 @@ const { client } = require('./elastic');
 
 chai.use(chaiHttp);
 
-const enrichURL = process.env.ENRICH_HOST || 'http://localhost:3000';
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const enrichURL = process.env.ENRICH_HOST || 'http://localhost:59703';
+const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 /**
  * ping all services to see if they are available

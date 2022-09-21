@@ -28,7 +28,7 @@ const {
   deleteAllAPIKey,
 } = require('./utils/apikey');
 
-const enrichService = process.env.ENRICH_HOST || 'http://localhost:5000';
+const enrichService = process.env.ENRICH_HOST || 'http://localhost:59703';
 
 const enrichDir = path.resolve(__dirname, 'sources');
 

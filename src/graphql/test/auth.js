@@ -19,7 +19,7 @@ const {
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:3000';
+const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
 
 const doi1 = '10.1186/s40510-015-0109-6'; // line 1 of fake1.jsonl
 

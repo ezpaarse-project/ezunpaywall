@@ -10,7 +10,7 @@ const {
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 describe('Test: Delete apikey', () => {
   before(async () => {

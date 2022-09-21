@@ -35,7 +35,7 @@ const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.UPDATE_HOST || 'http://localhost:4000';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
 describe('Test: daily update route test', () => {
   before(async function () {

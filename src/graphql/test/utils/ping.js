@@ -4,8 +4,8 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:3000';
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
+const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 /**
  * ping all services to see if they are available

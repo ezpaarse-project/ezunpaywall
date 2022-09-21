@@ -7,8 +7,8 @@ chai.use(chaiHttp);
 const snapshotsDir = path.resolve(__dirname, '..', 'sources');
 
 // TODO put it in config
-const updateURL = process.env.UPDATE_HOST || 'http://localhost:4000';
-const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:12000';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
+const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:59799';
 
 /**
  * delete a snapshot in ezunpaywall

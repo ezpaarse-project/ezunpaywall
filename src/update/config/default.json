@@ -10,7 +10,7 @@
     "port": "6379"
   },
   "mail": {
-    "baseURL": "http://mail:8000",
+    "baseURL": "http://mail:3000",
     "apikey": "changeme"
   },
   "elasticsearch": {

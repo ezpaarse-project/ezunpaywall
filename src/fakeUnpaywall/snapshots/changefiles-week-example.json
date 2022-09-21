@@ -8,7 +8,7 @@
       "lines": 50,
       "size": 19896,
       "to_date": "",
-      "url": "http://fakeUnpaywall:12000/feed/changefiles/fake1.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/feed/changefiles/fake1.jsonl.gz"
     },
     {
       "filename": "fake2.jsonl.gz",
@@ -18,7 +18,7 @@
       "lines": 100,
       "size": 44137,
       "to_date": "",
-      "url": "http://fakeUnpaywall:12000/feed/changefiles/fake2.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/feed/changefiles/fake2.jsonl.gz"
     },
     {
       "filename": "fake3.jsonl.gz",
@@ -28,7 +28,7 @@
       "lines": 2000,
       "size": 877494,
       "to_date": "",
-      "url": "http://fakeUnpaywall:12000/feed/changefiles/fake3.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/feed/changefiles/fake3.jsonl.gz"
     },
     {
       "filename": "fake1-error.jsonl.gz",
@@ -38,7 +38,7 @@
       "lines": 50,
       "size": 19918,
       "to_date": "",
-      "url": "http://fakeUnpaywall:12000/feed/changefiles/fake1-error.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/feed/changefiles/fake1-error.jsonl.gz"
     },
     {
       "filename": "fake1.jsonl.gz",
@@ -48,7 +48,7 @@
       "lines": 50,
       "size": 19896,
       "to_date": "",
-      "url": "http://fakeUnpaywall:12000/feed/changefiles/fake1.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/feed/changefiles/fake1.jsonl.gz"
     }
   ]
 }

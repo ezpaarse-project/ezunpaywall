@@ -39,6 +39,7 @@ async function updatePercentStepDownload(filepath, size, start) {
   } catch (err) {
     logger.error(`Cannot stat ${filepath}`);
     logger.error(err);
+    return;
   }
   if (bytes?.size >= size) {
     return;
@@ -135,7 +136,6 @@ const downloadBigSnapshot = async () => {
   const res = await getSnapshot();
 
   const snapshot = res.data;
-  console.log(res.headers['content-length']);
   const size = res.headers['content-length'];
 
   await download(snapshot, filepath, size);

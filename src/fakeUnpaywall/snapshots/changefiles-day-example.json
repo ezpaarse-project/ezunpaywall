@@ -7,7 +7,7 @@
       "last_modified": "",
       "lines": 50,
       "size": 19896,
-      "url": "http://fakeUnpaywall:12000/daily-feed/changefiles/fake1.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake1.jsonl.gz"
     },
     {
       "date": "",
@@ -16,7 +16,7 @@
       "last_modified": "",
       "lines": 100,
       "size": 44137,
-      "url": "http://fakeUnpaywall:12000/daily-feed/changefiles/fake2.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake2.jsonl.gz"
     },
     {
       "date": "",
@@ -25,7 +25,7 @@
       "last_modified": "",
       "lines": 2000,
       "size": 877494,
-      "url": "http://fakeUnpaywall:12000/daily-feed/changefiles/fake3.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake3.jsonl.gz"
     },
     {
       "date": "",
@@ -34,7 +34,7 @@
       "last_modified": "",
       "lines": 50,
       "size": 19918,
-      "url": "http://fakeUnpaywall:12000/daily-feed/changefiles/fake1-error.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake1-error.jsonl.gz"
     },
     {
       "date": "",
@@ -43,7 +43,7 @@
       "last_modified": "",
       "lines": 50,
       "size": 19896,
-      "url": "http://fakeUnpaywall:12000/daily-feed/changefiles/fake1.jsonl.gz"
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake1.jsonl.gz"
     }
   ]
 }
