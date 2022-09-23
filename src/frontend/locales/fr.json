@@ -144,7 +144,10 @@
     "language": "Langue",
     "contact": "Nous contacter"
   },
-  "weekHistory": {
+  "reportHistory": {
+    "title": "Dernière mises à jour",
+    "noReport": "Pas de rapport disponible",
+    "reportError": "Impossible de récupérer les rapports de mises à jour",
     "insertedDocs": "nouvelles lignes",
     "updatedDocs": "lignes mises à jour"
   },

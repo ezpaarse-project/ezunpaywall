@@ -1,6 +1,15 @@
 <template>
   <section>
-    <v-row>
+    <v-row
+      v-if="reports.length === 0"
+      align="center"
+      justify="center"
+    >
+      <v-col class="text-center" sm="4" cols="12">
+        {{ $t("reportHistory.noReport") }}
+      </v-col>
+    </v-row>
+    <v-row v-else>
       <v-col v-for="report in reports" :key="report.id" cols="12" class="pa-2">
         <success v-if="!report.data.error && report.data.done" :report="report" />
         <in-progress v-if="!report.data.error && !report.data.done" :report="report" />

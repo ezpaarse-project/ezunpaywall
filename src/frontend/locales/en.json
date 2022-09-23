@@ -144,7 +144,10 @@
     "language": "Language",
     "contact": "Contact us"
   },
-  "weekHistory": {
+  "reportHistory": {
+    "title": "Last updates",
+    "noReport": "No report availables",
+    "reportError": "Cannot get update reports",
     "insertedDocs": "new Lines",
     "updatedDocs": "updated Lines"
   },

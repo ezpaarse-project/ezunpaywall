@@ -1,90 +1,134 @@
 <template>
-  <v-row>
-    <v-col
-      v-for="report in reports"
-      :key="report.createdAt"
-      xs="12"
-      sm="6"
-      md="4"
-      lg="2"
-    >
-      <v-card v-if="!report.error && report.done" height="100%" outlined class="white--text" color="green darken-1">
-        <v-container class="pt-5 pl-5 pr-5">
-          <v-layout row>
-            {{ report.createdAt }}
-            <v-spacer />
-            <v-icon right color="white">
-              mdi-check
-            </v-icon>
-          </v-layout>
-        </v-container>
-        <v-container class="pa-5">
-          <v-layout row>
-            <v-icon size="22" class="pr-1" color="white">
-              mdi-update
-            </v-icon>
-            {{ report.totalUpdatedDocs }} {{ $t("weekHistory.updatedDocs") }}
-          </v-layout>
-          <v-layout row>
-            <v-icon size="22" class="pr-1" color="white">
-              mdi-plus
-            </v-icon>
-            {{ report.totalInsertedDocs }} {{ $t("weekHistory.insertedDocs") }}
-          </v-layout>
-        </v-container>
-      </v-card>
+  <v-card class="my-3">
+    <v-toolbar color="secondary" dark flat dense>
+      <v-toolbar-title v-text="$t('reportHistory.title')" />
+    </v-toolbar>
+    <v-container>
+      <v-row
+        v-if="reports.length === 0"
+        align="center"
+        justify="center"
+      >
+        <v-col class="text-center" cols="12" sm="4">
+          {{ $t("reportHistory.noReport") }}
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-col
+          v-for="report in reports"
+          :key="report.createdAt"
+          xs="12"
+          sm="6"
+          md="4"
+          lg="2"
+        >
+          <v-card
+            v-if="!report.error && report.done"
+            height="100%"
+            outlined
+            class="white--text"
+            color="green darken-1"
+          >
+            <v-container class="pt-5 pl-5 pr-5">
+              <v-layout row>
+                {{ report.createdAt }}
+                <v-spacer />
+                <v-icon right color="white">
+                  mdi-check
+                </v-icon>
+              </v-layout>
+            </v-container>
+            <v-container class="pa-5">
+              <v-layout row>
+                <v-icon size="22" class="pr-1" color="white">
+                  mdi-update
+                </v-icon>
+                {{ report.totalUpdatedDocs }}
+                {{ $t("reportHistory.updatedDocs") }}
+              </v-layout>
+              <v-layout row>
+                <v-icon size="22" class="pr-1" color="white">
+                  mdi-plus
+                </v-icon>
+                {{ report.totalInsertedDocs }}
+                {{ $t("reportHistory.insertedDocs") }}
+              </v-layout>
+            </v-container>
+          </v-card>
 
-      <v-card v-if="!report.error && !report.done" height="100%" class="white--text" color="orange darken-1">
-        <v-container class="pt-5 pl-5 pr-5">
-          <v-layout row>
-            {{ report.createdAt }}
-            <v-spacer />
-            <v-progress-circular right :size="20" :width="3" indeterminate color="white" />
-          </v-layout>
-        </v-container>
-        <v-container class="pa-5">
-          <v-layout row>
-            <v-icon size="22" class="pr-1" color="white">
-              mdi-update
-            </v-icon>
-            {{ report.totalUpdatedDocs }} {{ $t("weekHistory.updatedDocs") }}
-          </v-layout>
-          <v-layout row>
-            <v-icon size="22" class="pr-1" color="white">
-              mdi-plus
-            </v-icon>
-            {{ report.totalInsertedDocs }} {{ $t("weekHistory.insertedDocs") }}
-          </v-layout>
-        </v-container>
-      </v-card>
+          <v-card
+            v-if="!report.error && !report.done"
+            height="100%"
+            class="white--text"
+            color="orange darken-1"
+          >
+            <v-container class="pt-5 pl-5 pr-5">
+              <v-layout row>
+                {{ report.createdAt }}
+                <v-spacer />
+                <v-progress-circular
+                  right
+                  :size="20"
+                  :width="3"
+                  indeterminate
+                  color="white"
+                />
+              </v-layout>
+            </v-container>
+            <v-container class="pa-5">
+              <v-layout row>
+                <v-icon size="22" class="pr-1" color="white">
+                  mdi-update
+                </v-icon>
+                {{ report.totalUpdatedDocs }}
+                {{ $t("reportHistory.updatedDocs") }}
+              </v-layout>
+              <v-layout row>
+                <v-icon size="22" class="pr-1" color="white">
+                  mdi-plus
+                </v-icon>
+                {{ report.totalInsertedDocs }}
+                {{ $t("reportHistory.insertedDocs") }}
+              </v-layout>
+            </v-container>
+          </v-card>
 
-      <v-card v-if="report.error" height="100%" class="white--text" color="red darken-1">
-        <v-container class="pt-5 pl-5 pr-5">
-          <v-layout row>
-            {{ report.createdAt }}
-            <v-spacer />
-            <v-icon right color="white">
-              mdi-alert-circle
-            </v-icon>
-          </v-layout>
-        </v-container>
-        <v-container class="pa-5">
-          <v-layout row>
-            <v-icon size="22" class="pr-1" color="white">
-              mdi-update
-            </v-icon>
-            {{ report.totalUpdatedDocs }} {{ $t("weekHistory.updatedDocs") }}
-          </v-layout>
-          <v-layout row>
-            <v-icon size="22" class="pr-1" color="white">
-              mdi-plus
-            </v-icon>
-            {{ report.totalInsertedDocs }} {{ $t("weekHistory.insertedDocs") }}
-          </v-layout>
-        </v-container>
-      </v-card>
-    </v-col>
-  </v-row>
+          <v-card
+            v-if="report.error"
+            height="100%"
+            class="white--text"
+            color="red darken-1"
+          >
+            <v-container class="pt-5 pl-5 pr-5">
+              <v-layout row>
+                {{ report.createdAt }}
+                <v-spacer />
+                <v-icon right color="white">
+                  mdi-alert-circle
+                </v-icon>
+              </v-layout>
+            </v-container>
+            <v-container class="pa-5">
+              <v-layout row>
+                <v-icon size="22" class="pr-1" color="white">
+                  mdi-update
+                </v-icon>
+                {{ report.totalUpdatedDocs }}
+                {{ $t("reportHistory.updatedDocs") }}
+              </v-layout>
+              <v-layout row>
+                <v-icon size="22" class="pr-1" color="white">
+                  mdi-plus
+                </v-icon>
+                {{ report.totalInsertedDocs }}
+                {{ $t("reportHistory.insertedDocs") }}
+              </v-layout>
+            </v-container>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -128,9 +172,6 @@ export default {
 
       const filenames = res.data
 
-      console.log(res.data)
-    console.log(filenames)
-
       let report
 
       const maxIteratore = filenames.length >= 6 ? 6 : filenames.length
@@ -154,8 +195,7 @@ export default {
 }
 </script>
 <style scoped>
-.short{
+.short {
   width: 100%;
 }
-
 </style>

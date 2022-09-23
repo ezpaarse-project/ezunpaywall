@@ -6,14 +6,14 @@
           <v-icon size="22" class="pr-1" color="white">
             mdi-update
           </v-icon>
-          {{ report.data.totalUpdatedDocs }} {{ $t("weekHistory.updatedDocs") }}
+          {{ report.data.totalUpdatedDocs }} {{ $t("reportHistory.updatedDocs") }}
         </v-layout>
         <v-layout row>
           <v-icon size="22" class="pr-1" color="white">
             mdi-plus
           </v-icon>
           {{ report.data.totalInsertedDocs }}
-          {{ $t("weekHistory.insertedDocs") }}
+          {{ $t("reportHistory.insertedDocs") }}
         </v-layout>
       </v-container>
       <v-spacer />
