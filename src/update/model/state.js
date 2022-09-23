@@ -124,7 +124,7 @@ const endState = async () => {
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
   await createReport(state);
-  await sendMailReport(state);
+  // await sendMailReport(state);
   setInUpdate(false);
 };
 
