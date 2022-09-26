@@ -145,7 +145,7 @@
     "contact": "Nous contacter"
   },
   "reportHistory": {
-    "title": "Dernière mises à jour",
+    "title": "Dernières mises à jour",
     "noReport": "Pas de rapport disponible",
     "reportError": "Impossible de récupérer les rapports de mises à jour",
     "insertedDocs": "nouvelles lignes",
