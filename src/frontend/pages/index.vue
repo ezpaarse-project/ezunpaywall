@@ -5,48 +5,48 @@
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('home.title')" />
       </v-toolbar>
-      <v-container
-        v-html="
-          $t('home.intro', { unpaywallURL, blogURL })"
-      />
+      <v-card-text v-html="$t('home.intro', { unpaywallURL, blogURL })" />
     </v-card>
 
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title v-text="$t('home.metrics', { origin: getElasticOrigin()})" />
+        <v-toolbar-title
+          v-text="$t('home.metrics', { origin: getElasticOrigin() })"
+        />
       </v-toolbar>
-      <v-container>
-        <v-card-title v-text="$t('home.globalMetrics')" />
-        <v-card-text>
-          <v-chip color="grey darken-2" text-color="white">
-            {{ $t('home.referencedResources') }} : {{ metrics.doi }}
-          </v-chip>
-          <v-chip color="grey darken-2" text-color="white">
-            {{ $t('home.openAccess') }} : {{ metrics.isOA }}
-          </v-chip>
-        </v-card-text>
-      </v-container>
+      <v-card-title v-text="$t('home.globalMetrics')" />
+      <v-card-text>
+        <v-chip color="grey darken-2" text-color="white">
+          {{ $t("home.referencedResources") }} : {{ metrics.doi }}
+        </v-chip>
+        <v-chip color="grey darken-2" text-color="white">
+          {{ $t("home.openAccess") }} : {{ metrics.isOA }}
+        </v-chip>
+      </v-card-text>
 
       <v-divider />
-      <v-container>
-        <v-card-title v-text="$t('home.openAccessStatus')" />
-        <v-card-text>
-          <v-chip-group active-class="deep-purple accent-4 white--text" column>
-            <v-chip v-for="chip in metricsChips" :key="chip.name" :color="chip.color" text-color="white">
-              <v-icon left color="white">
-                mdi-lock-open
-              </v-icon>
-              {{ chip.name }} : {{ metrics[chip.name] }}
-            </v-chip>
-          </v-chip-group>
-        </v-card-text>
-      </v-container>
+
+      <v-card-title v-text="$t('home.openAccessStatus')" />
+      <v-card-text>
+        <v-chip-group active-class="deep-purple accent-4 white--text" column>
+          <v-chip
+            v-for="chip in metricsChips"
+            :key="chip.name"
+            :color="chip.color"
+            text-color="white"
+          >
+            <v-icon left color="white">
+              mdi-lock-open
+            </v-icon>
+            {{ chip.name }} : {{ metrics[chip.name] }}
+          </v-chip>
+        </v-chip-group>
+      </v-card-text>
     </v-card>
   </section>
 </template>
 
 <script>
-
 import weekHistory from '~/components/update/WeekHistory.vue'
 
 export default {
@@ -58,7 +58,8 @@ export default {
   data: () => {
     return {
       loaded: false,
-      blogURL: 'https://blog.ezpaarse.org/2021/05/communication-unpaywall-un-miroir-et-une-api-a-linist-cnrs/',
+      blogURL:
+        'https://blog.ezpaarse.org/2021/05/communication-unpaywall-un-miroir-et-une-api-a-linist-cnrs/',
       unpaywallURL: 'https://unpaywall.org/',
       metrics: {
         doi: 0,

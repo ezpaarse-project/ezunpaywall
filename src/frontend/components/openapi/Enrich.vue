@@ -1,7 +1,5 @@
 <template>
-  <v-container>
-    <div id="swagger" />
-  </v-container>
+  <div id="swagger" />
 </template>
 
 <script>

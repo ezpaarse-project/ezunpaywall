@@ -4,6 +4,7 @@
     app
     clipped
     fixed
+    disable-resize-watcher
     disable-route-watcher
     width="300"
   >

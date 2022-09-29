@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-bottom-navigation :value="value" color="primary" horizontal>
       <v-btn @click="setValue(0)">
         <span>Enrich</span>
@@ -17,19 +17,11 @@
         <span>Mail</span>
       </v-btn>
     </v-bottom-navigation>
-    <div v-if="value === 0">
-      <Enrich />
-    </div>
-    <div v-if="value === 1">
-      <Update />
-    </div>
-    <div v-if="value === 2">
-      <Apikey />
-    </div>
-    <div v-if="value === 3">
-      <Mail />
-    </div>
-  </v-container>
+    <Enrich v-if="value === 0" />
+    <Update v-if="value === 1" />
+    <Apikey v-if="value === 2" />
+    <Mail v-if="value === 3" />
+  </div>
 </template>
 
 <script>

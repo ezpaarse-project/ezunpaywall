@@ -7,50 +7,47 @@
         <v-spacer />
         <v-icon>mdi-api</v-icon>
       </v-toolbar>
-      <v-container>
+      <v-card-text>
         <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" filled />
         <v-text-field v-model="doi" label="DOI" filled />
-      </v-container>
+      </v-card-text>
 
-      <v-container>
-        <v-toolbar class="secondary" dark dense flat>
-          <v-toolbar-title v-text="$t('graphql.settings')" />
+      <v-toolbar class="secondary" dark dense flat>
+        <v-toolbar-title v-text="$t('graphql.settings')" />
+        <v-menu
+          v-model="attrsHelp"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          max-width="500"
+          offset-x
+          transition="slide-x-transition"
+        >
+          <template #activator="{ on }">
+            <v-btn class="mr-5" icon v-on="on">
+              <v-icon>mdi-help-circle</v-icon>
+            </v-btn>
+          </template>
 
-          <v-menu
-            v-model="attrsHelp"
-            :close-on-content-click="false"
-            :nudge-width="200"
-            max-width="500"
-            offset-x
-            transition="slide-x-transition"
-          >
-            <template #activator="{ on }">
-              <v-btn class="mr-5" icon v-on="on">
-                <v-icon>mdi-help-circle</v-icon>
-              </v-btn>
-            </template>
-
-            <v-card class="text-justify">
-              <v-card-text
-                v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
+          <v-card>
+            <v-card-text
+              class="text-justify"
+              v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
+            />
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                text
+                @click="attrsHelp = false"
+                v-text="$t('close')"
               />
-              <v-card-actions>
-                <v-spacer />
-                <v-btn
-                  class="body-2"
-                  text
-                  @click="attrsHelp = false"
-                  v-text="$t('close')"
-                />
-              </v-card-actions>
-            </v-card>
-          </v-menu>
-        </v-toolbar>
-
-        <v-container>
-          <SettingsGraphql />
-        </v-container>
-      </v-container>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+      </v-toolbar>
+      <v-card-text>
+        <SettingsGraphql />
+      </v-card-text>
     </v-card>
     <v-card class="mx-auto">
       <v-toolbar class="secondary" dark dense flat>
