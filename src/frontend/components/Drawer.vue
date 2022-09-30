@@ -49,7 +49,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item link router :to="{ path: '/update-history' }" ripple>
+      <v-list-item link router :to="{ path: '/report-history' }" ripple>
         <v-list-item-icon>
           <v-icon>mdi-update</v-icon>
         </v-list-item-icon>

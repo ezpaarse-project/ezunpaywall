@@ -3,13 +3,13 @@
     <v-card-actions>
       <v-container>
         <v-layout row>
-          <v-icon size="22" class="pr-1" color="white">
+          <v-icon size="22" class="pr-1">
             mdi-update
           </v-icon>
           {{ report.data.totalUpdatedDocs }} {{ $t("reportHistory.updatedDocs") }}
         </v-layout>
         <v-layout row>
-          <v-icon size="22" class="pr-1" color="white">
+          <v-icon size="22" class="pr-1">
             mdi-plus
           </v-icon>
           {{ report.data.totalInsertedDocs }}
@@ -17,7 +17,7 @@
         </v-layout>
       </v-container>
       <v-spacer />
-      <v-btn text class="mt-5" color="white" @click="showReportJSON(report)">
+      <v-btn text class="mt-5" @click="showReportJSON(report)">
         DETAILS
       </v-btn>
     </v-card-actions>
@@ -28,7 +28,7 @@
           style="height: 100%"
         >
           <v-card-text class="pb-0">
-            <pre>{{ JSON.stringify(report, null, 2) }} </pre>
+            <pre>{{ JSON.stringify(report.data, null, 2) }} </pre>
           </v-card-text>
           <v-card-actions class="pt-0">
             <v-spacer />

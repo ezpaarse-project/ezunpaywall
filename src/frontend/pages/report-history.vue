@@ -10,10 +10,10 @@
       </v-col>
     </v-row>
     <v-row v-else>
-      <v-col v-for="report in reports" :key="report.id" cols="12" class="pa-2">
-        <success v-if="!report.data.error && report.data.done" :report="report" />
-        <in-progress v-if="!report.data.error && !report.data.done" :report="report" />
-        <error v-if="report.data.error" :report="report" />
+      <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
+        <Success v-if="!report.data.error && report.data.done" :report="report" />
+        <In-progress v-if="!report.data.error && !report.data.done" :report="report" />
+        <Error v-if="report.data.error" :report="report" />
       </v-col>
     </v-row>
   </section>
@@ -35,11 +35,20 @@ export default {
   data () {
     return {
       reports: [],
-      reveal: false
+      id: ''
     }
   },
-  mounted () {
-    this.getReports()
+  async mounted () {
+    await this.getReports()
+    this.id = this.$route.query.id
+    if (this.id) {
+      const index = this.reports.findIndex(e => e.data.createdAt === this.id)
+      const reportSelected = this.reports[index]
+      this.reports[index] = reportSelected.reveal = true
+      console.log(reportSelected.id)
+      console.log(reportSelected)
+      this.$vuetify.goTo(`[id='${reportSelected.id}']`)
+    }
   },
   methods: {
     parseReports (report) {

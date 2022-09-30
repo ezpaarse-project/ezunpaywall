@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import weekHistory from '~/components/update/WeekHistory.vue'
+import weekHistory from '~/components/report/WeekHistory.vue'
 
 export default {
   name: 'Home',
