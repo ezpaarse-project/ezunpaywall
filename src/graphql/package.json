@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.13.0",
-    "@hapi/boom": "^9.1.4",
     "config": "^3.3.6",
     "cors": "^2.8.5",
     "date-fns": "^2.24.0",
