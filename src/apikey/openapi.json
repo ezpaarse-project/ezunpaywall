@@ -95,13 +95,6 @@
             "type": "string"
           },
           {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
-          {
             "in": "body",
             "name": "config",
             "description": "config for apikey",
@@ -174,7 +167,12 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -187,13 +185,6 @@
           "application/json"
         ],
         "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
           {
             "in": "path",
             "name": "apikey",
@@ -212,7 +203,12 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ]
       }
     },
     "/apikey/keys": {
@@ -226,15 +222,7 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "update apikey",
@@ -270,6 +258,21 @@
                   }
                 }
               }
+            },
+            "examples": {
+              "example-1": [
+                {
+                  "apikey": "azerty",
+                  "name": "john doe",
+                  "attributes": [
+                    "*"
+                  ],
+                  "access": [
+                    "graphql"
+                  ],
+                  "allowed": true
+                }
+              ]
             }
           },
           "401": {
@@ -278,7 +281,12 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -290,15 +298,7 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          }
-        ],
+        "parameters": [],
         "responses": {
           "204": {
             "description": "all apikey are deleted"
@@ -309,7 +309,12 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -322,13 +327,6 @@
           "application/json"
         ],
         "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
           {
             "in": "body",
             "name": "config",
@@ -399,7 +397,12 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ]
       }
     },
     "/apikey/keys/load": {
@@ -414,13 +417,6 @@
           "application/json"
         ],
         "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
           {
             "in": "body",
             "name": "keys",
@@ -472,7 +468,12 @@
               "$ref": "#/definitions/Unauthorized"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ]
       }
     },
     "/apikey/ping": {
@@ -517,5 +518,12 @@
       }
     }
   },
-  "schemes": []
+  "schemes": [],
+  "securityDefinitions": {
+    "x-api-key": {
+      "name": "API Key",
+      "type": "apiKey",
+      "in": "header"
+    }
+  }
 }

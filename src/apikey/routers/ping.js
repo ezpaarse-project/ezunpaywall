@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const boom = require('@hapi/boom');
 const { pingRedis } = require('../lib/service/redis');
+
+const logger = require('../lib/logger');
 
 router.get('/', async (req, res) => res.status(200).json('apikey service'));
 
@@ -11,7 +12,9 @@ router.get('/ping/redis', async (req, res, next) => {
   try {
     redis = await pingRedis();
   } catch (err) {
-    return next(boom.boomify(err));
+    logger.error('Cannot ping redis');
+    logger.error(err);
+    return next({ message: 'Cannot ping redis', stackTrace: err });
   }
   return res.status(200).json(redis);
 });
