@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const joi = require('joi');
-const boom = require('@hapi/boom');
 
 const { getChangefiles } = require('../lib/service/unpaywall');
 
@@ -8,7 +7,7 @@ router.get('/unpaywall/changefiles', async (req, res, next) => {
   const { error, value } = joi.string().trim().valid('week', 'day').default('day')
     .validate(req.body.interval);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const interval = value;
 
@@ -17,7 +16,7 @@ router.get('/unpaywall/changefiles', async (req, res, next) => {
   try {
     snapshotsInfo = await getChangefiles(interval, new Date(0), new Date());
   } catch (err) {
-    return next(boom.boomify(err));
+    return next({ message: err, stackTrace: err });
   }
 
   const { latest } = req.query;

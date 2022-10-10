@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const boom = require('@hapi/boom');
 const { pingRedis } = require('../lib/service/redis');
 const { elasticClient } = require('../lib/service/elastic');
 
@@ -12,7 +11,7 @@ router.get('/ping/redis', async (req, res, next) => {
   try {
     redis = await pingRedis();
   } catch (err) {
-    return next(boom.boomify(err));
+    return next({ message: 'Cannot ping redis', stackTrace: err });
   }
   return res.status(200).json(redis);
 });
@@ -22,7 +21,7 @@ router.get('/ping/elastic', async (req, res, next) => {
   try {
     elastic = await elasticClient.ping();
   } catch (err) {
-    return next(boom.boomify(err));
+    return next({ message: 'Cannot ping elastic', stackTrace: err });
   }
   return res.status(200).json(elastic);
 });

@@ -2,7 +2,6 @@ const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
 const multer = require('multer');
-const boom = require('@hapi/boom');
 const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
@@ -29,7 +28,7 @@ const upload = multer({ storage });
 router.get('/snapshots', async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req.query.latest);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const latest = value;
 
@@ -38,7 +37,7 @@ router.get('/snapshots', async (req, res, next) => {
     try {
       latestSnapshot = await getMostRecentFile(snapshotsDir);
     } catch (err) {
-      return next(boom.boomify(err));
+      return next({ message: 'Cannot get the lastest snapshot', stackTrace: err });
     }
     return res.status(200).json(latestSnapshot?.filename);
   }
@@ -53,8 +52,8 @@ router.get('/snapshots', async (req, res, next) => {
  * @return 200 file added
  */
 router.post('/snapshots', upload.single('file'), async (req, res, next) => {
-  if (!req?.file) return next(boom.badRequest('File not sent'));
-  return res.status(200).json({ messsage: 'file added' });
+  if (!req?.file) return next({ messsage: 'File not sent' });
+  return res.status(200).json({ messsage: 'File added' });
 });
 
 /**
@@ -66,21 +65,21 @@ router.post('/snapshots', upload.single('file'), async (req, res, next) => {
 router.delete('/snapshots/:filename', async (req, res, next) => {
   const { error, value } = joi.string().required().validate(req.params.filename);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const filename = value;
 
   if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
-    return next(boom.notFound('File not found'));
+    return next({ message: `File [${filename}] not found` });
   }
 
   try {
     await deleteFile(filename);
   } catch (err) {
-    return next(boom.boomify(err));
+    return next({ message: err, stackTrace: err });
   }
 
-  return res.status(200).json({ messsage: `${filename} deleted` });
+  return res.status(200).json({ messsage: `File [${filename}] deleted` });
 });
 
 module.exports = router;

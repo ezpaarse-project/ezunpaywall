@@ -2,7 +2,6 @@ const express = require('express');
 const fs = require('fs-extra');
 const path = require('path');
 const cors = require('cors');
-const boom = require('@hapi/boom');
 
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
@@ -27,8 +26,6 @@ fs.ensureDir(path.resolve(dataDir, 'reports'));
 fs.ensureDir(path.resolve(dataDir, 'states'));
 fs.ensureDir(path.resolve(dataDir, 'snapshots'));
 
-const isDev = process.env.NODE_ENV === 'development';
-
 const app = express();
 
 app.use(express.json());
@@ -45,16 +42,9 @@ app.use(routerUnpaywall);
 app.use(routerOpenapi);
 
 /* Errors and unknown routes */
-app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
-app.use((err, req, res, next) => {
-  const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
+app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
 
-  if (isDev && error.isServer) {
-    error.output.payload.stack = error.stack;
-  }
-
-  res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
-});
+app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
 app.listen(3000, async () => {
   logger.info('ezunpaywall update service listening on 3000');

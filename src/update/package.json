@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.13.0",
-    "@hapi/boom": "^9.1.4",
     "@hapi/joi-date": "^2.0.1",
     "axios": "^0.21.1",
     "config": "^3.3.6",

@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
-const boom = require('@hapi/boom');
 const joi = require('joi').extend(require('@hapi/joi-date'));
 const { format } = require('date-fns');
 
@@ -20,7 +19,7 @@ const checkAuth = require('../middlewares/auth');
 router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().default('unpaywall').validate(req.body.index);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const index = value;
 
@@ -42,7 +41,7 @@ router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
     endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')),
   }).with('endDate', 'startDate').validate(req.body);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const {
     startDate,
@@ -52,12 +51,12 @@ router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
   } = value;
 
   if (new Date(startDate).getTime() > Date.now()) {
-    return res.status(400).json(boom.badRequest('startDate cannot be in the futur'));
+    return res.status(400).json({ message: 'startDate cannot be in the futur' });
   }
 
   if (startDate && endDate) {
     if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
-      return res.status(400).json(boom.badRequest('endDate cannot be lower than startDate'));
+      return res.status(400).json({ message: 'endDate cannot be lower than startDate' });
     }
   }
 
@@ -93,7 +92,7 @@ router.post('/job/changefile/:filename', checkStatus, checkAuth, async (req, res
   const { error } = joi.string().trim().regex(snapshotPattern).required()
     .validate(filename);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const checkBody = joi.object({
     index: joi.string().trim().default('unpaywall'),
@@ -101,12 +100,12 @@ router.post('/job/changefile/:filename', checkStatus, checkAuth, async (req, res
     limit: joi.number().greater(joi.ref('offset')).default(-1),
   }).validate(req.body);
 
-  if (checkBody.error) return next(boom.badRequest(checkBody.error.details[0].message));
+  if (checkBody.error) return res.status(400).json({ message: checkBody.error.details[0].message });
 
   const { index, offset, limit } = checkBody.value;
 
   if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
-    return next(boom.notFound(`${filename} not found`));
+    return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
   const jobConfig = {

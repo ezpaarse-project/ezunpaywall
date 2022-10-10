@@ -1,4 +1,3 @@
-const boom = require('@hapi/boom');
 const { redisClient } = require('../lib/service/redis');
 const logger = require('../lib/logger');
 
@@ -14,7 +13,7 @@ const checkAuth = async (req, res, next) => {
   const apikey = req.get('x-api-key');
 
   if (!apikey) {
-    return res.status(401).json(boom.unauthorized('Not Authorized'));
+    return res.status(401).json({ message: 'Not authorized' });
   }
 
   let key;
@@ -23,7 +22,7 @@ const checkAuth = async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
-    return next(boom.boomify(err));
+    return next({ message: err, stackTrace: err });
   }
 
   let config;
@@ -32,11 +31,11 @@ const checkAuth = async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot parse ${key} in json format`);
     logger.error(err);
-    return next(boom.boomify(err));
+    return next({ message: err, stackTrace: err });
   }
 
   if (!Array.isArray(config?.access) || !config?.access?.includes('update') || !config?.allowed) {
-    return res.status(401).json(boom.unauthorized('Not Authorized'));
+    return res.status(401).json({ message: 'Not authorized' });
   }
 
   return next();
