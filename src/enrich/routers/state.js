@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const path = require('path');
-const boom = require('@hapi/boom');
 const joi = require('joi');
 const fs = require('fs-extra');
 
@@ -40,7 +39,7 @@ const getMostRecentFile = async (dir) => {
 
 router.get('/states', async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const latest = value;
 
@@ -49,13 +48,13 @@ router.get('/states', async (req, res, next) => {
     try {
       latestFile = await getMostRecentFile(statesDir);
     } catch (err) {
-      return next(boom.boomify(err));
+      return next({ message: err, stackTrace: err });
     }
     let state;
     try {
       state = await getState(latestFile?.filename);
     } catch (err) {
-      return next(boom.boomify(err));
+      return next({ message: err, stackTrace: err });
     }
     return res.status(200).json(state);
   }
@@ -64,7 +63,7 @@ router.get('/states', async (req, res, next) => {
   try {
     states = await fs.readdir(statesDir);
   } catch (err) {
-    return next(boom.boomify(err));
+    return next({ message: err, stackTrace: err });
   }
 
   return res.status(200).json(states);
@@ -74,17 +73,17 @@ router.get('/states/:filename', async (req, res, next) => {
   const { filename } = req.params;
   const { error } = joi.string().trim().required().validate(filename);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   if (!await fs.pathExists(path.resolve(statesDir, filename))) {
-    return next(boom.notFound(`"${filename}" not found`));
+    return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
   let state;
   try {
     state = await getState(filename);
   } catch (err) {
-    return next(boom.boomify(err));
+    return next({ message: err, stackTrace: err });
   }
   return res.status(200).json(state);
 });

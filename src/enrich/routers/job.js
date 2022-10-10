@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const boom = require('@hapi/boom');
 const joi = require('joi');
 
 const {
@@ -17,7 +16,9 @@ const checkAuth = require('../middlewares/auth');
 router.post('/job/:filename', checkAuth, async (req, res, next) => {
   const checkParams = joi.string().trim().required().validate(req.params.filename);
 
-  if (checkParams?.error) return next(boom.badRequest(checkParams?.error?.details[0].message));
+  if (checkParams?.error) {
+    return res.status(400).json({ message: checkParams?.error?.details[0].message });
+  }
 
   const id = checkParams?.value;
   // TODO check args with graphqlSyntax
@@ -28,7 +29,7 @@ router.post('/job/:filename', checkAuth, async (req, res, next) => {
     separator: joi.string().trim().default(','),
   }).validate(req.body);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const {
     type, args, index, separator,
