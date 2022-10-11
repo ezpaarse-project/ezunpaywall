@@ -171,7 +171,7 @@ export default {
           url: '/reports'
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('update.reportsError'))
+        this.$store.dispatch('snacks/error', this.$t('reportHistory.reportsError'))
       }
 
       const filenames = res.data
@@ -187,7 +187,7 @@ export default {
             url: `/reports/${filenames[i]}`
           })
         } catch (err) {
-          this.$store.dispatch('snacks/error', this.$t('update.reportsError'))
+          this.$store.dispatch('snacks/error', this.$t('reportHistory.reportError'))
           return
         }
         report = this.parseReports(report.data)

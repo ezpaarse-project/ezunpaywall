@@ -147,7 +147,8 @@
   "reportHistory": {
     "title": "Last updates",
     "noReport": "No report availables",
-    "reportError": "Cannot get update reports",
+    "reportsError": "Cannot get update reports",
+    "reportError": "Cannot get update report",
     "insertedDocs": "new Lines",
     "updatedDocs": "updated Lines"
   },

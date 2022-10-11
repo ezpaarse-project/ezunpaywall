@@ -45,8 +45,6 @@ export default {
       const index = this.reports.findIndex(e => e.data.createdAt === this.id)
       const reportSelected = this.reports[index]
       this.reports[index] = reportSelected.reveal = true
-      console.log(reportSelected.id)
-      console.log(reportSelected)
       this.$vuetify.goTo(`[id='${reportSelected.id}']`)
     }
   },
@@ -73,7 +71,8 @@ export default {
           url: '/reports'
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('update.reportsError'))
+        this.$store.dispatch('snacks/error', this.$t('reportHistory.reportsError'))
+        return
       }
 
       const filenames = res.data.sort((a, b) => b.createdAt - a.createdAt)
@@ -102,7 +101,7 @@ export default {
           url: `/reports/${filename}`
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('update.reportsError'))
+        this.$store.dispatch('snacks/error', this.$t('reportHistory.reportError'))
         return
       }
       return report

@@ -147,7 +147,8 @@
   "reportHistory": {
     "title": "Dernières mises à jour",
     "noReport": "Pas de rapport disponible",
-    "reportError": "Impossible de récupérer les rapports de mises à jour",
+    "reportsError": "Impossible de récupérer les rapports de mises à jour",
+    "reportError": "Impossible de récupérer le rapport de mises à jour",
     "insertedDocs": "nouvelles lignes",
     "updatedDocs": "lignes mises à jour"
   },
