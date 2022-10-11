@@ -27,7 +27,7 @@
         "tags": [
           "enrich"
         ],
-        "summary": "Get enriched file",
+        "summary": "Get enriched files",
         "operationId": "get-enrich-enriched",
         "description": "Get the list of enriched files",
         "produces": [

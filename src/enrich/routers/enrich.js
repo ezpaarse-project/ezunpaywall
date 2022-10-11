@@ -5,6 +5,8 @@ const multer = require('multer');
 const uuid = require('uuid');
 const joi = require('joi');
 
+const checkAuth = require('../middlewares/auth');
+
 const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
 
@@ -19,17 +21,17 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
-router.get('/enriched', async (req, res) => {
+router.get('/enriched', checkAuth, async (req, res) => {
   const files = await fs.readdir(enrichedDir);
   res.status(200).json(files);
 });
 
-router.get('/uploaded', async (req, res) => {
+router.get('/uploaded', checkAuth, async (req, res) => {
   const files = await fs.readdir(uploadDir);
   res.status(200).json(files);
 });
 
-router.get('/enriched/:filename', async (req, res, next) => {
+router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
   const { filename } = req.params;
   const { error } = joi.string().trim().required().validate(filename);
 
@@ -42,7 +44,7 @@ router.get('/enriched/:filename', async (req, res, next) => {
   return res.sendFile(path.resolve(enrichedDir, filename));
 });
 
-router.post('/upload', upload.single('file'), async (req, res, next) => {
+router.post('/upload', checkAuth, upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ message: 'File not sent' });
   const { filename } = req?.file;
   return res.status(200).json({ id: path.parse(filename).name });

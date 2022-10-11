@@ -102,6 +102,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -176,9 +177,9 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
-          .parse(binaryParser)
-          .set('x-api-key', 'user');
+          .parse(binaryParser);
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
@@ -252,6 +253,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -326,6 +328,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -401,6 +404,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -475,6 +479,7 @@ describe('Test: enrich service jsonl', () => {
         const res4 = await chai
           .request(enrichService)
           .get(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 

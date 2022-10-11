@@ -100,6 +100,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -173,9 +174,9 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
-          .parse(binaryParser)
-          .set('x-api-key', 'user');
+          .parse(binaryParser);
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
         try {
@@ -249,6 +250,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -323,6 +325,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -398,6 +401,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -473,6 +477,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
@@ -548,6 +553,7 @@ describe('Test: enrich service csv', () => {
         const res4 = await chai
           .request(enrichURL)
           .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
           .buffer()
           .parse(binaryParser);
 
