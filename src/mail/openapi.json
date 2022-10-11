@@ -16,7 +16,7 @@
   "paths": {
     "/mail/contact": {
       "post": {
-        "summary": "",
+        "summary": "Send mail contact",
         "operationId": "post-mail-contact",
         "responses": {
           "202": {
@@ -44,11 +44,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
+            "$ref": "#/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
@@ -58,20 +54,21 @@
             }
           }
         },
-        "description": "",
-        "parameters": [
+        "description": "Send contact mail",
+        "parameters": [],
+        "security": [
           {
-            "type": "string",
-            "in": "header",
-            "name": "x-api-key",
-            "description": "mail apikey"
+            "x-api-key": []
           }
+        ],
+        "tags": [
+          "mail"
         ]
       }
     },
     "/mail/update-start": {
       "post": {
-        "summary": "",
+        "summary": "Send mail update process start",
         "operationId": "post-mail-update-start",
         "responses": {
           "202": {
@@ -85,11 +82,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
+            "$ref": "#/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
@@ -97,26 +90,24 @@
               "type": "object",
               "properties": {}
             }
-          },
-          "": {
-            "examples": {}
           }
         },
-        "description": "",
-        "parameters": [
+        "description": "Sending of the email informing the launch of the update process",
+        "parameters": [],
+        "security": [
           {
-            "type": "string",
-            "in": "header",
-            "name": "x-api-key",
-            "description": "mail apikey"
+            "x-api-key": []
           }
+        ],
+        "tags": [
+          "mail"
         ]
       },
       "parameters": []
     },
     "/mail/update-end": {
       "post": {
-        "summary": "",
+        "summary": "Send mail update process ended",
         "operationId": "post-mail-update-end",
         "responses": {
           "202": {
@@ -130,11 +121,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
+            "$ref": "#/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
@@ -142,63 +129,113 @@
               "type": "object",
               "properties": {}
             }
-          },
-          "": {
-            "examples": {}
           }
         },
-        "description": "",
-        "parameters": [
+        "description": "Sending of the email with the report of the end of the update",
+        "parameters": [],
+        "security": [
           {
-            "type": "string",
-            "in": "header",
-            "name": "x-api-key",
-            "description": "mail apikey"
+            "x-api-key": []
           }
+        ],
+        "tags": [
+          "mail"
         ]
       },
       "parameters": []
+    },
+    "/mail": {
+      "get": {
+        "summary": "Name of service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "Success": {
+                "message": "mail service"
+              }
+            }
+          }
+        },
+        "operationId": "get-mail",
+        "description": "Get name of mail service",
+        "tags": [
+          "ping"
+        ]
+      }
+    },
+    "/mail/ping": {
+      "get": {
+        "summary": "Ping mail service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "Success": {
+                "message": true
+              }
+            }
+          }
+        },
+        "operationId": "get-mail-ping",
+        "description": "Ping mail service",
+        "tags": [
+          "ping"
+        ]
+      }
     }
   },
   "externalDocs": {
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {
-    "Unauthorized": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "number",
-          "default": 401
-        },
-        "error": {
-          "type": "string",
-          "default": "Unauthorized"
-        },
-        "message": {
-          "type": "string",
-          "default": "Not authorized"
-        }
-      }
-    },
-    "FileNotFound": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "string",
-          "default": "404"
-        },
-        "error": {
-          "type": "string",
-          "default": "Not Found"
-        },
-        "message": {
-          "type": "string",
-          "default": "\"file\" not found"
-        }
-      }
+  "definitions": {},
+  "schemes": [],
+  "securityDefinitions": {
+    "x-api-key": {
+      "name": "API Key",
+      "type": "apiKey",
+      "in": "header"
     }
   },
-  "schemes": []
+  "tags": [
+    {
+      "name": "mail"
+    },
+    {
+      "name": "ping"
+    }
+  ],
+  "responses": {
+    "Not-authorized": {
+      "description": "Your api key does not allow access to this resource",
+      "examples": {
+        "Not authorized": {
+          "message": "Not authorized"
+        }
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "x-examples": {
+          "example-1": {
+            "message": "Not authorized"
+          }
+        }
+      },
+      "headers": {}
+    }
+  }
 }

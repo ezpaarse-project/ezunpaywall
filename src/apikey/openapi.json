@@ -15,8 +15,10 @@
   },
   "tags": [
     {
-      "name": "apikey",
-      "description": "Apikey service to access for other services"
+      "name": "apikey"
+    },
+    {
+      "name": "ping"
     }
   ],
   "paths": {
@@ -26,7 +28,7 @@
           "apikey"
         ],
         "summary": "Get config of apikey",
-        "operationId": "getApikeyConfig",
+        "operationId": "get-apikey-keys-$-apikey",
         "description": "Get config of apikey",
         "produces": [
           "application/json"
@@ -81,7 +83,7 @@
           "apikey"
         ],
         "summary": "Update apikey",
-        "operationId": "putApikey",
+        "operationId": "put-apikeys-keys-$-apikey",
         "description": "Update apikey",
         "produces": [
           "application/json"
@@ -162,10 +164,7 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -178,8 +177,8 @@
         "tags": [
           "apikey"
         ],
-        "summary": "delete apikey",
-        "operationId": "deleteApikey",
+        "summary": "Delete apikey",
+        "operationId": "delete-apikey-keys-$-apikey",
         "description": "Delete apikey",
         "produces": [
           "application/json"
@@ -198,10 +197,7 @@
             "description": "apikey deleted"
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -217,7 +213,7 @@
           "apikey"
         ],
         "summary": "Get all config of all apikey",
-        "operationId": "getApikeyAll",
+        "operationId": "get-apikey-keys",
         "description": "Get all config of all apikey",
         "produces": [
           "application/json"
@@ -260,10 +256,10 @@
               }
             },
             "examples": {
-              "example-1": [
+              "apikey of John Doe": [
                 {
-                  "apikey": "azerty",
-                  "name": "john doe",
+                  "apikey": "azerty123456",
+                  "name": "John Doe",
                   "attributes": [
                     "*"
                   ],
@@ -276,10 +272,7 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -292,8 +285,8 @@
         "tags": [
           "apikey"
         ],
-        "summary": "delete all apikey",
-        "operationId": "deleteApikeyAll",
+        "summary": "Delete all apikey",
+        "operationId": "delete-apikey-keys",
         "description": "Delete all apikey",
         "produces": [
           "application/json"
@@ -304,10 +297,7 @@
             "description": "all apikey are deleted"
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -321,7 +311,7 @@
           "apikey"
         ],
         "summary": "Create apikey",
-        "operationId": "postApikey",
+        "operationId": "post-apikey-keys",
         "description": "Create new apikey",
         "produces": [
           "application/json"
@@ -392,10 +382,7 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -410,8 +397,8 @@
         "tags": [
           "apikey"
         ],
-        "summary": "load apikey",
-        "operationId": "postApikeyLoad",
+        "summary": "Load apikey",
+        "operationId": "post-apikeys-keys-load",
         "description": "Load apikey",
         "produces": [
           "application/json"
@@ -463,10 +450,7 @@
             "description": "all apikey are loaded"
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -476,22 +460,78 @@
         ]
       }
     },
+    "/apikey": {
+      "get": {
+        "summary": "Name of service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "Success": {
+                "message": "apikey service"
+              }
+            }
+          }
+        },
+        "operationId": "get-apikey",
+        "description": "Name of service",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
     "/apikey/ping": {
       "get": {
-        "tags": [
-          "apikey"
-        ],
-        "summary": "ping apikey",
-        "operationId": "getApikeyPing",
+        "summary": "Ping apikey service",
+        "operationId": "get-apikey-ping",
         "description": "Ping apikey service",
         "produces": [
           "application/json"
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "examples": {
+              "Success": true
+            }
           }
-        }
+        },
+        "tags": [
+          "ping"
+        ]
+      }
+    },
+    "/apikey/ping/redis": {
+      "get": {
+        "summary": "Ping redis service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "Success": {
+                "message": true
+              },
+              "Error": {
+                "message": "Cannot ping redis",
+                "stackTrace": ""
+              }
+            }
+          }
+        },
+        "operationId": "get-apikey-ping-redis",
+        "description": "Ping redis service",
+        "tags": [
+          "ping"
+        ]
       }
     }
   },
@@ -499,31 +539,37 @@
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {
-    "Unauthorized": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "number",
-          "default": 401
-        },
-        "error": {
-          "type": "string",
-          "default": "Unauthorized"
-        },
-        "message": {
-          "type": "string",
-          "default": "Not authorized"
-        }
-      }
-    }
-  },
+  "definitions": {},
   "schemes": [],
   "securityDefinitions": {
     "x-api-key": {
       "name": "API Key",
       "type": "apiKey",
       "in": "header"
+    }
+  },
+  "responses": {
+    "Not-authorized": {
+      "description": "Your api key does not allow access to this resource",
+      "examples": {
+        "Not authorized": {
+          "message": "Not authorized"
+        }
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "x-examples": {
+          "example-1": {
+            "message": "Not authorized"
+          }
+        }
+      },
+      "headers": {}
     }
   }
 }

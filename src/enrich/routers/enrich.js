@@ -24,7 +24,7 @@ router.get('/enriched', async (req, res) => {
   res.status(200).json(files);
 });
 
-router.get('/upload', async (req, res) => {
+router.get('/uploaded', async (req, res) => {
   const files = await fs.readdir(uploadDir);
   res.status(200).json(files);
 });

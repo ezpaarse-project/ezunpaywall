@@ -15,8 +15,10 @@
   },
   "tags": [
     {
-      "name": "enrich",
-      "description": "Enrich service"
+      "name": "enrich"
+    },
+    {
+      "name": "ping"
     }
   ],
   "paths": {
@@ -25,9 +27,9 @@
         "tags": [
           "enrich"
         ],
-        "summary": "get enriched file",
-        "operationId": "getEnrichEnriched",
-        "description": "get lists of enriched file",
+        "summary": "Get enriched file",
+        "operationId": "get-enrich-enriched",
+        "description": "Get the list of enriched files",
         "produces": [
           "application/json"
         ],
@@ -43,10 +45,7 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -56,14 +55,14 @@
         ]
       }
     },
-    "/enrich/uploads": {
+    "/enrich/uploaded": {
       "get": {
         "tags": [
           "enrich"
         ],
-        "summary": "get upload file",
-        "operationId": "getEnrichUpload",
-        "description": "get lists of upload file",
+        "summary": "Get uploaded files",
+        "operationId": "get-enriched-uploaded",
+        "description": "Get the lists of uploaded files",
         "produces": [
           "application/json"
         ],
@@ -79,10 +78,7 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -91,13 +87,16 @@
           }
         ]
       },
+      "parameters": []
+    },
+    "/enrich/upload": {
       "post": {
         "tags": [
           "enrich"
         ],
-        "summary": "post upload file",
-        "operationId": "postEnrichUpload",
-        "description": "post a upload file",
+        "summary": "Upload a file",
+        "operationId": "post-enrich-upload",
+        "description": "Upload a file to be enriched",
         "produces": [
           "application/json"
         ],
@@ -110,22 +109,25 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
-        }
-      }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ]
+      },
+      "parameters": []
     },
     "/enrich/enriched/${filename}": {
       "get": {
         "tags": [
           "enrich"
         ],
-        "summary": "get enriched file",
-        "operationId": "getEnrichEnrichedFile",
-        "description": "get enriched file",
+        "summary": "Get enriched file",
+        "operationId": "get-enrich-enriched-$-filename",
+        "description": "Get the enriched file, generated at the end of the enrichment process",
         "produces": [
           "application/json"
         ],
@@ -146,12 +148,14 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
-        }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ]
       }
     },
     "/enrich/job/{filename}": {
@@ -159,9 +163,9 @@
         "tags": [
           "enrich"
         ],
-        "summary": "do enrich job",
-        "operationId": "postEnrichJob",
-        "description": "start enrich job with uploaded file",
+        "summary": "Enrich job",
+        "operationId": "post-enrich-job-$-filename",
+        "description": "Start a enrich job with uploaded file",
         "produces": [
           "application/json"
         ],
@@ -217,10 +221,7 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         },
         "security": [
@@ -235,9 +236,9 @@
         "tags": [
           "enrich"
         ],
-        "summary": "get list of state of enrich job",
-        "operationId": "getEnrichStates",
-        "description": "get enriched file",
+        "summary": "Get list of states of enrich job",
+        "operationId": "get-enrich-states",
+        "description": "Get list of filenames state of enrich process",
         "produces": [
           "application/json"
         ],
@@ -262,10 +263,7 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           }
         }
       }
@@ -276,8 +274,8 @@
           "enrich"
         ],
         "summary": "Get State",
-        "operationId": "getEnrichState",
-        "description": "Get state with his filename",
+        "operationId": "get-enrich-states-$-filename",
+        "description": "Get state of enrich process with his filename",
         "produces": [
           "application/json"
         ],
@@ -328,67 +326,144 @@
             }
           },
           "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
+            "$ref": "#/responses/Not-authorized"
           },
           "404": {
             "description": "File not found",
-            "schema": {
-              "$ref": "#/definitions/FileNotFound"
+            "examples": {
+              "File not found": {
+                "message": "File not found"
+              }
             }
           }
         }
       }
+    },
+    "/enrich": {
+      "get": {
+        "summary": "Name of service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "Success": {
+                "message": "enrich service"
+              }
+            }
+          }
+        },
+        "operationId": "get-enrich",
+        "description": "Get name of enrich service",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
+    "/enrich/ping": {
+      "get": {
+        "summary": "Ping enrich service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "Success": {
+                "message": true
+              }
+            }
+          }
+        },
+        "operationId": "get-enrich-ping",
+        "description": "Ping enrich service",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "x-examples": {}
+          }
+        ],
+        "tags": [
+          "ping"
+        ]
+      }
+    },
+    "/enrich/ping/redis": {
+      "get": {
+        "summary": "Ping redis service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            },
+            "examples": {
+              "Success": {
+                "message": true
+              },
+              "Error": {
+                "message": "Cannot ping redis",
+                "stackTrace": ""
+              }
+            }
+          }
+        },
+        "operationId": "get-enrich-ping-redis",
+        "description": "Ping redis service",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
     }
   },
   "externalDocs": {
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {
-    "Unauthorized": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "number",
-          "default": 401
-        },
-        "error": {
-          "type": "string",
-          "default": "Unauthorized"
-        },
-        "message": {
-          "type": "string",
-          "default": "Not authorized"
-        }
-      }
-    },
-    "FileNotFound": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "string",
-          "default": "404"
-        },
-        "error": {
-          "type": "string",
-          "default": "Not Found"
-        },
-        "message": {
-          "type": "string",
-          "default": "\"file\" not found"
-        }
-      }
-    }
-  },
+  "definitions": {},
   "schemes": [],
   "securityDefinitions": {
     "x-api-key": {
       "name": "API Key",
       "type": "apiKey",
       "in": "header"
+    }
+  },
+  "responses": {
+    "Not-authorized": {
+      "description": "Your api key does not allow access to this resource",
+      "examples": {
+        "Not authorized": {
+          "message": "Not authorized"
+        }
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "x-examples": {
+          "example-1": {
+            "message": "Not authorized"
+          }
+        }
+      },
+      "headers": {}
     }
   }
 }
