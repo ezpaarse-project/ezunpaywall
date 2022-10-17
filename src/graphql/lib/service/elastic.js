@@ -38,21 +38,21 @@ const elasticClient = new Client({
 });
 const pingElastic = async () => {
   let elasticStatus;
-  for (let i = 1; i <= 4; i += 1) {
+  for (let i = 1; i <= 6; i += 1) {
     try {
       elasticStatus = await elasticClient.ping();
     } catch (err) {
       logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${err}`);
     }
     if (elasticStatus?.statusCode !== 200) {
-      logger.error(`ping - wait ${2 * i} seconds`);
-      await new Promise((resolve) => setTimeout(resolve, 2000 * i));
+      logger.error(`ping - wait ${2 ** i} seconds`);
+      await new Promise((resolve) => setTimeout(resolve, 2000 ** i));
     } else {
       logger.info(`ping - ${elasticsearch.host}:${elasticsearch.port} ok`);
       return true;
     }
   }
-  logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port} Fail 4 times`);
+  logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port} Fail 6 times`);
   return false;
 };
 
