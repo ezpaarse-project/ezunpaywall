@@ -46,7 +46,7 @@ const pingElastic = async () => {
     }
     if (elasticStatus?.statusCode !== 200) {
       logger.error(`ping - wait ${2 ** i} seconds`);
-      await new Promise((resolve) => setTimeout(resolve, 2000 ** i));
+      await new Promise((resolve) => setTimeout(resolve, 1000 * i ** 2));
     } else {
       logger.info(`ping - ${elasticsearch.host}:${elasticsearch.port} ok`);
       return true;
