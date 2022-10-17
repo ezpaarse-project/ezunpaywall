@@ -26,10 +26,10 @@ services:
     volumes:
       - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
       - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
-      - ${EZMETA_CERTS_PATH}:/graphql/certs
+      - ${EZMETA_CERTS_PATH:-./src/graphql/certs/ca.crt}:/graphql/certs
     command: "npm start"
     ports:
-      - ${GRAPHQL_PORT:-3000}:3000
+      - ${GRAPHQL_PORT:-59701}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -63,10 +63,10 @@ services:
       - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
       - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
       - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
-      - ${EZMETA_CERTS_PATH}:/update/certs
+      - ${EZMETA_CERTS_PATH-./src/update/certs/ca.crt}:/update/certs
     command: "npm start"
     ports:
-      - ${UPDATE_PORT:-4000}:3000
+      - ${UPDATE_PORT:-59702}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -92,7 +92,7 @@ services:
       - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
     command: "npm start"
     ports:
-      - ${ENRICH_PORT:-5000}:3000
+      - ${ENRICH_PORT:-59703}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -114,7 +114,7 @@ services:
       - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/apikey/log/access
     command: "npm start"
     ports:
-      - 7000:3000
+      - ${APIKEY_PORT:-59704}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -139,7 +139,7 @@ services:
       - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/mail/log/access
     command: "npm start"
     ports:
-      - ${MAIL_PORT:-8000}:3000
+      - ${MAIL_PORT:-59705}:3000
     restart: unless-stopped
 
   frontend:
@@ -151,7 +151,7 @@ services:
     container_name: ezunpaywall-frontend-prod
     command: "npm run start"
     ports:
-     - ${FRONTEND_PORT:-8080}:3000
+     - ${FRONTEND_PORT:-59706}:3000
     environment:
       # graphql
       - GRAPHQL_HOST
