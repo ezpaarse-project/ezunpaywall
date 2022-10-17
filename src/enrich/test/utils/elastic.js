@@ -93,7 +93,7 @@ const insertDataUnpaywall = async () => {
   try {
     await client.bulk({ refresh: true, body });
   } catch (err) {
-    console.error(`insertUPW: ${err}`);
+    console.error(`insertDataUnpaywall: ${err}`);
   }
 };
 

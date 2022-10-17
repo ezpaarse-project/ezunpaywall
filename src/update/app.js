@@ -48,8 +48,9 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, async () => {
   logger.info('ezunpaywall update service listening on 3000');
-  pingElastic();
   pingRedis();
-  await initAlias('unpaywall', unpaywallMapping, 'upw');
+  pingElastic().then(() => {
+    initAlias('unpaywall', unpaywallMapping, 'upw');
+  });
   await cronDeleteOutFiles.start();
 });
