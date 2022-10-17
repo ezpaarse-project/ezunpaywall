@@ -34,8 +34,8 @@ services:
     environment:
       - NODE_ENV=development
       # unpaywall
-      - UPDATE_UNPAYWALL_APIKEY
-      - UPDATE_UNPAYWALL_HOST
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_HOST
       # elastic
       - ELASTICSEARCH_HOST
       - ELASTICSEARCH_PORT

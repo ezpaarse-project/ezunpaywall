@@ -1,8 +1,8 @@
 {
   "node": "NODE_ENV",
   "unpaywall": {
-    "host": "UPDATE_UNPAYWALL_HOST",
-    "apikey": "UPDATE_UNPAYWALL_APIKEY"
+    "host": "UNPAYWALL_HOST",
+    "apikey": "UNPAYWALL_APIKEY"
   },
   "redis":  {
     "host": "REDIS_HOST",

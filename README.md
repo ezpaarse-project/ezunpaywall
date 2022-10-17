@@ -38,7 +38,7 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 
 | name | description |
 | --- | --- |
-| UPDATE_UNPAYWALL_APIKEY | api key to access weekly unpaywall updates |
+| UNPAYWALL_APIKEY | api key to access weekly unpaywall updates |
 #### Mail
 
 | name | description |

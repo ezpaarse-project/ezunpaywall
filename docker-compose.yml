@@ -47,8 +47,8 @@ services:
       - http_proxy
       - https_proxy
       # unpaywall
-      - UPDATE_UNPAYWALL_APIKEY
-      - UPDATE_UNPAYWALL_HOST=http://api.unpaywall.org
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_HOST=http://api.unpaywall.org
       # elastic
       - ELASTICSEARCH_HOST
       - ELASTICSEARCH_PORT
