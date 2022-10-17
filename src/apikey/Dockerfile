@@ -6,7 +6,7 @@ ENV NODE_ENV production
 WORKDIR /apikey
 
 COPY package*.json /apikey/
-RUN npm ci --only=production
+RUN npm ci --no-optional --only=production
 COPY . /apikey
 
 EXPOSE 7000

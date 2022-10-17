@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "description": "The update service allows to update the mirror data. This service queries unpaywall to get the snapshots and inserts their content in an elasticsearch index ",
     "version": "1.0.0",
@@ -21,43 +21,40 @@
         ],
         "summary": "Start process download and insert snapshot from unpaywall",
         "operationId": "post-update-job-snapshot",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "index",
-            "description": "index where the unpaywall data will be inserted",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "required": [
-                "userName"
-              ],
-              "properties": {
-                "interval": {
-                  "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userName"
+                ],
+                "properties": {
+                  "interval": {
+                    "type": "string"
+                  }
                 }
               }
             }
-          }
-        ],
+          },
+          "description": "index where the unpaywall data will be inserted"
+        },
         "responses": {
           "202": {
             "description": "Process start"
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           },
           "409": {
             "description": "Update in progress",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              }
             }
           }
         },
@@ -76,59 +73,74 @@
         ],
         "summary": "Start process download and insert changefiles from unpaywall",
         "operationId": "post-update-job-period",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "config",
-            "description": "config for process",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "required": [
-                "userName"
-              ],
-              "properties": {
-                "index": {
-                  "type": "string"
-                },
-                "interval": {
-                  "type": "string"
-                },
-                "startDate": {
-                  "type": "string"
-                },
-                "endDate": {
-                  "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userName"
+                ],
+                "properties": {
+                  "index": {
+                    "type": "string"
+                  },
+                  "interval": {
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "type": "string"
+                  },
+                  "endDate": {
+                    "type": "string"
+                  }
                 }
               }
             }
-          }
-        ],
+          },
+          "description": "config for process"
+        },
         "responses": {
           "202": {
             "description": "Process start"
           },
           "400": {
             "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              },
+              "Test1": {
+                "examples": {
+                  "response": {
+                    "value": "changeme"
+                  }
+                }
+              },
+              "Test2": {
+                "examples": {
+                  "response": {
+                    "value": "changeme"
+                  }
+                }
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           },
           "409": {
             "description": "Update in progress",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              }
             }
           }
         },
@@ -147,81 +159,94 @@
         ],
         "summary": "Start process insert changesfiles downloaded on ezunpaywall",
         "operationId": "post-update-job-changefile-$-filename",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "filename",
             "description": "filename",
             "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "config",
-            "description": "config for process",
-            "required": false,
             "schema": {
-              "type": "object",
-              "properties": {
-                "index": {
-                  "type": "string"
-                },
-                "offset": {
-                  "type": "integer"
-                },
-                "limit": {
-                  "type": "integer"
-                }
-              }
+              "type": "string"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "index": {
+                    "type": "string"
+                  },
+                  "offset": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "description": "config for process"
+        },
         "responses": {
           "202": {
             "description": "Process start"
           },
           "400": {
             "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           },
           "404": {
             "description": "File not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "File not found"
+                    }
+                  }
                 }
               },
-              "x-examples": {
-                "example-1": {
-                  "message": "File not found"
-                }
-              }
-            },
-            "examples": {
               "File not found": {
-                "message": "File not found"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "File not found"
+                    }
+                  }
+                }
               }
             }
           },
           "409": {
             "description": "Update in progress",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              }
             }
           }
         },
@@ -241,64 +266,75 @@
         "summary": "Get reports",
         "operationId": "get-update-reports",
         "description": "Get list of reports or latest report",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "query",
             "name": "latest",
             "description": "latest",
             "required": false,
-            "type": "boolean"
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "report",
-            "examples": {
-              "List of reports": [
-                "2022-10-10 13:10:51.json",
-                "2022-10-10 13:10:50.json",
-                "2022-10-10 13:10:49.json",
-                "2022-10-10 13:10:48.json",
-                "2022-10-10 13:10:47.json",
-                "2022-10-10 13:10:46.json",
-                "2022-10-10 13:10:45.json",
-                "2022-10-10 13:10:44.json"
-              ],
-              "Latest report": {
-                "done": true,
-                "createdAt": "2022-10-10T13:10:46.828Z",
-                "endAt": "2022-10-10T13:10:47.084Z",
-                "steps": [
-                  {
-                    "task": "getChangefiles",
-                    "took": 0.002,
-                    "status": "success"
-                  },
-                  {
-                    "task": "download",
-                    "file": "fake2.jsonl.gz",
-                    "percent": 100,
-                    "took": 0,
-                    "status": "success"
-                  },
-                  {
-                    "task": "insert",
-                    "index": "unpaywall-test",
-                    "file": "fake2.jsonl.gz",
-                    "linesRead": 100,
-                    "insertedDocs": 100,
-                    "updatedDocs": 0,
-                    "failedDocs": 0,
-                    "percent": 100,
-                    "took": 0.202,
-                    "status": "success"
+            "content": {
+              "List of reports": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      "2022-10-10 13:10:51.json",
+                      "2022-10-10 13:10:50.json",
+                      "2022-10-10 13:10:49.json",
+                      "2022-10-10 13:10:48.json",
+                      "2022-10-10 13:10:47.json",
+                      "2022-10-10 13:10:46.json",
+                      "2022-10-10 13:10:45.json",
+                      "2022-10-10 13:10:44.json"
+                    ]
                   }
-                ],
-                "error": false,
-                "took": 0.256
+                }
+              },
+              "Latest report": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "done": true,
+                      "createdAt": "2022-10-10T13:10:46.828Z",
+                      "endAt": "2022-10-10T13:10:47.084Z",
+                      "steps": [
+                        {
+                          "task": "getChangefiles",
+                          "took": 0.002,
+                          "status": "success"
+                        },
+                        {
+                          "task": "download",
+                          "file": "fake2.jsonl.gz",
+                          "percent": 100,
+                          "took": 0,
+                          "status": "success"
+                        },
+                        {
+                          "task": "insert",
+                          "index": "unpaywall-test",
+                          "file": "fake2.jsonl.gz",
+                          "linesRead": 100,
+                          "insertedDocs": 100,
+                          "updatedDocs": 0,
+                          "failedDocs": 0,
+                          "percent": 100,
+                          "took": 0.202,
+                          "status": "success"
+                        }
+                      ],
+                      "error": false,
+                      "took": 0.256
+                    }
+                  }
+                }
               }
             }
           }
@@ -313,113 +349,128 @@
         "summary": "Get report",
         "operationId": "get-update-reports-$-filename",
         "description": "Get report with his filename",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "filename",
             "description": "filename",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "report",
-            "examples": {
-              "Report": {
-                "done": true,
-                "createdAt": "2022-10-10T13:10:46.828Z",
-                "endAt": "2022-10-10T13:10:47.084Z",
-                "steps": [
-                  {
-                    "task": "getChangefiles",
-                    "took": 0.002,
-                    "status": "success"
-                  },
-                  {
-                    "task": "download",
-                    "file": "fake2.jsonl.gz",
-                    "percent": 100,
-                    "took": 0,
-                    "status": "success"
-                  },
-                  {
-                    "task": "insert",
-                    "index": "unpaywall-test",
-                    "file": "fake2.jsonl.gz",
-                    "linesRead": 100,
-                    "insertedDocs": 100,
-                    "updatedDocs": 0,
-                    "failedDocs": 0,
-                    "percent": 100,
-                    "took": 0.202,
-                    "status": "success"
-                  }
-                ],
-                "error": false,
-                "took": 0.256
-              }
-            },
-            "schema": {
-              "type": "object",
-              "x-examples": {
-                "example-1": {
-                  "done": true,
-                  "createdAt": "2022-10-10T13:10:46.828Z",
-                  "endAt": "2022-10-10T13:10:47.084Z",
-                  "steps": [
-                    {
-                      "task": "getChangefiles",
-                      "took": 0.002,
-                      "status": "success"
-                    },
-                    {
-                      "task": "download",
-                      "file": "fake2.jsonl.gz",
-                      "percent": 100,
-                      "took": 0,
-                      "status": "success"
-                    },
-                    {
-                      "task": "insert",
-                      "index": "unpaywall-test",
-                      "file": "fake2.jsonl.gz",
-                      "linesRead": 100,
-                      "insertedDocs": 100,
-                      "updatedDocs": 0,
-                      "failedDocs": 0,
-                      "percent": 100,
-                      "took": 0.202,
-                      "status": "success"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "done": true,
+                      "createdAt": "2022-10-10T13:10:46.828Z",
+                      "endAt": "2022-10-10T13:10:47.084Z",
+                      "steps": [
+                        {
+                          "task": "getChangefiles",
+                          "took": 0.002,
+                          "status": "success"
+                        },
+                        {
+                          "task": "download",
+                          "file": "fake2.jsonl.gz",
+                          "percent": 100,
+                          "took": 0,
+                          "status": "success"
+                        },
+                        {
+                          "task": "insert",
+                          "index": "unpaywall-test",
+                          "file": "fake2.jsonl.gz",
+                          "linesRead": 100,
+                          "insertedDocs": 100,
+                          "updatedDocs": 0,
+                          "failedDocs": 0,
+                          "percent": 100,
+                          "took": 0.202,
+                          "status": "success"
+                        }
+                      ],
+                      "error": false,
+                      "took": 0.256
                     }
-                  ],
-                  "error": false,
-                  "took": 0.256
+                  }
+                }
+              },
+              "Report": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "done": true,
+                      "createdAt": "2022-10-10T13:10:46.828Z",
+                      "endAt": "2022-10-10T13:10:47.084Z",
+                      "steps": [
+                        {
+                          "task": "getChangefiles",
+                          "took": 0.002,
+                          "status": "success"
+                        },
+                        {
+                          "task": "download",
+                          "file": "fake2.jsonl.gz",
+                          "percent": 100,
+                          "took": 0,
+                          "status": "success"
+                        },
+                        {
+                          "task": "insert",
+                          "index": "unpaywall-test",
+                          "file": "fake2.jsonl.gz",
+                          "linesRead": 100,
+                          "insertedDocs": 100,
+                          "updatedDocs": 0,
+                          "failedDocs": 0,
+                          "percent": 100,
+                          "took": 0.202,
+                          "status": "success"
+                        }
+                      ],
+                      "error": false,
+                      "took": 0.256
+                    }
+                  }
                 }
               }
             }
           },
           "404": {
             "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "File not found"
+                    }
+                  }
                 }
               },
-              "x-examples": {
-                "example-1": {
-                  "message": "File not found"
-                }
-              }
-            },
-            "examples": {
               "File not found": {
-                "message": "File not found"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "File not found"
+                    }
+                  }
+                }
               }
             }
           }
@@ -434,29 +485,34 @@
         "summary": "Get snapshots",
         "operationId": "get-update-snapshots",
         "description": "Get list of snapshot or latest snapshot",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "query",
             "name": "latest",
             "description": "latest",
             "required": false,
-            "type": "boolean"
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "snapshot",
-            "examples": {
-              "Lists of snapshots": [
-                "snapshot-2022-10-10.jsonl.gz"
-              ]
+            "content": {
+              "Lists of snapshots": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      "snapshot-2022-10-10.jsonl.gz"
+                    ]
+                  }
+                }
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -474,16 +530,15 @@
         "summary": "Get snapshot",
         "operationId": "get-update-snapshots-$-filename",
         "description": "Get snapshot with his filename",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "filename",
             "description": "filename",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -492,22 +547,30 @@
           },
           "404": {
             "description": "File not found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "File not found"
+                    }
+                  }
                 }
               },
-              "x-examples": {
-                "example-1": {
-                  "message": "File not found"
-                }
-              }
-            },
-            "examples": {
               "File not found": {
-                "message": "File not found"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "File not found"
+                    }
+                  }
+                }
               }
             }
           }
@@ -527,38 +590,41 @@
         "summary": "Get state",
         "operationId": "get-update-states",
         "description": "Get latest state",
-        "produces": [
-          "application/json"
-        ],
         "responses": {
           "200": {
             "description": "state",
-            "examples": {
+            "content": {
               "Latest state": {
-                "done": true,
-                "createdAt": "2022-10-10T13:10:51.417Z",
-                "endAt": "2022-10-10T13:10:51.584Z",
-                "steps": [
-                  {
-                    "task": "getChangefiles",
-                    "took": 0.002,
-                    "status": "success"
-                  },
-                  {
-                    "task": "insert",
-                    "index": "unpaywall-test",
-                    "file": "fake1.jsonl.gz",
-                    "linesRead": 50,
-                    "insertedDocs": 50,
-                    "updatedDocs": 0,
-                    "failedDocs": 0,
-                    "percent": 100,
-                    "took": 0.165,
-                    "status": "success"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "done": true,
+                      "createdAt": "2022-10-10T13:10:51.417Z",
+                      "endAt": "2022-10-10T13:10:51.584Z",
+                      "steps": [
+                        {
+                          "task": "getChangefiles",
+                          "took": 0.002,
+                          "status": "success"
+                        },
+                        {
+                          "task": "insert",
+                          "index": "unpaywall-test",
+                          "file": "fake1.jsonl.gz",
+                          "linesRead": 50,
+                          "insertedDocs": 50,
+                          "updatedDocs": 0,
+                          "failedDocs": 0,
+                          "percent": 100,
+                          "took": 0.165,
+                          "status": "success"
+                        }
+                      ],
+                      "error": false,
+                      "took": 0.167
+                    }
                   }
-                ],
-                "error": false,
-                "took": 0.167
+                }
               }
             }
           }
@@ -573,15 +639,24 @@
         "summary": "Get status",
         "operationId": "get-update-status",
         "description": "Get status",
-        "produces": [
-          "application/json"
-        ],
         "responses": {
           "200": {
             "description": "status",
-            "examples": {
-              "No process in progress": false,
-              "Update in progress": true
+            "content": {
+              "No process in progress": {
+                "examples": {
+                  "response": {
+                    "value": false
+                  }
+                }
+              },
+              "Update in progress": {
+                "examples": {
+                  "response": {
+                    "value": true
+                  }
+                }
+              }
             }
           }
         }
@@ -595,91 +670,99 @@
         "summary": "Get changefiles from unpaywall",
         "operationId": "get-update-unpaywall-changefiles",
         "description": "Get changefiles from unpaywall",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "interval",
-            "description": "interval of changefiles (\"week\" or \"day\")",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "index": {
-                  "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "index": {
+                    "type": "string"
+                  }
                 }
               }
             }
-          }
-        ],
+          },
+          "description": "interval of changefiles (\"week\" or \"day\")"
+        },
         "responses": {
           "200": {
             "description": "status",
-            "examples": {
-              "List of daily changefiles of unpaywall": [
-                {
-                  "date": "2022-10-10",
-                  "filename": "fake1.jsonl.gz",
-                  "filetype": "jsonl",
-                  "last_modified": "2021-10-09T13:10:50",
-                  "lines": 50,
-                  "size": 19896,
-                  "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake1.jsonl.gz"
-                },
-                {
-                  "date": "2022-10-09",
-                  "filename": "fake2.jsonl.gz",
-                  "filetype": "jsonl",
-                  "last_modified": "2022-10-09T13:10:50",
-                  "lines": 100,
-                  "size": 44137,
-                  "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake2.jsonl.gz"
-                },
-                {
-                  "date": "2022-10-08",
-                  "filename": "fake3.jsonl.gz",
-                  "filetype": "jsonl",
-                  "last_modified": "2022-10-08T13:10:50",
-                  "lines": 2000,
-                  "size": 877494,
-                  "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake3.jsonl.gz"
+            "content": {
+              "List of daily changefiles of unpaywall": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "date": "2022-10-10T00:00:00.000Z",
+                        "filename": "fake1.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2021-10-09T13:10:50.000Z",
+                        "lines": 50,
+                        "size": 19896,
+                        "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake1.jsonl.gz"
+                      },
+                      {
+                        "date": "2022-10-09T00:00:00.000Z",
+                        "filename": "fake2.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2022-10-09T13:10:50.000Z",
+                        "lines": 100,
+                        "size": 44137,
+                        "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake2.jsonl.gz"
+                      },
+                      {
+                        "date": "2022-10-08T00:00:00.000Z",
+                        "filename": "fake3.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2022-10-08T13:10:50.000Z",
+                        "lines": 2000,
+                        "size": 877494,
+                        "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake3.jsonl.gz"
+                      }
+                    ]
+                  }
                 }
-              ],
-              "List of weekly changefiles of unpaywall": [
-                {
-                  "date": "2022-10-10",
-                  "filename": "fake1.jsonl.gz",
-                  "filetype": "jsonl",
-                  "last_modified": "2021-10-09T13:10:50",
-                  "lines": 50,
-                  "size": 19896,
-                  "url": "http://fakeUnpaywall:3000/feed/changefiles/fake1.jsonl.gz"
-                },
-                {
-                  "date": "2022-10-09",
-                  "filename": "fake2.jsonl.gz",
-                  "filetype": "jsonl",
-                  "last_modified": "2022-10-09T13:10:50",
-                  "lines": 100,
-                  "size": 44137,
-                  "url": "http://fakeUnpaywall:3000/feed/changefiles/fake2.jsonl.gz"
-                },
-                {
-                  "date": "2022-10-08",
-                  "filename": "fake3.jsonl.gz",
-                  "filetype": "jsonl",
-                  "last_modified": "2022-10-08T13:10:50",
-                  "lines": 2000,
-                  "size": 877494,
-                  "url": "http://fakeUnpaywall:3000/feed/changefiles/fake3.jsonl.gz"
+              },
+              "List of weekly changefiles of unpaywall": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "date": "2022-10-10T00:00:00.000Z",
+                        "filename": "fake1.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2021-10-09T13:10:50.000Z",
+                        "lines": 50,
+                        "size": 19896,
+                        "url": "http://fakeUnpaywall:3000/feed/changefiles/fake1.jsonl.gz"
+                      },
+                      {
+                        "date": "2022-10-09T00:00:00.000Z",
+                        "filename": "fake2.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2022-10-09T13:10:50.000Z",
+                        "lines": 100,
+                        "size": 44137,
+                        "url": "http://fakeUnpaywall:3000/feed/changefiles/fake2.jsonl.gz"
+                      },
+                      {
+                        "date": "2022-10-08T00:00:00.000Z",
+                        "filename": "fake3.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2022-10-08T13:10:50.000Z",
+                        "lines": 2000,
+                        "size": 877494,
+                        "url": "http://fakeUnpaywall:3000/feed/changefiles/fake3.jsonl.gz"
+                      }
+                    ]
+                  }
                 }
-              ]
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -695,22 +778,30 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "update service"
+                    }
+                  }
                 }
               },
-              "x-examples": {
-                "example-1": {
-                  "message": "update service"
-                }
-              }
-            },
-            "examples": {
               "Success": {
-                "message": "update service"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "update service"
+                    }
+                  }
+                }
               }
             }
           }
@@ -728,22 +819,30 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "boolean"
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "boolean"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": true
+                    }
+                  }
                 }
               },
-              "x-examples": {
-                "example-1": {
-                  "message": true
-                }
-              }
-            },
-            "examples": {
               "Success": {
-                "message": true
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": true
+                    }
+                  }
+                }
               }
             }
           }
@@ -761,16 +860,30 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
               "Success": {
-                "message": true
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": true
+                    }
+                  }
+                }
               },
               "Error": {
-                "message": false
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": false
+                    }
+                  }
+                }
               }
             }
           }
@@ -788,25 +901,39 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "boolean"
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "boolean"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": true
+                    }
+                  }
                 }
               },
-              "x-examples": {
-                "example-1": {
-                  "message": true
-                }
-              }
-            },
-            "examples": {
               "Success": {
-                "message": true
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": true
+                    }
+                  }
+                }
               },
               "Error": {
-                "message": false
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": false
+                    }
+                  }
+                }
               }
             }
           }
@@ -823,15 +950,6 @@
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {},
-  "schemes": [],
-  "securityDefinitions": {
-    "x-api-key": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "API Key"
-    }
-  },
   "tags": [
     {
       "name": "ping"
@@ -840,28 +958,45 @@
       "name": "update"
     }
   ],
-  "responses": {
-    "Not-authorized": {
-      "description": "Your api key does not allow access to this resource",
-      "examples": {
-        "Not authorized": {
-          "message": "Not authorized"
-        }
-      },
-      "schema": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
+  "components": {
+    "responses": {
+      "Not-authorized": {
+        "description": "Your api key does not allow access to this resource",
+        "headers": {},
+        "content": {
+          "*/*": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "x-examples": {
+                "example-1": {
+                  "message": "Not authorized"
+                }
+              }
+            }
+          },
+          "Not authorized": {
+            "examples": {
+              "response": {
+                "value": {
+                  "message": "Not authorized"
+                }
+              }
+            }
           }
-        },
-        "x-examples": {
-          "example-1": {
-            "message": "Not authorized"
-          }
         }
-      },
-      "headers": {}
+      }
+    },
+    "securitySchemes": {
+      "x-api-key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "API Key"
+      }
     }
   }
 }

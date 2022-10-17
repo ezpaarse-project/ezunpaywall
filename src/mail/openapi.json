@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "description": "The mail service allows the sending of mail for the different services",
     "version": "1.0.0",
@@ -24,38 +24,67 @@
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
               "email expected": {
-                "message": "email are expected"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "email are expected"
+                    }
+                  }
+                }
               },
               "invalid email": {
-                "message": "[\"john\"] is invalid email"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "[\"john\"] is invalid email"
+                    }
+                  }
+                }
               },
               "subject expected": {
-                "message": "subject are expected"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "subject are expected"
+                    }
+                  }
+                }
               },
               "message expected": {
-                "message": "message are expected"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "message are expected"
+                    }
+                  }
+                }
               }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
           }
         },
         "description": "Send contact mail",
-        "parameters": [],
         "security": [
           {
             "x-api-key": []
@@ -76,24 +105,31 @@
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
           }
         },
         "description": "Sending of the email informing the launch of the update process",
-        "parameters": [],
         "security": [
           {
             "x-api-key": []
@@ -115,24 +151,31 @@
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
           }
         },
         "description": "Sending of the email with the report of the end of the update",
-        "parameters": [],
         "security": [
           {
             "x-api-key": []
@@ -150,13 +193,21 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
               "Success": {
-                "message": "mail service"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "mail service"
+                    }
+                  }
+                }
               }
             }
           }
@@ -174,13 +225,21 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
               "Success": {
-                "message": true
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": true
+                    }
+                  }
+                }
               }
             }
           }
@@ -197,15 +256,6 @@
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {},
-  "schemes": [],
-  "securityDefinitions": {
-    "x-api-key": {
-      "name": "API Key",
-      "type": "apiKey",
-      "in": "header"
-    }
-  },
   "tags": [
     {
       "name": "mail"
@@ -214,28 +264,45 @@
       "name": "ping"
     }
   ],
-  "responses": {
-    "Not-authorized": {
-      "description": "Your api key does not allow access to this resource",
-      "examples": {
-        "Not authorized": {
-          "message": "Not authorized"
-        }
-      },
-      "schema": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
+  "components": {
+    "responses": {
+      "Not-authorized": {
+        "description": "Your api key does not allow access to this resource",
+        "headers": {},
+        "content": {
+          "*/*": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "x-examples": {
+                "example-1": {
+                  "message": "Not authorized"
+                }
+              }
+            }
+          },
+          "Not authorized": {
+            "examples": {
+              "response": {
+                "value": {
+                  "message": "Not authorized"
+                }
+              }
+            }
           }
-        },
-        "x-examples": {
-          "example-1": {
-            "message": "Not authorized"
-          }
         }
-      },
-      "headers": {}
+      }
+    },
+    "securitySchemes": {
+      "x-api-key": {
+        "name": "API Key",
+        "type": "apiKey",
+        "in": "header"
+      }
     }
   }
 }

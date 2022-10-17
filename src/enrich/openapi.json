@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "description": "The enrichment service allows to enrich a csv or jsonl file which contains a \"doi\" field with the metadata of the ezunpaywall mirror",
     "version": "1.0.0",
@@ -30,22 +30,23 @@
         "summary": "Get enriched files",
         "operationId": "get-enrich-enriched",
         "description": "Get the list of enriched files",
-        "produces": [
-          "application/json"
-        ],
         "responses": {
           "200": {
             "description": "list of enriched file",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "default": "file.csv"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "default": "file.csv"
+                  }
+                }
               }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -63,22 +64,23 @@
         "summary": "Get uploaded files",
         "operationId": "get-enriched-uploaded",
         "description": "Get the lists of uploaded files",
-        "produces": [
-          "application/json"
-        ],
         "responses": {
           "200": {
             "description": "list of uploaded file",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "default": "file.csv"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "default": "file.csv"
+                  }
+                }
               }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -97,19 +99,20 @@
         "summary": "Upload a file",
         "operationId": "post-enrich-upload",
         "description": "Upload a file to be enriched",
-        "produces": [
-          "application/json"
-        ],
         "responses": {
           "200": {
             "description": "filename of uploaded file",
-            "schema": {
-              "type": "string",
-              "default": "id"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "id"
+                }
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -128,27 +131,31 @@
         "summary": "Get enriched file",
         "operationId": "get-enrich-enriched-$-filename",
         "description": "Get the enriched file, generated at the end of the enrichment process",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "filename",
             "description": "filename",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "enriched file",
-            "schema": {
-              "type": "file"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -166,62 +173,67 @@
         "summary": "Enrich job",
         "operationId": "post-enrich-job-$-filename",
         "description": "Start a enrich job with uploaded file",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "filename",
             "description": "filename",
             "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "keys",
-            "description": "apikeys",
-            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "keys": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "string"
-                      },
-                      "args": {
-                        "type": "string"
-                      },
-                      "index": {
-                        "type": "string"
-                      },
-                      "separator": {
-                        "type": "string"
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "keys": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "args": {
+                          "type": "string"
+                        },
+                        "index": {
+                          "type": "string"
+                        },
+                        "separator": {
+                          "type": "string"
+                        }
                       }
                     }
                   }
                 }
               }
             }
-          }
-        ],
+          },
+          "description": "apikeys",
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "filename of process",
-            "schema": {
-              "type": "string",
-              "default": "id"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "id"
+                }
+              }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -239,31 +251,34 @@
         "summary": "Get list of states of enrich job",
         "operationId": "get-enrich-states",
         "description": "Get list of filenames state of enrich process",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "query",
             "name": "latest",
             "description": "latest",
             "required": false,
-            "type": "boolean"
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "list of states file",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "default": "file.json"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "default": "file.json"
+                  }
+                }
               }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         }
       }
@@ -276,63 +291,72 @@
         "summary": "Get State",
         "operationId": "get-enrich-states-$-filename",
         "description": "Get state of enrich process with his filename",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "filename",
             "description": "filename",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "list of uploaded file",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "done": {
-                  "type": "boolean",
-                  "default": true
-                },
-                "loaded": {
-                  "type": "integer",
-                  "default": 150
-                },
-                "linesRead": {
-                  "type": "integer",
-                  "default": 3
-                },
-                "enrichedLines": {
-                  "type": "integer",
-                  "default": 3
-                },
-                "createdAt": {
-                  "type": "string",
-                  "default": "2021-11-30T10:00:00.00Z"
-                },
-                "endAt": {
-                  "type": "string",
-                  "default": "2021-11-30T10:01:00.00Z"
-                },
-                "error": {
-                  "type": "boolean",
-                  "default": false
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "done": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "loaded": {
+                      "type": "integer",
+                      "default": 150
+                    },
+                    "linesRead": {
+                      "type": "integer",
+                      "default": 3
+                    },
+                    "enrichedLines": {
+                      "type": "integer",
+                      "default": 3
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "default": "2021-11-30T10:00:00.000Z"
+                    },
+                    "endAt": {
+                      "type": "string",
+                      "default": "2021-11-30T10:01:00.000Z"
+                    },
+                    "error": {
+                      "type": "boolean",
+                      "default": false
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           },
           "404": {
             "description": "File not found",
-            "examples": {
+            "content": {
               "File not found": {
-                "message": "File not found"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "File not found"
+                    }
+                  }
+                }
               }
             }
           }
@@ -345,13 +369,21 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
               "Success": {
-                "message": "enrich service"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "enrich service"
+                    }
+                  }
+                }
               }
             }
           }
@@ -359,7 +391,8 @@
         "operationId": "get-enrich",
         "description": "Get name of enrich service",
         "tags": [
-          "ping"
+          "ping",
+          "enrich"
         ]
       },
       "parameters": []
@@ -370,30 +403,27 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
               "Success": {
-                "message": true
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": true
+                    }
+                  }
+                }
               }
             }
           }
         },
         "operationId": "get-enrich-ping",
         "description": "Ping enrich service",
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "x-examples": {}
-          }
-        ],
         "tags": [
           "ping"
         ]
@@ -405,17 +435,31 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
               "Success": {
-                "message": true
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": true
+                    }
+                  }
+                }
               },
               "Error": {
-                "message": "Cannot ping redis",
-                "stackTrace": ""
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "Cannot ping redis",
+                      "stackTrace": ""
+                    }
+                  }
+                }
               }
             }
           }
@@ -433,37 +477,45 @@
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {},
-  "schemes": [],
-  "securityDefinitions": {
-    "x-api-key": {
-      "name": "API Key",
-      "type": "apiKey",
-      "in": "header"
-    }
-  },
-  "responses": {
-    "Not-authorized": {
-      "description": "Your api key does not allow access to this resource",
-      "examples": {
-        "Not authorized": {
-          "message": "Not authorized"
-        }
-      },
-      "schema": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
+  "components": {
+    "responses": {
+      "Not-authorized": {
+        "description": "Your api key does not allow access to this resource",
+        "headers": {},
+        "content": {
+          "*/*": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "x-examples": {
+                "example-1": {
+                  "message": "Not authorized"
+                }
+              }
+            }
+          },
+          "Not authorized": {
+            "examples": {
+              "response": {
+                "value": {
+                  "message": "Not authorized"
+                }
+              }
+            }
           }
-        },
-        "x-examples": {
-          "example-1": {
-            "message": "Not authorized"
-          }
         }
-      },
-      "headers": {}
+      }
+    },
+    "securitySchemes": {
+      "x-api-key": {
+        "name": "API Key",
+        "type": "apiKey",
+        "in": "header"
+      }
     }
   }
 }

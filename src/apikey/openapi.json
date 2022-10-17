@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "description": "The Apikey service is reserved for the administrator, it allows to manage the API keys",
     "version": "1.0.0",
@@ -30,48 +30,51 @@
         "summary": "Get config of apikey",
         "operationId": "get-apikey-keys-$-apikey",
         "description": "Get config of apikey",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "apikey",
             "description": "apikey",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "config of apikey",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "apikey": {
-                  "type": "string",
-                  "default": "azerty"
-                },
-                "name": {
-                  "type": "string",
-                  "default": "john doe"
-                },
-                "attributes": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "default": "*"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apikey": {
+                      "type": "string",
+                      "default": "azerty"
+                    },
+                    "name": {
+                      "type": "string",
+                      "default": "john doe"
+                    },
+                    "attributes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "default": "*"
+                      }
+                    },
+                    "access": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "default": "graphql"
+                      }
+                    },
+                    "allowed": {
+                      "type": "boolean"
+                    }
                   }
-                },
-                "access": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "default": "graphql"
-                  }
-                },
-                "allowed": {
-                  "type": "boolean"
                 }
               }
             }
@@ -85,86 +88,99 @@
         "summary": "Update apikey",
         "operationId": "put-apikeys-keys-$-apikey",
         "description": "Update apikey",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "apikey",
             "description": "apikey",
             "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "config",
-            "description": "config for apikey",
-            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "apikey": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "attributes": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "access": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "allowed": {
-                  "type": "boolean"
-                }
-              }
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
             "description": "update apikey",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "apikey": {
-                  "type": "string",
-                  "default": "azerty"
-                },
-                "name": {
-                  "type": "string",
-                  "default": "john doe"
-                },
-                "attributes": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "default": "*"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apikey": {
+                      "type": "string",
+                      "default": "azerty"
+                    },
+                    "name": {
+                      "type": "string",
+                      "default": "john doe"
+                    },
+                    "attributes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "default": "*"
+                      }
+                    },
+                    "access": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "default": "graphql"
+                      }
+                    },
+                    "allowed": {
+                      "type": "boolean"
+                    }
                   }
                 },
-                "access": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "default": "graphql"
+                "examples": {
+                  "John Doe apikey": {
+                    "value": {
+                      "apikey": "azerty",
+                      "name": "john doe",
+                      "attributes": [
+                        "*"
+                      ],
+                      "access": [
+                        "graphql"
+                      ],
+                      "allowed": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "\"name\" is required"
+                    }
                   }
                 },
-                "allowed": {
-                  "type": "boolean"
+                "examples": {
+                  "Name is required": {
+                    "value": {
+                      "message": "\"name\" is required"
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -180,16 +196,15 @@
         "summary": "Delete apikey",
         "operationId": "delete-apikey-keys-$-apikey",
         "description": "Delete apikey",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "in": "path",
             "name": "apikey",
             "description": "apikey",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -197,7 +212,7 @@
             "description": "apikey deleted"
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -215,64 +230,85 @@
         "summary": "Get all config of all apikey",
         "operationId": "get-apikey-keys",
         "description": "Get all config of all apikey",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
         "responses": {
           "200": {
             "description": "update apikey",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "apikey": {
-                    "type": "string",
-                    "default": "azerty"
-                  },
-                  "name": {
-                    "type": "string",
-                    "default": "john doe"
-                  },
-                  "attributes": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "default": "*"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "apikey": {
+                        "type": "string",
+                        "default": "azerty"
+                      },
+                      "name": {
+                        "type": "string",
+                        "default": "john doe"
+                      },
+                      "attributes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "default": "*"
+                        }
+                      },
+                      "access": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "default": "graphql"
+                        }
+                      },
+                      "allowed": {
+                        "type": "boolean"
+                      }
                     }
-                  },
-                  "access": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "default": "graphql"
-                    }
-                  },
-                  "allowed": {
-                    "type": "boolean"
+                  }
+                },
+                "examples": {
+                  "John doe apikey": {
+                    "value": [
+                      {
+                        "apikey": "azerty",
+                        "name": "john doe",
+                        "attributes": [
+                          "*"
+                        ],
+                        "access": [
+                          "graphql"
+                        ],
+                        "allowed": true
+                      }
+                    ]
+                  }
+                }
+              },
+              "apikey of John Doe": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "apikey": "azerty123456",
+                        "name": "John Doe",
+                        "attributes": [
+                          "*"
+                        ],
+                        "access": [
+                          "graphql"
+                        ],
+                        "allowed": true
+                      }
+                    ]
                   }
                 }
               }
-            },
-            "examples": {
-              "apikey of John Doe": [
-                {
-                  "apikey": "azerty123456",
-                  "name": "John Doe",
-                  "attributes": [
-                    "*"
-                  ],
-                  "access": [
-                    "graphql"
-                  ],
-                  "allowed": true
-                }
-              ]
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -288,16 +324,12 @@
         "summary": "Delete all apikey",
         "operationId": "delete-apikey-keys",
         "description": "Delete all apikey",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
         "responses": {
           "204": {
             "description": "all apikey are deleted"
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -313,76 +345,77 @@
         "summary": "Create apikey",
         "operationId": "post-apikey-keys",
         "description": "Create new apikey",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "config",
-            "description": "config for apikey",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "attributes": {
-                  "type": "array",
-                  "items": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
                     "type": "string"
+                  },
+                  "attributes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "access": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "allowed": {
+                    "type": "boolean"
                   }
-                },
-                "access": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "allowed": {
-                  "type": "boolean"
                 }
               }
             }
-          }
-        ],
+          },
+          "description": "config for apikey",
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "update apikey",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "apikey": {
-                  "type": "string",
-                  "default": "azerty"
-                },
-                "name": {
-                  "type": "string",
-                  "default": "john doe"
-                },
-                "attributes": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "default": "*"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apikey": {
+                      "type": "string",
+                      "default": "azerty"
+                    },
+                    "name": {
+                      "type": "string",
+                      "default": "john doe"
+                    },
+                    "attributes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "default": "*"
+                      }
+                    },
+                    "access": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "default": "graphql"
+                      }
+                    },
+                    "allowed": {
+                      "type": "boolean"
+                    }
                   }
-                },
-                "access": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "default": "graphql"
-                  }
-                },
-                "allowed": {
-                  "type": "boolean"
                 }
               }
             }
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -400,57 +433,54 @@
         "summary": "Load apikey",
         "operationId": "post-apikeys-keys-load",
         "description": "Load apikey",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "keys",
-            "description": "apikeys",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "keys": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "apikey": {
-                        "type": "string"
-                      },
-                      "name": {
-                        "type": "string"
-                      },
-                      "attributes": {
-                        "type": "array",
-                        "items": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "keys": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "apikey": {
                           "type": "string"
-                        }
-                      },
-                      "access": {
-                        "type": "array",
-                        "items": {
+                        },
+                        "name": {
                           "type": "string"
+                        },
+                        "attributes": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "access": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "allowed": {
+                          "type": "boolean"
                         }
-                      },
-                      "allowed": {
-                        "type": "boolean"
                       }
                     }
                   }
                 }
               }
             }
-          }
-        ],
+          },
+          "description": "apikeys",
+          "required": true
+        },
         "responses": {
           "204": {
             "description": "all apikey are loaded"
           },
           "401": {
-            "$ref": "#/responses/Not-authorized"
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
         "security": [
@@ -466,13 +496,15 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
               "Success": {
-                "message": "apikey service"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "apikey service"
+                    }
+                  }
+                }
               }
             }
           }
@@ -490,14 +522,17 @@
         "summary": "Ping apikey service",
         "operationId": "get-apikey-ping",
         "description": "Ping apikey service",
-        "produces": [
-          "application/json"
-        ],
         "responses": {
           "200": {
             "description": "OK",
-            "examples": {
-              "Success": true
+            "content": {
+              "Success": {
+                "examples": {
+                  "response": {
+                    "value": true
+                  }
+                }
+              }
             }
           }
         },
@@ -512,17 +547,25 @@
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
               "Success": {
-                "message": true
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": true
+                    }
+                  }
+                }
               },
               "Error": {
-                "message": "Cannot ping redis",
-                "stackTrace": ""
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "Cannot ping redis",
+                      "stackTrace": ""
+                    }
+                  }
+                }
               }
             }
           }
@@ -539,37 +582,37 @@
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {},
-  "schemes": [],
-  "securityDefinitions": {
-    "x-api-key": {
-      "name": "API Key",
-      "type": "apiKey",
-      "in": "header"
-    }
-  },
-  "responses": {
-    "Not-authorized": {
-      "description": "Your api key does not allow access to this resource",
-      "examples": {
-        "Not authorized": {
-          "message": "Not authorized"
-        }
-      },
-      "schema": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
+  "components": {
+    "responses": {
+      "Not-authorized": {
+        "description": "Your api key does not allow access to this resource",
+        "content": {
+          "Not authorized": {
+            "examples": {
+              "response": {
+                "value": {
+                  "message": "Not authorized"
+                }
+              }
+            }
           }
         },
-        "x-examples": {
-          "example-1": {
-            "message": "Not authorized"
+        "headers": {
+          "redis-password": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "redis password"
           }
         }
-      },
-      "headers": {}
+      }
+    },
+    "securitySchemes": {
+      "x-api-key": {
+        "name": "API Key",
+        "type": "apiKey",
+        "in": "header"
+      }
     }
   }
 }
