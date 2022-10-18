@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const {
-  endState,
+  endState, fail,
 } = require('../model/state');
 
 const {
@@ -25,6 +25,8 @@ const {
   getChangefiles,
 } = require('../lib/service/unpaywall');
 
+const logger = require('../lib/logger');
+
 const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);
   createState();
@@ -43,7 +45,16 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
   const start = new Date();
   addStepGetChangefiles();
   const step = getLatestStep();
-  const snapshotsInfo = await getChangefiles(interval, startDate, endDate);
+  let snapshotsInfo;
+
+  try {
+    snapshotsInfo = await getChangefiles(interval, startDate, endDate);
+  } catch (err) {
+    logger.error(err);
+    await fail(err);
+    return;
+  }
+
   step.took = (new Date() - start) / 1000;
   step.status = 'success';
   updateLatestStep(step);
