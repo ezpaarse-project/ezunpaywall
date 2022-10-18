@@ -17,7 +17,7 @@ if (isProd) {
   try {
     ca = fs.readFileSync(caPath, 'utf8');
   } catch {
-    logger.error(`Cannot read file in ${caPath}`);
+    logger.error(`Cannot read elastic certificate file in ${caPath}`);
   }
   ssl = {
     ca,
