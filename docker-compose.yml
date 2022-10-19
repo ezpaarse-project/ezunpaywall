@@ -4,9 +4,6 @@ services:
   graphql:
     build:
       context: ./src/graphql
-      args:
-        - http_proxy
-        - https_proxy
     container_name: ezunpaywall-graphql-prod
     environment:
       - NODE_ENV=production
@@ -74,9 +71,6 @@ services:
   enrich:
     build:
       context: ./src/enrich
-      args:
-        - http_proxy
-        - https_proxy
     container_name: ezunpaywall-enrich-prod
     environment:
       - NODE_ENV=production
@@ -122,9 +116,6 @@ services:
   mail:
     build:
       context: ./src/mail
-      args:
-        - http_proxy
-        - https_proxy
     container_name: ezunpaywall-mail-prod
     environment:
       # mail
@@ -145,9 +136,6 @@ services:
   frontend:
     build:
       context: ./src/frontend
-      args:
-        - http_proxy
-        - https_proxy
     container_name: ezunpaywall-frontend-prod
     command: "npm run start"
     ports:
