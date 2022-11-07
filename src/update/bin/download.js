@@ -116,6 +116,8 @@ const downloadChangefile = async (info, interval) => {
     return false;
   }
 
+  if (!res) { return false; }
+
   const changefile = res.data;
   const { size } = info;
 
