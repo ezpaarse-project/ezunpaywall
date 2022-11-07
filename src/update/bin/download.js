@@ -112,6 +112,7 @@ const downloadChangefile = async (info, interval) => {
     res = await getChangefile(info.filename, interval);
   } catch (err) {
     logger.error(err);
+    await fail(err);
     return false;
   }
 
