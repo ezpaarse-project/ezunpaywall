@@ -2,7 +2,7 @@
   "node": "development",
   "unpaywall": {
     "host": "http://fakeunpaywall:3000",
-    "apikey": "test"
+    "apikey": "default"
   },
   "redis":  {
     "password": "changeme",
