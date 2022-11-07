@@ -41,7 +41,7 @@ const logger = createLogger({
 });
 
 const errorRequest = (err) => {
-  const url = `${err?.config?.url}`;
+  const url = `${err?.request?._currentUrl}`;
   if (!err?.response) {
     logger.error(`Cannot ${err?.config?.method} ${url} - 503`);
     return;
