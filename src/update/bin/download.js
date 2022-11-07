@@ -107,12 +107,10 @@ const downloadChangefile = async (info, interval) => {
   step.file = info.filename;
   updateLatestStep(step);
 
-  let res;
-  try {
-    res = await getChangefile(info.filename, interval);
-  } catch (err) {
-    logger.error(err);
-    await fail(err);
+  const res = await getChangefile(info.filename, interval);
+
+  if (!res) {
+    await fail();
     return false;
   }
 
