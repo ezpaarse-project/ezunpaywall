@@ -41,7 +41,7 @@ const logger = createLogger({
 });
 
 const errorRequest = (err) => {
-  let url = `${err.config.baseURL}${err.config.url}`;
+  let url = `${err?.config?.baseURL}${err?.config?.url}`;
 
   if (err.config.params) {
     let { params } = err.config;
