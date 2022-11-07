@@ -41,7 +41,18 @@ const logger = createLogger({
 });
 
 const errorRequest = (err) => {
-  const url = `${err?.request?._currentUrl}`;
+  const params = Object.entries(err.config.params);
+
+  let url = `${err.config.baseURL}${err.config.url}`;
+
+  if (params) {
+    url = `${url}?`;
+    params.forEach((param) => {
+      url = `${url}${param[0]}=${param[1]}&`;
+    });
+    url.substring(0, url.length - 1);
+  }
+
   if (!err?.response) {
     logger.error(`Cannot ${err?.config?.method} ${url} - 503`);
     return;
