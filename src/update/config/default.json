@@ -2,7 +2,7 @@
   "node": "development",
   "unpaywall": {
     "host": "http://fakeunpaywall:3000",
-    "apikey": "default"
+    "apikey": "changeme"
   },
   "redis":  {
     "password": "changeme",
@@ -10,7 +10,7 @@
     "port": "6379"
   },
   "mail": {
-    "baseURL": "http://mail:3000",
+    "host": "http://mail:3000",
     "apikey": "changeme"
   },
   "elasticsearch": {

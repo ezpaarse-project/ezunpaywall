@@ -7,7 +7,7 @@
   "license": "CeCILL",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon -L -e .js,.json app.js",
+    "dev": "nodemon -L -e .js app.js",
     "test": "mocha --timeout 5000",
     "lint": "eslint --ext .js ."
   },

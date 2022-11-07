@@ -25,8 +25,6 @@ const {
   getChangefiles,
 } = require('../lib/service/unpaywall');
 
-const logger = require('../lib/logger');
-
 const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);
   createState();
@@ -45,13 +43,12 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
   const start = new Date();
   addStepGetChangefiles();
   const step = getLatestStep();
-  let snapshotsInfo;
+  const snapshotsInfo = await getChangefiles(interval, startDate, endDate);
 
-  try {
-    snapshotsInfo = await getChangefiles(interval, startDate, endDate);
-  } catch (err) {
-    logger.error(err);
-    await fail(err);
+  if (!snapshotsInfo) {
+    step.status = 'error';
+    updateLatestStep(step);
+    await fail();
     return;
   }
 
