@@ -43,8 +43,9 @@ const logger = createLogger({
 const errorRequest = (err) => {
   let url = `${err.config.baseURL}${err.config.url}`;
 
-  if (err?.config?.params) {
-    const { params } = err.config;
+  if (err.config.params) {
+    let { params } = err.config;
+    params = Object.entries(params);
     url = `${url}?`;
     params.forEach((param) => {
       url = `${url}${param[0]}=${param[1]}&`;
