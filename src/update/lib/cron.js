@@ -44,4 +44,17 @@ const cronDeleteOutFiles = new CronJob('0 0 0 * * *', async () => {
   logger.info('Delete states files');
 }, null, true, 'Europe/Paris');
 
-module.exports = cronDeleteOutFiles;
+/**
+ * Create a custom cron
+ * @param {*} time time at cron format
+ * @param {*} task function will be call
+ * @returns cron
+ */
+const createCron = (time, task) => new CronJob(time, async () => {
+  await task();
+}, null, false, 'Europe/Paris');
+
+module.exports = {
+  createCron,
+  cronDeleteOutFiles,
+};

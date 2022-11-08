@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
-const cronDeleteOutFiles = require('./lib/cron');
+const { cronDeleteOutFiles } = require('./lib/cron');
 
 const { pingElastic, initAlias } = require('./lib/service/elastic');
 const { pingRedis } = require('./lib/service/redis');
@@ -18,6 +18,7 @@ const routerSnapshot = require('./routers/snapshot');
 const routerState = require('./routers/state');
 const routerStatus = require('./routers/status');
 const routerUnpaywall = require('./routers/unpaywall');
+const routerCron = require('./routers/cron');
 const routerOpenapi = require('./routers/openapi');
 
 const dataDir = path.resolve(__dirname, 'data');
@@ -39,6 +40,7 @@ app.use(routerSnapshot);
 app.use(routerState);
 app.use(routerStatus);
 app.use(routerUnpaywall);
+app.use(routerCron);
 app.use(routerOpenapi);
 
 /* Errors and unknown routes */

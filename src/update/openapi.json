@@ -545,6 +545,9 @@
           "200": {
             "description": "snapshot"
           },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          },
           "404": {
             "description": "File not found",
             "content": {
@@ -559,6 +562,13 @@
                   "x-examples": {
                     "example-1": {
                       "message": "File not found"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "string"
                     }
                   }
                 }
@@ -678,6 +688,13 @@
                 "properties": {
                   "index": {
                     "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "index": "string"
                   }
                 }
               }
@@ -944,6 +961,210 @@
           "ping"
         ]
       }
+    },
+    "/update/cron/start": {
+      "post": {
+        "summary": "",
+        "operationId": "post-update-cron-start",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "description": "Start update cron",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "cron"
+        ]
+      }
+    },
+    "/update/cron/stop": {
+      "post": {
+        "summary": "",
+        "operationId": "post-update-cron-stop",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "description": "Stop update cron",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "cron"
+        ]
+      },
+      "parameters": []
+    },
+    "/update/cron": {
+      "parameters": [],
+      "patch": {
+        "summary": "",
+        "operationId": "patch-update-cron",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "time": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        },
+                        "index": {
+                          "type": "string"
+                        },
+                        "interval": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "config": {
+                        "time": "* * * * * *",
+                        "status": false,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "updated": {
+                    "value": {
+                      "config": {
+                        "time": "* 30 12-15 * * *",
+                        "status": true,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "description": "update update cron",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "cron"
+        ]
+      },
+      "get": {
+        "summary": "",
+        "operationId": "get-update-cron",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "time": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        },
+                        "index": {
+                          "type": "string"
+                        },
+                        "interval": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "config": {
+                        "time": "* * * * * *",
+                        "status": false,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "day": {
+                    "value": {
+                      "config": {
+                        "time": "0 0 0 * * *",
+                        "status": true,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  },
+                  "week": {
+                    "value": {
+                      "config": {
+                        "time": "0 0 0 * * *",
+                        "status": true,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  },
+                  "off": {
+                    "value": {
+                      "config": {
+                        "time": "0 0 0 * * *",
+                        "status": false,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Get config of update cron",
+        "parameters": [],
+        "tags": [
+          "cron"
+        ]
+      }
+    },
+    "/update/cron - copy": {
+      "parameters": []
     }
   },
   "externalDocs": {
@@ -956,6 +1177,9 @@
     },
     {
       "name": "update"
+    },
+    {
+      "name": "cron"
     }
   ],
   "components": {
