@@ -26,13 +26,12 @@ function task() {
 const cron = new Cron('update', '0 0 0 * * *', () => task());
 
 function update(config) {
-  if (config.time) {
-    updateConfig.time = config.time;
-  }
+  if (config.time) cron.setTime(config.time);
+
   if (config.index) updateConfig.index = config.index;
   if (config.interval) updateConfig.interval = config.interval;
 
-  cron.setTask(() => task());
+  if (config.index || config.interval) cron.setTask(() => task());
 }
 
 function getGlobalConfig() {

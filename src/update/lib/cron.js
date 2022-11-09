@@ -24,11 +24,17 @@ const Cron = class Cron {
   setTask(task) {
     this.task = task;
     logger.info(`[cron ${this.name}] config - task updated`);
+    this.process = new CronJob(this.time, async () => {
+      await this.task();
+    }, null, false, 'Europe/Paris');
   }
 
   setTime(time) {
     this.time = time;
-    logger.info(`[cron ${this.name}] config - time: [${this.time}]`);
+    logger.info(`[cron ${this.name}] config - time is updated [${this.time}]`);
+    this.process = new CronJob(this.time, async () => {
+      await this.task();
+    }, null, false, 'Europe/Paris');
   }
 
   start() {
