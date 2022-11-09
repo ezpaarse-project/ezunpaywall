@@ -276,7 +276,7 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
   const { dev } = req.query;
-  const keys = req.body;
+  const loadDeys = req.body.keys;
 
   if (dev) {
     try {
@@ -289,20 +289,17 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
     return res.status(204).json();
   }
 
-  try {
-    await Promise.all(
-      Object.entries(keys).map(async ([keyId, keyValue]) => {
-        try {
-          await redisClient.set(keyId, `${JSON.stringify(keyValue)}`);
-        } catch (err) {
-          logger.error(`Cannot load [${keyId}] with config [${JSON.stringify(keyValue)}] on redis`);
-          logger.error(err);
-          return next({ message: `Cannot load [${keyId}] with config [${JSON.stringify(keyValue)}] on redis`, stackTrace: err });
-        }
-      }),
-    );
-  } catch (err) {
-    return next({ message: 'Cannot load apikeys on redis', stackTrace: err });
+  for (let i = 0; i < loadDeys.length; i += 1) {
+    const [apikey] = Object.keys(loadDeys[i]);
+    const config = loadDeys[i][apikey];
+
+    try {
+      await redisClient.set(apikey, `${JSON.stringify(config)}`);
+    } catch (err) {
+      logger.error(`Cannot load [${apikey}] with config [${JSON.stringify(config)}] on redis`);
+      logger.error(err);
+      return next({ message: `Cannot load [${apikey}] with config [${JSON.stringify(config)}] on redis`, stackTrace: err });
+    }
   }
 
   return res.status(204).json();
