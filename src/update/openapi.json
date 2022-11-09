@@ -964,7 +964,7 @@
     },
     "/update/cron/start": {
       "post": {
-        "summary": "",
+        "summary": "Start update cron",
         "operationId": "post-update-cron-start",
         "responses": {
           "202": {
@@ -987,7 +987,7 @@
     },
     "/update/cron/stop": {
       "post": {
-        "summary": "",
+        "summary": "Stop update cron",
         "operationId": "post-update-cron-stop",
         "responses": {
           "202": {
@@ -1012,7 +1012,7 @@
     "/update/cron": {
       "parameters": [],
       "patch": {
-        "summary": "",
+        "summary": "update update cron",
         "operationId": "patch-update-cron",
         "responses": {
           "200": {
@@ -1081,7 +1081,7 @@
         ]
       },
       "get": {
-        "summary": "",
+        "summary": "Get config of update cron",
         "operationId": "get-update-cron",
         "responses": {
           "200": {
@@ -1162,9 +1162,6 @@
           "cron"
         ]
       }
-    },
-    "/update/cron - copy": {
-      "parameters": []
     }
   },
   "externalDocs": {
