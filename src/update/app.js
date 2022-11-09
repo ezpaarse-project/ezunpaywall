@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
-const { cronDeleteOutFiles } = require('./lib/cron');
+const cronFile = require('./bin/cron/file');
 
 const { pingElastic, initAlias } = require('./lib/service/elastic');
 const { pingRedis } = require('./lib/service/redis');
@@ -54,5 +54,5 @@ app.listen(3000, async () => {
   pingElastic().then(() => {
     initAlias('unpaywall', unpaywallMapping, 'upw');
   });
-  await cronDeleteOutFiles.start();
+  cronFile.start();
 });

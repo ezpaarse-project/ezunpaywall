@@ -1,8 +1,8 @@
 const { format } = require('date-fns');
 
-const Cron = require('../lib/cron');
+const Cron = require('../../lib/cron');
 
-const { insertChangefilesOnPeriod } = require('./job');
+const { insertChangefilesOnPeriod } = require('../job');
 
 const updateConfig = {
   index: 'unpaywall',

@@ -3,16 +3,16 @@ const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const checkAuth = require('../middlewares/auth');
 
-const updateCron = require('../bin/cron');
+const updateCron = require('../bin/cron/update');
 
 router.post('/cron/start', checkAuth, async (req, res, next) => {
-  updateCron.start();
+  updateCron.cron.start();
 
   return res.status(202).json();
 });
 
 router.post('/cron/stop', checkAuth, async (req, res, next) => {
-  updateCron.stop();
+  updateCron.cron.stop();
 
   return res.status(202).json();
 });
@@ -30,13 +30,13 @@ router.patch('/cron', checkAuth, async (req, res, next) => {
 
   updateCron.update({ time, index, interval });
 
-  const config = updateCron.cronConfig;
+  const config = updateCron.getGlobalConfig();
 
   return res.status(200).json(config);
 });
 
 router.get('/cron', async (req, res, next) => {
-  const config = updateCron.cronConfig;
+  const config = updateCron.getGlobalConfig();
 
   return res.status(200).json(config);
 });
