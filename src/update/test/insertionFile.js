@@ -34,7 +34,7 @@ const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.URL || 'http://localhost:59702';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async function () {
