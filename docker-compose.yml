@@ -23,7 +23,7 @@ services:
     volumes:
       - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
       - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
-      - ${EZMETA_CERTS_PATH:-./src/graphql/certs/ca.crt}:/graphql/certs
+      - ${ELASTIC_CERT_CA_PATH:-./src/graphql/certs/ca.crt}:/graphql/certs
     command: "npm start"
     ports:
       - ${GRAPHQL_PORT:-59701}:3000
@@ -47,7 +47,7 @@ services:
       - UNPAYWALL_APIKEY
       - UNPAYWALL_HOST=http://api.unpaywall.org
       # elastic
-      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
@@ -60,7 +60,7 @@ services:
       - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
       - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
       - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
-      - ${EZMETA_CERTS_PATH-./src/update/certs/ca.crt}:/update/certs
+      - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/update/certs
     command: "npm start"
     ports:
       - ${UPDATE_PORT:-59702}:3000

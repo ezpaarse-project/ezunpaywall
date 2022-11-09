@@ -106,7 +106,9 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
-
+| APIKEY_APPLICATION_LOG_PATH | ./src/apikey/log/application | application output log path |
+| APIKEY_ACCESS_LOG_PATH | ./src/apikey/log/access | access log output path |
+| APIKEY_PORT | 59704 | output port |
 ##### enrich
 
 | name | default | description |
@@ -115,6 +117,10 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
+| ENRICH_APPLICATION_LOG_PATH | ./src/enrich/log/application | application output log path |
+| ENRICH_ACCESS_LOG_PATH | ./src/enrich/log/access | access log output path |
+| ENRICH_DATA_PATH | ./src/enrich/data | access data output path |
+| ENRICH_PORT | 59703 | output port |
 
 ##### frontend
 
@@ -128,6 +134,7 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | MAIL_HOST | http://localhost:59705 | mail host |
 | MAIL_APIKEY | changeme | mail apikey |
 | ELASTICSEARCH_ORIGIN | development | environment of elastic |
+| FRONTEND_PORT | 59706 | output port |
 
 ##### graphql
 
@@ -137,12 +144,17 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
-| ELASTICSEARCH_HOST | http://elastic | elastic host |
+| ELASTICSEARCH_HOSTS | http://elastic | elastic host |
 | ELASTICSEARCH_PORT | 9200 | elastic port |
 | ELASTICSEARCH_USERNAME | elastic | username of elastic super user |
 | ELASTICSEARCH_PASSWORD | changeme | password of elastic super user |
 | ELASTICSEARCH_INDEX_ALIAS | upw | default alias of unpaywall data |
-| ELASTICSEARCH_CERTS_PATH | '' | elastic certificate path |
+| GRAPHQL_APPLICATION_LOG_PATH | ./src/graphql/log/application | application output log path |
+| GRAPHQL_ACCESS_LOG_PATH | ./src/graphql/log/access | access log output path |
+| ELASTIC_CERT_CA_PATH | ./src/graphql/certs/ca.crt | elastic ca certificate path |
+| GRAPHQL_APPLICATION_LOG_PATH | ./src/graphql/log/application | application output log path |
+| GRAPHQL_ACCESS_LOG_PATH | ./src/graphql/log/access | access log output path |
+| GRAPHQL_PORT | 59701 | output port |
 
 ##### mail
 
@@ -156,6 +168,9 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | MAIL_NOTIFICATIONS_RECEIVERS | ["ezunpaywall@example.fr"] | recipients of the recent activity email |
 | MAIL_NOTIFICATIONS_MACHINE | dev | environment of machine |
 | MAIL_APIKEY | changeme | mail apikey |
+| MAIL_APPLICATION_LOG_PATH | ./src/mail/log/application | application output log path |
+| MAIL_ACCESS_LOG_PATH | ./src/mail/log/access | access log output path |
+| MAIL_PORT | 59705 | output port |
 
 ##### update
 
@@ -167,7 +182,7 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
-| ELASTICSEARCH_HOST | http://elastic | elastic host |
+| ELASTICSEARCH_HOSTS | http://elastic | elastic host |
 | ELASTICSEARCH_PORT | 9200 | elastic port |
 | ELASTICSEARCH_USERNAME | elastic | username of elastic super user |
 | ELASTICSEARCH_PASSWORD | changeme | password of elastic super user |
@@ -176,6 +191,10 @@ Create an environment file named `ezunpaywall.local.env.sh` and export the follo
 | ELASTICSEARCH_CERTS_PATH | '' | elastic certificate path |
 | MAIL_HOST | http://mail:3000 | mail service host |
 | MAIL_APIKEY | changeme | mail apikey |
+| UPDATE_APPLICATION_LOG_PATH | ./src/update/log/application | application output log path |
+| UPDATE_ACCESS_LOG_PATH | ./src/update/log/access | access log output path |
+| UPDATE_DATA_PATH | ./src/update/data | access data output path |
+| UPDATE_PORT | 59702 | output port |
 
 ### Adjust system configuration for Elasticsearch
 

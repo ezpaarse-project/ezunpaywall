@@ -7,7 +7,7 @@ services:
     environment:
       - NODE_ENV=development
       # elastic
-      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
@@ -37,7 +37,7 @@ services:
       - UNPAYWALL_APIKEY
       - UNPAYWALL_HOST
       # elastic
-      - ELASTICSEARCH_HOST
+      - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
