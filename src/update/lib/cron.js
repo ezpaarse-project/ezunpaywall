@@ -23,10 +23,12 @@ const Cron = class Cron {
 
   setTask(task) {
     this.task = task;
+    logger.info(`[cron ${this.name}] config - task updated`);
   }
 
   setTime(time) {
     this.time = time;
+    logger.info(`[cron ${this.name}] config - time: [${this.time}]`);
   }
 
   start() {
