@@ -10,7 +10,7 @@
     "password": "REDIS_PASSWORD"
   },
   "mail": {
-    "baseURL": "MAIL_BASEURL",
+    "baseURL": "MAIL_HOST",
     "apikey": "MAIL_APIKEY"
   },
   "elasticsearch": {

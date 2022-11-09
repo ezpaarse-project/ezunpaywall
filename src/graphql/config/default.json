@@ -10,6 +10,7 @@
     "port": 9200,
     "user": "elastic",
     "password": "changeme",
-    "indexAlias": "upw"
+    "indexAlias": "upw",
+    "cert": ""
   }
 }

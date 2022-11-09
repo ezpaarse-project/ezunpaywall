@@ -3,68 +3,180 @@
 ezunpaywall is an API and database that queries the Unpaywall database containing free scholarly articles
 
 **Table of content**
-- [Prerequisites](#prerequisites)
-- [Installation](#Installation)
 - [Structure](#Structure)
-- [Deployment](#Deployment)
-- [Developement](#Development)
+- [Installation](#Installation)
+    - [Developement](#Development)
+        - [Prerequisites](#Prerequisites)
+        - [Start](#Start)
+        - [Tests](#Tests)
+    - [Deployment](#Deployment)
+        - [Prerequisites](#Prerequisites)
+        - [Environment variables](#Environment-variables)
+            - [apikey](#apikey)
+            - [enrich](#enrich)
+            - [frontend](#frontend)
+            - [graphql](#graphql)
+            - [mail](#mail)
+            - [update](#update)
 - [Data update](#Data-update)
 - [API Graphql](#API-graphql)
 
-## Prerequisites
+## Structure
 
-The tools you need to let ezunpaywall run are :
-* docker
-* docker-compose
-* npm (for development)
-* a linux box or VM (eg: Ubuntu)
-* unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
+unpaywall is made up of several services which are distributed in several docker containers
+![Structure](/doc/structure.png)
+
+for apikey, enrich, update and mail service, a **open api** is available on frontend
 
 ## Installation
 
 ```bash
 git clone https://github.com/ezpaarse-project/ezunpaywall 
 ```
-## Structure
+### Development
 
-unpaywall is made up of several services which are distributed in several docker containers
+#### Prerequisites
 
-![Structure](/doc/structure.png)
-## Deployment
-### Setup environment
+The tools you need to let ezunpaywall run are :
+* docker
+* docker-compose
+* npm
 
-Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh` , which contains a set of predefined variables and is overriden by `ezunpaywall.local.env.sh`.
-#### Unpaywall
+Command : 
 
-| name | description |
-| --- | --- |
-| UNPAYWALL_APIKEY | api key to access weekly unpaywall updates |
-#### Mail
+```bash
+# install dependencies
+npm i
 
-| name | description |
-| --- | --- |
-| NODE_CONFIG | make tls and secure of mail (only in developement) |
-| MAIL_SMTP_HOST | host of the SMTP server |
-| MAIL_SMTP_PORT | port of the SMTP server |
-| MAIL_NOTIFICATIONS_SENDER | the sender for emails issued by ezunpaywall |
-| MAIL_NOTIFICATIONS_RECEIVERS | recipients of the recent activity email |
-#### Elastic
+# create volume for elastic
+docker-compose -f docker-compose.debug.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/ 
+```
+#### Start
 
-| name | description |
-| --- | --- |
-| ELASTICSEARCH_PORT | elastic port |
-| ELASTICSEARCH_HOST | elastic url |
-| ELASTICSEARCH_USERNAME | elastic user |
-| ELASTICSEARCH_PASSWORD | elastic password |
+```bash
+# Start ezunpaywall as daemon
+docker-compose -f docker-compose.debug.yml up -d
 
-#### Redis
-| name | description |
-| --- | --- |
-| REDIS_PASSWORD | password to access at redis |
+# Stop ezunpaywall
+docker-compose -f docker-compose.debug.yml stop
 
-### Configuration (optionnal)
+# Get the status of ezunpaywall services
+docker-compose -f docker-compose.debug.yml ps
+```
 
-this part is not obligatory, but it can be interesting in a pre-production environment
+#### Tests
+
+To run tests, you need ezunpaywall to be launched in dev mode with fakeUnpaywall. With that, you can run test on 
+
+```bash
+# there are alias on root folder
+$ ezunpaywall npm run test
+$ ezunpaywall npm run test:apikey
+$ ezunpaywall npm run test:enrich
+$ ezunpaywall npm run test:graphql
+$ ezunpaywall npm run test:mail
+$ ezunpaywall npm run test:update
+
+# you can run test for each service
+$ ezunpaywall/src/apikey npm run test
+$ ezunpaywall/src/enrich npm run test
+$ ezunpaywall/src/graphql npm run test
+$ ezunpaywall/src/mail npm run test
+$ ezunpaywall/src/update npm run test
+
+```
+
+### Deployment
+
+#### Prerequisites
+
+The tools you need to let ezunpaywall run are :
+* docker
+* docker-compose
+* unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
+
+#### Environment variables
+
+Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh`, which contains a set of predefined variables and is overriden by `ezunpaywall.local.env.sh`.
+##### apikey
+
+| name | default | description |
+| --- | --- | --- |
+| NODE_ENV | development | environment of node |
+| REDIS_HOST | redis | redis host |
+| REDIS_PORT | 6379 | redis port |
+| REDIS_PASSWORD | changeme | redis password |
+
+##### enrich
+
+| name | default | description |
+| --- | --- | --- |
+| NODE_ENV | development | environment of node |
+| REDIS_HOST | redis | redis host |
+| REDIS_PORT | 6379 | redis port |
+| REDIS_PASSWORD | changeme | redis password |
+
+##### frontend
+
+| name | default | description |
+| --- | --- | --- |
+| NODE_ENV | development | enviroement of node |
+| GRAPHQL_HOST | http://localhost:59701 | graphql host |
+| UPDATE_HOST | http://localhost:59702 | update host |
+| ENRICH_HOST | http://localhost:59703 | enrich host |
+| APIKEY_HOST | http://localhost:59704 | apikey host |
+| MAIL_HOST | http://localhost:59705 | mail host |
+| MAIL_APIKEY | changeme | mail apikey |
+| ELASTICSEARCH_ORIGIN | development | environment of elastic |
+
+##### graphql
+
+| name | default | description |
+| --- | --- | --- |
+| NODE_ENV | development | environnement of node |
+| REDIS_HOST | redis | redis host |
+| REDIS_PORT | 6379 | redis port |
+| REDIS_PASSWORD | changeme | redis password |
+| ELASTICSEARCH_HOST | http://elastic | elastic host |
+| ELASTICSEARCH_PORT | 9200 | elastic port |
+| ELASTICSEARCH_USERNAME | elastic | username of elastic super user |
+| ELASTICSEARCH_PASSWORD | changeme | password of elastic super user |
+| ELASTICSEARCH_INDEX_ALIAS | upw | default alias of unpaywall data |
+| ELASTICSEARCH_CERTS_PATH | '' | elastic certificate path |
+
+##### mail
+
+| name | default | description |
+| --- | --- | --- |
+| NODE_ENV | development | environment of node |
+| NODE_CONFIG | {} | make tls and secure of mail (only in developement) |
+| MAIL_SMTP_HOST | localhost | SMTP server host |
+| MAIL_SMTP_PORT | 25 | SMTP server port |
+| MAIL_NOTIFICATIONS_SENDER | ezunpaywall | the sender for emails issued by ezunpaywall |
+| MAIL_NOTIFICATIONS_RECEIVERS | ["ezunpaywall@example.fr"] | recipients of the recent activity email |
+| MAIL_NOTIFICATIONS_MACHINE | dev | environment of machine |
+| MAIL_APIKEY | changeme | mail apikey |
+
+##### update
+
+| name | default | description |
+| --- | --- | --- |
+| NODE_ENV | development | environnement of node |
+| UNPAYWALL_HOST | http://fakeunpaywall:3000 | unpaywall api host to access to changefiles |
+| UNPAYWALL_APIKEY | changeme | unpaywall apikey to access to changefiles |
+| REDIS_HOST | redis | redis host |
+| REDIS_PORT | 6379 | redis port |
+| REDIS_PASSWORD | changeme | redis password |
+| ELASTICSEARCH_HOST | http://elastic | elastic host |
+| ELASTICSEARCH_PORT | 9200 | elastic port |
+| ELASTICSEARCH_USERNAME | elastic | username of elastic super user |
+| ELASTICSEARCH_PASSWORD | changeme | password of elastic super user |
+| ELASTICSEARCH_MAX_BULK_SIZE | 4000 | max bulk size of update process |
+| ELASTICSEARCH_INDEX_ALIAS | upw | default alias of unpaywall data |
+| ELASTICSEARCH_CERTS_PATH | '' | elastic certificate path |
+| MAIL_HOST | http://mail:3000 | mail service host |
+| MAIL_APIKEY | changeme | mail apikey |
+
 ### Adjust system configuration for Elasticsearch
 
 Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
@@ -75,24 +187,10 @@ To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sys
 # configuration needed for elastic search
 vm.max_map_count=262144
 ```
-
 Then apply the changes : 
 ```bash
 sysctl -p
 ```
-### Setup Elastic certificates
-
-For each node in the cluster, add certificates in `elasticsearch/config/certificates/`. Kibana should also have certificates in `kibana/config/certificates`. If you don't have them yet, you can generate them by following these steps :
-
-  - Open the `config/certs` directory.
-  - Create an [instances.yml](https://www.elastic.co/guide/en/elasticsearch/reference/current/certutil.html#certutil-silent) file (an example file is available).
-
-  - Run `docker-compose -f create-certs.yml up`.
-  - A bundle.zip archive is created, it must be decompressed in the certificates folder.
-  ```bash
-  unzip bundle.zip -d ../elasticsearch/certificates/
-  ```
-
 ### Start/Stop/Status
 
 Before you start ezunpaywall, make sure all necessary environment variables are set.
@@ -107,38 +205,12 @@ docker-compose stop
 # Get the status of ezunpaywall services
 docker-compose ps
 ```
-## Development
-### Install
 
-```bash
-npm i
-```
-### Start
-
-Before you start ezunpaywall, make sure all necessary environment variables are set.
-
-```bash
-# Execute this one time
-docker-compose -f docker-compose.debug.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/ 
-
-# Start ezunpaywall as daemon
-docker-compose -f docker-compose.debug.yml up -d
-
-# Stop ezunpaywall
-docker-compose -f docker-compose.debug.yml stop
-
-# Get the status of ezunpaywall services
-docker-compose -f docker-compose.debug.yml ps
-```
-
-```bash
-# start test
-npm run test
-```
 ## Data update 
 
-You can update your data via update snapshots provided by unpaywall on a weekly basis (if you have API key).
-You can directly use the update routes or use the [ezunpaywall command](https://github.com/ezpaarse-project/node-ezunpaywall)
+You can update your data via update snapshots provided by unpaywall on a weekly or daily basis (if you have API key).
+in the update service, there is a cron that allows to automatically update the data from unpaywall, weekly or daily.
+
 ### Data update API
 
 `POST "/update/:name`
