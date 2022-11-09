@@ -1,8 +1,10 @@
 const { format } = require('date-fns');
 
 const Cron = require('../../lib/cron');
+const { getStatus } = require('../status');
 
 const { insertChangefilesOnPeriod } = require('../job');
+const logger = require('../../lib/logger');
 
 const updateConfig = {
   index: 'unpaywall',
@@ -10,6 +12,11 @@ const updateConfig = {
 };
 
 function task() {
+  const status = getStatus();
+  if (status) {
+    logger.info(`[cron ${this.name}] conflit: a update is already in progress`);
+    return;
+  }
   let startDate = format(new Date(), 'yyyy-MM-dd');
   const endDate = format(new Date(), 'yyyy-MM-dd');
   if (updateConfig.interval === 'week') startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
