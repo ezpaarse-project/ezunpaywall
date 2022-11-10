@@ -138,6 +138,7 @@ const downloadBigSnapshot = async () => {
   updateLatestStep(step);
 
   const res = await getSnapshot();
+  if (!res) return false;
 
   const snapshot = res.data;
   const size = res.headers['content-length'];

@@ -29,6 +29,10 @@ const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);
   createState();
   const filename = await downloadBigSnapshot(jobConfig);
+  if (!filename) {
+    await fail();
+    return;
+  }
   jobConfig.filename = filename;
   await insertDataUnpaywall(jobConfig);
   await endState();

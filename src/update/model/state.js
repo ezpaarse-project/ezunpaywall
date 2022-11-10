@@ -106,6 +106,7 @@ function updateLatestStep(step) {
  * @param {Array<String>} stackTrace - log of error
  */
 const fail = async (stackTrace) => {
+  logger.error('[update process]: fail');
   state.done = true;
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
@@ -120,6 +121,7 @@ const fail = async (stackTrace) => {
  * update the state when the process is finished
  */
 const endState = async () => {
+  logger.info('[update process]: end process');
   state.done = true;
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
