@@ -19,7 +19,7 @@ function task() {
     startDate,
     endDate,
     offset: 0,
-    litmit: -1,
+    limit: -1,
   });
 }
 
