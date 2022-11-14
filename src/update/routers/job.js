@@ -66,7 +66,7 @@ router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
     startDate,
     endDate,
     offset: 0,
-    litmit: -1,
+    limit: -1,
   };
 
   if (!startDate && !endDate) {

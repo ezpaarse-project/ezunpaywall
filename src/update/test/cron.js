@@ -34,8 +34,8 @@ describe('Test: cron manage', () => {
 
       expect(res).have.status(200);
 
-      expect(res.body).have.property('time').equal('0 0 0 * * *');
-      expect(res.body).have.property('status').equal(false);
+      expect(res.body).have.property('schedule').equal('0 0 0 * * *');
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall');
       expect(res.body).have.property('interval').equal('day');
     });
@@ -54,8 +54,8 @@ describe('Test: cron manage', () => {
 
       expect(res).have.status(200);
 
-      expect(res.body).have.property('time').equal('0 0 0 1 * *');
-      expect(res.body).have.property('status').equal(false);
+      expect(res.body).have.property('schedule').equal('0 0 0 1 * *');
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall');
       expect(res.body).have.property('interval').equal('day');
     });
@@ -74,8 +74,8 @@ describe('Test: cron manage', () => {
 
       expect(res).have.status(200);
 
-      expect(res.body).have.property('time').equal('0 0 0 * * *');
-      expect(res.body).have.property('status').equal(false);
+      expect(res.body).have.property('schedule').equal('0 0 0 * * *');
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall2');
       expect(res.body).have.property('interval').equal('day');
     });
@@ -94,8 +94,8 @@ describe('Test: cron manage', () => {
 
       expect(res).have.status(200);
 
-      expect(res.body).have.property('time').equal('0 0 0 * * *');
-      expect(res.body).have.property('status').equal(false);
+      expect(res.body).have.property('schedule').equal('0 0 0 * * *');
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall');
       expect(res.body).have.property('interval').equal('week');
     });
@@ -150,8 +150,8 @@ describe('Test: cron manage', () => {
 
       expect(res).have.status(200);
 
-      expect(res.body).have.property('time').equal('0 0 0 * * *');
-      expect(res.body).have.property('status').equal(true);
+      expect(res.body).have.property('schedule').equal('0 0 0 * * *');
+      expect(res.body).have.property('active').equal(true);
       expect(res.body).have.property('index').equal('unpaywall');
       expect(res.body).have.property('interval').equal('day');
     });
@@ -176,8 +176,8 @@ describe('Test: cron manage', () => {
 
       expect(res).have.status(200);
 
-      expect(res.body).have.property('time').equal('0 0 0 * * *');
-      expect(res.body).have.property('status').equal(false);
+      expect(res.body).have.property('schedule').equal('0 0 0 * * *');
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall');
       expect(res.body).have.property('interval').equal('day');
     });
