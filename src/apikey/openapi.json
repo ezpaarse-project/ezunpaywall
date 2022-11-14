@@ -437,37 +437,64 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "keys": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "apikey": {
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        },
-                        "attributes": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "access": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "allowed": {
-                          "type": "boolean"
-                        }
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "apikey": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "attributes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
                       }
+                    },
+                    "access": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "allowed": {
+                      "type": "boolean"
                     }
                   }
+                },
+                "x-examples": {
+                  "example-1": [
+                    {
+                      "apikey": "string",
+                      "name": "string",
+                      "attributes": [
+                        "string"
+                      ],
+                      "access": [
+                        "string"
+                      ],
+                      "allowed": true
+                    }
+                  ]
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": [
+                    {
+                      "apikey": "string",
+                      "name": "string",
+                      "attributes": [
+                        "string"
+                      ],
+                      "access": [
+                        "string"
+                      ],
+                      "allowed": true
+                    }
+                  ]
                 }
               }
             }

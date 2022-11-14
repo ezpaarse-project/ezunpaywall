@@ -34,16 +34,18 @@ const load = async () => {
   apiKeys = await fs.readFile(path.resolve(__dirname, '..', '..', filename), 'utf8');
   apiKeys = JSON.parse(apiKeys);
 
-  await Promise.all(
-    Object.entries(apiKeys).map(async ([keyId, keyValue]) => {
-      try {
-        await redisClient.set(keyId, `${JSON.stringify(keyValue)}`);
-      } catch (err) {
-        logger.error(`Cannot load ${keyId} with ${JSON.stringify(keyValue)} on redis`);
-        logger.error(err);
-      }
-    }),
-  );
+  for (let i = 0; i < apiKeys.length; i += 1) {
+    const [apikey] = Object.keys(apiKeys[i]);
+    const configApikey = apiKeys[i][apikey];
+
+    try {
+      await redisClient.set(apikey, `${JSON.stringify(configApikey)}`);
+      logger.info(`[load] ${configApikey.name} loaded`);
+    } catch (err) {
+      logger.error(`Cannot load [${apikey}] with config [${JSON.stringify(config)}] on redis`);
+      logger.error(err);
+    }
+  }
 };
 
 const pingRedis = async () => {

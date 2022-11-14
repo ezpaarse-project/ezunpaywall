@@ -60,7 +60,7 @@ router.get('/keys/:apikey', async (req, res, next) => {
 router.get('/keys', checkAuth, async (req, res, next) => {
   const keys = await redisClient.keys('*');
 
-  const allKeys = {};
+  const allKeys = [];
 
   for (let i = 0; i < keys.length; i += 1) {
     const key = keys[i];
@@ -79,7 +79,7 @@ router.get('/keys', checkAuth, async (req, res, next) => {
       return next({ message: `Cannot parse config [${config}]`, stackTrace: err });
     }
 
-    allKeys[key] = config;
+    allKeys.push({ [key]: config });
   }
 
   return res.status(200).json(allKeys);
@@ -276,7 +276,7 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
   const { dev } = req.query;
-  const loadDeys = req.body.keys;
+  const loadKeys = req.body;
 
   if (dev) {
     try {
@@ -289,12 +289,13 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
     return res.status(204).json();
   }
 
-  for (let i = 0; i < loadDeys.length; i += 1) {
-    const [apikey] = Object.keys(loadDeys[i]);
-    const config = loadDeys[i][apikey];
+  for (let i = 0; i < loadKeys.length; i += 1) {
+    const [apikey] = Object.keys(loadKeys[i]);
+    const config = loadKeys[i][apikey];
 
     try {
       await redisClient.set(apikey, `${JSON.stringify(config)}`);
+      logger.info(`[load] ${config.name} loaded`);
     } catch (err) {
       logger.error(`Cannot load [${apikey}] with config [${JSON.stringify(config)}] on redis`);
       logger.error(err);
