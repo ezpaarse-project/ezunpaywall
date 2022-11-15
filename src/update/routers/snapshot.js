@@ -10,7 +10,7 @@ const {
 
 const {
   getMostRecentFile,
-} = require('../lib/file');
+} = require('../bin/file');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 

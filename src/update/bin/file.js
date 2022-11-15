@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -33,7 +34,22 @@ const getMostRecentFile = async (dir) => {
   return files.length ? files[0] : undefined;
 };
 
+async function deleteFilesInDir(directory, maxAgeInDays) {
+  const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;
+  const threshold = Date.now() - time;
+
+  const files = await fs.readdir(directory);
+
+  for (const file of files) {
+    const stat = await fs.stat(path.join(directory, file));
+    if (stat.mtime < threshold) {
+      await fs.unlink(path.join(directory, file));
+    }
+  }
+}
+
 module.exports = {
-  orderRecentFiles,
   getMostRecentFile,
+  deleteFilesInDir,
+  orderRecentFiles,
 };

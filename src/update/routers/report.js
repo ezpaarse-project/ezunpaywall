@@ -5,7 +5,7 @@ const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
   getMostRecentFile,
-} = require('../lib/file');
+} = require('../bin/file');
 
 const {
   getReport,
