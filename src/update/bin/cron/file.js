@@ -15,10 +15,10 @@ async function task() {
   await deleteFilesInDir(snapshotDir, 30);
   logger.info('Delete snapshots files older than 1 months');
 
-  await deleteFilesInDir(states, 1);
+  await deleteFilesInDir(states, 30);
   logger.info('Delete states files older than 1 months');
 }
 
-const cron = new Cron('DeleteFileOlderThanOneMonth', '0 0 0 * * *', async () => task());
+const cron = new Cron('DeleteFileOlderThanOneMonth', '0 0 0 * * *', task);
 
 module.exports = cron;

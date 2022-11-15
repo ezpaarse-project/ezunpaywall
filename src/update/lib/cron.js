@@ -2,22 +2,20 @@ const { CronJob } = require('cron');
 
 const logger = require('./logger');
 
-const Cron = class Cron {
-  constructor(name, time, task) {
+class Cron {
+  constructor(name, schedule, task) {
     this.name = name;
-    this.time = time;
+    this.schedule = schedule;
     this.task = task;
-    this.status = false;
-    this.process = new CronJob(time, async () => {
-      await task();
-    }, null, false, 'Europe/Paris');
+    this.active = false;
+    this.process = new CronJob(schedule, this.task, null, false, 'Europe/Paris');
   }
 
   getConfig() {
     return {
       name: this.name,
-      time: this.time,
-      status: this.status,
+      schedule: this.schedule,
+      active: this.active,
     };
   }
 
@@ -25,33 +23,31 @@ const Cron = class Cron {
     this.process.stop();
     this.task = task;
     logger.info(`[cron ${this.name}] config - task updated`);
-    this.process = new CronJob(this.time, async () => {
-      await this.task();
-    }, null, false, 'Europe/Paris');
-    if (this.status) this.process.start();
+    this.process = new CronJob(this.schedule, this.task, null, false, 'Europe/Paris');
+    if (this.active) this.process.start();
   }
 
-  setTime(time) {
+  setSchedule(schedule) {
     this.process.stop();
-    this.time = time;
-    logger.info(`[cron ${this.name}] config - time is updated [${this.time}]`);
-    this.process = new CronJob(this.time, async () => {
+    this.schedule = schedule;
+    logger.info(`[cron ${this.name}] config - schedule is updated [${this.schedule}]`);
+    this.process = new CronJob(this.schedule, async () => {
       await this.task();
     }, null, false, 'Europe/Paris');
-    if (this.status) this.process.start();
+    if (this.active) this.process.start();
   }
 
   start() {
     try {
       this.process.start();
       logger.info(`[cron ${this.name}] - started`);
-      logger.info(`[cron ${this.name}] config - time: [${this.time}]`);
+      logger.info(`[cron ${this.name}] config - schedule: [${this.schedule}]`);
     } catch (err) {
       logger.error(`[cron ${this.name}] - error in start`);
       logger.error(err);
       return;
     }
-    this.status = true;
+    this.active = true;
   }
 
   stop() {
@@ -63,8 +59,8 @@ const Cron = class Cron {
       logger.error(err);
       return;
     }
-    this.status = false;
+    this.active = false;
   }
-};
+}
 
 module.exports = Cron;
