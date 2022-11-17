@@ -1078,7 +1078,50 @@
         ],
         "tags": [
           "cron"
-        ]
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "string"
+                  },
+                  "index": {
+                    "type": "string"
+                  },
+                  "interval": {
+                    "type": "string"
+                  }
+                },
+                "x-examples": {
+                  "example-1": {
+                    "time": "",
+                    "index": "",
+                    "interval": ""
+                  }
+                }
+              },
+              "examples": {
+                "daily": {
+                  "value": {
+                    "time": "0 0 0 * * *",
+                    "index": "unpaywall",
+                    "interval": "day"
+                  }
+                },
+                "weekly": {
+                  "value": {
+                    "time": "0 0 0 * * 0",
+                    "index": "unpaywall",
+                    "interval": "weekly"
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "get": {
         "summary": "Get config of update cron",
@@ -1182,7 +1225,7 @@
   "components": {
     "responses": {
       "Not-authorized": {
-        "description": "Your api key does not allow access to this resource",
+        "description": "Not authorized",
         "headers": {},
         "content": {
           "*/*": {
@@ -1196,6 +1239,13 @@
               "x-examples": {
                 "example-1": {
                   "message": "Not authorized"
+                }
+              }
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "message": "string"
                 }
               }
             }

@@ -267,7 +267,7 @@
   "components": {
     "responses": {
       "Not-authorized": {
-        "description": "Your api key does not allow access to this resource",
+        "description": "Not authorized",
         "headers": {},
         "content": {
           "*/*": {

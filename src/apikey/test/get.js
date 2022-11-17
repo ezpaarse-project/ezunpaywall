@@ -46,6 +46,15 @@ describe('Test: Get config of apikey', () => {
     let apikeyDev = await fs.readFile(path.resolve(__dirname, '..', 'apikey-dev.json'));
     apikeyDev = JSON.parse(apikeyDev);
 
+    function sortApikey(a, b) {
+      const t1 = Object.entries(a);
+      const t2 = Object.entries(b);
+      return t1[0][0] < t2[0][0] ? -1 : 1;
+    }
+
+    apikeyDev.sort(sortApikey);
+    keys.sort(sortApikey);
+
     const equal = isEqual(keys, apikeyDev);
 
     expect(equal).equal(true);
