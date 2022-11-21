@@ -41,7 +41,7 @@ const insertDataInElastic = async (data) => {
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
-    await fail(err);
+    await fail(err[0].reason);
     return false;
   }
 
