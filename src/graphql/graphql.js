@@ -2,7 +2,7 @@ const graphql = require('graphql');
 
 const GetByDOI = require('./resolvers/getByDOI');
 const Metrics = require('./resolvers/metrics');
-const dailyMetrics = require('./resolvers/dailyMetrics');
+const DailyMetrics = require('./resolvers/dailyMetrics');
 
 const {
   GraphQLSchema,
@@ -14,7 +14,7 @@ const RootQuery = new GraphQLObjectType({
   fields: () => ({
     GetByDOI,
     Metrics,
-    dailyMetrics,
+    DailyMetrics,
   }),
 });
 

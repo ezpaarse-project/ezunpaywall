@@ -112,14 +112,14 @@ export default {
           url: '/graphql',
           params: {
             query:
-              '{ Metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }'
+              '{ DailyMetrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }'
           }
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
       }
-      if (res?.data?.data?.Metrics) {
-        this.metrics = res?.data?.data?.Metrics
+      if (res?.data?.data?.DailyMetrics) {
+        this.metrics = res?.data?.data?.DailyMetrics
       }
       this.loaded = false
     },
