@@ -97,6 +97,17 @@
               {{ $t("reportHistory.insertedDocs") }}
             </v-row>
           </v-card-text>
+          <v-card-actions class="pa-0">
+            <v-spacer />
+            <v-btn
+              text
+              color="white"
+              router
+              :to="{ path: '/report-history', query: { id: report.data.createdAt } }"
+            >
+              DETAILS
+            </v-btn>
+          </v-card-actions>
         </v-card>
 
         <v-card
@@ -130,6 +141,17 @@
               {{ $t("reportHistory.insertedDocs") }}
             </v-row>
           </v-card-text>
+          <v-card-actions class="pa-0">
+            <v-spacer />
+            <v-btn
+              text
+              color="white"
+              router
+              :to="{ path: '/report-history', query: { id: report.data.createdAt } }"
+            >
+              DETAILS
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
