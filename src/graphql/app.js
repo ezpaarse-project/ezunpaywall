@@ -7,6 +7,9 @@ const auth = require('./middlewares/auth');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
+const cronMetrics = require('./bin/cron/metrics');
+const { setMetrics } = require('./bin/metrics');
+
 const { pingRedis } = require('./lib/service/redis');
 
 const { pingElastic } = require('./lib/service/elastic');
@@ -44,4 +47,6 @@ app.listen(3000, () => {
   logger.info('ezunpaywall graphQL API listening on 3000');
   pingElastic();
   pingRedis();
+  setMetrics();
+  cronMetrics.start();
 });
