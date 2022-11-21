@@ -47,7 +47,7 @@ router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
 router.post('/upload', checkAuth, upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ message: 'File not sent' });
   const { filename } = req?.file;
-  return res.status(200).json({ id: path.parse(filename).name });
+  return res.status(200).json(path.parse(filename).name);
 });
 
 module.exports = router;

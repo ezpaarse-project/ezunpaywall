@@ -60,7 +60,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
@@ -136,7 +136,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
       it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
         const res2 = await chai
@@ -210,7 +210,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
@@ -286,7 +286,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with args { best_oa_location { license } } and download it', async () => {
@@ -362,7 +362,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with args { z_authors { given } } and download it', async () => {
@@ -437,7 +437,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors{ family } } and download it', async () => {
@@ -512,7 +512,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should return a error message', async () => {

@@ -179,7 +179,7 @@
 
           <v-stepper-content step="3">
             <v-layout justify-end class="mb-3">
-              <v-btn :href="resultUrl" :disabled="inProcess || error">
+              <v-btn :disabled="inProcess || error" @click="download()">
                 <v-icon left>
                   mdi-download
                 </v-icon>
@@ -317,8 +317,8 @@ export default {
       return `{ ${attrs.join(', ')} }`
     },
     // process
-    resultUrl () {
-      return `${this.$enrich.defaults.baseURL}/enriched/${this.id}.${this.extensionSelected}`
+    resultID () {
+      return `${this.id}.${this.extensionSelected}`
     },
 
     extensionFileColor () {
@@ -356,15 +356,14 @@ export default {
             'Content-Type': 'text/csv',
             'X-API-KEY': this.apiKey
           },
-          responseType: 'json',
-          timeout: 0
+          responseType: 'json'
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
         return this.errored()
       }
 
-      const { id } = upload
+      const id = upload.data
 
       this.stepTitle = this.$t('enrich.stepEnrich')
       try {
@@ -404,6 +403,33 @@ export default {
       // done
       this.inProcess = false
       this.id = id
+    },
+
+    async download () {
+      let download
+      try {
+        download = await this.$enrich({
+          method: 'GET',
+          url: `/enriched/${this.resultID}`,
+          headers: {
+            'X-API-KEY': this.apiKey
+          },
+          responseType: 'json'
+        })
+      } catch (err) {
+        this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
+        return this.errored()
+      }
+      this.forceFileDownload(download)
+    },
+
+    forceFileDownload (response) {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', this.resultID)
+      document.body.appendChild(link)
+      link.click()
     },
 
     startTimer (startTime) {

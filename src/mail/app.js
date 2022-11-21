@@ -4,8 +4,6 @@ const cors = require('cors');
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 
-const { name, version } = require('./package.json');
-
 const routerPing = require('./routers/ping');
 const routerMail = require('./routers/mail');
 const routerOpenapi = require('./routers/openapi');
@@ -20,10 +18,6 @@ app.use(cors({
 app.use(morgan);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-app.get('/', async (req, res) => {
-  res.status(200).json({ name, version });
-});
 
 app.use(routerPing);
 app.use(routerMail);
