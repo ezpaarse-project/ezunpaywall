@@ -4,5 +4,9 @@
     "host": "redis",
     "port": "6379",
     "password": "changeme"
+  },
+  "graphql": {
+    "host": "http://graphql", 
+    "port": "3000"
   }
 }
