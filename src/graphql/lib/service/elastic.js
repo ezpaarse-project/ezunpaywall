@@ -63,7 +63,7 @@ async function getMetrics(index) {
   try {
     res = await elasticClient.count({
       index,
-    });
+    }, { requestTimeout: '600s' });
   } catch (err) {
     logger.error('Cannot request elastic');
     logger.error(err);
@@ -109,7 +109,7 @@ async function getMetrics(index) {
           },
         },
       },
-    });
+    }, { requestTimeout: '600s' });
   } catch (err) {
     logger.error('Cannot request elastic');
     logger.error(err);
