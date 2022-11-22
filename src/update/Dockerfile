@@ -9,5 +9,4 @@ COPY package*.json /update/
 RUN npm ci --only=production
 COPY . /update
 
-EXPOSE 4000
 CMD [ "npm", "start" ]

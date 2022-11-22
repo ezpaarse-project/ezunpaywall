@@ -9,5 +9,4 @@ COPY package*.json /enrich/
 RUN npm ci --only=production
 COPY . /enrich
 
-EXPOSE 5000
 CMD [ "npm", "start" ]

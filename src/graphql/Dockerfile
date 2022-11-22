@@ -9,5 +9,4 @@ COPY package*.json /graphql/
 RUN npm ci --only=production
 COPY . /graphql
 
-EXPOSE 3000
 CMD [ "npm", "start" ]

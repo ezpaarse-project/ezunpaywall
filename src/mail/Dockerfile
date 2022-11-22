@@ -9,5 +9,4 @@ COPY package*.json /mail/
 RUN npm ci --only=production
 COPY . /mail
 
-EXPOSE 8000
 CMD [ "npm", "start" ]

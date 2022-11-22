@@ -9,5 +9,4 @@ COPY package*.json /apikey/
 RUN npm ci --only=production
 COPY . /apikey
 
-EXPOSE 7000
 CMD [ "npm", "start" ]
