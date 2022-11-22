@@ -125,7 +125,7 @@
               </v-icon>
             </v-row>
           </v-card-text>
-          <v-card-text class="pa-5">
+          <v-card-text class="white--text pa-5">
             <v-row>
               <v-icon size="22" class="white--text pr-1" color="white">
                 mdi-update
