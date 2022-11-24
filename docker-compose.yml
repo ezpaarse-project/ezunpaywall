@@ -7,9 +7,6 @@ services:
     container_name: ezunpaywall-graphql-prod
     environment:
       - NODE_ENV=production
-      # proxy
-      - http_proxy
-      - https_proxy
       # elastic
       - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
@@ -25,8 +22,6 @@ services:
       - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
       - ${ELASTIC_CERT_CA_PATH:-./src/graphql/certs/ca.crt}:/graphql/certs
     command: "npm start"
-    ports:
-      - ${GRAPHQL_PORT:-59701}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -37,7 +32,7 @@ services:
       args:
         - http_proxy
         - https_proxy
-    container_name: ezunpaywall-update-preprod
+    container_name: ezunpaywall-update-prod
     environment:
       - NODE_ENV=production
       # proxy
@@ -67,8 +62,6 @@ services:
       - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
       - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/update/certs
     command: "npm start"
-    ports:
-      - ${UPDATE_PORT:-59702}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -91,8 +84,6 @@ services:
       - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/enrich/log/access
       - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
     command: "npm start"
-    ports:
-      - ${ENRICH_PORT:-59703}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -100,9 +91,6 @@ services:
   apikey:
     build:
       context: ./src/apikey
-      args:
-        - http_proxy
-        - https_proxy
     container_name: ezunpaywall-apikey-prod
     environment:
       # redis
@@ -113,8 +101,6 @@ services:
       - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/apikey/log/application
       - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/apikey/log/access
     command: "npm start"
-    ports:
-      - ${APIKEY_PORT:-59704}:3000
     depends_on:
       - redis
     restart: unless-stopped
@@ -135,8 +121,6 @@ services:
       - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/mail/log/application
       - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/mail/log/access
     command: "npm start"
-    ports:
-      - ${MAIL_PORT:-59705}:3000
     restart: unless-stopped
 
   frontend:
@@ -148,13 +132,10 @@ services:
      - ${FRONTEND_PORT:-59706}:3000
     environment:
       - NODE_ENV=production
-      # graphql
+      # host of service
       - GRAPHQL_HOST
-      # update
       - UPDATE_HOST
-      # enrich
       - ENRICH_HOST
-      # mail
       - MAIL_HOST
       - MAIL_APIKEY
 
@@ -164,8 +145,6 @@ services:
     command: redis-server --requirepass "${REDIS_PASSWORD}"
     volumes:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
-    ports:
-      - ${REDIS_PORT:-6379}:6379
     restart: unless-stopped
 
   nginx:
@@ -185,3 +164,26 @@ services:
       - graphql
       - apikey
       - frontend
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: ezunpaywall-elastic-dev
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ELASTIC_USERNAME={ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+    healthcheck:
+      test: curl --cacert $CERTS_DIR_ES/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "./data/elastic:/usr/share/elasticsearch/data"
+    restart: unless-stopped

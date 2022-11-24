@@ -223,8 +223,6 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
     container_name: ezunpaywall-kibana-dev
-    ports:
-      - 5601:5601
     environment:
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
@@ -232,6 +230,8 @@ services:
       - xpack.security.enabled=true
     depends_on: 
       - elastic
+    ports:
+      - 5601:5601
     restart: unless-stopped
 
 
