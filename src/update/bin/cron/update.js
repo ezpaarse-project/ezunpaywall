@@ -7,6 +7,11 @@ const { getStatus } = require('../status');
 const { insertChangefilesOnPeriod } = require('../job');
 const logger = require('../../lib/logger');
 
+let { active } = cron;
+
+if (active === 'true') active = true;
+else active = false;
+
 const updateConfig = {
   index: cron.index,
   interval: cron.interval,
@@ -31,7 +36,7 @@ async function task() {
   });
 }
 
-const updateCron = new Cron('update', cron.schedule, task, cron.active);
+const updateCron = new Cron('update', cron.schedule, task, active);
 
 function update(config) {
   if (config.time) updateCron.setSchedule(config.time);
