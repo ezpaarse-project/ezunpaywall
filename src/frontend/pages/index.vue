@@ -11,7 +11,7 @@
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title
-          v-text="$t('home.metrics', { origin: getElasticOrigin() })"
+          v-text="$t('home.metrics', { env: getEnvironment() })"
         />
       </v-toolbar>
       <v-card-title v-text="$t('home.globalMetrics')" />
@@ -123,8 +123,8 @@ export default {
       }
       this.loaded = false
     },
-    getElasticOrigin () {
-      return this.$config.elasticOrigin
+    getEnvironment () {
+      return this.$config.environment
     }
   }
 }

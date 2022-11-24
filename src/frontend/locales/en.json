@@ -2,7 +2,7 @@
   "home": {
     "title" : "What is ezUnpaywall?",
     "intro": "The ezUnpaywall server is an <a href=\"{url}\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM. This interface is used as a demonstrator, it allows to test the mirror features (graphql API and file enrichment). For more information, see the <a href=\"{blogURL}\" target=\"_blank\">blog post</a>.",
-    "metrics": "Metrics - {origin}",
+    "metrics": "Metrics - {env}",
     "globalMetrics": "Global metrics",
     "referencedResources": "Referenced resources",
     "openAccess": "Open Access",

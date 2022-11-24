@@ -2,7 +2,7 @@
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
     "intro": "Le serveur ezUnpaywall est un miroir <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. Cette interface est sert de démonstrateur, elle permet de tester les fonctionnalités du miroir (API graphql et enrichissement de fichier). Pour plus d'informations, regarder <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
-    "metrics": "Métriques - {origin}",
+    "metrics": "Métriques - {env}",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
     "openAccess": "Accès ouvert",
