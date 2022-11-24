@@ -1,4 +1,5 @@
 const { format, subDays } = require('date-fns');
+const { cron } = require('config');
 
 const Cron = require('../../lib/cron');
 const { getStatus } = require('../status');
@@ -7,8 +8,8 @@ const { insertChangefilesOnPeriod } = require('../job');
 const logger = require('../../lib/logger');
 
 const updateConfig = {
-  index: 'unpaywall',
-  interval: 'day',
+  index: cron.index,
+  interval: cron.interval,
 };
 
 async function task() {
@@ -30,24 +31,24 @@ async function task() {
   });
 }
 
-const cron = new Cron('update', '0 0 0 * * *', task);
+const updateCron = new Cron('update', cron.schedule, task, cron.active);
 
 function update(config) {
-  if (config.time) cron.setSchedule(config.time);
+  if (config.time) updateCron.setSchedule(config.time);
 
   if (config.index) updateConfig.index = config.index;
   if (config.interval) updateConfig.interval = config.interval;
 
-  if (config.index || config.interval) cron.setTask(task);
+  if (config.index || config.interval) updateCron.setTask(task);
 }
 
 function getGlobalConfig() {
-  const config = cron.getConfig();
+  const config = updateCron.getConfig();
   return { ...config, ...updateConfig };
 }
 
 module.exports = {
   getGlobalConfig,
   update,
-  cron,
+  updateCron,
 };

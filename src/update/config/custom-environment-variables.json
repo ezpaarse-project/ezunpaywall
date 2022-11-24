@@ -20,5 +20,11 @@
     "password": "ELASTICSEARCH_PASSWORD",
     "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
     "indexAlias": "ELASTICSEARCH_INDEX_ALIAS"
+  },
+  "cron": {
+    "schedule": "UPDATE_CRON_SCHEDULE",
+    "active": "UPDATE_CRON_ACTIVE",
+    "index": "UPDATE_CRON_INDEX",
+    "interval": "UPDATE_CRON_INTERVAL"
   }
 }

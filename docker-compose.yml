@@ -56,6 +56,11 @@ services:
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
+      # cron
+      - UPDATE_CRON_SCHEDULE
+      - UPDATE_CRON_ACTIVE
+      - UPDATE_CRON_INDEX
+      - UPDATE_CRON_INTERVAL
     volumes:
       - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
       - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access

@@ -3,12 +3,16 @@ const { CronJob } = require('cron');
 const logger = require('./logger');
 
 class Cron {
-  constructor(name, schedule, task) {
+  constructor(name, schedule, task, active) {
     this.name = name;
     this.schedule = schedule;
     this.task = task;
-    this.active = false;
+    this.active = active;
     this.process = new CronJob(schedule, this.task, null, false, 'Europe/Paris');
+    if (active) {
+      logger.info(`[cron ${this.name}] - started`);
+      logger.info(`[cron ${this.name}] config - schedule: [${this.schedule}]`);
+    }
   }
 
   getConfig() {

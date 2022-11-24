@@ -21,5 +21,11 @@
     "maxBulkSize": 4000,
     "indexAlias": "upw",
     "cert": ""
+  },
+  "cron": {
+    "schedule": "0 0 0 * * *",
+    "active": false,
+    "index": "unpaywall",
+    "interval": "day"
   }
 }

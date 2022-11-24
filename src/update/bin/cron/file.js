@@ -19,6 +19,6 @@ async function task() {
   logger.info('Delete states files older than 1 months');
 }
 
-const cron = new Cron('DeleteFileOlderThanOneMonth', '0 0 0 * * *', task);
+const cron = new Cron('DeleteFileOlderThanOneMonth', '0 0 0 * * *', task, true);
 
 module.exports = cron;

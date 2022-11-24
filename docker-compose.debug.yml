@@ -46,6 +46,11 @@ services:
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
+      # cron
+      - UPDATE_CRON_SCHEDULE
+      - UPDATE_CRON_ACTIVE
+      - UPDATE_CRON_INDEX
+      - UPDATE_CRON_INTERVAL
     working_dir: /update
     volumes:
       - ./src/update:/update
