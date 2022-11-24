@@ -8,7 +8,7 @@ export default {
     apikeyHost: process.env.APIKEY_HOST || 'http://localhost:59704',
     mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
     apikeyMail: process.env.MAIL_APIKEY || 'changeme',
-    environment: process.env.ENVIRONMENT || 'development'
+    environment: process.env.NODE_ENV || 'development'
   },
 
   server: {

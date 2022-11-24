@@ -147,7 +147,7 @@ services:
     ports:
      - ${FRONTEND_PORT:-59706}:3000
     environment:
-      - ENVIRONMENT
+      - NODE_ENV=production
       # graphql
       - GRAPHQL_HOST
       # update
