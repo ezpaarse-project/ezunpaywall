@@ -414,7 +414,7 @@ export default {
           headers: {
             'X-API-KEY': this.apiKey
           },
-          responseType: 'json'
+          responseType: 'blob'
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
