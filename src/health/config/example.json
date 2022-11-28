@@ -1,0 +1,15 @@
+[
+  {
+    "name": "update",
+    "url": "https://unpaywall.inist.fr/api/update/health",
+    "method": "get",
+    "timeout": 3000
+  },
+  {
+    "name": "update",
+    "url": "https://unpaywall.inist.fr/api/update/health/elastic",
+    "method": "get",
+    "timeout": 3000
+  }
+]
+

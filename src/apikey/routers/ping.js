@@ -5,9 +5,9 @@ const logger = require('../lib/logger');
 
 router.get('/', async (req, res) => res.status(200).json({ message: 'apikey service' }));
 
-router.get('/ping', async (req, res, next) => res.status(200).json({ message: true }));
+router.get('/ping', async (req, res, next) => res.status(204));
 
-router.get('/ping/redis', async (req, res, next) => {
+router.get('/health', async (req, res, next) => {
   let redis;
   try {
     redis = await pingRedis();
