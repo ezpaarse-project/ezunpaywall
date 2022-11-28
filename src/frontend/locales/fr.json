@@ -59,7 +59,7 @@
     "apiKey": "clé d'API",
     "settings": "Attributs unpaywall à récuperer",
     "request": "Requête GraphQL",
-    "start": "Lancement de la requête",
+    "start": "Lancer la requête",
     "result": "Résultat",
     "linkAPI": "Voir sur l'API",
     "copyRequest": "Requête GraphQL copié",
