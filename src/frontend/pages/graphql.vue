@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div v-html="$t('graphql.general', { dataFormatURL })" />
+    <div v-html="$t('graphql.general', { url: dataFormatURL })" />
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />
@@ -117,6 +117,9 @@ export default {
     }
   },
   computed: {
+    graphqlHost () {
+      return this
+    },
     formatDOIs () {
       const dois = this.doi.split(',')
       return `"${dois.join('", "')}"`

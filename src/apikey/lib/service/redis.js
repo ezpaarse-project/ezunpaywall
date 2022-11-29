@@ -49,18 +49,13 @@ const load = async () => {
 };
 
 const pingRedis = async () => {
-  let redisStatus;
-  do {
-    try {
-      redisStatus = await redisClient.ping();
-    } catch (err) {
-      logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
-      logger.error(err);
-    }
-    if (redisStatus !== 'PONG') {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  } while (redisStatus !== 'PONG');
+  try {
+    await redisClient.ping();
+  } catch (err) {
+    logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
+    logger.error(err);
+    return false;
+  }
   logger.info(`ping - ${config.get('redis.host')}:${config.get('redis.port')} ok`);
   return true;
 };
