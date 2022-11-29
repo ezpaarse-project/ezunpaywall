@@ -16,31 +16,89 @@
       </v-toolbar>
       <v-card-title v-text="$t('home.globalMetrics')" />
       <v-card-text>
-        <v-chip color="grey darken-2" text-color="white">
-          {{ $t("home.referencedResources") }} : {{ metrics.doi }}
-        </v-chip>
-        <v-chip color="grey darken-2" text-color="white">
-          {{ $t("home.openAccess") }} : {{ metrics.isOA }}
-        </v-chip>
+        <v-menu
+          v-for="chip in metricsGlobalMetricsChips"
+          :key="chip.name"
+          v-model="chip.help"
+          offset-y
+          bottom
+          right
+          transition="scale-transition"
+          origin="top left"
+        >
+          <template #activator="{ on }">
+            <v-chip
+              :color="chip.color"
+              text-color="white"
+              class="ma-1"
+              v-on="on"
+            >
+              {{ $t(chip.name) }} : {{ metrics[chip.field] }}
+            </v-chip>
+          </template>
+
+          <v-card class="text-justify">
+            <v-card-text
+              v-text="$t(chip.text)"
+            />
+
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                text
+                @click="chip.help = false"
+                v-text="$t('close')"
+              />
+            </v-card-actions>
+          </v-card>
+        </v-menu>
       </v-card-text>
 
       <v-divider />
 
       <v-card-title v-text="$t('home.openAccessStatus')" />
       <v-card-text>
-        <v-chip-group active-class="deep-purple accent-4 white--text" column>
-          <v-chip
-            v-for="chip in metricsChips"
-            :key="chip.name"
-            :color="chip.color"
-            text-color="white"
-          >
-            <v-icon left color="white">
-              mdi-lock-open
-            </v-icon>
-            {{ chip.name }} : {{ metrics[chip.name] }}
-          </v-chip>
-        </v-chip-group>
+        <v-menu
+          v-for="chip in metricsOAStatusChips"
+          :key="chip.name"
+          v-model="chip.help"
+          offset-y
+          bottom
+          right
+          transition="scale-transition"
+          origin="top left"
+        >
+          <template #activator="{ on }">
+            <v-chip
+              :color="chip.color"
+              text-color="white"
+              class="ma-1"
+              v-on="on"
+            >
+              <v-icon left color="white">
+                {{ chip.icon }}
+              </v-icon>
+              {{ chip.name }} : {{ metrics[chip.name] }}
+            </v-chip>
+          </template>
+
+          <v-card class="text-justify">
+            <v-card-text
+              v-text="$t(chip.text)"
+            />
+
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                text
+                @click="chip.help = false"
+                v-text="$t('close')"
+              />
+            </v-card-actions>
+          </v-card>
+        </v-menu>
       </v-card-text>
     </v-card>
   </section>
@@ -70,26 +128,57 @@ export default {
         greenOA: 0,
         closedOA: 0
       },
-      metricsChips: [
+      metricsGlobalMetricsChips: [
+        {
+          name: 'referencedResources',
+          field: 'doi',
+          color: 'grey darken-2',
+          text: 'home.referencedRessourceHelp',
+          help: false
+        },
+        {
+          name: 'openAccess',
+          field: 'isOA',
+          color: 'grey darken-2',
+          text: 'home.openAccessHelp',
+          help: false
+        }
+      ],
+      metricsOAStatusChips: [
         {
           name: 'goldOA',
-          color: '#FFC000'
+          color: '#FFC000',
+          icon: 'mdi-lock-open',
+          text: 'home.goldOAHelp',
+          help: false
         },
         {
           name: 'hybridOA',
-          color: '#DD7931'
+          color: '#DD7931',
+          icon: 'mdi-lock-open',
+          text: 'home.hybridOAHelp',
+          help: false
         },
         {
           name: 'bronzeOA',
-          color: '#DD7931'
+          color: '#DD7931',
+          icon: 'mdi-lock-open',
+          text: 'home.bronzeOAHelp',
+          help: false
         },
         {
           name: 'greenOA',
-          color: '#00F765'
+          color: '#4CAF50',
+          icon: 'mdi-lock-open',
+          text: 'home.greenOAHelp',
+          help: false
         },
         {
           name: 'closedOA',
-          color: '#BBBBBB'
+          color: '#BBBBBB',
+          icon: 'mdi-lock',
+          text: 'home.closedOAHelp',
+          help: false
         }
       ]
     }
@@ -97,6 +186,11 @@ export default {
   head () {
     return {
       title: 'Home'
+    }
+  },
+  computed: {
+    referencedRessourceHelp () {
+      return this.$t('home.referencedRessourceHelp')
     }
   },
   mounted () {

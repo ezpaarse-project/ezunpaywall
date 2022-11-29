@@ -6,7 +6,14 @@
     "globalMetrics": "Global metrics",
     "referencedResources": "Referenced resources",
     "openAccess": "Open Access",
-    "openAccessStatus": "Open Access Status"
+    "openAccessStatus": "Open Access Status",
+    "referencedRessourceHelp": "Number of bibliographic references recorded in the mirror",
+    "openAccessHelp": "Number of bibliographic references available for free access",
+    "goldOAHelp": "Number of bibliographic references with 'gold' status",
+    "hybridOAHelp": "Number of bibliographic references with 'hybrid' status",
+    "bronzeOAHelp": "Number of bibliographic references with 'bronze' status",
+    "greenOAHelp": "Number of bibliographic references with 'green' status",
+    "closedOAHelp": "Number of bibliographic references with 'closed' status"
   },
   "contact": {
     "contactUs": "Contact us",

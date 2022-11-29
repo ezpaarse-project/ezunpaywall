@@ -19,16 +19,6 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item link router :to="{ path: '/graphql' }" ripple>
-        <v-list-item-icon>
-          <v-icon>mdi-server</v-icon>
-        </v-list-item-icon>
-
-        <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.graphql')" />
-        </v-list-item-content>
-      </v-list-item>
-
       <v-list-item link router :to="{ path: '/enrich' }" ripple>
         <v-list-item-icon>
           <v-icon>mdi-code-json</v-icon>
@@ -36,6 +26,16 @@
 
         <v-list-item-content>
           <v-list-item-title v-text="$t('drawer.enrich')" />
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link router :to="{ path: '/graphql' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-server</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="$t('drawer.graphql')" />
         </v-list-item-content>
       </v-list-item>
 

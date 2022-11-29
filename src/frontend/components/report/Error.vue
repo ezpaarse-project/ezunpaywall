@@ -4,7 +4,7 @@
     <v-row class="ma-2">
       {{ report.createdAt }}
       <v-spacer />
-      <v-icon right color="white">
+      <v-icon right color="red darken-2">
         mdi-alert-circle
       </v-icon>
     </v-row>
