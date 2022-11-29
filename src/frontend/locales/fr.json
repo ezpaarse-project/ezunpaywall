@@ -1,7 +1,7 @@
 {
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
-    "intro": "Le serveur ezUnpaywall est un miroir <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. Cette interface est sert de démonstrateur, elle permet de tester les fonctionnalités du miroir (API graphql et enrichissement de fichier). Pour plus d'informations, regarder <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
+    "intro": "ezUnpaywall est un miroir des données <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. Il dispose d'une interface d'enrichissement de fichier en données Open Access à partir du DOI et d'un démonstrateur d'interrogation de DOI avec des requêtes GraphQL, Ce serveur dispose d'une API interrogeable via une APIKey. Vous pouvez obtenir une APIKey sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
     "metrics": "Métriques - {env}",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
@@ -61,7 +61,7 @@
     "errorState": "Impossible d'obtenir l'état"
   },
   "graphql": {
-    "general": "Cette page permet de tester l'API GraphQL mise à disposition à l'adresse <a href=\"{url}\" target=\"_blank\">{url}</a>. Pour pouvoir requêter le miroir, il est nécessaire d'indiquer une clé d'API, des DOIs separé par une virgule et des attributs unpaywall voulus. Un constructeur de requête GraphQL est à votre disposition pour vous aider à requeter l'API.",
+    "general": "Ce démonstrateur GraphQL vous permet de construire une requête d'interrogation de l'API. Il suffit de préciser en entrée le DOI ou les DOIs recherchés séparé par une virgule, votre clé d'API les champs Unpaywall désirés en sortie. Le démonstrateur construit la requête et vous pouvez envoyer la requête au serveur et voir la réponse. Utiliser les aides dans l'interface pour avoir plus d'informations sur l'usage des données du formulaire. Si vous êtes développeur, vous pouvez aussi utiliser la section documentation (swagger) pour tester les différentes routes de l'API.",
     "constructor": "Constructeur de requête GraphQL",
     "apiKey": "clé d'API",
     "settings": "Attributs unpaywall à récuperer",

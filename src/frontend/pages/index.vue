@@ -1,6 +1,6 @@
 <template>
   <section>
-    <week-history />
+    <!-- <week-history /> -->
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('home.title')" />
@@ -33,7 +33,7 @@
               class="ma-1"
               v-on="on"
             >
-              {{ $t(chip.name) }} : {{ metrics[chip.field] }}
+              {{ $t(chip.title) }} : {{ formatNumber(metrics[chip.name]) }}
             </v-chip>
           </template>
 
@@ -79,7 +79,7 @@
               <v-icon left color="white">
                 {{ chip.icon }}
               </v-icon>
-              {{ chip.name }} : {{ metrics[chip.name] }}
+              {{ chip.name }} : {{ formatNumber(metrics[chip.name]) }}
             </v-chip>
           </template>
 
@@ -130,15 +130,15 @@ export default {
       },
       metricsGlobalMetricsChips: [
         {
-          name: 'referencedResources',
-          field: 'doi',
+          name: 'doi',
+          title: 'home.referencedResources',
           color: 'grey darken-2',
           text: 'home.referencedRessourceHelp',
           help: false
         },
         {
-          name: 'openAccess',
-          field: 'isOA',
+          name: 'isOA',
+          title: 'home.openAccess',
           color: 'grey darken-2',
           text: 'home.openAccessHelp',
           help: false
@@ -216,6 +216,9 @@ export default {
         this.metrics = res?.data?.data?.DailyMetrics
       }
       this.loaded = false
+    },
+    formatNumber (x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
     },
     getElasticEnvironment () {
       if (this.$config.elasticEnv !== 'integration' || this.$config.elasticEnv !== 'production') {

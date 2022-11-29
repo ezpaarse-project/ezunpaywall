@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div v-html="$t('graphql.general', { url: graphqlAPIHost })" />
+    <div v-html="$t('graphql.general')" />
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />
@@ -117,9 +117,6 @@ export default {
     }
   },
   computed: {
-    graphqlAPIHost () {
-      return `${this.$graphql.defaults.baseURL}/graphql`
-    },
     formatDOIs () {
       const dois = this.doi.split(',')
       return `"${dois.join('", "')}"`
