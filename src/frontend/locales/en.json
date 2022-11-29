@@ -54,7 +54,7 @@
     "errorState": "Cannot get state of enrichment"
   },
   "graphql": {
-    "general": "This page allows you to test the GraphQL API available at <a href=\"{url}\" target=\"_blank\">{url}</a>. To be able to query the mirror, it is necessary to indicate an API key, a list of DOIs and some unpaywall attributes. A GraphQL request builder is available to help you request the API.",
+    "general": "This page allows you to test the GraphQL API available at <a href=\"{url}\" target=\"_blank\">{url}</a>. To be able to query the mirror, it is necessary to indicate an API key, a list of DOIs seperated by a comma and some unpaywall attributes. A GraphQL request builder is available to help you request the API.",
     "constructor": "GraphQL request builder",
     "apiKey": "API key",
     "settings": "Unpaywall attributes to retrieve",
@@ -72,6 +72,7 @@
     "title": "Settings",
     "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
     "general": {
+      "doi": "Digital Object Identifier",
       "data_standard": "Data collection approaches used for this resource",
       "doi_url": "DOI in hyperlink form",
       "genre": "Type of resource",
@@ -156,5 +157,8 @@
     "dark": "Dark theme",
     "light": "Light theme"
   },
-  "close": "Close"
+  "close": "Close",
+  "development": "development",
+  "integration": "integration",
+  "production": "production"
 }

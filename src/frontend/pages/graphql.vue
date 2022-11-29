@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div v-html="$t('graphql.general', { dataFormatURL })" />
+    <div v-html="$t('graphql.general', { url: graphqlAPIHost })" />
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />
@@ -8,8 +8,8 @@
         <v-icon>mdi-api</v-icon>
       </v-toolbar>
       <v-card-text>
-        <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" filled />
-        <v-text-field v-model="doi" label="DOI" filled />
+        <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" />
+        <v-text-field v-model="doi" label="DOIs" />
       </v-card-text>
 
       <v-toolbar class="secondary" dark dense flat>
@@ -103,7 +103,7 @@ export default {
   data: () => {
     return {
       apiKey: 'demo',
-      doi: '10.1001/jama.2016.9797',
+      doi: '10.1111/jvp.12137',
       loading: false,
       response: '',
       // help
@@ -117,6 +117,9 @@ export default {
     }
   },
   computed: {
+    graphqlAPIHost () {
+      return `${this.$graphql.defaults.baseURL}/graphql`
+    },
     formatDOIs () {
       const dois = this.doi.split(',')
       return `"${dois.join('", "')}"`
@@ -180,7 +183,7 @@ export default {
     },
     async graphqlRequest () {
       this.loading = true
-      // 10.1001/jama.2016.9797
+      // 10.1111/jvp.12137
       try {
         this.response = await this.$graphql({
           method: 'GET',

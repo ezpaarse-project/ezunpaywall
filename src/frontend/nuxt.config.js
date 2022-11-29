@@ -8,7 +8,8 @@ export default {
     apikeyHost: process.env.APIKEY_HOST || 'http://localhost:59704',
     mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
     apikeyMail: process.env.MAIL_APIKEY || 'changeme',
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    elasticEnv: process.env.ELASTIC_ENV || 'development'
   },
 
   server: {
@@ -20,8 +21,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - client',
-    title: 'client',
+    titleTemplate: 'ezunpaywall - %s',
+    title: 'ezunpaywall',
     htmlAttrs: {
       lang: 'en'
     },
