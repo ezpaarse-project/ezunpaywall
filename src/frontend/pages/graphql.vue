@@ -74,18 +74,22 @@
         />
       </v-card-actions>
       <div id="graphqlResponse">
-        <v-card-title v-text="$t('graphql.result')" />
-        <v-card-text>
-          <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
-        </v-card-text>
-        <v-card-actions v-if="response.data">
-          <v-spacer />
-          <v-btn
-            :href="linkGraphql"
-            target="_blank"
-            v-text="$t('graphql.linkAPI')"
-          />
-        </v-card-actions>
+        <div v-if="response.data">
+          <v-card-title v-text="$t('graphql.result')" />
+          <v-card-text>
+            <pre>
+                <code v-highlight class="json">{{ JSON.stringify(response.data, null, 2) }}</code>
+            </pre>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              :href="linkGraphql"
+              target="_blank"
+              v-text="$t('graphql.linkAPI')"
+            />
+          </v-card-actions>
+        </div>
       </div>
     </v-card>
   </section>
@@ -206,6 +210,5 @@ export default {
 pre {
   display: block;
   padding: 12px;
-  color: #f60;
 }
 </style>
