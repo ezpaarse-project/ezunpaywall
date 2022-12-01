@@ -107,7 +107,7 @@ export default {
   data: () => {
     return {
       apiKey: 'demo',
-      doi: '10.1111/jvp.12137',
+      doi: '10.1001/jama.2016.9797',
       loading: false,
       response: '',
       // help
@@ -184,7 +184,7 @@ export default {
     },
     async graphqlRequest () {
       this.loading = true
-      // 10.1111/jvp.12137
+      // 10.1001/jama.2016.9797
       try {
         this.response = await this.$graphql({
           method: 'GET',
