@@ -25,6 +25,7 @@
     "failed": "L'envoi du formulaire de contact a échoué.",
     "requestInformation": "Demande d'information",
     "bugReport": "Signaler un bug",
+    "requestApikey": "Demander une clé d'API",
     "emailIsRequired": "L'adresse électronique est requise",
     "emailMustBeValid": "L'adresse électronique doit être valide",
     "contentIsRequired": "Un message est requis",

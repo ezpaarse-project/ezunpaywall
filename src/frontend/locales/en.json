@@ -25,6 +25,7 @@
     "failed": "Sending the contact form failed.",
     "requestInformation": "Information request",
     "bugReport": "Bug report",
+    "requestApikey": "Request an API key",
     "emailIsRequired": "The email address is required",
     "emailMustBeValid": "The email address must be valid",
     "contentIsRequired": "A message is required",

@@ -6,26 +6,26 @@ const logger = require('../lib/logger');
 
 const { sendMail, generateMail } = require('../lib/mail');
 
-const sendMailStarted = async (config) => {
+async function sendMailUpdateStarted(config) {
   try {
     await sendMail({
       from: notifications.sender,
       to: notifications.receivers,
       subject: `ezunpaywall ${notifications.machine} - Mise à jour des données`,
-      ...generateMail('started', {
+      ...generateMail('updateStarted', {
         config,
         date: format(new Date(), 'dd-MM-yyyy'),
       }),
     });
   } catch (err) {
-    logger.error(`Cannot send mail ${err}`);
+    logger.error(`Cannot send update started mail ${err}`);
     logger.error(err);
     return;
   }
-  logger.info('send update start email');
-};
+  logger.info('send update started mail');
+}
 
-const sendMailReport = async (state) => {
+async function sendMailUpdateReport(state) {
   let status = state.error;
   if (status) {
     status = 'error';
@@ -47,7 +47,7 @@ const sendMailReport = async (state) => {
       from: notifications.sender,
       to: notifications.receivers,
       subject: `ezunpaywall ${notifications.machine} - Rapport de mise à jour - ${status}`,
-      ...generateMail('report', {
+      ...generateMail('updateReport', {
         state,
         status,
         insertedDocs,
@@ -56,14 +56,14 @@ const sendMailReport = async (state) => {
       }),
     });
   } catch (err) {
-    logger.error(`Cannot send mail ${err}`);
+    logger.error(`Cannot send update report mail ${err}`);
     logger.error(err);
     return;
   }
-  logger.info('send update end email');
-};
+  logger.info('send update report mail');
+}
 
 module.exports = {
-  sendMailStarted,
-  sendMailReport,
+  sendMailUpdateStarted,
+  sendMailUpdateReport,
 };
