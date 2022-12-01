@@ -25,8 +25,6 @@ const binaryParser = (res, cb) => {
 const compareFile = async (path1, path2) => {
   const file1 = await fs.readFile(path1, 'utf-8');
   const file2 = await fs.readFile(path2, 'utf-8');
-  console.log(file1);
-  console.log(file2);
   return file1.trim().replace(/\r\n/g, '\n') === file2.trim().replace(/\r\n/g, '\n');
 };
 
