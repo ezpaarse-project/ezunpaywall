@@ -119,8 +119,11 @@ const flatten = (obj) => {
  * @returns {array<object>} enriched data
  */
 const enrichTab = (data, response) => {
+  const enrichedTab = data;
+  let lineEnriched = 0;
+
   if (!response) {
-    return data;
+    return enrichedTab;
   }
 
   const results = new Map();
@@ -130,7 +133,8 @@ const enrichTab = (data, response) => {
       results.set(el.doi, el);
     }
   });
-  data.forEach((el) => {
+
+  enrichedTab.forEach((el) => {
     if (!el.doi) {
       return;
     }
@@ -138,10 +142,12 @@ const enrichTab = (data, response) => {
     if (!res) {
       return;
     }
+    lineEnriched += 1;
     res = flatten(res);
     el = Object.assign(el, res);
   });
-  return data;
+
+  return { lineEnriched, enrichedTab };
 };
 
 /**
@@ -247,6 +253,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   if (!args) {
     args = allArgs();
   }
+
   args = addDOItoGraphqlRequest(args);
 
   try {
@@ -291,30 +298,32 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
           await parser.pause();
 
           // enrichment
-          const response = await askEzunpaywall(data, args, stateName, index, apikey);
-          enrichTab(tabWillBeEnriched, response);
-          await writeInFileCSV(tabWillBeEnriched, headers, separator, enrichedFile);
+          const response = await askEzunpaywall(tabWillBeEnriched, args, stateName, index, apikey);
+          const enrichedData = enrichTab(tabWillBeEnriched, response);
+          const { enrichedTab, lineEnriched } = enrichedData;
+          await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
 
           // state
           state.linesRead += 1000;
-          state.enrichedLines += response.length || 0;
+          state.enrichedLines += lineEnriched || 0;
           state.loaded += loaded;
           await updateStateInFile(state, stateName);
           await parser.resume();
         }
       },
-      complete: () => resolve(),
+      complete: resolve,
     });
   });
   // last insertion
   if (data.length !== 0) {
     // enrichment
     const response = await askEzunpaywall(data, args, stateName, index, apikey);
-    enrichTab(data, response);
-    await writeInFileCSV(data, headers, separator, enrichedFile);
+    const enrichedData = enrichTab(data, response);
+    const { enrichedTab, lineEnriched } = enrichedData;
+    await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
     // state
-    state.linesRead += data?.length || 0;
-    state.enrichedLines += response?.length || 0;
+    state.linesRead += data.length || 0;
+    state.enrichedLines += lineEnriched || 0;
     state.loaded += loaded;
     await updateStateInFile(state, stateName);
   }
