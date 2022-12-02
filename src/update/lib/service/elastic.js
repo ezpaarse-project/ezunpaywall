@@ -34,7 +34,7 @@ const elasticClient = new Client({
     },
     ssl,
   },
-  requestTimeout: 10000,
+  requestTimeout: elasticsearch.timeout,
 });
 
 const pingElastic = async () => {
