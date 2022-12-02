@@ -6,8 +6,9 @@
         <v-toolbar-title v-text="$t('home.title')" />
       </v-toolbar>
       <v-card-text>
-        <div v-html="$t('home.general1', { unpaywallURL })" /> <br>
-        {{ $t('home.general2') }}
+        <div v-html="$t('home.general1', { unpaywallURL })" />
+        <br>
+        {{ $t("home.general2") }}
         <div v-html="$t('home.general3', { blogURL })" />
       </v-card-text>
     </v-card>
@@ -37,14 +38,12 @@
               class="ma-1"
               v-on="on"
             >
-              {{ $t(chip.title) }} : {{ formatNumber(metrics[chip.name]) }}
+              {{ $t(chip.title) }} : {{ chip.value }}
             </v-chip>
           </template>
 
           <v-card class="text-justify">
-            <v-card-text
-              v-text="$t(chip.text)"
-            />
+            <v-card-text v-text="$t(chip.text)" />
 
             <v-card-actions>
               <v-spacer />
@@ -83,14 +82,12 @@
               <v-icon left color="white">
                 {{ chip.icon }}
               </v-icon>
-              {{ chip.name }} : {{ formatNumber(metrics[chip.name]) }}
+              {{ chip.name }} : {{ chip.value }}
             </v-chip>
           </template>
 
           <v-card class="text-justify">
-            <v-card-text
-              v-text="$t(chip.text)"
-            />
+            <v-card-text v-text="$t(chip.text)" />
 
             <v-card-actions>
               <v-spacer />
@@ -109,13 +106,8 @@
 </template>
 
 <script>
-import weekHistory from '~/components/report/WeekHistory.vue'
-
 export default {
   name: 'Home',
-  components: {
-    weekHistory
-  },
   transition: 'slide-x-transition',
   data: () => {
     return {
@@ -131,60 +123,7 @@ export default {
         bronzeOA: 0,
         greenOA: 0,
         closedOA: 0
-      },
-      metricsGlobalMetricsChips: [
-        {
-          name: 'doi',
-          title: 'home.referencedResources',
-          color: 'grey darken-2',
-          text: 'home.referencedRessourceHelp',
-          help: false
-        },
-        {
-          name: 'isOA',
-          title: 'home.openAccess',
-          color: 'grey darken-2',
-          text: 'home.openAccessHelp',
-          help: false
-        }
-      ],
-      metricsOAStatusChips: [
-        {
-          name: 'goldOA',
-          color: '#FFC000',
-          icon: 'mdi-lock-open',
-          text: 'home.goldOAHelp',
-          help: false
-        },
-        {
-          name: 'hybridOA',
-          color: '#DD7931',
-          icon: 'mdi-lock-open',
-          text: 'home.hybridOAHelp',
-          help: false
-        },
-        {
-          name: 'bronzeOA',
-          color: '#DD7931',
-          icon: 'mdi-lock-open',
-          text: 'home.bronzeOAHelp',
-          help: false
-        },
-        {
-          name: 'greenOA',
-          color: '#4CAF50',
-          icon: 'mdi-lock-open',
-          text: 'home.greenOAHelp',
-          help: false
-        },
-        {
-          name: 'closedOA',
-          color: '#BBBBBB',
-          icon: 'mdi-lock',
-          text: 'home.closedOAHelp',
-          help: false
-        }
-      ]
+      }
     }
   },
   head () {
@@ -195,6 +134,70 @@ export default {
   computed: {
     referencedRessourceHelp () {
       return this.$t('home.referencedRessourceHelp')
+    },
+    metricsOAStatusChips () {
+      return [
+        {
+          name: 'goldOA',
+          color: '#FFC000',
+          icon: 'mdi-lock-open',
+          text: 'home.goldOAHelp',
+          help: false,
+          value: this.metrics.goldOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'hybridOA',
+          color: '#DD7931',
+          icon: 'mdi-lock-open',
+          text: 'home.hybridOAHelp',
+          help: false,
+          value: this.metrics.hybridOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'bronzeOA',
+          color: '#DD7931',
+          icon: 'mdi-lock-open',
+          text: 'home.bronzeOAHelp',
+          help: false,
+          value: this.metrics.bronzeOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'greenOA',
+          color: '#4CAF50',
+          icon: 'mdi-lock-open',
+          text: 'home.greenOAHelp',
+          help: false,
+          value: this.metrics.greenOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'closedOA',
+          color: '#BBBBBB',
+          icon: 'mdi-lock',
+          text: 'home.closedOAHelp',
+          help: false,
+          value: this.metrics.closedOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        }
+      ]
+    },
+    metricsGlobalMetricsChips () {
+      return [
+        {
+          name: 'doi',
+          title: 'home.referencedResources',
+          color: 'grey darken-2',
+          text: 'home.referencedRessourceHelp',
+          help: false,
+          value: this.metrics.doi.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'isOA',
+          title: 'home.openAccess',
+          color: 'grey darken-2',
+          text: 'home.openAccessHelp',
+          help: false,
+          value: this.metrics.isOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        }
+      ]
     }
   },
   mounted () {
@@ -221,11 +224,11 @@ export default {
       }
       this.loaded = false
     },
-    formatNumber (x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-    },
     getElasticEnvironment () {
-      if (this.$config.elasticEnv !== 'integration' || this.$config.elasticEnv !== 'production') {
+      if (
+        this.$config.elasticEnv !== 'integration' ||
+        this.$config.elasticEnv !== 'production'
+      ) {
         return this.$t('development')
       }
       if (this.$config.elasticEnv === 'integration') {
