@@ -127,7 +127,7 @@
           rel="noreferrer"
           outlined
         >
-          Version: {{ appVersion }}
+          Version: {{ $config.version }}
           <v-icon right>
             mdi-github
           </v-icon>
@@ -140,11 +140,6 @@
 <script>
 export default {
   name: 'Drawer',
-  data () {
-    return {
-      appVersion: '1.0.0'
-    }
-  },
   computed: {
     drawer: {
       get () {
