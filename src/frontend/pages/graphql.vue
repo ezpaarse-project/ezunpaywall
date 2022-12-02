@@ -1,6 +1,16 @@
 <template>
   <section>
-    <div v-html="$t('graphql.general', { dataFormatURL })" />
+    <v-card class="my-3">
+      <v-toolbar color="secondary" dark flat dense>
+        <v-toolbar-title v-text="$t('graphql.title')" />
+      </v-toolbar>
+      <v-card-text>
+        {{ $t('graphql.general1') }} <br>
+        {{ $t('graphql.general2') }} <br>
+        {{ $t('graphql.general3') }} <br>
+        {{ $t('graphql.general4') }} <br>
+      </v-card-text>
+    </v-card>
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />
@@ -8,8 +18,8 @@
         <v-icon>mdi-api</v-icon>
       </v-toolbar>
       <v-card-text>
-        <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" filled />
-        <v-text-field v-model="doi" label="DOI" filled />
+        <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" />
+        <v-text-field v-model="doi" label="DOIs" />
       </v-card-text>
 
       <v-toolbar class="secondary" dark dense flat>
@@ -74,18 +84,22 @@
         />
       </v-card-actions>
       <div id="graphqlResponse">
-        <v-card-title v-text="$t('graphql.result')" />
-        <v-card-text>
-          <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
-        </v-card-text>
-        <v-card-actions v-if="response.data">
-          <v-spacer />
-          <v-btn
-            :href="linkGraphql"
-            target="_blank"
-            v-text="$t('graphql.linkAPI')"
-          />
-        </v-card-actions>
+        <div v-if="response.data">
+          <v-card-title v-text="$t('graphql.result')" />
+          <v-card-text>
+            <pre>
+                <code v-highlight class="json">{{ JSON.stringify(response.data, null, 2) }}</code>
+            </pre>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              :href="linkGraphql"
+              target="_blank"
+              v-text="$t('graphql.linkAPI')"
+            />
+          </v-card-actions>
+        </div>
       </div>
     </v-card>
   </section>
@@ -206,6 +220,5 @@ export default {
 pre {
   display: block;
   padding: 12px;
-  color: #f60;
 }
 </style>

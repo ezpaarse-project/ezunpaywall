@@ -10,7 +10,7 @@ const mail = axios.create({
 });
 mail.host = config.get('mail.host');
 
-async function sendMailReport(state) {
+async function sendMailUpdateReport(state) {
   let res;
   try {
     res = await mail({
@@ -29,7 +29,7 @@ async function sendMailReport(state) {
   return res?.body;
 }
 
-async function sendMailStarted(info) {
+async function sendMailUpdateStarted(info) {
   let res;
   try {
     res = await mail({
@@ -48,6 +48,6 @@ async function sendMailStarted(info) {
 }
 
 module.exports = {
-  sendMailReport,
-  sendMailStarted,
+  sendMailUpdateReport,
+  sendMailUpdateStarted,
 };

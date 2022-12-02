@@ -9,7 +9,7 @@
         :size="20"
         :width="3"
         indeterminate
-        color="white"
+        color="blue darken-2"
       />
     </v-row>
     <Detail :report="report" />

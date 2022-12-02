@@ -141,6 +141,7 @@ services:
      - ${FRONTEND_PORT:-59706}:3000
     environment:
       - NODE_ENV=development
+      - ELASTIC_ENV=development
       # graphql
       - GRAPHQL_HOST
       # update

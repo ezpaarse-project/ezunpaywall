@@ -8,7 +8,7 @@
     <v-row class="ma-2">
       {{ report.createdAt }}
       <v-spacer />
-      <v-icon right color="green">
+      <v-icon right color="green darken-2">
         mdi-check
       </v-icon>
     </v-row>

@@ -89,6 +89,10 @@ export default {
         {
           value: 'bugs',
           text: this.$t('contact.bugReport')
+        },
+        {
+          value: 'apikey',
+          text: this.$t('contact.requestApikey')
         }
       ]
     },

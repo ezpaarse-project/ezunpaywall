@@ -1,59 +1,113 @@
 <template>
   <section>
-    <week-history />
+    <!-- <week-history /> -->
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('home.title')" />
       </v-toolbar>
-      <v-card-text v-html="$t('home.intro', { unpaywallURL, blogURL })" />
+      <v-card-text>
+        <div v-html="$t('home.general1', { unpaywallURL })" />
+        <br>
+        {{ $t("home.general2") }}
+        <div v-html="$t('home.general3', { blogURL })" />
+      </v-card-text>
     </v-card>
 
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title
-          v-text="$t('home.metrics', { env: getEnvironment() })"
+          v-text="$t('home.metrics', { env: getElasticEnvironment() })"
         />
       </v-toolbar>
       <v-card-title v-text="$t('home.globalMetrics')" />
       <v-card-text>
-        <v-chip color="grey darken-2" text-color="white">
-          {{ $t("home.referencedResources") }} : {{ metrics.doi }}
-        </v-chip>
-        <v-chip color="grey darken-2" text-color="white">
-          {{ $t("home.openAccess") }} : {{ metrics.isOA }}
-        </v-chip>
+        <v-menu
+          v-for="chip in metricsGlobalMetricsChips"
+          :key="chip.name"
+          v-model="chip.help"
+          offset-y
+          bottom
+          right
+          transition="scale-transition"
+          origin="top left"
+        >
+          <template #activator="{ on }">
+            <v-chip
+              :color="chip.color"
+              text-color="white"
+              class="ma-1"
+              v-on="on"
+            >
+              {{ $t(chip.title) }} : {{ chip.value }}
+            </v-chip>
+          </template>
+
+          <v-card class="text-justify">
+            <v-card-text v-text="$t(chip.text)" />
+
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                text
+                @click="chip.help = false"
+                v-text="$t('close')"
+              />
+            </v-card-actions>
+          </v-card>
+        </v-menu>
       </v-card-text>
 
       <v-divider />
 
       <v-card-title v-text="$t('home.openAccessStatus')" />
       <v-card-text>
-        <v-chip-group active-class="deep-purple accent-4 white--text" column>
-          <v-chip
-            v-for="chip in metricsChips"
-            :key="chip.name"
-            :color="chip.color"
-            text-color="white"
-          >
-            <v-icon left color="white">
-              mdi-lock-open
-            </v-icon>
-            {{ chip.name }} : {{ metrics[chip.name] }}
-          </v-chip>
-        </v-chip-group>
+        <v-menu
+          v-for="chip in metricsOAStatusChips"
+          :key="chip.name"
+          v-model="chip.help"
+          offset-y
+          bottom
+          right
+          transition="scale-transition"
+          origin="top left"
+        >
+          <template #activator="{ on }">
+            <v-chip
+              :color="chip.color"
+              text-color="white"
+              class="ma-1"
+              v-on="on"
+            >
+              <v-icon left color="white">
+                {{ chip.icon }}
+              </v-icon>
+              {{ chip.name }} : {{ chip.value }}
+            </v-chip>
+          </template>
+
+          <v-card class="text-justify">
+            <v-card-text v-text="$t(chip.text)" />
+
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                text
+                @click="chip.help = false"
+                v-text="$t('close')"
+              />
+            </v-card-actions>
+          </v-card>
+        </v-menu>
       </v-card-text>
     </v-card>
   </section>
 </template>
 
 <script>
-import weekHistory from '~/components/report/WeekHistory.vue'
-
 export default {
   name: 'Home',
-  components: {
-    weekHistory
-  },
   transition: 'slide-x-transition',
   data: () => {
     return {
@@ -69,34 +123,81 @@ export default {
         bronzeOA: 0,
         greenOA: 0,
         closedOA: 0
-      },
-      metricsChips: [
-        {
-          name: 'goldOA',
-          color: '#FFC000'
-        },
-        {
-          name: 'hybridOA',
-          color: '#DD7931'
-        },
-        {
-          name: 'bronzeOA',
-          color: '#DD7931'
-        },
-        {
-          name: 'greenOA',
-          color: '#00F765'
-        },
-        {
-          name: 'closedOA',
-          color: '#BBBBBB'
-        }
-      ]
+      }
     }
   },
   head () {
     return {
       title: 'Home'
+    }
+  },
+  computed: {
+    referencedRessourceHelp () {
+      return this.$t('home.referencedRessourceHelp')
+    },
+    metricsOAStatusChips () {
+      return [
+        {
+          name: 'goldOA',
+          color: '#FFC000',
+          icon: 'mdi-lock-open',
+          text: 'home.goldOAHelp',
+          help: false,
+          value: this.metrics.goldOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'hybridOA',
+          color: '#DD7931',
+          icon: 'mdi-lock-open',
+          text: 'home.hybridOAHelp',
+          help: false,
+          value: this.metrics.hybridOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'bronzeOA',
+          color: '#DD7931',
+          icon: 'mdi-lock-open',
+          text: 'home.bronzeOAHelp',
+          help: false,
+          value: this.metrics.bronzeOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'greenOA',
+          color: '#4CAF50',
+          icon: 'mdi-lock-open',
+          text: 'home.greenOAHelp',
+          help: false,
+          value: this.metrics.greenOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'closedOA',
+          color: '#BBBBBB',
+          icon: 'mdi-lock',
+          text: 'home.closedOAHelp',
+          help: false,
+          value: this.metrics.closedOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        }
+      ]
+    },
+    metricsGlobalMetricsChips () {
+      return [
+        {
+          name: 'doi',
+          title: 'home.referencedResources',
+          color: 'grey darken-2',
+          text: 'home.referencedRessourceHelp',
+          help: false,
+          value: this.metrics.doi.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        },
+        {
+          name: 'isOA',
+          title: 'home.openAccess',
+          color: 'grey darken-2',
+          text: 'home.openAccessHelp',
+          help: false,
+          value: this.metrics.isOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
+        }
+      ]
     }
   },
   mounted () {
@@ -123,8 +224,19 @@ export default {
       }
       this.loaded = false
     },
-    getEnvironment () {
-      return this.$config.environment
+    getElasticEnvironment () {
+      if (
+        this.$config.elasticEnv !== 'integration' ||
+        this.$config.elasticEnv !== 'production'
+      ) {
+        return this.$t('development')
+      }
+      if (this.$config.elasticEnv === 'integration') {
+        return this.$t('integration')
+      }
+      if (this.$config.elasticEnv === 'production') {
+        return this.$t('production')
+      }
     }
   }
 }
