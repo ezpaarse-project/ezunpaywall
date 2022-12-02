@@ -31,7 +31,7 @@ router.post('/contact', checkAuth, async (req, res, next) => {
   try {
     sendMailContact(email, subject, message);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next({ message: err });
   }
   return res.status(202).json();
 });
@@ -44,7 +44,7 @@ router.post('/update-start', checkAuth, async (req, res, next) => {
   try {
     sendMailUpdateStarted(config);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next({ message: err });
   }
   return res.status(202).json();
 });
@@ -56,7 +56,7 @@ router.post('/update-end', checkAuth, async (req, res, next) => {
   try {
     sendMailUpdateReport(state);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next({ message: err });
   }
   return res.status(202).json();
 });
