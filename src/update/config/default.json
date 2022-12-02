@@ -20,7 +20,7 @@
     "password": "changeme",
     "maxBulkSize": 4000,
     "indexAlias": "upw",
-    "cert": ""
+    "timeout": 20000
   },
   "cron": {
     "schedule": "0 0 0 * * *",

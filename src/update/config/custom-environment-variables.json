@@ -19,7 +19,8 @@
     "user": "ELASTICSEARCH_USERNAME",
     "password": "ELASTICSEARCH_PASSWORD",
     "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
-    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS"
+    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS",
+    "timeout": "ELASTICSEARCH_TIMEOUT"
   },
   "cron": {
     "schedule": "UPDATE_CRON_SCHEDULE",
