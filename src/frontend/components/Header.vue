@@ -60,15 +60,13 @@ export default {
       this.$store.dispatch('drawer/setDrawer', !this.drawer)
     },
     getTitle () {
-      if (this.$config.environment !== 'integration' || this.$config.environment !== 'production') {
-        return `ezunpaywall ${this.$t('development')}`
-      }
       if (this.$config.environment === 'integration') {
         return `ezunpaywall ${this.$t('integration')}`
       }
       if (this.$config.environment === 'production') {
         return 'ezunpaywall'
       }
+      return `ezunpaywall ${this.$t('development')}`
     }
   }
 }
