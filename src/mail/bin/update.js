@@ -26,12 +26,7 @@ async function sendMailUpdateStarted(config) {
 }
 
 async function sendMailUpdateReport(state) {
-  let status = state.error;
-  if (status) {
-    status = 'error';
-  } else {
-    status = 'success';
-  }
+  const status = state.error === true ? 'error' : 'success';
 
   let insertedDocs = 0;
   let updatedDocs = 0;
