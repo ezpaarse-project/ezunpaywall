@@ -5,7 +5,11 @@
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('home.title')" />
       </v-toolbar>
-      <v-card-text v-html="$t('home.intro', { unpaywallURL, blogURL })" />
+      <v-card-text>
+        <div v-html="$t('home.general1', { unpaywallURL })" /> <br>
+        {{ $t('home.general2') }}
+        <div v-html="$t('home.general3', { blogURL })" />
+      </v-card-text>
     </v-card>
 
     <v-card class="my-3">

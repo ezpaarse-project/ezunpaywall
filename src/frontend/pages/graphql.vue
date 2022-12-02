@@ -1,6 +1,16 @@
 <template>
   <section>
-    <div v-html="$t('graphql.general')" />
+    <v-card class="my-3">
+      <v-toolbar color="secondary" dark flat dense>
+        <v-toolbar-title v-text="$t('graphql.title')" />
+      </v-toolbar>
+      <v-card-text>
+        {{ $t('graphql.general1') }} <br>
+        {{ $t('graphql.general2') }} <br>
+        {{ $t('graphql.general3') }} <br>
+        {{ $t('graphql.general4') }} <br>
+      </v-card-text>
+    </v-card>
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />
