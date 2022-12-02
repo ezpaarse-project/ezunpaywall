@@ -34,7 +34,7 @@ const elasticClient = new Client({
     },
     ssl,
   },
-  requestTimeout: 2000,
+  requestTimeout: 10000,
 });
 
 const pingElastic = async () => {
