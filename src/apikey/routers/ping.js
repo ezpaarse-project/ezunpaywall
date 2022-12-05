@@ -1,32 +1,13 @@
 const router = require('express').Router();
 const { pingRedis } = require('../lib/service/redis');
 
+const myPromise = require('../bin/utils');
+
 router.get('/', async (req, res) => res.status(200).json('apikey service'));
 
-router.get('/ping', async (req, res, next) => res.status(204));
+router.get('/ping', async (req, res, next) => res.status(200).json());
 
-function myPromise(timeout, callback) {
-  return new Promise((resolve, reject) => {
-    // Set up the timeout
-    const timer = setTimeout(() => {
-      reject(new Error(`Promise timed out after ${timeout} ms`));
-    }, timeout);
-
-    // Set up the real work
-    callback(
-      (value) => {
-        clearTimeout(timer);
-        resolve(value);
-      },
-      (error) => {
-        clearTimeout(timer);
-        reject(error);
-      },
-    );
-  });
-}
-
-router.get('/health', async (req, res, next) => {
+router.get('/health/redis', async (req, res, next) => {
   const start = Date.now();
 
   let status;
@@ -37,8 +18,9 @@ router.get('/health', async (req, res, next) => {
       return reject(false);
     });
   } catch (err) {
+    const end = Date.now();
     return res.status(200).json({
-      name: 'redis', status: false, elapsedTime: 3000, error: 'time out',
+      name: 'redis', status: false, elapsedTime: end - start, error: err?.message,
     });
   }
 

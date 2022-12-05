@@ -51,6 +51,8 @@ services:
       - UPDATE_CRON_ACTIVE
       - UPDATE_CRON_INDEX
       - UPDATE_CRON_INTERVAL
+      # password
+      - UPDATE_APIKEY
     working_dir: /update
     volumes:
       - ./src/update:/update
@@ -120,6 +122,8 @@ services:
       - MAIL_NOTIFICATIONS_SENDER
       - MAIL_NOTIFICATIONS_RECEIVERS
       - MAIL_NOTIFICATIONS_MACHINE
+      # password
+      - MAIL_APIKEY
     working_dir: /mail
     volumes:
       - ./src/mail:/mail

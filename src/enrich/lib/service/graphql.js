@@ -21,7 +21,7 @@ graphql.host = config.get('graphql.host');
  * @param {String} apikey - apikey of user
  * @return {Array} ezunpaywall response
  */
-async function askEzunpaywall(data, args, stateName, index, apikey) {
+async function requestGraphql(data, args, stateName, index, apikey) {
   let dois = [];
   let res = [];
   // contain index of doi
@@ -52,4 +52,22 @@ async function askEzunpaywall(data, args, stateName, index, apikey) {
   return res?.data?.data?.GetByDOI;
 }
 
-module.exports = askEzunpaywall;
+async function pingGraphql() {
+  let res;
+  try {
+    res = await graphql({
+      method: 'GET',
+      url: '/ping',
+    });
+  } catch (err) {
+    logger.error(err);
+    return false;
+  }
+  if (res.status === 200) return true;
+  return false;
+}
+
+module.exports = {
+  requestGraphql,
+  pingGraphql,
+};

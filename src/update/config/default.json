@@ -27,5 +27,6 @@
     "active": false,
     "index": "unpaywall",
     "interval": "day"
-  }
+  },
+  "apikey": "changeme"
 }

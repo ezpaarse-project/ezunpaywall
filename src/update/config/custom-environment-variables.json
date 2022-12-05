@@ -26,5 +26,6 @@
     "active": "UPDATE_CRON_ACTIVE",
     "index": "UPDATE_CRON_INDEX",
     "interval": "UPDATE_CRON_INTERVAL"
-  }
+  },
+  "apikey": "UPDATE_APIKEY"
 }
