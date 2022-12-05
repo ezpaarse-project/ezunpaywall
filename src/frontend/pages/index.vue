@@ -43,7 +43,7 @@
           </template>
 
           <v-card class="text-justify">
-            <v-card-text v-text="$t(chip.text)" />
+            <v-card-text v-html="$t(chip.text)" />
 
             <v-card-actions>
               <v-spacer />
@@ -87,7 +87,7 @@
           </template>
 
           <v-card class="text-justify">
-            <v-card-text v-text="$t(chip.text)" />
+            <v-card-text v-html="$t(chip.text)" />
 
             <v-card-actions>
               <v-spacer />
@@ -226,17 +226,15 @@ export default {
     },
     getElasticEnvironment () {
       if (
-        this.$config.elasticEnv !== 'integration' ||
-        this.$config.elasticEnv !== 'production'
+        !(this.$config.elasticEnv === 'integration' ||
+        this.$config.elasticEnv === 'production')
       ) {
         return this.$t('development')
       }
       if (this.$config.elasticEnv === 'integration') {
         return this.$t('integration')
       }
-      if (this.$config.elasticEnv === 'production') {
-        return this.$t('production')
-      }
+      return ''
     }
   }
 }

@@ -4,18 +4,18 @@
     "general1": "ezUnpaywall est un miroir des données <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
     "general2": "Il dispose d'une interface d'enrichissement de fichier en données Open Access à partir du DOI et d'un démonstrateur d'interrogation de DOI avec des requêtes GraphQL.",
     "general3": "Ce serveur dispose d'une API interrogeable via une APIKey. Vous pouvez obtenir une APIKey sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
-    "metrics": "Métriques - {env}",
+    "metrics": "Métriques {env}",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
     "openAccess": "Accès ouvert",
     "openAccessStatus": "Statuts Open Access",
     "referencedRessourceHelp": "Nombre de référence bibliographique enregistré dans le miroir",
-    "openAccessHelp": "Nombre de référence bibliographique disponible en accès gratuit",
-    "goldOAHelp": "Nombre de référence bibliographique ayant le status 'gold'",
-    "hybridOAHelp": "Nombre de référence bibliographique ayant le status 'hybrid'",
-    "bronzeOAHelp": "Nombre de référence bibliographique ayant le status 'bronze'",
-    "greenOAHelp": "Nombre de référence bibliographique ayant le status 'green'",
-    "closedOAHelp": "Nombre de référence bibliographique ayant le status 'closed'"
+    "openAccessHelp": "Nombre de référence bibliographique disponible en accès gratuit </br> (is_oa: true)",
+    "goldOAHelp": "Nombre de référence bibliographique ayant le status 'gold' </br> (oa_status: 'gold')",
+    "hybridOAHelp": "Nombre de référence bibliographique ayant le status 'hybrid' </br> (oa_status: 'hybrid')",
+    "bronzeOAHelp": "Nombre de référence bibliographique ayant le status 'bronze' </br> (oa_status: 'bronze')",
+    "greenOAHelp": "Nombre de référence bibliographique ayant le status 'green' </br> (oa_status: 'green')",
+    "closedOAHelp": "Nombre de référence bibliographique ayant le status 'closed' </br> (oa_status: 'closed')"
   },
   "contact": {
     "contactUs": "Nous contacter",
@@ -152,8 +152,8 @@
   },
   "drawer": {
     "home": "Accueil",
-    "enrich": "Enrichissement",
-    "graphql": "GraphQL",
+    "enrich": "Enrichissement de fichier",
+    "graphql": "Démonstrateur GraphQL",
     "updateHistory": "Historique de mises à jour",
     "openapi": "Documentation",
     "language": "Langue",
@@ -173,6 +173,5 @@
   },
   "close": "Fermer",
   "development": "développement",
-  "integration": "integration",
-  "production": "production"
+  "integration": "integration"
 }
