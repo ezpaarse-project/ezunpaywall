@@ -5,16 +5,16 @@ async function pingWithTimeout(p1, name, timeout) {
     setTimeout(reject, timeout, 'time out');
   });
 
-  let res;
+  let error;
 
   try {
-    res = await Promise.race([p1, p2]);
+    await Promise.race([p1, p2]);
   } catch (err) {
-    res = err;
+    error = err?.message;
   }
 
   return {
-    name, status: res ?? true, elapsedTime: Date.now() - start,
+    name, elapsedTime: Date.now() - start, error,
   };
 }
 
