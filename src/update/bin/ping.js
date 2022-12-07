@@ -7,11 +7,9 @@ async function pingWithTimeout(p1, name, timeout) {
 
   let error;
 
-  try {
-    await Promise.race([p1, p2]);
-  } catch (err) {
-    error = err?.message;
-  }
+  const reply = await Promise.race([p1, p2]);
+
+  if (reply !== true) error = reply;
 
   return {
     name, elapsedTime: Date.now() - start, error,
