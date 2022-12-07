@@ -157,6 +157,16 @@ services:
       - MAIL_HOST
       - MAIL_APIKEY
 
+  health:
+    image: node:18.12.0
+    container_name: ezunpaywall-health-dev
+    working_dir: /health
+    volumes:
+      - ./src/health:/health
+    command: "npm run dev"
+    ports:
+     - ${HEALTH_PORT:-59707}:3000
+
   redis:
     image: redis:6.2.5
     container_name: ezunpaywall-redis-dev
