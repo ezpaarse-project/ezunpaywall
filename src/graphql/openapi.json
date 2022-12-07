@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "description": "The mail service allows the sending of mail for the different services",
+    "description": "The graphql service allows access to unpaywall data stored in elastic.",
     "version": "1.0.0",
-    "title": "Mail service",
+    "title": "Graphql service",
     "contact": {
       "email": "ezteam@couperin.org",
       "name": "ezTeam"
@@ -14,7 +14,7 @@
     }
   },
   "paths": {
-    "/mail": {
+    "/graphql": {
       "get": {
         "summary": "Name of service",
         "responses": {
@@ -25,12 +25,12 @@
                 "schema": {
                   "type": "string",
                   "x-examples": {
-                    "example-1": "mail service"
+                    "example-1": "graphql service"
                   }
                 },
                 "examples": {
                   "service": {
-                    "value": "mail service"
+                    "value": "graphql service"
                   }
                 }
               },
@@ -38,7 +38,7 @@
                 "examples": {
                   "response": {
                     "value": {
-                      "message": "mail service"
+                      "message": "graphql service"
                     }
                   }
                 }
@@ -46,16 +46,17 @@
             }
           }
         },
-        "operationId": "get-mail",
-        "description": "Get name of mail service",
+        "operationId": "get-graphql",
+        "description": "Get name of graphql service",
         "tags": [
           "ping"
         ]
-      }
+      },
+      "parameters": []
     },
-    "/mail/ping": {
+    "/graphql/ping": {
       "get": {
-        "summary": "Ping mail service",
+        "summary": "Ping graphql service",
         "responses": {
           "200": {
             "description": "OK",
@@ -85,14 +86,15 @@
             }
           }
         },
-        "operationId": "get-mail-ping",
-        "description": "Ping mail service",
+        "operationId": "get-graphql-ping",
+        "description": "ping graphql service",
         "tags": [
           "ping"
         ]
-      }
+      },
+      "parameters": []
     },
-    "/mail/health": {
+    "/graphql/health": {
       "get": {
         "summary": "Health",
         "responses": {
@@ -100,199 +102,42 @@
             "$ref": "#/components/responses/Healths"
           }
         },
-        "operationId": "get-mail-health",
-        "description": "Health on all service connected to enrich service",
+        "operationId": "get-graphql-health",
+        "description": "Health on all service connected to graphql service",
         "tags": [
           "ping"
         ]
       },
       "parameters": []
     },
-    "/mail/health/smtp": {
+    "/graphql/health/redis": {
       "get": {
-        "summary": "Health on SMTP service",
+        "summary": "Health on redis service",
         "responses": {
           "200": {
             "$ref": "#/components/responses/Health"
           }
         },
-        "operationId": "get-mail-health-smtp",
-        "description": "Health on smtp",
+        "operationId": "get-graphql-health-redis",
+        "description": "Health on redis",
         "tags": [
           "ping"
         ]
       },
       "parameters": []
     },
-    "/mail/contact": {
-      "post": {
-        "summary": "Send mail contact",
-        "operationId": "post-mail-contact",
+    "/graphql/health/elastic": {
+      "get": {
+        "summary": "Health on elastic service",
         "responses": {
-          "202": {
-            "description": "Accepted"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              },
-              "email expected": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "email are expected"
-                    }
-                  }
-                }
-              },
-              "invalid email": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "[\"john\"] is invalid email"
-                    }
-                  }
-                }
-              },
-              "subject expected": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "subject are expected"
-                    }
-                  }
-                }
-              },
-              "message expected": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "message are expected"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Not-authorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            }
+          "200": {
+            "$ref": "#/components/responses/Health"
           }
         },
-        "description": "Send contact mail",
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
+        "operationId": "get-graphql-health-elastic",
+        "description": "Health on elastic",
         "tags": [
-          "mail"
-        ]
-      }
-    },
-    "/mail/update-start": {
-      "post": {
-        "summary": "Send mail update process start",
-        "operationId": "post-mail-update-start",
-        "responses": {
-          "202": {
-            "description": "Accepted"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Not-authorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            }
-          }
-        },
-        "description": "Sending of the email informing the launch of the update process",
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "tags": [
-          "mail"
-        ]
-      },
-      "parameters": []
-    },
-    "/mail/update-end": {
-      "post": {
-        "summary": "Send mail update process ended",
-        "operationId": "post-mail-update-end",
-        "responses": {
-          "202": {
-            "description": "Accepted"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Not-authorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            }
-          }
-        },
-        "description": "Sending of the email with the report of the end of the update",
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "tags": [
-          "mail"
+          "ping"
         ]
       },
       "parameters": []
@@ -303,9 +148,6 @@
     "url": "http://swagger.io"
   },
   "tags": [
-    {
-      "name": "mail"
-    },
     {
       "name": "ping"
     }
@@ -327,6 +169,13 @@
               "x-examples": {
                 "example-1": {
                   "message": "Not authorized"
+                }
+              }
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "message": "string"
                 }
               }
             }
@@ -463,9 +312,9 @@
     },
     "securitySchemes": {
       "x-api-key": {
-        "name": "API Key",
         "type": "apiKey",
-        "in": "header"
+        "in": "header",
+        "name": "API Key"
       }
     }
   }

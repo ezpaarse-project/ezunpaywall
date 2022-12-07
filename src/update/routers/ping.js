@@ -1,45 +1,33 @@
 const router = require('express').Router();
 
-const myPromise = require('../bin/utils');
+const pingWithTimeout = require('../bin/ping');
+
 const { pingRedis } = require('../lib/service/redis');
-const { elasticClient } = require('../lib/service/elastic');
+const { pingElastic } = require('../lib/service/elastic');
 
 router.get('/', async (req, res) => res.status(200).json('update service'));
 
-router.get('/ping', async (req, res, next) => res.status(200).json());
+router.get('/ping', async (req, res, next) => res.status(200).json('pong'));
 
 router.get('/health/redis', async (req, res, next) => {
-  const start = Date.now();
+  const resultPing = await pingWithTimeout(pingRedis(), 'redis', 3000);
 
-  let status;
-  try {
-    status = await myPromise(3000, async (resolve, reject) => {
-      const resultPing = await pingRedis();
-      if (resultPing) return resolve(true);
-      return reject(false);
-    });
-  } catch (err) {
-    const end = Date.now();
-    return res.status(200).json({
-      name: 'redis', status: false, elapsedTime: end - start, error: err?.message,
-    });
-  }
-
-  const end = Date.now();
-
-  return res.status(200).json({
-    name: 'redis', status, elapsedTime: end - start,
-  });
+  return res.status(200).json(resultPing);
 });
 
-router.get('/ping/elastic', async (req, res, next) => {
-  let elastic;
-  try {
-    elastic = await elasticClient.ping();
-  } catch (err) {
-    return next({ message: 'Cannot ping elastic', stackTrace: err });
-  }
-  return res.status(200).json({ message: elastic });
+router.get('/health/elastic', async (req, res, next) => {
+  const resultPing = await pingWithTimeout(pingElastic(), 'elastic', 3000);
+
+  return res.status(200).json(resultPing);
+});
+
+router.get('/health', async (req, res, next) => {
+  const p1 = pingWithTimeout(pingRedis(), 'redis', 3000);
+  const p2 = pingWithTimeout(pingElastic(), 'elastic', 3000);
+
+  const result = await Promise.all([p1, p2]);
+
+  return res.status(200).json(result);
 });
 
 module.exports = router;

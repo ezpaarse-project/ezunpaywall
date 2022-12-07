@@ -2,25 +2,30 @@
   <div>
     <v-bottom-navigation :value="value" color="primary" horizontal>
       <v-btn @click="setValue(0)">
-        <span>Enrich</span>
+        <span>Graphql</span>
       </v-btn>
 
       <v-btn @click="setValue(1)">
-        <span>Update</span>
+        <span>Enrich</span>
       </v-btn>
 
       <v-btn @click="setValue(2)">
-        <span>Apikey</span>
+        <span>Update</span>
       </v-btn>
 
       <v-btn @click="setValue(3)">
+        <span>Apikey</span>
+      </v-btn>
+
+      <v-btn @click="setValue(4)">
         <span>Mail</span>
       </v-btn>
     </v-bottom-navigation>
-    <Enrich v-if="value === 0" />
-    <Update v-if="value === 1" />
-    <Apikey v-if="value === 2" />
-    <Mail v-if="value === 3" />
+    <Graphql v-if="value === 0" />
+    <Enrich v-if="value === 1" />
+    <Update v-if="value === 2" />
+    <Apikey v-if="value === 3" />
+    <Mail v-if="value === 4" />
   </div>
 </template>
 
@@ -29,13 +34,15 @@ import Enrich from '~/components/openapi/Enrich.vue'
 import Update from '~/components/openapi/Update.vue'
 import Apikey from '~/components/openapi/Apikey.vue'
 import Mail from '~/components/openapi/Mail.vue'
+import Graphql from '~/components/openapi/Graphql.vue'
 
 export default {
   components: {
     Enrich,
     Update,
     Apikey,
-    Mail
+    Mail,
+    Graphql
   },
   data: () => ({ value: 0 }),
   head () {

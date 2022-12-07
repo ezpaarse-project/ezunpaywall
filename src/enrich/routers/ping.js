@@ -1,58 +1,32 @@
 const router = require('express').Router();
+
+const pingWithTimeout = require('../bin/ping');
 const { pingRedis } = require('../lib/service/redis');
 const { pingGraphql } = require('../lib/service/graphql');
 
-const myPromise = require('../bin/utils');
-
 router.get('/', async (req, res) => res.status(200).json('enrich service'));
 
-router.get('/ping', async (req, res, next) => res.status(200).json());
+router.get('/ping', async (req, res, next) => res.status(200).json('pong'));
 
 router.get('/health/redis', async (req, res, next) => {
-  const start = Date.now();
+  const resultPing = await pingWithTimeout(pingRedis(), 'redis', 3000);
 
-  let status;
-  try {
-    status = await myPromise(3000, async (resolve, reject) => {
-      const resultPing = await pingRedis();
-      if (resultPing) return resolve(true);
-      return reject(false);
-    });
-  } catch (err) {
-    const end = Date.now();
-    return res.status(200).json({
-      name: 'redis', status: false, elapsedTime: end - start, error: err?.message,
-    });
-  }
-
-  const end = Date.now();
-
-  return res.status(200).json({
-    name: 'redis', status, elapsedTime: end - start,
-  });
+  return res.status(200).json(resultPing);
 });
 
 router.get('/health/graphql', async (req, res, next) => {
-  const start = Date.now();
+  const resultPing = await pingWithTimeout(pingGraphql(), 'graphql', 3000);
 
-  let status;
-  try {
-    status = await myPromise(3000, async (resolve, reject) => {
-      const resultPing = await pingGraphql();
-      if (resultPing) return resolve(true);
-      return reject(false);
-    });
-  } catch (err) {
-    return res.status(200).json({
-      name: 'graphql', status: false, elapsedTime: 3000, error: 'Time out',
-    });
-  }
+  return res.status(200).json(resultPing);
+});
 
-  const end = Date.now();
+router.get('/health', async (req, res, next) => {
+  const p1 = pingWithTimeout(pingRedis(), 'redis', 3000);
+  const p2 = pingWithTimeout(pingGraphql(), 'graphql', 3000);
 
-  return res.status(200).json({
-    name: 'graphql', status, elapsedTime: end - start,
-  });
+  const result = await Promise.all([p1, p2]);
+
+  return res.status(200).json(result);
 });
 
 module.exports = router;

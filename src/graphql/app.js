@@ -17,6 +17,7 @@ const { pingElastic } = require('./lib/service/elastic');
 const schema = require('./graphql');
 
 const routerPing = require('./routers/ping');
+const routerOpenapi = require('./routers/openapi');
 
 const app = express();
 
@@ -33,6 +34,8 @@ app.use(express.json());
 
 // routers
 app.use(routerPing);
+app.use(routerOpenapi);
+
 app.use('/graphql', auth, graphqlHTTP({
   schema,
   graphiql: false,
