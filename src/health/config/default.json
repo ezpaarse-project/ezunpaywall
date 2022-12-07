@@ -1,0 +1,10 @@
+{ 
+  "graphql": "http://graphql:3000",
+  "update": "http://update:3000",
+  "enrich": "http://enrich:3000",
+  "apikey": "http://apikey:3000",
+  "mail": "http://mail:3000",
+  "redis": "redis:6379",
+  "elastic": "http://elastic:9200",
+  "unpaywall": "http://fakeUnpaywall:3000"
+}

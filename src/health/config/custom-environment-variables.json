@@ -1,0 +1,10 @@
+{ 
+  "graphql": "GRAPHQL_HOST",
+  "update": "UPDATE_HOST",
+  "enrich": "ENRICH_HOST",
+  "apikey": "APIKEY_HOST",
+  "mail": "MAIL_HOST",
+  "redis": "REDIS_HOST",
+  "elastic": "ELASTIC_HOST",
+  "unpaywall": "UNPAYWALL_HOST"
+}
