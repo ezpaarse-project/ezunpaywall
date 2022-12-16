@@ -38,11 +38,15 @@ const elasticClient = new Client({
 });
 
 const pingElastic = async () => {
+  let elasticStatus;
   try {
-    await elasticClient.ping();
+    elasticStatus = await elasticClient.ping();
   } catch (err) {
     logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${err}`);
-    return err;
+    return err.message;
+  }
+  if (elasticStatus?.statusCode !== 200) {
+    return false;
   }
   logger.info(`ping - ${elasticsearch.host}:${elasticsearch.port} ok`);
   return true;

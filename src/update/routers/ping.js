@@ -25,9 +25,15 @@ router.get('/health', async (req, res, next) => {
   const p1 = pingWithTimeout(pingRedis(), 'redis', 3000);
   const p2 = pingWithTimeout(pingElastic(), 'elastic', 3000);
 
-  const result = await Promise.allSettled([p1, p2]);
+  let resultPing = await Promise.allSettled([p1, p2]);
+  resultPing = resultPing.map((e) => e.value);
+  const result = {};
 
-  return res.status(200).json(result.map((e) => e.value));
+  resultPing.forEach((e) => {
+    result[e?.name] = { elapsedTime: e?.elapsedTime, status: e?.status, error: e?.error };
+  });
+
+  return res.status(200).json(result);
 });
 
 module.exports = router;

@@ -25,8 +25,18 @@ services:
     ports:
       - ${GRAPHQL_PORT:-59701}:3000
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   update:
     image: node:14.15.5
@@ -63,8 +73,18 @@ services:
     ports:
       - ${UPDATE_PORT:-59702}:3000
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   enrich:
     image: node:14.15.5
@@ -87,8 +107,18 @@ services:
     ports:
       - ${ENRICH_PORT:-59703}:3000
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   apikey:
     image: node:14.15.5
@@ -108,8 +138,18 @@ services:
     ports:
       - ${APIKEY_PORT:-59704}:3000
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   mail:
     image: node:14.15.5
@@ -133,6 +173,15 @@ services:
     ports:
       - ${MAIL_PORT:-59705}:3000
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   frontend:
     image: node:14.15.5
@@ -156,6 +205,15 @@ services:
       # mail
       - MAIL_HOST
       - MAIL_APIKEY
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   health:
     image: node:18.12.0
@@ -166,6 +224,31 @@ services:
     command: "npm run dev"
     ports:
      - ${HEALTH_PORT:-59707}:3000
+    restart: unless-stopped
+    depends_on:
+      enrich:
+        condition: service_healthy
+      update:
+        condition: service_healthy
+      graphql:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elastic:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   redis:
     image: redis:6.2.5
@@ -176,6 +259,15 @@ services:
     ports:
       - ${REDIS_PORT:-6379}:6379
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli --pass changeme ping | grep PONG"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   nginx:
     image: nginx:1.20.1
@@ -189,11 +281,25 @@ services:
       - ${NGINX_ACCESS_LOG_PATH:-./src/nginx/log}:/var/log/nginx
     restart: unless-stopped
     depends_on:
-      - enrich
-      - update
-      - graphql
-      - apikey
-      - frontend
+      enrich:
+        condition: service_healthy
+      update:
+        condition: service_healthy
+      graphql:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://localhost:80 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   fakeunpaywall:
     container_name: ezunpaywall-fakeunpaywall-dev
@@ -208,6 +314,15 @@ services:
     ports:
       - 59799:3000
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
@@ -219,20 +334,20 @@ services:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - ELASTIC_USERNAME={ELASTICSEARCH_USERNAME:-elastic}
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-    healthcheck:
-      test: curl --cacert $CERTS_DIR_ES/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes:
       - "./data/elastic:/usr/share/elasticsearch/data"
     ports:
       - 9200:9200
     restart: unless-stopped
+    healthcheck:
+      test: 
+        [
+          "CMD-SHELL",
+          "curl -s https://elastic:changeme@localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
@@ -243,10 +358,20 @@ services:
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - xpack.security.enabled=true
     depends_on: 
-      - elastic
+      elastic:
+        condition: service_healthy
     ports:
       - 5601:5601
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://elastic:changeme@localhost:5601/api/status 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
 
   maildev:
@@ -254,4 +379,13 @@ services:
     container_name: ezunpaywall-maildev-dev
     ports:
       - 1080:80
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -S -O - http://localhost:80 2>&1 | grep 'HTTP/1.1 200 OK'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 

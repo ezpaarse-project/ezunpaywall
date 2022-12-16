@@ -4,20 +4,24 @@ const config = require('config');
 const logger = require('../lib/logger');
 
 async function pingWithTimeout(p1, name, timeout) {
+  const start = Date.now();
+
   const p2 = new Promise((resolve, reject) => {
-    setTimeout(reject, timeout, 'time out');
+    setTimeout(reject, timeout, new Error('time out'));
   });
 
-  let res;
+  let reply;
 
   try {
-    res = await Promise.race([p1, p2]);
+    reply = await Promise.race([p1, p2]);
   } catch (err) {
-    res = err;
+    return {
+      name, elapsedTime: Date.now() - start, error: err?.message,
+    };
   }
 
   return {
-    name, services: res ?? true,
+    name, elapsedTime: Date.now() - start, services: reply,
   };
 }
 
