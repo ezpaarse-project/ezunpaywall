@@ -60,7 +60,9 @@
     "/health/ping": {
       "get": {
         "summary": "Your GET endpoint",
-        "tags": [],
+        "tags": [
+          "ping"
+        ],
         "responses": {
           "204": {
             "description": "No Content"
@@ -73,7 +75,9 @@
     "/health/health": {
       "get": {
         "summary": "Your GET endpoint",
-        "tags": [],
+        "tags": [
+          "ping"
+        ],
         "responses": {
           "200": {
             "description": "OK",
