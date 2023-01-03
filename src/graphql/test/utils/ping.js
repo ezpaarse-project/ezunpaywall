@@ -4,60 +4,34 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
-const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
+const graphqlHost = process.env.GRAPHQL_HOST || 'http://localhost:59701';
+const updateHost = process.env.UPDATE_HOST || 'http://localhost:59702';
+const elasticHost = process.env.UPDATE_HOST || 'http://elastic:changeme@localhost:9200';
+const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 /**
  * ping all services to see if they are available
  */
-const ping = async () => {
-  let graphql;
-  while (graphql?.status !== 200) {
-    try {
-      graphql = await chai.request(graphqlURL).get('/ping');
-    } catch (err) {
-      console.error(`graphql ping : ${err}`);
-    }
-    if (graphql?.status !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+async function ping() {
+  const graphql = await chai.request(graphqlHost).get('/ping');
+  if (graphql?.status !== 204) {
+    throw new Error(`[graphql] Bad status : ${graphql?.status}`);
   }
 
-  let elastic;
-  while (elastic?.status !== 200) {
-    try {
-      elastic = await chai.request(graphqlURL).get('/ping/elastic');
-    } catch (err) {
-      console.error(`elastic ping : ${err}`);
-    }
-    if (elastic?.status !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+  const elastic = await chai.request(elasticHost).get('/');
+  if (elastic?.status !== 200) {
+    throw new Error(`[elastic] Bad status : ${elastic?.status}`);
   }
 
-  let apikey;
-  do {
-    try {
-      apikey = await chai.request(apikeyURL).get('/ping');
-    } catch (err) {
-      console.error(`apikey ping : ${err}`);
-    }
-    if (apikey?.statusCode !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  } while (apikey?.statusCode !== 200);
+  const apikey = await chai.request(apikeyHost).get('/ping');
+  if (apikey?.statusCode !== 204) {
+    throw new Error(`[apikey] Bad status : ${apikey?.status}`);
+  }
 
-  let redis;
-  do {
-    try {
-      redis = await chai.request(graphqlURL).get('/ping/redis');
-    } catch (err) {
-      console.error(`redis ping : ${err}`);
-    }
-    if (!redis?.status) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  } while (!redis?.status);
-};
+  const redis = await chai.request(updateHost).get('/ping/redis');
+  if (!redis?.status) {
+    throw new Error(`[redis] Bad status : ${redis?.status}`);
+  }
+}
 
 module.exports = ping;

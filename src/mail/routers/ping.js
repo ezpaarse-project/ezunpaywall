@@ -6,7 +6,7 @@ const { pingSMTP } = require('../lib/mail');
 
 router.get('/', (req, res) => res.status(200).json('mail service'));
 
-router.get('/ping', (req, res, next) => res.status(200).json('pong'));
+router.get('/ping', (req, res, next) => res.status(204).end());
 
 router.get('/health/smtp', async (req, res, next) => {
   const resultPing = await pingWithTimeout(pingSMTP(), 'smtp', 3000);

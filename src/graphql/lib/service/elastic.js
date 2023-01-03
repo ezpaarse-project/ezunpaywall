@@ -46,9 +46,9 @@ const pingElastic = async () => {
     return err.message;
   }
   if (elasticStatus?.statusCode !== 200) {
+    logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port}`);
     return false;
   }
-  logger.info(`ping - ${elasticsearch.host}:${elasticsearch.port} ok`);
   return true;
 };
 

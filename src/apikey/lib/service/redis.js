@@ -29,7 +29,7 @@ redisClient.on('error', (err) => {
   logger.error(`Error in redis ${err}`);
 });
 
-const load = async () => {
+async function load() {
   const filename = process.env.NODE_ENV === 'production' ? 'apikey.json' : 'apikey-dev.json';
   apiKeys = await fs.readFile(path.resolve(__dirname, '..', '..', filename), 'utf8');
   apiKeys = JSON.parse(apiKeys);
@@ -46,21 +46,19 @@ const load = async () => {
       logger.error(err);
     }
   }
-};
+}
 
-const pingRedis = async () => {
+async function pingRedis() {
   try {
     await redisClient.ping();
   } catch (err) {
     logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
-    logger.error(err);
-    return false;
+    return err?.message;
   }
-  logger.info(`ping - ${config.get('redis.host')}:${config.get('redis.port')} ok`);
   return true;
-};
+}
 
-const loadDemoAPIKey = async () => {
+async function loadDemoAPIKey() {
   const configAPIKey = {
     name: 'demo',
     access: ['graphql', 'enrich'],
@@ -75,7 +73,7 @@ const loadDemoAPIKey = async () => {
     return Promise.reject(err);
   }
   logger.info('Demo apikey are loaded');
-};
+}
 
 module.exports = {
   redisClient,

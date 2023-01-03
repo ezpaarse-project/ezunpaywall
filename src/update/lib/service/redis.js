@@ -13,17 +13,13 @@ redisClient.get = util.promisify(redisClient.get);
 redisClient.ping = util.promisify(redisClient.ping);
 
 async function pingRedis() {
-  let redisStatus;
   try {
-    redisStatus = await redisClient.ping();
+    await redisClient.ping();
   } catch (err) {
     logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
-    logger.error(err);
+    logger.error(err?.message);
+    return err?.message;
   }
-  if (redisStatus !== 'PONG') {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  logger.info(`ping - ${config.get('redis.host')}:${config.get('redis.port')} ok`);
   return true;
 }
 

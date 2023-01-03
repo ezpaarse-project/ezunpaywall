@@ -16,12 +16,17 @@ async function pingWithTimeout(p1, name, timeout) {
     reply = await Promise.race([p1, p2]);
   } catch (err) {
     return {
-      name, elapsedTime: Date.now() - start, error: err?.message,
+      name, elapsedTime: Date.now() - start, error: err?.message, status: false,
     };
   }
 
+  const services = { ...reply };
+
+  delete services.elapsedTime;
+  delete services.status;
+
   return {
-    name, elapsedTime: Date.now() - start, services: reply,
+    name, elapsedTime: Date.now() - start, services, status: reply.status || false,
   };
 }
 
@@ -54,6 +59,12 @@ async function pingAll() {
 
   const mailHost = config.get('mail');
   const healthMail = pingWithTimeout(health('mail', mailHost), 'mail', 5000);
+
+  // TODO elastic
+
+  // TODO redis
+
+  // TODO unpaywall
 
   const result = await Promise.allSettled([
     healthGraphql,

@@ -61,9 +61,9 @@ async function pingGraphql() {
     });
   } catch (err) {
     logger.error(err);
-    return false;
+    return err?.message;
   }
-  if (res.status === 200) return true;
+  if (res?.status === 204) return true;
   return false;
 }
 
