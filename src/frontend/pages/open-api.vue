@@ -20,34 +20,53 @@
       <v-btn @click="setValue(4)">
         <span>Mail</span>
       </v-btn>
+
+      <v-btn @click="setValue(5)">
+        <span>Health</span>
+      </v-btn>
     </v-bottom-navigation>
-    <Graphql v-if="value === 0" />
-    <Enrich v-if="value === 1" />
-    <Update v-if="value === 2" />
-    <Apikey v-if="value === 3" />
-    <Mail v-if="value === 4" />
+
+    <Openapi v-if="value === 0" :host="graphqlHost" />
+    <Openapi v-if="value === 1" :host="enrichHost" />
+    <Openapi v-if="value === 2" :host="updateHost" />
+    <Openapi v-if="value === 3" :host="apikeyHost" />
+    <Openapi v-if="value === 4" :host="mailHost" />
+    <Openapi v-if="value === 5" :host="healthHost" />
   </div>
 </template>
 
 <script>
-import Enrich from '~/components/openapi/Enrich.vue'
-import Update from '~/components/openapi/Update.vue'
-import Apikey from '~/components/openapi/Apikey.vue'
-import Mail from '~/components/openapi/Mail.vue'
-import Graphql from '~/components/openapi/Graphql.vue'
+
+import Openapi from '~/components/openapi/Openapi.vue'
 
 export default {
   components: {
-    Enrich,
-    Update,
-    Apikey,
-    Mail,
-    Graphql
+    Openapi
   },
   data: () => ({ value: 0 }),
   head () {
     return {
       title: 'Doc'
+    }
+  },
+  computed: {
+    graphqlHost () {
+      return this.$config.graphqlHost
+    },
+    updateHost () {
+      return this.$config.updateHost
+    },
+    enrichHost () {
+      return this.$config.enrichHost
+    },
+    apikeyHost () {
+      return this.$config.apikeyHost
+    },
+    mailHost () {
+      return this.$config.mailHost
+    },
+    healthHost () {
+      return this.$config.healthHost
     }
   },
   methods: {

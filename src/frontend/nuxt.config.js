@@ -7,6 +7,7 @@ export default {
     enrichHost: process.env.ENRICH_HOST || 'http://localhost:59703',
     apikeyHost: process.env.APIKEY_HOST || 'http://localhost:59704',
     mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
+    healthHost: process.env.HEALTH_HOST || 'http://localhost:59707',
     apikeyMail: process.env.MAIL_APIKEY || 'changeme',
     environment: process.env.NODE_ENV || 'development'
   },
