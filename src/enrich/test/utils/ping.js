@@ -8,7 +8,6 @@ const enrichHost = process.env.ENRICH_HOST || 'http://localhost:59703';
 const elasticHost = process.env.UPDATE_HOST || 'http://elastic:changeme@localhost:9200';
 const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
 
-
 /**
  * ping all services to see if they are available
  */

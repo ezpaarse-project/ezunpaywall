@@ -56,55 +56,78 @@
     "/mail/ping": {
       "get": {
         "summary": "Ping mail service",
+        "operationId": "get-mail-ping",
+        "description": "Ping mail service",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/mail/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "get-mail-health",
+        "description": "Health on all service connected to enrich service",
+        "tags": [
+          "ping"
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "type": "string",
+                  "type": "object",
+                  "properties": {
+                    "smtp": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  },
                   "x-examples": {
-                    "example-1": "pong"
+                    "Example 1": {
+                      "smtp": {
+                        "elapsedTime": 1,
+                        "status": true
+                      }
+                    }
                   }
                 },
                 "examples": {
-                  "pong": {
-                    "value": "pong"
-                  }
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
+                  "Success": {
                     "value": {
-                      "message": true
+                      "smtp": {
+                        "elapsedTime": 1,
+                        "status": true
+                      }
+                    }
+                  },
+                  "Error smtp": {
+                    "value": {
+                      "smtp": {
+                        "elapsedTime": 133,
+                        "status": false,
+                        "error": "self signed certificate"
+                      }
                     }
                   }
                 }
               }
             }
           }
-        },
-        "operationId": "get-mail-ping",
-        "description": "Ping mail service",
-        "tags": [
-          "ping"
-        ]
-      }
-    },
-    "/mail/health": {
-      "get": {
-        "summary": "Health",
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/Healths"
-          }
-        },
-        "operationId": "get-mail-health",
-        "description": "Health on all service connected to enrich service",
-        "tags": [
-          "ping"
-        ]
+        }
       },
       "parameters": []
     },
@@ -345,7 +368,7 @@
       "Health": {
         "description": "Example response",
         "content": {
-          "application/json": {
+          "Success": {
             "schema": {
               "type": "object",
               "properties": {
@@ -368,93 +391,19 @@
               }
             },
             "examples": {
-              "ok": {
+              "Success": {
                 "value": {
                   "name": "name of service",
                   "status": true,
                   "elapsedTime": 1
                 }
               },
-              "timeout": {
+              "Error smtp": {
                 "value": {
-                  "name": "name of service",
+                  "elapsedTime": 115,
                   "status": false,
-                  "elapsedTime": 3000
+                  "error": "self signed certificate"
                 }
-              }
-            }
-          },
-          "application/xml": {
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        }
-      },
-      "Healths": {
-        "description": "Example response",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "boolean"
-                  },
-                  "elapsedTime": {
-                    "type": "integer"
-                  }
-                }
-              },
-              "x-examples": {
-                "Example 1": [
-                  {
-                    "name": "name of service 1",
-                    "status": true,
-                    "elapsedTime": 1
-                  },
-                  {
-                    "name": "name of service 2",
-                    "status": true,
-                    "elapsedTime": 1
-                  }
-                ]
-              }
-            },
-            "examples": {
-              "ok": {
-                "value": [
-                  {
-                    "name": "name of service 1",
-                    "status": true,
-                    "elapsedTime": 1
-                  },
-                  {
-                    "name": "name of service 2",
-                    "status": true,
-                    "elapsedTime": 1
-                  }
-                ]
-              },
-              "timeout": {
-                "value": [
-                  {
-                    "name": "name of service 1",
-                    "status": true,
-                    "elapsedTime": 1
-                  },
-                  {
-                    "name": "name of service 2",
-                    "status": false,
-                    "elapsedTime": 3000
-                  }
-                ]
               }
             }
           }

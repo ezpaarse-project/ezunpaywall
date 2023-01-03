@@ -57,56 +57,114 @@
     "/graphql/ping": {
       "get": {
         "summary": "Ping graphql service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string",
-                  "x-examples": {
-                    "example-1": "pong"
-                  }
-                },
-                "examples": {
-                  "pong": {
-                    "value": "pong"
-                  }
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
         "operationId": "get-graphql-ping",
         "description": "ping graphql service",
         "tags": [
           "ping"
-        ]
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
       },
       "parameters": []
     },
     "/graphql/health": {
       "get": {
         "summary": "Health",
-        "responses": {
-          "200": {
-            "$ref": "#/components/responses/Healths"
-          }
-        },
         "operationId": "get-graphql-health",
         "description": "Health on all service connected to graphql service",
         "tags": [
           "ping"
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "redis": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "elastic": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "elapsedTime": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "redis": {
+                        "elapsedTime": 0,
+                        "status": true
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 1,
+                      "status": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Success": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 1,
+                      "status": true
+                    }
+                  },
+                  "Error redis": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 3001,
+                        "status": false,
+                        "error": "time out"
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 3001,
+                      "status": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       },
       "parameters": []
     },
@@ -217,93 +275,20 @@
               }
             },
             "examples": {
-              "ok": {
+              "Success": {
                 "value": {
                   "name": "name of service",
                   "status": true,
                   "elapsedTime": 1
                 }
               },
-              "timeout": {
+              "Error redis": {
                 "value": {
-                  "name": "name of service",
-                  "status": false,
-                  "elapsedTime": 3000
+                  "name": "redis",
+                  "elapsedTime": 3002,
+                  "error": "time out",
+                  "status": false
                 }
-              }
-            }
-          },
-          "application/xml": {
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        }
-      },
-      "Healths": {
-        "description": "Example response",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "boolean"
-                  },
-                  "elapsedTime": {
-                    "type": "integer"
-                  }
-                }
-              },
-              "x-examples": {
-                "Example 1": [
-                  {
-                    "name": "name of service 1",
-                    "status": true,
-                    "elapsedTime": 1
-                  },
-                  {
-                    "name": "name of service 2",
-                    "status": true,
-                    "elapsedTime": 1
-                  }
-                ]
-              }
-            },
-            "examples": {
-              "ok": {
-                "value": [
-                  {
-                    "name": "name of service 1",
-                    "status": true,
-                    "elapsedTime": 1
-                  },
-                  {
-                    "name": "name of service 2",
-                    "status": true,
-                    "elapsedTime": 1
-                  }
-                ]
-              },
-              "timeout": {
-                "value": [
-                  {
-                    "name": "name of service 1",
-                    "status": true,
-                    "elapsedTime": 1
-                  },
-                  {
-                    "name": "name of service 2",
-                    "status": false,
-                    "elapsedTime": 3000
-                  }
-                ]
               }
             }
           }
