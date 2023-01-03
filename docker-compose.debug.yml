@@ -29,14 +29,11 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
+
 
   update:
     image: node:14.15.5
@@ -77,11 +74,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -111,11 +104,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -142,11 +131,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -174,12 +159,8 @@ services:
       - ${MAIL_PORT:-59705}:3000
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
-      interval: 30s
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
+      interval: 10s
       timeout: 10s
       retries: 5
 
@@ -206,11 +187,7 @@ services:
       - MAIL_HOST
       - MAIL_APIKEY
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -241,11 +218,7 @@ services:
       elastic:
         condition: service_healthy
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -260,11 +233,7 @@ services:
       - ${REDIS_PORT:-6379}:6379
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "redis-cli --pass changeme ping | grep PONG"
-        ]
+      test: [ "CMD-SHELL", "redis-cli --pass changeme ping | grep PONG" ]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -292,11 +261,7 @@ services:
       frontend:
         condition: service_healthy
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s -I http://localhost:80 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "curl -s -I http://localhost:80 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -315,11 +280,7 @@ services:
       - 59799:3000
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -340,14 +301,11 @@ services:
       - 9200:9200
     restart: unless-stopped
     healthcheck:
-      test: 
-        [
-          "CMD-SHELL",
-          "curl -s https://elastic:changeme@localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi"
-        ]
+      test: [ "CMD-SHELL", "curl -s --fail http://elastic:changeme@localhost:9200" ]
       interval: 10s
       timeout: 10s
       retries: 5
+      start_period: 30s
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
@@ -364,14 +322,11 @@ services:
       - 5601:5601
     restart: unless-stopped
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s -I http://elastic:changeme@localhost:5601/api/status 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "curl -s --fail http://elastic:changeme@localhost:5601/api/status" ]
       interval: 10s
       timeout: 10s
       retries: 5
+      start_period: 30s
 
 
   maildev:
@@ -380,12 +335,9 @@ services:
     ports:
       - 1080:80
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -q -S -O - http://localhost:80 2>&1 | grep 'HTTP/1.1 200 OK'"
-        ]
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:80 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
       timeout: 10s
       retries: 5
+      
 
