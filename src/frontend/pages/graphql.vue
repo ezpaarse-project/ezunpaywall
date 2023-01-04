@@ -173,8 +173,9 @@ export default {
     copyText () {
       try {
         navigator.clipboard.writeText(this.query)
-        this.$store.dispatch('snacks/info', 'request copied')
+        this.$store.dispatch('snacks/info', this.$t('graphql.copyRequest'))
       } catch (err) {
+        console.log(err);
         this.$store.dispatch(
           'snacks/error',
           this.$t('graphql.errorCopyRequest')
