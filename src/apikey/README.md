@@ -14,6 +14,7 @@ API key management service for update, graphql and enrich service.
 ## Docker environment variables
 
 | name | default | description |
+| --- | --- | --- |
 | APIKEY_APPLICATION_LOG_PATH | ezunpaywall/src/apikey/log/application | application output log path |
 | APIKEY_ACCESS_LOG_PATH | ezunpaywall/src/apikey/log/access | access log output path |
 | APIKEY_PORT | 59704 | output port |

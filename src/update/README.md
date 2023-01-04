@@ -23,6 +23,8 @@ Health service indicating the status of the connection between each service.
 
 ## Docker environment variables
 
+| name | default | description |
+| --- | --- | --- |
 | UPDATE_APPLICATION_LOG_PATH | ./src/update/log/application | application output log path |
 | UPDATE_ACCESS_LOG_PATH | ./src/update/log/access | access log output path |
 | UPDATE_DATA_PATH | ./src/update/data | access data output path |

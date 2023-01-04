@@ -97,15 +97,15 @@ The tools you need to let ezunpaywall run are :
 Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh`, which contains a set of predefined variables and is overriden by `ezunpaywall.local.env.sh`.
 
 Details : 
-* [apikey](/src/apikey/README.md)
-* [enrich](/src/enrich/README.md)
-* [fakeUnpaywall](/src/fakeUnpaywall/README.md)
-* [frontend](/src/frontend/README.md)
-* [graphql](/src/graphql/README.md)
-* [health](/src/health/README.md)
-* [mail](/src/mail/README.md)
-* [nginx](/src/nginx/README.md)
-* [update](/src/update/README.md)
+* [apikey](/src/apikey#ezunpaywall-apikey)
+* [enrich](/src/enrich#ezunpaywall-enrich)
+* [fakeUnpaywall](/src/fakeUnpaywall#ezunpaywall-fakeUnpaywall)
+* [frontend](/src/frontend#ezunpaywall-frontend)
+* [graphql](/src/graphql#ezunpaywall-graphql)
+* [health](/src/health#ezunpaywall-health)
+* [mail](/src/mail#ezunpaywall-mail)
+* [nginx](/src/nginx#ezunpaywall-nginx)
+* [update](/src/update#ezunpaywall-update)
 
 ### Adjust system configuration for Elasticsearch
 

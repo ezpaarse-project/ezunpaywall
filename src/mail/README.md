@@ -18,6 +18,7 @@ Health service indicating the status of the connection between each service.
 ## Docker environment variables
 
 | name | default | description |
+| --- | --- | --- |
 | MAIL_APPLICATION_LOG_PATH | ./src/mail/log/application | application output log path |
 | MAIL_ACCESS_LOG_PATH | ./src/mail/log/access | access log output path |
 | MAIL_PORT | 59705 | output port |

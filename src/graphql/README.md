@@ -19,6 +19,7 @@ unpaywall data access service
 ## Docker environment variables
 
 | name | default | description |
+| --- | --- | --- |
 | GRAPHQL_APPLICATION_LOG_PATH | ./src/graphql/log/application | application output log path |
 | GRAPHQL_ACCESS_LOG_PATH | ./src/graphql/log/access | access log output path |
 | GRAPHQL_PORT | 59701 | output port |
