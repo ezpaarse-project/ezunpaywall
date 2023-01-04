@@ -15,7 +15,7 @@ async function resetCronConfig() {
     res = await chai.request(updateURL)
       .patch('/cron')
       .send({ time: '0 0 0 * * *', index: 'unpaywall', interval: 'day' })
-      .set('x-api-key', 'admin');
+      .set('x-api-key', 'changeme');
   } catch (err) {
     console.error(`Cannot PATCH ${updateURL}/cron`);
     process.exit(1);

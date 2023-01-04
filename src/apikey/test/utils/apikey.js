@@ -12,7 +12,7 @@ const loadDevAPIKey = async () => {
   try {
     await chai.request(apikeyURL)
       .post('/keys/load?dev=true')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
   } catch (err) {
     console.error('Cannot request apikey service');
     console.error(err);
@@ -26,7 +26,7 @@ const deleteAllAPIKey = async () => {
   try {
     await chai.request(apikeyURL)
       .delete('/keys')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
   } catch (err) {
     console.error('Cannot request apikey service');
     console.error(err);

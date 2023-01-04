@@ -38,7 +38,7 @@ describe('Test: Get config of apikey', () => {
     const res = await chai
       .request(apikeyURL)
       .get('/keys')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 

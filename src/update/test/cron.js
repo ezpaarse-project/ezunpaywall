@@ -6,10 +6,6 @@ const chaiHttp = require('chai-http');
 const reset = require('./utils/reset');
 
 const ping = require('./utils/ping');
-const {
-  loadDevAPIKey,
-  deleteAllAPIKey,
-} = require('./utils/apikey');
 
 chai.use(chaiHttp);
 
@@ -19,8 +15,6 @@ describe('Test: cron manage', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
   });
 
   describe('Test: get config of cron', () => {
@@ -50,7 +44,7 @@ describe('Test: cron manage', () => {
       const res = await chai.request(updateURL)
         .patch('/cron')
         .send({ time: '0 0 0 1 * *' })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(200);
 
@@ -70,7 +64,7 @@ describe('Test: cron manage', () => {
       const res = await chai.request(updateURL)
         .patch('/cron')
         .send({ index: 'unpaywall2' })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(200);
 
@@ -90,7 +84,7 @@ describe('Test: cron manage', () => {
       const res = await chai.request(updateURL)
         .patch('/cron')
         .send({ interval: 'week' })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(200);
 
@@ -139,7 +133,7 @@ describe('Test: cron manage', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
         .post('/cron/start')
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -165,7 +159,7 @@ describe('Test: cron manage', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
         .post('/cron/stop')
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });

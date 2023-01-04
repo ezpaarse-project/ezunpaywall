@@ -30,7 +30,7 @@ describe('Test: Create apikey', () => {
         attributes: ['*'],
         allowed: true,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').to.not.equal(undefined);
@@ -47,7 +47,7 @@ describe('Test: Create apikey', () => {
       .send({
         name: 'test-user2',
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -68,7 +68,7 @@ describe('Test: Create apikey', () => {
         attributes: ['*'],
         allowed: true,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(409);
   });
@@ -83,7 +83,7 @@ describe('Test: Create apikey', () => {
         attributes: ['*'],
         allowed: true,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });
@@ -98,7 +98,7 @@ describe('Test: Create apikey', () => {
         attributes: ['*'],
         allowed: true,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });
@@ -113,7 +113,7 @@ describe('Test: Create apikey', () => {
         attributes: 1,
         allowed: true,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });
@@ -128,7 +128,7 @@ describe('Test: Create apikey', () => {
         attributes: 'test',
         allowed: true,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });
@@ -143,7 +143,7 @@ describe('Test: Create apikey', () => {
         attributes: ['*'],
         allowed: 1,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });

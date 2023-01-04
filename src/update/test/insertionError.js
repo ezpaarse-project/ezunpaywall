@@ -26,11 +26,6 @@ const {
 
 const ping = require('./utils/ping');
 
-const {
-  loadDevAPIKey,
-  deleteAllAPIKey,
-} = require('./utils/apikey');
-
 const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
@@ -41,8 +36,6 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   before(async function () {
     this.timeout(30000);
     await ping();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
     await updateChangeFile('week');
   });
 
@@ -60,7 +53,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         })
         .set('Access-Control-Allow-Origin', '*')
         .set('Content-Type', 'application/json')
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -127,7 +120,5 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
   after(async () => {
     await reset();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
   });
 });
