@@ -2,14 +2,14 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   publicRuntimeConfig: {
+    environment: process.env.NODE_ENV || 'development',
     graphqlHost: process.env.GRAPHQL_HOST || 'http://localhost:59701',
     updateHost: process.env.UPDATE_HOST || 'http://localhost:59702',
     enrichHost: process.env.ENRICH_HOST || 'http://localhost:59703',
     apikeyHost: process.env.APIKEY_HOST || 'http://localhost:59704',
-    mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
-    healthHost: process.env.HEALTH_HOST || 'http://localhost:59707',
     apikeyMail: process.env.MAIL_APIKEY || 'changeme',
-    environment: process.env.NODE_ENV || 'development'
+    mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
+    healthHost: process.env.HEALTH_HOST || 'http://localhost:59707'
   },
 
   server: {

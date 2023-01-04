@@ -164,34 +164,6 @@ services:
       timeout: 10s
       retries: 5
 
-  frontend:
-    image: node:14.15.5
-    container_name: ezunpaywall-frontend-dev
-    working_dir: /frontend
-    volumes:
-      - ./src/frontend:/frontend
-    command: "npm run dev"
-    ports:
-     - ${FRONTEND_PORT:-59706}:3000
-    environment:
-      - NODE_ENV=development
-      # graphql
-      - GRAPHQL_HOST
-      # update
-      - UPDATE_HOST
-      # enrich
-      - ENRICH_HOST
-      # apikey
-      - APIKEY_HOST
-      # mail
-      - MAIL_HOST
-      - MAIL_APIKEY
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-
   health:
     image: node:18.12.0
     container_name: ezunpaywall-health-dev
@@ -217,6 +189,34 @@ services:
         condition: service_healthy
       elastic:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  frontend:
+    image: node:14.15.5
+    container_name: ezunpaywall-frontend-dev
+    working_dir: /frontend
+    volumes:
+      - ./src/frontend:/frontend
+    command: "npm run dev"
+    ports:
+     - ${FRONTEND_PORT:-59706}:3000
+    environment:
+      - NODE_ENV=development
+      # graphql
+      - GRAPHQL_HOST
+      # update
+      - UPDATE_HOST
+      # enrich
+      - ENRICH_HOST
+      # apikey
+      - APIKEY_HOST
+      # mail
+      - MAIL_HOST
+      - MAIL_APIKEY
     healthcheck:
       test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
       interval: 10s
