@@ -27,11 +27,6 @@ const {
 
 const ping = require('./utils/ping');
 
-const {
-  loadDevAPIKey,
-  deleteAllAPIKey,
-} = require('./utils/apikey');
-
 const reset = require('./utils/reset');
 
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
@@ -72,7 +67,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           startDate: date1,
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -204,7 +199,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           endDate: date1,
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -336,7 +331,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           endDate: date3,
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -381,7 +376,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           endDate: date1,
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -397,7 +392,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           startDate: 'doesn\'t exist',
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -410,7 +405,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           startDate: '01-01-2000',
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -423,7 +418,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           startDate: '2000-50-50',
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -439,7 +434,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           endDate: date3,
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -454,7 +449,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
           startDate: tomorrow,
           interval: 'day',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -462,8 +457,6 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   after(async () => {
     await deleteIndex('unpaywall-test');
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
     await deleteFile('fake1.jsonl.gz');
     await deleteFile('fake2.jsonl.gz');
     await deleteFile('fake3.jsonl.gz');

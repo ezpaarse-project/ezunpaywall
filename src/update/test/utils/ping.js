@@ -32,11 +32,6 @@ async function ping() {
   if (apikey?.statusCode !== 204) {
     throw new Error(`[apikey] Bad status : ${apikey?.status}`);
   }
-
-  const redis = await chai.request(updateHost).get('/ping/redis');
-  if (!redis?.status) {
-    throw new Error(`[redis] Bad status : ${redis?.status}`);
-  }
 }
 
 module.exports = ping;
