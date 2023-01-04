@@ -269,7 +269,7 @@ headers: {
 }
 ```
 
-`GET "<HOST>/api/graphql?query={GetByDOI(dois:["10.1038/2211089b0","10.1038/nature12373"], published_date_range: {gte: "2014", lte: "2019"}){doi, is_oa, best_oa_location{ url }}}"`
+`GET "<HOST>/api/graphql?query={GetByDOI(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
 
 #### POST
 
@@ -280,7 +280,7 @@ headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
 body: {
-    "query": "{GetByDOI(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"], published_date_range: {gte: \"2014\", lte: \"2019\"}){doi, is_oa, best_oa_location{ url }}}"
+    "query": "{GetByDOI(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
 }
 ```
 
@@ -291,13 +291,9 @@ headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
 body: {
-    "query": "query ($dois: [ID!]!){ GetByDOI(dois: $dois, published_date_range: $published_date_range){is_oa} }",
+    "query": "query ($dois: [ID!]!){ GetByDOI(dois: $dois){is_oa} }",
     "variables": { 
         "dois": ["10.1038/2211089b0","10.1038/nature12373"],
-        "published_date_range": {
-          "lte": "2014",
-          "gte": "2019",
-        } 
     }
 }
 ```
