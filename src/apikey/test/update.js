@@ -29,7 +29,7 @@ describe('Test: Update apikey', () => {
       .send({
         name: 'new-name',
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -47,7 +47,7 @@ describe('Test: Update apikey', () => {
       .send({
         access: ['update'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -65,7 +65,7 @@ describe('Test: Update apikey', () => {
       .send({
         attributes: ['doi'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -83,7 +83,7 @@ describe('Test: Update apikey', () => {
       .send({
         attributes: ['doi', 'is_oa'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -101,7 +101,7 @@ describe('Test: Update apikey', () => {
       .send({
         allowed: false,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -119,7 +119,7 @@ describe('Test: Update apikey', () => {
       .send({
         allowed: true,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -138,7 +138,7 @@ describe('Test: Update apikey', () => {
         name: 'new-user',
         access: ['update'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -156,7 +156,7 @@ describe('Test: Update apikey', () => {
       .send({
         access: ['hello'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });
@@ -168,7 +168,7 @@ describe('Test: Update apikey', () => {
       .send({
         attributes: ['hello'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });
@@ -180,7 +180,7 @@ describe('Test: Update apikey', () => {
       .send({
         allowed: 'maybe',
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });

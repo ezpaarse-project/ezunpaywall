@@ -676,7 +676,7 @@
           }
         },
         "headers": {
-          "redis-password": {
+          "x-api-key": {
             "schema": {
               "type": "string"
             },
