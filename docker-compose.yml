@@ -47,10 +47,6 @@ services:
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
       - ELASTICSEARCH_INDEX_ALIAS
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
       # cron
       - UPDATE_CRON_SCHEDULE
       - UPDATE_CRON_ACTIVE
@@ -64,8 +60,6 @@ services:
       - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
       - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/update/certs
     command: "npm start"
-    depends_on:
-      - redis
     restart: unless-stopped
 
   enrich:
@@ -150,6 +144,35 @@ services:
     volumes:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
     restart: unless-stopped
+
+  health:
+    build:
+      context: ./src/health
+    container_name: ezunpaywall-health-prod
+    command: "npm run start"
+    ports:
+     - ${HEALTH_PORT:-59707}:3000
+    restart: unless-stopped
+    depends_on:
+      enrich:
+        condition: service_healthy
+      update:
+        condition: service_healthy
+      graphql:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elastic:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   nginx:
     image: nginx:1.20.1-alpine

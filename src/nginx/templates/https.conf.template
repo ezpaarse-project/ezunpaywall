@@ -63,6 +63,16 @@ server {
     proxy_pass http://apikey:3000/;
   }
 
+  location /api/mail {
+    rewrite ^/api/mail(/.*)$ $1 break;
+    proxy_pass http://mail:3000/;
+  }
+
+  location /api/health {
+    rewrite ^/api/health(/.*)$ $1 break;
+    proxy_pass http://health:3000/;
+  }
+
   ## Diffie-Hellman
   ssl_ecdh_curve secp384r1;
 

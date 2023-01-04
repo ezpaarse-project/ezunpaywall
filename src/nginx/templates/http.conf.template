@@ -42,4 +42,9 @@ server {
     rewrite ^/api/mail(/.*)$ $1 break;
     proxy_pass http://mail:3000/;
   }
+
+  location /api/health {
+    rewrite ^/api/health(/.*)$ $1 break;
+    proxy_pass http://health:3000/;
+  }
 }
