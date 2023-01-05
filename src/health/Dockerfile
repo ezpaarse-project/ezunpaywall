@@ -1,4 +1,4 @@
-FROM node:18.12.0-alpine3.13
+FROM node:18.12-alpine3.17
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
