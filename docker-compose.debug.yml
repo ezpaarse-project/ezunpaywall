@@ -95,6 +95,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      elastic:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
@@ -157,37 +159,6 @@ services:
       timeout: 10s
       retries: 5
 
-  health:
-    image: node:18.12-alpine3.17
-    container_name: ezunpaywall-health-dev
-    working_dir: /health
-    volumes:
-      - ./src/health:/health
-    command: "npm run dev"
-    ports:
-     - ${HEALTH_PORT:-59707}:3000
-    restart: unless-stopped
-    depends_on:
-      enrich:
-        condition: service_healthy
-      update:
-        condition: service_healthy
-      graphql:
-        condition: service_healthy
-      apikey:
-        condition: service_healthy
-      frontend:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      elastic:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-
   frontend:
     image: node:14.15.5
     container_name: ezunpaywall-frontend-dev
@@ -231,6 +202,38 @@ services:
       timeout: 3s
       retries: 5
 
+  health:
+    image: node:18.12-alpine3.17
+    container_name: ezunpaywall-health-dev
+    working_dir: /health
+    volumes:
+      - ./src/health:/health
+      - ${HEALTH_APPLICATION_LOG_PATH:-./src/health/log/application}:/health/log/application
+    command: "npm run dev"
+    ports:
+     - ${HEALTH_PORT:-59707}:3000
+    restart: unless-stopped
+    depends_on:
+      enrich:
+        condition: service_healthy
+      update:
+        condition: service_healthy
+      graphql:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elastic:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
   nginx:
     image: nginx:1.20.1
     container_name: ezunpaywall-nginx-dev
@@ -250,6 +253,8 @@ services:
       graphql:
         condition: service_healthy
       apikey:
+        condition: service_healthy
+      health:
         condition: service_healthy
       frontend:
         condition: service_healthy
@@ -298,7 +303,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-      start_period: 30s
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
@@ -319,7 +323,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-      start_period: 30s
 
 
   maildev:

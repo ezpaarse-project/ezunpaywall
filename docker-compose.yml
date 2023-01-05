@@ -23,7 +23,8 @@ services:
       - ${ELASTIC_CERT_CA_PATH:-./src/graphql/certs/ca.crt}:/graphql/certs
     command: "npm start"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
 
   update:
@@ -81,7 +82,10 @@ services:
       - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
     command: "npm start"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+      elastic:
+        condition: service_healthy
     restart: unless-stopped
 
   apikey:
@@ -98,7 +102,8 @@ services:
       - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/apikey/log/access
     command: "npm start"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     
   mail:
@@ -186,11 +191,18 @@ services:
       - ${NGINX_ACCESS_LOG_PATH:-./src/nginx/log}:/var/log/nginx
     restart: unless-stopped
     depends_on:
-      - enrich
-      - update
-      - graphql
-      - apikey
-      - frontend
+      enrich:
+        condition: service_healthy
+      update:
+        condition: service_healthy
+      graphql:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      health:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
@@ -204,7 +216,7 @@ services:
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     healthcheck:
       test: curl --cacert $CERTS_DIR_ES/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-      interval: 30s
+      interval: 10s
       timeout: 10s
       retries: 5
     ulimits:
@@ -214,3 +226,23 @@ services:
     volumes:
       - "./data/elastic:/usr/share/elasticsearch/data"
     restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    container_name: ezunpaywall-kibana-dev
+    environment:
+      - ELASTICSEARCH_HOSTS="http://elastic:9200"
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      - xpack.security.enabled=true
+    depends_on: 
+      elastic:
+        condition: service_healthy
+    ports:
+      - 5601:5601
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s --fail http://elastic:changeme@localhost:5601/api/status" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
