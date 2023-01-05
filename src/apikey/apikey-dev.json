@@ -25,14 +25,6 @@
     }
   },
   {
-    "admin": {
-      "name": "admin",
-      "access": ["graphql", "enrich", "update"],
-      "attributes": ["*"],
-      "allowed": true
-    }
-  },
-  {
     "graphql": {
       "name": "graphql",
       "access": ["graphql"],
@@ -49,17 +41,9 @@
     }
   },
   {
-    "update": {
-      "name": "update",
-      "access": ["update"],
-      "attributes": ["*"],
-      "allowed": true
-    }
-  },
-  {
     "notAllowed": {
       "name": "notAllowed",
-      "access": ["graphql", "enrich", "update"],
+      "access": ["graphql", "enrich"],
       "attributes": ["*"],
       "allowed": false
     }
