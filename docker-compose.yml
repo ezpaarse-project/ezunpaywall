@@ -199,6 +199,8 @@ services:
         condition: service_healthy
       apikey:
         condition: service_healthy
+      mail:
+        condition: service_healthy
       health:
         condition: service_healthy
       frontend:
