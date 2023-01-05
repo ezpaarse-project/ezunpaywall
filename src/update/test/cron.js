@@ -95,7 +95,7 @@ describe('Test: cron manage', () => {
     });
   });
 
-  describe('Test: update time config of cron without apikey', () => {
+  describe('Test: update time config of cron without admin apikey', () => {
     before(async () => {
       await reset();
     });
@@ -109,7 +109,7 @@ describe('Test: cron manage', () => {
     });
   });
 
-  describe('Test: update time config of cron with wrong apikey', () => {
+  describe('Test: update time config of cron with wrong admin apikey', () => {
     before(async function () {
       this.timeout(30000);
       await reset();

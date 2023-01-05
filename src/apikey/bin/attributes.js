@@ -1,4 +1,4 @@
-const availableAccess = ['update', 'enrich', 'graphql'];
+const availableAccess = ['enrich', 'graphql'];
 
 const unpaywallAttrs = [
   '*',

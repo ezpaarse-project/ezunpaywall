@@ -40,12 +40,12 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Should update config.access to "update" for the apikey "user"', async () => {
+  it('Should update config.access to "graphql" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/keys/user')
       .send({
-        access: ['update'],
+        access: ['graphql'],
       })
       .set('x-api-key', 'changeme');
 
@@ -53,7 +53,7 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
-    expect(res.body).have.property('access').to.be.an('array').eql(['update']);
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
@@ -130,13 +130,13 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Should update config.name to "new-user" and config.access to "update" for the apikey "user"', async () => {
+  it('Should update config.name to "new-user" and config.access to "graphql" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/keys/user')
       .send({
         name: 'new-user',
-        access: ['update'],
+        access: ['graphql'],
       })
       .set('x-api-key', 'changeme');
 
@@ -144,7 +144,7 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('new-user');
-    expect(res.body).have.property('access').to.be.an('array').eql(['update']);
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
