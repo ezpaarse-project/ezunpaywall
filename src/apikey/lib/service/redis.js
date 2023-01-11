@@ -62,7 +62,7 @@ async function loadDemoAPIKey() {
   const configAPIKey = {
     name: 'demo',
     access: ['graphql', 'enrich'],
-    attributes: '*',
+    attributes: ['*'],
     allowed: true,
     count: 100000,
   };
