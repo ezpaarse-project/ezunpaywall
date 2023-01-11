@@ -1,6 +1,5 @@
 <template>
   <section>
-    <week-history />
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('home.title')" />
@@ -28,32 +27,27 @@
 
       <v-card-title v-text="$t('home.openAccessStatus')" />
       <v-card-text>
-        <v-chip-group active-class="deep-purple accent-4 white--text" column>
-          <v-chip
-            v-for="chip in metricsChips"
-            :key="chip.name"
-            :color="chip.color"
-            text-color="white"
-          >
-            <v-icon left color="white">
-              mdi-lock-open
-            </v-icon>
-            {{ chip.name }} : {{ metrics[chip.name] }}
-          </v-chip>
-        </v-chip-group>
+        <v-chip
+          v-for="chip in metricsChips"
+          :key="chip.name"
+          :color="chip.color"
+          text-color="white"
+          class="ma-1"
+        >
+          <v-icon left color="white">
+            mdi-lock-open
+          </v-icon>
+          {{ chip.name }} : {{ metrics[chip.name] }}
+        </v-chip>
       </v-card-text>
     </v-card>
   </section>
 </template>
 
 <script>
-import weekHistory from '~/components/report/WeekHistory.vue'
 
 export default {
   name: 'Home',
-  components: {
-    weekHistory
-  },
   transition: 'slide-x-transition',
   data: () => {
     return {

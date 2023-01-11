@@ -1,10 +1,6 @@
 <template>
   <v-card height="100%" outlined>
-    <v-progress-linear
-      color="green darken-2"
-      height="25"
-      value="100"
-    />
+    <v-progress-linear color="green darken-2" height="25" value="100" />
     <v-row class="ma-2">
       {{ report.createdAt }}
       <v-spacer />

@@ -49,7 +49,7 @@
         <v-btn
           color="error"
           @click="$router.go(-1)"
-          v-text="$t('contact.cancel')"
+          v-text="$t('cancel')"
         />
         <v-btn
           :disabled="!valid"

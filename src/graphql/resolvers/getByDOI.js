@@ -135,7 +135,7 @@ const getByDOI = {
     const filter = [{ terms: { doi: dois } }];
 
     for (const attr in args) {
-      const deepAttrs = new Set(['best_oa_location', 'oa_location', 'first_oa_location']);
+      const deepAttrs = new Set(['best_oa_location', 'oa_locations', 'first_oa_location']);
       if (deepAttrs.has(attr)) {
         filter.push(parseTerms(attr, args));
       } else if (attr !== 'dois') {

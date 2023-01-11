@@ -22,6 +22,13 @@ export default (ctx, inject) => {
 
   inject('enrich', enrich)
 
+  const apikey = axios.create({
+    baseURL: ctx.$config.apikeyHost,
+    timeout: 3000
+  })
+
+  inject('apikey', apikey)
+
   const mail = axios.create({
     baseURL: ctx.$config.mailHost,
     timeout: 3000,
@@ -31,4 +38,11 @@ export default (ctx, inject) => {
   })
 
   inject('mail', mail)
+
+  const health = axios.create({
+    baseURL: ctx.$config.healthHost,
+    timeout: 3000
+  })
+
+  inject('health', health)
 }

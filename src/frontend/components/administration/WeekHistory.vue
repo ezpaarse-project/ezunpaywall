@@ -2,6 +2,8 @@
   <v-card class="my-3">
     <v-toolbar color="secondary" dark flat dense>
       <v-toolbar-title v-text="$t('reportHistory.title')" />
+      <v-spacer />
+      <UpdateProcessButton />
     </v-toolbar>
     <v-row v-if="reports.length === 0" align="center" justify="center">
       <v-col class="text-center" cols="12" sm="4">
@@ -12,7 +14,7 @@
       <v-col
         v-for="report in reports"
         :key="report.data.createdAt"
-        xs="12"
+        cols="12"
         sm="6"
         md="4"
         lg="2"
@@ -159,8 +161,13 @@
 </template>
 
 <script>
+import UpdateProcessButton from '~/components/administration/UpdateProcessButton.vue'
+
 export default {
   name: 'WeekHistory',
+  components: {
+    UpdateProcessButton
+  },
   data () {
     return {
       reports: []
