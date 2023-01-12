@@ -126,12 +126,15 @@ export default {
           method: 'GET',
           url: '/keys',
           headers: {
-            'X-API-KEY': 'changeme'
+            'X-API-KEY': this.$store.state.admin.password
           }
         })
       } catch (e) {
+        console.log(e);
+        console.log(this.$store.state.admin.password)
         this.$store.dispatch('snacks/error', this.$t('administration.errorApikey'))
         this.loading = false
+        return
       }
       this.apikeys = res?.data
     }

@@ -145,7 +145,7 @@ export default {
             allowed: this.allowed
           },
           headers: {
-            'X-API-KEY': 'changeme'
+            'X-API-KEY': this.$store.state.admin.password
           }
         })
       } catch (e) {

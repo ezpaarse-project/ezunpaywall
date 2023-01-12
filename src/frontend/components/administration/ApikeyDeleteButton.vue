@@ -68,7 +68,7 @@ export default {
           method: 'DELETE',
           url: `/keys/${this.apikey}`,
           headers: {
-            'X-API-KEY': 'changeme'
+            'X-API-KEY': this.$store.state.admin.password
           }
         })
       } catch (e) {

@@ -8,6 +8,7 @@ const { pingRedis, loadDemoAPIKey } = require('./lib/service/redis');
 const cronDemo = require('./lib/cron');
 
 const routerPing = require('./routers/ping');
+const routerAdmin = require('./routers/admin');
 const routerManage = require('./routers/manage');
 const routerOpenapi = require('./routers/openapi');
 
@@ -17,6 +18,7 @@ app.use(morgan);
 app.use(express.json());
 app.use(cors());
 
+app.use(routerAdmin);
 app.use(routerPing);
 app.use(routerManage);
 app.use(routerOpenapi);

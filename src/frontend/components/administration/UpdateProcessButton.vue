@@ -97,7 +97,7 @@ export default {
             endDate: this.endDate
           },
           headers: {
-            'X-API-KEY': 'changeme'
+            'X-API-KEY': this.$store.state.admin.password
           }
         })
       } catch (e) {

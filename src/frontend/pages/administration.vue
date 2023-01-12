@@ -1,34 +1,37 @@
 <template>
   <section>
-    <WeekHistory />
-    <v-card>
-      <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title v-text="$t('administration.health.title')" />
-        <v-spacer />
-        <v-icon>mdi-security</v-icon>
-      </v-toolbar>
-
-      <v-row v-if="healths.length === 0" align="center" justify="center" class="ma-2">
-        <v-col class="text-center" cols="12" sm="4">
-          {{ $t("administration.health.noHealths") }}
-        </v-col>
-      </v-row>
-      <v-row v-else class="ma-2">
-        <v-col
-          v-for="(globalHealth, globalName) in healths"
-          :key="globalName"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-          xl="2"
-        >
-          <HealthCards :global-name="globalName" :global-health="globalHealth" />
-        </v-col>
-      </v-row>
-    </v-card>
-
-    <Apikeycards />
+    <v-container v-if="!isAdmin">
+      <v-card>
+        <v-toolbar dark color="secondary">
+          <v-toolbar-title>Login form</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <v-text-field
+            v-model="password"
+            prepend-icon="mdi-lock"
+            :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[passwordRules]"
+            :type="passwordVisible ? 'text' : 'password'"
+            :label="$t('administration.password')"
+            @click:append="passwordVisible = !passwordVisible"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="primary" @click="tryLogin()">
+            Login
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-container>
+    <v-container v-else>
+      <v-btn color="primary" @click="logOut()">
+        Logout
+      </v-btn>
+      <WeekHistory />
+      <HealthCards :global-name="globalName" :global-health="globalHealth" />
+      <Apikeycards />
+    </v-container>
   </section>
 </template>
 
@@ -47,33 +50,39 @@ export default {
   },
   data () {
     return {
-      healths: {}
+      password: '',
+      passwordVisible: false,
+      passwordRules: value => !!value || 'Required.',
+      login: false
     }
   },
-  async mounted () {
-    await this.getHealth()
+  computed: {
+    isAdmin () {
+      return this.$store.state.admin.status
+    }
   },
   methods: {
-    async getHealth () {
-      let res
-      this.loading = true
+    async tryLogin () {
       try {
-        res = await this.$health.get('/health')
-      } catch (e) {
-        this.$store.dispatch('snacks/error', this.$t('administration.errorHelth'))
-        this.loading = false
-      }
-      this.healths = res?.data
-    },
-
-    async isLogin () {
-      let res
-      try {
-        res = await this.$apikey.get('/login')
+        await this.$apikey({
+          method: 'GET',
+          url: '/login',
+          headers: {
+            'X-API-KEY': this.password
+          }
+        })
       } catch (e) {
         this.$store.dispatch('snacks/error', this.$t('administration.errorLogin'))
         this.loading = false
+        return
       }
+      this.$store.dispatch('admin/setAdmin', true)
+      this.$store.dispatch('admin/setPassword', this.password)
+      this.$store.dispatch('snacks/info', this.$t('administration.login'))
+    },
+    logOut () {
+      this.$store.dispatch('admin/setAdmin', false)
+      this.$store.dispatch('admin/setPassword', '')
     }
   }
 }
