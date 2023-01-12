@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: () => ({
-    status: true,
+    status: false,
     password: ''
   }),
   actions: {

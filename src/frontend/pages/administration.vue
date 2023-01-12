@@ -72,6 +72,7 @@ export default {
           }
         })
       } catch (e) {
+        console.log(e)
         this.$store.dispatch('snacks/error', this.$t('administration.errorLogin'))
         this.loading = false
         return

@@ -130,8 +130,6 @@ export default {
           }
         })
       } catch (e) {
-        console.log(e);
-        console.log(this.$store.state.admin.password)
         this.$store.dispatch('snacks/error', this.$t('administration.errorApikey'))
         this.loading = false
         return
