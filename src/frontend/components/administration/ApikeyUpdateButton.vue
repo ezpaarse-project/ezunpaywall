@@ -131,19 +131,19 @@ export default {
       return res
     },
     attributesSimple () {
-      return this.attributes.filter(e => !e.includes('.'))
+      return this.attributes?.filter(e => !e.includes('.'))
     },
     attributesBestOaLocation () {
-      return this.attributes.filter(e => e.includes('best_oa_location')).map(e => e.split('.')[1])
+      return this.attributes?.filter(e => e.includes('best_oa_location')).map(e => e.split('.')[1])
     },
     attributesFirstOaLocation () {
-      return this.attributes.filter(e => e.includes('first_oa_location')).map(e => e.split('.')[1])
+      return this.attributes?.filter(e => e.includes('first_oa_location')).map(e => e.split('.')[1])
     },
     attributesOaLocations () {
-      return this.attributes.filter(e => e.includes('oa_locations')).map(e => e.split('.')[1])
+      return this.attributes?.filter(e => e.includes('oa_locations')).map(e => e.split('.')[1])
     },
     attributesZAuthors () {
-      return this.attributes.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
+      return this.attributes?.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
     },
     attributesAll () {
       return this.attributes.includes('*')
