@@ -69,7 +69,10 @@
   },
   "administration": {
     "title": "Administration",
-    "health": "État des services",
+    "health": {
+      "title": "État des services",
+      "noHealth": "Aucun état de service"
+    },
     "apikey": {
       "title": "Clés d'API",
       "noApikeys": "Pas de clés d'API",

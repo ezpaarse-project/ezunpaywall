@@ -69,7 +69,10 @@
   },
   "administration": {
     "title": "Administration",
-    "health": "Status of services",
+    "health": {
+      "title": "Services status",
+      "noHealth": "No service status"
+    },
     "apikey": {
       "title": "API keys",
       "noApikeys": "no API keys",
