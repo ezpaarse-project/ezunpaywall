@@ -3,14 +3,14 @@
     <WeekHistory />
     <v-card>
       <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title v-text="$t('administration.health')" />
+        <v-toolbar-title v-text="$t('administration.health.title')" />
         <v-spacer />
         <v-icon>mdi-security</v-icon>
       </v-toolbar>
 
       <v-row v-if="healths.length === 0" align="center" justify="center" class="ma-2">
         <v-col class="text-center" cols="12" sm="4">
-          {{ $t("administration.noHealths") }}
+          {{ $t("administration.health.noHealths") }}
         </v-col>
       </v-row>
       <v-row v-else class="ma-2">
