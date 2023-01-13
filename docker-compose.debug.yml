@@ -213,6 +213,18 @@ services:
     ports:
      - ${HEALTH_PORT:-59707}:3000
     restart: unless-stopped
+    environment:
+      - GRAPHQL_HOST
+      - UPDATE_HOST
+      - ENRICH_HOST
+      - APIKEY_HOST
+      - MAIL_HOST
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
+      - ELASTIC_HOST
+      - UNPAYWALL_HOST
+      - UNPAYWALL_APIKEY
     depends_on:
       enrich:
         condition: service_healthy
