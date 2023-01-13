@@ -222,7 +222,7 @@ services:
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
-      - ELASTIC_HOST
+      - ELASTIC_HOST_LOGIN
       - UNPAYWALL_HOST
       - UNPAYWALL_APIKEY
     depends_on:
