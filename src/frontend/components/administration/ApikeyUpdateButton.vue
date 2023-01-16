@@ -21,7 +21,8 @@
           color="primary"
           dark
         >
-          <span class="mr-2" v-text="$t('administration.apikey.update')" /> <v-chip
+          <span class="mr-2" v-text="$t('administration.apikey.update')" />
+          <v-chip
             label
             color="secondary"
             text-color="white"

@@ -21,7 +21,14 @@
           color="primary"
           dark
         >
-          <span class="mr-2" v-text="$t('administration.apikey.delete')" /> <span class="overline" v-text="apikey" />
+          <span class="mr-2" v-text="$t('administration.apikey.delete')" />
+          <v-chip
+            label
+            color="secondary"
+            text-color="white"
+          >
+            {{ apikey }}
+          </v-chip>
         </v-toolbar>
         <v-card-text>
           <div class="pa-12" v-text="$t('administration.apikey.deleteMessage')" />

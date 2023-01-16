@@ -18,16 +18,12 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" @click="tryLogin()">
-            Login
-          </v-btn>
+          <v-btn color="primary" @click="tryLogin()" v-text="$t('administration.login')" />
         </v-card-actions>
       </v-card>
     </v-container>
     <v-container v-else>
-      <v-btn color="primary" @click="logOut()">
-        Logout
-      </v-btn>
+      <v-btn color="primary" @click="logOut()" v-text="$t('administration.logout')" />
       <WeekHistory />
       <HealthCards :global-name="globalName" :global-health="globalHealth" />
       <Apikeycards />

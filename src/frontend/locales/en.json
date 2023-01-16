@@ -69,6 +69,9 @@
   },
   "administration": {
     "title": "Administration",
+    "login": "Login",
+    "logout": "Logout",
+    "password": "Password",
     "health": {
       "title": "Services status",
       "noHealth": "No service status"
