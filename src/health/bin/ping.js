@@ -16,6 +16,7 @@ async function healthWithTimeout(p1, name, timeout) {
   try {
     reply = await Promise.race([p1, p2]);
   } catch (err) {
+    logger.error(`[${name}] ${err}`);
     return {
       name, elapsedTime: Date.now() - start, error: err?.message, status: false,
     };
@@ -57,6 +58,7 @@ async function pingWithTimeout(p1, name, timeout) {
   try {
     reply = await Promise.race([p1, p2]);
   } catch (err) {
+    logger.error(`[${name}] ${err}`);
     return {
       name, elapsedTime: Date.now() - start, error: err?.message, status: false,
     };
