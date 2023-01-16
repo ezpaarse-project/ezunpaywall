@@ -180,6 +180,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     name, attributes, access, allowed,
   } = checkBody.value;
 
+  // check if apikey exist
   let key;
   try {
     key = await redisClient.get(apikey);
@@ -193,6 +194,42 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     return res.status(404).json({ message: `Apikey [${apikey}] not found` });
   }
 
+  // Check if name already exist
+  let keys;
+
+  try {
+    keys = await redisClient.keys('*');
+  } catch (err) {
+    logger.error(err);
+    return next({ message: 'Cannot get keys [*] on redis', stackTrace: err });
+  }
+
+  // if name change
+  if (JSON.parse(key).name !== name) {
+    for (let i = 0; i < keys.length; i += 1) {
+      let config;
+
+      try {
+        config = await redisClient.get(keys[i]);
+      } catch (err) {
+        logger.error(err);
+        return next({ message: `Cannot get key [${keys[i]}] on redis`, stackTrace: err });
+      }
+
+      try {
+        config = JSON.parse(config);
+      } catch (err) {
+        logger.error(err);
+        return next({ message: `Cannot parse config [${config}]`, stackTrace: err });
+      }
+
+      if (config.name === name) {
+        return res.status(409).json(`Name [${name}] already exist for a key`);
+      }
+    }
+  }
+
+  // update
   try {
     await updateApiKey(apikey, name, access, attributes, allowed);
   } catch (err) {
@@ -201,6 +238,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     return next({ message: `Cannot update apikey [${apikey}]`, stackTrace: err });
   }
 
+  // get new config of apikey
   let configApiKey;
   try {
     configApiKey = await redisClient.get(apikey);

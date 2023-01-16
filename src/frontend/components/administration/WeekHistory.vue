@@ -182,11 +182,11 @@ export default {
       let totalInsertedDocs = 0
       let totalUpdatedDocs = 0
       report.steps.forEach((e) => {
-        totalInsertedDocs += e.insertedDocs
+        totalInsertedDocs += e?.insertedDocs || 0
       })
       report.totalInsertedDocs = totalInsertedDocs
       report.steps.forEach((e) => {
-        totalUpdatedDocs += e.updatedDocs
+        totalUpdatedDocs += e?.updatedDocs || 0
       })
       report.totalUpdatedDocs = totalUpdatedDocs
       return report
