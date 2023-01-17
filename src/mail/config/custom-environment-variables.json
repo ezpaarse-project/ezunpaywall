@@ -1,5 +1,6 @@
 {
   "node": "NODE_ENV",
+  "accessLogRotate": "ACCESS_LOG_ROTATE",
   "smtp": {
     "host": "MAIL_SMTP_HOST",
     "port": "MAIL_SMTP_PORT"
