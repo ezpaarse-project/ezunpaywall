@@ -72,6 +72,7 @@
     "login": "Login",
     "logout": "Logout",
     "loginSuccess": "Successful connection",
+    "errorLogin": "Incorrect password",
     "password": "Password",
     "health": {
       "title": "Services status",

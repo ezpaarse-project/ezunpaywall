@@ -73,6 +73,7 @@
     "logout": "Deconnexion",
     "password": "Mot de passe",
     "loginSuccess": "Connexion réussite",
+    "errorLogin": "Mot de passe incorrect",
     "health": {
       "title": "État des services",
       "noHealth": "Aucun état de service"
