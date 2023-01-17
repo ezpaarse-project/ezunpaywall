@@ -26,7 +26,7 @@
       </v-btn>
     </v-bottom-navigation>
 
-    <Openapi v-if="value === 0" :host="`${graphqlHost}/openapi`" />
+    <Openapi v-if="value === 0" :host="graphqlHost" />
     <Openapi v-if="value === 1" :host="enrichHost" />
     <Openapi v-if="value === 2" :host="updateHost" />
     <Openapi v-if="value === 3" :host="apikeyHost" />
