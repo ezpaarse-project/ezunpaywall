@@ -33,7 +33,7 @@
 
 <script>
 
-import WeekHistory from '~/components/administration/WeekHistory.vue'
+import WeekHistory from '~/components/administration/report/WeekHistory.vue'
 import HealthCards from '~/components/administration/HealthCards.vue'
 import Apikeycards from '~/components/administration/ApikeyCards.vue'
 

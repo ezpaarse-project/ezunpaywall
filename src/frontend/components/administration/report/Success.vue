@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Detail from '~/components/report/Detail.vue'
+import Detail from '~/components/administration/report/Detail.vue'
 
 export default {
   components: {

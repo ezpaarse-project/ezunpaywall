@@ -1,11 +1,11 @@
 <template>
   <v-card height="100%" outlined>
-    <v-progress-linear color="green darken-2" height="25" value="100" />
-    <v-card-title>
+    <v-progress-linear color="red darken-2" height="25" value="100" />
+    <v-card-title class="ma-2">
       {{ report.createdAt }}
       <v-spacer />
-      <v-icon right color="green">
-        mdi-check
+      <v-icon right color="white">
+        mdi-alert-circle
       </v-icon>
     </v-card-title>
     <Detail :report="report" />
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Detail from '~/components/report/Detail.vue'
+import Detail from '~/components/administration/report/Detail.vue'
 
 export default {
   components: {
