@@ -1,13 +1,17 @@
 <template>
   <v-card height="100%" outlined>
-    <v-progress-linear color="red darken-2" height="25" value="100" />
-    <v-card-title class="ma-2">
-      {{ report.createdAt }}
+    <v-progress-linear
+      color="red darken-2"
+      dark
+      height="40"
+      value="100"
+    >
+      <span class="ma-2" v-text="report.createdAt" />
       <v-spacer />
-      <v-icon right color="white">
+      <v-icon class="ma-2" color="white">
         mdi-alert-circle
       </v-icon>
-    </v-card-title>
+    </v-progress-linear>
     <Detail :report="report" />
   </v-card>
 </template>

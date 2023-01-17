@@ -74,7 +74,7 @@ export default {
       }
       this.$store.dispatch('admin/setAdmin', true)
       this.$store.dispatch('admin/setPassword', this.password)
-      this.$store.dispatch('snacks/info', this.$t('administration.login'))
+      this.$store.dispatch('snacks/info', this.$t('administration.loginSuccess'))
     },
     logOut () {
       this.$store.dispatch('admin/setAdmin', false)

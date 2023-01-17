@@ -71,6 +71,7 @@
     "title": "Administration",
     "login": "Login",
     "logout": "Logout",
+    "loginSuccess": "Successful connection",
     "password": "Password",
     "health": {
       "title": "Services status",
