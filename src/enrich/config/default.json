@@ -7,7 +7,6 @@
     "password": "changeme"
   },
   "graphql": {
-    "host": "http://graphql", 
-    "port": "3000"
+    "host": "http://graphql:3000"
   }
 }
