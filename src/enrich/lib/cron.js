@@ -1,47 +1,70 @@
-/* eslint-disable no-restricted-syntax */
 const { CronJob } = require('cron');
-const fs = require('fs-extra');
-const path = require('path');
+
 const logger = require('./logger');
 
-const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
-const statesDir = path.resolve(__dirname, '..', 'data', 'states');
-const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
-
-const deleteFilesInDir = async (directory, maxAgeInDays) => {
-  const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;
-  const threshold = Date.now() - time;
-
-  let files;
-  try {
-    files = await fs.readdir(directory);
-  } catch (err) {
-    logger.error(err);
-    return;
+class Cron {
+  constructor(name, schedule, task, active) {
+    this.name = name;
+    this.schedule = schedule;
+    this.task = task;
+    this.active = active;
+    this.process = new CronJob(schedule, this.task, null, false, 'Europe/Paris');
+    if (active) {
+      logger.info(`[cron ${this.name}] - started`);
+      logger.info(`[cron ${this.name}] config - schedule: [${this.schedule}]`);
+    }
   }
 
-  for (const file of files) {
+  getConfig() {
+    return {
+      name: this.name,
+      schedule: this.schedule,
+      active: this.active,
+    };
+  }
+
+  setTask(task) {
+    this.process.stop();
+    this.task = task;
+    logger.info(`[cron ${this.name}] config - task updated`);
+    this.process = new CronJob(this.schedule, this.task, null, false, 'Europe/Paris');
+    if (this.active) this.process.start();
+  }
+
+  setSchedule(schedule) {
+    this.process.stop();
+    this.schedule = schedule;
+    logger.info(`[cron ${this.name}] config - schedule is updated [${this.schedule}]`);
+    this.process = new CronJob(this.schedule, async () => {
+      await this.task();
+    }, null, false, 'Europe/Paris');
+    if (this.active) this.process.start();
+  }
+
+  start() {
     try {
-      const stat = await fs.stat(path.join(directory, file));
-      if (stat.mtime < threshold) {
-        await fs.unlink(path.join(directory, file));
-      }
+      this.process.start();
+      logger.info(`[cron ${this.name}] - started`);
+      logger.info(`[cron ${this.name}] config - schedule: [${this.schedule}]`);
     } catch (err) {
+      logger.error(`[cron ${this.name}] - error in start`);
       logger.error(err);
       return;
     }
+    this.active = true;
   }
-};
 
-const cronDeleteOutFiles = new CronJob('0 0 0 * * *', async () => {
-  await deleteFilesInDir(enrichedDir, 1);
-  logger.info('Delete enriched file');
+  stop() {
+    try {
+      this.process.stop();
+      logger.info(`[cron ${this.name}] - stoped`);
+    } catch (err) {
+      logger.error(`[cron ${this.name}] - error in stop`);
+      logger.error(err);
+      return;
+    }
+    this.active = false;
+  }
+}
 
-  await deleteFilesInDir(statesDir, 1);
-  logger.info('Delete states file');
-
-  await deleteFilesInDir(uploadDir, 1);
-  logger.info('Delete uploaded file');
-}, null, true, 'Europe/Paris');
-
-module.exports = cronDeleteOutFiles;
+module.exports = Cron;
