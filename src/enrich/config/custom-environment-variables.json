@@ -7,7 +7,6 @@
     "password": "REDIS_PASSWORD"
   },
   "graphql": {
-    "host": "GRAPHQL_HOST", 
-    "port": "GRAPHQL_PORT"
+    "host": "GRAPHQL_HOST"
   }
 }
