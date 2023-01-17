@@ -6,16 +6,6 @@ services:
     container_name: ezunpaywall-graphql-dev
     environment:
       - NODE_ENV=development
-      # elastic
-      - ELASTICSEARCH_HOSTS
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
     working_dir: /graphql
     volumes:
       - ./src/graphql:/graphql
@@ -40,22 +30,6 @@ services:
     container_name: ezunpaywall-update-dev
     environment:
       - NODE_ENV=development
-      # unpaywall
-      - UNPAYWALL_APIKEY
-      - UNPAYWALL_HOST
-      # elastic
-      - ELASTICSEARCH_HOSTS
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
-      # cron
-      - UPDATE_CRON_SCHEDULE
-      - UPDATE_CRON_ACTIVE
-      - UPDATE_CRON_INDEX
-      - UPDATE_CRON_INTERVAL
-      # password
-      - UPDATE_APIKEY
     working_dir: /update
     volumes:
       - ./src/update:/update
@@ -77,12 +51,6 @@ services:
     container_name: ezunpaywall-enrich-dev
     environment:
       - NODE_ENV=development
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
-      # graphql
-      - GRAPHQL_HOST=http://graphql:3000
     working_dir: /enrich
     volumes:
       - ./src/enrich:/enrich
@@ -109,10 +77,6 @@ services:
     container_name: ezunpaywall-apikey-dev
     environment:
       - NODE_ENV=development
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
     working_dir: /apikey
     volumes:
       - ./src/apikey:/apikey
@@ -135,15 +99,7 @@ services:
     image: node:14.15.5
     container_name: ezunpaywall-mail-dev
     environment:
-      # mail
-      - NODE_CONFIG
       - MAIL_SMTP_HOST=maildev
-      - MAIL_SMTP_PORT
-      - MAIL_NOTIFICATIONS_SENDER
-      - MAIL_NOTIFICATIONS_RECEIVERS
-      - MAIL_NOTIFICATIONS_MACHINE
-      # password
-      - MAIL_APIKEY
     working_dir: /mail
     volumes:
       - ./src/mail:/mail
@@ -213,18 +169,6 @@ services:
     ports:
      - ${HEALTH_PORT:-59707}:3000
     restart: unless-stopped
-    environment:
-      - GRAPHQL_HOST
-      - UPDATE_HOST
-      - ENRICH_HOST
-      - APIKEY_HOST
-      - MAIL_HOST
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
-      - ELASTIC_HOST_LOGIN
-      - UNPAYWALL_HOST
-      - UNPAYWALL_APIKEY
     depends_on:
       enrich:
         condition: service_healthy

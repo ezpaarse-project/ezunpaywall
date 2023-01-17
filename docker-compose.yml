@@ -7,6 +7,7 @@ services:
     container_name: ezunpaywall-graphql-prod
     environment:
       - NODE_ENV=production
+      - ACCESS_LOG_ROTATE
       # elastic
       - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
@@ -36,6 +37,7 @@ services:
     container_name: ezunpaywall-update-prod
     environment:
       - NODE_ENV=production
+      - ACCESS_LOG_ROTATE
       # proxy
       - http_proxy
       - https_proxy
@@ -69,6 +71,7 @@ services:
     container_name: ezunpaywall-enrich-prod
     environment:
       - NODE_ENV=production
+      - ACCESS_LOG_ROTATE
       # redis
       - REDIS_HOST
       - REDIS_PORT
@@ -93,6 +96,8 @@ services:
       context: ./src/apikey
     container_name: ezunpaywall-apikey-prod
     environment:
+      - NODE_ENV=production
+      - ACCESS_LOG_ROTATE
       # redis
       - REDIS_HOST
       - REDIS_PORT
@@ -111,6 +116,8 @@ services:
       context: ./src/mail
     container_name: ezunpaywall-mail-prod
     environment:
+      - NODE_ENV=production
+      - ACCESS_LOG_ROTATE
       # mail
       - NODE_CONFIG
       - MAIL_SMTP_HOST
