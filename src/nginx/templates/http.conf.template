@@ -18,8 +18,8 @@ server {
     proxy_pass http://frontend:3000/;
   }
 
-  location /api/graphql {
-    rewrite ^/api/graphql(/.*)$ $1 break;
+  location /api {
+    rewrite ^/api(/.*)$ $1 break;
     proxy_pass http://graphql:3000/;
   }
 
