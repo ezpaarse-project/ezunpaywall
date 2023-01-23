@@ -11,25 +11,19 @@
     </v-row>
     <v-row v-else>
       <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
-        <Success v-if="!report.data.error && report.data.done" :report="report" />
-        <In-progress v-if="!report.data.error && !report.data.done" :report="report" />
-        <Error v-if="report.data.error" :report="report" />
+        <Card :report="report" :status="getStatusOfReport(report)" />
       </v-col>
     </v-row>
   </section>
 </template>
 
 <script>
-import Success from '~/components/report/Success.vue'
-import Error from '~/components/report/Error.vue'
-import InProgress from '~/components/report/InProgress.vue'
+import Card from '~/components/report/Card.vue'
 
 export default {
   name: 'UpdateHistory',
   components: {
-    Success,
-    Error,
-    InProgress
+    Card
   },
   transition: 'slide-x-transition',
   data () {
@@ -44,7 +38,6 @@ export default {
     if (this.id) {
       const index = this.reports.findIndex(e => e.data.createdAt === this.id)
       const reportSelected = this.reports[index]
-      this.reports[index] = reportSelected.reveal = true
       this.$vuetify.goTo(`[id='${reportSelected.id}']`)
     }
   },
@@ -61,6 +54,11 @@ export default {
       })
       report.totalUpdatedDocs = totalUpdatedDocs
       return report
+    },
+    getStatusOfReport (report) {
+      if (!report.data.error && report.data.done) { return 'success' }
+      if (!report.data.error && !report.data.done) { return 'inprogress' }
+      if (report.data.error) { return 'error' }
     },
     async getReports () {
       this.loading = true
@@ -85,7 +83,6 @@ export default {
         this.reports.push(
           {
             id: i,
-            reveal: false,
             data: report,
             createdAt: this.$dateFns.format(report.createdAt)
           }
@@ -105,18 +102,7 @@ export default {
         return
       }
       return report
-    },
-    showReportJSON (report) {
-      report.reveal = !report.reveal
     }
   }
 }
 </script>
-
-<style>
-pre {
-  display: block;
-  padding: 12px;
-  color: #f60;
-}
-</style>

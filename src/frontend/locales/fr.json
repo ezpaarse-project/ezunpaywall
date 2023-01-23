@@ -103,6 +103,7 @@
     "title": "Paramètres",
     "help": "Dans cette partie, vous pouvez séléctionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
     "general": {
+      "doi": "Identifiant",
       "data_standard": "Approches de collectes de données utilisées pour cette ressource",
       "doi_url": "DOI sous forme de lien hypertexte",
       "genre": "Type de ressource",
@@ -188,6 +189,7 @@
     "dark": "Thème sombre",
     "light": "Thème clair"
   },
+  "create": "Créer",
   "required": "Requis",
   "cancel": "Annuler",
   "update": "Mettre à jour",

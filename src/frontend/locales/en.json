@@ -90,7 +90,7 @@
       "errorUpdate": "The API key could not be updated",
       "delete": "Deleting the API key",
       "deleteMessage": "Are you sure you want to delete this API key (irreversible action)",
-      "infoDelete": "The API key has been deleted",
+      "infoDeleted": "The API key has been deleted",
       "errorDelete": "Cannot delete apikey"
     },
     "update" : {
@@ -103,6 +103,7 @@
     "title": "Settings",
     "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
     "general": {
+      "doi": "Identifier",
       "data_standard": "Data collection approaches used for this resource",
       "doi_url": "DOI in hyperlink form",
       "genre": "Type of resource",
@@ -188,6 +189,7 @@
     "dark": "Dark theme",
     "light": "Light theme"
   },
+  "create": "Create",
   "required": "Required",
   "cancel": "Cancel",
   "update": "Update",

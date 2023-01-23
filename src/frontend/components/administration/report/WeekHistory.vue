@@ -3,7 +3,13 @@
     <v-toolbar color="secondary" dark flat dense>
       <v-toolbar-title v-text="$t('reportHistory.title')" />
       <v-spacer />
-      <UpdateProcessButton />
+      <v-col class="text-right">
+        <v-btn
+          @click.stop="setDialogShow(true)"
+          v-text="$t('update')"
+        />
+      </v-col>
+      <UpdateDialog :dialog="dialogShow" @closed="setDialogShow(false)" />
     </v-toolbar>
     <v-row v-if="reports.length === 0" align="center" justify="center">
       <v-col class="text-center" cols="12" sm="4">
@@ -16,32 +22,29 @@
         :id="report.id"
         :key="report.id"
         cols="12"
-        sm="3"
-        md="3"
+        sm="12"
+        md="6"
+        lg="3"
       >
-        <Success v-if="!report.data.error && report.data.done" :report="report" />
-        <In-progress v-if="!report.data.error && !report.data.done" :report="report" />
-        <Error v-if="report.data.error" :report="report" />
+        <Card :report="report" :status="getStatusOfReport(report)" />
       </v-col>
     </v-row>
   </v-card>
 </template>
 
 <script>
-import UpdateProcessButton from '~/components/administration/report/UpdateProcessButton.vue'
-import Success from '~/components/administration/report/Success.vue'
-import Error from '~/components/administration/report/Error.vue'
-import InProgress from '~/components/administration/report/InProgress.vue'
+import UpdateDialog from '~/components/administration/report/UpdateDialog.vue'
+import Card from '~/components/report/Card.vue'
+
 export default {
   name: 'WeekHistory',
   components: {
-    UpdateProcessButton,
-    Success,
-    Error,
-    InProgress
+    UpdateDialog,
+    Card
   },
   data () {
     return {
+      dialogShow: false,
       reports: []
     }
   },
@@ -62,6 +65,11 @@ export default {
       })
       report.totalUpdatedDocs = totalUpdatedDocs
       return report
+    },
+    getStatusOfReport (report) {
+      if (!report.data.error && report.data.done) { return 'success' }
+      if (!report.data.error && !report.data.done) { return 'inprogress' }
+      if (report.data.error) { return 'error' }
     },
     async getReports () {
       this.loading = true
@@ -99,6 +107,9 @@ export default {
         })
       }
       this.loaded = false
+    },
+    setDialogShow (value) {
+      this.dialogShow = value
     }
   }
 }
