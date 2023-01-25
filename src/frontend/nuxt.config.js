@@ -9,7 +9,7 @@ export default {
     apikeyHost: process.env.APIKEY_HOST || 'http://localhost:59704',
     apikeyMail: process.env.MAIL_APIKEY || 'changeme',
     mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
-    healthHost: process.env.HEALTH_HOST || 'http://localhost:59707'
+    healthHost: process.env.HEALTH_HOST || 'http://localhost:59707',
     elasticEnv: process.env.ELASTIC_ENV || 'development',
     version: process.env.VERSION || 'development'
   },
