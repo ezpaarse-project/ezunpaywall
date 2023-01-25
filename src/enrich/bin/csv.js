@@ -293,13 +293,13 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
         }
 
         if (data.length === 1000) {
-          const tabWillBeEnriched = data;
+          const copyData = [...data];
           data = [];
           await parser.pause();
 
           // enrichment
-          const response = await askEzunpaywall(tabWillBeEnriched, args, stateName, index, apikey);
-          const enrichedData = enrichTab(tabWillBeEnriched, response);
+          const response = await requestGraphql(copyData, args, stateName, index, apikey);
+          const enrichedData = enrichTab(copyData, response);
           const { enrichedTab, lineEnriched } = enrichedData;
           await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
 
@@ -320,8 +320,8 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
     const response = await requestGraphql(data, args, stateName, index, apikey);
     const enrichedData = enrichTab(data, response);
     const { enrichedTab, lineEnriched } = enrichedData;
-    await writeInFileCSV(enrichedTab, headers, separator, enrichedFile)
- 
+    await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
+
     // state
     state.linesRead += data.length || 0;
     state.enrichedLines += lineEnriched || 0;
