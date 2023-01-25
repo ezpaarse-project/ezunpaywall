@@ -36,7 +36,7 @@ async function task() {
   });
 }
 
-const updateCron = new Cron('update', cron.schedule, task, active);
+const updateCron = new Cron('update', '0 0 0 * * *', task, active);
 
 function update(config) {
   if (config.time) updateCron.setSchedule(config.time);

@@ -112,11 +112,3 @@ export default {
   }
 }
 </script>
-
-<style>
-pre {
-  display: block;
-  padding: 12px;
-  color: #f60;
-}
-</style>

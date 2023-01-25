@@ -573,6 +573,158 @@ describe('Test: enrich service csv', () => {
       });
     });
 
+    describe('Do a enrichment of a csv file with same doi', () => {
+      let id;
+      let enrichedFile;
+      it('Should upload the file', async () => {
+        const res1 = await chai
+          .request(enrichURL)
+          .post('/upload')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file3.csv'), 'file3.csv')
+          .set('Content-Type', 'text/csv')
+          .set('x-api-key', 'user');
+
+        expect(res1).have.status(200);
+
+        id = res1?.body;
+      });
+
+      it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
+        const res2 = await chai
+          .request(enrichURL)
+          .post(`/job/${id}`)
+          .send({
+            type: 'csv',
+            index: 'unpaywall-test',
+            args: '{ is_oa }',
+          })
+          .set('x-api-key', 'user');
+
+        expect(res2).have.status(200);
+      });
+
+      it('Should get the state of enrich', async () => {
+        let res3;
+
+        do {
+          res3 = await chai
+            .request(enrichURL)
+            .get(`/states/${id}.json`);
+          expect(res3).have.status(200);
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        } while (!res3?.body?.done);
+
+        const state = res3?.body;
+
+        expect(state).have.property('done').equal(true);
+        expect(state).have.property('loaded').to.not.equal(undefined);
+        expect(state).have.property('linesRead').equal(3);
+        expect(state).have.property('enrichedLines').equal(3);
+        expect(state).have.property('createdAt').to.not.equal(undefined);
+        expect(state).have.property('endAt').to.not.equal(undefined);
+        expect(state).have.property('error').equal(false);
+      });
+
+      it('Should download the enrichedfile', async () => {
+        const res4 = await chai
+          .request(enrichURL)
+          .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
+          .buffer()
+          .parse(binaryParser);
+
+        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+        try {
+          await fs.writeFile(enrichedFile, res4.body.toString());
+        } catch (err) {
+          console.error(`writeFile: ${err}`);
+        }
+      });
+
+      it('Should be the same', async () => {
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file8.csv');
+
+        const same = await compareFile(reference, enrichedFile);
+        expect(same).to.be.equal(true);
+      });
+    });
+
+    describe('Do a enrichment of a csv file with 1200 lines', () => {
+      let id;
+      let enrichedFile;
+      it('Should upload the file', async () => {
+        const res1 = await chai
+          .request(enrichURL)
+          .post('/upload')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file4.csv'), 'file4.csv')
+          .set('Content-Type', 'text/csv')
+          .set('x-api-key', 'user');
+
+        expect(res1).have.status(200);
+
+        id = res1?.body;
+      });
+
+      it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
+        const res2 = await chai
+          .request(enrichURL)
+          .post(`/job/${id}`)
+          .send({
+            type: 'csv',
+            index: 'unpaywall-test',
+            args: '{ is_oa }',
+          })
+          .set('x-api-key', 'user');
+
+        expect(res2).have.status(200);
+      });
+
+      it('Should get the state of enrich', async () => {
+        let res3;
+
+        do {
+          res3 = await chai
+            .request(enrichURL)
+            .get(`/states/${id}.json`);
+          expect(res3).have.status(200);
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        } while (!res3?.body?.done);
+
+        const state = res3?.body;
+
+        expect(state).have.property('done').equal(true);
+        expect(state).have.property('loaded').to.not.equal(undefined);
+        expect(state).have.property('linesRead').equal(1200);
+        expect(state).have.property('enrichedLines').equal(1200);
+        expect(state).have.property('createdAt').to.not.equal(undefined);
+        expect(state).have.property('endAt').to.not.equal(undefined);
+        expect(state).have.property('error').equal(false);
+      });
+
+      it('Should download the enrichedfile', async () => {
+        const res4 = await chai
+          .request(enrichURL)
+          .get(`/enriched/${id}.csv`)
+          .set('x-api-key', 'user')
+          .buffer()
+          .parse(binaryParser);
+
+        enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+        try {
+          await fs.writeFile(enrichedFile, res4.body.toString());
+        } catch (err) {
+          console.error(`writeFile: ${err}`);
+        }
+      });
+
+      it('Should be the same', async () => {
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file9.csv');
+
+        const same = await compareFile(reference, enrichedFile);
+        expect(same).to.be.equal(true);
+      });
+    });
+
     describe('Don\'t do a enrichment of a csv file because the arguments doesn\'t exist on ezunpaywall index', () => {
       let id;
 

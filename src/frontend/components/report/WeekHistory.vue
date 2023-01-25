@@ -137,7 +137,7 @@
               <v-icon size="22" class="pr-1" color="white">
                 mdi-plus
               </v-icon>
-              {{ report.totalInsertedDocs }}
+              {{ report.data.totalInsertedDocs }}
               {{ $t("reportHistory.insertedDocs") }}
             </v-row>
           </v-card-text>

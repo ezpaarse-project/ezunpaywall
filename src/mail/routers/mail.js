@@ -3,7 +3,7 @@ const checkAuth = require('../middlewares/auth');
 
 const sendMailContact = require('../bin/contact');
 
-const { sendMailStarted, sendMailReport } = require('../bin/update');
+const { sendMailUpdateStarted, sendMailUpdateReport } = require('../bin/update');
 
 router.post('/contact', checkAuth, async (req, res, next) => {
   const {
@@ -31,9 +31,9 @@ router.post('/contact', checkAuth, async (req, res, next) => {
   try {
     sendMailContact(email, subject, message);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next(err);
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 // auth
@@ -42,11 +42,11 @@ router.post('/update-start', checkAuth, async (req, res, next) => {
   // TODO test config
 
   try {
-    sendMailStarted(config);
+    sendMailUpdateStarted(config);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next(err);
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 router.post('/update-end', checkAuth, async (req, res, next) => {
@@ -54,11 +54,11 @@ router.post('/update-end', checkAuth, async (req, res, next) => {
   // TODO test state
 
   try {
-    sendMailReport(state);
+    sendMailUpdateReport(state);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next(err);
   }
-  return res.status(202).json({});
+  return res.status(202).json();
 });
 
 module.exports = router;

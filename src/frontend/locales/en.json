@@ -1,12 +1,21 @@
 {
   "home": {
     "title" : "What is ezUnpaywall?",
-    "intro": "The ezUnpaywall server is an <a href=\"{url}\" target=\"_blank\">unpaywall</a> mirror hosted at Inist-CNRS and developed by ezTEAM. This interface is used as a demonstrator, it allows to test the mirror features (graphql API and file enrichment). For more information, see the <a href=\"{blogURL}\" target=\"_blank\">blog post</a>.",
-    "metrics": "Metrics - {env}",
+    "general1": "ezUnpaywall is a mirror of <a href=\"{url}\" target=\"_blank\">Unpaywall</a> hosted at Inist-CNRS and developed by ezTEAM.",
+    "general2": "It has an interface for enriching files with Open Access data from the DOI and a demonstrator for querying DOIs with GraphQL requests. ",
+    "general3": "This server has an API that can be queried via an APIKey. You can get an APIKey on request to the team (see the contact section). For more information, see the <a href=\"{blogURL}\" target=\"_blank\">blog post</a>.",
+    "metrics": "Metrics {env}",
     "globalMetrics": "Global metrics",
     "referencedResources": "Referenced resources",
     "openAccess": "Open Access",
-    "openAccessStatus": "Open Access Status"
+    "openAccessStatus": "Open Access Status",
+    "referencedRessourceHelp": "Number of bibliographic references recorded in the mirror",
+    "openAccessHelp": "Number of bibliographic references available for free access  </br> (is_oa: true)",
+    "goldOAHelp": "Number of bibliographic references with 'gold' status </br> (oa_status: 'gold')",
+    "hybridOAHelp": "Number of bibliographic references with 'hybrid' status </br> (oa_status: 'hybrid')",
+    "bronzeOAHelp": "Number of bibliographic references with 'bronze' status </br> (oa_status: 'bronze')",
+    "greenOAHelp": "Number of bibliographic references with 'green' status </br> (oa_status: 'green')",
+    "closedOAHelp": "Number of bibliographic references with 'closed' status  </br> (oa_status: 'closed')"
   },
   "contact": {
     "contactUs": "Contact us",
@@ -18,6 +27,7 @@
     "failed": "Sending the contact form failed.",
     "requestInformation": "Information request",
     "bugReport": "Bug report",
+    "requestApikey": "Request an API key",
     "emailIsRequired": "The email address is required",
     "emailMustBeValid": "The email address must be valid",
     "contentIsRequired": "A message is required",
@@ -54,8 +64,12 @@
     "errorState": "Cannot get state of enrichment"
   },
   "graphql": {
-    "general": "This page allows you to test the GraphQL API available at <a href=\"{url}\" target=\"_blank\">{url}</a>. To be able to query the mirror, it is necessary to indicate an API key, a list of DOIs and some unpaywall attributes. A GraphQL request builder is available to help you request the API.",
-    "constructor": "GraphQL request builder",
+    "title": "Graphql",
+    "general1": "This GraphQL demonstrator allows you to build an API query.",
+    "general2": "You just need to specify the DOI or DOIs seperated by a comma, your API key and the desired Unpaywall fields as output.",
+    "general3": "The demonstrator builds the request and you can send the request to the server and see the answer. Use the help in the interface to get more information about the use of the form data.",
+    "general4": "If you are a developer, you can also use the documentation section (swagger) to test the different API routes.",
+    "constructor": "Graphql Demostrator",
     "apiKey": "API key",
     "settings": "Unpaywall attributes to retrieve",
     "request": "GraphQL request",
@@ -72,6 +86,7 @@
     "title": "Settings",
     "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
     "general": {
+      "doi": "Digital Object Identifier",
       "data_standard": "Data collection approaches used for this resource",
       "doi_url": "DOI in hyperlink form",
       "genre": "Type of resource",
@@ -137,8 +152,8 @@
   },
   "drawer": {
     "home": "Home",
-    "enrich": "Enrich",
-    "graphql": "Graphql",
+    "enrich": "File enrichment",
+    "graphql": "Graphql demonstrator",
     "updateHistory": "Update history",
     "openapi": "Documentation",
     "language": "Language",
@@ -156,5 +171,7 @@
     "dark": "Dark theme",
     "light": "Light theme"
   },
-  "close": "Close"
+  "close": "Close",
+  "development": "development",
+  "integration": "integration"
 }

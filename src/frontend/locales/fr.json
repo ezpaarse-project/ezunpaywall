@@ -1,12 +1,21 @@
 {
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
-    "intro": "Le serveur ezUnpaywall est un miroir <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. Cette interface est sert de démonstrateur, elle permet de tester les fonctionnalités du miroir (API graphql et enrichissement de fichier). Pour plus d'informations, regarder <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
-    "metrics": "Métriques - {env}",
+    "general1": "ezUnpaywall est un miroir des données <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
+    "general2": "Il dispose d'une interface d'enrichissement de fichier en données Open Access à partir du DOI et d'un démonstrateur d'interrogation de DOI avec des requêtes GraphQL.",
+    "general3": "Ce serveur dispose d'une API interrogeable via une APIKey. Vous pouvez obtenir une APIKey sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
+    "metrics": "Métriques {env}",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
     "openAccess": "Accès ouvert",
-    "openAccessStatus": "Statuts Open Access"
+    "openAccessStatus": "Statuts Open Access",
+    "referencedRessourceHelp": "Nombre de référence bibliographique enregistré dans le miroir",
+    "openAccessHelp": "Nombre de référence bibliographique disponible en accès gratuit </br> (is_oa: true)",
+    "goldOAHelp": "Nombre de référence bibliographique ayant le status 'gold' </br> (oa_status: 'gold')",
+    "hybridOAHelp": "Nombre de référence bibliographique ayant le status 'hybrid' </br> (oa_status: 'hybrid')",
+    "bronzeOAHelp": "Nombre de référence bibliographique ayant le status 'bronze' </br> (oa_status: 'bronze')",
+    "greenOAHelp": "Nombre de référence bibliographique ayant le status 'green' </br> (oa_status: 'green')",
+    "closedOAHelp": "Nombre de référence bibliographique ayant le status 'closed' </br> (oa_status: 'closed')"
   },
   "contact": {
     "contactUs": "Nous contacter",
@@ -18,6 +27,7 @@
     "failed": "L'envoi du formulaire de contact a échoué.",
     "requestInformation": "Demande d'information",
     "bugReport": "Signaler un bug",
+    "requestApikey": "Demander une clé d'API",
     "emailIsRequired": "L'adresse électronique est requise",
     "emailMustBeValid": "L'adresse électronique doit être valide",
     "contentIsRequired": "Un message est requis",
@@ -54,12 +64,16 @@
     "errorState": "Impossible d'obtenir l'état"
   },
   "graphql": {
-    "general": "Cette page permet de tester l'API GraphQL mise à disposition à l'adresse <a href=\"{url}\" target=\"_blank\">{url}</a>. Pour pouvoir requêter le miroir, il est nécessaire d'indiquer une clé d'API, des DOIs et des attributs unpaywall voulus. Un constructeur de requête GraphQL est à votre disposition pour vous aider à requeter l'API.",
-    "constructor": "Constructeur de requête GraphQL",
+    "title": "Graphql",
+    "general1": "Ce démonstrateur GraphQL vous permet de construire une requête d'interrogation de l'API.",
+    "general2": "Il suffit de préciser en entrée le DOI ou les DOIs recherchés séparé par une virgule, votre clé d'API les champs Unpaywall désirés en sortie.",
+    "general3": "Le démonstrateur construit la requête et vous pouvez envoyer la requête au serveur et voir la réponse. Utiliser les aides dans l'interface pour avoir plus d'informations sur l'usage des données du formulaire.",
+    "general4": "Si vous êtes développeur, vous pouvez aussi utiliser la section documentation (swagger) pour tester les différentes routes de l'API.",
+    "constructor": "Démostrateur graphql",
     "apiKey": "clé d'API",
     "settings": "Attributs unpaywall à récuperer",
     "request": "Requête GraphQL",
-    "start": "Lancement de la requête",
+    "start": "Lancer la requête",
     "result": "Résultat",
     "linkAPI": "Voir sur l'API",
     "copyRequest": "Requête GraphQL copié",
@@ -72,6 +86,7 @@
     "title": "Paramètres",
     "help": "Dans cette partie, vous pouvez séléctionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
     "general": {
+      "doi": "Digital Object Identifier",
       "data_standard": "Approches de collectes de données utilisées pour cette ressource",
       "doi_url": "DOI sous forme de lien hypertexte",
       "genre": "Type de ressource",
@@ -137,8 +152,8 @@
   },
   "drawer": {
     "home": "Accueil",
-    "enrich": "Enrichissement",
-    "graphql": "GraphQL",
+    "enrich": "Enrichissement de fichier",
+    "graphql": "Démonstrateur GraphQL",
     "updateHistory": "Historique de mises à jour",
     "openapi": "Documentation",
     "language": "Langue",
@@ -156,5 +171,7 @@
     "dark": "Thème sombre",
     "light": "Thème clair"
   },
-  "close": "Fermer"
+  "close": "Fermer",
+  "development": "développement",
+  "integration": "integration"
 }

@@ -49,6 +49,11 @@ services:
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
       - ELASTICSEARCH_INDEX_ALIAS
+      - ELASTICSEARCH_TIMEOUT
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
       # cron
       - UPDATE_CRON_SCHEDULE
       - UPDATE_CRON_ACTIVE
@@ -170,6 +175,8 @@ services:
      - ${FRONTEND_PORT:-59706}:3000
     environment:
       - NODE_ENV=development
+      - ELASTIC_ENV=development
+      - VERSION=development
       # graphql
       - GRAPHQL_HOST
       # update
