@@ -128,8 +128,6 @@ async function pingAll() {
 
   const pingRedis = pingWithTimeout(pingRedisWithClient(), 'redis', 5000);
 
-  // TODO redis
-
   const result = await Promise.allSettled([
     healthGraphql,
     healthUpdate,
