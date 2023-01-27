@@ -131,9 +131,6 @@ export default {
     }
   },
   computed: {
-    graphqlHost () {
-      return this
-    },
     formatDOIs () {
       const dois = this.doi.split(',')
       return `"${dois.join('", "')}"`
