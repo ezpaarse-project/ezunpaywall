@@ -16,7 +16,7 @@ router.get('/health', async (req, res, next) => {
       elapsedTime: e?.elapsedTime,
       services: e?.services,
       error: e?.error,
-      status: e?.status,
+      healthy: e?.healthy,
     };
   });
 
