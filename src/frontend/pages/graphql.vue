@@ -181,9 +181,14 @@ export default {
     }
   },
   methods: {
+    /**
+     * Necessary on preprod
+     * (http environment)
+     */
     unsecuredCopyToClipboard (text) {
       const textArea = document.createElement('textarea')
       textArea.value = text
+      textArea.setAttribute('display', 'none')
       document.body.appendChild(textArea)
       textArea.focus()
       textArea.select()
