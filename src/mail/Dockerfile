@@ -3,10 +3,10 @@ LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
 
-WORKDIR /mail
+WORKDIR /usr/src/app
 
-COPY package*.json /mail/
+COPY package*.json /usr/src/app/
 RUN npm ci --only=production
-COPY . /mail
+COPY . /usr/src/app
 
 CMD [ "npm", "start" ]
