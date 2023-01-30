@@ -1,4 +1,4 @@
-async function PromiseWithTimeout(p1, name, timeout) {
+async function promiseWithTimeout(p1, name, timeout) {
   const start = Date.now();
 
   const p2 = new Promise((resolve, reject) => {
@@ -28,4 +28,4 @@ async function PromiseWithTimeout(p1, name, timeout) {
   };
 }
 
-module.exports = PromiseWithTimeout;
+module.exports = promiseWithTimeout;

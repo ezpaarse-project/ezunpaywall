@@ -45,7 +45,7 @@ async function health(name, host) {
   return res.data;
 }
 
-async function PromiseWithTimeout(p1, name, timeout) {
+async function promiseWithTimeout(p1, name, timeout) {
   const start = Date.now();
 
   const p2 = new Promise((resolve, reject) => {
@@ -121,12 +121,12 @@ async function pingAll() {
   const healthMail = PromiseOnHealthWithTimeout(health('mail', mailHost), 'mail', 5000);
 
   const elasticHost = config.get('elasticHost');
-  const pingElastic = PromiseWithTimeout(ping('elastic', elasticHost), 'elastic', 5000);
+  const pingElastic = promiseWithTimeout(ping('elastic', elasticHost), 'elastic', 5000);
 
   const unpaywallHost = config.get('unpaywall.host');
-  const pingUnpaywall = PromiseWithTimeout(ping('unpaywall', unpaywallHost), 'unpaywall', 5000);
+  const pingUnpaywall = promiseWithTimeout(ping('unpaywall', unpaywallHost), 'unpaywall', 5000);
 
-  const pingRedis = PromiseWithTimeout(pingRedisWithClient(), 'redis', 5000);
+  const pingRedis = promiseWithTimeout(pingRedisWithClient(), 'redis', 5000);
 
   const result = await Promise.allSettled([
     healthGraphql,

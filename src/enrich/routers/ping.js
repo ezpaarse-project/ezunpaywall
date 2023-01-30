@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const PromiseWithTimeout = require('../bin/ping');
+const promiseWithTimeout = require('../bin/ping');
 const { pingRedis } = require('../lib/service/redis');
 const { pingGraphql } = require('../lib/service/graphql');
 
@@ -11,8 +11,8 @@ router.get('/ping', (req, res, next) => res.status(204).end());
 router.get('/health', async (req, res, next) => {
   const start = Date.now();
 
-  const p1 = PromiseWithTimeout(pingRedis(), 'redis', 3000);
-  const p2 = PromiseWithTimeout(pingGraphql(), 'graphql', 3000);
+  const p1 = promiseWithTimeout(pingRedis(), 'redis', 3000);
+  const p2 = promiseWithTimeout(pingGraphql(), 'graphql', 3000);
 
   let resultPing = await Promise.allSettled([p1, p2]);
   resultPing = resultPing.map((e) => e.value);
@@ -28,13 +28,13 @@ router.get('/health', async (req, res, next) => {
 });
 
 router.get('/health/redis', async (req, res, next) => {
-  const resultPing = await PromiseWithTimeout(pingRedis(), 'redis', 3000);
+  const resultPing = await promiseWithTimeout(pingRedis(), 'redis', 3000);
 
   return res.status(200).json(resultPing);
 });
 
 router.get('/health/graphql', async (req, res, next) => {
-  const resultPing = await PromiseWithTimeout(pingGraphql(), 'graphql', 3000);
+  const resultPing = await promiseWithTimeout(pingGraphql(), 'graphql', 3000);
 
   return res.status(200).json(resultPing);
 });

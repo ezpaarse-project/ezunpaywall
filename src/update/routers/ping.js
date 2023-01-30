@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const PromiseWithTimeout = require('../bin/ping');
+const promiseWithTimeout = require('../bin/ping');
 
 const { pingElastic } = require('../lib/service/elastic');
 
@@ -11,7 +11,7 @@ router.get('/ping', (req, res, next) => res.status(204).end());
 router.get('/health', async (req, res, next) => {
   const start = Date.now();
 
-  const p1 = PromiseWithTimeout(pingElastic(), 'elastic', 3000);
+  const p1 = promiseWithTimeout(pingElastic(), 'elastic', 3000);
 
   let resultPing = await Promise.allSettled([p1]);
   resultPing = resultPing.map((e) => e.value);
@@ -27,7 +27,7 @@ router.get('/health', async (req, res, next) => {
 });
 
 router.get('/health/elastic', async (req, res, next) => {
-  const resultPing = await PromiseWithTimeout(pingElastic(), 'elastic', 3000);
+  const resultPing = await promiseWithTimeout(pingElastic(), 'elastic', 3000);
 
   return res.status(200).json(resultPing);
 });
