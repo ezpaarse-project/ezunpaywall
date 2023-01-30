@@ -14,6 +14,139 @@
     }
   },
   "paths": {
+    "/mail": {
+      "get": {
+        "summary": "Name of service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "x-examples": {
+                    "example-1": "mail service"
+                  }
+                },
+                "examples": {
+                  "service": {
+                    "value": "mail service"
+                  }
+                }
+              },
+              "Success": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "mail service"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-mail",
+        "description": "Get name of mail service",
+        "tags": [
+          "ping"
+        ]
+      }
+    },
+    "/mail/ping": {
+      "get": {
+        "summary": "Ping mail service",
+        "operationId": "get-mail-ping",
+        "description": "Ping mail service",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/mail/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "get-mail-health",
+        "description": "Health on all service connected to enrich service",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "smtp": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "smtp": {
+                        "elapsedTime": 1,
+                        "status": true
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Success": {
+                    "value": {
+                      "smtp": {
+                        "elapsedTime": 1,
+                        "status": true
+                      }
+                    }
+                  },
+                  "Error smtp": {
+                    "value": {
+                      "smtp": {
+                        "elapsedTime": 133,
+                        "status": false,
+                        "error": "self signed certificate"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/mail/health/smtp": {
+      "get": {
+        "summary": "Health on SMTP service",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
+          }
+        },
+        "operationId": "get-mail-health-smtp",
+        "description": "Health on smtp",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
     "/mail/contact": {
       "post": {
         "summary": "Send mail contact",
@@ -186,70 +319,6 @@
         ]
       },
       "parameters": []
-    },
-    "/mail": {
-      "get": {
-        "summary": "Name of service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "mail service"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-mail",
-        "description": "Get name of mail service",
-        "tags": [
-          "ping"
-        ]
-      }
-    },
-    "/mail/ping": {
-      "get": {
-        "summary": "Ping mail service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-mail-ping",
-        "description": "Ping mail service",
-        "tags": [
-          "ping"
-        ]
-      }
     }
   },
   "externalDocs": {
@@ -290,6 +359,50 @@
               "response": {
                 "value": {
                   "message": "Not authorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Health": {
+        "description": "Example response",
+        "content": {
+          "Success": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "boolean"
+                },
+                "elapsedTime": {
+                  "type": "integer"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "name": "redis",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "value": {
+                  "name": "name of service",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              },
+              "Error smtp": {
+                "value": {
+                  "elapsedTime": 115,
+                  "status": false,
+                  "error": "self signed certificate"
                 }
               }
             }

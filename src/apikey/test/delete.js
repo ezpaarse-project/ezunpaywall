@@ -23,7 +23,7 @@ describe('Test: Delete apikey', () => {
     const res = await chai
       .request(apikeyURL)
       .delete('/keys/user')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(204);
   });
@@ -32,7 +32,7 @@ describe('Test: Delete apikey', () => {
     const res = await chai
       .request(apikeyURL)
       .delete('/keys/test')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(404);
   });

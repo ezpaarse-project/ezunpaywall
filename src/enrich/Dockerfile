@@ -3,10 +3,10 @@ LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
 
-WORKDIR /enrich
+WORKDIR /usr/src/app
 
-COPY package*.json /enrich/
+COPY package*.json /usr/src/app/
 RUN npm ci --only=production
-COPY . /enrich
+COPY . /usr/src/app
 
 CMD [ "npm", "start" ]

@@ -22,6 +22,144 @@
     }
   ],
   "paths": {
+    "/apikey": {
+      "get": {
+        "summary": "Name of service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "Success": {
+                "examples": {
+                  "response": {
+                    "value": "apikey service"
+                  }
+                },
+                "schema": {
+                  "type": "string",
+                  "x-examples": {
+                    "example-1": "apikey service"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-apikey",
+        "description": "Name of service",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
+    "/apikey/ping": {
+      "get": {
+        "summary": "Ping apikey service",
+        "operationId": "get-apikey-ping",
+        "description": "Ping apikey service",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "ping"
+        ]
+      }
+    },
+    "/apikey/health": {
+      "get": {
+        "summary": "Health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Success": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 0,
+                        "status": true
+                      },
+                      "elapsedTime": 0,
+                      "status": true
+                    }
+                  },
+                  "Error redis": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 3000,
+                        "status": false,
+                        "error": "time out"
+                      },
+                      "elapsedTime": 3001,
+                      "status": false
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "redis": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "elapsedTime": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "redis": {
+                        "elapsedTime": 0,
+                        "status": true
+                      },
+                      "elapsedTime": 0,
+                      "status": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-apikey-health",
+        "description": "Health on all service connected to apikey service",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
+    "/apikey/health/redis": {
+      "get": {
+        "summary": "Health on redis service",
+        "operationId": "get-apikey-health-redis",
+        "description": "Health on redis",
+        "tags": [
+          "ping"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
+          }
+        }
+      },
+      "parameters": []
+    },
     "/apikey/keys/${apikey}": {
       "get": {
         "tags": [
@@ -516,93 +654,6 @@
           }
         ]
       }
-    },
-    "/apikey": {
-      "get": {
-        "summary": "Name of service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "apikey service"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-apikey",
-        "description": "Name of service",
-        "tags": [
-          "ping"
-        ]
-      },
-      "parameters": []
-    },
-    "/apikey/ping": {
-      "get": {
-        "summary": "Ping apikey service",
-        "operationId": "get-apikey-ping",
-        "description": "Ping apikey service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": true
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "ping"
-        ]
-      }
-    },
-    "/apikey/ping/redis": {
-      "get": {
-        "summary": "Ping redis service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": true
-                    }
-                  }
-                }
-              },
-              "Error": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "Cannot ping redis",
-                      "stackTrace": ""
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-apikey-ping-redis",
-        "description": "Ping redis service",
-        "tags": [
-          "ping"
-        ]
-      }
     }
   },
   "externalDocs": {
@@ -625,11 +676,56 @@
           }
         },
         "headers": {
-          "redis-password": {
+          "x-api-key": {
             "schema": {
               "type": "string"
             },
             "description": "redis password"
+          }
+        }
+      },
+      "Health": {
+        "description": "Example response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "boolean"
+                },
+                "elapsedTime": {
+                  "type": "integer"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "name": "redis",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "value": {
+                  "name": "name of service",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              },
+              "Error redis": {
+                "value": {
+                  "name": "redis",
+                  "elapsedTime": 3002,
+                  "error": "time out",
+                  "status": false
+                }
+              }
+            }
           }
         }
       }

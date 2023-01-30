@@ -18,12 +18,13 @@ services:
       - REDIS_PORT
       - REDIS_PASSWORD
     volumes:
-      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
-      - ${ELASTIC_CERT_CA_PATH:-./src/graphql/certs/ca.crt}:/graphql/certs
+      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/usr/src/app/log/application
+      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/usr/src/app/log/access
+      - ${ELASTIC_CERT_CA_PATH:-./src/graphql/certs/ca.crt}:/usr/src/app/certs
     command: "npm start"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
 
   update:
@@ -47,23 +48,19 @@ services:
       - ELASTICSEARCH_USERNAME
       - ELASTICSEARCH_PASSWORD
       - ELASTICSEARCH_INDEX_ALIAS
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
       # cron
       - UPDATE_CRON_SCHEDULE
       - UPDATE_CRON_ACTIVE
       - UPDATE_CRON_INDEX
       - UPDATE_CRON_INTERVAL
+      # password
+      - UPDATE_APIKEY
     volumes:
-      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
-      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
-      - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
-      - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/update/certs
+      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/usr/src/app/log/application
+      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/usr/src/app/log/access
+      - ${UPDATE_DATA_PATH:-./src/update/data}:/usr/src/app/data
+      - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/usr/src/app/certs
     command: "npm start"
-    depends_on:
-      - redis
     restart: unless-stopped
 
   enrich:
@@ -80,12 +77,15 @@ services:
       - GRAPHQL_HOST
       - GRAPHQL_PORT
     volumes:
-      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/enrich/log/application
-      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/enrich/log/access
-      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
+      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/usr/src/app/log/application
+      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/usr/src/app/log/access
+      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/usr/src/app/data
     command: "npm start"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+      elastic:
+        condition: service_healthy
     restart: unless-stopped
 
   apikey:
@@ -98,11 +98,12 @@ services:
       - REDIS_PORT
       - REDIS_PASSWORD
     volumes:
-      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/apikey/log/application
-      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/apikey/log/access
+      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/usr/src/app/log/application
+      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/usr/src/app/log/access
     command: "npm start"
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     
   mail:
@@ -117,9 +118,11 @@ services:
       - MAIL_NOTIFICATIONS_SENDER
       - MAIL_NOTIFICATIONS_RECEIVERS
       - MAIL_NOTIFICATIONS_MACHINE
+      # password
+      - MAIL_APIKEY
     volumes:
-      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/mail/log/application
-      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/mail/log/access
+      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/usr/src/app/log/application
+      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/usr/src/app/log/access
     command: "npm start"
     restart: unless-stopped
 
@@ -148,6 +151,37 @@ services:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
     restart: unless-stopped
 
+  health:
+    build:
+      context: ./src/health
+    container_name: ezunpaywall-health-prod
+    volumes:
+      - ${HEALTH_APPLICATION_LOG_PATH:-./src/health/log/application}:/usr/src/app/log/application
+    command: "npm run start"
+    ports:
+     - ${HEALTH_PORT:-59707}:3000
+    restart: unless-stopped
+    depends_on:
+      enrich:
+        condition: service_healthy
+      update:
+        condition: service_healthy
+      graphql:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elastic:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
   nginx:
     image: nginx:1.20.1-alpine
     container_name: ezunpaywall-nginx-prod
@@ -160,11 +194,20 @@ services:
       - ${NGINX_ACCESS_LOG_PATH:-./src/nginx/log}:/var/log/nginx
     restart: unless-stopped
     depends_on:
-      - enrich
-      - update
-      - graphql
-      - apikey
-      - frontend
+      enrich:
+        condition: service_healthy
+      update:
+        condition: service_healthy
+      graphql:
+        condition: service_healthy
+      apikey:
+        condition: service_healthy
+      mail:
+        condition: service_healthy
+      health:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
@@ -178,7 +221,7 @@ services:
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     healthcheck:
       test: curl --cacert $CERTS_DIR_ES/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-      interval: 30s
+      interval: 10s
       timeout: 10s
       retries: 5
     ulimits:
@@ -188,3 +231,23 @@ services:
     volumes:
       - "./data/elastic:/usr/share/elasticsearch/data"
     restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    container_name: ezunpaywall-kibana-dev
+    environment:
+      - ELASTICSEARCH_HOSTS="http://elastic:9200"
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      - xpack.security.enabled=true
+    depends_on: 
+      elastic:
+        condition: service_healthy
+    ports:
+      - 5601:5601
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s --fail http://elastic:changeme@localhost:5601/api/status" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5

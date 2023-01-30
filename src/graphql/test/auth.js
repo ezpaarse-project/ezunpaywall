@@ -108,7 +108,7 @@ describe('Test: auth service in graphql service', () => {
     });
   });
 
-  describe('Test with update API key', () => {
+  describe('Test with admin API key', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')

@@ -26,11 +26,6 @@ const {
 
 const ping = require('./utils/ping');
 
-const {
-  loadDevAPIKey,
-  deleteAllAPIKey,
-} = require('./utils/apikey');
-
 const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
@@ -41,8 +36,6 @@ describe('Week: Test: weekly update route test', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
     await updateChangeFile('week');
   });
 
@@ -59,7 +52,7 @@ describe('Week: Test: weekly update route test', () => {
           index: 'unpaywall-test',
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -158,7 +151,7 @@ describe('Week: Test: weekly update route test', () => {
           index: 'unpaywall-test',
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -231,7 +224,5 @@ describe('Week: Test: weekly update route test', () => {
 
   after(async () => {
     await reset();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
   });
 });

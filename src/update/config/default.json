@@ -4,11 +4,6 @@
     "host": "http://fakeunpaywall:3000",
     "apikey": "default"
   },
-  "redis":  {
-    "password": "changeme",
-    "host": "redis",
-    "port": "6379"
-  },
   "mail": {
     "host": "http://mail:3000",
     "apikey": "changeme"
@@ -27,5 +22,6 @@
     "active": false,
     "index": "unpaywall",
     "interval": "day"
-  }
+  },
+  "apikey": "changeme"
 }

@@ -7,7 +7,6 @@ const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 
 const { pingElastic, initAlias } = require('./lib/service/elastic');
-const { pingRedis } = require('./lib/service/redis');
 const unpaywallMapping = require('./mapping/unpaywall.json');
 
 const routerPing = require('./routers/ping');
@@ -49,7 +48,6 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, async () => {
   logger.info('ezunpaywall update service listening on 3000');
-  pingRedis();
   pingElastic().then(() => {
     initAlias('unpaywall', unpaywallMapping, 'upw');
   });

@@ -9,6 +9,7 @@ const {
 const authorType = new GraphQLObjectType({
   name: 'authorType',
   fields: {
+    ORCID: { type: GraphQLString },
     family: { type: GraphQLString },
     given: { type: GraphQLString },
   },
@@ -17,6 +18,7 @@ const authorType = new GraphQLObjectType({
 const authorInput = new GraphQLInputObjectType({
   name: 'authorInput',
   fields: {
+    ORCID: { type: GraphQLString },
     family: { type: GraphQLString },
     given: { type: GraphQLString },
   },

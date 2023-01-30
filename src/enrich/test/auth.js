@@ -117,7 +117,7 @@ describe('Test: auth service in enrich service', () => {
       });
     });
 
-    describe('Test with update API key', () => {
+    describe('Test with admin API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)
@@ -227,7 +227,7 @@ describe('Test: auth service in enrich service', () => {
       });
     });
 
-    describe('Test with update API key', () => {
+    describe('Test with admin API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
           .request(enrichService)

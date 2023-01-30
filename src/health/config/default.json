@@ -1,0 +1,17 @@
+{ 
+  "graphqlHost": "http://graphql:3000",
+  "updateHost": "http://update:3000",
+  "enrichHost": "http://enrich:3000",
+  "apikeyHost": "http://apikey:3000",
+  "mailHost": "http://mail:3000",
+  "elasticHost": "http://elastic:changeme@elastic:9200",
+  "unpaywall": {
+    "host": "http://fakeUnpaywall:3000",
+    "apikey": "default"
+  },
+  "redis":  {
+    "host": "redis",
+    "port": "6379",
+    "password": "changeme"
+  }
+}

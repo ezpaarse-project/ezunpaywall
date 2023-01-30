@@ -6,9 +6,24 @@
 import SwaggerUI from 'swagger-ui'
 
 export default {
+  props: {
+    host: {
+      type: String,
+      default: () => ''
+    }
+  },
+  watch: {
+    host (newVal, oldVal) {
+      SwaggerUI({
+        url: `${this.host}/openapi.json`,
+        dom_id: '#swagger',
+        deepLinking: false
+      })
+    }
+  },
   mounted () {
     SwaggerUI({
-      url: `${this.$config.updateHost}/openapi.json`,
+      url: `${this.host}/openapi.json`,
       dom_id: '#swagger',
       deepLinking: false
     })

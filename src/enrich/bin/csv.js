@@ -13,7 +13,7 @@ const {
   fail,
 } = require('../model/state');
 
-const askEzunpaywall = require('../lib/service/graphql');
+const { requestGraphql } = require('../lib/service/graphql');
 
 const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 const enriched = path.resolve(__dirname, '..', 'data', 'enriched');
@@ -293,13 +293,13 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
         }
 
         if (data.length === 1000) {
-          const tabWillBeEnriched = data;
+          const copyData = [...data];
           data = [];
           await parser.pause();
 
           // enrichment
-          const response = await askEzunpaywall(tabWillBeEnriched, args, stateName, index, apikey);
-          const enrichedData = enrichTab(tabWillBeEnriched, response);
+          const response = await requestGraphql(copyData, args, stateName, index, apikey);
+          const enrichedData = enrichTab(copyData, response);
           const { enrichedTab, lineEnriched } = enrichedData;
           await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
 
@@ -317,10 +317,11 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   // last insertion
   if (data.length !== 0) {
     // enrichment
-    const response = await askEzunpaywall(data, args, stateName, index, apikey);
+    const response = await requestGraphql(data, args, stateName, index, apikey);
     const enrichedData = enrichTab(data, response);
     const { enrichedTab, lineEnriched } = enrichedData;
     await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
+
     // state
     state.linesRead += data.length || 0;
     state.enrichedLines += lineEnriched || 0;

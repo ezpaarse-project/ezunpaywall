@@ -1,22 +1,33 @@
 const router = require('express').Router();
+
+const PromiseWithTimeout = require('../bin/ping');
 const { pingRedis } = require('../lib/service/redis');
 
-const logger = require('../lib/logger');
+router.get('/', (req, res) => res.status(200).json('apikey service'));
 
-router.get('/', async (req, res) => res.status(200).json({ message: 'apikey service' }));
+router.get('/ping', (req, res, next) => res.status(204).end());
 
-router.get('/ping', async (req, res, next) => res.status(200).json({ message: true }));
+router.get('/health', async (req, res, next) => {
+  const start = Date.now();
+  const p1 = PromiseWithTimeout(pingRedis(), 'redis', 3000);
 
-router.get('/ping/redis', async (req, res, next) => {
-  let redis;
-  try {
-    redis = await pingRedis();
-  } catch (err) {
-    logger.error('Cannot ping redis');
-    logger.error(err);
-    return next({ message: 'Cannot ping redis', stackTrace: err });
-  }
-  return res.status(200).json({ message: redis });
+  let resultPing = await Promise.allSettled([p1]);
+  resultPing = resultPing.map((e) => e.value);
+  const result = {};
+
+  resultPing.forEach((e) => {
+    result[e?.name] = { elapsedTime: e?.elapsedTime, healthy: e?.healthy, error: e?.error };
+  });
+
+  const healthy = resultPing.every((e) => e?.healthy);
+
+  return res.status(200).json({ ...result, elapsedTime: Date.now() - start, healthy });
+});
+
+router.get('/health/redis', async (req, res, next) => {
+  const resultPing = await PromiseWithTimeout(pingRedis(), 'redis', 3000);
+
+  return res.status(200).json(resultPing);
 });
 
 module.exports = router;

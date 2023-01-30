@@ -15,87 +15,191 @@
   },
   "tags": [
     {
-      "name": "enrich"
+      "name": "job"
     },
     {
       "name": "ping"
     }
   ],
   "paths": {
-    "/enrich/enriched": {
+    "/enrich": {
       "get": {
-        "tags": [
-          "enrich"
-        ],
-        "summary": "Get enriched files",
-        "operationId": "get-enrich-enriched",
-        "description": "Get the list of enriched files",
+        "summary": "Name of service",
         "responses": {
           "200": {
-            "description": "list of enriched file",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "default": "file.csv"
+                  "type": "string",
+                  "x-examples": {
+                    "Example 1": "enrich service"
+                  }
+                },
+                "examples": {
+                  "response": {
+                    "value": "enrich service"
                   }
                 }
               }
             }
-          },
-          "401": {
-            "$ref": "#/components/responses/Not-authorized"
           }
         },
-        "security": [
-          {
-            "x-api-key": []
+        "operationId": "get-enrich",
+        "description": "Get name of enrich service",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
+    "/enrich/ping": {
+      "get": {
+        "summary": "Ping enrich service",
+        "responses": {
+          "204": {
+            "description": "No Content"
           }
+        },
+        "operationId": "get-enrich-ping",
+        "description": "Ping enrich service",
+        "tags": [
+          "ping"
         ]
       }
     },
-    "/enrich/uploaded": {
+    "/enrich/health": {
       "get": {
+        "summary": "Health",
+        "operationId": "get-enrich-health",
+        "description": "Health on all service connected to enrich service",
         "tags": [
-          "enrich"
+          "ping"
         ],
-        "summary": "Get uploaded files",
-        "operationId": "get-enriched-uploaded",
-        "description": "Get the lists of uploaded files",
         "responses": {
           "200": {
-            "description": "list of uploaded file",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "default": "file.csv"
+                  "type": "object",
+                  "properties": {
+                    "redis": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "graphql": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "elapsedTime": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "redis": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "graphql": {
+                        "elapsedTime": 2,
+                        "status": true
+                      },
+                      "elapsedTime": 2,
+                      "status": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Success": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 4,
+                        "status": true
+                      },
+                      "graphql": {
+                        "elapsedTime": 3,
+                        "status": true
+                      },
+                      "elapsedTime": 6,
+                      "status": true
+                    }
+                  },
+                  "Error redis": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 3003,
+                        "status": false,
+                        "error": "time out"
+                      },
+                      "graphql": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 3003,
+                      "status": false
+                    }
                   }
                 }
               }
             }
-          },
-          "401": {
-            "$ref": "#/components/responses/Not-authorized"
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/enrich/health/redis": {
+      "get": {
+        "summary": "Health on redis service",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
           }
         },
-        "security": [
-          {
-            "x-api-key": []
-          }
+        "operationId": "get-enrich-health-redis",
+        "description": "Health on redis",
+        "tags": [
+          "ping"
         ]
+      },
+      "parameters": []
+    },
+    "/enrich/health/elastic": {
+      "get": {
+        "summary": "Health on graphql service",
+        "operationId": "get-enrich-health-elastic",
+        "description": "Health on elastic",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
+          }
+        }
       },
       "parameters": []
     },
     "/enrich/upload": {
       "post": {
-        "tags": [
-          "enrich"
-        ],
         "summary": "Upload a file",
         "operationId": "post-enrich-upload",
         "description": "Upload a file to be enriched",
@@ -119,57 +223,15 @@
           {
             "x-api-key": []
           }
+        ],
+        "tags": [
+          "job"
         ]
       },
       "parameters": []
     },
-    "/enrich/enriched/${filename}": {
-      "get": {
-        "tags": [
-          "enrich"
-        ],
-        "summary": "Get enriched file",
-        "operationId": "get-enrich-enriched-$-filename",
-        "description": "Get the enriched file, generated at the end of the enrichment process",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "filename",
-            "description": "filename",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "enriched file",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Not-authorized"
-          }
-        },
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ]
-      }
-    },
     "/enrich/job/{filename}": {
       "post": {
-        "tags": [
-          "enrich"
-        ],
         "summary": "Enrich job",
         "operationId": "post-enrich-job-$-filename",
         "description": "Start a enrich job with uploaded file",
@@ -240,14 +302,90 @@
           {
             "x-api-key": []
           }
+        ],
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/enrich/enriched": {
+      "get": {
+        "summary": "Get enriched files",
+        "operationId": "get-enrich-enriched",
+        "description": "Get the list of enriched files",
+        "responses": {
+          "200": {
+            "description": "list of enriched file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "default": "file.csv"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/enrich/enriched/${filename}": {
+      "get": {
+        "summary": "Get enriched file",
+        "operationId": "get-enrich-enriched-$-filename",
+        "description": "Get the enriched file, generated at the end of the enrichment process",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "enriched file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "job"
         ]
       }
     },
     "/enrich/states": {
       "get": {
-        "tags": [
-          "enrich"
-        ],
         "summary": "Get list of states of enrich job",
         "operationId": "get-enrich-states",
         "description": "Get list of filenames state of enrich process",
@@ -280,14 +418,14 @@
           "401": {
             "$ref": "#/components/responses/Not-authorized"
           }
-        }
+        },
+        "tags": [
+          "job"
+        ]
       }
     },
     "/enrich/states/${filename}": {
       "get": {
-        "tags": [
-          "enrich"
-        ],
         "summary": "Get State",
         "operationId": "get-enrich-states-$-filename",
         "description": "Get state of enrich process with his filename",
@@ -360,114 +498,43 @@
               }
             }
           }
-        }
-      }
-    },
-    "/enrich": {
-      "get": {
-        "summary": "Name of service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "enrich service"
-                    }
-                  }
-                }
-              }
-            }
-          }
         },
-        "operationId": "get-enrich",
-        "description": "Get name of enrich service",
         "tags": [
-          "ping",
-          "enrich"
-        ]
-      },
-      "parameters": []
-    },
-    "/enrich/ping": {
-      "get": {
-        "summary": "Ping enrich service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-enrich-ping",
-        "description": "Ping enrich service",
-        "tags": [
-          "ping"
+          "job"
         ]
       }
     },
-    "/enrich/ping/redis": {
+    "/enrich/uploaded": {
       "get": {
-        "summary": "Ping redis service",
+        "summary": "Get uploaded files",
+        "operationId": "get-enriched-uploaded",
+        "description": "Get the lists of uploaded files",
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "list of uploaded file",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": true
-                    }
-                  }
-                }
-              },
-              "Error": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "Cannot ping redis",
-                      "stackTrace": ""
-                    }
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "default": "file.csv"
                   }
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
           }
         },
-        "operationId": "get-enrich-ping-redis",
-        "description": "Ping redis service",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
         "tags": [
-          "ping"
+          "job"
         ]
       },
       "parameters": []
@@ -503,6 +570,51 @@
               "response": {
                 "value": {
                   "message": "Not authorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Health": {
+        "description": "Example response",
+        "content": {
+          "Success": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "boolean"
+                },
+                "elapsedTime": {
+                  "type": "integer"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "name": "redis",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "value": {
+                  "name": "name of service",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              },
+              "Error redis": {
+                "value": {
+                  "name": "redis",
+                  "elapsedTime": 3002,
+                  "error": "time out",
+                  "status": false
                 }
               }
             }

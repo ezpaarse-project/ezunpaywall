@@ -4,6 +4,7 @@ const mjml2html = require('mjml');
 const path = require('path');
 const fs = require('fs');
 const { smtp } = require('config');
+const logger = require('./logger');
 
 const transporter = nodemailer.createTransport(smtp);
 
@@ -14,7 +15,7 @@ nunjucks.configure(templatesDir);
 
 const images = fs.readdirSync(imagesDir);
 
-const generateMail = (templateName, locals = {}) => {
+function generateMail(templateName, locals = {}) {
   if (!templateName) { throw new Error('No template name provided'); }
 
   const text = nunjucks.render(`${templateName}.txt`, locals);
@@ -22,9 +23,9 @@ const generateMail = (templateName, locals = {}) => {
   const { html, errors } = mjml2html(mjmlTemplate);
 
   return { html, text, errors };
-};
+}
 
-const sendMail = (options) => {
+function sendMail(options) {
   const mailOptions = options || {};
   mailOptions.attachments = mailOptions.attachments || [];
 
@@ -45,9 +46,20 @@ const sendMail = (options) => {
       }
     });
   });
-};
+}
+
+async function pingSMTP() {
+  try {
+    await transporter.verify();
+  } catch (err) {
+    logger.error(`Cannot ping ${smtp.host}:${smtp.port} - ${err}`);
+    return err?.message;
+  }
+  return true;
+}
 
 module.exports = {
   generateMail,
   sendMail,
+  pingSMTP,
 };

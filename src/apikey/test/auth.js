@@ -28,7 +28,7 @@ describe('Test: apikey service', () => {
     const res = await chai
       .request(apikeyURL)
       .get('/keys')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
   });
@@ -37,7 +37,7 @@ describe('Test: apikey service', () => {
     const res = await chai
       .request(apikeyURL)
       .get('/keys')
-      .set('redis-password', 'hello');
+      .set('x-api-key', 'hello');
 
     expect(res).have.status(401);
   });

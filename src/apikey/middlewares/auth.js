@@ -8,7 +8,7 @@ const config = require('config');
  * @returns {Object|function} res or next
  */
 const checkAuth = (req, res, next) => {
-  const apikey = req.get('redis-password');
+  const apikey = req.get('x-api-key');
 
   if (apikey !== config.get('redis.password')) {
     return res.status(401).json({ message: 'Not authorized' });

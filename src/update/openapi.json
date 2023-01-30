@@ -14,11 +14,192 @@
     }
   },
   "paths": {
+    "/update": {
+      "get": {
+        "summary": "Name of service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "x-examples": {
+                    "example-1": "update service"
+                  }
+                },
+                "examples": {
+                  "service": {
+                    "value": "update service"
+                  }
+                }
+              },
+              "Success": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "update service"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-update",
+        "description": "Get name of update service",
+        "tags": [
+          "ping"
+        ]
+      }
+    },
+    "/update/ping": {
+      "get": {
+        "summary": "Ping update service",
+        "operationId": "get-update-ping",
+        "description": "Ping update service",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/update/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "get-update-health",
+        "description": "Health on all service connected to update service",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "redis": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "elastic": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "elapsedTime": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "redis": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 1,
+                      "status": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Success": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 1,
+                      "status": true
+                    }
+                  },
+                  "Error redis": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 3001,
+                        "status": false,
+                        "error": "time out"
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 3001,
+                      "status": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/update/health/redis": {
+      "get": {
+        "summary": "Health on redis service",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
+          }
+        },
+        "operationId": "get-update-health-redis",
+        "description": "Health on redis",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
+    "/update/health/elastic": {
+      "get": {
+        "summary": "Health on elastic service",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
+          }
+        },
+        "operationId": "get-update-health-elastic",
+        "description": "Health on elastic",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
     "/update/job/snapshot": {
       "post": {
-        "tags": [
-          "update"
-        ],
         "summary": "Start process download and insert snapshot from unpaywall",
         "operationId": "post-update-job-snapshot",
         "requestBody": {
@@ -63,14 +244,14 @@
             "x-api-key": []
           }
         ],
-        "description": "Download and insert the latest snapshot from unpaywall.org"
+        "description": "Download and insert the latest snapshot from unpaywall.org",
+        "tags": [
+          "job"
+        ]
       }
     },
     "/update/job/period": {
       "post": {
-        "tags": [
-          "update"
-        ],
         "summary": "Start process download and insert changefiles from unpaywall",
         "operationId": "post-update-job-period",
         "requestBody": {
@@ -149,14 +330,14 @@
             "x-api-key": []
           }
         ],
-        "description": "Download and insert changefiles from unpaywall.org"
+        "description": "Download and insert changefiles from unpaywall.org",
+        "tags": [
+          "job"
+        ]
       }
     },
     "/update/job/changefile/{filename}": {
       "post": {
-        "tags": [
-          "update"
-        ],
         "summary": "Start process insert changesfiles downloaded on ezunpaywall",
         "operationId": "post-update-job-changefile-$-filename",
         "parameters": [
@@ -255,14 +436,14 @@
             "x-api-key": []
           }
         ],
-        "description": "Insert changefiles already downloaded on ezunpaywall"
+        "description": "Insert changefiles already downloaded on ezunpaywall",
+        "tags": [
+          "job"
+        ]
       }
     },
     "/update/reports": {
       "get": {
-        "tags": [
-          "update"
-        ],
         "summary": "Get reports",
         "operationId": "get-update-reports",
         "description": "Get list of reports or latest report",
@@ -338,14 +519,14 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "job"
+        ]
       }
     },
     "/update/reports/${filename}": {
       "get": {
-        "tags": [
-          "update"
-        ],
         "summary": "Get report",
         "operationId": "get-update-reports-$-filename",
         "description": "Get report with his filename",
@@ -474,14 +655,14 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "job"
+        ]
       }
     },
     "/update/snapshots": {
       "get": {
-        "tags": [
-          "update"
-        ],
         "summary": "Get snapshots",
         "operationId": "get-update-snapshots",
         "description": "Get list of snapshot or latest snapshot",
@@ -519,14 +700,14 @@
           {
             "x-api-key": []
           }
+        ],
+        "tags": [
+          "job"
         ]
       }
     },
     "/update/snapshots/${filename}": {
       "get": {
-        "tags": [
-          "update"
-        ],
         "summary": "Get snapshot",
         "operationId": "get-update-snapshots-$-filename",
         "description": "Get snapshot with his filename",
@@ -589,14 +770,14 @@
           {
             "x-api-key": []
           }
+        ],
+        "tags": [
+          "job"
         ]
       }
     },
     "/update/states": {
       "get": {
-        "tags": [
-          "update"
-        ],
         "summary": "Get state",
         "operationId": "get-update-states",
         "description": "Get latest state",
@@ -638,14 +819,14 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "job"
+        ]
       }
     },
     "/update/status": {
       "get": {
-        "tags": [
-          "update"
-        ],
         "summary": "Get status",
         "operationId": "get-update-status",
         "description": "Get status",
@@ -669,14 +850,14 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "job"
+        ]
       }
     },
     "/update/unpaywall/changefiles": {
       "get": {
-        "tags": [
-          "update"
-        ],
         "summary": "Get changefiles from unpaywall",
         "operationId": "get-update-unpaywall-changefiles",
         "description": "Get changefiles from unpaywall",
@@ -786,179 +967,9 @@
           {
             "x-api-key": []
           }
-        ]
-      }
-    },
-    "/update": {
-      "get": {
-        "summary": "Name of service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "x-examples": {
-                    "example-1": {
-                      "message": "update service"
-                    }
-                  }
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "update service"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-update",
-        "description": "Get name of update service",
+        ],
         "tags": [
-          "ping"
-        ]
-      }
-    },
-    "/update/ping": {
-      "get": {
-        "summary": "Ping update service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "boolean"
-                    }
-                  },
-                  "x-examples": {
-                    "example-1": {
-                      "message": true
-                    }
-                  }
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-update-ping",
-        "description": "ping update service",
-        "tags": [
-          "ping"
-        ]
-      }
-    },
-    "/update/ping/redis": {
-      "get": {
-        "summary": "Ping redis service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": true
-                    }
-                  }
-                }
-              },
-              "Error": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": false
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-update-ping-redis",
-        "description": "Ping redis service",
-        "tags": [
-          "ping"
-        ]
-      }
-    },
-    "/update/ping/elastic": {
-      "get": {
-        "summary": "Ping elastic service",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "boolean"
-                    }
-                  },
-                  "x-examples": {
-                    "example-1": {
-                      "message": true
-                    }
-                  }
-                }
-              },
-              "Success": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": true
-                    }
-                  }
-                }
-              },
-              "Error": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": false
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get-update-ping-elastic",
-        "description": "Ping elastic service",
-        "tags": [
-          "ping"
+          "job"
         ]
       }
     },
@@ -1213,13 +1224,13 @@
   },
   "tags": [
     {
-      "name": "ping"
-    },
-    {
-      "name": "update"
-    },
-    {
       "name": "cron"
+    },
+    {
+      "name": "job"
+    },
+    {
+      "name": "ping"
     }
   ],
   "components": {
@@ -1260,6 +1271,51 @@
             }
           }
         }
+      },
+      "Health": {
+        "description": "Example response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "boolean"
+                },
+                "elapsedTime": {
+                  "type": "integer"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "name": "redis",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "value": {
+                  "name": "name of service",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              },
+              "Error redis": {
+                "value": {
+                  "name": "redis",
+                  "elapsedTime": 3002,
+                  "error": "time out",
+                  "status": false
+                }
+              }
+            }
+          }
+        }
       }
     },
     "securitySchemes": {
@@ -1268,6 +1324,7 @@
         "in": "header",
         "name": "API Key"
       }
-    }
+    },
+    "schemas": {}
   }
 }

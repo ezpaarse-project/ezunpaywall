@@ -1,51 +1,50 @@
 <template>
   <div>
-    <v-bottom-navigation :value="value" color="primary" horizontal>
-      <v-btn @click="setValue(0)">
-        <span>Enrich</span>
-      </v-btn>
+    <v-tabs v-model="tab" fixed-tabs color="primary">
+      <v-tab
+        v-for="item in items"
+        :key="item"
+      >
+        {{ item }}
+      </v-tab>
+    </v-tabs>
 
-      <v-btn @click="setValue(1)">
-        <span>Update</span>
-      </v-btn>
-
-      <v-btn @click="setValue(2)">
-        <span>Apikey</span>
-      </v-btn>
-
-      <v-btn @click="setValue(3)">
-        <span>Mail</span>
-      </v-btn>
-    </v-bottom-navigation>
-    <Enrich v-if="value === 0" />
-    <Update v-if="value === 1" />
-    <Apikey v-if="value === 2" />
-    <Mail v-if="value === 3" />
+    <Openapi :host="host" />
   </div>
 </template>
 
 <script>
-import Enrich from '~/components/openapi/Enrich.vue'
-import Update from '~/components/openapi/Update.vue'
-import Apikey from '~/components/openapi/Apikey.vue'
-import Mail from '~/components/openapi/Mail.vue'
+
+import Openapi from '~/components/openapi/Openapi.vue'
 
 export default {
   components: {
-    Enrich,
-    Update,
-    Apikey,
-    Mail
+    Openapi
   },
-  data: () => ({ value: 0 }),
+  data: () => ({
+    tab: null,
+    items: [
+      'Graphql',
+      'Enrich',
+      'Update',
+      'Apikey',
+      'Mail',
+      'Health'
+    ]
+  }),
   head () {
     return {
-      title: 'Doc'
+      title: 'Documentation'
     }
   },
-  methods: {
-    setValue (value) {
-      this.value = value
+  computed: {
+    host () {
+      if (this.tab === 1) { return this.$config.enrichHost }
+      if (this.tab === 2) { return this.$config.updateHost }
+      if (this.tab === 3) { return this.$config.apikeyHost }
+      if (this.tab === 4) { return this.$config.mailHost }
+      if (this.tab === 5) { return this.$config.healthHost }
+      return this.$config.graphqlHost
     }
   }
 }

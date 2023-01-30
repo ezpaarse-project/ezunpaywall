@@ -14,7 +14,7 @@ const {
   fail,
 } = require('../model/state');
 
-const askEzunpaywall = require('../lib/service/graphql');
+const { requestGraphql } = require('../lib/service/graphql');
 
 const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
@@ -199,7 +199,7 @@ const processEnrichJSON = async (id, index, args, apikey) => {
 
     // enrichment
     if (data.length === 1000) {
-      const response = await askEzunpaywall(data, args, stateName, index, apikey);
+      const response = await requestGraphql(data, args, stateName, index, apikey);
       enrichTab(data, response);
       await writeInFileJSON(data, enrichedFile, stateName);
       data = [];
@@ -214,7 +214,7 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   // last insertion
   if (data.length !== 0) {
     // enrichment
-    const response = await askEzunpaywall(data, args, stateName, index, apikey);
+    const response = await requestGraphql(data, args, stateName, index, apikey);
     data = enrichTab(data, response);
     await writeInFileJSON(data, enrichedFile, stateName);
     // state

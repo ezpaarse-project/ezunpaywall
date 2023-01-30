@@ -1,64 +1,36 @@
 /* eslint-disable no-await-in-loop */
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const { client } = require('./elastic');
 
 chai.use(chaiHttp);
 
-const enrichURL = process.env.ENRICH_HOST || 'http://localhost:59703';
-const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
+const enrichHost = process.env.ENRICH_HOST || 'http://localhost:59703';
+const elasticHost = process.env.UPDATE_HOST || 'http://elastic:changeme@localhost:9200';
+const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 /**
  * ping all services to see if they are available
  */
 const ping = async () => {
-  let enrich;
-  while (enrich?.status !== 200) {
-    try {
-      enrich = await chai.request(enrichURL).get('/ping');
-    } catch (err) {
-      console.error(`enrich ping : ${err}`);
-    }
-    if (enrich?.status !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+  const enrich = await chai.request(enrichHost).get('/ping');
+  if (enrich?.status !== 204) {
+    throw new Error(`[enrich] Bad status : ${enrich?.status}`);
   }
 
-  let elastic;
-  while (elastic?.statusCode !== 200) {
-    try {
-      elastic = await client.ping();
-    } catch (err) {
-      console.error(`elastic ping : ${err}`);
-    }
-    if (elastic?.statusCode !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+  const elastic = await chai.request(elasticHost).get('/');
+  if (elastic?.status !== 200) {
+    throw new Error(`[elastic] Bad status : ${elastic?.status}`);
   }
 
-  let apikey;
-  do {
-    try {
-      apikey = await chai.request(apikeyURL).get('/ping');
-    } catch (err) {
-      console.error(`apikey ping : ${err}`);
-    }
-    if (apikey?.statusCode !== 200) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  } while (apikey?.statusCode !== 200);
+  const apikey = await chai.request(apikeyHost).get('/ping');
+  if (apikey?.statusCode !== 204) {
+    throw new Error(`[apikey] Bad status : ${apikey?.status}`);
+  }
 
-  let redis;
-  do {
-    try {
-      redis = await chai.request(apikeyURL).get('/ping/redis');
-    } catch (err) {
-      console.error(`redis ping : ${err}`);
-    }
-    if (!redis?.status) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-  } while (!redis?.status);
+  const redis = await chai.request(enrichHost).get('/ping/redis');
+  if (!redis?.status) {
+    throw new Error(`[redis] Bad status : ${redis?.status}`);
+  }
 };
 
 module.exports = ping;

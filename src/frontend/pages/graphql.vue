@@ -181,15 +181,34 @@ export default {
     }
   },
   methods: {
+    /**
+     * Necessary on preprod
+     * (http environment)
+     */
+    unsecuredCopyToClipboard (text) {
+      const textArea = document.createElement('textarea')
+      textArea.value = text
+      textArea.setAttribute('display', 'none')
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        document.execCommand('copy')
+      } catch (err) {
+        this.$store.dispatch('snacks/error', this.$t('graphql.errorCopyRequest'))
+      }
+      document.body.removeChild(textArea)
+    },
     copyText () {
       try {
-        navigator.clipboard.writeText(this.query)
-        this.$store.dispatch('snacks/info', 'request copied')
+        if (window.isSecureContext && navigator.clipboard) {
+          navigator.clipboard.writeText(this.query)
+        } else {
+          this.unsecuredCopyToClipboard(this.query)
+        }
+        this.$store.dispatch('snacks/info', this.$t('graphql.copyRequest'))
       } catch (err) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('graphql.errorCopyRequest')
-        )
+        this.$store.dispatch('snacks/error', this.$t('graphql.errorCopyRequest'))
       }
     },
     async graphqlRequest () {
