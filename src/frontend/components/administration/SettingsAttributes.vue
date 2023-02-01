@@ -14,31 +14,31 @@
       :items="unpaywallAttr"
       label="simple"
       :selected="simpleSelected"
-      @simple="setSimple"
+      @simple="setAttributes(simpleSelected, $event)"
     />
     <SelectAttributes
       :items="oaLocationAttr"
       label="best_oa_location"
       :selected="bestOaLocationSelected"
-      @best_oa_location="setBestOaLocation"
+      @best_oa_location="setAttributes(bestOaLocationSelected, $event)"
     />
     <SelectAttributes
       :items="oaLocationAttr"
       label="first_oa_location"
       :selected="firstOaLocationSelected"
-      @first_oa_location="setFirstOaLocation"
+      @first_oa_location="setAttributes('firstOaLocationSelected', $event)"
     />
     <SelectAttributes
       :items="oaLocationAttr"
       label="oa_locations"
       :selected="oaLocationsSelected"
-      @oa_locations="setOaLocations"
+      @oa_locations="setAttributes('oaLocationsSelected', $event)"
     />
     <SelectAttributes
       :items="zAuthorsAttr"
       label="z_authors"
       :selected="zAuthorsSelected"
-      @z_authors="setZAuthors"
+      @z_authors="setAttributes('zAuthorsSelected', $event)"
     />
   </div>
 </template>
@@ -169,24 +169,9 @@ export default {
       this.zAuthorsSelected = []
       this.$emit('attributes', this.attributes)
     },
-    setSimple (e) {
-      this.simpleSelected = e
-      this.$emit('attributes', this.attributes)
-    },
-    setBestOaLocation (e) {
-      this.bestOaLocationSelected = e
-      this.$emit('attributes', this.attributes)
-    },
-    setFirstOaLocation (e) {
-      this.firstOaLocationSelected = e
-      this.$emit('attributes', this.attributes)
-    },
-    setOaLocations (e) {
-      this.oaLocationsSelected = e
-      this.$emit('attributes', this.attributes)
-    },
-    setZAuthors (e) {
-      this.zAuthorsSelected = e
+    setAttributes (key, e) {
+      if (!this[key]) { return false }
+      this[key] = e
       this.$emit('attributes', this.attributes)
     },
     parse (e, attr) {
@@ -195,6 +180,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>
