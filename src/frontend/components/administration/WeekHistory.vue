@@ -5,11 +5,11 @@
       <v-spacer />
       <v-col class="text-right">
         <v-btn
-          @click.stop="setDialogShow(true)"
+          @click.stop="setDialogVisible(true)"
           v-text="$t('update')"
         />
       </v-col>
-      <UpdateDialog :dialog="dialogShow" @closed="setDialogShow(false)" />
+      <UpdateDialog :dialog="dialogVisible" @closed="setDialogVisible(false)" />
     </v-toolbar>
     <v-row v-if="reports.length === 0" align="center" justify="center">
       <v-col class="text-center" cols="12" sm="4">
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import UpdateDialog from '~/components/administration/report/UpdateDialog.vue'
+import UpdateDialog from '~/components/administration/update/UpdateDialog.vue'
 import Card from '~/components/report/Card.vue'
 
 export default {
@@ -44,7 +44,8 @@ export default {
   },
   data () {
     return {
-      dialogShow: false,
+      loading: false,
+      dialogVisible: false,
       reports: []
     }
   },
@@ -52,7 +53,7 @@ export default {
     this.getReports()
   },
   methods: {
-    parseReports (report) {
+    enrichReport (report) {
       report.steps = report.steps.filter(e => e.task === 'insert')
       let totalInsertedDocs = 0
       let totalUpdatedDocs = 0
@@ -81,15 +82,17 @@ export default {
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('reportHistory.reportsError'))
+        this.loaded = false
+        return
       }
 
-      const filenames = res.data
+      let filenames = Array.isArray(res?.data) ? res.data : []
 
       let report
 
-      const maxIteratore = filenames.length >= 8 ? 8 : filenames.length
+      filenames = filenames.slice(0, 8)
 
-      for (let i = 0; i < maxIteratore; i += 1) {
+      for (let i = 0; i < filenames.length; i += 1) {
         try {
           report = await this.$update({
             method: 'GET',
@@ -97,9 +100,10 @@ export default {
           })
         } catch (err) {
           this.$store.dispatch('snacks/error', this.$t('reportHistory.reportError'))
+          this.loaded = false
           return
         }
-        report = this.parseReports(report.data)
+        report = this.enrichReport(report.data)
         this.reports.push({
           id: i,
           createdAt: this.$dateFns.format(report.createdAt),
@@ -108,8 +112,8 @@ export default {
       }
       this.loaded = false
     },
-    setDialogShow (value) {
-      this.dialogShow = value
+    setDialogVisible (value) {
+      this.dialogVisible = value
     }
   }
 }

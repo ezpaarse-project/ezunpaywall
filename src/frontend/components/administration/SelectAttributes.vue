@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <v-autocomplete
-        :value="selectedComputed"
+        :value="selected"
         :label="label"
         :items="items"
         item-text="name"
@@ -42,11 +42,7 @@ export default {
   data: () => {
     return {}
   },
-  computed: {
-    selectedComputed () {
-      return this.selected
-    }
-  },
+  computed: {},
 
   methods: {
     updateModel (value) {

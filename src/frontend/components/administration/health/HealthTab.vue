@@ -42,6 +42,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       healths: []
     }
   },
@@ -55,11 +56,12 @@ export default {
       try {
         res = await this.$health.get('/health')
       } catch (e) {
-        this.$store.dispatch('snacks/error', this.$t('administration.errorHelth'))
+        this.$store.dispatch('snacks/error', this.$t('administration.errorHealth'))
         this.loading = false
         return
       }
       this.healths = res?.data
+      this.loading = false
     }
   }
 }

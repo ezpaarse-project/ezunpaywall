@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="show"
+    v-model="visible"
     transition="dialog-top-transition"
     max-width="1000px"
     @click:outside="closeDialog()"
@@ -71,7 +71,7 @@ export default {
     intervalAttr () {
       return ['day', 'week']
     },
-    show: {
+    visible: {
       get () {
         return this.dialog
       },
@@ -82,10 +82,7 @@ export default {
   },
   methods: {
     dateRule (date) {
-      if (!date) { return ['YYYY-MM-DD'] }
-      const match = date.match(/\d{4}-\d{2}-\d{2}/gm)
-      if (match) { return [true] }
-      return ['YYYY-MM-DD']
+      return [/^\d{4}-\d{2}-\d{2}$/i.test(date) || 'YYYY-MM-DD']
     },
     async startUpdate () {
       this.loading = true
@@ -112,7 +109,7 @@ export default {
     },
     closeDialog () {
       this.$emit('closed')
-      this.show = false
+      this.visible = false
     }
   }
 }

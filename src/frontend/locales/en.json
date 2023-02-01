@@ -83,6 +83,7 @@
   },
   "administration": {
     "title": "Administration",
+    "loginForm": "Login form",
     "login": "Login",
     "logout": "Logout",
     "loginSuccess": "Successful connection",
@@ -90,7 +91,8 @@
     "password": "Password",
     "health": {
       "title": "Services status",
-      "noHealth": "No service status"
+      "noHealth": "No service status",
+      "errorHealth": "Cannot get healths"
     },
     "apikey": {
       "title": "API keys",

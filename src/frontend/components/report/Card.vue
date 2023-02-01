@@ -48,11 +48,11 @@
         </v-layout>
       </v-container>
       <v-spacer />
-      <v-btn text class="mt-5" @click.stop="setDialogShow(true)">
+      <v-btn text class="mt-5" @click.stop="setDialogVisible(true)">
         DETAILS
       </v-btn>
     </v-card-actions>
-    <DetailDialog :report="report" :dialog="dialogShow" @closed="setDialogShow(false)" />
+    <DetailDialog :report="report" :dialog="dialogVisible" @closed="setDialogVisible(false)" />
   </v-card>
 </template>
 
@@ -75,7 +75,7 @@ export default {
   },
   data () {
     return {
-      dialogShow: false
+      dialogVisible: false
     }
   },
   methods: {
@@ -84,8 +84,8 @@ export default {
       if (this.status === 'inprogress') { return 'blue darken-2' }
       if (this.status === 'error') { return 'red darken-2' }
     },
-    setDialogShow (value) {
-      this.dialogShow = value
+    setDialogVisible (value) {
+      this.dialogVisible = value
     }
   }
 }

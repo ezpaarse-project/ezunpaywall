@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" max-width="1000px" @click:outside="closeDialog()">
+  <v-dialog :value="visible" max-width="1000px" @click:outside="closeDialog()">
     <v-card>
       <v-toolbar
         color="primary"
@@ -77,7 +77,7 @@ export default {
     SettingsAttributes
   },
   props: {
-    dialog: {
+    visible: {
       type: Boolean,
       default: false
     },
@@ -100,14 +100,6 @@ export default {
     }
   },
   computed: {
-    show: {
-      get () {
-        return this.dialog
-      },
-      set (dialog) {
-        this.$emit('input', dialog)
-      }
-    },
     valid () {
       return this?.attributes?.length > 0 && this?.name?.length > 0 && this?.access?.length > 0
     },
@@ -146,7 +138,6 @@ export default {
   methods: {
     closeDialog () {
       this.$emit('closed')
-      this.show = false
     },
     async updateApikey () {
       this.loading = true
@@ -171,6 +162,7 @@ export default {
       }
       this.$store.dispatch('snacks/info', this.$t('administration.apikey.infoUpdate'))
       this.$emit('updated')
+      this.loading = true
       this.closeDialog()
     },
     setAttributes (e) {

@@ -13,7 +13,7 @@
 <script>
 
 import Login from '~/components/administration/Login.vue'
-import WeekHistory from '~/components/administration/report/WeekHistory.vue'
+import WeekHistory from '~/components/administration/WeekHistory.vue'
 import HealthTab from '~/components/administration/health/HealthTab.vue'
 import ApikeyTab from '~/components/administration/apikey/ApikeyTab.vue'
 

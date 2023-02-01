@@ -204,8 +204,15 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     return next({ message: 'Cannot get keys [*] on redis', stackTrace: err });
   }
 
+  try {
+    key = JSON.parse(key);
+  } catch (err) {
+    logger.error(err);
+    return next({ message: `Cannot parse config [${key}]`, stackTrace: err });
+  }
+
   // if name change
-  if (JSON.parse(key).name !== name) {
+  if (key?.name !== name) {
     for (let i = 0; i < keys.length; i += 1) {
       let config;
 
@@ -223,7 +230,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
         return next({ message: `Cannot parse config [${config}]`, stackTrace: err });
       }
 
-      if (config.name === name) {
+      if (config?.name === name) {
         return res.status(409).json(`Name [${name}] already exist for a key`);
       }
     }

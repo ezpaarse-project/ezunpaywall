@@ -55,32 +55,32 @@
     <v-card-actions>
       <v-btn
         color="orange"
-        @click.stop="setUpdateDialogShow(true)"
+        @click.stop="setUpdateDialogVisible(true)"
       >
         <v-icon color="white">
           mdi-pencil
         </v-icon>
       </v-btn>
       <UpdateDialog
-        :dialog="updateDialogShow"
+        :visible="updateDialogVisible"
         :apikey="apikey"
         :config="config"
-        @closed="setUpdateDialogShow(false)"
+        @closed="setUpdateDialogVisible(false)"
         @updated="emitUpdated()"
       />
       <v-spacer />
       <v-btn
         color="red"
-        @click.stop="setDeleteDialogShow(true)"
+        @click.stop="setDeleteDialogVisible(true)"
       >
         <v-icon color="white">
           mdi-delete
         </v-icon>
       </v-btn>
       <DeleteDialog
-        :dialog="deleteDialogShow"
+        :visible="deleteDialogVisible"
         :apikey="apikey"
-        @closed="setDeleteDialogShow(false)"
+        @closed="setDeleteDialogVisible(false)"
         @deleted="emitDeleted()"
       />
     </v-card-actions>
@@ -109,20 +109,19 @@ export default {
   },
   data () {
     return {
-      updateDialogShow: false,
-      deleteDialogShow: false,
-      apikeys: {}
+      updateDialogVisible: false,
+      deleteDialogVisible: false
     }
   },
   methods: {
-    setUpdateDialogShow (value) {
-      this.updateDialogShow = value
+    setUpdateDialogVisible (value) {
+      this.updateDialogVisible = value
     },
     emitUpdated () {
       this.$emit('updated')
     },
-    setDeleteDialogShow (value) {
-      this.deleteDialogShow = value
+    setDeleteDialogVisible (value) {
+      this.deleteDialogVisible = value
     },
     emitDeleted () {
       this.$emit('deleted')

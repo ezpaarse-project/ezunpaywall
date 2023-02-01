@@ -83,6 +83,7 @@
   },
   "administration": {
     "title": "Administration",
+    "loginForm": "Formulaire de connexion",
     "login": "Connexion",
     "logout": "Deconnexion",
     "password": "Mot de passe",
@@ -90,7 +91,8 @@
     "errorLogin": "Mot de passe incorrect",
     "health": {
       "title": "État des services",
-      "noHealth": "Aucun état de service"
+      "noHealth": "Aucun état de service",
+      "errorHealth": "Impossible de récupérer les états de santé"
     },
     "apikey": {
       "title": "Clés d'API",
@@ -105,7 +107,7 @@
       "delete": "Suppression de la clé d'API",
       "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)",
       "infoDeleted": "La clé d'API a été supprimé",
-      "errorDelete": "Cannot delete apikey"
+      "errorDelete": "Impossible de supprimer la clé d'API"
     },
     "update" : {
       "title": "Lancement d'une mise à jour",

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="show" max-width="1000px" @click:outside="closeDialog()">
+  <v-dialog :value="visible" max-width="1000px" @click:outside="closeDialog()">
     <v-card>
       <v-toolbar
         color="primary"
@@ -41,26 +41,24 @@
 export default {
   name: 'ApikeyDeleteDialog',
   props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
     apikey: {
       type: String,
       default: ''
-    },
-    dialog: {
-      type: Boolean,
-      default: false
     }
   },
-  computed: {
-    show: {
-      get () {
-        return this.dialog
-      },
-      set (dialog) {
-        this.$emit('input', dialog)
-      }
+  data () {
+    return {
+      loading: false
     }
   },
   methods: {
+    closeDialog () {
+      this.$emit('closed')
+    },
     async deleteApikey () {
       this.loading = true
       try {
@@ -78,11 +76,8 @@ export default {
       }
       this.$store.dispatch('snacks/info', this.$t('administration.apikey.infoDeleted'))
       this.$emit('deleted')
+      this.loading = false
       this.closeDialog()
-    },
-    closeDialog () {
-      this.$emit('closed')
-      this.show = false
     }
   }
 }

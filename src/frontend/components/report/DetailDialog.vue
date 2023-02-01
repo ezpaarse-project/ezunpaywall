@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="show"
+    v-model="visible"
     transition="dialog-top-transition"
     max-width="1000"
     @click:outside="closeDialog()"
@@ -12,8 +12,10 @@
       >
         <span class="mr-2" v-text="report.createdAt" />
       </v-toolbar>
-      <v-card-text class="pb-0">
-        <pre>{{ JSON.stringify(report.data, null, 2) }} </pre>
+      <v-card-text>
+        <pre>
+          <code v-highlight class="json">{{ JSON.stringify(report.data, null, 2) }}</code>
+        </pre>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -40,7 +42,7 @@ export default {
     }
   },
   computed: {
-    show: {
+    visible: {
       get () {
         return this.dialog
       },
@@ -52,7 +54,7 @@ export default {
   methods: {
     closeDialog () {
       this.$emit('closed')
-      this.show = false
+      this.visible = false
     }
   }
 }

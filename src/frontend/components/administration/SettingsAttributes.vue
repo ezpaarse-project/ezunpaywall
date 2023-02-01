@@ -77,7 +77,6 @@ export default {
   },
   data: () => {
     return {
-      allSelected: false,
       simpleSelected: [],
       bestOaLocationSelected: [],
       firstOaLocationSelected: [],
@@ -86,6 +85,10 @@ export default {
     }
   },
   computed: {
+    allSelected () {
+      return this.simpleSelected.length + this.bestOaLocationSelected.length + this.firstOaLocationSelected.length + this.oaLocationsSelected.length + this.zAuthorsSelected.length ===
+        this.unpaywallAttr.length + (this.oaLocationAttr.length * 3) + this.zAuthorsAttr.length
+    },
     unpaywallAttr () {
       return [
         { name: 'doi', info: this.$t('unpaywallArgs.general.doi') },
@@ -151,16 +154,14 @@ export default {
   },
   methods: {
     selectAll () {
-      this.allSelected = true
-      this.simpleSelected = ['doi', 'data_standard', 'doi_url', 'genre', 'is_oa', 'is_paratext', 'journal_is_in_doaj', 'journal_is_oa', 'journal_issn_l', 'journal_issns', 'journal_name', 'oa_status', 'published_date', 'publisher', 'title', 'updated', 'year']
-      this.bestOaLocationSelected = ['evidence', 'host_type', 'is_best', 'license', 'pmh_id', 'updated', 'url', 'url_for_landing_page', 'url_for_pdf', 'version']
-      this.firstOaLocationSelected = ['evidence', 'host_type', 'is_best', 'license', 'pmh_id', 'updated', 'url', 'url_for_landing_page', 'url_for_pdf', 'version']
-      this.oaLocationsSelected = ['evidence', 'host_type', 'is_best', 'license', 'pmh_id', 'updated', 'url', 'url_for_landing_page', 'url_for_pdf', 'version']
-      this.zAuthorsSelected = ['family', 'given', 'ORCID']
+      this.simpleSelected = this.unpaywallAttr.map(e => e.name)
+      this.bestOaLocationSelected = this.oaLocationAttr.map(e => e.name)
+      this.firstOaLocationSelected = this.oaLocationAttr.map(e => e.name)
+      this.oaLocationsSelected = this.oaLocationAttr.map(e => e.name)
+      this.zAuthorsSelected = this.zAuthorsAttr.map(e => e.name)
       this.$emit('attributes', this.attributes)
     },
     deselectAll () {
-      this.allSelected = false
       this.simpleSelected = []
       this.bestOaLocationSelected = []
       this.firstOaLocationSelected = []
@@ -169,27 +170,22 @@ export default {
       this.$emit('attributes', this.attributes)
     },
     setSimple (e) {
-      this.allSelected = false
       this.simpleSelected = e
       this.$emit('attributes', this.attributes)
     },
     setBestOaLocation (e) {
-      this.allSelected = false
       this.bestOaLocationSelected = e
       this.$emit('attributes', this.attributes)
     },
     setFirstOaLocation (e) {
-      this.allSelected = false
       this.firstOaLocationSelected = e
       this.$emit('attributes', this.attributes)
     },
     setOaLocations (e) {
-      this.allSelected = false
       this.oaLocationsSelected = e
       this.$emit('attributes', this.attributes)
     },
     setZAuthors (e) {
-      this.allSelected = false
       this.zAuthorsSelected = e
       this.$emit('attributes', this.attributes)
     },

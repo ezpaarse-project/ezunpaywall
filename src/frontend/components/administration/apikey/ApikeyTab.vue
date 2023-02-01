@@ -8,14 +8,14 @@
     <v-card-actions>
       <v-spacer />
       <v-btn
-        @click.stop="setShow(true)"
+        @click.stop="setVisible(true)"
         v-text="$t('administration.apikey.buttonCreate')"
       />
 
       <CreateDialog
-        :dialog="dialog"
+        :visible="createDialogVisible"
         @created="getApikeys()"
-        @closed="setShow(false)"
+        @closed="setVisible(false)"
       />
     </v-card-actions>
 
@@ -62,16 +62,17 @@ export default {
   },
   data () {
     return {
-      dialog: false,
-      apikeys: {}
+      loading: false,
+      createDialogVisible: false,
+      apikeys: []
     }
   },
   async mounted () {
     await this.getApikeys()
   },
   methods: {
-    setShow (value) {
-      this.dialog = value
+    setVisible (value) {
+      this.createDialogVisible = value
     },
     async getApikeys () {
       let res
@@ -92,7 +93,7 @@ export default {
         this.loading = false
         return
       }
-
+      this.loading = false
       this.apikeys = res?.data
     }
   }

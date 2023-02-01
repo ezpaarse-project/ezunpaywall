@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-toolbar dark color="secondary">
-      <v-toolbar-title>Login form</v-toolbar-title>
+      <v-toolbar-title v-text="$t('administration.loginForm')" />
     </v-toolbar>
     <v-card-text>
       <v-text-field
@@ -28,12 +28,16 @@ export default {
     return {
       password: '',
       passwordVisible: false,
-      passwordRules: value => !!value || 'Required.',
-      login: false
+      login: false,
+      loading: false
     }
+  },
+  computed: {
+    passwordRules () { return value => !!value || 'Required.' }
   },
   methods: {
     async tryLogin () {
+      this.loading = true
       try {
         await this.$apikey({
           method: 'GET',
