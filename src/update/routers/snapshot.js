@@ -6,11 +6,11 @@ const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
   deleteFile,
-} = require('../bin/snapshot');
+} = require('../controllers/snapshot');
 
 const {
   getMostRecentFile,
-} = require('../bin/file');
+} = require('../controllers/file');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 

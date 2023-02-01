@@ -5,11 +5,11 @@ const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
   getMostRecentFile,
-} = require('../bin/file');
+} = require('../controllers/file');
 
 const {
   getReport,
-} = require('../bin/report');
+} = require('../controllers/report');
 
 const reportsDir = path.resolve(__dirname, '..', 'data', 'reports');
 

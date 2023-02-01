@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const checkAuth = require('../middlewares/auth');
 
-const sendMailContact = require('../bin/contact');
+const sendMailContact = require('../controllers/contact');
 
-const { sendMailUpdateStarted, sendMailUpdateReport } = require('../bin/update');
+const { sendMailUpdateStarted, sendMailUpdateReport } = require('../controllers/update');
 
 router.post('/contact', checkAuth, async (req, res, next) => {
   const {

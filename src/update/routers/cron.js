@@ -3,7 +3,7 @@ const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const checkAuth = require('../middlewares/auth');
 
-const cron = require('../bin/cron/update');
+const cron = require('../controllers/cron/update');
 
 router.post('/cron/start', checkAuth, async (req, res, next) => {
   cron.updateCron.start();

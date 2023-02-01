@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 
-const updateChangefilesExample = require('./bin/changefiles');
+const updateChangefilesExample = require('./controllers/changefiles');
 
 const routerPing = require('./routers/ping');
 const routerSnapshots = require('./routers/snapshots');

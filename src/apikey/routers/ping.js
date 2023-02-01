@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const promiseWithTimeout = require('../bin/ping');
+const promiseWithTimeout = require('../controllers/ping');
 const { pingRedis } = require('../lib/service/redis');
 
 router.get('/', (req, res) => res.status(200).json('apikey service'));

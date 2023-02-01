@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const pingAll = require('../bin/ping');
+const pingAll = require('../controllers/ping');
 
 router.get('/', (req, res) => res.status(200).json('health service'));
 

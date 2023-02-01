@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const checkAuth = require('../middlewares/auth');
-const { getStatus, setInUpdate } = require('../bin/status');
+const { getStatus, setInUpdate } = require('../controllers/status');
 
 /**
  * @return status

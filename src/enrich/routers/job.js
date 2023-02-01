@@ -4,7 +4,7 @@ const joi = require('joi');
 const {
   enrichJSON,
   enrichCSV,
-} = require('../bin/job');
+} = require('../controllers/job');
 
 const checkAuth = require('../middlewares/auth');
 

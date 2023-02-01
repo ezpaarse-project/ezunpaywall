@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const promiseWithTimeout = require('../bin/ping');
+const promiseWithTimeout = require('../controllers/ping');
 const { pingRedis } = require('../lib/service/redis');
 const { pingGraphql } = require('../lib/service/graphql');
 

@@ -6,7 +6,7 @@ const cors = require('cors');
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 
-const cronDeleteOutFiles = require('./bin/cron/file');
+const cronDeleteOutFiles = require('./controllers/cron/file');
 
 const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');

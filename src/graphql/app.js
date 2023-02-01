@@ -7,8 +7,8 @@ const auth = require('./middlewares/auth');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
-const cronMetrics = require('./bin/cron/metrics');
-const { setMetrics } = require('./bin/metrics');
+const cronMetrics = require('./controllers/cron/metrics');
+const { setMetrics } = require('./controllers/metrics');
 
 const { pingRedis } = require('./lib/service/redis');
 

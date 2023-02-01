@@ -13,12 +13,12 @@ const {
   createApiKey,
   updateApiKey,
   deleteApiKey,
-} = require('../bin/manage');
+} = require('../controllers/manage');
 
 const {
   availableAccess,
   unpaywallAttrs,
-} = require('../bin/attributes');
+} = require('../controllers/attributes');
 
 /**
  * get config of apikey

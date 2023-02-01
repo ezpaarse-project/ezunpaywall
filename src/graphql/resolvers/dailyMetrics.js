@@ -1,6 +1,6 @@
 const metricsType = require('../models/metrics');
 
-const { getDailyMetrics } = require('../bin/metrics');
+const { getDailyMetrics } = require('../controllers/metrics');
 
 const dailyMetrics = {
   type: metricsType,

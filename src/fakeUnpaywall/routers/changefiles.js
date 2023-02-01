@@ -5,7 +5,7 @@ const fs = require('fs-extra');
 
 const logger = require('../lib/logger');
 
-const updateChangefilesExample = require('../bin/changefiles');
+const updateChangefilesExample = require('../controllers/changefiles');
 
 router.patch('/changefiles', async (req, res, next) => {
   const { interval } = req.query;

@@ -10,7 +10,7 @@ const {
   downloadAndInsertSnapshot,
   insertChangefilesOnPeriod,
   insertChangefile,
-} = require('../bin/job');
+} = require('../controllers/job');
 
 const checkStatus = require('../middlewares/status');
 
