@@ -21,9 +21,9 @@ router.get('/health', async (req, res, next) => {
     result[e?.name] = { elapsedTime: e?.elapsedTime, healthy: e?.healthy, error: e?.error };
   });
 
-  const status = resultPing.every((e) => e?.status);
+  const healthy = resultPing.every((e) => e?.health);
 
-  return res.status(200).json({ ...result, elapsedTime: Date.now() - start, status });
+  return res.status(200).json({ ...result, elapsedTime: Date.now() - start, healthy });
 });
 
 router.get('/health/smtp', async (req, res, next) => {
