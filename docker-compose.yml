@@ -19,9 +19,9 @@ services:
       - REDIS_PORT
       - REDIS_PASSWORD
     volumes:
-      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
-      - ${ELASTIC_CERT_CA_PATH:-./src/graphql/certs/ca.crt}:/graphql/certs
+      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/usr/src/app/log/application
+      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/usr/src/app/log/access
+      - ${ELASTIC_CERT_CA_PATH:-./src/graphql/certs/ca.crt}:/usr/src/app/certs
     command: "npm start"
     depends_on:
       redis:
@@ -58,10 +58,10 @@ services:
       # password
       - UPDATE_APIKEY
     volumes:
-      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
-      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
-      - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
-      - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/update/certs
+      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/usr/src/app/log/application
+      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/usr/src/app/log/access
+      - ${UPDATE_DATA_PATH:-./src/update/data}:/usr/src/app/data
+      - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/usr/src/app/certs
     command: "npm start"
     restart: unless-stopped
 
@@ -80,9 +80,9 @@ services:
       - GRAPHQL_HOST
       - GRAPHQL_PORT
     volumes:
-      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/enrich/log/application
-      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/enrich/log/access
-      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
+      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/usr/src/app/log/application
+      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/usr/src/app/log/access
+      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/usr/src/app/data
     command: "npm start"
     depends_on:
       redis:
@@ -103,8 +103,8 @@ services:
       - REDIS_PORT
       - REDIS_PASSWORD
     volumes:
-      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/apikey/log/application
-      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/apikey/log/access
+      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/usr/src/app/log/application
+      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/usr/src/app/log/access
     command: "npm start"
     depends_on:
       redis:
@@ -128,8 +128,8 @@ services:
       # password
       - MAIL_APIKEY
     volumes:
-      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/mail/log/application
-      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/mail/log/access
+      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/usr/src/app/log/application
+      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/usr/src/app/log/access
     command: "npm start"
     restart: unless-stopped
 
@@ -142,6 +142,7 @@ services:
      - ${FRONTEND_PORT:-59706}:3000
     environment:
       - NODE_ENV=production
+      - ELASTIC_ENV=production
       # host of service
       - GRAPHQL_HOST
       - UPDATE_HOST
@@ -161,6 +162,8 @@ services:
     build:
       context: ./src/health
     container_name: ezunpaywall-health-prod
+    volumes:
+      - ${HEALTH_APPLICATION_LOG_PATH:-./src/health/log/application}:/usr/src/app/log/application
     command: "npm run start"
     ports:
      - ${HEALTH_PORT:-59707}:3000

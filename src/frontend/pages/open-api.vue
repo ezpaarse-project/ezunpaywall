@@ -1,37 +1,15 @@
 <template>
   <div>
-    <v-bottom-navigation :value="value" color="primary" horizontal>
-      <v-btn @click="setValue(0)">
-        <span>Graphql</span>
-      </v-btn>
+    <v-tabs v-model="tab" fixed-tabs color="primary">
+      <v-tab
+        v-for="item in items"
+        :key="item"
+      >
+        {{ item }}
+      </v-tab>
+    </v-tabs>
 
-      <v-btn @click="setValue(1)">
-        <span>Enrich</span>
-      </v-btn>
-
-      <v-btn @click="setValue(2)">
-        <span>Update</span>
-      </v-btn>
-
-      <v-btn @click="setValue(3)">
-        <span>Apikey</span>
-      </v-btn>
-
-      <v-btn @click="setValue(4)">
-        <span>Mail</span>
-      </v-btn>
-
-      <v-btn @click="setValue(5)">
-        <span>Health</span>
-      </v-btn>
-    </v-bottom-navigation>
-
-    <Openapi v-if="value === 0" :host="graphqlHost" />
-    <Openapi v-if="value === 1" :host="enrichHost" />
-    <Openapi v-if="value === 2" :host="updateHost" />
-    <Openapi v-if="value === 3" :host="apikeyHost" />
-    <Openapi v-if="value === 4" :host="mailHost" />
-    <Openapi v-if="value === 5" :host="healthHost" />
+    <Openapi :host="host" />
   </div>
 </template>
 
@@ -43,35 +21,30 @@ export default {
   components: {
     Openapi
   },
-  data: () => ({ value: 0 }),
+  data: () => ({
+    tab: null,
+    items: [
+      'Graphql',
+      'Enrich',
+      'Update',
+      'Apikey',
+      'Mail',
+      'Health'
+    ]
+  }),
   head () {
     return {
-      title: 'Doc'
+      title: 'Documentation'
     }
   },
   computed: {
-    graphqlHost () {
+    host () {
+      if (this.tab === 1) { return this.$config.enrichHost }
+      if (this.tab === 2) { return this.$config.updateHost }
+      if (this.tab === 3) { return this.$config.apikeyHost }
+      if (this.tab === 4) { return this.$config.mailHost }
+      if (this.tab === 5) { return this.$config.healthHost }
       return this.$config.graphqlHost
-    },
-    updateHost () {
-      return this.$config.updateHost
-    },
-    enrichHost () {
-      return this.$config.enrichHost
-    },
-    apikeyHost () {
-      return this.$config.apikeyHost
-    },
-    mailHost () {
-      return this.$config.mailHost
-    },
-    healthHost () {
-      return this.$config.healthHost
-    }
-  },
-  methods: {
-    setValue (value) {
-      this.value = value
     }
   }
 }

@@ -3,7 +3,7 @@ const {
 } = require('../bin/report');
 
 const {
-  sendMailReport,
+  sendMailUpdateReport,
 } = require('../lib/service/mail');
 
 const {
@@ -114,7 +114,7 @@ const fail = async (stackTrace) => {
   state.stackTrace = stackTrace;
   await createReport(state);
   setInUpdate(false);
-  await sendMailReport(state);
+  await sendMailUpdateReport(state);
 };
 
 /**
@@ -126,7 +126,7 @@ const endState = async () => {
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
   await createReport(state);
-  // await sendMailReport(state);
+  // await sendMailUpdateReport(state);
   setInUpdate(false);
 };
 

@@ -4,17 +4,19 @@
       :items="unpaywallAttr"
       label="simple"
       source="graphql"
-      :selected="defaultSelected"
+      :selected="['doi']"
     />
     <SelectAttributes
       :items="oa_locations"
       label="best_oa_location"
       source="graphql"
+      :selected="['evidence', 'is_best']"
     />
     <SelectAttributes
       :items="oa_locations"
       label="first_oa_location"
       source="graphql"
+      :selected="['url_for_pdf']"
     />
     <SelectAttributes
       :items="oa_locations"
@@ -25,6 +27,7 @@
       :items="z_authors"
       label="z_authors"
       source="graphql"
+      :selected="['family', 'given']"
     />
   </div>
 </template>
@@ -34,11 +37,6 @@ import SelectAttributes from '~/components/unpaywallArgs/SelectAttributes.vue'
 export default {
   components: {
     SelectAttributes
-  },
-  data: () => {
-    return {
-      defaultSelected: ['doi']
-    }
   },
   computed: {
     unpaywallAttr () {

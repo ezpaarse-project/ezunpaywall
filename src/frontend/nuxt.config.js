@@ -9,7 +9,9 @@ export default {
     apikeyHost: process.env.APIKEY_HOST || 'http://localhost:59704',
     apikeyMail: process.env.MAIL_APIKEY || 'changeme',
     mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
-    healthHost: process.env.HEALTH_HOST || 'http://localhost:59707'
+    healthHost: process.env.HEALTH_HOST || 'http://localhost:59707',
+    elasticEnv: process.env.ELASTIC_ENV || 'development',
+    version: process.env.VERSION || 'development'
   },
 
   server: {
@@ -21,8 +23,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - client',
-    title: 'client',
+    titleTemplate: 'ezunpaywall - %s',
+    title: 'Unpaywall mirror',
     htmlAttrs: {
       lang: 'en'
     },
@@ -55,7 +57,8 @@ export default {
     // https://go.nuxtjs.dev/eslint
     // '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    'nuxt-highlightjs'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules

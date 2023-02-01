@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
-const { getStatus } = require('../bin/status');
+const checkAuth = require('../middlewares/auth');
+const { getStatus, setInUpdate } = require('../bin/status');
 
 /**
  * @return status
@@ -8,6 +9,12 @@ const { getStatus } = require('../bin/status');
 router.get('/status', (req, res) => {
   const status = getStatus();
   return res.status(200).json(status);
+});
+
+router.patch('/status', checkAuth, (req, res) => {
+  const status = getStatus();
+  setInUpdate(!status);
+  return res.status(200).json(!status);
 });
 
 module.exports = router;

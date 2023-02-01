@@ -182,11 +182,11 @@
       },
       "parameters": []
     },
-    "/enrich/health/graphql": {
+    "/enrich/health/elastic": {
       "get": {
         "summary": "Health on graphql service",
-        "operationId": "get-enrich-health-graphql",
-        "description": "Health on graphql",
+        "operationId": "get-enrich-health-elastic",
+        "description": "Health on elastic",
         "tags": [
           "ping"
         ],

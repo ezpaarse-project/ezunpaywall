@@ -6,11 +6,21 @@ services:
     container_name: ezunpaywall-graphql-dev
     environment:
       - NODE_ENV=development
-    working_dir: /graphql
+      # elastic
+      - ELASTICSEARCH_HOSTS
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
+    working_dir: /usr/src/app
     volumes:
-      - ./src/graphql:/graphql
-      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/graphql/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/graphql/log/access
+      - ./src/graphql:/usr/src/app
+      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/usr/src/app/log/application
+      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/usr/src/app/log/access
     command: "npm run dev"
     ports:
       - ${GRAPHQL_PORT:-59701}:3000
@@ -30,12 +40,33 @@ services:
     container_name: ezunpaywall-update-dev
     environment:
       - NODE_ENV=development
-    working_dir: /update
+      # unpaywall
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_HOST
+      # elastic
+      - ELASTICSEARCH_HOSTS
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
+      - ELASTICSEARCH_TIMEOUT
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
+      # cron
+      - UPDATE_CRON_SCHEDULE
+      - UPDATE_CRON_ACTIVE
+      - UPDATE_CRON_INDEX
+      - UPDATE_CRON_INTERVAL
+      # password
+      - UPDATE_APIKEY
+    working_dir: /usr/src/app
     volumes:
-      - ./src/update:/update
-      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/update/log/application
-      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/update/log/access
-      - ${UPDATE_DATA_PATH:-./src/update/data}:/update/data
+      - ./src/update:/usr/src/app
+      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/usr/src/app/log/application
+      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/usr/src/app/log/access
+      - ${UPDATE_DATA_PATH:-./src/update/data}:/usr/src/app/data
     command: "npm run dev"
     ports:
       - ${UPDATE_PORT:-59702}:3000
@@ -51,12 +82,18 @@ services:
     container_name: ezunpaywall-enrich-dev
     environment:
       - NODE_ENV=development
-    working_dir: /enrich
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
+      # graphql
+      - GRAPHQL_HOST=http://graphql:3000
+    working_dir: /usr/src/app
     volumes:
-      - ./src/enrich:/enrich
-      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/enrich/log/application
-      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/enrich/log/access
-      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/enrich/data
+      - ./src/enrich:/usr/src/app
+      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/usr/src/app/log/application
+      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/usr/src/app/log/access
+      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/usr/src/app/data
     command: "npm run dev"
     ports:
       - ${ENRICH_PORT:-59703}:3000
@@ -77,11 +114,15 @@ services:
     container_name: ezunpaywall-apikey-dev
     environment:
       - NODE_ENV=development
-    working_dir: /apikey
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
+    working_dir: /usr/src/app
     volumes:
-      - ./src/apikey:/apikey
-      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/apikey/log/application
-      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/apikey/log/access
+      - ./src/apikey:/usr/src/app
+      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/usr/src/app/log/application
+      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/usr/src/app/log/access
     command: "npm run dev"
     ports:
       - ${APIKEY_PORT:-59704}:3000
@@ -100,11 +141,17 @@ services:
     container_name: ezunpaywall-mail-dev
     environment:
       - MAIL_SMTP_HOST=maildev
-    working_dir: /mail
+      - MAIL_SMTP_PORT
+      - MAIL_NOTIFICATIONS_SENDER
+      - MAIL_NOTIFICATIONS_RECEIVERS
+      - MAIL_NOTIFICATIONS_MACHINE
+      # password
+      - MAIL_APIKEY
+    working_dir: /usr/src/app
     volumes:
-      - ./src/mail:/mail
-      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/mail/log/application
-      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/mail/log/access
+      - ./src/mail:/usr/src/app
+      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/usr/src/app/log/application
+      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/usr/src/app/log/access
     command: "npm run dev"
     ports:
       - ${MAIL_PORT:-59705}:3000
@@ -118,14 +165,16 @@ services:
   frontend:
     image: node:14.15.5
     container_name: ezunpaywall-frontend-dev
-    working_dir: /frontend
+    working_dir: /usr/src/app
     volumes:
-      - ./src/frontend:/frontend
+      - ./src/frontend:/usr/src/app
     command: "npm run dev"
     ports:
      - ${FRONTEND_PORT:-59706}:3000
     environment:
       - NODE_ENV=development
+      - ELASTIC_ENV=development
+      - VERSION=development
       # graphql
       - GRAPHQL_HOST
       # update
@@ -161,10 +210,10 @@ services:
   health:
     image: node:18.12-alpine3.17
     container_name: ezunpaywall-health-dev
-    working_dir: /health
+    working_dir: /usr/src/app
     volumes:
-      - ./src/health:/health
-      - ${HEALTH_APPLICATION_LOG_PATH:-./src/health/log/application}:/health/log/application
+      - ./src/health:/usr/src/app
+      - ${HEALTH_APPLICATION_LOG_PATH:-./src/health/log/application}:/usr/src/app/log/application
     command: "npm run dev"
     ports:
      - ${HEALTH_PORT:-59707}:3000
@@ -228,9 +277,9 @@ services:
     environment:
       - http_proxy
       - https_proxy
-    working_dir: /fakeUnpaywall
+    working_dir: /usr/src/app
     volumes:
-      - ./src/fakeUnpaywall:/fakeUnpaywall
+      - ./src/fakeUnpaywall:/usr/src/app
     command: "npm run dev"
     ports:
       - 59799:3000

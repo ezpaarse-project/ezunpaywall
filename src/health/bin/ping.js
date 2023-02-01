@@ -4,7 +4,7 @@ const redis = require('redis');
 
 const logger = require('../lib/logger');
 
-async function healthWithTimeout(p1, name, timeout) {
+async function PromiseOnHealthWithTimeout(p1, name, timeout) {
   const start = Date.now();
 
   const p2 = new Promise((resolve, reject) => {
@@ -18,17 +18,17 @@ async function healthWithTimeout(p1, name, timeout) {
   } catch (err) {
     logger.error(`[${name}] ${err}`);
     return {
-      name, elapsedTime: Date.now() - start, error: err?.message, status: false,
+      name, elapsedTime: Date.now() - start, error: err?.message, healthy: false,
     };
   }
 
   const services = { ...reply };
 
   delete services.elapsedTime;
-  delete services.status;
+  delete services.healthy;
 
   return {
-    name, elapsedTime: Date.now() - start, services, status: reply.status || false,
+    name, elapsedTime: Date.now() - start, services, healthy: reply.healthy || false,
   };
 }
 
@@ -46,7 +46,7 @@ async function health(name, host) {
   return res.data;
 }
 
-async function pingWithTimeout(p1, name, timeout) {
+async function promiseWithTimeout(p1, name, timeout) {
   const start = Date.now();
 
   const p2 = new Promise((resolve, reject) => {
@@ -60,20 +60,20 @@ async function pingWithTimeout(p1, name, timeout) {
   } catch (err) {
     logger.error(`[${name}] ${err}`);
     return {
-      name, elapsedTime: Date.now() - start, error: err?.message, status: false,
+      name, elapsedTime: Date.now() - start, error: err?.message, healthy: false,
     };
   }
 
   let error;
-  let status = true;
+  let healthy = true;
 
   if (reply !== true) {
     error = reply;
-    status = false;
+    healthy = false;
   }
 
   return {
-    name, elapsedTime: Date.now() - start, error, status,
+    name, elapsedTime: Date.now() - start, error, healthy,
   };
 }
 
@@ -107,30 +107,28 @@ async function pingRedisWithClient() {
 }
 
 async function pingAll() {
-  const graphqlHost = config.get('graphql');
-  const healthGraphql = healthWithTimeout(health('graphql', graphqlHost), 'graphql', 5000);
+  const graphqlHost = config.get('graphqlHost');
+  const healthGraphql = PromiseOnHealthWithTimeout(health('graphql', graphqlHost), 'graphql', 5000);
 
-  const updateHost = config.get('update');
-  const healthUpdate = healthWithTimeout(health('update', updateHost), 'update', 5000);
+  const updateHost = config.get('updateHost');
+  const healthUpdate = PromiseOnHealthWithTimeout(health('update', updateHost), 'update', 5000);
 
-  const enrichHost = config.get('enrich');
-  const healthEnrich = healthWithTimeout(health('enrich', enrichHost), 'enrich', 5000);
+  const enrichHost = config.get('enrichHost');
+  const healthEnrich = PromiseOnHealthWithTimeout(health('enrich', enrichHost), 'enrich', 5000);
 
-  const apikeyHost = config.get('apikey');
-  const healthApikey = healthWithTimeout(health('apikey', apikeyHost), 'apikey', 5000);
+  const apikeyHost = config.get('apikeyHost');
+  const healthApikey = PromiseOnHealthWithTimeout(health('apikey', apikeyHost), 'apikey', 5000);
 
-  const mailHost = config.get('mail');
-  const healthMail = healthWithTimeout(health('mail', mailHost), 'mail', 5000);
+  const mailHost = config.get('mailHost');
+  const healthMail = PromiseOnHealthWithTimeout(health('mail', mailHost), 'mail', 5000);
 
-  const elasticHost = config.get('elastic');
-  const pingElastic = pingWithTimeout(ping('elastic', elasticHost), 'elastic', 5000);
+  const elasticHost = config.get('elasticHost');
+  const pingElastic = promiseWithTimeout(ping('elastic', elasticHost), 'elastic', 5000);
 
   const unpaywallHost = config.get('unpaywall.host');
-  const pingUnpaywall = pingWithTimeout(ping('unpaywall', unpaywallHost), 'unpaywall', 5000);
+  const pingUnpaywall = promiseWithTimeout(ping('unpaywall', unpaywallHost), 'unpaywall', 5000);
 
-  const pingRedis = pingWithTimeout(pingRedisWithClient(), 'redis', 5000);
-
-  // TODO redis
+  const pingRedis = promiseWithTimeout(pingRedisWithClient(), 'redis', 5000);
 
   const result = await Promise.allSettled([
     healthGraphql,

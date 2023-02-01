@@ -1,9 +1,10 @@
 { 
-  "graphql": "GRAPHQL_HOST",
-  "update": "UPDATE_HOST",
-  "enrich": "ENRICH_HOST",
-  "apikey": "APIKEY_HOST",
-  "mail": "MAIL_HOST",
+  "graphqlHost": "GRAPHQL_HOST",
+  "updateHost": "UPDATE_HOST",
+  "enrichHost": "ENRICH_HOST",
+  "apikeyHost": "APIKEY_HOST",
+  "mailHost": "MAIL_HOST",
+  "elasticHost": "ELASTIC_HOST",
   "redis":  {
     "host": "REDIS_HOST",
     "port": "REDIS_PORT",

@@ -5,7 +5,7 @@
         {{ name }}
         <v-spacer />
         <v-icon
-          :color="config.status ? 'green darken-1' : 'red darken-1'"
+          :color="config.healthy ? 'green darken-1' : 'red darken-1'"
           size="30"
         >
           mdi-circle
@@ -22,7 +22,7 @@
         <v-spacer />
         <v-icon
           :color="
-            serviceDependency.status ? 'green darken-1' : 'red darken-1'
+            serviceDependency.healthy ? 'green darken-1' : 'red darken-1'
           "
           size="15"
         >

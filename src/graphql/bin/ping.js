@@ -1,4 +1,4 @@
-async function pingWithTimeout(p1, name, timeout) {
+async function promiseWithTimeout(p1, name, timeout) {
   const start = Date.now();
 
   const p2 = new Promise((resolve, reject) => {
@@ -6,7 +6,7 @@ async function pingWithTimeout(p1, name, timeout) {
   });
 
   let error;
-  let status = true;
+  let healthy = true;
 
   let reply;
 
@@ -14,18 +14,18 @@ async function pingWithTimeout(p1, name, timeout) {
     reply = await Promise.race([p1, p2]);
   } catch (err) {
     return {
-      name, elapsedTime: Date.now() - start, error: err?.message, status: false,
+      name, elapsedTime: Date.now() - start, error: err?.message, healthy: false,
     };
   }
 
   if (reply !== true) {
     error = reply;
-    status = false;
+    healthy = false;
   }
 
   return {
-    name, elapsedTime: Date.now() - start, error, status,
+    name, elapsedTime: Date.now() - start, error, healthy,
   };
 }
 
-module.exports = pingWithTimeout;
+module.exports = promiseWithTimeout;
