@@ -91,6 +91,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('totalInsertedDocs').equal(150);
+      expect(state).have.property('totalUpdatedDocs').equal(0);
 
       expect(state.steps[0]).have.property('task').equal('getChangefiles');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
@@ -140,6 +142,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(false);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('totalInsertedDocs').equal(150);
+      expect(report).have.property('totalUpdatedDocs').equal(0);
 
       expect(report.steps[0]).have.property('task').equal('getChangefiles');
       expect(report.steps[0]).have.property('took').to.not.equal(undefined);
@@ -221,6 +225,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('totalInsertedDocs').equal(2100);
+      expect(state).have.property('totalUpdatedDocs').equal(0);
 
       expect(state.steps[0]).have.property('task').equal('getChangefiles');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
@@ -270,6 +276,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(false);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('totalInsertedDocs').equal(2100);
+      expect(report).have.property('totalUpdatedDocs').equal(0);
 
       expect(report.steps[0]).have.property('task').equal('getChangefiles');
       expect(report.steps[0]).have.property('took').to.not.equal(undefined);
@@ -353,6 +361,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('totalInsertedDocs').equal(0);
+      expect(state).have.property('totalUpdatedDocs').equal(0);
 
       expect(state.steps[0]).have.property('task').equal('getChangefiles');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);

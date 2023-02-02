@@ -71,6 +71,8 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('totalInsertedDocs').equal(2150);
+      expect(state).have.property('totalUpdatedDocs').equal(0);
 
       expect(state.steps[0]).have.property('task').equal('download');
       expect(state.steps[0]).have.property('percent').equal(100);
@@ -99,6 +101,8 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(false);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('totalInsertedDocs').equal(2150);
+      expect(report).have.property('totalUpdatedDocs').equal(0);
 
       expect(report.steps[0]).have.property('task').equal('download');
       expect(report.steps[0]).have.property('percent').equal(100);

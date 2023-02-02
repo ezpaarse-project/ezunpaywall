@@ -26,7 +26,7 @@
         md="6"
         lg="3"
       >
-        <Card :report="report" :status="getStatusOfReport(report)" />
+        <ReportCard :report="report" :status="getStatusOfReport(report)" />
       </v-col>
     </v-row>
   </v-card>
@@ -34,13 +34,13 @@
 
 <script>
 import UpdateDialog from '~/components/administration/update/UpdateDialog.vue'
-import Card from '~/components/report/Card.vue'
+import ReportCard from '~/components/report/ReportCard.vue'
 
 export default {
   name: 'WeekHistory',
   components: {
     UpdateDialog,
-    Card
+    ReportCard
   },
   data () {
     return {
@@ -53,20 +53,6 @@ export default {
     this.getReports()
   },
   methods: {
-    enrichReport (report) {
-      report.steps = report.steps.filter(e => e.task === 'insert')
-      let totalInsertedDocs = 0
-      let totalUpdatedDocs = 0
-      report.steps.forEach((e) => {
-        totalInsertedDocs += e?.insertedDocs || 0
-      })
-      report.totalInsertedDocs = totalInsertedDocs
-      report.steps.forEach((e) => {
-        totalUpdatedDocs += e?.updatedDocs || 0
-      })
-      report.totalUpdatedDocs = totalUpdatedDocs
-      return report
-    },
     getStatusOfReport (report) {
       if (!report.data.error && report.data.done) { return 'success' }
       if (!report.data.error && !report.data.done) { return 'inprogress' }
@@ -93,24 +79,29 @@ export default {
       filenames = filenames.slice(0, 8)
 
       for (let i = 0; i < filenames.length; i += 1) {
-        try {
-          report = await this.$update({
-            method: 'GET',
-            url: `/reports/${filenames[i]}`
-          })
-        } catch (err) {
-          this.$store.dispatch('snacks/error', this.$t('reportHistory.reportError'))
-          this.loaded = false
-          return
-        }
-        report = this.enrichReport(report.data)
-        this.reports.push({
-          id: i,
-          createdAt: this.$dateFns.format(report.createdAt),
-          data: report
-        })
+        report = await this.getReport(filenames[i])
+        this.reports.push(
+          {
+            id: i,
+            data: report,
+            createdAt: this.$dateFns.format(report.createdAt)
+          }
+        )
       }
       this.loaded = false
+    },
+    async getReport (filename) {
+      let report
+      try {
+        report = await this.$update({
+          method: 'GET',
+          url: `/reports/${filename}`
+        })
+      } catch (err) {
+        this.$store.dispatch('snacks/error', this.$t('reportHistory.reportError'))
+        return
+      }
+      return report.data
     },
     setDialogVisible (value) {
       this.dialogVisible = value
