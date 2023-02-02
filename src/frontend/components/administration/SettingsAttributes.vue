@@ -5,7 +5,7 @@
         Select all
       </v-btn>
       <v-spacer />
-      <v-btn @click="deselectAll()">
+      <v-btn @click="unselectAll()">
         unselectall
       </v-btn>
     </v-card-actions>
@@ -161,7 +161,7 @@ export default {
       this.zAuthorsSelected = this.zAuthorsAttr.map(e => e.name)
       this.$emit('attributes', this.attributes)
     },
-    deselectAll () {
+    unselectAll () {
       this.simpleSelected = []
       this.bestOaLocationSelected = []
       this.firstOaLocationSelected = []
