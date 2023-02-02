@@ -19,7 +19,7 @@
             required
           />
           <v-card-actions>
-            <span class="mr-2">Access: </span>
+            <span class="mr-2" v-text="$t('administration.apikey.access')" />
             <v-checkbox
               v-model="graphql"
               class="mr-2"
@@ -78,6 +78,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       name: '',
       enrich: false,
       graphql: true,
