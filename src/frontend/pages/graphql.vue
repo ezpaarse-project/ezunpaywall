@@ -88,7 +88,7 @@
           <v-card-title v-text="$t('graphql.result')" />
           <v-card-text>
             <pre>
-                <code v-highlight class="json">{{ JSON.stringify(response.data, null, 2) }}</code>
+                <code v-highlight class="json">{{ stringifiedGraphqlResponse }}</code>
             </pre>
           </v-card-text>
           <v-card-actions>
@@ -178,6 +178,9 @@ export default {
     },
     linkGraphql () {
       return `${this.$graphql.defaults.baseURL}/graphql?query=${this.query}&apikey=demo`
+    },
+    stringifiedGraphqlResponse () {
+      return JSON.stringify(this.response.data, null, 2)
     }
   },
   methods: {
