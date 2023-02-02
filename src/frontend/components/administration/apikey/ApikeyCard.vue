@@ -5,14 +5,14 @@
         {{ config.name }}
         <v-spacer />
         <template v-if="config.allowed">
-          <span class="green--text" v-text="$t('administration.allowed')" />
+          <span class="green--text" v-text="$t('administration.apikey.allowed')" />
           <v-icon size="30" right color="green">
             mdi-check
           </v-icon>
         </template>
 
         <template v-else>
-          <span class="red--text" v-text="$t('administration.notAllowed')" />
+          <span class="red--text" v-text="$t('administration.apikey.notAllowed')" />
           <v-icon size="30" right color="red">
             mdi-close
           </v-icon>
