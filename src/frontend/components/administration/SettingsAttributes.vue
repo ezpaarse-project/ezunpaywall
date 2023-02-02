@@ -135,10 +135,10 @@ export default {
       return this.allSelected
         ? ['*']
         : this.simpleSelected
-          .concat(this.parse(this.bestOaLocationSelected, 'best_oa_location'))
-          .concat(this.parse(this.firstOaLocationSelected, 'first_oa_location'))
-          .concat(this.parse(this.oaLocationsSelected, 'oa_locations'))
-          .concat(this.parse(this.zAuthorsSelected, 'z_authors'))
+          .concat(this.flatten(this.bestOaLocationSelected, 'best_oa_location'))
+          .concat(this.flatten(this.firstOaLocationSelected, 'first_oa_location'))
+          .concat(this.flatten(this.oaLocationsSelected, 'oa_locations'))
+          .concat(this.flatten(this.zAuthorsSelected, 'z_authors'))
     }
   },
   mounted () {
@@ -174,7 +174,7 @@ export default {
       this[key] = e
       this.$emit('attributes', this.attributes)
     },
-    parse (e, attr) {
+    flatten (e, attr) {
       return e.map(e => `${attr}.${e}`)
     }
   }
