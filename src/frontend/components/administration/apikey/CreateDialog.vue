@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="visible" max-width="1000px" @click:outside="closeDialog()">
+  <v-dialog :value="visible" max-width="1000px" @input="closeDialog">
     <v-card>
       <v-toolbar
         color="primary"
@@ -37,7 +37,7 @@
             :first-oa-location="attributesFirstOaLocation"
             :oa-locations="attributesOaLocations"
             :z-authors="attributesZAuthors"
-            @attributes="setAttributes"
+            @attributes="updateAttributes"
           />
         </v-form>
       </v-card-text>
@@ -136,7 +136,7 @@ export default {
             'X-API-KEY': this.$store.state.admin.password
           }
         })
-      } catch (e) {
+      } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('administration.apikey.errorCreate'))
         this.loading = false
         return
@@ -146,8 +146,8 @@ export default {
       this.loading = true
       this.closeDialog()
     },
-    setAttributes (e) {
-      this.attributes = e
+    updateAttributes (attributesSelected) {
+      this.attributes = attributesSelected
     }
   }
 }
