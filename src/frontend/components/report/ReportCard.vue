@@ -1,7 +1,7 @@
 <template>
   <v-card height="100%" outlined>
     <v-progress-linear
-      :color="color()"
+      :color="color"
       dark
       height="40"
       value="100"
