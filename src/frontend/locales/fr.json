@@ -87,7 +87,7 @@
     "login": "Connexion",
     "logout": "Deconnexion",
     "password": "Mot de passe",
-    "loginSuccess": "Connexion réussite",
+    "loginSuccess": "Connexion réussie",
     "errorLogin": "Mot de passe incorrect",
     "health": {
       "title": "État des services",
@@ -97,27 +97,31 @@
     "apikey": {
       "title": "Clés d'API",
       "noApikeys": "Pas de clés d'API",
+      "attributes": "Attributs :",
+      "access": "Accès :",
       "buttonCreate": "Créer une nouvelle clé d'API",
-      "create": "Creation d'une nouvelle clé d'API",
-      "infoCreated": "La clé d'API a été créé",
-      "errorCreate": "La clé d'API n'a pas pu être créé",
+      "create": "Création d'une nouvelle clé d'API",
+      "infoCreated": "La clé d'API a été créée",
+      "errorCreate": "La clé d'API n'a pas pu être créée",
       "update": "Mise à jour de la clé d'API",
-      "infoUpdate": "La clé d'API a été mis à jour",
-      "errorUpdate": "La clé d'API n'a pas pu être mis à jour",
+      "infoUpdate": "La clé d'API a été mise à jour",
+      "errorUpdate": "La clé d'API n'a pas pu être mise à jour",
       "delete": "Suppression de la clé d'API",
       "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)",
-      "infoDeleted": "La clé d'API a été supprimé",
+      "infoDeleted": "La clé d'API a été supprimée",
       "errorDelete": "Impossible de supprimer la clé d'API"
     },
     "update" : {
       "title": "Lancement d'une mise à jour",
       "infoUpdate": "La mise à jour a démarré",
-      "errorUpdate": "Error lors du lancement de la mise à jour"
+      "errorUpdate": "Erreur lors du lancement de la mise à jour"
     }
   },
   "unpaywallArgs": {
     "title": "Paramètres",
-    "help": "Dans cette partie, vous pouvez séléctionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
+    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
+    "selectAll": "Tout sélectionner",
+    "unselectAll": "Tout désélectionner",
     "general": {
       "doi": "Digital Object Identifier",
       "data_standard": "Approches de collectes de données utilisées pour cette ressource",

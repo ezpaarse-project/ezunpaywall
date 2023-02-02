@@ -11,18 +11,18 @@
         <v-container fluid>
           <v-select
             v-model="interval"
-            :items="intervalAttr"
+            :items="intervals"
             label="interval"
           />
           <v-text-field
             v-model="startDate"
             label="startDate"
-            :rules="dateRule(startDate)"
+            :rules="[dateRule]"
           />
           <v-text-field
             v-model="endDate"
             label="dateEnd"
-            :rules="dateRule(endDate)"
+            :rules="[dateRule]"
           />
         </v-container>
       </v-card-text>
@@ -63,7 +63,7 @@ export default {
     }
   },
   computed: {
-    intervalAttr () {
+    intervals () {
       return ['day', 'week']
     },
     dateRule () {
@@ -79,9 +79,6 @@ export default {
     }
   },
   methods: {
-    dateRule (date) {
-      return [/^\d{4}-\d{2}-\d{2}$/i.test(date) || 'YYYY-MM-DD']
-    },
     async startUpdate () {
       this.loading = true
       try {

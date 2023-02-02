@@ -26,7 +26,7 @@
             required
           />
           <v-card-actions>
-            <span class="mr-2">Access: </span>
+            <span class="mr-2" v-text="$t('administration.apikey.access')" />
             <v-checkbox
               v-model="graphql"
               class="mr-2"
@@ -44,7 +44,7 @@
             :first-oa-location="attributesFirstOaLocation"
             :oa-locations="attributesOaLocations"
             :z-authors="attributesZAuthors"
-            @attributes="setAttributes"
+            @attributes="updateAttributes"
           />
         </v-form>
       </v-card-text>
@@ -87,7 +87,7 @@ export default {
     },
     config: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data () {
@@ -128,12 +128,12 @@ export default {
       return this.attributes?.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
     },
     attributesAll () {
-      return this.attributes.includes('*')
+      return this.attributes?.includes('*')
     }
   },
   mounted () {
-    this.graphql = this.config.access.includes('graphql')
-    this.enrich = this.config.access.includes('enrich')
+    this.graphql = this.config?.access.includes('graphql')
+    this.enrich = this.config?.access.includes('enrich')
   },
   methods: {
     closeDialog () {
@@ -165,8 +165,8 @@ export default {
       this.loading = true
       this.closeDialog()
     },
-    setAttributes (e) {
-      this.attributes = e
+    updateAttributes (attributesSelected) {
+      this.attributes = attributesSelected
     }
   }
 }

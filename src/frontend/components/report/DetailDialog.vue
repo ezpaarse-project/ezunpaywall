@@ -44,6 +44,9 @@ export default {
       set (dialog) {
         this.$emit('input', dialog)
       }
+    },
+    stringifiedReport () {
+      return JSON.stringify(this.report.data, null, 2)
     }
   },
   methods: {

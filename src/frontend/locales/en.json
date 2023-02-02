@@ -97,6 +97,8 @@
     "apikey": {
       "title": "API keys",
       "noApikeys": "no API keys",
+      "attributes": "Attributes :",
+      "access": "Access :",
       "buttonCreate": "Create new API key",
       "create": "Creation of a new API key",
       "infoCreated": "The API key has been created",
@@ -118,6 +120,8 @@
   "unpaywallArgs": {
     "title": "Settings",
     "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
+    "selectAll": "Select all",
+    "unselectAll": "Unselect all",
     "general": {
       "doi": "Digital Object Identifier",
       "data_standard": "Data collection approaches used for this resource",
