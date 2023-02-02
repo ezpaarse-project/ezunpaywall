@@ -14,13 +14,13 @@
       :items="unpaywallAttr"
       label="simple"
       :selected="simpleSelected"
-      @simple="setAttributes(simpleSelected, $event)"
+      @simple="setAttributes('simpleSelected', $event)"
     />
     <SelectAttributes
       :items="oaLocationAttr"
       label="best_oa_location"
       :selected="bestOaLocationSelected"
-      @best_oa_location="setAttributes(bestOaLocationSelected, $event)"
+      @best_oa_location="setAttributes('bestOaLocationSelected', $event)"
     />
     <SelectAttributes
       :items="oaLocationAttr"
