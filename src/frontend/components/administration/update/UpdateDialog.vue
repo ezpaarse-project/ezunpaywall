@@ -66,6 +66,9 @@ export default {
     intervalAttr () {
       return ['day', 'week']
     },
+    dateRule () {
+      return value => this.$dateFns.isMatch(value, 'yyyy-MM-dd') || 'YYYY-MM-DD'
+    },
     visible: {
       get () {
         return this.dialog
