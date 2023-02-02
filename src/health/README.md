@@ -11,11 +11,11 @@ Health service indicating the status of the connection between each service.
 | GRAPHQL_HOST | http://update:3000 | update host |
 | GRAPHQL_HOST | http://apikey:3000 | apikey host |
 | GRAPHQL_HOST | http://mail:3000 | mail host |
-| ELASTICSEARCH_HOSTS | http://elastic:changeme@elastic:9200 | elasticsearch host |
+| ELASTICSEARCH_URL | http://elastic:changeme@elastic:9200 | elasticsearch host with login and password |
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
-| UNOAYWALL_HOST | http://fakeUnpaywall:3000 | unpaywall host |
+| UNPAYWALL_HOST | http://fakeUnpaywall:3000 | unpaywall host |
 | UNPAYWALL_APIKEY | default | unpaywall apikey |
 
 

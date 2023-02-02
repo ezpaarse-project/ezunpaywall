@@ -10,7 +10,7 @@
     "port": "REDIS_PORT",
     "password": "REDIS_PASSWORD"
   },
-  "elastic": "ELASTIC_HOST_LOGIN",
+  "elastic": "ELASTIC_URL",
   "unpaywall": {
     "host": "UNPAYWALL_HOST",
     "apikey": "UNPAYWALL_APIKEY"
