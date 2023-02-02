@@ -27,12 +27,12 @@ export default {
   },
   computed: {
     isAdmin () {
-      return this.$store.state.admin.status
+      return this.$store.state.admin.isAdmin
     }
   },
   methods: {
     logOut () {
-      this.$store.dispatch('admin/setAdmin', false)
+      this.$store.dispatch('admin/setIsAdmin', false)
       this.$store.dispatch('admin/setPassword', '')
     }
   }

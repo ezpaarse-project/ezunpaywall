@@ -1,20 +1,20 @@
 export default {
   namespaced: true,
   state: () => ({
-    status: false,
+    isAdmin: false,
     password: ''
   }),
   actions: {
-    setAdmin ({ commit }, value) {
-      commit('setAdmin', value)
+    setIsAdmin ({ commit }, value) {
+      commit('setIsAdmin', value)
     },
     setPassword ({ commit }, value) {
       commit('setPassword', value)
     }
   },
   mutations: {
-    setAdmin (state, value) {
-      state.status = value
+    setIsAdmin (state, value) {
+      state.isAdmin = value
     },
     setPassword (state, value) {
       state.password = value

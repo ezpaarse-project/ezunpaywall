@@ -26,14 +26,14 @@ export default {
   name: 'Login',
   data () {
     return {
+      loading: false,
       password: '',
       passwordVisible: false,
-      login: false,
-      loading: false
+      login: false
     }
   },
   computed: {
-    passwordRules () { return value => !!value || 'Required.' }
+    passwordRules () { return value => !!value || this.$t('required') }
   },
   methods: {
     async tryLogin () {
@@ -51,9 +51,10 @@ export default {
         this.loading = false
         return
       }
-      this.$store.dispatch('admin/setAdmin', true)
+      this.$store.dispatch('admin/setIsAdmin', true)
       this.$store.dispatch('admin/setPassword', this.password)
       this.$store.dispatch('snacks/info', this.$t('administration.loginSuccess'))
+      this.loading = false
     }
   }
 }
