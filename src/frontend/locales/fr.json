@@ -99,6 +99,8 @@
       "noApikeys": "Pas de clés d'API",
       "attributes": "Attributs :",
       "access": "Accès :",
+      "allowed": "Active",
+      "notAllowed": "Désactivé",
       "buttonCreate": "Créer une nouvelle clé d'API",
       "create": "Création d'une nouvelle clé d'API",
       "infoCreated": "La clé d'API a été créée",

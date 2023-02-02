@@ -98,6 +98,8 @@
       "title": "API keys",
       "noApikeys": "no API keys",
       "attributes": "Attributes :",
+      "allowed": "Allowed",
+      "notAllowed": "Not Allowed",
       "access": "Access :",
       "buttonCreate": "Create new API key",
       "create": "Creation of a new API key",

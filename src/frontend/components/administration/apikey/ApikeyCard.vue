@@ -5,14 +5,14 @@
         {{ config.name }}
         <v-spacer />
         <template v-if="config.allowed">
-          <span class="green--text"> Allowed </span>
+          <span class="green--text" v-text="$t('administration.allowed')" />
           <v-icon size="30" right color="green">
             mdi-check
           </v-icon>
         </template>
 
         <template v-else>
-          <span class="red--text"> Not Allowed </span>
+          <span class="red--text" v-text="$t('administration.notAllowed')" />
           <v-icon size="30" right color="red">
             mdi-close
           </v-icon>
@@ -95,6 +95,7 @@
 
 import DeleteDialog from '~/components/administration/apikey/DeleteDialog.vue'
 import UpdateDialog from '~/components/administration/apikey/UpdateDialog.vue'
+
 export default {
   name: 'ApikeyCard',
   components: {
