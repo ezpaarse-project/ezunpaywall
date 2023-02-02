@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="visible" max-width="1000px" @click:outside="closeDialog()">
+  <v-dialog :value="visible" max-width="1000px" @input="closeDialog">
     <v-card>
       <v-toolbar
         color="primary"
