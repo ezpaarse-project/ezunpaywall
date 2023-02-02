@@ -93,6 +93,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       name: this.config.name,
       enrich: false,
       graphql: false,
