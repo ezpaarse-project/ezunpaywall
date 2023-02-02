@@ -162,7 +162,7 @@ export default {
       }
       this.$store.dispatch('snacks/info', this.$t('administration.apikey.infoUpdate'))
       this.$emit('updated')
-      this.loading = true
+      this.loading = false
       this.closeDialog()
     },
     updateAttributes (attributesSelected) {

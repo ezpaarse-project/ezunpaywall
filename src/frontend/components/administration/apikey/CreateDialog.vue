@@ -143,7 +143,7 @@ export default {
       }
       this.$store.dispatch('snacks/info', this.$t('administration.apikey.infoCreated'))
       this.$emit('created')
-      this.loading = true
+      this.loading = false
       this.closeDialog()
     },
     updateAttributes (attributesSelected) {
