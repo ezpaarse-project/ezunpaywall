@@ -12,16 +12,16 @@
           <v-select
             v-model="interval"
             :items="intervals"
-            label="interval"
+            :label="$t('administration.update.interval')"
           />
           <v-text-field
             v-model="startDate"
-            label="startDate"
+            :label="$t('administration.update.startDate')"
             :rules="[dateRule]"
           />
           <v-text-field
             v-model="endDate"
-            label="dateEnd"
+            :label="$t('administration.update.endDate')"
             :rules="[dateRule]"
           />
         </v-container>

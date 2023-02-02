@@ -116,7 +116,10 @@
     "update" : {
       "title": "Launch an update",
       "infoUpdate": "The update process has started",
-      "errorUpdate": "Cannot start update process"
+      "errorUpdate": "Cannot start update process",
+      "interval": "Interval",
+      "startDate": "Start date",
+      "endDate": "End date"
     }
   },
   "unpaywallArgs": {

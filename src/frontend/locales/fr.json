@@ -116,7 +116,10 @@
     "update" : {
       "title": "Lancement d'une mise à jour",
       "infoUpdate": "La mise à jour a démarré",
-      "errorUpdate": "Erreur lors du lancement de la mise à jour"
+      "errorUpdate": "Erreur lors du lancement de la mise à jour",
+      "interval": "Interval",
+      "startDate": "Date de début",
+      "endDate": "Date de fin"
     }
   },
   "unpaywallArgs": {
