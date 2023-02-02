@@ -2,11 +2,11 @@
   <div>
     <v-card-actions>
       <v-btn @click="selectAll()">
-        Select all
+        <span v-text="$t('unpaywallArgs.selectAll')" />
       </v-btn>
       <v-spacer />
       <v-btn @click="unselectAll()">
-        unselectall
+        <span v-text="$t('unpaywallArgs.unselectAll')" />
       </v-btn>
     </v-card-actions>
 
