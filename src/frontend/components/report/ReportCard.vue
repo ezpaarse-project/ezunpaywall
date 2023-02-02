@@ -1,7 +1,7 @@
 <template>
   <v-card height="100%" outlined>
     <v-progress-linear
-      :color="color(status)"
+      :color="color()"
       dark
       height="40"
       value="100"
@@ -80,11 +80,10 @@ export default {
   },
   computed: {
     color () {
-      return (value) => {
-        if (value === 'success') { return 'green darken-2' }
-        if (value === 'inprogress') { return 'blue darken-2' }
-        if (value === 'error') { return 'red darken-2' }
-      }
+      if (this.status === 'success') { return 'green darken-2' }
+      if (this.status === 'inprogress') { return 'blue darken-2' }
+      if (this.status === 'error') { return 'red darken-2' }
+      return 'orange darken-2'
     }
   },
   methods: {
