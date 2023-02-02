@@ -49,15 +49,19 @@ export default {
       reports: []
     }
   },
+  computed: {
+    getStatusOfReport () {
+      return (value) => {
+        if (!value.data.error && value.data.done) { return 'success' }
+        if (!value.data.error && !value.data.done) { return 'inprogress' }
+        if (value.data.error) { return 'error' }
+      }
+    }
+  },
   mounted () {
     this.getReports()
   },
   methods: {
-    getStatusOfReport (report) {
-      if (!report.data.error && report.data.done) { return 'success' }
-      if (!report.data.error && !report.data.done) { return 'inprogress' }
-      if (report.data.error) { return 'error' }
-    },
     async getReports () {
       this.loading = true
       let res
