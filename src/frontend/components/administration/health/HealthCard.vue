@@ -5,7 +5,7 @@
         {{ name }}
         <v-spacer />
         <v-icon
-          :color="config.healthy ? 'green darken-1' : 'red darken-1'"
+          :color="health.healthy ? 'green darken-1' : 'red darken-1'"
           size="30"
         >
           mdi-circle
@@ -14,7 +14,7 @@
     </v-card-title>
     <v-divider class="ma-2" />
     <v-card-text
-      v-for="(serviceDependency, serviceName) in config.services"
+      v-for="(serviceDependency, serviceName) in health.services"
       :key="serviceName"
     >
       <v-row>
@@ -44,9 +44,9 @@ export default {
       type: String,
       default: ''
     },
-    config: {
+    health: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   }
 }

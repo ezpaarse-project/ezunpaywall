@@ -4,15 +4,19 @@
       <v-row>
         {{ config.name }}
         <v-spacer />
-        <span v-if="config.allowed" class="green--text"> Allowed </span>
-        <v-icon v-if="config.allowed" size="30" right color="green">
-          mdi-check
-        </v-icon>
+        <template v-if="config.allowed">
+          <span class="green--text"> Allowed </span>
+          <v-icon size="30" right color="green">
+            mdi-check
+          </v-icon>
+        </template>
 
-        <span v-if="!config.allowed" class="red--text"> Not Allowed </span>
-        <v-icon v-if="!config.allowed" size="30" right color="red">
-          mdi-close
-        </v-icon>
+        <template v-else>
+          <span class="red--text"> Not Allowed </span>
+          <v-icon size="30" right color="red">
+            mdi-close
+          </v-icon>
+        </template>
       </v-row>
     </v-card-title>
 
@@ -23,7 +27,7 @@
     <v-divider class="ma-2" />
 
     <div class="ml-8">
-      access:
+      <span v-text="$t('administration.apikey.access')" />
       <v-chip
         v-for="access in config.access"
         :key="access"
@@ -38,7 +42,7 @@
     </div>
 
     <div class="ml-8">
-      attributes:
+      <span v-text="$t('administration.apikey.attributes')" />
       <v-chip
         v-for="attributes in config.attributes"
         :key="attributes"
@@ -104,7 +108,7 @@ export default {
     },
     config: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data () {

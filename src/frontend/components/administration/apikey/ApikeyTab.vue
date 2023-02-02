@@ -39,7 +39,7 @@
         lg="6"
         xl="6"
       >
-        <Card
+        <ApikeyCard
           :apikey="Object.keys(apikey)[0]"
           :config="apikey[Object.keys(apikey)[0]]"
           @deleted="getApikeys()"
@@ -52,13 +52,13 @@
 
 <script>
 import CreateDialog from '~/components/administration/apikey/CreateDialog.vue'
-import Card from '~/components/administration/apikey/Card.vue'
+import ApikeyCard from '~/components/administration/apikey/ApikeyCard.vue'
 
 export default {
   name: 'ApikeyTab',
   components: {
     CreateDialog,
-    Card
+    ApikeyCard
   },
   data () {
     return {

@@ -11,19 +11,19 @@
     </v-row>
     <v-row v-else>
       <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
-        <Card :report="report" :status="getStatusOfReport(report)" />
+        <ReportCard :report="report" :status="getStatusOfReport(report)" />
       </v-col>
     </v-row>
   </section>
 </template>
 
 <script>
-import Card from '~/components/report/Card.vue'
+import ReportCard from '~/components/report/ReportCard.vue'
 
 export default {
   name: 'UpdateHistory',
   components: {
-    Card
+    ReportCard
   },
   transition: 'slide-x-transition',
   data () {
@@ -34,27 +34,8 @@ export default {
   },
   async mounted () {
     await this.getReports()
-    this.id = this.$route.query.id
-    if (this.id) {
-      const index = this.reports.findIndex(e => e.data.createdAt === this.id)
-      const reportSelected = this.reports[index]
-      this.$vuetify.goTo(`[id='${reportSelected.id}']`)
-    }
   },
   methods: {
-    parseReports (report) {
-      let totalInsertedDocs = 0
-      let totalUpdatedDocs = 0
-      report.steps.forEach((e) => {
-        totalInsertedDocs += e?.insertedDocs || 0
-      })
-      report.totalInsertedDocs = totalInsertedDocs
-      report.steps.forEach((e) => {
-        totalUpdatedDocs += e?.updatedDocs || 0
-      })
-      report.totalUpdatedDocs = totalUpdatedDocs
-      return report
-    },
     getStatusOfReport (report) {
       if (!report.data.error && report.data.done) { return 'success' }
       if (!report.data.error && !report.data.done) { return 'inprogress' }
@@ -79,7 +60,6 @@ export default {
 
       for (let i = 0; i < filenames.length; i += 1) {
         report = await this.getReport(filenames[i])
-        report = this.parseReports(report.data)
         this.reports.push(
           {
             id: i,
@@ -101,7 +81,7 @@ export default {
         this.$store.dispatch('snacks/error', this.$t('reportHistory.reportError'))
         return
       }
-      return report
+      return report.data
     }
   }
 }
