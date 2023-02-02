@@ -16,7 +16,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn color="primary" @click="tryLogin()" v-text="$t('administration.login')" />
+      <v-btn :loading="loading" color="primary" @click="tryLogin()" v-text="$t('administration.login')" />
     </v-card-actions>
   </v-card>
 </template>

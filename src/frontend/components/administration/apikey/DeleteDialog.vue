@@ -27,6 +27,7 @@
         <v-spacer />
         <v-btn
           text
+          :loading="loading"
           class="green--text"
           @click="deleteApikey()"
           v-text="$t('yes')"

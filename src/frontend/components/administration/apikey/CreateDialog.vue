@@ -50,6 +50,7 @@
         />
         <v-spacer />
         <v-btn
+          :loading="loading"
           text
           :disabled="!valid"
           class="green--text"
