@@ -14,7 +14,7 @@
       </v-toolbar>
       <v-card-text>
         <pre>
-          <code v-highlight class="json">{{ JSON.stringify(report.data, null, 2) }}</code>
+          <code v-highlight class="json">{{ stringifiedReport }}</code>
         </pre>
       </v-card-text>
       <v-card-actions>
