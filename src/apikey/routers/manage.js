@@ -63,14 +63,14 @@ router.get('/keys', checkAuth, async (req, res, next) => {
   const allKeys = [];
 
   for (let i = 0; i < keys.length; i += 1) {
-    const key = keys[i];
+    const apikey = keys[i];
 
     let config;
 
     try {
-      config = await redisClient.get(key);
+      config = await redisClient.get(apikey);
     } catch (err) {
-      return next({ message: `Cannot get key [${key}] on redis`, stackTrace: err });
+      return next({ message: `Cannot get key [${apikey}] on redis`, stackTrace: err });
     }
 
     try {
@@ -79,7 +79,7 @@ router.get('/keys', checkAuth, async (req, res, next) => {
       return next({ message: `Cannot parse config [${config}]`, stackTrace: err });
     }
 
-    allKeys.push({ [key]: config });
+    allKeys.push({ apikey, config });
   }
 
   return res.status(200).json(allKeys);
@@ -320,26 +320,13 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
  * load apikey
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
-  const { dev } = req.query;
   const loadKeys = req.body;
 
-  if (dev) {
-    try {
-      await load();
-    } catch (err) {
-      logger.error('Cannot load apikeys');
-      logger.error(err);
-      return next({ message: 'Cannot load apikeys', stackTrace: err });
-    }
-    return res.status(204).json();
-  }
-
   for (let i = 0; i < loadKeys.length; i += 1) {
-    const [apikey] = Object.keys(loadKeys[i]);
-    const config = loadKeys[i][apikey];
+    const { apikey, config } = loadKeys[i];
 
     try {
-      await redisClient.set(apikey, `${JSON.stringify(config)}`);
+      await redisClient.set(apikey, JSON.stringify(config));
       logger.info(`[load] ${config.name} loaded`);
     } catch (err) {
       logger.error(`Cannot load [${apikey}] with config [${JSON.stringify(config)}] on redis`);
@@ -348,6 +335,20 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
     }
   }
 
+  return res.status(204).json();
+});
+
+/**
+ * Load dev apikeys for development or test
+ */
+router.post('/keys/loadDev', checkAuth, async (req, res, next) => {
+    try {
+    await load();
+    } catch (err) {
+    logger.error('Cannot load apikeys');
+      logger.error(err);
+    return next({ message: 'Cannot load apikeys', stackTrace: err });
+    }
   return res.status(204).json();
 });
 
