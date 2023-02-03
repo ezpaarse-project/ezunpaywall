@@ -21,7 +21,7 @@ const {
 } = require('../bin/attributes');
 
 /**
- * get config of apikey
+ * Get config of apikey entered in parameter
  */
 router.get('/keys/:apikey', async (req, res, next) => {
   const { apikey } = req.params;
@@ -55,7 +55,7 @@ router.get('/keys/:apikey', async (req, res, next) => {
 });
 
 /**
- * get config of apikey
+ * Get list of all apikeys
  */
 router.get('/keys', checkAuth, async (req, res, next) => {
   const keys = await redisClient.keys('*');
@@ -94,7 +94,7 @@ router.get('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * create new apikey
+ * Create new apikey with config in body
  */
 router.post('/keys', checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
@@ -102,9 +102,9 @@ router.post('/keys', checkAuth, async (req, res, next) => {
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql']),
     allowed: joi.boolean().default(true),
-  }).validate(req.body);
+  }).validate(req?.body);
 
-  if (error) return res.status(400).json({ message: error.details[0].message });
+  if (error) return res.status(400).json({ message: error?.details?.[0]?.message });
 
   const {
     name, attributes, access, allowed,
@@ -163,7 +163,7 @@ router.post('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * update apikey
+ * Update apikey entered in parameter with new config in body
  */
 router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
   const checkParams = joi.string().trim().required().validate(req.params.apikey);
@@ -277,7 +277,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
 });
 
 /**
- * delete apikey
+ * Delete the apikey entered in parameter
  */
 router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.apikey);
@@ -311,7 +311,7 @@ router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
 });
 
 /**
- * delete all apikey
+ * Delete all apikeys
  */
 router.delete('/keys', checkAuth, async (req, res, next) => {
   try {
@@ -325,7 +325,7 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * load apikey
+ * Load apikeys entered in body
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
   const loadKeys = req.body;
@@ -350,13 +350,13 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
  * Load dev apikeys for development or test
  */
 router.post('/keys/loadDev', checkAuth, async (req, res, next) => {
-    try {
+  try {
     await load();
-    } catch (err) {
+  } catch (err) {
     logger.error('Cannot load apikeys');
-      logger.error(err);
+    logger.error(err);
     return next({ message: 'Cannot load apikeys', stackTrace: err });
-    }
+  }
   return res.status(204).json();
 });
 
