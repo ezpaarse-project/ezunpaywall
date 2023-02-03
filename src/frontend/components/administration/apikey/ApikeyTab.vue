@@ -13,7 +13,7 @@
       />
 
       <CreateDialog
-        :visible="createDialogVisible"
+        v-model="createDialogVisible"
         @created="getApikeys()"
         @closed="setVisible(false)"
       />

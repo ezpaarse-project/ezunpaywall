@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="visible" max-width="1000px" @input="closeDialog">
+  <v-dialog :value="value" max-width="1000px" @input="updateVisible($event)">
     <v-card>
       <v-toolbar
         color="primary"
@@ -52,7 +52,7 @@
         <v-btn
           text
           class="red--text"
-          @click.stop="closeDialog()"
+          @click.stop="updateVisible(false)"
           v-text="$t('cancel')"
         />
         <v-spacer />
@@ -78,7 +78,7 @@ export default {
     SettingsAttributes
   },
   props: {
-    visible: {
+    value: {
       type: Boolean,
       default: false
     },
@@ -138,8 +138,8 @@ export default {
     this.enrich = this.config?.access.includes('enrich')
   },
   methods: {
-    closeDialog () {
-      this.$emit('closed')
+    updateVisible (visible) {
+      this.$emit('input', visible)
     },
     async updateApikey () {
       this.loading = true
@@ -165,7 +165,7 @@ export default {
       this.$store.dispatch('snacks/info', this.$t('administration.apikey.infoUpdate'))
       this.$emit('updated')
       this.loading = false
-      this.closeDialog()
+      this.updateVisible(false)
     },
     updateAttributes (attributesSelected) {
       this.attributes = attributesSelected

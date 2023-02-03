@@ -66,7 +66,7 @@
         </v-icon>
       </v-btn>
       <UpdateDialog
-        :visible="updateDialogVisible"
+        v-model="updateDialogVisible"
         :apikey="apikey"
         :config="config"
         @closed="setUpdateDialogVisible(false)"
@@ -82,7 +82,7 @@
         </v-icon>
       </v-btn>
       <DeleteDialog
-        :visible="deleteDialogVisible"
+        v-model="deleteDialogVisible"
         :apikey="apikey"
         @closed="setDeleteDialogVisible(false)"
         @deleted="emitDeleted()"

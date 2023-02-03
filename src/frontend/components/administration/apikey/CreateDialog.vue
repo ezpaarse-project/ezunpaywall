@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="visible" max-width="1000px" @input="closeDialog">
+  <v-dialog :value="value" max-width="1000px" @input="updateVisible($event)">
     <v-card>
       <v-toolbar
         color="primary"
@@ -45,14 +45,14 @@
         <v-btn
           text
           class="red--text"
-          @click.stop="closeDialog()"
+          @click.stop="updateVisible(false)"
           v-text="$t('cancel')"
         />
         <v-spacer />
         <v-btn
           :loading="loading"
           text
-          :disabled="!valid"
+          :disabled="!validForm"
           class="green--text"
           @click="createApikey()"
           v-text="$t('create')"
@@ -71,7 +71,7 @@ export default {
     SettingsAttributes
   },
   props: {
-    visible: {
+    value: {
       type: Boolean,
       default: false
     }
@@ -87,7 +87,7 @@ export default {
     }
   },
   computed: {
-    valid () {
+    validForm () {
       return this?.attributes?.length > 0 && this?.name?.length > 0 && this?.access?.length > 0
     },
     nameRule () {
@@ -119,8 +119,8 @@ export default {
     }
   },
   methods: {
-    closeDialog () {
-      this.$emit('closed')
+    updateVisible (visible) {
+      this.$emit('input', visible)
     },
     async createApikey () {
       this.loading = true
@@ -146,7 +146,7 @@ export default {
       this.$store.dispatch('snacks/info', this.$t('administration.apikey.infoCreated'))
       this.$emit('created')
       this.loading = false
-      this.closeDialog()
+      this.updateVisible(false)
     },
     updateAttributes (attributesSelected) {
       this.attributes = attributesSelected
