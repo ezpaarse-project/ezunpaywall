@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import UpdateDialog from '~/components/administration/update/UpdateDialog.vue'
+import UpdateDialog from '~/components/administration/update/UpdateProcessDialog.vue'
 import ReportCard from '~/components/report/ReportCard.vue'
 
 export default {
