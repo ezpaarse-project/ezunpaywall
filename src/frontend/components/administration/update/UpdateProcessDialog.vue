@@ -17,12 +17,12 @@
           <v-text-field
             v-model="startDate"
             :label="$t('administration.update.startDate')"
-            :rules="[dateRule]"
+            :rules="[dateFormatRule, dateIsFuturRule]"
           />
           <v-text-field
             v-model="endDate"
             :label="$t('administration.update.endDate')"
-            :rules="[dateRule]"
+            :rules="[dateFormatRule, dateIsFuturRule]"
           />
         </v-container>
       </v-card-text>
@@ -36,6 +36,7 @@
         <v-spacer />
         <v-btn
           text
+          :disabled="!validForm"
           class="green--text"
           @click="startUpdate()"
           v-text="$t('create')"
@@ -59,15 +60,18 @@ export default {
       interval: 'day',
       startDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
       endDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
-      name: ''
+      dateFormatRule: value => this.$dateFns.isMatch(value, 'yyyy-MM-dd') || 'YYYY-MM-DD',
+      dateIsFuturRule: value => Date.now() > new Date(value) || this.$t('administration.update.futur'),
     }
   },
   computed: {
     intervals () {
       return ['day', 'week']
     },
-    dateRule () {
-      return value => this.$dateFns.isMatch(value, 'yyyy-MM-dd') || 'YYYY-MM-DD'
+    validForm () {
+      return this.$dateFns.isMatch(this.startDate, 'yyyy-MM-dd') &&
+        this.$dateFns.isMatch(this.endDate, 'yyyy-MM-dd') &&
+        new Date(this.endDate) <= Date.now()
     },
     visible: {
       get () {

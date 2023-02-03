@@ -117,6 +117,7 @@
       "title": "Launch an update",
       "infoUpdate": "The update process has started",
       "errorUpdate": "Cannot start update process",
+      "futur": "The date is after today",
       "interval": "Interval",
       "startDate": "Start date",
       "endDate": "End date"
