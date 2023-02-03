@@ -82,6 +82,14 @@ router.get('/keys', checkAuth, async (req, res, next) => {
     allKeys.push({ apikey, config });
   }
 
+  const sortApikey = (a, b) => {
+    if (a.config.name < b.config.name) { return -1; }
+    if (a.config.name > b.config.name) { return 1; }
+    return 0;
+  };
+
+  allKeys.sort(sortApikey);
+
   return res.status(200).json(allKeys);
 });
 
