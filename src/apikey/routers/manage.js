@@ -58,7 +58,16 @@ router.get('/keys/:apikey', async (req, res, next) => {
  * Get list of all apikeys
  */
 router.get('/keys', checkAuth, async (req, res, next) => {
-  const keys = await redisClient.keys('*');
+  let keys;
+  try {
+    keys = await redisClient.keys('*');
+  } catch (err) {
+    return next({ message: 'Cannot get alls keys on redis', stackTrace: err });
+  }
+
+  if (!Array.isArray(keys)) {
+    return next({ message: `${keys} is not an array` });
+  }
 
   const allKeys = [];
 
@@ -328,7 +337,11 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
  * Load apikeys entered in body
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
-  const loadKeys = req.body;
+  const { error, value } = joi.array().validate(req.body);
+
+  if (error) return res.status(400).json({ message: error.details[0].message });
+
+  const loadKeys = value;
 
   for (let i = 0; i < loadKeys.length; i += 1) {
     const { apikey, config } = loadKeys[i];
