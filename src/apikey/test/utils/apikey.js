@@ -11,7 +11,7 @@ const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 const loadDevAPIKey = async () => {
   try {
     await chai.request(apikeyURL)
-      .post('/keys/load?dev=true')
+      .post('/keys/loadDev')
       .set('x-api-key', 'changeme');
   } catch (err) {
     console.error('Cannot request apikey service');

@@ -1,6 +1,7 @@
 [
   {
-    "demo": {
+    "apikey": "demo",
+    "config": {
       "name": "demo",
       "access": ["graphql", "enrich"],
       "attributes": ["*"],
@@ -9,7 +10,8 @@
     }
   },
   {
-    "user": {
+    "apikey": "user",
+    "config": {
       "name": "user",
       "access": ["graphql", "enrich"],
       "attributes": ["*"],
@@ -17,7 +19,8 @@
     }
   },
   {
-    "userRestricted": {
+    "apikey": "userRestricted",
+    "config": {
       "name": "userRestricted",
       "access": ["graphql", "enrich"],
       "attributes": ["doi", "is_oa", "best_oa_location.license"],
@@ -25,7 +28,8 @@
     }
   },
   {
-    "graphql": {
+    "apikey": "graphql",
+    "config": {
       "name": "graphql",
       "access": ["graphql"],
       "attributes": ["*"],
@@ -33,7 +37,8 @@
     }
   },
   {
-    "enrich": {
+    "apikey": "enrich",
+    "config": {
       "name": "enrich",
       "access": ["enrich"],
       "attributes": ["*"],
@@ -41,7 +46,8 @@
     }
   },
   {
-    "notAllowed": {
+    "apikey": "notAllowed",
+    "config": {
       "name": "notAllowed",
       "access": ["graphql", "enrich"],
       "attributes": ["*"],

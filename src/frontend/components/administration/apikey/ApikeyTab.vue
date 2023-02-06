@@ -31,8 +31,8 @@
     </v-row>
     <v-row v-else class="ma-2">
       <v-col
-        v-for="(apikey, id) in apikeys"
-        :key="id"
+        v-for="(key) in apikeys"
+        :key="key.apikey"
         cols="12"
         sm="12"
         md="12"
@@ -40,8 +40,8 @@
         xl="6"
       >
         <ApikeyCard
-          :apikey="Object.keys(apikey)[0]"
-          :config="apikey[Object.keys(apikey)[0]]"
+          :apikey="key.apikey"
+          :config="key.config"
           @deleted="getApikeys()"
           @updated="getApikeys()"
         />

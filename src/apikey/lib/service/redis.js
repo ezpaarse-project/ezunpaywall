@@ -30,16 +30,16 @@ redisClient.on('error', (err) => {
 });
 
 async function load() {
-  const filename = process.env.NODE_ENV === 'production' ? 'apikey.json' : 'apikey-dev.json';
+  const filename = 'apikey-dev.json';
   apiKeys = await fs.readFile(path.resolve(__dirname, '..', '..', filename), 'utf8');
   apiKeys = JSON.parse(apiKeys);
 
   for (let i = 0; i < apiKeys.length; i += 1) {
-    const [apikey] = Object.keys(apiKeys[i]);
-    const configApikey = apiKeys[i][apikey];
+    const { apikey } = apiKeys[i];
+    const configApikey = apiKeys[i].config;
 
     try {
-      await redisClient.set(apikey, `${JSON.stringify(configApikey)}`);
+      await redisClient.set(apikey, JSON.stringify(configApikey));
       logger.info(`[load] ${configApikey.name} loaded`);
     } catch (err) {
       logger.error(`Cannot load [${apikey}] with config [${JSON.stringify(config)}] on redis`);

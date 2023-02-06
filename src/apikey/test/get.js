@@ -47,9 +47,9 @@ describe('Test: Get config of apikey', () => {
     apikeyDev = JSON.parse(apikeyDev);
 
     function sortApikey(a, b) {
-      const t1 = Object.entries(a);
-      const t2 = Object.entries(b);
-      return t1[0][0] < t2[0][0] ? -1 : 1;
+      if (a.config.name < b.config.name) { return -1; }
+      if (a.config.name > b.config.name) { return 1; }
+      return 0;
     }
 
     apikeyDev.sort(sortApikey);
