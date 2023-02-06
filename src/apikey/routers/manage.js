@@ -83,8 +83,8 @@ router.get('/keys', checkAuth, async (req, res, next) => {
   }
 
   const sortApikey = (a, b) => {
-    if (a.config.name < b.config.name) { return -1; }
-    if (a.config.name > b.config.name) { return 1; }
+    if (a.config?.name < b?.config.name) { return -1; }
+    if (a.config?.name > b?.config.name) { return 1; }
     return 0;
   };
 
