@@ -26,7 +26,7 @@
         md="6"
         lg="3"
       >
-        <ReportCard :report="report" :status="getStatusOfReport(report)" />
+        <ReportCard :report="report" />
       </v-col>
     </v-row>
   </v-card>
@@ -47,15 +47,6 @@ export default {
       loading: false,
       dialogVisible: false,
       reports: []
-    }
-  },
-  computed: {
-    getStatusOfReport () {
-      return (value) => {
-        if (!value.data.error && value.data.done) { return 'success' }
-        if (!value.data.error && !value.data.done) { return 'inprogress' }
-        if (value.data.error) { return 'error' }
-      }
     }
   },
   mounted () {

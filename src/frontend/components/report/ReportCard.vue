@@ -62,10 +62,6 @@ export default {
     DetailDialog
   },
   props: {
-    status: {
-      type: String,
-      default: ''
-    },
     report: {
       type: Object,
       default: () => ({})
@@ -77,6 +73,11 @@ export default {
     }
   },
   computed: {
+    status () {
+      if (this.report.data.error) { return 'error' }
+      if (this.report.data.done) { return 'success' }
+      return 'inprogress'
+    },
     color () {
       if (this.status === 'success') { return 'green darken-2' }
       if (this.status === 'inprogress') { return 'blue darken-2' }
