@@ -61,7 +61,7 @@ export default {
       startDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
       endDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
       dateFormatRule: value => this.$dateFns.isMatch(value, 'yyyy-MM-dd') || 'YYYY-MM-DD',
-      dateIsFuturRule: value => Date.now() > new Date(value) || this.$t('administration.update.futur'),
+      dateIsFuturRule: value => Date.now() > new Date(value) || this.$t('administration.update.futur')
     }
   },
   computed: {
