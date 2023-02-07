@@ -21,7 +21,7 @@ const {
 } = require('../bin/attributes');
 
 /**
- * get config of apikey
+ * Get config of apikey entered in parameter
  */
 router.get('/keys/:apikey', async (req, res, next) => {
   const { apikey } = req.params;
@@ -55,22 +55,31 @@ router.get('/keys/:apikey', async (req, res, next) => {
 });
 
 /**
- * get config of apikey
+ * Get list of all apikeys
  */
 router.get('/keys', checkAuth, async (req, res, next) => {
-  const keys = await redisClient.keys('*');
+  let keys;
+  try {
+    keys = await redisClient.keys('*');
+  } catch (err) {
+    return next({ message: 'Cannot get alls keys on redis', stackTrace: err });
+  }
+
+  if (!Array.isArray(keys)) {
+    return next({ message: `${keys} is not an array` });
+  }
 
   const allKeys = [];
 
   for (let i = 0; i < keys.length; i += 1) {
-    const key = keys[i];
+    const apikey = keys[i];
 
     let config;
 
     try {
-      config = await redisClient.get(key);
+      config = await redisClient.get(apikey);
     } catch (err) {
-      return next({ message: `Cannot get key [${key}] on redis`, stackTrace: err });
+      return next({ message: `Cannot get key [${apikey}] on redis`, stackTrace: err });
     }
 
     try {
@@ -79,14 +88,22 @@ router.get('/keys', checkAuth, async (req, res, next) => {
       return next({ message: `Cannot parse config [${config}]`, stackTrace: err });
     }
 
-    allKeys.push({ [key]: config });
+    allKeys.push({ apikey, config });
   }
+
+  const sortApikey = (a, b) => {
+    if (a.config?.name < b?.config.name) { return -1; }
+    if (a.config?.name > b?.config.name) { return 1; }
+    return 0;
+  };
+
+  allKeys.sort(sortApikey);
 
   return res.status(200).json(allKeys);
 });
 
 /**
- * create new apikey
+ * Create new apikey with config in body
  */
 router.post('/keys', checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
@@ -94,9 +111,9 @@ router.post('/keys', checkAuth, async (req, res, next) => {
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql']),
     allowed: joi.boolean().default(true),
-  }).validate(req.body);
+  }).validate(req?.body);
 
-  if (error) return res.status(400).json({ message: error.details[0].message });
+  if (error) return res.status(400).json({ message: error?.details?.[0]?.message });
 
   const {
     name, attributes, access, allowed,
@@ -155,7 +172,7 @@ router.post('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * update apikey
+ * Update apikey entered in parameter with new config in body
  */
 router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
   const checkParams = joi.string().trim().required().validate(req.params.apikey);
@@ -180,6 +197,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     name, attributes, access, allowed,
   } = checkBody.value;
 
+  // check if apikey exist
   let key;
   try {
     key = await redisClient.get(apikey);
@@ -193,6 +211,49 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     return res.status(404).json({ message: `Apikey [${apikey}] not found` });
   }
 
+  // Check if name already exist
+  let keys;
+
+  try {
+    keys = await redisClient.keys('*');
+  } catch (err) {
+    logger.error(err);
+    return next({ message: 'Cannot get keys [*] on redis', stackTrace: err });
+  }
+
+  try {
+    key = JSON.parse(key);
+  } catch (err) {
+    logger.error(err);
+    return next({ message: `Cannot parse config [${key}]`, stackTrace: err });
+  }
+
+  // if name change
+  if (key?.name !== name) {
+    for (let i = 0; i < keys.length; i += 1) {
+      let config;
+
+      try {
+        config = await redisClient.get(keys[i]);
+      } catch (err) {
+        logger.error(err);
+        return next({ message: `Cannot get key [${keys[i]}] on redis`, stackTrace: err });
+      }
+
+      try {
+        config = JSON.parse(config);
+      } catch (err) {
+        logger.error(err);
+        return next({ message: `Cannot parse config [${config}]`, stackTrace: err });
+      }
+
+      if (config?.name === name) {
+        return res.status(409).json(`Name [${name}] already exist for a key`);
+      }
+    }
+  }
+
+  // update
   try {
     await updateApiKey(apikey, name, access, attributes, allowed);
   } catch (err) {
@@ -201,6 +262,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     return next({ message: `Cannot update apikey [${apikey}]`, stackTrace: err });
   }
 
+  // get new config of apikey
   let configApiKey;
   try {
     configApiKey = await redisClient.get(apikey);
@@ -224,7 +286,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
 });
 
 /**
- * delete apikey
+ * Delete the apikey entered in parameter
  */
 router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.apikey);
@@ -258,7 +320,7 @@ router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
 });
 
 /**
- * delete all apikey
+ * Delete all apikeys
  */
 router.delete('/keys', checkAuth, async (req, res, next) => {
   try {
@@ -272,29 +334,20 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * load apikey
+ * Load apikeys entered in body
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
-  const { dev } = req.query;
-  const loadKeys = req.body;
+  const { error, value } = joi.array().validate(req.body);
 
-  if (dev) {
-    try {
-      await load();
-    } catch (err) {
-      logger.error('Cannot load apikeys');
-      logger.error(err);
-      return next({ message: 'Cannot load apikeys', stackTrace: err });
-    }
-    return res.status(204).json();
-  }
+  if (error) return res.status(400).json({ message: error.details[0].message });
+
+  const loadKeys = value;
 
   for (let i = 0; i < loadKeys.length; i += 1) {
-    const [apikey] = Object.keys(loadKeys[i]);
-    const config = loadKeys[i][apikey];
+    const { apikey, config } = loadKeys[i];
 
     try {
-      await redisClient.set(apikey, `${JSON.stringify(config)}`);
+      await redisClient.set(apikey, JSON.stringify(config));
       logger.info(`[load] ${config.name} loaded`);
     } catch (err) {
       logger.error(`Cannot load [${apikey}] with config [${JSON.stringify(config)}] on redis`);
@@ -303,6 +356,20 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
     }
   }
 
+  return res.status(204).json();
+});
+
+/**
+ * Load dev apikeys for development or test
+ */
+router.post('/keys/loadDev', checkAuth, async (req, res, next) => {
+  try {
+    await load();
+  } catch (err) {
+    logger.error('Cannot load apikeys');
+    logger.error(err);
+    return next({ message: 'Cannot load apikeys', stackTrace: err });
+  }
   return res.status(204).json();
 });
 

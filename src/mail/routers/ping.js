@@ -9,6 +9,8 @@ router.get('/', (req, res) => res.status(200).json('mail service'));
 router.get('/ping', (req, res, next) => res.status(204).end());
 
 router.get('/health', async (req, res, next) => {
+  const start = Date.now();
+
   const p1 = promiseWithTimeout(pingSMTP(), 'smtp', 3000);
 
   let resultPing = await Promise.allSettled([p1]);
@@ -19,7 +21,15 @@ router.get('/health', async (req, res, next) => {
     result[e?.name] = { elapsedTime: e?.elapsedTime, healthy: e?.healthy, error: e?.error };
   });
 
-  return res.status(200).json(result);
+  const healthy = resultPing.every((e) => e?.health);
+
+  return res.status(200).json({ ...result, elapsedTime: Date.now() - start, healthy });
+});
+
+router.get('/health/smtp', async (req, res, next) => {
+  const resultPing = await promiseWithTimeout(pingSMTP(), 'smtp', 3000);
+
+  return res.status(200).json(resultPing);
 });
 
 router.get('/health/smtp', async (req, res, next) => {

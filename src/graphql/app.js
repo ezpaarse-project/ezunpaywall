@@ -36,7 +36,7 @@ app.use(express.json());
 app.use(routerPing);
 app.use(routerOpenapi);
 
-app.use('/graphql', auth, graphqlHTTP({
+app.use('/', auth, graphqlHTTP({
   schema,
   graphiql: false,
 }));

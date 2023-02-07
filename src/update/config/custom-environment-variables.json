@@ -1,5 +1,6 @@
 {
   "node": "NODE_ENV",
+  "accessLogRotate": "ACCESS_LOG_ROTATE",
   "unpaywall": {
     "host": "UNPAYWALL_HOST",
     "apikey": "UNPAYWALL_APIKEY"

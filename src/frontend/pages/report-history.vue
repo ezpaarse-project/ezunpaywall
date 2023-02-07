@@ -11,25 +11,19 @@
     </v-row>
     <v-row v-else>
       <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
-        <Success v-if="!report.data.error && report.data.done" :report="report" />
-        <In-progress v-if="!report.data.error && !report.data.done" :report="report" />
-        <Error v-if="report.data.error" :report="report" />
+        <ReportCard :report="report" :status="getStatusOfReport(report)" />
       </v-col>
     </v-row>
   </section>
 </template>
 
 <script>
-import Success from '~/components/report/Success.vue'
-import Error from '~/components/report/Error.vue'
-import InProgress from '~/components/report/InProgress.vue'
+import ReportCard from '~/components/report/ReportCard.vue'
 
 export default {
   name: 'UpdateHistory',
   components: {
-    Success,
-    Error,
-    InProgress
+    ReportCard
   },
   transition: 'slide-x-transition',
   data () {
@@ -40,27 +34,12 @@ export default {
   },
   async mounted () {
     await this.getReports()
-    this.id = this.$route.query.id
-    if (this.id) {
-      const index = this.reports.findIndex(e => e.data.createdAt === this.id)
-      const reportSelected = this.reports[index]
-      this.reports[index] = reportSelected.reveal = true
-      this.$vuetify.goTo(`[id='${reportSelected.id}']`)
-    }
   },
   methods: {
-    parseReports (report) {
-      let totalInsertedDocs = 0
-      let totalUpdatedDocs = 0
-      report.steps.forEach((e) => {
-        totalInsertedDocs += e?.insertedDocs || 0
-      })
-      report.totalInsertedDocs = totalInsertedDocs
-      report.steps.forEach((e) => {
-        totalUpdatedDocs += e?.updatedDocs || 0
-      })
-      report.totalUpdatedDocs = totalUpdatedDocs
-      return report
+    getStatusOfReport (report) {
+      if (!report.data.error && report.data.done) { return 'success' }
+      if (!report.data.error && !report.data.done) { return 'inprogress' }
+      if (report.data.error) { return 'error' }
     },
     async getReports () {
       this.loading = true
@@ -81,11 +60,9 @@ export default {
 
       for (let i = 0; i < filenames.length; i += 1) {
         report = await this.getReport(filenames[i])
-        report = this.parseReports(report.data)
         this.reports.push(
           {
             id: i,
-            reveal: false,
             data: report,
             createdAt: this.$dateFns.format(report.createdAt)
           }
@@ -104,10 +81,7 @@ export default {
         this.$store.dispatch('snacks/error', this.$t('reportHistory.reportError'))
         return
       }
-      return report
-    },
-    showReportJSON (report) {
-      report.reveal = !report.reveal
+      return report.data
     }
   }
 }

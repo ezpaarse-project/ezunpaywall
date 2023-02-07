@@ -6,8 +6,7 @@ const cors = require('cors');
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 
-const { pingElastic, initAlias } = require('./lib/service/elastic');
-const unpaywallMapping = require('./mapping/unpaywall.json');
+const cronDeleteOutFiles = require('./bin/cron/file');
 
 const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');
@@ -17,6 +16,7 @@ const routerState = require('./routers/state');
 const routerStatus = require('./routers/status');
 const routerUnpaywall = require('./routers/unpaywall');
 const routerCron = require('./routers/cron');
+const routerElastic = require('./routers/elastic');
 const routerOpenapi = require('./routers/openapi');
 
 const dataDir = path.resolve(__dirname, 'data');
@@ -39,6 +39,7 @@ app.use(routerState);
 app.use(routerStatus);
 app.use(routerUnpaywall);
 app.use(routerCron);
+app.use(routerElastic);
 app.use(routerOpenapi);
 
 /* Errors and unknown routes */
@@ -48,7 +49,5 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, async () => {
   logger.info('ezunpaywall update service listening on 3000');
-  pingElastic().then(() => {
-    initAlias('unpaywall', unpaywallMapping, 'upw');
-  });
+  cronDeleteOutFiles.start();
 });

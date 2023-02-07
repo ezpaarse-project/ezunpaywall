@@ -9,16 +9,16 @@ const snapshotDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 const states = path.resolve(__dirname, '..', '..', 'data', 'states');
 
 async function task() {
-  await deleteFilesInDir(reportsDir, 30);
-  logger.info('Delete reports files older than 1 months');
+  const deletedReportFiles = await deleteFilesInDir(reportsDir, 30);
+  logger.info(`[cron delete out files] ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
 
-  await deleteFilesInDir(snapshotDir, 30);
-  logger.info('Delete snapshots files older than 1 months');
+  const deletedSnapshotFiles = await deleteFilesInDir(snapshotDir, 30);
+  logger.info(`[cron delete out files] ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
 
-  await deleteFilesInDir(states, 30);
-  logger.info('Delete states files older than 1 months');
+  const deletedStateFiles = await deleteFilesInDir(states, 30);
+  logger.info(`[cron delete out files] ${deletedStateFiles?.join(',')} (${deletedStateFiles.length}) states are deleted`);
 }
 
-const cron = new Cron('DeleteFileOlderThanOneMonth', '0 0 0 * * *', task, true);
+const cron = new Cron('delete out files', '0 0 0 * * *', task, true);
 
 module.exports = cron;

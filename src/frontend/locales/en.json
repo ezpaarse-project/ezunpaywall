@@ -32,8 +32,7 @@
     "emailMustBeValid": "The email address must be valid",
     "contentIsRequired": "A message is required",
     "subjectIsRequired": "Subject is required",
-    "send": "Send",
-    "cancel": "Cancel"
+    "send": "Send"
   },
   "enrich": {
     "general": "This page allows you to test the enrichment function of jsonl and csv files with unpaywall attributes.",
@@ -82,9 +81,53 @@
     "errorCopyRequest": "Error while saving GraphQL request",
     "errorCopyResult": "Error while to saving response"
   },
+  "administration": {
+    "title": "Administration",
+    "loginForm": "Login form",
+    "login": "Login",
+    "logout": "Logout",
+    "loginSuccess": "Successful connection",
+    "errorLogin": "Incorrect password",
+    "password": "Password",
+    "health": {
+      "title": "Services status",
+      "noHealth": "No service status",
+      "errorHealth": "Cannot get healths"
+    },
+    "apikey": {
+      "title": "API keys",
+      "noApikeys": "no API keys",
+      "attributes": "Attributes :",
+      "allowed": "Allowed",
+      "notAllowed": "Not Allowed",
+      "access": "Access :",
+      "buttonCreate": "Create new API key",
+      "create": "Creation of a new API key",
+      "infoCreated": "The API key has been created",
+      "errorCreate": "The API key could not be created",
+      "update": "Update Api key",
+      "infoUpdate": "The API key has been updated",
+      "errorUpdate": "The API key could not be updated",
+      "delete": "Deleting the API key",
+      "deleteMessage": "Are you sure you want to delete this API key (irreversible action)",
+      "infoDeleted": "The API key has been deleted",
+      "errorDelete": "Cannot delete apikey"
+    },
+    "update" : {
+      "title": "Launch an update",
+      "infoUpdate": "The update process has started",
+      "errorUpdate": "Cannot start update process",
+      "future": "The date is after today",
+      "interval": "Interval",
+      "startDate": "Start date",
+      "endDate": "End date"
+    }
+  },
   "unpaywallArgs": {
     "title": "Settings",
     "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
+    "selectAll": "Select all",
+    "unselectAll": "Unselect all",
     "general": {
       "doi": "Digital Object Identifier",
       "data_standard": "Data collection approaches used for this resource",
@@ -104,7 +147,7 @@
       "updated": "Time when the data for this resource was last updated",
       "year": "Year this resource was published"
     },
-    "oa_location": {
+    "oa_locations": {
       "evidence": "How unpaywall found this OA location",
       "host_type": "Type of host that serves this OA location",
       "is_best": "Is this location the best_oa_location for its resource",
@@ -157,7 +200,8 @@
     "updateHistory": "Update history",
     "openapi": "Documentation",
     "language": "Language",
-    "contact": "Contact us"
+    "contact": "Contact us",
+    "administration": "Administration"
   },
   "reportHistory": {
     "title": "Last updates",
@@ -171,7 +215,14 @@
     "dark": "Dark theme",
     "light": "Light theme"
   },
+  "create": "Create",
+  "required": "Required",
+  "cancel": "Cancel",
+  "update": "Update",
   "close": "Close",
+  "yes": "Yes",
+  "no": "No",
+  "detail": "Detail",
   "development": "development",
   "integration": "integration"
 }

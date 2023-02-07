@@ -92,6 +92,7 @@
               <v-btn
                 class="body-2"
                 color="primary"
+                :disabled="!hasLogFiles"
                 @click="step = 2"
                 v-text="$t('enrich.continue')"
               />

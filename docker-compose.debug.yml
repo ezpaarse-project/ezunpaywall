@@ -140,8 +140,6 @@ services:
     image: node:14.15.5
     container_name: ezunpaywall-mail-dev
     environment:
-      # mail
-      - NODE_CONFIG
       - MAIL_SMTP_HOST=maildev
       - MAIL_SMTP_PORT
       - MAIL_NOTIFICATIONS_SENDER

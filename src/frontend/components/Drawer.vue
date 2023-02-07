@@ -68,6 +68,16 @@
           <v-list-item-title v-text="$t('drawer.contact')" />
         </v-list-item-content>
       </v-list-item>
+
+      <v-list-item link router :to="{ path: '/administration' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-security</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="$t('drawer.administration')" />
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
 
     <v-list-group

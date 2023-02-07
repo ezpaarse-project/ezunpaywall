@@ -32,8 +32,7 @@
     "emailMustBeValid": "L'adresse électronique doit être valide",
     "contentIsRequired": "Un message est requis",
     "subjectIsRequired": "L'objet est requis",
-    "send": "Envoyer",
-    "cancel": "Annuler"
+    "send": "Envoyer"
   },
   "enrich": {
     "general": "Cette page vous permet de tester la fonction d'enrichissement de fichiers jsonl et csv avec des attributs unpaywall.",
@@ -82,9 +81,53 @@
     "errorCopyRequest": "Impossible de sauvegarder la requête GraphQL",
     "errorCopyResult": "Impossible de sauvegarder la réponse"
   },
+  "administration": {
+    "title": "Administration",
+    "loginForm": "Formulaire de connexion",
+    "login": "Connexion",
+    "logout": "Deconnexion",
+    "password": "Mot de passe",
+    "loginSuccess": "Connexion réussie",
+    "errorLogin": "Mot de passe incorrect",
+    "health": {
+      "title": "État des services",
+      "noHealth": "Aucun état de service",
+      "errorHealth": "Impossible de récupérer les états de santé"
+    },
+    "apikey": {
+      "title": "Clés d'API",
+      "noApikeys": "Pas de clés d'API",
+      "attributes": "Attributs :",
+      "access": "Accès :",
+      "allowed": "Active",
+      "notAllowed": "Désactivé",
+      "buttonCreate": "Créer une nouvelle clé d'API",
+      "create": "Création d'une nouvelle clé d'API",
+      "infoCreated": "La clé d'API a été créée",
+      "errorCreate": "La clé d'API n'a pas pu être créée",
+      "update": "Mise à jour de la clé d'API",
+      "infoUpdate": "La clé d'API a été mise à jour",
+      "errorUpdate": "La clé d'API n'a pas pu être mise à jour",
+      "delete": "Suppression de la clé d'API",
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)",
+      "infoDeleted": "La clé d'API a été supprimée",
+      "errorDelete": "Impossible de supprimer la clé d'API"
+    },
+    "update" : {
+      "title": "Lancement d'une mise à jour",
+      "infoUpdate": "La mise à jour a démarré",
+      "errorUpdate": "Erreur lors du lancement de la mise à jour",
+      "future": "La date est après aujourd'hui",
+      "interval": "Interval",
+      "startDate": "Date de début",
+      "endDate": "Date de fin"
+    }
+  },
   "unpaywallArgs": {
     "title": "Paramètres",
-    "help": "Dans cette partie, vous pouvez séléctionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
+    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
+    "selectAll": "Tout sélectionner",
+    "unselectAll": "Tout désélectionner",
     "general": {
       "doi": "Digital Object Identifier",
       "data_standard": "Approches de collectes de données utilisées pour cette ressource",
@@ -104,7 +147,7 @@
       "updated": "Heure de la dernière mise à jour des données pour cette ressource",
       "year": "Année de publication de cette ressource"
     },
-    "oa_location": {
+    "oa_locations": {
       "evidence": "Comment Unpaywall a trouvé cet emplacement OA",
       "host_type": "Type d'hôte qui dessert cet emplacement OA",
       "is_best": "Cet emplacement est-il le best_oa_location pour la ressource",
@@ -157,7 +200,8 @@
     "updateHistory": "Historique de mises à jour",
     "openapi": "Documentation",
     "language": "Langue",
-    "contact": "Nous contacter"
+    "contact": "Nous contacter",
+    "administration": "Administration"
   },
   "reportHistory": {
     "title": "Dernières mises à jour",
@@ -171,7 +215,14 @@
     "dark": "Thème sombre",
     "light": "Thème clair"
   },
+  "create": "Créer",
+  "required": "Requis",
+  "cancel": "Annuler",
+  "update": "Mettre à jour",
   "close": "Fermer",
+  "yes": "Oui",
+  "no": "Non",
+  "detail": "Détail",
   "development": "développement",
   "integration": "integration"
 }

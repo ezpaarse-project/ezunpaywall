@@ -45,7 +45,7 @@ export default {
   props: {
     state: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data: () => {

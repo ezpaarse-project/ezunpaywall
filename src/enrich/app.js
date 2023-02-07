@@ -8,7 +8,7 @@ const morgan = require('./lib/morgan');
 
 const { pingRedis } = require('./lib/service/redis');
 
-const cronDeleteOutFiles = require('./lib/cron');
+const cronDeleteOutFiles = require('./bin/cron/file');
 
 const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');
