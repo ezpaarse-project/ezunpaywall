@@ -37,7 +37,7 @@
         <v-spacer />
         <v-btn
           text
-          :disabled="!validForm"
+          :loading="loading"
           class="green--text"
           @click="startUpdate()"
           v-text="$t('create')"
@@ -58,6 +58,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       interval: 'day',
       startDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
       endDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
@@ -104,6 +105,7 @@ export default {
         this.loading = false
         return
       }
+      this.loading = false
       this.$store.dispatch('snacks/info', this.$t('administration.update.infoUpdate'))
       this.closeDialog()
     },

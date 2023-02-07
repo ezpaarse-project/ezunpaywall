@@ -60,8 +60,8 @@
           :loading="loading"
           text
           :disabled="!valid"
+          :loading="loading"
           class="green--text"
-          @click="updateApikey()"
           v-text="$t('update')"
         />
       </v-card-actions>
