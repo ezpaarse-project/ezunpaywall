@@ -44,15 +44,15 @@
     <div class="ml-8">
       <span v-text="$t('administration.apikey.attributes')" />
       <v-chip
-        v-for="attributes in config.attributes"
-        :key="attributes"
+        v-for="attribute in config.attributes"
+        :key="attribute"
         color="green darken-3"
         text-color="white"
         class="ma-1"
         label
         small
       >
-        {{ attributes }}
+        {{ attribute }}
       </v-chip>
     </div>
 
