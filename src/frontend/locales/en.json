@@ -222,6 +222,7 @@
   "close": "Close",
   "yes": "Yes",
   "no": "No",
+  "detail": "Detail",
   "development": "development",
   "integration": "integration"
 }

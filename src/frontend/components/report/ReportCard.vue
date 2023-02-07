@@ -16,7 +16,7 @@
         mdi-check
       </v-icon>
       <v-progress-circular
-        v-if="status === 'inprogress'"
+        v-else-if="status === 'inprogress'"
         class="ma-2"
         :size="20"
         :width="3"
@@ -24,7 +24,7 @@
         color="white"
       />
       <v-icon
-        v-if="status === 'error'"
+        v-else-if="status === 'error'"
         class="ma-2"
         color="white"
       >
@@ -48,9 +48,7 @@
         </v-layout>
       </v-container>
       <v-spacer />
-      <v-btn text class="mt-5" @click.stop="setDialogVisible(true)">
-        DETAILS
-      </v-btn>
+      <v-btn text class="mt-5" @click.stop="setDialogVisible(true)" v-text="$t('detail')" />
     </v-card-actions>
     <DetailDialog :report="report" :dialog="dialogVisible" @closed="setDialogVisible(false)" />
   </v-card>
