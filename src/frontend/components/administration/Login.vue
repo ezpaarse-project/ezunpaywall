@@ -40,7 +40,7 @@ export default {
       this.loading = true
       try {
         await this.$apikey({
-          method: 'GET',
+          method: 'POST',
           url: '/login',
           headers: {
             'X-API-KEY': this.password
