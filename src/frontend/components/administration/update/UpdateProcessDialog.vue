@@ -9,22 +9,25 @@
       </v-toolbar>
       <v-card-text>
         <v-container fluid>
-          <v-select
-            v-model="interval"
-            :items="intervals"
-            :label="$t('administration.update.interval')"
-          />
-          <v-text-field
-            v-model="startDate"
-            :label="$t('administration.update.startDate')"
+          <v-form id="form" v-model="valid" @submit.prevent="startUpdate()">
+            <v-select
+              v-model="interval"
+              class="mt-4"
+              :items="intervals"
+              :label="$t('administration.update.interval')"
+            />
+            <v-text-field
+              v-model="startDate"
+              :label="$t('administration.update.startDate')"
               :rules="[dateFormatRule, dateIsFutureRule]"
               autofocus
-          />
-          <v-text-field
-            v-model="endDate"
-            :label="$t('administration.update.endDate')"
+            />
+            <v-text-field
+              v-model="endDate"
+              :label="$t('administration.update.endDate')"
               :rules="[dateFormatRule, dateIsFutureRule]"
-          />
+            />
+          </v-form>
         </v-container>
       </v-card-text>
       <v-card-actions>
@@ -37,9 +40,11 @@
         <v-spacer />
         <v-btn
           text
+          type="submit"
+          form="form"
+          :disabled="!valid"
           :loading="loading"
           class="green--text"
-          @click="startUpdate()"
           v-text="$t('create')"
         />
       </v-card-actions>
@@ -58,8 +63,10 @@ export default {
   },
   data () {
     return {
+      valid: true,
       loading: false,
       interval: 'day',
+      intervals: ['day', 'week'],
       startDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
       endDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
       dateFormatRule: value => this.$dateFns.isMatch(value, 'yyyy-MM-dd') || 'YYYY-MM-DD',
@@ -67,14 +74,6 @@ export default {
     }
   },
   computed: {
-    intervals () {
-      return ['day', 'week']
-    },
-    validForm () {
-      return this.$dateFns.isMatch(this.startDate, 'yyyy-MM-dd') &&
-        this.$dateFns.isMatch(this.endDate, 'yyyy-MM-dd') &&
-        new Date(this.endDate) <= Date.now()
-    },
     visible: {
       get () {
         return this.dialog

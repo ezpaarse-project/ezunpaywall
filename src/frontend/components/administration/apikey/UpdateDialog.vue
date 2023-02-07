@@ -14,8 +14,8 @@
           {{ apikey }}
         </v-chip>
       </v-toolbar>
-      <v-card-text>
-        <v-form ref="form" class="mt-4">
+      <v-card-text class="mt-4">
+        <v-form :id="`form-${apikey}`" v-model="validForm" @submit.prevent="updateApikey()">
           <v-text-field
             v-model="name"
             :rules="nameRule"
@@ -24,6 +24,7 @@
             outlined
             clearable
             required
+            autofocus
           />
           <v-card-actions>
             <span class="mr-2" v-text="$t('administration.apikey.access')" />
@@ -57,8 +58,9 @@
         />
         <v-spacer />
         <v-btn
-          :loading="loading"
           text
+          type="submit"
+          :form="`form-${apikey}`"
           :disabled="!valid"
           :loading="loading"
           class="green--text"
@@ -93,6 +95,7 @@ export default {
   },
   data () {
     return {
+      validForm: true,
       loading: false,
       name: this.config.name,
       enrich: false,

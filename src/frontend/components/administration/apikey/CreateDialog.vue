@@ -7,8 +7,8 @@
       >
         <span class="mr-2" v-text="$t('administration.apikey.create')" />
       </v-toolbar>
-      <v-card-text>
-        <v-form ref="form" class="mt-4">
+      <v-card-text class="mt-4">
+        <v-form id="formCreate" v-model="valid" @submit.prevent="createApikey()">
           <v-text-field
             v-model="name"
             :rules="nameRule"
@@ -17,6 +17,7 @@
             outlined
             clearable
             required
+            autofocus
           />
           <v-card-actions>
             <span class="mr-2" v-text="$t('administration.apikey.access')" />
@@ -50,11 +51,12 @@
         />
         <v-spacer />
         <v-btn
-          :loading="loading"
           text
-          :disabled="!validForm"
+          type="submit"
+          form="formCreate"
+          :disabled="!valid"
+          :loading="loading"
           class="green--text"
-          @click="createApikey()"
           v-text="$t('create')"
         />
       </v-card-actions>
@@ -79,6 +81,7 @@ export default {
   data () {
     return {
       loading: false,
+      valid: false,
       name: '',
       enrich: false,
       graphql: true,
