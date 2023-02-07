@@ -17,12 +17,13 @@
           <v-text-field
             v-model="startDate"
             :label="$t('administration.update.startDate')"
-            :rules="[dateFormatRule, dateIsFuturRule]"
+              :rules="[dateFormatRule, dateIsFutureRule]"
+              autofocus
           />
           <v-text-field
             v-model="endDate"
             :label="$t('administration.update.endDate')"
-            :rules="[dateFormatRule, dateIsFuturRule]"
+              :rules="[dateFormatRule, dateIsFutureRule]"
           />
         </v-container>
       </v-card-text>
@@ -61,7 +62,7 @@ export default {
       startDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
       endDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
       dateFormatRule: value => this.$dateFns.isMatch(value, 'yyyy-MM-dd') || 'YYYY-MM-DD',
-      dateIsFuturRule: value => Date.now() > new Date(value) || this.$t('administration.update.futur')
+      dateIsFutureRule: value => Date.now() > new Date(value) || this.$t('administration.update.future')
     }
   },
   computed: {
