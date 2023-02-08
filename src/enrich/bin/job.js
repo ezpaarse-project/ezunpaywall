@@ -3,13 +3,9 @@ const {
   endState,
 } = require('../model/state');
 
-const {
-  processEnrichJSON,
-} = require('./json');
+const processEnrichJSON = require('./json');
 
-const {
-  processEnrichCSV,
-} = require('./csv');
+const processEnrichCSV = require('./csv');
 
 /**
  * start an enrich process with a file give by user
@@ -20,9 +16,9 @@ const {
  * @param {String} apikey - apikey of user
  */
 const enrichJSON = async (id, index, args, apikey) => {
-  await createState(id);
+  await createState(id, apikey);
   await processEnrichJSON(id, index, args, apikey);
-  await endState(`${id}.json`);
+  await endState(id, apikey);
 };
 
 /**
@@ -35,9 +31,9 @@ const enrichJSON = async (id, index, args, apikey) => {
  * @param {String} apikey - apikey of user
  */
 const enrichCSV = async (id, index, args, apikey, separator) => {
-  await createState(id);
+  await createState(id, apikey);
   await processEnrichCSV(id, index, args, apikey, separator);
-  await endState(`${id}.json`);
+  await endState(id, apikey);
 };
 
 module.exports = {

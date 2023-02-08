@@ -29,7 +29,7 @@ router.post('/contact', checkAuth, async (req, res, next) => {
   }
 
   try {
-    sendMailContact(email, subject, message);
+    await sendMailContact(email, subject, message);
   } catch (err) {
     return next(err);
   }

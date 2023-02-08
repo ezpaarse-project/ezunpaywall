@@ -2,6 +2,7 @@ const router = require('express').Router();
 const joi = require('joi');
 
 const checkAuth = require('../middlewares/auth');
+
 const {
   redisClient,
   load,

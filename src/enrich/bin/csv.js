@@ -243,12 +243,12 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
 const processEnrichCSV = async (id, index, args, apikey, separator) => {
   const filename = `${id}.csv`;
 
-  const readStream = fs.createReadStream(path.resolve(uploadDir, filename));
+  const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, filename));
 
   const stateName = `${id}.json`;
-  const state = await getState(stateName);
+  const state = await getState(stateName, apikey);
 
-  const enrichedFile = path.resolve(enriched, filename);
+  const enrichedFile = path.resolve(enriched, apikey, filename);
 
   if (!args) {
     args = allArgs();
@@ -261,6 +261,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   } catch (err) {
     logger.error(`Cannot ensure ${enrichedFile}`);
     logger.error(err);
+    throw err;
   }
 
   let loaded = 0;
@@ -332,6 +333,4 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
 };
 
-module.exports = {
-  processEnrichCSV,
-};
+module.exports = processEnrichCSV;

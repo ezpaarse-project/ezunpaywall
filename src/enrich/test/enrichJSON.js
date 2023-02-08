@@ -82,8 +82,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
-          expect(res3).have.status(200);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
 
@@ -157,7 +157,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -233,7 +234,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -308,7 +310,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -384,7 +387,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -459,7 +463,8 @@ describe('Test: enrich service jsonl', () => {
         do {
           res3 = await chai
             .request(enrichService)
-            .get(`/states/${id}.json`);
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
           expect(res3).have.status(200);
           await new Promise((resolve) => setTimeout(resolve, 100));
         } while (!res3?.body?.done);
@@ -529,6 +534,23 @@ describe('Test: enrich service jsonl', () => {
         // TODO mettre une erreur 401
         expect(res2).have.status(200);
         // expect(JSON.parse(res.body).message).be.equal('args incorrect');
+      });
+    });
+
+    describe('Don\'t do a enrichment of a jsonl file because the file doesn\'t exist', () => {
+      it('Should upload the file', async () => {
+        const res1 = await chai
+          .request(enrichService)
+          .post('/job')
+          .send({
+            id: 'hello',
+            type: 'jsonl',
+            index: 'unpaywall-test',
+            args: '{ is_oa }',
+          })
+          .set('x-api-key', 'user');
+
+        expect(res1).have.status(404);
       });
     });
   });

@@ -32,6 +32,8 @@ async function ping() {
   if (apikey?.statusCode !== 204) {
     throw new Error(`[apikey] Bad status : ${apikey?.status}`);
   }
+
+  return false;
 }
 
 module.exports = ping;

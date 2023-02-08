@@ -26,7 +26,7 @@ function setState(key, value) {
  * create a new file on folder "data/update/state" containing the update state
  * @return {String} name of the file where the state is saved
  */
-function createState() {
+async function createState() {
   state = {
     done: false,
     createdAt: new Date(),

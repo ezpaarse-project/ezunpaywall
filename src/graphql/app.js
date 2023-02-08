@@ -5,6 +5,8 @@ const responseTime = require('response-time');
 
 const auth = require('./middlewares/auth');
 
+const { name, version } = require('./package.json');
+
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 const cronMetrics = require('./bin/cron/metrics');
@@ -32,6 +34,10 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get('/', async (req, res, next) => res.status(200).json({
+  name, version,
+}));
+
 // routers
 app.use(routerPing);
 app.use(routerOpenapi);
@@ -40,6 +46,8 @@ app.use('/', auth, graphqlHTTP({
   schema,
   graphiql: false,
 }));
+
+app.use(routerPing);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

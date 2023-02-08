@@ -11,7 +11,7 @@ const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
 /**
  * ping all services to see if they are available
  */
-const ping = async () => {
+async function ping() {
   const enrich = await chai.request(enrichHost).get('/ping');
   if (enrich?.status !== 204) {
     throw new Error(`[enrich] Bad status : ${enrich?.status}`);
@@ -31,6 +31,6 @@ const ping = async () => {
   if (!redis?.status) {
     throw new Error(`[redis] Bad status : ${redis?.status}`);
   }
-};
+}
 
 module.exports = ping;

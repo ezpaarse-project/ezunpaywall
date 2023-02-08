@@ -390,7 +390,10 @@ export default {
           state = await this.$enrich({
             method: 'GET',
             url: `/states/${id}.json`,
-            responseType: 'json'
+            responseType: 'json',
+            headers: {
+              'X-API-KEY': this.apiKey
+            }
           })
           this.state = state?.data
         } catch (err) {

@@ -71,17 +71,22 @@ router.get('/states', async (req, res, next) => {
 
 router.get('/states/:filename', async (req, res, next) => {
   const { filename } = req.params;
-  const { error } = joi.string().trim().required().validate(filename);
 
-  if (error) return res.status(400).json({ message: error.details[0].message });
+  const { errorParam } = joi.string().trim().required().validate(filename);
+  if (errorParam) return res.status(400).json({ message: errorParam.details[0].message });
 
-  if (!await fs.pathExists(path.resolve(statesDir, filename))) {
+  const apikey = req.get('x-api-key');
+
+  const { errorHeader } = joi.string().trim().required().validate(apikey);
+  if (errorHeader) return res.status(400).json({ message: errorHeader.details[0].message });
+
+  if (!await fs.pathExists(path.resolve(statesDir, apikey, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
   let state;
   try {
-    state = await getState(filename);
+    state = await getState(filename, apikey);
   } catch (err) {
     return next({ message: err, stackTrace: err });
   }

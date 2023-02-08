@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const joi = require('joi');
+const fs = require('fs-extra');
+const path = require('path');
 
 const {
   enrichJSON,
@@ -7,6 +9,8 @@ const {
 } = require('../bin/job');
 
 const checkAuth = require('../middlewares/auth');
+
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 
 /**
  *
@@ -31,18 +35,22 @@ router.post('/job/:filename', checkAuth, async (req, res, next) => {
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 
+  const apikey = req.get('x-api-key');
+
   const {
     type, args, index, separator,
   } = value;
 
-  const apiKey = req.get('x-api-key');
+  if (!await fs.pathExists(path.resolve(uploadDir, apikey, `${id}.${type}`))) {
+    return res.status(404).json({ message: `[file] ${id}.${type} not found` });
+  }
 
   if (type === 'jsonl') {
-    enrichJSON(id, index, args, apiKey);
+    enrichJSON(id, index, args, apikey);
   }
 
   if (type === 'csv') {
-    enrichCSV(id, index, args, apiKey, separator);
+    enrichCSV(id, index, args, apikey, separator);
   }
 
   return res.status(200).json(id);

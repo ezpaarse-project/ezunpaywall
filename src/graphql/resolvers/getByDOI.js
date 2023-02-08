@@ -4,8 +4,10 @@ const graphql = require('graphql');
 const graphqlFields = require('graphql-fields');
 
 const config = require('config');
+
 const { redisClient } = require('../lib/service/redis');
 const { elasticClient } = require('../lib/service/elastic');
+
 const logger = require('../lib/logger');
 
 const unpaywallType = require('../models/unpaywall');

@@ -1,5 +1,4 @@
 const { redisClient } = require('../lib/service/redis');
-
 const logger = require('../lib/logger');
 
 /**
@@ -9,7 +8,7 @@ const logger = require('../lib/logger');
  * @param {function} next - do the following
  * @returns {Object|function} res or next
  */
-const checkAuth = async (req, res, next) => {
+const checkAdmin = async (req, res, next) => {
   // TODO check in query
   const apikey = req.get('x-api-key');
 
@@ -23,17 +22,16 @@ const checkAuth = async (req, res, next) => {
   } catch (err) {
     logger.error(`Cannot get ${apikey} on redis`);
     logger.error(err);
-    return next({ message: err, stackTrace: err });
+    return res.status(500).json({ message: 'Internal server error' });
   }
 
   let config;
-
   try {
     config = JSON.parse(key);
   } catch (err) {
     logger.error(`Cannot parse ${key}`);
     logger.error(err);
-    return next({ message: err, stackTrace: err });
+    return res.status(500).json({ message: 'Internal server error' });
   }
 
   if (!Array.isArray(config?.access) || !config?.access?.includes('enrich') || !config?.allowed) {
@@ -69,4 +67,4 @@ const checkAuth = async (req, res, next) => {
   return next();
 };
 
-module.exports = checkAuth;
+module.exports = checkAdmin;

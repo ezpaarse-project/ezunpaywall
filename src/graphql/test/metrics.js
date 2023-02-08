@@ -24,8 +24,8 @@ const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
 describe('test graphql metrics request', () => {
   before(async function () {
     this.timeout(30000);
-    await ping();
     await deleteAllAPIKey();
+    await ping();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);

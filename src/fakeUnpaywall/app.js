@@ -5,18 +5,19 @@ const logger = require('./lib/logger');
 
 const updateChangefilesExample = require('./bin/changefiles');
 
-const routerPing = require('./routers/ping');
 const routerSnapshots = require('./routers/snapshots');
 const routerChangeFiles = require('./routers/changefiles');
+const routerPing = require('./routers/ping');
 
 // start server
 const app = express();
 
 app.use('/snapshots', cors());
 app.use(express.json());
-app.use(routerPing);
+
 app.use(routerSnapshots);
 app.use(routerChangeFiles);
+app.use(routerPing);
 
 /* Errors and unknown routes */
 /* Errors and unknown routes */

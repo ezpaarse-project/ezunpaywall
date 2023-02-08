@@ -157,15 +157,15 @@ const writeInFileJSON = async (data, enrichedFile, stateName) => {
  * @param {String} apikey - apikey of user
  */
 const processEnrichJSON = async (id, index, args, apikey) => {
-  const readStream = fs.createReadStream(path.resolve(uploadDir, `${id}.jsonl`));
+  const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, `${id}.jsonl`));
   if (!args) {
     args = allArgs();
   }
   args = addDOItoGraphqlRequest(args);
   const stateName = `${id}.json`;
-  const state = await getState(stateName);
+  const state = await getState(stateName, apikey);
   const file = `${id}.jsonl`;
-  const enrichedFile = path.resolve(enrichedDir, file);
+  const enrichedFile = path.resolve(enrichedDir, apikey, file);
 
   try {
     await fs.ensureFile(enrichedFile);
@@ -227,6 +227,4 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
 };
 
-module.exports = {
-  processEnrichJSON,
-};
+module.exports = processEnrichJSON;
