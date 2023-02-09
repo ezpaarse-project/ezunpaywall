@@ -1,4 +1,4 @@
-FROM node:14.15.5-alpine3.13
+FROM node:18.12-alpine3.17
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
@@ -6,7 +6,7 @@ ENV NODE_ENV production
 WORKDIR /usr/src/app
 
 COPY package*.json /usr/src/app/
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 COPY . /usr/src/app
 
 CMD [ "npm", "start" ]
