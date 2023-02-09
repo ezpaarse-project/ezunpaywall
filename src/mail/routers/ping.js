@@ -21,7 +21,7 @@ router.get('/health', async (req, res, next) => {
     result[e?.name] = { elapsedTime: e?.elapsedTime, healthy: e?.healthy, error: e?.error };
   });
 
-  const healthy = resultPing.every((e) => e?.health);
+  const healthy = resultPing.every((e) => e?.healthy);
 
   return res.status(200).json({ ...result, elapsedTime: Date.now() - start, healthy });
 });
