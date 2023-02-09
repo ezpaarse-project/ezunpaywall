@@ -19,8 +19,6 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./src/graphql:/usr/src/app
-      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/usr/src/app/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/usr/src/app/log/access
     command: "npm run dev"
     ports:
       - ${GRAPHQL_PORT:-59701}:3000
@@ -64,9 +62,6 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./src/update:/usr/src/app
-      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/usr/src/app/log/application
-      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/usr/src/app/log/access
-      - ${UPDATE_DATA_PATH:-./src/update/data}:/usr/src/app/data
     command: "npm run dev"
     ports:
       - ${UPDATE_PORT:-59702}:3000
@@ -91,9 +86,6 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./src/enrich:/usr/src/app
-      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/usr/src/app/log/application
-      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/usr/src/app/log/access
-      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/usr/src/app/data
     command: "npm run dev"
     ports:
       - ${ENRICH_PORT:-59703}:3000
@@ -121,8 +113,6 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./src/apikey:/usr/src/app
-      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/usr/src/app/log/application
-      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/usr/src/app/log/access
     command: "npm run dev"
     ports:
       - ${APIKEY_PORT:-59704}:3000
@@ -150,8 +140,6 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./src/mail:/usr/src/app
-      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/usr/src/app/log/application
-      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/usr/src/app/log/access
     command: "npm run dev"
     ports:
       - ${MAIL_PORT:-59705}:3000
@@ -213,7 +201,6 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./src/health:/usr/src/app
-      - ${HEALTH_APPLICATION_LOG_PATH:-./src/health/log/application}:/usr/src/app/log/application
     command: "npm run dev"
     ports:
      - ${HEALTH_PORT:-59707}:3000
