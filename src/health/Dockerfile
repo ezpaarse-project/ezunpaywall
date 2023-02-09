@@ -6,7 +6,7 @@ ENV NODE_ENV production
 WORKDIR /usr/src/app
 
 COPY package*.json /usr/src/app/
-RUN RUN npm ci --omit=dev
+RUN npm ci --omit=dev
 COPY . /usr/src/app
 
 CMD [ "npm", "start" ]
