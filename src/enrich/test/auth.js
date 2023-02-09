@@ -19,13 +19,9 @@ const {
   countDocuments,
 } = require('./utils/elastic');
 
-const {
-  pingEnrich,
-  pingElastic,
-  pingRedis,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
-const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
+const enrichService = process.env.ENRICH_HOST || 'http://localhost:59703';
 const enrichDir = path.resolve(__dirname, 'sources');
 
 describe('Test: auth service in enrich service', () => {
@@ -33,9 +29,7 @@ describe('Test: auth service in enrich service', () => {
 
   before(async function () {
     this.timeout(30000);
-    await pingEnrich();
-    await pingElastic();
-    await pingRedis();
+    await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
@@ -123,22 +117,6 @@ describe('Test: auth service in enrich service', () => {
       });
     });
 
-    describe('Test with update API key', () => {
-      it('Should return a error message', async () => {
-        const res = await chai
-          .request(enrichService)
-          .post(`/job/${id}`)
-          .send({
-            type: 'csv',
-            index: 'unpaywall-test',
-            args: '{ is_oa }',
-          })
-          .set('x-api-key', 'update');
-
-        expect(res).have.status(401);
-      });
-    });
-
     describe('Test with notAllowed API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
@@ -205,7 +183,7 @@ describe('Test: auth service in enrich service', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
@@ -341,22 +319,6 @@ describe('Test: auth service in enrich service', () => {
             args: '{ is_oa }',
           })
           .set('x-api-key', 'wrong apikey');
-
-        expect(res).have.status(401);
-      });
-    });
-
-    describe('Test to enrich with update API key', () => {
-      it('Should return a error message', async () => {
-        const res = await chai
-          .request(enrichService)
-          .post(`/job/${id}`)
-          .send({
-            type: 'jsonl',
-            index: 'unpaywall-test',
-            args: '{ is_oa }',
-          })
-          .set('x-api-key', 'update');
 
         expect(res).have.status(401);
       });

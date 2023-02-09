@@ -4,60 +4,33 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const enrichURL = process.env.ENRICH_URL || 'http://localhost:3000';
+const enrichHost = process.env.ENRICH_HOST || 'http://localhost:59703';
+const elasticHost = process.env.UPDATE_HOST || 'http://elastic:changeme@localhost:9200';
+const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
 
-async function pingEnrich() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(enrichURL).get('/ping');
-    } catch (err) {
-      console.error(`enrich ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+/**
+ * ping all services to see if they are available
+ */
+async function ping() {
+  const enrich = await chai.request(enrichHost).get('/ping');
+  if (enrich?.status !== 204) {
+    throw new Error(`[enrich] Bad status : ${enrich?.status}`);
   }
-  return false;
-}
-async function pingElastic() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(enrichURL).get('/ping/elastic');
-    } catch (err) {
-      console.error(`elastic ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const elastic = await chai.request(elasticHost).get('/');
+  if (elastic?.status !== 200) {
+    throw new Error(`[elastic] Bad status : ${elastic?.status}`);
   }
-  return false;
+
+  const apikey = await chai.request(apikeyHost).get('/ping');
+  if (apikey?.statusCode !== 204) {
+    throw new Error(`[apikey] Bad status : ${apikey?.status}`);
+  }
+
+  const redis = await chai.request(enrichHost).get('/ping/redis');
+  if (!redis?.status) {
+    throw new Error(`[redis] Bad status : ${redis?.status}`);
+  }
 }
 
-async function pingRedis() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(enrichURL).get('/ping/redis');
-    } catch (err) {
-      console.error(`elastic ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  return false;
-}
-
-module.exports = {
-  pingEnrich,
-  pingElastic,
-  pingRedis,
-};
+module.exports = ping;

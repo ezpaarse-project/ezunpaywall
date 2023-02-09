@@ -1,6 +1,7 @@
 const { CronJob } = require('cron');
 const logger = require('./logger');
-const { redisClient } = require('../service/redis');
+
+const { redisClient } = require('./service/redis');
 
 const cronDemo = new CronJob('0 0 0 * * *', async () => {
   let key;

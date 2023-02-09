@@ -14,10 +14,10 @@ const {
   fail,
 } = require('../model/state');
 
-const { askEzunpaywall } = require('../service/graphql');
+const { requestGraphql } = require('../lib/service/graphql');
 
-const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
-const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
+const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
 
 /**
  * getter of all the unpaywall attributes that can be used for enrichment in graphql format
@@ -157,13 +157,7 @@ const writeInFileJSON = async (data, enrichedFile, stateName) => {
  * @param {String} apikey - apikey of user
  */
 const processEnrichJSON = async (id, index, args, apikey) => {
-  let readStream;
-  try {
-    readStream = fs.createReadStream(path.resolve(uploadedDir, apikey, `${id}.jsonl`));
-  } catch (err) {
-    logger.error(`Cannot create readStream in ${path.resolve(uploadedDir, apikey, `${id}.jsonl`)}`);
-    return;
-  }
+  const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, `${id}.jsonl`));
   if (!args) {
     args = allArgs();
   }
@@ -205,7 +199,7 @@ const processEnrichJSON = async (id, index, args, apikey) => {
 
     // enrichment
     if (data.length === 1000) {
-      const response = await askEzunpaywall(data, args, stateName, index, apikey);
+      const response = await requestGraphql(data, args, stateName, index, apikey);
       enrichTab(data, response);
       await writeInFileJSON(data, enrichedFile, stateName);
       data = [];
@@ -220,7 +214,7 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   // last insertion
   if (data.length !== 0) {
     // enrichment
-    const response = await askEzunpaywall(data, args, stateName, index, apikey);
+    const response = await requestGraphql(data, args, stateName, index, apikey);
     data = enrichTab(data, response);
     await writeInFileJSON(data, enrichedFile, stateName);
     // state
@@ -233,6 +227,4 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
 };
 
-module.exports = {
-  processEnrichJSON,
-};
+module.exports = processEnrichJSON;

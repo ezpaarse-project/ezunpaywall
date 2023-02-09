@@ -3,11 +3,10 @@ LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ENV NODE_ENV production
 
-WORKDIR /usr/src/graphql
+WORKDIR /usr/src/app
 
-COPY package*.json /usr/src/graphql/
+COPY package*.json /usr/src/app/
 RUN npm ci --only=production
-COPY . /usr/src/graphql
+COPY . /usr/src/app
 
-EXPOSE 3000
 CMD [ "npm", "start" ]

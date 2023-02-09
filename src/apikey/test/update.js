@@ -2,7 +2,7 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
-const pingApikey = require('./utils/ping');
+const ping = require('./utils/ping');
 const {
   loadDevAPIKey,
   deleteAllAPIKey,
@@ -10,11 +10,11 @@ const {
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 describe('Test: Update apikey', () => {
   before(async () => {
-    await pingApikey();
+    await ping();
   });
 
   beforeEach(async () => {
@@ -29,7 +29,7 @@ describe('Test: Update apikey', () => {
       .send({
         name: 'new-name',
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -40,20 +40,20 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Should update config.access to "update" for the apikey "user"', async () => {
+  it('Should update config.access to "graphql" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/keys/user')
       .send({
-        access: ['update'],
+        access: ['graphql'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
-    expect(res.body).have.property('access').to.be.an('array').eql(['update']);
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
@@ -65,7 +65,7 @@ describe('Test: Update apikey', () => {
       .send({
         attributes: ['doi'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -83,7 +83,7 @@ describe('Test: Update apikey', () => {
       .send({
         attributes: ['doi', 'is_oa'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -101,7 +101,7 @@ describe('Test: Update apikey', () => {
       .send({
         allowed: false,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -119,7 +119,7 @@ describe('Test: Update apikey', () => {
       .send({
         allowed: true,
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
@@ -130,21 +130,21 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('allowed').equal(true);
   });
 
-  it('Should update config.name to "new-user" and config.access to "update" for the apikey "user"', async () => {
+  it('Should update config.name to "new-user" and config.access to "graphql" for the apikey "user"', async () => {
     const res = await chai
       .request(apikeyURL)
       .put('/keys/user')
       .send({
         name: 'new-user',
-        access: ['update'],
+        access: ['graphql'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('new-user');
-    expect(res.body).have.property('access').to.be.an('array').eql(['update']);
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
   });
@@ -156,7 +156,7 @@ describe('Test: Update apikey', () => {
       .send({
         access: ['hello'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });
@@ -168,7 +168,7 @@ describe('Test: Update apikey', () => {
       .send({
         attributes: ['hello'],
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });
@@ -180,7 +180,7 @@ describe('Test: Update apikey', () => {
       .send({
         allowed: 'maybe',
       })
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(400);
   });

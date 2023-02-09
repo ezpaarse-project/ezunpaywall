@@ -4,80 +4,36 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
-const fakeUnpaywallURL = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:12000';
+const updateHost = process.env.UPDATE_HOST || 'http://localhost:59702';
+const elasticHost = process.env.UPDATE_HOST || 'http://elastic:changeme@localhost:9200';
+const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
+const fakeUnpaywallHost = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:59799';
 
-async function pingUpdate() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(updateURL).get('/ping');
-    } catch (err) {
-      console.error(`update ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+/**
+ * ping all services to see if they are available
+ */
+async function ping() {
+  const update = await chai.request(updateHost).get('/ping');
+  if (update?.status !== 204) {
+    throw new Error(`[update] Bad status : ${update?.status}`);
   }
+
+  const fakeUnpaywall = await chai.request(fakeUnpaywallHost).get('/ping');
+  if (fakeUnpaywall?.status !== 204) {
+    throw new Error(`[fakeUnpaywall] Bad status : ${fakeUnpaywall?.status}`);
+  }
+
+  const elastic = await chai.request(elasticHost).get('/');
+  if (elastic?.status !== 200) {
+    throw new Error(`[elastic] Bad status : ${elastic?.status}`);
+  }
+
+  const apikey = await chai.request(apikeyHost).get('/ping');
+  if (apikey?.statusCode !== 204) {
+    throw new Error(`[apikey] Bad status : ${apikey?.status}`);
+  }
+
   return false;
 }
 
-async function pingFakeUnpaywall() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(fakeUnpaywallURL).get('/ping');
-    } catch (err) {
-      console.error(`fakeUnpaywall ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  return false;
-}
-
-async function pingElastic() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(updateURL).get('/ping/elastic');
-    } catch (err) {
-      console.error(`elastic ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  return false;
-}
-
-async function pingRedis() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(updateURL).get('/ping/redis');
-    } catch (err) {
-      console.error(`elastic ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  return false;
-}
-
-module.exports = {
-  pingUpdate,
-  pingFakeUnpaywall,
-  pingElastic,
-  pingRedis,
-};
+module.exports = ping;

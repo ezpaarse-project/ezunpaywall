@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "description": "The update service allows to update the mirror data. This service queries unpaywall to get the snapshots and inserts their content in an elasticsearch index ",
     "version": "1.0.0",
@@ -14,492 +14,1207 @@
     }
   },
   "paths": {
-    "/update/job/snapshot": {
-      "post": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Strat download and insert the current snapshot from unpaywall",
-        "operationId": "post-update-job-snapshot",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "body",
-            "name": "index",
-            "description": "index where the unpaywall data will be inserted",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "required": [
-                "userName"
-              ],
-              "properties": {
-                "interval": {
-                  "type": "string"
+    "/update": {
+      "get": {
+        "summary": "Name of service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "x-examples": {
+                    "example-1": "update service"
+                  }
+                },
+                "examples": {
+                  "service": {
+                    "value": "update service"
+                  }
+                }
+              },
+              "Success": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "update service"
+                    }
+                  }
                 }
               }
-            }
-          }
-        ],
-        "responses": {
-          "202": {
-            "description": "Process start"
-          },
-          "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
-          },
-          "409": {
-            "description": "Update in progress",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
             }
           }
         },
-        "description": "Download and insert snapshot from unpaywall"
-      }
-    },
-    "/update/job/period": {
-      "post": {
+        "operationId": "get-update",
+        "description": "Get name of update service",
         "tags": [
-          "update"
-        ],
-        "summary": "Start download and insert changesfiles from unpaywall bewtween a period",
-        "operationId": "post-update-job-period",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "body",
-            "name": "config",
-            "description": "config for process",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "required": [
-                "userName"
-              ],
-              "properties": {
-                "index": {
-                  "type": "string"
-                },
-                "interval": {
-                  "type": "string"
-                },
-                "startDate": {
-                  "type": "string"
-                },
-                "endDate": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "202": {
-            "description": "Process start"
-          },
-          "400": {
-            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
-            }
-          },
-          "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
-          },
-          "409": {
-            "description": "Update in progress",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
-            }
-          }
-        },
-        "description": "Download and insert delta from unpaywall between a period and with a interval"
-      }
-    },
-    "/update/job/changefile/{filename}": {
-      "post": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Start insert changesfiles installed on ezunpaywall",
-        "operationId": "post-update-job-changefile-filename",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "filename",
-            "description": "filename",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "body",
-            "name": "config",
-            "description": "config for process",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "index": {
-                  "type": "string"
-                },
-                "offset": {
-                  "type": "integer"
-                },
-                "limit": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "202": {
-            "description": "Process start"
-          },
-          "400": {
-            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
-            }
-          },
-          "401": {
-            "description": "Not authorized",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
-          },
-          "404": {
-            "description": "File not found",
-            "schema": {
-              "$ref": "#/definitions/FileNotFound"
-            }
-          },
-          "409": {
-            "description": "Update in progress",
-            "schema": {
-              "type": "string",
-              "default": "changeme"
-            }
-          }
-        },
-        "description": "Insert file from installed on ezunpaywall"
-      }
-    },
-    "/update/reports": {
-      "get": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Get reports",
-        "operationId": "get-update-reports",
-        "description": "Get list of report or latest report",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "query",
-            "name": "latest",
-            "description": "latest",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "report"
-          }
-        }
-      }
-    },
-    "/update/reports/${filename}": {
-      "get": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Get report",
-        "operationId": "get-update-reports-filename",
-        "description": "Get report with his filename",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "filename",
-            "description": "filename",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "report"
-          },
-          "401": {
-            "description": "File not found",
-            "schema": {
-              "$ref": "#/definitions/Unauthorized"
-            }
-          }
-        }
-      }
-    },
-    "/update/snapshots": {
-      "get": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Get snapshots",
-        "operationId": "get-update-snapshots",
-        "description": "Get list of snapshot or latest snapshot",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          },
-          {
-            "in": "query",
-            "name": "latest",
-            "description": "latest",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "snapshot"
-          }
-        }
-      }
-    },
-    "/update/snapshots/${filename}": {
-      "get": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Get snapshot",
-        "operationId": "get-update-snasphots-filename",
-        "description": "Get snapshot with his filename",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "filename",
-            "description": "filename",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "header",
-            "name": "x-api-key",
-            "description": "apikey",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "snapshot"
-          },
-          "404": {
-            "description": "File not found",
-            "schema": {
-              "$ref": "#/definitions/FileNotFound"
-            }
-          }
-        }
-      }
-    },
-    "/update/states": {
-      "get": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Get state",
-        "operationId": "get-update-states",
-        "description": "Get latest state",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "state"
-          }
-        }
-      }
-    },
-    "/update/status": {
-      "get": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Get status",
-        "operationId": "get-update-status",
-        "description": "Get status",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "status"
-          }
-        }
-      }
-    },
-    "/update/unpaywall/changefiles": {
-      "get": {
-        "tags": [
-          "update"
-        ],
-        "summary": "Get changefiles from unpaywall",
-        "operationId": "get-update-unpaywall-changefiles",
-        "description": "Get changefiles from unpaywall",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "interval",
-            "description": "interval of changefiles (\"week\" or \"day\")",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "index": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "status"
-          }
-        }
+          "ping"
+        ]
       }
     },
     "/update/ping": {
       "get": {
-        "summary": "Your GET endpoint",
-        "tags": [],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        },
+        "summary": "Ping update service",
         "operationId": "get-update-ping",
-        "description": "ping update service"
+        "description": "Ping update service",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
       }
     },
-    "/update/ping/elastic": {
+    "/update/health": {
       "get": {
-        "summary": "Your GET endpoint",
-        "tags": [],
+        "summary": "Health",
+        "operationId": "get-update-health",
+        "description": "Health on all service connected to update service",
+        "tags": [
+          "ping"
+        ],
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "redis": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "elastic": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "elapsedTime": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "redis": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 1,
+                      "status": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Success": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 1,
+                      "status": true
+                    }
+                  },
+                  "Error redis": {
+                    "value": {
+                      "redis": {
+                        "elapsedTime": 3001,
+                        "status": false,
+                        "error": "time out"
+                      },
+                      "elastic": {
+                        "elapsedTime": 1,
+                        "status": true
+                      },
+                      "elapsedTime": 3001,
+                      "status": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/update/health/redis": {
+      "get": {
+        "summary": "Health on redis service",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
+          }
+        },
+        "operationId": "get-update-health-redis",
+        "description": "Health on redis",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
+    "/update/health/elastic": {
+      "get": {
+        "summary": "Health on elastic service",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
+          }
+        },
+        "operationId": "get-update-health-elastic",
+        "description": "Health on elastic",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
+    "/update/job/snapshot": {
+      "post": {
+        "summary": "Start process download and insert snapshot from unpaywall",
+        "operationId": "post-update-job-snapshot",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userName"
+                ],
+                "properties": {
+                  "interval": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "index where the unpaywall data will be inserted"
+        },
+        "responses": {
+          "202": {
+            "description": "Process start"
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          },
+          "409": {
+            "description": "Update in progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              }
             }
           }
         },
-        "operationId": "get-update-ping-elastic",
-        "description": "ping elastic service"
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "description": "Download and insert the latest snapshot from unpaywall.org",
+        "tags": [
+          "job"
+        ]
       }
     },
-    "/update/ping/redis": {
+    "/update/job/period": {
+      "post": {
+        "summary": "Start process download and insert changefiles from unpaywall",
+        "operationId": "post-update-job-period",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userName"
+                ],
+                "properties": {
+                  "index": {
+                    "type": "string"
+                  },
+                  "interval": {
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "type": "string"
+                  },
+                  "endDate": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "config for process"
+        },
+        "responses": {
+          "202": {
+            "description": "Process start"
+          },
+          "400": {
+            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              },
+              "Test1": {
+                "examples": {
+                  "response": {
+                    "value": "changeme"
+                  }
+                }
+              },
+              "Test2": {
+                "examples": {
+                  "response": {
+                    "value": "changeme"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          },
+          "409": {
+            "description": "Update in progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "description": "Download and insert changefiles from unpaywall.org",
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/job/changefile/{filename}": {
+      "post": {
+        "summary": "Start process insert changesfiles downloaded on ezunpaywall",
+        "operationId": "post-update-job-changefile-$-filename",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "index": {
+                    "type": "string"
+                  },
+                  "offset": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "description": "config for process"
+        },
+        "responses": {
+          "202": {
+            "description": "Process start"
+          },
+          "400": {
+            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          },
+          "404": {
+            "description": "File not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "File not found"
+                    }
+                  }
+                }
+              },
+              "File not found": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "File not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Update in progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "default": "changeme"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "description": "Insert changefiles already downloaded on ezunpaywall",
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/reports": {
       "get": {
-        "summary": "Your GET endpoint",
-        "tags": [],
+        "summary": "Get reports",
+        "operationId": "get-update-reports",
+        "description": "Get list of reports or latest report",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "latest",
+            "description": "latest",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "report",
+            "content": {
+              "List of reports": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      "2022-10-10 13:10:51.json",
+                      "2022-10-10 13:10:50.json",
+                      "2022-10-10 13:10:49.json",
+                      "2022-10-10 13:10:48.json",
+                      "2022-10-10 13:10:47.json",
+                      "2022-10-10 13:10:46.json",
+                      "2022-10-10 13:10:45.json",
+                      "2022-10-10 13:10:44.json"
+                    ]
+                  }
+                }
+              },
+              "Latest report": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "done": true,
+                      "createdAt": "2022-10-10T13:10:46.828Z",
+                      "endAt": "2022-10-10T13:10:47.084Z",
+                      "steps": [
+                        {
+                          "task": "getChangefiles",
+                          "took": 0.002,
+                          "status": "success"
+                        },
+                        {
+                          "task": "download",
+                          "file": "fake2.jsonl.gz",
+                          "percent": 100,
+                          "took": 0,
+                          "status": "success"
+                        },
+                        {
+                          "task": "insert",
+                          "index": "unpaywall-test",
+                          "file": "fake2.jsonl.gz",
+                          "linesRead": 100,
+                          "insertedDocs": 100,
+                          "updatedDocs": 0,
+                          "failedDocs": 0,
+                          "percent": 100,
+                          "took": 0.202,
+                          "status": "success"
+                        }
+                      ],
+                      "error": false,
+                      "took": 0.256
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/reports/${filename}": {
+      "get": {
+        "summary": "Get report",
+        "operationId": "get-update-reports-$-filename",
+        "description": "Get report with his filename",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "report",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "done": true,
+                      "createdAt": "2022-10-10T13:10:46.828Z",
+                      "endAt": "2022-10-10T13:10:47.084Z",
+                      "steps": [
+                        {
+                          "task": "getChangefiles",
+                          "took": 0.002,
+                          "status": "success"
+                        },
+                        {
+                          "task": "download",
+                          "file": "fake2.jsonl.gz",
+                          "percent": 100,
+                          "took": 0,
+                          "status": "success"
+                        },
+                        {
+                          "task": "insert",
+                          "index": "unpaywall-test",
+                          "file": "fake2.jsonl.gz",
+                          "linesRead": 100,
+                          "insertedDocs": 100,
+                          "updatedDocs": 0,
+                          "failedDocs": 0,
+                          "percent": 100,
+                          "took": 0.202,
+                          "status": "success"
+                        }
+                      ],
+                      "error": false,
+                      "took": 0.256
+                    }
+                  }
+                }
+              },
+              "Report": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "done": true,
+                      "createdAt": "2022-10-10T13:10:46.828Z",
+                      "endAt": "2022-10-10T13:10:47.084Z",
+                      "steps": [
+                        {
+                          "task": "getChangefiles",
+                          "took": 0.002,
+                          "status": "success"
+                        },
+                        {
+                          "task": "download",
+                          "file": "fake2.jsonl.gz",
+                          "percent": 100,
+                          "took": 0,
+                          "status": "success"
+                        },
+                        {
+                          "task": "insert",
+                          "index": "unpaywall-test",
+                          "file": "fake2.jsonl.gz",
+                          "linesRead": 100,
+                          "insertedDocs": 100,
+                          "updatedDocs": 0,
+                          "failedDocs": 0,
+                          "percent": 100,
+                          "took": 0.202,
+                          "status": "success"
+                        }
+                      ],
+                      "error": false,
+                      "took": 0.256
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "File not found"
+                    }
+                  }
+                }
+              },
+              "File not found": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "File not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/snapshots": {
+      "get": {
+        "summary": "Get snapshots",
+        "operationId": "get-update-snapshots",
+        "description": "Get list of snapshot or latest snapshot",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "latest",
+            "description": "latest",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "snapshot",
+            "content": {
+              "Lists of snapshots": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      "snapshot-2022-10-10.jsonl.gz"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/snapshots/${filename}": {
+      "get": {
+        "summary": "Get snapshot",
+        "operationId": "get-update-snapshots-$-filename",
+        "description": "Get snapshot with his filename",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "filename",
+            "description": "filename",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "snapshot"
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          },
+          "404": {
+            "description": "File not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "message": "File not found"
+                    }
+                  }
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "message": "string"
+                    }
+                  }
+                }
+              },
+              "File not found": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "File not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/states": {
+      "get": {
+        "summary": "Get state",
+        "operationId": "get-update-states",
+        "description": "Get latest state",
+        "responses": {
+          "200": {
+            "description": "state",
+            "content": {
+              "Latest state": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "done": true,
+                      "createdAt": "2022-10-10T13:10:51.417Z",
+                      "endAt": "2022-10-10T13:10:51.584Z",
+                      "steps": [
+                        {
+                          "task": "getChangefiles",
+                          "took": 0.002,
+                          "status": "success"
+                        },
+                        {
+                          "task": "insert",
+                          "index": "unpaywall-test",
+                          "file": "fake1.jsonl.gz",
+                          "linesRead": 50,
+                          "insertedDocs": 50,
+                          "updatedDocs": 0,
+                          "failedDocs": 0,
+                          "percent": 100,
+                          "took": 0.165,
+                          "status": "success"
+                        }
+                      ],
+                      "error": false,
+                      "took": 0.167
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/status": {
+      "get": {
+        "summary": "Get status",
+        "operationId": "get-update-status",
+        "description": "Get status",
+        "responses": {
+          "200": {
+            "description": "status",
+            "content": {
+              "No process in progress": {
+                "examples": {
+                  "response": {
+                    "value": false
+                  }
+                }
+              },
+              "Update in progress": {
+                "examples": {
+                  "response": {
+                    "value": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/unpaywall/changefiles": {
+      "get": {
+        "summary": "Get changefiles from unpaywall",
+        "operationId": "get-update-unpaywall-changefiles",
+        "description": "Get changefiles from unpaywall",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "index": {
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "index": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "interval of changefiles (\"week\" or \"day\")"
+        },
+        "responses": {
+          "200": {
+            "description": "status",
+            "content": {
+              "List of daily changefiles of unpaywall": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "date": "2022-10-10T00:00:00.000Z",
+                        "filename": "fake1.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2021-10-09T13:10:50.000Z",
+                        "lines": 50,
+                        "size": 19896,
+                        "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake1.jsonl.gz"
+                      },
+                      {
+                        "date": "2022-10-09T00:00:00.000Z",
+                        "filename": "fake2.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2022-10-09T13:10:50.000Z",
+                        "lines": 100,
+                        "size": 44137,
+                        "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake2.jsonl.gz"
+                      },
+                      {
+                        "date": "2022-10-08T00:00:00.000Z",
+                        "filename": "fake3.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2022-10-08T13:10:50.000Z",
+                        "lines": 2000,
+                        "size": 877494,
+                        "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake3.jsonl.gz"
+                      }
+                    ]
+                  }
+                }
+              },
+              "List of weekly changefiles of unpaywall": {
+                "examples": {
+                  "response": {
+                    "value": [
+                      {
+                        "date": "2022-10-10T00:00:00.000Z",
+                        "filename": "fake1.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2021-10-09T13:10:50.000Z",
+                        "lines": 50,
+                        "size": 19896,
+                        "url": "http://fakeUnpaywall:3000/feed/changefiles/fake1.jsonl.gz"
+                      },
+                      {
+                        "date": "2022-10-09T00:00:00.000Z",
+                        "filename": "fake2.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2022-10-09T13:10:50.000Z",
+                        "lines": 100,
+                        "size": 44137,
+                        "url": "http://fakeUnpaywall:3000/feed/changefiles/fake2.jsonl.gz"
+                      },
+                      {
+                        "date": "2022-10-08T00:00:00.000Z",
+                        "filename": "fake3.jsonl.gz",
+                        "filetype": "jsonl",
+                        "last_modified": "2022-10-08T13:10:50.000Z",
+                        "lines": 2000,
+                        "size": 877494,
+                        "url": "http://fakeUnpaywall:3000/feed/changefiles/fake3.jsonl.gz"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "job"
+        ]
+      }
+    },
+    "/update/cron/start": {
+      "post": {
+        "summary": "Start update cron",
+        "operationId": "post-update-cron-start",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "description": "Start update cron",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "cron"
+        ]
+      }
+    },
+    "/update/cron/stop": {
+      "post": {
+        "summary": "Stop update cron",
+        "operationId": "post-update-cron-stop",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "description": "Stop update cron",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "cron"
+        ]
+      },
+      "parameters": []
+    },
+    "/update/cron": {
+      "parameters": [],
+      "patch": {
+        "summary": "update update cron",
+        "operationId": "patch-update-cron",
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "time": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        },
+                        "index": {
+                          "type": "string"
+                        },
+                        "interval": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "config": {
+                        "time": "* * * * * *",
+                        "status": false,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "updated": {
+                    "value": {
+                      "config": {
+                        "time": "* 30 12-15 * * *",
+                        "status": true,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          }
+        },
+        "description": "update update cron",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "tags": [
+          "cron"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "time": {
+                    "type": "string"
+                  },
+                  "index": {
+                    "type": "string"
+                  },
+                  "interval": {
+                    "type": "string"
+                  }
+                },
+                "x-examples": {
+                  "example-1": {
+                    "time": "",
+                    "index": "",
+                    "interval": ""
+                  }
+                }
+              },
+              "examples": {
+                "daily": {
+                  "value": {
+                    "time": "0 0 0 * * *",
+                    "index": "unpaywall",
+                    "interval": "day"
+                  }
+                },
+                "weekly": {
+                  "value": {
+                    "time": "0 0 0 * * 0",
+                    "index": "unpaywall",
+                    "interval": "weekly"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get config of update cron",
+        "operationId": "get-update-cron",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "time": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        },
+                        "index": {
+                          "type": "string"
+                        },
+                        "interval": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "example-1": {
+                      "config": {
+                        "time": "* * * * * *",
+                        "status": false,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "day": {
+                    "value": {
+                      "config": {
+                        "time": "0 0 0 * * *",
+                        "status": true,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  },
+                  "week": {
+                    "value": {
+                      "config": {
+                        "time": "0 0 0 * * *",
+                        "status": true,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  },
+                  "off": {
+                    "value": {
+                      "config": {
+                        "time": "0 0 0 * * *",
+                        "status": false,
+                        "index": "unpaywall",
+                        "interval": "day"
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         },
-        "operationId": "get-update-ping-redis",
-        "description": "ping redis service"
+        "description": "Get config of update cron",
+        "parameters": [],
+        "tags": [
+          "cron"
+        ]
       }
     }
   },
@@ -507,41 +1222,109 @@
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {
-    "Unauthorized": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "number",
-          "default": 401
-        },
-        "error": {
-          "type": "string",
-          "default": "Unauthorized"
-        },
-        "message": {
-          "type": "string",
-          "default": "Not authorized"
+  "tags": [
+    {
+      "name": "cron"
+    },
+    {
+      "name": "job"
+    },
+    {
+      "name": "ping"
+    }
+  ],
+  "components": {
+    "responses": {
+      "Not-authorized": {
+        "description": "Not authorized",
+        "headers": {},
+        "content": {
+          "*/*": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "x-examples": {
+                "example-1": {
+                  "message": "Not authorized"
+                }
+              }
+            },
+            "examples": {
+              "example-1": {
+                "value": {
+                  "message": "string"
+                }
+              }
+            }
+          },
+          "Not authorized": {
+            "examples": {
+              "response": {
+                "value": {
+                  "message": "Not authorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Health": {
+        "description": "Example response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "boolean"
+                },
+                "elapsedTime": {
+                  "type": "integer"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "name": "redis",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "value": {
+                  "name": "name of service",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              },
+              "Error redis": {
+                "value": {
+                  "name": "redis",
+                  "elapsedTime": 3002,
+                  "error": "time out",
+                  "status": false
+                }
+              }
+            }
+          }
         }
       }
     },
-    "FileNotFound": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "string",
-          "default": "404"
-        },
-        "error": {
-          "type": "string",
-          "default": "Not Found"
-        },
-        "message": {
-          "type": "string",
-          "default": "\"file\" not found"
-        }
+    "securitySchemes": {
+      "x-api-key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "API Key"
       }
-    }
-  },
-  "schemes": []
+    },
+    "schemas": {}
+  }
 }

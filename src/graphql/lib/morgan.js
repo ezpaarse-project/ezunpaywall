@@ -1,17 +1,27 @@
 const morgan = require('morgan');
+const fs = require('fs-extra');
 const rfs = require('rotating-file-stream');
 const path = require('path');
 const { format } = require('date-fns');
+const { accessLogRotate } = require('config');
+
+const accessLogDir = path.resolve(__dirname, '..', 'log');
 
 function logFilename(time) {
   if (!time) return 'access.log';
-  return `${format(time, 'yyyy-MM-dd')}-access.log`;
+  return `${format(new Date(time) - 1000 * 60 * 60 * 24, 'yyyy-MM-dd')}-access.log`;
 }
 
-const accessLogStream = rfs.createStream(logFilename, {
-  interval: '1d', // rotate daily
-  path: path.resolve(__dirname, '..', 'log'),
-});
+let accessLogStream;
+
+if (accessLogRotate) {
+  accessLogStream = rfs.createStream(logFilename, {
+    interval: '1d', // rotate daily
+    path: accessLogDir,
+  });
+} else {
+  accessLogStream = fs.createWriteStream(path.resolve(accessLogDir, 'access.log'), { flags: 'a+' });
+}
 
 morgan.token('ip', (req) => req.headers['x-forwarded-for'] || req.connection.remoteAddress);
 

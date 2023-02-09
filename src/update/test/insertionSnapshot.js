@@ -20,33 +20,18 @@ const {
   checkIfInUpdate,
 } = require('./utils/status');
 
-const {
-  pingUpdate,
-  pingFakeUnpaywall,
-  pingElastic,
-  pingRedis,
-} = require('./utils/ping');
-
-const {
-  loadDevAPIKey,
-  deleteAllAPIKey,
-} = require('./utils/apikey');
+const ping = require('./utils/ping');
 
 const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
 describe('Test: download and insert snapshot from unpaywall', () => {
   before(async function () {
     this.timeout(30000);
-    await pingUpdate();
-    await pingFakeUnpaywall();
-    await pingElastic();
-    await pingRedis();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
+    await ping();
   });
 
   describe('Do a download and a insertion of snapshot', () => {
@@ -60,7 +45,7 @@ describe('Test: download and insert snapshot from unpaywall', () => {
         .send({
           index: 'unpaywall-test',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -86,6 +71,8 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('totalInsertedDocs').equal(2150);
+      expect(state).have.property('totalUpdatedDocs').equal(0);
 
       expect(state.steps[0]).have.property('task').equal('download');
       expect(state.steps[0]).have.property('percent').equal(100);
@@ -114,6 +101,8 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(false);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('totalInsertedDocs').equal(2150);
+      expect(report).have.property('totalUpdatedDocs').equal(0);
 
       expect(report.steps[0]).have.property('task').equal('download');
       expect(report.steps[0]).have.property('percent').equal(100);
@@ -135,8 +124,6 @@ describe('Test: download and insert snapshot from unpaywall', () => {
 
     after(async () => {
       await reset();
-      await deleteAllAPIKey();
-      await loadDevAPIKey();
     });
   });
 });

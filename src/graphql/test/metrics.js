@@ -10,10 +10,7 @@ const {
   insertDataUnpaywall,
 } = require('./utils/elastic');
 
-const {
-  pingElastic,
-  pingRedis,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const {
   loadDevAPIKey,
@@ -22,14 +19,13 @@ const {
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
+const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
 
 describe('test graphql metrics request', () => {
   before(async function () {
     this.timeout(30000);
-    await pingElastic();
-    await pingRedis();
     await deleteAllAPIKey();
+    await ping();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
     await createIndex('unpaywall-test', mappingUnpaywall);

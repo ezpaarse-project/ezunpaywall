@@ -31,7 +31,7 @@ const {
 const processConfiguration = [
   new transports.DailyRotateFile({
     name: 'file',
-    filename: path.resolve(__dirname, '..', 'log', '%DATE%.log'),
+    filename: path.resolve(__dirname, '..', 'log', 'application', '%DATE%.log'),
     datePattern: 'yyyy-MM-DD',
     level: 'info',
   }),

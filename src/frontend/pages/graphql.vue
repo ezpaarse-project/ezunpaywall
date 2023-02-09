@@ -1,56 +1,63 @@
 <template>
   <section>
-    <div v-html="$t('graphql.general', { dataFormatURL })" />
+    <v-card class="my-3">
+      <v-toolbar color="secondary" dark flat dense>
+        <v-toolbar-title v-text="$t('graphql.title')" />
+      </v-toolbar>
+      <v-card-text>
+        {{ $t('graphql.general1') }} <br>
+        {{ $t('graphql.general2') }} <br>
+        {{ $t('graphql.general3') }} <br>
+        {{ $t('graphql.general4') }} <br>
+      </v-card-text>
+    </v-card>
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title v-text="$t('graphql.constructor')" />
         <v-spacer />
         <v-icon>mdi-api</v-icon>
       </v-toolbar>
-      <v-container>
-        <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" filled />
-        <v-text-field v-model="doi" label="DOI" filled />
-      </v-container>
+      <v-card-text>
+        <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" />
+        <v-text-field v-model="doi" label="DOIs" />
+      </v-card-text>
 
-      <v-container>
-        <v-toolbar class="secondary" dark dense flat>
-          <v-toolbar-title v-text="$t('graphql.settings')" />
+      <v-toolbar class="secondary" dark dense flat>
+        <v-toolbar-title v-text="$t('graphql.settings')" />
+        <v-menu
+          v-model="attrsHelp"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          max-width="500"
+          offset-x
+          transition="slide-x-transition"
+        >
+          <template #activator="{ on }">
+            <v-btn class="mr-5" icon v-on="on">
+              <v-icon>mdi-help-circle</v-icon>
+            </v-btn>
+          </template>
 
-          <v-menu
-            v-model="attrsHelp"
-            :close-on-content-click="false"
-            :nudge-width="200"
-            max-width="500"
-            offset-x
-            transition="slide-x-transition"
-          >
-            <template #activator="{ on }">
-              <v-btn class="mr-5" icon v-on="on">
-                <v-icon>mdi-help-circle</v-icon>
-              </v-btn>
-            </template>
-
-            <v-card class="text-justify">
-              <v-card-text
-                v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
+          <v-card>
+            <v-card-text
+              class="text-justify"
+              v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
+            />
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                text
+                @click="attrsHelp = false"
+                v-text="$t('close')"
               />
-              <v-card-actions>
-                <v-spacer />
-                <v-btn
-                  class="body-2"
-                  text
-                  @click="attrsHelp = false"
-                  v-text="$t('close')"
-                />
-              </v-card-actions>
-            </v-card>
-          </v-menu>
-        </v-toolbar>
-
-        <v-container>
-          <SettingsGraphql />
-        </v-container>
-      </v-container>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+      </v-toolbar>
+      <v-card-text>
+        <SettingsGraphql />
+      </v-card-text>
     </v-card>
     <v-card class="mx-auto">
       <v-toolbar class="secondary" dark dense flat>
@@ -77,18 +84,22 @@
         />
       </v-card-actions>
       <div id="graphqlResponse">
-        <v-card-title v-text="$t('graphql.result')" />
-        <v-card-text>
-          <pre>{{ JSON.stringify(response.data, null, 2) }} </pre>
-        </v-card-text>
-        <v-card-actions v-if="response.data">
-          <v-spacer />
-          <v-btn
-            :href="linkGraphql"
-            target="_blank"
-            v-text="$t('graphql.linkAPI')"
-          />
-        </v-card-actions>
+        <div v-if="response.data">
+          <v-card-title v-text="$t('graphql.result')" />
+          <v-card-text>
+            <pre>
+                <code v-highlight class="json">{{ stringifiedGraphqlResponse }}</code>
+            </pre>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              :href="linkGraphql"
+              target="_blank"
+              v-text="$t('graphql.linkAPI')"
+            />
+          </v-card-actions>
+        </div>
       </div>
     </v-card>
   </section>
@@ -106,12 +117,17 @@ export default {
   data: () => {
     return {
       apiKey: 'demo',
-      doi: '10.1111/jvp.12137',
+      doi: '10.1001/jama.2016.9797',
       loading: false,
       response: '',
       // help
       attrsHelp: false,
       dataFormatURL: 'https://unpaywall.org/data-format'
+    }
+  },
+  head () {
+    return {
+      title: 'Graphql'
     }
   },
   computed: {
@@ -162,23 +178,45 @@ export default {
     },
     linkGraphql () {
       return `${this.$graphql.defaults.baseURL}/graphql?query=${this.query}&apikey=demo`
+    },
+    stringifiedGraphqlResponse () {
+      return JSON.stringify(this.response.data, null, 2)
     }
   },
   methods: {
+    /**
+     * Necessary on preprod
+     * (http environment)
+     */
+    unsecuredCopyToClipboard (text) {
+      const textArea = document.createElement('textarea')
+      textArea.value = text
+      textArea.setAttribute('display', 'none')
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        document.execCommand('copy')
+      } catch (err) {
+        this.$store.dispatch('snacks/error', this.$t('graphql.errorCopyRequest'))
+      }
+      document.body.removeChild(textArea)
+    },
     copyText () {
       try {
-        navigator.clipboard.writeText(this.query)
-        this.$store.dispatch('snacks/info', 'request copied')
+        if (window.isSecureContext && navigator.clipboard) {
+          navigator.clipboard.writeText(this.query)
+        } else {
+          this.unsecuredCopyToClipboard(this.query)
+        }
+        this.$store.dispatch('snacks/info', this.$t('graphql.copyRequest'))
       } catch (err) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('graphql.errorCopyRequest')
-        )
+        this.$store.dispatch('snacks/error', this.$t('graphql.errorCopyRequest'))
       }
     },
     async graphqlRequest () {
       this.loading = true
-      // 10.1111/jvp.12137
+      // 10.1001/jama.2016.9797
       try {
         this.response = await this.$graphql({
           method: 'GET',
@@ -204,6 +242,5 @@ export default {
 pre {
   display: block;
   padding: 12px;
-  color: #f60;
 }
 </style>

@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 /**
  * load default dev apikey
@@ -11,8 +11,8 @@ const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
 const loadDevAPIKey = async () => {
   try {
     await chai.request(apikeyURL)
-      .post('/load?dev=true')
-      .set('redis-password', 'changeme');
+      .post('/loadDev')
+      .set('x-api-key', 'changeme');
   } catch (err) {
     console.error('Cannot request apikey service');
     console.error(err);
@@ -26,7 +26,7 @@ const deleteAllAPIKey = async () => {
   try {
     await chai.request(apikeyURL)
       .delete('/all')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
   } catch (err) {
     console.error('Cannot request apikey service');
     console.error(err);

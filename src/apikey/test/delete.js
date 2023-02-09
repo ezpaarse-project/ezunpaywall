@@ -2,7 +2,7 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
-const pingApikey = require('./utils/ping');
+const ping = require('./utils/ping');
 const {
   loadDevAPIKey,
   deleteAllAPIKey,
@@ -10,11 +10,11 @@ const {
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 describe('Test: Delete apikey', () => {
   before(async () => {
-    await pingApikey();
+    await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
   });
@@ -23,7 +23,7 @@ describe('Test: Delete apikey', () => {
     const res = await chai
       .request(apikeyURL)
       .delete('/keys/user')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(204);
   });
@@ -32,7 +32,7 @@ describe('Test: Delete apikey', () => {
     const res = await chai
       .request(apikeyURL)
       .delete('/keys/test')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(404);
   });

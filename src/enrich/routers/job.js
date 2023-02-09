@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const boom = require('@hapi/boom');
 const joi = require('joi');
 const fs = require('fs-extra');
 const path = require('path');
@@ -7,11 +6,11 @@ const path = require('path');
 const {
   enrichJSON,
   enrichCSV,
-} = require('../bin/utils');
+} = require('../bin/job');
 
 const checkAuth = require('../middlewares/auth');
 
-const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 
 /**
  *
@@ -21,7 +20,9 @@ const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
 router.post('/job/:filename', checkAuth, async (req, res, next) => {
   const checkParams = joi.string().trim().required().validate(req.params.filename);
 
-  if (checkParams?.error) return next(boom.badRequest(checkParams?.error?.details[0].message));
+  if (checkParams?.error) {
+    return res.status(400).json({ message: checkParams?.error?.details[0].message });
+  }
 
   const id = checkParams?.value;
   // TODO check args with graphqlSyntax
@@ -32,7 +33,7 @@ router.post('/job/:filename', checkAuth, async (req, res, next) => {
     separator: joi.string().trim().default(','),
   }).validate(req.body);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const apikey = req.get('x-api-key');
 
@@ -40,8 +41,8 @@ router.post('/job/:filename', checkAuth, async (req, res, next) => {
     type, args, index, separator,
   } = value;
 
-  if (!await fs.pathExists(path.resolve(uploadedDir, apikey, `${id}.${type}`))) {
-    return next(boom.notFound(`${id}.${type} not found`));
+  if (!await fs.pathExists(path.resolve(uploadDir, apikey, `${id}.${type}`))) {
+    return res.status(404).json({ message: `[file] ${id}.${type} not found` });
   }
 
   if (type === 'jsonl') {

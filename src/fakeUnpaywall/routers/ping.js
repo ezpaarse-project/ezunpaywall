@@ -1,5 +1,7 @@
 const router = require('express').Router();
 
-router.get('/ping', async (req, res) => res.status(200).json({}));
+router.get('/', (req, res) => res.status(200).json('fakeUnpaywall service'));
+
+router.get('/ping', (req, res, next) => res.status(204).end());
 
 module.exports = router;

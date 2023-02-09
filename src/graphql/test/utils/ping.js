@@ -4,43 +4,34 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
+const graphqlHost = process.env.GRAPHQL_HOST || 'http://localhost:59701';
+const updateHost = process.env.UPDATE_HOST || 'http://localhost:59702';
+const elasticHost = process.env.UPDATE_HOST || 'http://elastic:changeme@localhost:9200';
+const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
 
-async function pingElastic() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(graphqlURL).get('/ping/elastic');
-    } catch (err) {
-      console.error(`elastic ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+/**
+ * ping all services to see if they are available
+ */
+async function ping() {
+  const graphql = await chai.request(graphqlHost).get('/ping');
+  if (graphql?.status !== 204) {
+    throw new Error(`[graphql] Bad status : ${graphql?.status}`);
   }
-  return false;
+
+  const elastic = await chai.request(elasticHost).get('/');
+  if (elastic?.status !== 200) {
+    throw new Error(`[elastic] Bad status : ${elastic?.status}`);
+  }
+
+  const apikey = await chai.request(apikeyHost).get('/ping');
+  if (apikey?.statusCode !== 204) {
+    throw new Error(`[apikey] Bad status : ${apikey?.status}`);
+  }
+
+  const redis = await chai.request(updateHost).get('/ping/redis');
+  if (!redis?.status) {
+    throw new Error(`[redis] Bad status : ${redis?.status}`);
+  }
 }
 
-async function pingRedis() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(graphqlURL).get('/ping/redis');
-    } catch (err) {
-      console.error(`elastic ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  return false;
-}
-
-module.exports = {
-  pingElastic,
-  pingRedis,
-};
+module.exports = ping;

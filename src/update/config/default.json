@@ -1,15 +1,12 @@
 {
+  "node": "development",
+  "accessLogRotate": false,
   "unpaywall": {
-    "host": "http://fakeUnpaywall:12000",
+    "host": "http://fakeunpaywall:3000",
     "apikey": "default"
   },
-  "redis":  {
-    "password": "changeme",
-    "host": "redis",
-    "port": "6379"
-  },
   "mail": {
-    "baseURL": "http://mail:8000",
+    "host": "http://mail:3000",
     "apikey": "changeme"
   },
   "elasticsearch": {
@@ -18,6 +15,14 @@
     "user": "elastic",
     "password": "changeme",
     "maxBulkSize": 4000,
-    "indexAlias": "upw"
-  }
+    "indexAlias": "upw",
+    "timeout": 20000
+  },
+  "cron": {
+    "schedule": "0 0 0 * * *",
+    "active": false,
+    "index": "unpaywall",
+    "interval": "day"
+  },
+  "apikey": "changeme"
 }

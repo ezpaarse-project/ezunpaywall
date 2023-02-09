@@ -1,0 +1,88 @@
+## Redirection to HTTPS
+server {
+  server_name ${NGINX_HOST};
+
+  client_max_body_size 100M;
+
+  listen 80;
+  listen [::]:80;
+
+  location ~ /\.well-known/acme-challenge {
+    allow all;
+  }
+
+  location / {
+    return 301 https://${NGINX_HOST}$request_uri; 
+  }
+}
+
+## HTTPS configuration
+server {
+  server_name ${NGINX_HOST};
+
+  client_max_body_size 100M;
+
+  listen 443 ssl;
+  listen [::]:443 ssl;
+
+  ## Certificates
+  ssl_certificate /etc/nginx/ssl/${NGINX_HOST}.pem;
+  ssl_certificate_key /etc/nginx/ssl/${NGINX_HOST}-key.pem;
+  ssl_trusted_certificate /etc/nginx/ssl/${NGINX_HOST}.pem;
+
+  ## Configuration
+  proxy_set_header X-Forwarded-Host $host;
+  proxy_set_header X-Forwarded-Server $host;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto https;
+  proxy_hide_header X-Powered-By;
+
+  ## client
+
+  location / {
+    proxy_pass http://frontend:3000/;
+  }
+
+  location /api {
+    rewrite ^/api(/.*)$ $1 break;
+    proxy_pass http://graphql:3000/;
+  }
+
+  location /api/update {
+    rewrite ^/api/update(/.*)$ $1 break;
+    proxy_pass http://update:3000/;
+  }
+
+  location /api/enrich {
+    rewrite ^/api/enrich(/.*)$ $1 break;
+    proxy_pass http://enrich:3000/;
+  }
+
+  location /api/apikey {
+    rewrite ^/api/apikey(/.*)$ $1 break;
+    proxy_pass http://apikey:3000/;
+  }
+
+  location /api/mail {
+    rewrite ^/api/mail(/.*)$ $1 break;
+    proxy_pass http://mail:3000/;
+  }
+
+  location /api/health {
+    rewrite ^/api/health(/.*)$ $1 break;
+    proxy_pass http://health:3000/;
+  }
+
+  ## Diffie-Hellman
+  ssl_ecdh_curve secp384r1;
+
+  ## Protocol
+  ssl_protocols TLSv1.2;
+
+  ## Cipher suite
+  ssl_ciphers EECDH+AESGCM:EECDH+CHACHA20:EECDH+AES;
+  ssl_prefer_server_ciphers on;
+
+  ## HTTP Strict Transport Security
+  add_header Strict-Transport-Security "max-age=15552000; preload";
+}

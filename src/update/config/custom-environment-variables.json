@@ -1,23 +1,28 @@
 {
+  "node": "NODE_ENV",
+  "accessLogRotate": "ACCESS_LOG_ROTATE",
   "unpaywall": {
-    "host": "UNPAYWALL_URL",
+    "host": "UNPAYWALL_HOST",
     "apikey": "UNPAYWALL_APIKEY"
   },
-  "redis":  {
-    "host": "REDIS_HOST",
-    "port": "REDIS_PORT",
-    "password": "REDIS_PASSWORD"
-  },
   "mail": {
-    "baseURL": "EZUNPAYWALL_MAIL_BASEURL",
-    "apikey": "EZUNPAYWALL_MAIL_APIKEY"
+    "host": "MAIL_HOST",
+    "apikey": "MAIL_APIKEY"
   },
   "elasticsearch": {
-    "host": "ELASTICSEARCH_HOST",
+    "host": "ELASTICSEARCH_HOSTS",
     "port": "ELASTICSEARCH_PORT",
     "user": "ELASTICSEARCH_USERNAME",
     "password": "ELASTICSEARCH_PASSWORD",
     "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
-    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS"
-  }
+    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS",
+    "timeout": "ELASTICSEARCH_TIMEOUT"
+  },
+  "cron": {
+    "schedule": "UPDATE_CRON_SCHEDULE",
+    "active": "UPDATE_CRON_ACTIVE",
+    "index": "UPDATE_CRON_INDEX",
+    "interval": "UPDATE_CRON_INTERVAL"
+  },
+  "apikey": "UPDATE_APIKEY"
 }

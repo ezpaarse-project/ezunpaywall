@@ -40,89 +40,86 @@
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <v-container>
-              <v-layout row class="mb-3 ml-1">
-                <v-row align="center">
-                  <div class="mr-1" v-text="$t('enrich.authorizedFile')" />
-                  <v-chip-group
-                    v-for="extension in authorizedFile"
-                    :key="extension.name"
-                  >
-                    <v-chip :color="extension.color" label text-color="white">
-                      {{ extension.name }}
-                    </v-chip>
-                  </v-chip-group>
-                </v-row>
-                <v-spacer />
-                <v-menu
-                  v-model="fileSelectionHelp"
-                  :close-on-content-click="false"
-                  :nudge-width="200"
-                  max-width="500"
-                  offset-x
-                  transition="slide-x-transition"
+            <v-row class="ma-3">
+              <v-row align="center">
+                <div class="mr-1" v-text="$t('enrich.authorizedFile')" />
+                <v-chip-group
+                  v-for="extension in authorizedFile"
+                  :key="extension.name"
                 >
-                  <template #activator="{ on }">
-                    <v-btn class="mr-5" icon v-on="on">
-                      <v-icon>mdi-help-circle</v-icon>
-                    </v-btn>
-                  </template>
+                  <v-chip :color="extension.color" label text-color="white">
+                    {{ extension.name }}
+                  </v-chip>
+                </v-chip-group>
+              </v-row>
+              <v-spacer />
+              <v-menu
+                v-model="fileSelectionHelp"
+                :close-on-content-click="false"
+                :nudge-width="200"
+                max-width="500"
+                offset-x
+                transition="slide-x-transition"
+              >
+                <template #activator="{ on }">
+                  <v-btn class="mr-5" icon v-on="on">
+                    <v-icon>mdi-help-circle</v-icon>
+                  </v-btn>
+                </template>
 
-                  <v-card class="text-justify">
-                    <v-card-text v-html="$t('enrich.explainationLogs')" />
-                    <v-divider />
-                    <v-card-text
-                      v-html="
-                        $t('enrich.explainationTestsLogs', {
-                          url: logSamplesUrl,
-                        })
-                      "
+                <v-card class="text-justify">
+                  <v-card-text v-html="$t('enrich.explainationLogs')" />
+                  <v-divider />
+                  <v-card-text
+                    v-html="
+                      $t('enrich.explainationTestsLogs', {
+                        url: logSamplesUrl,
+                      })
+                    "
+                  />
+
+                  <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                      class="body-2"
+                      text
+                      @click="fileSelectionHelp = false"
+                      v-text="$t('close')"
                     />
-
-                    <v-card-actions>
-                      <v-spacer />
-                      <v-btn
-                        class="body-2"
-                        text
-                        @click="fileSelectionHelp = false"
-                        v-text="$t('close')"
-                      />
-                    </v-card-actions>
-                  </v-card>
-                </v-menu>
-                <v-btn
-                  class="body-2"
-                  color="primary"
-                  @click="step = 2"
-                  v-text="$t('enrich.continue')"
-                />
-              </v-layout>
-            </v-container>
+                  </v-card-actions>
+                </v-card>
+              </v-menu>
+              <v-btn
+                class="body-2"
+                color="primary"
+                :disabled="!hasLogFiles"
+                @click="step = 2"
+                v-text="$t('enrich.continue')"
+              />
+            </v-row>
             <LogFiles class="ma-1" @files="getFiles($event)" />
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-container>
-              <v-layout row align-center class="mb-3">
-                <v-btn
-                  class="body-2"
-                  color="primary"
-                  @click="step = 1"
-                  v-text="$t('enrich.settings')"
-                />
-                <v-spacer />
-                <v-btn
-                  class="body-2"
-                  color="primary"
-                  :disabled="!hasLogFiles || !getSetting"
-                  @click="
-                    enrich();
-                    step = 3;
-                  "
-                  v-text="$t('enrich.startProcess')"
-                />
-              </v-layout>
-            </v-container>
+            <v-row align-center class="my-5 mx-1">
+              <v-btn
+                class="body-2"
+                color="primary"
+                @click="step = 1"
+                v-text="$t('enrich.settings')"
+              />
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                color="primary"
+                :disabled="!hasLogFiles || !getSetting"
+                @click="
+                  enrich();
+                  step = 3;
+                "
+                v-text="$t('enrich.startProcess')"
+              />
+            </v-row>
 
             <v-toolbar class="secondary" dark dense flat>
               <v-toolbar-title v-text="$t('enrich.settings')" />
@@ -139,11 +136,7 @@
             />
             <v-row class="mb-3 ml-1">
               <div class="mr-1" v-text="$t('enrich.fileExtension')" />
-              <v-chip
-                label
-                text-color="white"
-                :color="extensionFileColor"
-              >
+              <v-chip label text-color="white" :color="extensionFileColor">
                 {{ extensionSelected }}
               </v-chip>
             </v-row>
@@ -186,16 +179,14 @@
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <v-container>
-              <v-layout row justify-end class="mb-3">
-                <v-btn :href="resultUrl" :disabled="inProcess || error">
-                  <v-icon left>
-                    mdi-download
-                  </v-icon>
-                  {{ $t("enrich.download") }}
-                </v-btn>
-              </v-layout>
-            </v-container>
+            <v-layout justify-end class="mb-3">
+              <v-btn :disabled="inProcess || error" @click="download()">
+                <v-icon left>
+                  mdi-download
+                </v-icon>
+                {{ $t("enrich.download") }}
+              </v-btn>
+            </v-layout>
             <v-container v-if="inProcess" class="text-center">
               <v-progress-circular
                 :size="70"
@@ -271,6 +262,11 @@ export default {
       id: ''
     }
   },
+  head () {
+    return {
+      title: 'Enrich'
+    }
+  },
   computed: {
     // config
     hasLogFiles () {
@@ -322,8 +318,8 @@ export default {
       return `{ ${attrs.join(', ')} }`
     },
     // process
-    resultUrl () {
-      return `${this.$enrich.defaults.baseURL}/enriched/${this.id}.${this.extensionSelected}`
+    resultID () {
+      return `${this.id}.${this.extensionSelected}`
     },
 
     extensionFileColor () {
@@ -361,15 +357,14 @@ export default {
             'Content-Type': 'text/csv',
             'X-API-KEY': this.apiKey
           },
-          responseType: 'json',
-          timeout: 0
+          responseType: 'json'
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
         return this.errored()
       }
 
-      const { id } = upload
+      const id = upload.data
 
       this.stepTitle = this.$t('enrich.stepEnrich')
       try {
@@ -395,7 +390,10 @@ export default {
           state = await this.$enrich({
             method: 'GET',
             url: `/states/${id}.json`,
-            responseType: 'json'
+            responseType: 'json',
+            headers: {
+              'X-API-KEY': this.apiKey
+            }
           })
           this.state = state?.data
         } catch (err) {
@@ -409,6 +407,33 @@ export default {
       // done
       this.inProcess = false
       this.id = id
+    },
+
+    async download () {
+      let download
+      try {
+        download = await this.$enrich({
+          method: 'GET',
+          url: `/enriched/${this.resultID}`,
+          headers: {
+            'X-API-KEY': this.apiKey
+          },
+          responseType: 'blob'
+        })
+      } catch (err) {
+        this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
+        return this.errored()
+      }
+      this.forceFileDownload(download)
+    },
+
+    forceFileDownload (response) {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', this.resultID)
+      document.body.appendChild(link)
+      link.click()
     },
 
     startTimer (startTime) {

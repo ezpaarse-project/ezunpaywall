@@ -2,10 +2,10 @@ export default {
   namespaced: true,
   state: () => ({
     simple: ['doi'],
-    best_oa_location: [],
-    first_oa_location: [],
+    best_oa_location: ['evidence', 'is_best'],
+    first_oa_location: ['url_for_pdf'],
     oa_locations: [],
-    z_authors: []
+    z_authors: ['family', 'given']
   }),
   actions: {
     add ({ commit }, value) {

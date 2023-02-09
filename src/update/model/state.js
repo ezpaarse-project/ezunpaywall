@@ -3,9 +3,8 @@ const {
 } = require('../bin/report');
 
 const {
-  sendMailStarted,
-  sendMailReport,
-} = require('../service/mail');
+  sendMailUpdateReport,
+} = require('../lib/service/mail');
 
 const {
   setInUpdate,
@@ -24,11 +23,10 @@ function setState(key, value) {
 }
 
 /**
- * create a new file on folder "out/update/state" containing the update state
+ * create a new file on folder "data/update/state" containing the update state
  * @return {String} name of the file where the state is saved
  */
 async function createState() {
-  await sendMailStarted();
   state = {
     done: false,
     createdAt: new Date(),
@@ -103,32 +101,47 @@ function updateLatestStep(step) {
   state.steps[state.steps.length - 1] = step;
 }
 
+function end() {
+  state.done = true;
+  state.endAt = new Date();
+  state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
+
+  const insertSteps = state.steps.filter((e) => e.task === 'insert');
+  let totalInsertedDocs = 0;
+  let totalUpdatedDocs = 0;
+  insertSteps.forEach((e) => {
+    totalInsertedDocs += e?.insertedDocs || 0;
+  });
+  state.totalInsertedDocs = totalInsertedDocs;
+  insertSteps.forEach((e) => {
+    totalUpdatedDocs += e?.updatedDocs || 0;
+  });
+  state.totalUpdatedDocs = totalUpdatedDocs;
+}
+
 /**
  * update the state when there is an error
  * @param {Array<String>} stackTrace - log of error
  */
-const fail = async (stackTrace) => {
-  state.done = true;
-  state.endAt = new Date();
-  state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
+async function fail(stackTrace) {
+  logger.error('[update process]: fail');
+  end();
   state.error = true;
   state.stackTrace = stackTrace;
   await createReport(state);
+  await sendMailUpdateReport(state);
   setInUpdate(false);
-  await sendMailReport(state);
-};
+}
 
 /**
  * update the state when the process is finished
  */
-const endState = async () => {
-  state.done = true;
-  state.endAt = new Date();
-  state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
+async function endState() {
+  logger.info('[update process]: end process');
+  end();
   await createReport(state);
-  await sendMailReport(state);
   setInUpdate(false);
-};
+}
 
 module.exports = {
   getState,

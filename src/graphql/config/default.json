@@ -1,4 +1,6 @@
 {
+  "node": "development",
+  "accessLogRotate": false,
   "redis":  {
     "host": "redis",
     "port": "6379",

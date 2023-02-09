@@ -3,13 +3,13 @@ const uuid = require('uuid');
 const path = require('path');
 const fs = require('fs-extra');
 
-const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 
 const storage = multer.diskStorage(
   {
     destination: (req, file, cb) => {
       const apikey = req.get('x-api-key');
-      const dir = path.resolve(uploadedDir, apikey);
+      const dir = path.resolve(uploadDir, apikey);
       fs.exists(dir, (exist) => {
         if (!exist) {
           return fs.mkdir(dir, (error) => cb(error, dir));
@@ -25,4 +25,4 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage });
 
-module.export = upload;
+module.exports = upload;

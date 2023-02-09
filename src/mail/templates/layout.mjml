@@ -32,25 +32,15 @@
       </mj-section>
 
       <mj-section>
-        <mj-group>
-          <mj-column width="50%">
-            <mj-image
-              align="left"
-              width="150px"
-              href="https://ezmesure.couperin.org"
-              src="cid:ezmesure_logo.png"
-            />
-          </mj-column>
-
-          <mj-column width="50%">
-            <mj-social align="right" padding-bottom="0px">
-              <mj-social-element name="youtube" src="cid:ezmesure_youtube.png" href="https://www.youtube.com/channel/UCcR-0UE9WjYiwS4fMG2T4tQ" />
-              <mj-social-element name="twitter-noshare" src="cid:ezmesure_twitter.png" href="https://twitter.com/ezpaarse" />
-              <mj-social-element name="github-noshare" src="cid:ezmesure_github.png" href="https://github.com/ezpaarse-project/" />
-            </mj-social>
-          </mj-column>
-        </mj-group>
+        <mj-column width="50%">
+          <mj-social padding-bottom="0px">
+            <mj-social-element name="youtube" src="cid:youtube.png" href="https://www.youtube.com/channel/UCcR-0UE9WjYiwS4fMG2T4tQ" />
+            <mj-social-element name="twitter-noshare" src="cid:twitter.png" href="https://twitter.com/ezpaarse" />
+            <mj-social-element name="github-noshare" src="cid:github.png" href="https://github.com/ezpaarse-project/" />
+          </mj-social>
+        </mj-column>
       </mj-section>
+    
     </mj-wrapper>
 
     <mj-section>

@@ -1,11 +1,9 @@
 const router = require('express').Router();
-const boom = require('@hapi/boom');
-
 const checkAuth = require('../middlewares/auth');
 
 const sendMailContact = require('../bin/contact');
 
-const { sendMailStarted, sendMailReport } = require('../bin/update');
+const { sendMailUpdateStarted, sendMailUpdateReport } = require('../bin/update');
 
 router.post('/contact', checkAuth, async (req, res, next) => {
   const {
@@ -13,27 +11,27 @@ router.post('/contact', checkAuth, async (req, res, next) => {
   } = req.body;
 
   if (!email) {
-    return res.status(400).json(boom.badRequest('email are expected'));
+    return res.status(400).json({ message: 'Email is expected' });
   }
 
   const pattern = /.+@.+\..+/;
 
   if (!pattern.test(email)) {
-    return res.status(400).json(boom.badRequest(`[${email}] is invalid email`));
+    return res.status(400).json({ message: `Email [${email}] is invalid` });
   }
 
   if (!subject) {
-    return res.status(400).json(boom.badRequest('subject are expected'));
+    return res.status(400).json({ message: 'Subject is expected' });
   }
 
   if (!message) {
-    return res.status(400).json(boom.badRequest('message are expected'));
+    return res.status(400).json({ message: 'Message is expected' });
   }
 
   try {
     await sendMailContact(email, subject, message);
   } catch (err) {
-    return next(boom.boomify(err));
+    return next(err);
   }
   return res.status(202).json();
 });
@@ -44,9 +42,9 @@ router.post('/update-start', checkAuth, async (req, res, next) => {
   // TODO test config
 
   try {
-    await sendMailStarted(config);
+    sendMailUpdateStarted(config);
   } catch (err) {
-    return next(boom.boomify(err));
+    return next(err);
   }
   return res.status(202).json();
 });
@@ -56,9 +54,9 @@ router.post('/update-end', checkAuth, async (req, res, next) => {
   // TODO test state
 
   try {
-    await sendMailReport(state);
+    sendMailUpdateReport(state);
   } catch (err) {
-    return next(boom.boomify(err));
+    return next(err);
   }
   return res.status(202).json();
 });

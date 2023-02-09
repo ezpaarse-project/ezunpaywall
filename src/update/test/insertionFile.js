@@ -23,33 +23,18 @@ const {
   checkIfInUpdate,
 } = require('./utils/status');
 
-const {
-  pingUpdate,
-  pingFakeUnpaywall,
-  pingElastic,
-  pingRedis,
-} = require('./utils/ping');
-
-const {
-  loadDevAPIKey,
-  deleteAllAPIKey,
-} = require('./utils/apikey');
+const ping = require('./utils/ping');
 
 const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 
-const updateURL = process.env.EZUNPAYWALL_URL || 'http://localhost:4000';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
 describe('Test: insert the content of a file already installed on ezunpaywall', () => {
   before(async function () {
     this.timeout(30000);
-    await pingUpdate();
-    await pingFakeUnpaywall();
-    await pingElastic();
-    await pingRedis();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
+    await ping();
   });
 
   describe('Do insertion of a file already installed', () => {
@@ -64,7 +49,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .send({
           index: 'unpaywall-test',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -144,7 +129,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
           index: 'unpaywall-test',
           limit: 10,
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -223,7 +208,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
           index: 'unpaywall-test',
           offset: 40,
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -303,7 +288,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
           offset: 10,
           limit: 20,
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -376,7 +361,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .send({
           index: 'unpaywall-test',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -389,7 +374,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
         .send({
           index: 'unpaywall-test',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(404);
     });
@@ -409,7 +394,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
           offset: 100,
           limit: 50,
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -421,7 +406,5 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
   after(async () => {
     await reset();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
   });
 });

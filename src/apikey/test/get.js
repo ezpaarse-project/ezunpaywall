@@ -5,7 +5,7 @@ const fs = require('fs-extra');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
-const pingApikey = require('./utils/ping');
+const ping = require('./utils/ping');
 const {
   loadDevAPIKey,
   deleteAllAPIKey,
@@ -13,11 +13,11 @@ const {
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 describe('Test: Get config of apikey', () => {
   before(async () => {
-    await pingApikey();
+    await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
   });
@@ -38,13 +38,22 @@ describe('Test: Get config of apikey', () => {
     const res = await chai
       .request(apikeyURL)
       .get('/keys')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
 
     const keys = res.body;
     let apikeyDev = await fs.readFile(path.resolve(__dirname, '..', 'apikey-dev.json'));
     apikeyDev = JSON.parse(apikeyDev);
+
+    function sortApikey(a, b) {
+      if (a.config.name < b.config.name) { return -1; }
+      if (a.config.name > b.config.name) { return 1; }
+      return 0;
+    }
+
+    apikeyDev.sort(sortApikey);
+    keys.sort(sortApikey);
 
     const equal = isEqual(keys, apikeyDev);
 

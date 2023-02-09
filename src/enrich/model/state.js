@@ -3,10 +3,10 @@ const fs = require('fs-extra');
 
 const logger = require('../lib/logger');
 
-const stateDir = path.resolve(__dirname, '..', 'out', 'states');
+const stateDir = path.resolve(__dirname, '..', 'data', 'states');
 
 /**
- * create a new file on folder "out/enrich/state" containing the enrich state
+ * create a new file on folder "data/enrich/state" containing the enrich state
  * @param {String} id - id of process
  */
 const createState = async (id, apikey) => {
@@ -24,29 +24,47 @@ const createState = async (id, apikey) => {
   const filename = `${id}.json`;
   const filenamePath = path.resolve(stateDir, apikey, filename);
 
+  const dir = path.resolve(stateDir, apikey);
+
+  const exist = await fs.exists(dir);
+
+  if (!exist) {
+    await fs.mkdir(dir);
+  }
+
   try {
     await fs.writeFile(filenamePath, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${filenamePath}`);
+    logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${filenamePath}`);
     logger.error(err);
+    throw err;
   }
 };
 
 /**
- * get state from the folder "out/enrich/state"
+ * get state from the folder "data/enrich/state"
  * @param {String} filename - state filename
  * @returns {Object} - state in JSON format
  */
 const getState = async (filename, apikey) => {
   const filenamePath = path.resolve(stateDir, apikey, filename);
 
-  let state = await fs.readFile(filenamePath, 'utf8');
+  let state;
+
+  try {
+    state = await fs.readFile(filenamePath, 'utf8');
+  } catch (err) {
+    logger.error(`[state]: Cannot read "${filenamePath}" file`);
+    logger.error(err);
+    throw err;
+  }
 
   try {
     state = JSON.parse(state);
   } catch (err) {
-    logger.error(`Cannot parse "${state}" in json format`);
+    logger.error(`[state]: Cannot parse "${state}" in json format`);
     logger.error(err);
+    throw err;
   }
 
   return state;
@@ -63,14 +81,14 @@ const updateStateInFile = async (state, filename) => {
   const isPathExist = await fs.pathExists(pathfile);
 
   if (!isPathExist) {
-    logger.error(`Cannot update state because ${pathfile} doesn't exist`);
+    logger.error(`[state]: Cannot update state because ${pathfile} doesn't exist`);
     return;
   }
 
   try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`);
+    logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`);
   }
 };
 

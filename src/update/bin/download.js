@@ -15,9 +15,9 @@ const {
 const {
   getSnapshot,
   getChangefile,
-} = require('../service/unpaywall');
+} = require('../lib/service/unpaywall');
 
-const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 /**
  * Update the step the percentage in download regularly until the download is complete
@@ -39,6 +39,7 @@ async function updatePercentStepDownload(filepath, size, start) {
   } catch (err) {
     logger.error(`Cannot stat ${filepath}`);
     logger.error(err);
+    return;
   }
   if (bytes?.size >= size) {
     return;
@@ -107,9 +108,13 @@ const downloadChangefile = async (info, interval) => {
   updateLatestStep(step);
 
   const res = await getChangefile(info.filename, interval);
+
   if (!res) {
+    await fail();
     return false;
   }
+
+  if (!res) { return false; }
 
   const changefile = res.data;
   const { size } = info;
@@ -133,6 +138,7 @@ const downloadBigSnapshot = async () => {
   updateLatestStep(step);
 
   const res = await getSnapshot();
+  if (!res) return false;
 
   const snapshot = res.data;
   const size = res.headers['content-length'];

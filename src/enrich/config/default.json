@@ -1,7 +1,12 @@
 { 
-  "redis":  {
+  "node": "development",
+  "accessLogRotate": false,
+  "redis": {
     "host": "redis",
     "port": "6379",
     "password": "changeme"
+  },
+  "graphql": {
+    "host": "http://graphql:3000"
   }
 }

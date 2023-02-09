@@ -4,26 +4,21 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.APIKEY_URL || 'http://localhost:7000';
+const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 /**
  * ping apikey service to see if they are available
  */
-async function pingApikey() {
-  let res;
-  let i = 1;
-  for (i; i < 3; i += 1) {
-    try {
-      res = await chai.request(apikeyURL).get('/ping');
-    } catch (err) {
-      console.error(`enrich ping : ${err}`);
-    }
-    if (res.status === 200) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+async function ping() {
+  const apikey = await chai.request(apikeyHost).get('/ping');
+  if (apikey?.statusCode !== 204) {
+    throw new Error(`[apikey] Bad status : ${apikey?.status}`);
   }
-  return false;
+
+  const redis = await chai.request(apikeyHost).get('/ping/redis');
+  if (!redis?.status) {
+    throw new Error(`[redis] Bad status : ${redis?.status}`);
+  }
 }
 
-module.exports = pingApikey;
+module.exports = ping;

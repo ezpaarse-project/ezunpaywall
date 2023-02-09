@@ -11,27 +11,15 @@ require('winston-daily-rotate-file');
 const {
   combine,
   timestamp,
-  // label,
   printf,
   colorize,
 } = format;
-
-// TODO log for prod
-// function prodFormat() {
-//   const replaceError = ({
-//     name, level, message, stack,
-//   }) => ({
-//     name, level, message, stack,
-//   });
-//   const replacer = (key, value) => (value instanceof Error ? replaceError(value) : value);
-//   return combine(label({ name: 'ssr server log' }), format.json({ replacer }));
-// }
 
 // logger configuration
 const processConfiguration = [
   new transports.DailyRotateFile({
     name: 'file',
-    filename: path.resolve(__dirname, '..', 'log', '%DATE%.log'),
+    filename: path.resolve(__dirname, '..', 'log', 'application', '%DATE%.log'),
     datePattern: 'yyyy-MM-DD',
     level: 'info',
   }),
@@ -53,7 +41,18 @@ const logger = createLogger({
 });
 
 const errorRequest = (err) => {
-  const url = `${err?.config?.url}`;
+  let url = `${err?.config?.baseURL}${err?.config?.url}`;
+
+  if (err?.config?.params) {
+    let { params } = err.config;
+    params = Object.entries(params);
+    url = `${url}?`;
+    params.forEach((param) => {
+      url = `${url}${param[0]}=${param[1]}&`;
+    });
+    url = url.substring(0, url.length - 1);
+  }
+
   if (!err?.response) {
     logger.error(`Cannot ${err?.config?.method} ${url} - 503`);
     return;

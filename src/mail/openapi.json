@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "description": "The mail service allows the sending of mail for the different services",
     "version": "1.0.0",
@@ -14,9 +14,142 @@
     }
   },
   "paths": {
+    "/mail": {
+      "get": {
+        "summary": "Name of service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "x-examples": {
+                    "example-1": "mail service"
+                  }
+                },
+                "examples": {
+                  "service": {
+                    "value": "mail service"
+                  }
+                }
+              },
+              "Success": {
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "mail service"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-mail",
+        "description": "Get name of mail service",
+        "tags": [
+          "ping"
+        ]
+      }
+    },
+    "/mail/ping": {
+      "get": {
+        "summary": "Ping mail service",
+        "operationId": "get-mail-ping",
+        "description": "Ping mail service",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/mail/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "get-mail-health",
+        "description": "Health on all service connected to enrich service",
+        "tags": [
+          "ping"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "smtp": {
+                      "type": "object",
+                      "properties": {
+                        "elapsedTime": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  },
+                  "x-examples": {
+                    "Example 1": {
+                      "smtp": {
+                        "elapsedTime": 1,
+                        "status": true
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Success": {
+                    "value": {
+                      "smtp": {
+                        "elapsedTime": 1,
+                        "status": true
+                      }
+                    }
+                  },
+                  "Error smtp": {
+                    "value": {
+                      "smtp": {
+                        "elapsedTime": 133,
+                        "status": false,
+                        "error": "self signed certificate"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": []
+    },
+    "/mail/health/smtp": {
+      "get": {
+        "summary": "Health on SMTP service",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Health"
+          }
+        },
+        "operationId": "get-mail-health-smtp",
+        "description": "Health on smtp",
+        "tags": [
+          "ping"
+        ]
+      },
+      "parameters": []
+    },
     "/mail/contact": {
       "post": {
-        "summary": "",
+        "summary": "Send mail contact",
         "operationId": "post-mail-contact",
         "responses": {
           "202": {
@@ -24,54 +157,80 @@
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            },
-            "examples": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
               "email expected": {
-                "message": "email are expected"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "email are expected"
+                    }
+                  }
+                }
               },
               "invalid email": {
-                "message": "[\"john\"] is invalid email"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "[\"john\"] is invalid email"
+                    }
+                  }
+                }
               },
               "subject expected": {
-                "message": "subject are expected"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "subject are expected"
+                    }
+                  }
+                }
               },
               "message expected": {
-                "message": "message are expected"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "message are expected"
+                    }
+                  }
+                }
               }
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
+            "$ref": "#/components/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
           }
         },
-        "description": "send contact mail from interface",
-        "parameters": [
+        "description": "Send contact mail",
+        "security": [
           {
-            "type": "string",
-            "in": "header",
-            "name": "x-api-key",
-            "description": "mail apikey"
+            "x-api-key": []
           }
+        ],
+        "tags": [
+          "mail"
         ]
       }
     },
     "/mail/update-start": {
       "post": {
-        "summary": "",
+        "summary": "Send mail update process start",
         "operationId": "post-mail-update-start",
         "responses": {
           "202": {
@@ -79,44 +238,45 @@
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
+            "$ref": "#/components/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
-          },
-          "": {
-            "examples": {}
           }
         },
-        "description": "send start update process from update service",
-        "parameters": [
+        "description": "Sending of the email informing the launch of the update process",
+        "security": [
           {
-            "type": "string",
-            "in": "header",
-            "name": "x-api-key",
-            "description": "mail apikey"
+            "x-api-key": []
           }
+        ],
+        "tags": [
+          "mail"
         ]
       },
       "parameters": []
     },
     "/mail/update-end": {
       "post": {
-        "summary": "",
+        "summary": "Send mail update process ended",
         "operationId": "post-mail-update-end",
         "responses": {
           "202": {
@@ -124,98 +284,138 @@
           },
           "400": {
             "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
+            "$ref": "#/components/responses/Not-authorized"
           },
           "403": {
             "description": "Forbidden",
-            "schema": {
-              "type": "object",
-              "properties": {}
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
             }
-          },
-          "": {
-            "examples": {}
           }
         },
-        "description": "send end update process from update service",
-        "parameters": [
+        "description": "Sending of the email with the report of the end of the update",
+        "security": [
           {
-            "type": "string",
-            "in": "header",
-            "name": "x-api-key",
-            "description": "mail apikey"
+            "x-api-key": []
           }
+        ],
+        "tags": [
+          "mail"
         ]
       },
       "parameters": []
-    },
-    "/mail/ping": {
-      "get": {
-        "summary": "Your GET endpoint",
-        "tags": [],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        },
-        "operationId": "get-mail-ping",
-        "description": "ping mail service"
-      }
     }
   },
   "externalDocs": {
     "description": "Find out more about Swagger",
     "url": "http://swagger.io"
   },
-  "definitions": {
-    "Unauthorized": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "number",
-          "default": 401
-        },
-        "error": {
-          "type": "string",
-          "default": "Unauthorized"
-        },
-        "message": {
-          "type": "string",
-          "default": "Not authorized"
+  "tags": [
+    {
+      "name": "mail"
+    },
+    {
+      "name": "ping"
+    }
+  ],
+  "components": {
+    "responses": {
+      "Not-authorized": {
+        "description": "Not authorized",
+        "headers": {},
+        "content": {
+          "*/*": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "x-examples": {
+                "example-1": {
+                  "message": "Not authorized"
+                }
+              }
+            }
+          },
+          "Not authorized": {
+            "examples": {
+              "response": {
+                "value": {
+                  "message": "Not authorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Health": {
+        "description": "Example response",
+        "content": {
+          "Success": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "boolean"
+                },
+                "elapsedTime": {
+                  "type": "integer"
+                }
+              },
+              "x-examples": {
+                "Example 1": {
+                  "name": "redis",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              }
+            },
+            "examples": {
+              "Success": {
+                "value": {
+                  "name": "name of service",
+                  "status": true,
+                  "elapsedTime": 1
+                }
+              },
+              "Error smtp": {
+                "value": {
+                  "elapsedTime": 115,
+                  "status": false,
+                  "error": "self signed certificate"
+                }
+              }
+            }
+          }
         }
       }
     },
-    "FileNotFound": {
-      "type": "object",
-      "properties": {
-        "statusCode": {
-          "type": "string",
-          "default": "404"
-        },
-        "error": {
-          "type": "string",
-          "default": "Not Found"
-        },
-        "message": {
-          "type": "string",
-          "default": "\"file\" not found"
-        }
+    "securitySchemes": {
+      "x-api-key": {
+        "name": "API Key",
+        "type": "apiKey",
+        "in": "header"
       }
     }
-  },
-  "schemes": []
+  }
 }

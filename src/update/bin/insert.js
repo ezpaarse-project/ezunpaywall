@@ -21,12 +21,12 @@ const {
 const {
   elasticClient,
   createIndex,
-} = require('../service/elastic');
+} = require('../lib/service/elastic');
 
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 
-const snapshotsDir = path.resolve(__dirname, '..', 'out', 'snapshots');
+const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 /**
  * insert data on elastic with elastic bulk request
@@ -41,7 +41,7 @@ const insertDataInElastic = async (data) => {
   } catch (err) {
     logger.error('Cannot bulk on elastic');
     logger.error(err);
-    await fail(err);
+    await fail(err?.[0]?.reason);
     return false;
   }
 

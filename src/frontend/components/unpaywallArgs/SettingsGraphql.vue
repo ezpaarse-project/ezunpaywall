@@ -4,20 +4,22 @@
       :items="unpaywallAttr"
       label="simple"
       source="graphql"
-      :selected="defaultSelected"
+      :selected="['doi']"
     />
     <SelectAttributes
-      :items="oa_location"
+      :items="oa_locations"
       label="best_oa_location"
       source="graphql"
+      :selected="['evidence', 'is_best']"
     />
     <SelectAttributes
-      :items="oa_location"
+      :items="oa_locations"
       label="first_oa_location"
       source="graphql"
+      :selected="['url_for_pdf']"
     />
     <SelectAttributes
-      :items="oa_location"
+      :items="oa_locations"
       label="oa_locations"
       source="graphql"
     />
@@ -25,6 +27,7 @@
       :items="z_authors"
       label="z_authors"
       source="graphql"
+      :selected="['family', 'given']"
     />
   </div>
 </template>
@@ -34,11 +37,6 @@ import SelectAttributes from '~/components/unpaywallArgs/SelectAttributes.vue'
 export default {
   components: {
     SelectAttributes
-  },
-  data: () => {
-    return {
-      defaultSelected: ['doi']
-    }
   },
   computed: {
     unpaywallAttr () {
@@ -62,18 +60,18 @@ export default {
         { name: 'year', info: this.$t('unpaywallArgs.general.year') }
       ]
     },
-    oa_location () {
+    oa_locations () {
       return [
-        { name: 'evidence', info: this.$t('unpaywallArgs.oa_location.evidence') },
-        { name: 'host_type', info: this.$t('unpaywallArgs.oa_location.host_type') },
-        { name: 'is_best', info: this.$t('unpaywallArgs.oa_location.is_best') },
-        { name: 'license', info: this.$t('unpaywallArgs.oa_location.license') },
-        { name: 'pmh_id', info: this.$t('unpaywallArgs.oa_location.pmh_id') },
-        { name: 'updated', info: this.$t('unpaywallArgs.oa_location.updated') },
-        { name: 'url', info: this.$t('unpaywallArgs.oa_location.url') },
-        { name: 'url_for_landing_page', info: this.$t('unpaywallArgs.oa_location.url_for_landing_page') },
-        { name: 'url_for_pdf', info: this.$t('unpaywallArgs.oa_location.url_for_pdf') },
-        { name: 'version', info: this.$t('unpaywallArgs.oa_location.version') }
+        { name: 'evidence', info: this.$t('unpaywallArgs.oa_locations.evidence') },
+        { name: 'host_type', info: this.$t('unpaywallArgs.oa_locations.host_type') },
+        { name: 'is_best', info: this.$t('unpaywallArgs.oa_locations.is_best') },
+        { name: 'license', info: this.$t('unpaywallArgs.oa_locations.license') },
+        { name: 'pmh_id', info: this.$t('unpaywallArgs.oa_locations.pmh_id') },
+        { name: 'updated', info: this.$t('unpaywallArgs.oa_locations.updated') },
+        { name: 'url', info: this.$t('unpaywallArgs.oa_locations.url') },
+        { name: 'url_for_landing_page', info: this.$t('unpaywallArgs.oa_locations.url_for_landing_page') },
+        { name: 'url_for_pdf', info: this.$t('unpaywallArgs.oa_locations.url_for_pdf') },
+        { name: 'version', info: this.$t('unpaywallArgs.oa_locations.version') }
       ]
     },
     z_authors () {

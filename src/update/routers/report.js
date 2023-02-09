@@ -1,18 +1,17 @@
 const router = require('express').Router();
 const path = require('path');
 const fs = require('fs-extra');
-const boom = require('@hapi/boom');
 const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const {
   getMostRecentFile,
-} = require('../lib/file');
+} = require('../bin/file');
 
 const {
   getReport,
 } = require('../bin/report');
 
-const reportsDir = path.resolve(__dirname, '..', 'out', 'reports');
+const reportsDir = path.resolve(__dirname, '..', 'data', 'reports');
 
 /**
  * get the most recent report in JSON format
@@ -24,7 +23,7 @@ router.get('/reports', async (req, res, next) => {
     latest: joi.boolean().default(false),
   }).validate(req.query);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const { latest } = value;
 
@@ -33,22 +32,30 @@ router.get('/reports', async (req, res, next) => {
     try {
       latestFile = await getMostRecentFile(reportsDir);
     } catch (err) {
-      return next(boom.boomify(err));
+      return next({ message: err, stackTrace: err });
     }
 
     if (!latestFile) {
-      return next(boom.notFound('File not found'));
+      return next({ message: 'No reports are available' });
     }
 
     let report;
     try {
       report = await getReport(latestFile?.filename);
     } catch (err) {
-      return next(boom.boomify(err));
+      return next({ message: `Cannot get [${latestFile?.filename}] latest report`, stackTrace: err });
     }
     return res.status(200).json(report);
   }
-  const reports = await fs.readdir(reportsDir);
+
+  let reports = await fs.readdir(reportsDir);
+
+  reports = reports.sort((a, b) => {
+    const [date1] = a.split('.');
+    const [date2] = b.split('.');
+    return new Date(date2).getTime() - new Date(date1).getTime();
+  });
+
   return res.status(200).json(reports);
 });
 
@@ -63,21 +70,21 @@ router.get('/reports', async (req, res, next) => {
 router.get('/reports/:filename', async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.filename);
 
-  if (error) return next(boom.badRequest(error.details[0].message));
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const filename = value;
 
   try {
     await fs.stat(path.resolve(reportsDir, filename));
   } catch (err) {
-    return next(boom.notFound('File not found'));
+    return next({ message: `File [${filename}] not found` });
   }
 
   let report;
   try {
     report = await getReport(filename);
   } catch (err) {
-    return next(boom.boomify(err));
+    return next({ message: `Cannot get ${filename} report`, stackTrace: err });
   }
   return res.status(200).json(report);
 });

@@ -21,27 +21,21 @@ const {
   countDocuments,
 } = require('./utils/elastic');
 
-const {
-  pingEnrich,
-  pingElastic,
-  pingRedis,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const {
   loadDevAPIKey,
   deleteAllAPIKey,
 } = require('./utils/apikey');
 
-const enrichService = process.env.ENRICH_URL || 'http://localhost:5000';
+const enrichService = process.env.ENRICH_HOST || 'http://localhost:59703';
 
 const enrichDir = path.resolve(__dirname, 'sources');
 
 describe('Test: enrich service jsonl', () => {
   before(async function () {
     this.timeout(30000);
-    await pingEnrich();
-    await pingElastic();
-    await pingRedis();
+    await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
@@ -66,7 +60,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
@@ -142,7 +136,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
       it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
         const res2 = await chai
@@ -217,7 +211,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
@@ -294,7 +288,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with args { best_oa_location { license } } and download it', async () => {
@@ -371,7 +365,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with args { z_authors { given } } and download it', async () => {
@@ -447,7 +441,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors{ family } } and download it', async () => {
@@ -523,7 +517,7 @@ describe('Test: enrich service jsonl', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
 
       it('Should return a error message', async () => {

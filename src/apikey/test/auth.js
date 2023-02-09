@@ -2,7 +2,7 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 
-const pingApikey = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const {
   loadDevAPIKey,
@@ -11,15 +11,15 @@ const {
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.AUTH_URL || 'http://localhost:7000';
+const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 describe('Test: apikey service', () => {
   before(async () => {
-    await pingApikey();
+    await ping();
   });
 
   before(async () => {
-    await pingApikey();
+    await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
   });
@@ -28,7 +28,7 @@ describe('Test: apikey service', () => {
     const res = await chai
       .request(apikeyURL)
       .get('/keys')
-      .set('redis-password', 'changeme');
+      .set('x-api-key', 'changeme');
 
     expect(res).have.status(200);
   });
@@ -37,7 +37,7 @@ describe('Test: apikey service', () => {
     const res = await chai
       .request(apikeyURL)
       .get('/keys')
-      .set('redis-password', 'hello');
+      .set('x-api-key', 'hello');
 
     expect(res).have.status(401);
   });

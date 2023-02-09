@@ -13,10 +13,10 @@ const {
   fail,
 } = require('../model/state');
 
-const { askEzunpaywall } = require('../service/graphql');
+const { requestGraphql } = require('../lib/service/graphql');
 
-const uploadedDir = path.resolve(__dirname, '..', 'out', 'uploaded');
-const enrichedDir = path.resolve(__dirname, '..', 'out', 'enriched');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
+const enriched = path.resolve(__dirname, '..', 'data', 'enriched');
 
 /**
  * getter of all the unpaywall attributes that can be used for enrichment in graphql format
@@ -119,8 +119,11 @@ const flatten = (obj) => {
  * @returns {array<object>} enriched data
  */
 const enrichTab = (data, response) => {
+  const enrichedTab = data;
+  let lineEnriched = 0;
+
   if (!response) {
-    return data;
+    return enrichedTab;
   }
 
   const results = new Map();
@@ -130,7 +133,8 @@ const enrichTab = (data, response) => {
       results.set(el.doi, el);
     }
   });
-  data.forEach((el) => {
+
+  enrichedTab.forEach((el) => {
     if (!el.doi) {
       return;
     }
@@ -138,10 +142,12 @@ const enrichTab = (data, response) => {
     if (!res) {
       return;
     }
+    lineEnriched += 1;
     res = flatten(res);
     el = Object.assign(el, res);
   });
-  return data;
+
+  return { lineEnriched, enrichedTab };
 };
 
 /**
@@ -237,22 +243,17 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
 const processEnrichCSV = async (id, index, args, apikey, separator) => {
   const filename = `${id}.csv`;
 
-  let readStream;
-  try {
-    readStream = fs.createReadStream(path.resolve(uploadedDir, apikey, `${id}.csv`));
-  } catch (err) {
-    logger.error(`Cannot create readStream in ${path.resolve(uploadedDir, apikey, `${id}.csv`)}`);
-    return;
-  }
+  const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, filename));
 
   const stateName = `${id}.json`;
   const state = await getState(stateName, apikey);
 
-  const enrichedFile = path.resolve(enrichedDir, apikey, filename);
+  const enrichedFile = path.resolve(enriched, apikey, filename);
 
   if (!args) {
     args = allArgs();
   }
+
   args = addDOItoGraphqlRequest(args);
 
   try {
@@ -260,6 +261,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   } catch (err) {
     logger.error(`Cannot ensure ${enrichedFile}`);
     logger.error(err);
+    throw err;
   }
 
   let loaded = 0;
@@ -292,35 +294,38 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
         }
 
         if (data.length === 1000) {
-          const tabWillBeEnriched = data;
+          const copyData = [...data];
           data = [];
           await parser.pause();
 
           // enrichment
-          const response = await askEzunpaywall(data, args, stateName, index, apikey);
-          enrichTab(tabWillBeEnriched, response);
-          await writeInFileCSV(tabWillBeEnriched, headers, separator, enrichedFile);
+          const response = await requestGraphql(copyData, args, stateName, index, apikey);
+          const enrichedData = enrichTab(copyData, response);
+          const { enrichedTab, lineEnriched } = enrichedData;
+          await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
 
           // state
           state.linesRead += 1000;
-          state.enrichedLines += response.length || 0;
+          state.enrichedLines += lineEnriched || 0;
           state.loaded += loaded;
           await updateStateInFile(state, stateName);
           await parser.resume();
         }
       },
-      complete: () => resolve(),
+      complete: resolve,
     });
   });
   // last insertion
   if (data.length !== 0) {
     // enrichment
-    const response = await askEzunpaywall(data, args, stateName, index, apikey);
-    enrichTab(data, response);
-    await writeInFileCSV(data, headers, separator, enrichedFile);
+    const response = await requestGraphql(data, args, stateName, index, apikey);
+    const enrichedData = enrichTab(data, response);
+    const { enrichedTab, lineEnriched } = enrichedData;
+    await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
+
     // state
-    state.linesRead += data?.length || 0;
-    state.enrichedLines += response?.length || 0;
+    state.linesRead += data.length || 0;
+    state.enrichedLines += lineEnriched || 0;
     state.loaded += loaded;
     await updateStateInFile(state, stateName);
   }
@@ -328,6 +333,4 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
 };
 
-module.exports = {
-  processEnrichCSV,
-};
+module.exports = processEnrichCSV;

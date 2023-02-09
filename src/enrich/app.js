@@ -2,14 +2,13 @@ const express = require('express');
 const fs = require('fs-extra');
 const path = require('path');
 const cors = require('cors');
-const boom = require('@hapi/boom');
 
 const logger = require('./lib/logger');
-const { pingRedis } = require('./service/redis');
-const { name, version } = require('./package.json');
-
 const morgan = require('./lib/morgan');
-const cronDeleteOutFiles = require('./lib/cron');
+
+const { pingRedis } = require('./lib/service/redis');
+
+const cronDeleteOutFiles = require('./bin/cron/file');
 
 const routerPing = require('./routers/ping');
 const routerJob = require('./routers/job');
@@ -17,14 +16,12 @@ const routerEnrich = require('./routers/enrich');
 const routerState = require('./routers/state');
 const routerOpenapi = require('./routers/openapi');
 
-const outDir = path.resolve(__dirname, 'out');
+const dataDir = path.resolve(__dirname, 'data');
 
-fs.ensureDir(path.resolve(outDir));
-fs.ensureDir(path.resolve(outDir, 'states'));
-fs.ensureDir(path.resolve(outDir, 'uploaded'));
-fs.ensureDir(path.resolve(outDir, 'enriched'));
-
-const isDev = process.env.NODE_ENV === 'development';
+fs.ensureDir(path.resolve(dataDir));
+fs.ensureDir(path.resolve(dataDir, 'states'));
+fs.ensureDir(path.resolve(dataDir, 'upload'));
+fs.ensureDir(path.resolve(dataDir, 'enriched'));
 
 const app = express();
 app.use(morgan);
@@ -38,10 +35,6 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', async (req, res, next) => res.status(200).json({
-  name, version,
-}));
-
 app.use(routerJob);
 app.use(routerEnrich);
 app.use(routerState);
@@ -49,19 +42,12 @@ app.use(routerOpenapi);
 app.use(routerPing);
 
 /* Errors and unknown routes */
-app.use((req, res, next) => res.status(404).json(boom.notFound(`Cannot ${req.method} ${req.originalUrl}`)));
-app.use((err, req, res, next) => {
-  const error = err.isBoom ? err : boom.boomify(err, { statusCode: err.statusCode });
+app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
 
-  if (isDev && error.isServer) {
-    error.output.payload.stack = error.stack;
-  }
+app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
-  return res.status(error.output.statusCode).set(error.output.headers).json(error.output.payload);
-});
-
-app.listen(5000, () => {
-  logger.info('ezunpaywall enrich service listening on 5000');
+app.listen(3000, () => {
+  logger.info('ezunpaywall enrich service listening on 3000');
   pingRedis();
   cronDeleteOutFiles.start();
 });

@@ -23,21 +23,11 @@ const {
   checkIfInUpdate,
 } = require('./utils/status');
 
-const {
-  pingUpdate,
-  pingFakeUnpaywall,
-  pingElastic,
-  pingRedis,
-} = require('./utils/ping');
-
-const {
-  loadDevAPIKey,
-  deleteAllAPIKey,
-} = require('./utils/apikey');
+const ping = require('./utils/ping');
 
 const reset = require('./utils/reset');
 
-const updateURL = process.env.UPDATE_URL || 'http://localhost:4000';
+const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
 chai.use(chaiHttp);
 
@@ -59,10 +49,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
 
   before(async function () {
     this.timeout(30000);
-    await pingUpdate();
-    await pingFakeUnpaywall();
-    await pingElastic();
-    await pingRedis();
+    await ping();
     await updateChangeFile('week');
   });
 
@@ -79,7 +66,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           startDate: date2,
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -104,6 +91,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('totalInsertedDocs').equal(150);
+      expect(state).have.property('totalUpdatedDocs').equal(0);
 
       expect(state.steps[0]).have.property('task').equal('getChangefiles');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
@@ -153,6 +142,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(false);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('totalInsertedDocs').equal(150);
+      expect(report).have.property('totalUpdatedDocs').equal(0);
 
       expect(report.steps[0]).have.property('task').equal('getChangefiles');
       expect(report.steps[0]).have.property('took').to.not.equal(undefined);
@@ -209,7 +200,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           endDate: date2,
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -234,6 +225,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('totalInsertedDocs').equal(2100);
+      expect(state).have.property('totalUpdatedDocs').equal(0);
 
       expect(state.steps[0]).have.property('task').equal('getChangefiles');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
@@ -283,6 +276,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(report).have.property('steps').to.be.an('array');
       expect(report).have.property('error').equal(false);
       expect(report).have.property('took').to.not.equal(undefined);
+      expect(report).have.property('totalInsertedDocs').equal(2100);
+      expect(report).have.property('totalUpdatedDocs').equal(0);
 
       expect(report.steps[0]).have.property('task').equal('getChangefiles');
       expect(report.steps[0]).have.property('took').to.not.equal(undefined);
@@ -341,7 +336,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           endDate: date4,
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
     });
@@ -366,6 +361,8 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(state).have.property('steps').to.be.an('array');
       expect(state).have.property('error').equal(false);
       expect(state).have.property('took').to.not.equal(undefined);
+      expect(state).have.property('totalInsertedDocs').equal(0);
+      expect(state).have.property('totalUpdatedDocs').equal(0);
 
       expect(state.steps[0]).have.property('task').equal('getChangefiles');
       expect(state.steps[0]).have.property('took').to.not.equal(undefined);
@@ -387,7 +384,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           endDate: date1,
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -406,7 +403,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           index: 'unpaywall-test',
           startDate: 'doen\'t exist',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -419,7 +416,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           startDate: '01-01-2000',
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -432,7 +429,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           startDate: '2000-50-50',
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -448,7 +445,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           endDate: date3,
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -463,7 +460,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
           startDate: tomorrow,
           interval: 'week',
         })
-        .set('x-api-key', 'admin');
+        .set('x-api-key', 'changeme');
 
       expect(res).have.status(400);
     });
@@ -471,7 +468,5 @@ describe('Week: Test: download and insert file from unpaywall between a period',
 
   after(async () => {
     await reset();
-    await deleteAllAPIKey();
-    await loadDevAPIKey();
   });
 });

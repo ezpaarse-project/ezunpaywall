@@ -49,7 +49,7 @@
         <v-btn
           color="error"
           @click="$router.go(-1)"
-          v-text="$t('contact.cancel')"
+          v-text="$t('cancel')"
         />
         <v-btn
           :disabled="!valid"
@@ -74,6 +74,11 @@ export default {
     valid: true,
     loading: false
   }),
+  head () {
+    return {
+      title: 'Contact'
+    }
+  },
   computed: {
     subjects () {
       return [
@@ -84,6 +89,10 @@ export default {
         {
           value: 'bugs',
           text: this.$t('contact.bugReport')
+        },
+        {
+          value: 'apikey',
+          text: this.$t('contact.requestApikey')
         }
       ]
     },

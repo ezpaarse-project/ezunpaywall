@@ -1,0 +1,18 @@
+{ 
+  "graphqlHost": "GRAPHQL_HOST",
+  "updateHost": "UPDATE_HOST",
+  "enrichHost": "ENRICH_HOST",
+  "apikeyHost": "APIKEY_HOST",
+  "mailHost": "MAIL_HOST",
+  "elasticHost": "ELASTIC_HOST",
+  "redis":  {
+    "host": "REDIS_HOST",
+    "port": "REDIS_PORT",
+    "password": "REDIS_PASSWORD"
+  },
+  "elastic": "ELASTIC_URL",
+  "unpaywall": {
+    "host": "UNPAYWALL_HOST",
+    "apikey": "UNPAYWALL_APIKEY"
+  }
+}

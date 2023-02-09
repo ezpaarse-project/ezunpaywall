@@ -4,6 +4,7 @@
     app
     clipped
     fixed
+    disable-resize-watcher
     disable-route-watcher
     width="300"
   >
@@ -18,16 +19,6 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item link router :to="{ path: '/graphql' }" ripple>
-        <v-list-item-icon>
-          <v-icon>mdi-server</v-icon>
-        </v-list-item-icon>
-
-        <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.graphql')" />
-        </v-list-item-content>
-      </v-list-item>
-
       <v-list-item link router :to="{ path: '/enrich' }" ripple>
         <v-list-item-icon>
           <v-icon>mdi-code-json</v-icon>
@@ -35,6 +26,16 @@
 
         <v-list-item-content>
           <v-list-item-title v-text="$t('drawer.enrich')" />
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link router :to="{ path: '/graphql' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-server</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="$t('drawer.graphql')" />
         </v-list-item-content>
       </v-list-item>
 
@@ -48,6 +49,16 @@
         </v-list-item-content>
       </v-list-item>
 
+      <v-list-item link router :to="{ path: '/report-history' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-update</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="$t('drawer.updateHistory')" />
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item link router :to="{ path: '/contact' }" ripple>
         <v-list-item-icon>
           <v-icon>mdi-email</v-icon>
@@ -55,6 +66,16 @@
 
         <v-list-item-content>
           <v-list-item-title v-text="$t('drawer.contact')" />
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link router :to="{ path: '/administration' }" ripple>
+        <v-list-item-icon>
+          <v-icon>mdi-security</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title v-text="$t('drawer.administration')" />
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -116,7 +137,7 @@
           rel="noreferrer"
           outlined
         >
-          Version: {{ appVersion }}
+          Version: {{ $config.version }}
           <v-icon right>
             mdi-github
           </v-icon>
@@ -129,11 +150,6 @@
 <script>
 export default {
   name: 'Drawer',
-  data () {
-    return {
-      appVersion: '1.0.0'
-    }
-  },
   computed: {
     drawer: {
       get () {

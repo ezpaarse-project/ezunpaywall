@@ -2,20 +2,29 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   publicRuntimeConfig: {
-    grapqlURL: process.env.GRAPHQL_URL || 'http://localhost:3000',
-    updateURL: process.env.UPDATE_URL || 'http://localhost:4000',
-    enrichURL: process.env.ENRICH_URL || 'http://localhost:5000',
-    mailURL: process.env.MAIL_URL || 'http://localhost:8000',
-    apikeymail: process.env.EZUNPAYWALL_MAIL_APIKEY || 'changeme',
-    elasticOrigin: process.env.ELASTICSEARCH_ORIGIN || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    graphqlHost: process.env.GRAPHQL_HOST || 'http://localhost:59701',
+    updateHost: process.env.UPDATE_HOST || 'http://localhost:59702',
+    enrichHost: process.env.ENRICH_HOST || 'http://localhost:59703',
+    apikeyHost: process.env.APIKEY_HOST || 'http://localhost:59704',
+    apikeyMail: process.env.MAIL_APIKEY || 'changeme',
+    mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
+    healthHost: process.env.HEALTH_HOST || 'http://localhost:59707',
+    elasticEnv: process.env.ELASTIC_ENV || 'development',
+    version: process.env.VERSION || 'development'
+  },
+
+  server: {
+    port: 3000,
+    host: '0.0.0.0'
   },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - client',
-    title: 'client',
+    titleTemplate: 'ezunpaywall - %s',
+    title: 'Unpaywall mirror',
     htmlAttrs: {
       lang: 'en'
     },
@@ -48,7 +57,8 @@ export default {
     // https://go.nuxtjs.dev/eslint
     // '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    'nuxt-highlightjs'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules

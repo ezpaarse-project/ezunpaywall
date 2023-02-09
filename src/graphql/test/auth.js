@@ -10,10 +10,7 @@ const {
   insertDataUnpaywall,
 } = require('./utils/elastic');
 
-const {
-  pingElastic,
-  pingRedis,
-} = require('./utils/ping');
+const ping = require('./utils/ping');
 
 const {
   loadDevAPIKey,
@@ -22,15 +19,14 @@ const {
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:3000';
+const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
 
 const doi1 = '10.1186/s40510-015-0109-6'; // line 1 of fake1.jsonl
 
 describe('Test: auth service in graphql service', () => {
   before(async function () {
     this.timeout(30000);
-    await pingElastic();
-    await pingRedis();
+    await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
     await deleteIndex('unpaywall-test');
@@ -112,7 +108,7 @@ describe('Test: auth service in graphql service', () => {
     });
   });
 
-  describe('Test with update API key', () => {
+  describe('Test with admin API key', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
