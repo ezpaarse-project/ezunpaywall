@@ -182,7 +182,6 @@ services:
       - NODE_ENV=development
       - ELASTIC_ENV=development
       - VERSION=development
-      - NODE_OPTIONS=--openssl-legacy-provider
       - GRAPHQL_HOST
       - UPDATE_HOST
       - ENRICH_HOST
