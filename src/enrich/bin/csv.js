@@ -4,6 +4,7 @@
 const fs = require('fs-extra');
 const Papa = require('papaparse');
 const path = require('path');
+const config = require('config');
 
 const logger = require('../lib/logger');
 
@@ -302,7 +303,8 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
           try {
             response = await requestGraphql(copyData, args, stateName, index, apikey);
           } catch (err) {
-            logger.error(err);
+            logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
+            logger.error(JSON.stringify(err?.response?.data?.errors));
             await fail(stateName, apikey);
             return;
           }
@@ -328,7 +330,8 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
     try {
       response = await requestGraphql(data, args, stateName, index, apikey);
     } catch (err) {
-      logger.error(err);
+      logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
+      logger.error(JSON.stringify(err?.response?.data?.errors));
       await fail(stateName, apikey);
       return;
     }
