@@ -10,13 +10,29 @@ const checkAuth = require('../middlewares/auth');
 const upload = require('../middlewares/multer');
 
 router.get('/enriched', checkAuth, async (req, res) => {
-  const files = await fs.readdir(enrichedDir);
-  res.status(200).json(files);
+  const apikey = req.get('x-api-key');
+
+  try {
+    await fs.readdir(path.resolve(enrichedDir, apikey));
+  } catch (err) {
+    return res.status(200).json([]);
+  }
+
+  const files = await fs.readdir(path.resolve(enrichedDir, apikey));
+  return res.status(200).json(files);
 });
 
 router.get('/upload', checkAuth, async (req, res) => {
-  const files = await fs.readdir(uploadDir);
-  res.status(200).json(files);
+  const apikey = req.get('x-api-key');
+
+  try {
+    await fs.readdir(path.resolve(uploadDir, apikey));
+  } catch (err) {
+    return res.status(200).json([]);
+  }
+
+  const files = await fs.readdir(path.resolve(uploadDir, apikey));
+  return res.status(200).json(files);
 });
 
 router.get('/enriched/:filename', checkAuth, async (req, res, next) => {

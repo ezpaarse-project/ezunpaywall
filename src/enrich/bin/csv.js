@@ -298,8 +298,15 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
           data = [];
           await parser.pause();
 
+          let response;
+          try {
+            response = await requestGraphql(copyData, args, stateName, index, apikey);
+          } catch (err) {
+            logger.error(err);
+            await fail(stateName, apikey);
+            return;
+          }
           // enrichment
-          const response = await requestGraphql(copyData, args, stateName, index, apikey);
           const enrichedData = enrichTab(copyData, response);
           const { enrichedTab, lineEnriched } = enrichedData;
           await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
@@ -317,8 +324,15 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   });
   // last insertion
   if (data.length !== 0) {
+    let response;
+    try {
+      response = await requestGraphql(data, args, stateName, index, apikey);
+    } catch (err) {
+      logger.error(err);
+      await fail(stateName, apikey);
+      return;
+    }
     // enrichment
-    const response = await requestGraphql(data, args, stateName, index, apikey);
     const enrichedData = enrichTab(data, response);
     const { enrichedTab, lineEnriched } = enrichedData;
     await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);

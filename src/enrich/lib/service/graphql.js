@@ -3,10 +3,6 @@ const config = require('config');
 
 const logger = require('../logger');
 
-const {
-  fail,
-} = require('../../model/state');
-
 const graphql = axios.create({
   baseURL: config.get('graphql.host'),
 });
@@ -47,7 +43,7 @@ async function requestGraphql(data, args, stateName, index, apikey) {
   } catch (err) {
     logger.error(`Cannot request graphql service at ${graphql.host}/graphql`);
     logger.error(JSON.stringify(err?.response?.data?.errors));
-    await fail(stateName);
+    throw err.message;
   }
   return res?.data?.data?.GetByDOI;
 }
