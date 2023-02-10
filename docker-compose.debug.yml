@@ -170,7 +170,7 @@ services:
       retries: 5
 
   frontend:
-    image: node:16.19.0
+    image: node:18.12.1
     container_name: ezunpaywall-frontend-dev
     working_dir: /usr/src/app
     volumes:
@@ -182,15 +182,11 @@ services:
       - NODE_ENV=development
       - ELASTIC_ENV=development
       - VERSION=development
-      # graphql
+      - NODE_OPTIONS=--openssl-legacy-provider
       - GRAPHQL_HOST
-      # update
       - UPDATE_HOST
-      # enrich
       - ENRICH_HOST
-      # apikey
       - APIKEY_HOST
-      # mail
       - MAIL_HOST
       - MAIL_APIKEY
     healthcheck:

@@ -1,4 +1,4 @@
-FROM node:16.19.0-alpine3.17
+FROM node:18.12-alpine3.17
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
 ARG GRAPHQL_HOST
