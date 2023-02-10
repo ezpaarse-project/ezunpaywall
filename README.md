@@ -12,12 +12,12 @@ ezunpaywall is an API and database that queries the Unpaywall database containin
     - [Deployment](#Deployment)
         - [Prerequisites](#Prerequisites)
         - [Environment variables](#Environment-variables)
-            - [apikey](#apikey)
-            - [enrich](#enrich)
-            - [frontend](#frontend)
-            - [graphql](#graphql)
-            - [mail](#mail)
-            - [update](#update)
+            - [apikey](/src/apikey/README.md#ezunpaywall-apikey)
+            - [enrich](/src/enrich/README.md#ezunpaywall-enrich)
+            - [frontend](/src/frontend/README.md#ezunpaywall-frontend)
+            - [graphql](/src/graphql/README.md#ezunpaywall-graphql)
+            - [mail](/src/mail/README.md#ezunpaywall-mail)
+            - [update](/src/update/README.md#ezunpaywall-update)
 - [Data update](#Data-update)
 - [API Graphql](#API-graphql)
 
@@ -73,14 +73,12 @@ $ ezunpaywall npm run test
 $ ezunpaywall npm run test:apikey
 $ ezunpaywall npm run test:enrich
 $ ezunpaywall npm run test:graphql
-$ ezunpaywall npm run test:mail
 $ ezunpaywall npm run test:update
 
 # you can run test for each service
 $ ezunpaywall/src/apikey npm run test
 $ ezunpaywall/src/enrich npm run test
 $ ezunpaywall/src/graphql npm run test
-$ ezunpaywall/src/mail npm run test
 $ ezunpaywall/src/update npm run test
 ```
 ### Deployment
