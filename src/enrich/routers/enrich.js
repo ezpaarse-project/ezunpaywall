@@ -12,26 +12,30 @@ const upload = require('../middlewares/multer');
 router.get('/enriched', checkAuth, async (req, res) => {
   const apikey = req.get('x-api-key');
 
+  let files;
   try {
-    await fs.readdir(path.resolve(enrichedDir, apikey));
+    files = await fs.readdir(path.resolve(enrichedDir, apikey));
   } catch (err) {
-    return res.status(200).json([]);
+    if (err.code !== 'ENOTFOUND') {
+      return res.status(500).end();
+    }
+    files = [];
   }
-
-  const files = await fs.readdir(path.resolve(enrichedDir, apikey));
   return res.status(200).json(files);
 });
 
 router.get('/upload', checkAuth, async (req, res) => {
   const apikey = req.get('x-api-key');
 
+  let files;
   try {
-    await fs.readdir(path.resolve(uploadDir, apikey));
+    files = await fs.readdir(path.resolve(uploadDir, apikey));
   } catch (err) {
-    return res.status(200).json([]);
+    if (err.code !== 'ENOTFOUND') {
+      return res.status(500).end();
+    }
+    files = [];
   }
-
-  const files = await fs.readdir(path.resolve(uploadDir, apikey));
   return res.status(200).json(files);
 });
 
