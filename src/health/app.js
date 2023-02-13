@@ -3,8 +3,8 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 
-const routerPing = require('./routers/ping');
-const routerOpenapi = require('./routers/openapi');
+const routerPing = require('./lib/routers/ping');
+const routerOpenapi = require('./lib/routers/openapi');
 
 const app = express();
 

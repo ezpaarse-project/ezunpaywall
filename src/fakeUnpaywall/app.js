@@ -3,11 +3,11 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 
-const updateChangefilesExample = require('./bin/changefiles');
+const updateChangefilesExample = require('./lib/controllers/changefiles');
 
-const routerSnapshots = require('./routers/snapshots');
-const routerChangeFiles = require('./routers/changefiles');
-const routerPing = require('./routers/ping');
+const routerSnapshots = require('./lib/routers/snapshots');
+const routerChangeFiles = require('./lib/routers/changefiles');
+const routerPing = require('./lib/routers/ping');
 
 // start server
 const app = express();

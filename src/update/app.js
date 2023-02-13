@@ -6,18 +6,18 @@ const cors = require('cors');
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 
-const cronDeleteOutFiles = require('./bin/cron/file');
+const cronDeleteOutFiles = require('./lib/controllers/cron/file');
 
-const routerPing = require('./routers/ping');
-const routerJob = require('./routers/job');
-const routerReport = require('./routers/report');
-const routerSnapshot = require('./routers/snapshot');
-const routerState = require('./routers/state');
-const routerStatus = require('./routers/status');
-const routerUnpaywall = require('./routers/unpaywall');
-const routerCron = require('./routers/cron');
-const routerElastic = require('./routers/elastic');
-const routerOpenapi = require('./routers/openapi');
+const routerPing = require('./lib/routers/ping');
+const routerJob = require('./lib/routers/job');
+const routerReport = require('./lib/routers/report');
+const routerSnapshot = require('./lib/routers/snapshot');
+const routerState = require('./lib/routers/state');
+const routerStatus = require('./lib/routers/status');
+const routerUnpaywall = require('./lib/routers/unpaywall');
+const routerCron = require('./lib/routers/cron');
+const routerElastic = require('./lib/routers/elastic');
+const routerOpenapi = require('./lib/routers/openapi');
 
 const dataDir = path.resolve(__dirname, 'data');
 fs.ensureDir(path.resolve(dataDir));

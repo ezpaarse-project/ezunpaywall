@@ -4,14 +4,14 @@ const cors = require('cors');
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 
-const { pingRedis, loadDemoAPIKey } = require('./lib/service/redis');
+const { pingRedis, loadDemoAPIKey } = require('./lib/services/redis');
 
 const cronDemo = require('./lib/cron');
 
-const routerPing = require('./routers/ping');
-const routerAdmin = require('./routers/admin');
-const routerManage = require('./routers/manage');
-const routerOpenapi = require('./routers/openapi');
+const routerPing = require('./lib/routers/ping');
+const routerAdmin = require('./lib/routers/admin');
+const routerManage = require('./lib/routers/manage');
+const routerOpenapi = require('./lib/routers/openapi');
 
 const app = express();
 
