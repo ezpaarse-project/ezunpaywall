@@ -16,7 +16,7 @@ router.get('/enriched', checkAuth, async (req, res) => {
   try {
     files = await fs.readdir(path.resolve(enrichedDir, apikey));
   } catch (err) {
-    if (err.code !== 'ENOTFOUND') {
+    if (err.code !== 'ENOENT') {
       return res.status(500).end();
     }
     files = [];
@@ -31,7 +31,7 @@ router.get('/upload', checkAuth, async (req, res) => {
   try {
     files = await fs.readdir(path.resolve(uploadDir, apikey));
   } catch (err) {
-    if (err.code !== 'ENOTFOUND') {
+    if (err.code !== 'ENOENT') {
       return res.status(500).end();
     }
     files = [];
