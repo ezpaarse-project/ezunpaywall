@@ -4,9 +4,9 @@ const cors = require('cors');
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 
-const routerPing = require('./routers/ping');
-const routerMail = require('./routers/mail');
-const routerOpenapi = require('./routers/openapi');
+const routerPing = require('./lib/routers/ping');
+const routerMail = require('./lib/routers/mail');
+const routerOpenapi = require('./lib/routers/openapi');
 
 const app = express();
 

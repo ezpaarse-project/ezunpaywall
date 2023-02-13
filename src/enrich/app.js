@@ -6,15 +6,15 @@ const cors = require('cors');
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 
-const { pingRedis } = require('./lib/service/redis');
+const { pingRedis } = require('./lib/services/redis');
 
-const cronDeleteOutFiles = require('./bin/cron/file');
+const cronDeleteOutFiles = require('./lib/controllers/cron/file');
 
-const routerPing = require('./routers/ping');
-const routerJob = require('./routers/job');
-const routerEnrich = require('./routers/enrich');
-const routerState = require('./routers/state');
-const routerOpenapi = require('./routers/openapi');
+const routerPing = require('./lib/routers/ping');
+const routerJob = require('./lib/routers/job');
+const routerEnrich = require('./lib/routers/enrich');
+const routerState = require('./lib/routers/state');
+const routerOpenapi = require('./lib/routers/openapi');
 
 const dataDir = path.resolve(__dirname, 'data');
 

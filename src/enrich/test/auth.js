@@ -387,6 +387,74 @@ describe('Test: auth service in enrich service', () => {
         expect(res).have.status(401);
       });
     });
+
+    describe('Test to access to user files with enrich API key', () => {
+      it('Should upload the file', async () => {
+        const res1 = await chai
+          .request(enrichService)
+          .post('/upload')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .set('Content-Type', 'application/x-ndjson')
+          .set('x-api-key', 'user');
+
+        expect(res1).have.status(200);
+
+        id = res1?.body;
+      });
+
+      it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
+        // start enrich process
+        const res2 = await chai
+          .request(enrichService)
+          .post(`/job/${id}`)
+          .send({
+            type: 'jsonl',
+            index: 'unpaywall-test',
+          })
+          .set('x-api-key', 'user');
+
+        expect(res2).have.status(200);
+      });
+
+      it('Should get the state of enrich', async () => {
+        let res3;
+        do {
+          res3 = await chai
+            .request(enrichService)
+            .get(`/states/${id}.json`)
+            .set('x-api-key', 'user');
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        } while (!res3?.body?.done);
+
+        const state = res3?.body;
+
+        expect(state).have.property('done').equal(true);
+        expect(state).have.property('loaded').to.not.equal(undefined);
+        expect(state).have.property('linesRead').equal(3);
+        expect(state).have.property('enrichedLines').equal(3);
+        expect(state).have.property('createdAt').to.not.equal(undefined);
+        expect(state).have.property('endAt').to.not.equal(undefined);
+        expect(state).have.property('error').equal(false);
+      });
+
+      it('Should return a error message', async () => {
+        const res = await chai
+          .request(enrichService)
+          .get(`/states/${id}.json`)
+          .set('x-api-key', 'enrich');
+
+        expect(res).have.status(404);
+      });
+
+      it('Should return a error message', async () => {
+        const res = await chai
+          .request(enrichService)
+          .post(`/enriched/${id}.jsonl`)
+          .set('x-api-key', 'enrich');
+
+        expect(res).have.status(404);
+      });
+    });
   });
   after(async () => {
     await deleteIndex('unpaywall-test');

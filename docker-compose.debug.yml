@@ -291,9 +291,6 @@ services:
   fakeunpaywall:
     container_name: ezunpaywall-fakeunpaywall-dev
     image: node:18.12.1
-    environment:
-      - http_proxy
-      - https_proxy
     working_dir: /usr/src/app
     volumes:
       - ./src/fakeUnpaywall:/usr/src/app

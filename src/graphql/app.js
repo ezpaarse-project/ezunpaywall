@@ -3,23 +3,21 @@ const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 const responseTime = require('response-time');
 
-const auth = require('./middlewares/auth');
-
-const { name, version } = require('./package.json');
+const auth = require('./lib/middlewares/auth');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
-const cronMetrics = require('./bin/cron/metrics');
-const { setMetrics } = require('./bin/metrics');
+const cronMetrics = require('./lib/controllers/cron/metrics');
+const { setMetrics } = require('./lib/controllers/metrics');
 
-const { pingRedis } = require('./lib/service/redis');
+const { pingRedis } = require('./lib/services/redis');
 
-const { pingElastic } = require('./lib/service/elastic');
+const { pingElastic } = require('./lib/services/elastic');
 
-const schema = require('./graphql');
+const schema = require('./lib/resolvers/graphql');
 
-const routerPing = require('./routers/ping');
-const routerOpenapi = require('./routers/openapi');
+const routerPing = require('./lib/routers/ping');
+const routerOpenapi = require('./lib/routers/openapi');
 
 const app = express();
 
@@ -33,10 +31,6 @@ app.use(cors({
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-app.get('/', async (req, res, next) => res.status(200).json({
-  name, version,
-}));
 
 // routers
 app.use(routerPing);
