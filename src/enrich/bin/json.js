@@ -5,6 +5,7 @@
 const fs = require('fs-extra');
 const readline = require('readline');
 const path = require('path');
+const config = require('config');
 
 const logger = require('../lib/logger');
 
@@ -137,14 +138,14 @@ const enrichTab = (data, response) => {
  * @param {Array} data - array of line enriched
  * @param {String} stateName  state filename
  */
-const writeInFileJSON = async (data, enrichedFile, stateName) => {
+const writeInFileJSON = async (data, enrichedFile, stateName, apikey) => {
   const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
   try {
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
     logger.error(`Cannot write ${stringTab} in ${enrichedFile}`);
     logger.error(err);
-    await fail(stateName);
+    await fail(stateName, apikey);
   }
 };
 
@@ -197,11 +198,19 @@ const processEnrichJSON = async (id, index, args, apikey) => {
     }
     data.push(li);
 
-    // enrichment
     if (data.length === 1000) {
-      const response = await requestGraphql(data, args, stateName, index, apikey);
+      let response;
+      try {
+        response = await requestGraphql(data, args, stateName, index, apikey);
+      } catch (err) {
+        logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
+        logger.error(JSON.stringify(err?.response?.data?.errors));
+        await fail(stateName, apikey);
+        return;
+      }
+      // enrichment
       enrichTab(data, response);
-      await writeInFileJSON(data, enrichedFile, stateName);
+      await writeInFileJSON(data, enrichedFile, stateName, apikey);
       data = [];
 
       state.linesRead += 1000;
@@ -213,10 +222,18 @@ const processEnrichJSON = async (id, index, args, apikey) => {
 
   // last insertion
   if (data.length !== 0) {
+    let response;
+    try {
+      response = await requestGraphql(data, args, stateName, index, apikey);
+    } catch (err) {
+      logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
+      logger.error(JSON.stringify(err?.response?.data?.errors));
+      await fail(stateName, apikey);
+      return;
+    }
     // enrichment
-    const response = await requestGraphql(data, args, stateName, index, apikey);
     data = enrichTab(data, response);
-    await writeInFileJSON(data, enrichedFile, stateName);
+    await writeInFileJSON(data, enrichedFile, stateName, apikey);
     // state
     state.linesRead += data?.length || 0;
     state.enrichedLines += response?.length || 0;

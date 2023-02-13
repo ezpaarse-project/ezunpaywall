@@ -3,10 +3,6 @@ const config = require('config');
 
 const logger = require('../logger');
 
-const {
-  fail,
-} = require('../../model/state');
-
 const graphql = axios.create({
   baseURL: config.get('graphql.host'),
 });
@@ -30,25 +26,19 @@ async function requestGraphql(data, args, stateName, index, apikey) {
   dois = await map1.filter((elem) => elem !== undefined);
   dois = dois.join('","');
 
-  try {
-    res = await graphql({
-      method: 'POST',
-      url: '/graphql',
-      data:
-      {
-        query: `{ GetByDOI(dois: ["${dois}"]) ${args.toString()} }`,
-      },
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'x-api-key': apikey,
-        index,
-      },
-    });
-  } catch (err) {
-    logger.error(`Cannot request graphql service at ${graphql.host}/graphql`);
-    logger.error(JSON.stringify(err?.response?.data?.errors));
-    await fail(stateName);
-  }
+  res = await graphql({
+    method: 'POST',
+    url: '/graphql',
+    data:
+    {
+      query: `{ GetByDOI(dois: ["${dois}"]) ${args.toString()} }`,
+    },
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-api-key': apikey,
+      index,
+    },
+  });
   return res?.data?.data?.GetByDOI;
 }
 

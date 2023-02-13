@@ -96,8 +96,8 @@ const updateStateInFile = async (state, filename) => {
  * update the state when there is an error
  * @param {String} filename - state filename
  */
-const fail = async (filename) => {
-  const state = await getState(filename);
+const fail = async (filename, apikey) => {
+  const state = await getState(filename, apikey);
   state.done = true;
   state.endAt = new Date();
   state.error = true;

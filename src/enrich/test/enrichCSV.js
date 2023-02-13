@@ -763,7 +763,6 @@ describe('Test: enrich service csv', () => {
 
         // TODO mettre une erreur 401
         expect(res2).have.status(200);
-        // expect(JSON.parse(res.body).message).be.equal('args incorrect');
       });
     });
 
