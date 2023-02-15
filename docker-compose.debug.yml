@@ -253,15 +253,22 @@ services:
       retries: 5
 
   nginx:
-    image: nginx:1.20.1
+    image: nginx:1.23.3
     container_name: ezunpaywall-nginx-dev
+    environment:
+      # host of service
+      - NGINX_HOST
+      - FRONTEND_HOST=http://frontend:3000
+      - GRAPHQL_HOST=http://graphql:3000
+      - UPDATE_HOST=http://update:3000
+      - ENRICH_HOST=http://enrich:3000
+      - APIKEY_HOST=http://apikey:3000
+      - MAIL_HOST=http://mail:3000
+      - HEALTH_HOST=http://health:3000
     ports:
       - ${NGINX_PORT:-80}:80
-    environment:
-      - NGINX_HOST
     volumes:
-      - ${NGINX_CONFIG_PATH:-./src/nginx/templates/http.conf.template}:/etc/nginx/templates/default.conf.template:ro
-      - ${NGINX_ACCESS_LOG_PATH:-./src/nginx/log}:/var/log/nginx
+      - ./src/nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro
     restart: unless-stopped
     depends_on:
       enrich:
