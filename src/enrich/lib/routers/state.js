@@ -3,6 +3,8 @@ const path = require('path');
 const joi = require('joi');
 const fs = require('fs-extra');
 
+const checkAuth = require('../middlewares/auth');
+
 const {
   getState,
 } = require('../models/state');
@@ -37,39 +39,41 @@ const getMostRecentFile = async (dir) => {
   return Array.isArray(files) ? files[0] : undefined;
 };
 
-router.get('/states', async (req, res, next) => {
+router.get('/states', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
   if (error) return res.status(400).json({ message: error.details[0].message });
+
+  const apikey = req.get('x-api-key');
 
   const latest = value;
 
   if (latest) {
     let latestFile;
     try {
-      latestFile = await getMostRecentFile(statesDir);
+      latestFile = await getMostRecentFile(path.resolve(statesDir, apikey));
     } catch (err) {
-      return next({ message: err, stackTrace: err });
+      return next({ message: err });
     }
     let state;
     try {
-      state = await getState(latestFile?.filename);
+      state = await getState(latestFile?.filename, apikey);
     } catch (err) {
-      return next({ message: err, stackTrace: err });
+      return next({ message: err });
     }
     return res.status(200).json(state);
   }
   let states;
 
   try {
-    states = await fs.readdir(statesDir);
+    states = await fs.readdir(path.resolve(statesDir, apikey));
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next({ message: err });
   }
 
   return res.status(200).json(states);
 });
 
-router.get('/states/:filename', async (req, res, next) => {
+router.get('/states/:filename', checkAuth, async (req, res, next) => {
   const { filename } = req.params;
 
   const { errorParam } = joi.string().trim().required().validate(filename);
