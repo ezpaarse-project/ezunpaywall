@@ -191,7 +191,7 @@ services:
 
   nginx:
     build:
-      context: ./src/health
+      context: ./src/nginx
     container_name: ezunpaywall-nginx-prod
     environment:
       # host of service
