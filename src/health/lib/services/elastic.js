@@ -4,10 +4,10 @@ const path = require('path');
 const { Client } = require('@elastic/elasticsearch');
 const { URL } = require('url');
 const { elasticsearch } = require('config');
-const { node } = require('config');
+const { nodeEnv } = require('config');
 const logger = require('../logger');
 
-const isProd = (node === 'production');
+const isProd = (nodeEnv === 'production');
 
 const pingElasticWithClient = async () => {
   let ssl;

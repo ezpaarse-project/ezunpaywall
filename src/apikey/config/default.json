@@ -1,5 +1,5 @@
 { 
-  "node": "development",
+  "nodeEnv": "development",
   "accessLogRotate": false,
   "redis":  {
     "host": "redis",

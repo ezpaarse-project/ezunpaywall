@@ -1,5 +1,5 @@
 { 
-  "node": "development",
+  "nodeEnv": "development",
   "graphqlHost": "http://graphql:3000",
   "updateHost": "http://update:3000",
   "enrichHost": "http://enrich:3000",

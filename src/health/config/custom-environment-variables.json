@@ -1,5 +1,5 @@
 { 
-  "node": "NODE_ENV",
+  "nodeEnv": "NODE_ENV",
   "graphqlHost": "GRAPHQL_HOST",
   "updateHost": "UPDATE_HOST",
   "enrichHost": "ENRICH_HOST",
