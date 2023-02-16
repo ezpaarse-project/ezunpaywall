@@ -17,12 +17,4 @@ Health service indicating the status of the connection between each service.
 | ELASTICSEARCH_INDEX_ALIAS | upw | default alias of unpaywall data |
 | MAIL_HOST | http://mail:3000 | mail service host |
 | MAIL_APIKEY | changeme | mail apikey |
-
-## Docker environment variables
-
-| name | default | description |
-| --- | --- | --- |
-| UPDATE_APPLICATION_LOG_PATH | ./src/update/log/application | application output log path |
-| UPDATE_ACCESS_LOG_PATH | ./src/update/log/access | access log output path |
-| UPDATE_DATA_PATH | ./src/update/data | access data output path |
-| UPDATE_PORT | 59702 | output port |
+| HEALTH_TIMEOUT | 3000 | timeout to query the health route |

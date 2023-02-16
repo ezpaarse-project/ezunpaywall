@@ -6,5 +6,6 @@
     "port": "REDIS_PORT",
     "password": "REDIS_PASSWORD"
   },
-  "apikey": "APIKEY_APIKEY"
+  "apikey": "APIKEY_APIKEY",
+  "healthTimeout": "HEALTH_TIMEOUT"
 }

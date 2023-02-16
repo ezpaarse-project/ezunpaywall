@@ -24,5 +24,6 @@
     "index": "unpaywall",
     "interval": "day"
   },
-  "apikey": "changeme"
+  "apikey": "changeme",
+  "healthTimeout": 3000
 }

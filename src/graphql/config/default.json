@@ -12,5 +12,6 @@
     "user": "elastic",
     "password": "changeme",
     "indexAlias": "upw"
-  }
+  },
+  "healthTimeout": 3000
 }

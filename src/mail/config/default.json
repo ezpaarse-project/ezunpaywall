@@ -10,5 +10,6 @@
     "receivers": ["ezunpaywall@example.fr"],
     "machine": "dev"
   },
-  "apikey": "changeme"
+  "apikey": "changeme",
+  "healthTimeout": 3000
 }

@@ -8,5 +8,6 @@
   },
   "graphql": {
     "host": "http://graphql:3000"
-  }
+  },
+  "healthTimeout": 3000
 }

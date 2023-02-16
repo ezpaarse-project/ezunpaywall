@@ -8,5 +8,6 @@
   },
   "graphql": {
     "host": "GRAPHQL_HOST"
-  }
+  },
+  "healthTimeout": "HEALTH_TIMEOUT"
 }

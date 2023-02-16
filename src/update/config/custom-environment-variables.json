@@ -24,5 +24,6 @@
     "index": "UPDATE_CRON_INDEX",
     "interval": "UPDATE_CRON_INTERVAL"
   },
-  "apikey": "UPDATE_APIKEY"
+  "apikey": "UPDATE_APIKEY",
+  "healthTimeout": "HEALTH_TIMEOUT"
 }

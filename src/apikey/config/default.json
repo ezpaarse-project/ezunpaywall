@@ -6,5 +6,6 @@
     "port": "6379",
     "password": "changeme"
   },
-  "apikey": "changeme"
+  "apikey": "changeme",
+  "healthTimeout": 3000
 }
