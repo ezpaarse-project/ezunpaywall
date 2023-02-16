@@ -16,7 +16,7 @@ const pingElasticWithClient = async () => {
     let ca;
     const caPath = path.resolve(__dirname, '..', '..', 'certs', 'ca.crt');
     try {
-      ca = fs.readFileSync(caPath, 'utf8');
+      ca = await fs.readFile(caPath, 'utf8');
     } catch {
       logger.error(`Cannot read elastic certificate file in ${caPath}`);
     }
