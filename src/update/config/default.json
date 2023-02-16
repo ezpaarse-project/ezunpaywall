@@ -1,5 +1,5 @@
 {
-  "node": "development",
+  "nodeEnv": "development",
   "accessLogRotate": false,
   "unpaywall": {
     "host": "http://fakeunpaywall:3000",
@@ -24,5 +24,6 @@
     "index": "unpaywall",
     "interval": "day"
   },
-  "apikey": "changeme"
+  "apikey": "changeme",
+  "healthTimeout": 3000
 }

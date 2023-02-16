@@ -41,7 +41,7 @@ export default (ctx, inject) => {
 
   const health = axios.create({
     baseURL: ctx.$config.healthHost,
-    timeout: 3000
+    timeout: 10000
   })
 
   inject('health', health)

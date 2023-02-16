@@ -1,5 +1,5 @@
 { 
-  "node": "development",
+  "nodeEnv": "development",
   "accessLogRotate": false,
   "redis": {
     "host": "redis",
@@ -8,5 +8,6 @@
   },
   "graphql": {
     "host": "http://graphql:3000"
-  }
+  },
+  "healthTimeout": 3000
 }

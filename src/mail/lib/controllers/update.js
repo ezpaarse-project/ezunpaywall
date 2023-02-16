@@ -30,7 +30,7 @@ async function sendMailUpdateReport(state) {
 
   let insertedDocs = 0;
   let updatedDocs = 0;
-  state.steps.forEach((step) => {
+  state?.steps?.forEach((step) => {
     if (step.task === 'insert') {
       insertedDocs += step.insertedDocs;
       updatedDocs += step.updatedDocs;
