@@ -1,8 +1,10 @@
 const axios = require('axios');
 const config = require('config');
-const redis = require('redis');
 
 const logger = require('../logger');
+
+const pingRedisWithClient = require('../services/redis');
+const pingElasticWithClient = require('../services/elastic');
 
 async function PromiseOnHealthWithTimeout(p1, name, timeout) {
   const start = Date.now();
@@ -90,22 +92,6 @@ async function ping(name, host) {
   return true;
 }
 
-async function pingRedisWithClient() {
-  const redisClient = redis.createClient({
-    host: config.get('redis.host'),
-    port: config.get('redis.port'),
-    password: config.get('redis.password'),
-  });
-
-  try {
-    await redisClient.ping();
-  } catch (err) {
-    logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
-    return err?.message;
-  }
-  return true;
-}
-
 async function pingAll() {
   const graphqlHost = config.get('graphqlHost');
   const healthGraphql = PromiseOnHealthWithTimeout(health('graphql', graphqlHost), 'graphql', 5000);
@@ -122,8 +108,7 @@ async function pingAll() {
   const mailHost = config.get('mailHost');
   const healthMail = PromiseOnHealthWithTimeout(health('mail', mailHost), 'mail', 5000);
 
-  const elasticHost = config.get('elasticHost');
-  const pingElastic = promiseWithTimeout(ping('elastic', elasticHost), 'elastic', 5000);
+  const pingElastic = promiseWithTimeout(pingElasticWithClient(), 'elastic', 5000);
 
   const unpaywallHost = config.get('unpaywall.host');
   const pingUnpaywall = promiseWithTimeout(ping('unpaywall', unpaywallHost), 'unpaywall', 5000);

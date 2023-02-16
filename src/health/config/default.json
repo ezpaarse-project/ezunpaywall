@@ -4,7 +4,12 @@
   "enrichHost": "http://enrich:3000",
   "apikeyHost": "http://apikey:3000",
   "mailHost": "http://mail:3000",
-  "elasticHost": "http://elastic:changeme@elastic:9200",
+  "elasticsearch": {
+    "host": "http://elastic",
+    "port": 9200,
+    "user": "elastic",
+    "password": "changeme"
+  },
   "unpaywall": {
     "host": "http://fakeUnpaywall:3000",
     "apikey": "default"
