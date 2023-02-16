@@ -28,24 +28,17 @@ router.post('/contact', checkAuth, async (req, res, next) => {
     return res.status(400).json({ message: 'Message is expected' });
   }
 
-  try {
-    sendMailContact(email, subject, message);
-  } catch (err) {
-    return next(err);
-  }
+  sendMailContact(email, subject, message);
+
   return res.status(202).json();
 });
 
-// auth
 router.post('/update-start', checkAuth, async (req, res, next) => {
   const config = req.body;
   // TODO test config
 
-  try {
-    sendMailUpdateStarted(config);
-  } catch (err) {
-    return next(err);
-  }
+  sendMailUpdateStarted(config);
+
   return res.status(202).json();
 });
 
@@ -53,11 +46,8 @@ router.post('/update-end', checkAuth, async (req, res, next) => {
   const state = req.body;
   // TODO test state
 
-  try {
-    sendMailUpdateReport(state);
-  } catch (err) {
-    return next(err);
-  }
+  sendMailUpdateReport(state);
+
   return res.status(202).json();
 });
 
