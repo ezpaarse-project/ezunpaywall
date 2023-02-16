@@ -1,8 +1,10 @@
-async function promiseWithTimeout(p1, name, timeout) {
+const { healthTimeout } = require('config');
+
+async function promiseWithTimeout(p1, name) {
   const start = Date.now();
 
   const p2 = new Promise((resolve, reject) => {
-    setTimeout(reject, timeout, new Error('time out'));
+    setTimeout(reject, healthTimeout, new Error('time out'));
   });
 
   let error;

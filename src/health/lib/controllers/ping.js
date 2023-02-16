@@ -6,11 +6,12 @@ const logger = require('../logger');
 const pingRedisWithClient = require('../services/redis');
 const pingElasticWithClient = require('../services/elastic');
 
-async function PromiseOnHealthWithTimeout(p1, name, timeout) {
+const healthTimeout = config.get('healthTimeout');
+async function PromiseOnHealthWithTimeout(p1, name) {
   const start = Date.now();
 
   const p2 = new Promise((resolve, reject) => {
-    setTimeout(reject, timeout, new Error('time out'));
+    setTimeout(reject, healthTimeout, new Error('time out'));
   });
 
   let reply;
@@ -48,11 +49,11 @@ async function health(name, host) {
   return res.data;
 }
 
-async function promiseWithTimeout(p1, name, timeout) {
+async function promiseWithTimeout(p1, name) {
   const start = Date.now();
 
   const p2 = new Promise((resolve, reject) => {
-    setTimeout(reject, timeout, new Error('time out'));
+    setTimeout(reject, healthTimeout, new Error('time out'));
   });
 
   let reply;
@@ -94,26 +95,26 @@ async function ping(name, host) {
 
 async function pingAll() {
   const graphqlHost = config.get('graphqlHost');
-  const healthGraphql = PromiseOnHealthWithTimeout(health('graphql', graphqlHost), 'graphql', 5000);
+  const healthGraphql = PromiseOnHealthWithTimeout(health('graphql', graphqlHost), 'graphql');
 
   const updateHost = config.get('updateHost');
-  const healthUpdate = PromiseOnHealthWithTimeout(health('update', updateHost), 'update', 5000);
+  const healthUpdate = PromiseOnHealthWithTimeout(health('update', updateHost), 'update');
 
   const enrichHost = config.get('enrichHost');
-  const healthEnrich = PromiseOnHealthWithTimeout(health('enrich', enrichHost), 'enrich', 5000);
+  const healthEnrich = PromiseOnHealthWithTimeout(health('enrich', enrichHost), 'enrich');
 
   const apikeyHost = config.get('apikeyHost');
-  const healthApikey = PromiseOnHealthWithTimeout(health('apikey', apikeyHost), 'apikey', 5000);
+  const healthApikey = PromiseOnHealthWithTimeout(health('apikey', apikeyHost), 'apikey');
 
   const mailHost = config.get('mailHost');
-  const healthMail = PromiseOnHealthWithTimeout(health('mail', mailHost), 'mail', 5000);
+  const healthMail = PromiseOnHealthWithTimeout(health('mail', mailHost), 'mail');
 
-  const pingElastic = promiseWithTimeout(pingElasticWithClient(), 'elastic', 5000);
+  const pingElastic = promiseWithTimeout(pingElasticWithClient(), 'elastic');
 
   const unpaywallHost = config.get('unpaywall.host');
-  const pingUnpaywall = promiseWithTimeout(ping('unpaywall', unpaywallHost), 'unpaywall', 5000);
+  const pingUnpaywall = promiseWithTimeout(ping('unpaywall', unpaywallHost), 'unpaywall');
 
-  const pingRedis = promiseWithTimeout(pingRedisWithClient(), 'redis', 5000);
+  const pingRedis = promiseWithTimeout(pingRedisWithClient(), 'redis');
 
   const result = await Promise.allSettled([
     healthGraphql,
