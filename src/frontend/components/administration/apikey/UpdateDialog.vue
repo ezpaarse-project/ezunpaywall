@@ -38,6 +38,12 @@
               label="enrich"
             />
           </v-card-actions>
+          <v-card-actions>
+            <span class="mr-2" v-text="`${$t('administration.apikey.allowed')} :`" />
+            <v-checkbox
+              v-model="allowed"
+            />
+          </v-card-actions>
           <SettingsAttributes
             :all="attributesAll"
             :simple="attributesSimple"
