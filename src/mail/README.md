@@ -15,11 +15,4 @@ Health service indicating the status of the connection between each service.
 | MAIL_NOTIFICATIONS_RECEIVERS | ezunpaywall@example.fr" | recipients of the recent activity email |
 | MAIL_NOTIFICATIONS_MACHINE | dev | environment of machine |
 | MAIL_APIKEY | changeme | mail apikey |
-
-## Docker environment variables
-
-| name | default | description |
-| --- | --- | --- |
-| MAIL_APPLICATION_LOG_PATH | ./src/mail/log/application | application output log path |
-| MAIL_ACCESS_LOG_PATH | ./src/mail/log/access | access log output path |
-| MAIL_PORT | 59705 | output port |
+| HEALTH_TIMEOUT | 3000 | timeout to query the health route |

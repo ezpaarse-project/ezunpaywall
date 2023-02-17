@@ -1,5 +1,5 @@
 {
-  "node": "NODE_ENV",
+  "nodeEnv": "NODE_ENV",
   "accessLogRotate": "ACCESS_LOG_ROTATE",
   "smtp": {
     "host": "MAIL_SMTP_HOST",
@@ -10,5 +10,6 @@
     "receivers": "MAIL_NOTIFICATIONS_RECEIVERS",
     "machine": "MAIL_NOTIFICATIONS_MACHINE"
   },
-  "apikey": "MAIL_APIKEY"
+  "apikey": "MAIL_APIKEY",
+  "healthTimeout": "HEALTH_TIMEOUT"
 }

@@ -1,5 +1,5 @@
 { 
-  "node": "NODE_ENV",
+  "nodeEnv": "NODE_ENV",
   "accessLogRotate": "ACCESS_LOG_ROTATE",
   "redis": {
     "host": "REDIS_HOST",
@@ -12,5 +12,6 @@
     "user": "ELASTICSEARCH_USERNAME",
     "password": "ELASTICSEARCH_PASSWORD",
     "indexAlias": "ELASTICSEARCH_INDEX_ALIAS"
-  }
+  },
+  "healthTimeout": "HEALTH_TIMEOUT"
 }

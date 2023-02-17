@@ -1,10 +1,11 @@
 { 
-  "node": "NODE_ENV",
+  "nodeEnv": "NODE_ENV",
   "accessLogRotate": "ACCESS_LOG_ROTATE",
   "redis":  {
     "host": "REDIS_HOST",
     "port": "REDIS_PORT",
     "password": "REDIS_PASSWORD"
   },
-  "apikey": "APIKEY_APIKEY"
+  "apikey": "APIKEY_APIKEY",
+  "healthTimeout": "HEALTH_TIMEOUT"
 }
