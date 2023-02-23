@@ -5,7 +5,7 @@ const path = require('path');
 const { format } = require('date-fns');
 const { accessLogRotate } = require('config');
 
-const accessLogDir = path.resolve(__dirname, '..', 'log');
+const accessLogDir = path.resolve(__dirname, '..', 'log', 'access');
 
 function logFilename(time) {
   if (!time) return 'access.log';
