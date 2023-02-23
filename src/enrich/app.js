@@ -23,6 +23,11 @@ fs.ensureDir(path.resolve(dataDir, 'states'));
 fs.ensureDir(path.resolve(dataDir, 'upload'));
 fs.ensureDir(path.resolve(dataDir, 'enriched'));
 
+const logDir = path.resolve(__dirname, 'log');
+fs.ensureDir(path.resolve(logDir));
+fs.ensureDir(path.resolve(logDir, 'application'));
+fs.ensureDir(path.resolve(logDir, 'access'));
+
 const app = express();
 app.use(morgan);
 

@@ -25,6 +25,11 @@ fs.ensureDir(path.resolve(dataDir, 'reports'));
 fs.ensureDir(path.resolve(dataDir, 'states'));
 fs.ensureDir(path.resolve(dataDir, 'snapshots'));
 
+const logDir = path.resolve(__dirname, 'log');
+fs.ensureDir(path.resolve(logDir));
+fs.ensureDir(path.resolve(logDir, 'application'));
+fs.ensureDir(path.resolve(logDir, 'access'));
+
 const app = express();
 
 app.use(express.json());

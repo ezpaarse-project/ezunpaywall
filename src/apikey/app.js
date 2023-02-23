@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs-extra');
+const path = require('path');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
@@ -12,6 +14,11 @@ const routerPing = require('./lib/routers/ping');
 const routerAdmin = require('./lib/routers/admin');
 const routerManage = require('./lib/routers/manage');
 const routerOpenapi = require('./lib/routers/openapi');
+
+const logDir = path.resolve(__dirname, 'log');
+fs.ensureDir(path.resolve(logDir));
+fs.ensureDir(path.resolve(logDir, 'application'));
+fs.ensureDir(path.resolve(logDir, 'access'));
 
 const app = express();
 

@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 const responseTime = require('response-time');
+const fs = require('fs-extra');
+const path = require('path');
 
 const auth = require('./lib/middlewares/auth');
 
@@ -18,6 +20,11 @@ const schema = require('./lib/resolvers/graphql');
 
 const routerPing = require('./lib/routers/ping');
 const routerOpenapi = require('./lib/routers/openapi');
+
+const logDir = path.resolve(__dirname, 'log');
+fs.ensureDir(path.resolve(logDir));
+fs.ensureDir(path.resolve(logDir, 'application'));
+fs.ensureDir(path.resolve(logDir, 'access'));
 
 const app = express();
 
