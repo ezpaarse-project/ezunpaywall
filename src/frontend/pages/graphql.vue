@@ -83,12 +83,12 @@
           v-text="$t('graphql.start')"
         />
       </v-card-actions>
-      <div id="graphqlResponse">
-        <div v-if="response.data">
+      <div id="graphqlResult">
+        <div v-if="result">
           <v-card-title v-text="$t('graphql.result')" />
           <v-card-text>
             <pre>
-                <code v-highlight class="json">{{ stringifiedGraphqlResponse }}</code>
+                <code v-highlight class="json" v-text="stringifiedGraphqlResult" />
             </pre>
           </v-card-text>
           <v-card-actions>
@@ -119,7 +119,7 @@ export default {
       apiKey: 'demo',
       doi: '10.1001/jama.2016.9797',
       loading: false,
-      response: '',
+      result: '',
       // help
       attrsHelp: false,
       dataFormatURL: 'https://unpaywall.org/data-format'
@@ -179,8 +179,8 @@ export default {
     linkGraphql () {
       return `${this.$graphql.defaults.baseURL}/graphql?query=${this.query}&apikey=demo`
     },
-    stringifiedGraphqlResponse () {
-      return JSON.stringify(this.response.data, null, 2)
+    stringifiedGraphqlResult () {
+      return JSON.stringify(this.result.data, null, 2)
     }
   },
   methods: {
@@ -216,9 +216,10 @@ export default {
     },
     async graphqlRequest () {
       this.loading = true
+      let res
       // 10.1001/jama.2016.9797
       try {
-        this.response = await this.$graphql({
+        res = await this.$graphql({
           method: 'GET',
           url: '/graphql',
           params: {
@@ -231,9 +232,11 @@ export default {
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
       }
+
+      this.result = res?.data
       this.loading = false
 
-      this.$vuetify.goTo('#graphqlResponse')
+      this.$vuetify.goTo('#graphqlResult')
     }
   }
 }
