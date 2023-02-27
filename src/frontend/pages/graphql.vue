@@ -229,14 +229,13 @@ export default {
             'x-api-key': this.apiKey
           }
         })
+        this.$vuetify.goTo('#graphqlResult')
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
       }
 
       this.result = res?.data
       this.loading = false
-
-      this.$vuetify.goTo('#graphqlResult')
     }
   }
 }
