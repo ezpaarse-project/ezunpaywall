@@ -24,7 +24,7 @@
         sm="6"
         md="4"
         lg="3"
-        xl="2"
+        xl="3"
       >
         <HealthCard :name="name" :health="health" />
       </v-col>

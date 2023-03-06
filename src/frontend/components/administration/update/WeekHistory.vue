@@ -16,7 +16,7 @@
         {{ $t("reportHistory.noReport") }}
       </v-col>
     </v-row>
-    <v-row v-else>
+    <v-row v-else class="ma-2">
       <v-col
         v-for="report in reports"
         :id="report.id"
