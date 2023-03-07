@@ -1,13 +1,14 @@
 <template>
   <v-card class="my-3">
     <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title v-text="$t('reportHistory.title')" />
+      <v-toolbar-title> {{ $t('reportHistory.title') }} </v-toolbar-title>
       <v-spacer />
       <v-col class="text-right">
         <v-btn
           @click.stop="setDialogVisible(true)"
-          v-text="$t('update')"
-        />
+        >
+          {{ $t('update') }}
+        </v-btn>
       </v-col>
       <UpdateDialog :dialog="dialogVisible" @closed="setDialogVisible(false)" />
     </v-toolbar>

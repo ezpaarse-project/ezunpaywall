@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-toolbar dark color="secondary">
-      <v-toolbar-title v-text="$t('administration.loginForm')" />
+      <v-toolbar-title> {{ $t("administration.loginForm") }} </v-toolbar-title>
     </v-toolbar>
     <v-card-text>
       <v-form v-model="valid" @submit.prevent="tryLogin">
@@ -19,7 +19,14 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn :loading="loading" :disabled="!valid" color="primary" @click="tryLogin()" v-text="$t('administration.login')" />
+      <v-btn
+        :loading="loading"
+        :disabled="!valid"
+        color="primary"
+        @click="tryLogin()"
+      >
+        {{ $t("administration.login") }}
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -37,7 +44,9 @@ export default {
     }
   },
   computed: {
-    passwordRules () { return value => !!value || this.$t('required') }
+    passwordRules () {
+      return value => !!value || this.$t('required')
+    }
   },
   methods: {
     async tryLogin () {
@@ -51,19 +60,24 @@ export default {
           }
         })
       } catch (e) {
-        this.$store.dispatch('snacks/error', this.$t('administration.errorLogin'))
+        this.$store.dispatch(
+          'snacks/error',
+          this.$t('administration.errorLogin')
+        )
         this.loading = false
         return
       }
       this.$store.dispatch('admin/setIsAdmin', true)
       this.$store.dispatch('admin/setPassword', this.password)
       this.loading = false
-      this.$store.dispatch('snacks/info', this.$t('administration.loginSuccess'))
+      this.$store.dispatch(
+        'snacks/info',
+        this.$t('administration.loginSuccess')
+      )
     }
   }
 }
 </script>
 
 <style>
-
 </style>

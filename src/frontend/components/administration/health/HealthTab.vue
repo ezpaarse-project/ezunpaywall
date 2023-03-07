@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title v-text="$t('administration.health.title')" />
+      <v-toolbar-title> {{ $t('administration.health.title') }} </v-toolbar-title>
       <v-spacer />
       <v-icon>mdi-security</v-icon>
     </v-toolbar>

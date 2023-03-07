@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app dark fixed clipped-left color="primary">
     <v-app-bar-nav-icon dark @click.stop="setDrawer()" />
-    <v-toolbar-title v-text="getTitle()" />
+    <v-toolbar-title> {{ getTitle() }} </v-toolbar-title>
     <v-spacer />
     <v-menu
       v-model="help"
@@ -18,9 +18,9 @@
       </template>
 
       <v-card class="text-justify">
-        <v-card-text
-          v-text="$t('header.help')"
-        />
+        <v-card-text>
+          {{ $t('header.help') }}
+        </v-card-text>
 
         <v-card-actions>
           <v-spacer />
@@ -28,8 +28,9 @@
             class="body-2"
             text
             @click="help = false"
-            v-text="$t('close')"
-          />
+          >
+            {{ $t('close') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-menu>

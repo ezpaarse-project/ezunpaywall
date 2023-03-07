@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title v-text="$t('administration.apikey.title')" />
+      <v-toolbar-title> {{ $t('administration.apikey.title') }} </v-toolbar-title>
       <v-spacer />
       <v-icon>mdi-security</v-icon>
     </v-toolbar>
@@ -9,9 +9,9 @@
       <v-spacer />
       <v-btn
         @click.stop="setVisible(true)"
-        v-text="$t('administration.apikey.buttonCreate')"
-      />
-
+      >
+        {{ $t('administration.apikey.buttonCreate') }}
+      </v-btn>
       <CreateDialog
         v-model="createDialogVisible"
         @created="getApikeys()"
