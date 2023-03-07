@@ -19,16 +19,8 @@
       />
     </v-card-actions>
 
-    <v-row
-      v-if="apikeys.length === 0"
-      align="center"
-      justify="center"
-      class="ma-2"
-    >
-      <v-col class="text-center" cols="12" sm="4">
-        {{ $t("administration.apikey.noApikeys") }}
-      </v-col>
-    </v-row>
+    <Loader v-if="loading" />
+    <NoData v-else-if="apikeys.length === 0" :local-key="'administration.apikey.noApikeys'" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="(key) in apikeys"
@@ -52,12 +44,16 @@
 
 <script>
 import CreateDialog from '~/components/administration/apikey/CreateDialog.vue'
+import Loader from '~/components/Loader.vue'
+import NoData from '~/components/NoData.vue'
 import ApikeyCard from '~/components/administration/apikey/ApikeyCard.vue'
 
 export default {
   name: 'ApikeyTab',
   components: {
     CreateDialog,
+    Loader,
+    NoData,
     ApikeyCard
   },
   data () {

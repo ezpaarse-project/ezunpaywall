@@ -6,16 +6,8 @@
       <v-icon>mdi-security</v-icon>
     </v-toolbar>
 
-    <v-row
-      v-if="Object.keys(healths).length === 0"
-      align="center"
-      justify="center"
-      class="ma-2"
-    >
-      <v-col class="text-center" cols="12" sm="4">
-        {{ $t("administration.health.noHealth") }}
-      </v-col>
-    </v-row>
+    <Loader v-if="loading" />
+    <NoData v-else-if="Object.keys(healths).length === 0" :local-key="'administration.health.noHealth'" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="(health, name) in healths"
@@ -34,11 +26,15 @@
 
 <script>
 import HealthCard from '~/components/administration/health/HealthCard.vue'
+import Loader from '~/components/Loader.vue'
+import NoData from '~/components/NoData.vue'
 
 export default {
   name: 'HealthTab',
   components: {
-    HealthCard
+    HealthCard,
+    Loader,
+    NoData
   },
   data () {
     return {

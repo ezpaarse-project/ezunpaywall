@@ -11,11 +11,8 @@
       </v-col>
       <UpdateDialog :dialog="dialogVisible" @closed="setDialogVisible(false)" />
     </v-toolbar>
-    <v-row v-if="reports.length === 0" align="center" justify="center">
-      <v-col class="text-center" cols="12" sm="4">
-        {{ $t("reportHistory.noReport") }}
-      </v-col>
-    </v-row>
+    <Loader v-if="loading" />
+    <NoData v-else-if="reports.length === 0" :local-key="'reportHistory.noReport'" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="report in reports"
@@ -34,12 +31,16 @@
 
 <script>
 import UpdateDialog from '~/components/administration/update/UpdateProcessDialog.vue'
+import Loader from '~/components/Loader.vue'
+import NoData from '~/components/NoData.vue'
 import ReportCard from '~/components/report/ReportCard.vue'
 
 export default {
   name: 'WeekHistory',
   components: {
     UpdateDialog,
+    Loader,
+    NoData,
     ReportCard
   },
   data () {
@@ -63,9 +64,10 @@ export default {
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('reportHistory.reportsError'))
-        this.loaded = false
+        this.loading = false
         return
       }
+      this.loading = false
 
       let filenames = Array.isArray(res?.data) ? res.data : []
 
@@ -83,7 +85,6 @@ export default {
           }
         )
       }
-      this.loaded = false
     },
     async getReport (filename) {
       let report
