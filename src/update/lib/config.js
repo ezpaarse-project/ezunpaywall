@@ -15,7 +15,7 @@ function getConfig(verbose) {
       logger.warn('[config]: Mail apikey has the default value');
     }
 
-    if (copyConfig.elasticsearch.apikey === defaultConfig.elasticsearch.apikey) {
+    if (copyConfig.elasticsearch.password === defaultConfig.elasticsearch.password) {
       logger.warn('[config]: elasticsearch password has the default value');
     }
 
@@ -26,7 +26,7 @@ function getConfig(verbose) {
 
   copyConfig.unpaywall.apikey = '********';
   copyConfig.mail.apikey = '********';
-  copyConfig.elasticsearch.apikey = '********';
+  copyConfig.elasticsearch.password = '********';
   copyConfig.apikey = '********';
 
   if (verbose) {
