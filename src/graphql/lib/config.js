@@ -8,10 +8,10 @@ const copyConfig = JSON.parse(JSON.stringify(config));
 function getConfig(verbose) {
   if (verbose) {
     if (copyConfig.redis.password === defaultConfig.redis.password) {
-      logger.warn('[config]: Redis password is the default value');
+      logger.warn('[config]: Redis password has the default value');
     }
     if (copyConfig.elasticsearch.password === defaultConfig.elasticsearch.password) {
-      logger.warn('[config]: Elastic password is the default value');
+      logger.warn('[config]: Elastic password has the default value');
     }
   }
 

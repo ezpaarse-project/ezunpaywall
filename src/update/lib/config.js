@@ -8,19 +8,19 @@ const copyConfig = JSON.parse(JSON.stringify(config));
 function getConfig(verbose) {
   if (verbose) {
     if (copyConfig.unpaywall.apikey === defaultConfig.unpaywall.apikey) {
-      logger.warn('[config]: Unpaywall apikey is the default value');
+      logger.warn('[config]: Unpaywall apikey has the default value');
     }
 
     if (copyConfig.mail.apikey === defaultConfig.mail.apikey) {
-      logger.warn('[config]: Mail apikey is the default value');
+      logger.warn('[config]: Mail apikey has the default value');
     }
 
     if (copyConfig.elasticsearch.apikey === defaultConfig.elasticsearch.apikey) {
-      logger.warn('[config]: elasticsearch password is the default value');
+      logger.warn('[config]: elasticsearch password has the default value');
     }
 
     if (copyConfig.apikey === defaultConfig.apikey) {
-      logger.warn('[config]: Apikey is the default value');
+      logger.warn('[config]: Apikey has the default value');
     }
   }
 

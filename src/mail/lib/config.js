@@ -8,7 +8,7 @@ const copyConfig = JSON.parse(JSON.stringify(config));
 function getConfig(verbose) {
   if (verbose) {
     if (copyConfig.apikey === defaultConfig.apikey) {
-      logger.warn('[config]: Apikey is the default value');
+      logger.warn('[config]: Apikey has the default value');
     }
   }
 
