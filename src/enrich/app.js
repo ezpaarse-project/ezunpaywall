@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
+const showConfig = require('./lib/config');
 
 const { pingRedis } = require('./lib/services/redis');
 
@@ -53,6 +54,7 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, () => {
   logger.info('ezunpaywall enrich service listening on 3000');
+  showConfig();
   pingRedis();
   cronDeleteOutFiles.start();
 });

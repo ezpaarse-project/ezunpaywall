@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
+const showConfig = require('./lib/config');
 
 const cronDeleteOutFiles = require('./lib/controllers/cron/file');
 
@@ -54,5 +55,6 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, async () => {
   logger.info('ezunpaywall update service listening on 3000');
+  showConfig();
   cronDeleteOutFiles.start();
 });

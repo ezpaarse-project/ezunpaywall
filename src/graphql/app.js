@@ -9,10 +9,10 @@ const auth = require('./lib/middlewares/auth');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
+const showConfig = require('./lib/config');
+
 const cronMetrics = require('./lib/controllers/cron/metrics');
 const { setMetrics } = require('./lib/controllers/metrics');
-
-const { pingRedis } = require('./lib/services/redis');
 
 const { pingElastic } = require('./lib/services/elastic');
 
@@ -57,8 +57,10 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, () => {
   logger.info('ezunpaywall graphQL API listening on 3000');
-  pingElastic();
-  pingRedis();
-  setMetrics();
+  showConfig();
+
+  pingElastic().then(() => {
+    setMetrics();
+  });
   cronMetrics.start();
 });
