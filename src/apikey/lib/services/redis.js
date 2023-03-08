@@ -62,6 +62,8 @@ async function loadDemoAPIKey() {
   const configAPIKey = {
     name: 'demo',
     access: ['graphql', 'enrich'],
+    owner: 'ezunpaywall',
+    description: 'test API key for the interface, limited to 100,000 DOIs per day',
     attributes: ['*'],
     allowed: true,
     count: 100000,

@@ -111,13 +111,15 @@ router.post('/keys', checkAuth, async (req, res, next) => {
     name: joi.string().trim().required(),
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql']),
+    owner: joi.string().trim().optional().allow(''),
+    description: joi.string().trim().optional().allow(''),
     allowed: joi.boolean().default(true),
   }).validate(req?.body);
 
   if (error) return res.status(400).json({ message: error?.details?.[0]?.message });
 
   const {
-    name, attributes, access, allowed,
+    name, owner, description, attributes, access, allowed,
   } = value;
 
   let keys;
@@ -154,7 +156,9 @@ router.post('/keys', checkAuth, async (req, res, next) => {
   let apikey;
 
   try {
-    apikey = await createApiKey(name, access, attributes, allowed);
+    apikey = await createApiKey({
+      name, owner, description, access, attributes, allowed,
+    });
   } catch (err) {
     logger.error(err);
     return next({ message: 'Cannot create apikey key', stackTrace: err });
@@ -187,6 +191,8 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     name: joi.string().trim(),
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql', 'enrich']),
+    owner: joi.string().trim().optional().allow(''),
+    description: joi.string().trim().optional().allow(''),
     allowed: joi.boolean().default(true),
   }).validate(req.body);
 
@@ -195,7 +201,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
   }
 
   const {
-    name, attributes, access, allowed,
+    name, attributes, access, allowed, owner, description,
   } = checkBody.value;
 
   // check if apikey exist
@@ -256,7 +262,9 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
 
   // update
   try {
-    await updateApiKey(apikey, name, access, attributes, allowed);
+    await updateApiKey(apikey, {
+      name, owner, description, access, attributes, allowed,
+    });
   } catch (err) {
     logger.error(`Cannot update apikey [${apikey}]`);
     logger.error(err);
