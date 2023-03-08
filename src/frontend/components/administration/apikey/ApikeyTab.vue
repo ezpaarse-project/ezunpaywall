@@ -16,6 +16,7 @@
       />
       <v-btn
         icon
+        :disabled="loading"
         @click.stop="getApikeys()"
       >
         <v-icon>mdi-reload</v-icon>

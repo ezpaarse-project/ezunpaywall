@@ -6,6 +6,7 @@
         <v-spacer />
         <v-btn
           icon
+          :disabled="loading"
           @click.stop="getReports()"
         >
           <v-icon>mdi-reload</v-icon>
@@ -21,7 +22,7 @@
         </v-col>
       </v-row>
       <v-row v-else>
-        <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
+        <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="mt-1 py-1">
           <ReportCard :report="report" :status="getStatusOfReport(report)" />
         </v-col>
       </v-row>
@@ -40,6 +41,7 @@ export default {
   transition: 'slide-x-transition',
   data () {
     return {
+      loading: false,
       reports: [],
       id: ''
     }
@@ -81,7 +83,8 @@ export default {
           }
         )
       }
-      this.loaded = false
+
+      this.loading = false
     },
     async getReport (filename) {
       let report

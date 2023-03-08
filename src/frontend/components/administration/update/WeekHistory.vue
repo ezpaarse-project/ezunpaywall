@@ -15,6 +15,7 @@
       />
       <v-btn
         icon
+        :disabled="loading"
         @click.stop="getReports()"
       >
         <v-icon>mdi-reload</v-icon>
@@ -72,7 +73,7 @@ export default {
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('reportHistory.reportsError'))
-        this.loaded = false
+        this.loading = false
         return
       }
 
@@ -92,7 +93,7 @@ export default {
           }
         )
       }
-      this.loaded = false
+      this.loading = false
     },
     async getReport (filename) {
       let report

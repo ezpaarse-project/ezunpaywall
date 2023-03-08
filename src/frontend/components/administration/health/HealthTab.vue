@@ -5,6 +5,7 @@
       <v-spacer />
       <v-btn
         icon
+        :disabled="loading"
         @click.stop="getHealths()"
       >
         <v-icon>mdi-reload</v-icon>
