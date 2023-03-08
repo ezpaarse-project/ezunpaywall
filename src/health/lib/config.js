@@ -5,7 +5,7 @@ const defaultConfig = require('../config/default.json');
 
 const copyConfig = JSON.parse(JSON.stringify(config));
 
-function logConfig(verbose) {
+function getConfig(verbose) {
   if (verbose) {
     if (copyConfig.redis.password === defaultConfig.redis.password) {
       logger.warn('[config]: Redis password is the default value');
@@ -29,4 +29,4 @@ function logConfig(verbose) {
   return copyConfig;
 }
 
-module.exports = logConfig;
+module.exports = getConfig;

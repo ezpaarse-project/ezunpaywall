@@ -5,7 +5,7 @@ const defaultConfig = require('../config/default.json');
 
 const copyConfig = JSON.parse(JSON.stringify(config));
 
-function logConfig(verbose) {
+function getConfig(verbose) {
   if (verbose) {
     if (copyConfig.apikey === defaultConfig.apikey) {
       logger.warn('[config]: Apikey is the default value');
@@ -21,4 +21,4 @@ function logConfig(verbose) {
   return copyConfig;
 }
 
-module.exports = logConfig;
+module.exports = getConfig;

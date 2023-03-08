@@ -5,7 +5,7 @@ const path = require('path');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
-const logConfig = require('./lib/config');
+const getConfig = require('./lib/config');
 
 const { pingRedis, loadDemoAPIKey } = require('./lib/services/redis');
 
@@ -40,7 +40,7 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, async () => {
   logger.info('ezunpaywall apikey service listening on 3000');
-  logConfig(true);
+  getConfig(true);
   pingRedis();
   loadDemoAPIKey();
   cronDemo.start();
