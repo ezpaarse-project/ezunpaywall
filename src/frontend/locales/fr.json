@@ -97,11 +97,13 @@
     "apikey": {
       "title": "Clés d'API",
       "noApikeys": "Pas de clés d'API",
-      "attributes": "Attributs :",
-      "access": "Accès :",
+      "name": "Nom",
+      "owner": "Propriétaire",
+      "description": "Description",
+      "attributes": "Attributs unpaywall",
+      "access": "Accès",
       "allowed": "Active",
       "notAllowed": "Désactivé",
-      "buttonCreate": "Créer une nouvelle clé d'API",
       "create": "Création d'une nouvelle clé d'API",
       "infoCreated": "La clé d'API a été créée",
       "errorCreate": "La clé d'API n'a pas pu être créée",
@@ -181,7 +183,6 @@
     "errorStatus": "Impossible d'obtenir le statut"
   },
   "state": {
-    "createdAt": "Créé le",
     "tasks": "Tâches",
     "task": "Tâche",
     "took": "Temps",
@@ -216,6 +217,7 @@
     "light": "Thème clair"
   },
   "create": "Créer",
+  "createdAt": "Créé le",
   "required": "Requis",
   "cancel": "Annuler",
   "update": "Mettre à jour",
