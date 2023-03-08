@@ -29,6 +29,9 @@ describe('Test: Get config of apikey', () => {
 
     expect(res).have.status(200);
     expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('user dev apikey');
+    expect(res.body).have.property('createdAt').equal('2021-06-01');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body).have.property('attributes').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);

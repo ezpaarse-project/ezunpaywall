@@ -1,6 +1,7 @@
 const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
+const { format } = require('date-fns');
 
 const ping = require('./utils/ping');
 
@@ -26,6 +27,8 @@ describe('Test: Create apikey', () => {
       .post('/keys')
       .send({
         name: 'test-user1',
+        owner: 'test',
+        description: 'created by test program',
         access: ['graphql'],
         attributes: ['*'],
         allowed: true,
@@ -35,6 +38,9 @@ describe('Test: Create apikey', () => {
 
     expect(res.body).have.property('apikey').to.not.equal(undefined);
     expect(res.body.config).have.property('name').equal('test-user1');
+    expect(res.body.config).have.property('owner').equal('test');
+    expect(res.body.config).have.property('description').equal('created by test program');
+    expect(res.body.config).have.property('createAt').equal(format(new Date(), 'yyyy-MM-dd'));
     expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body.config).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body.config).have.property('allowed').equal(true);
@@ -53,6 +59,9 @@ describe('Test: Create apikey', () => {
 
     expect(res.body).have.property('apikey').to.not.equal(undefined);
     expect(res.body.config).have.property('name').equal('test-user2');
+    expect(res.body.config).have.property('owner').equal('');
+    expect(res.body.config).have.property('description').equal('');
+    expect(res.body.config).have.property('createAt').equal(format(new Date(), 'yyyy-MM-dd'));
     expect(res.body.config).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body.config).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body.config).have.property('allowed').equal(true);
