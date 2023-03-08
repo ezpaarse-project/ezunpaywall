@@ -3,21 +3,24 @@
     <v-toolbar color="secondary" dark flat dense>
       <v-toolbar-title v-text="$t('administration.apikey.title')" />
       <v-spacer />
-      <v-icon>mdi-security</v-icon>
-    </v-toolbar>
-    <v-card-actions>
-      <v-spacer />
       <v-btn
+        icon
         @click.stop="setVisible(true)"
-        v-text="$t('administration.apikey.buttonCreate')"
-      />
-
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
       <CreateDialog
         v-model="createDialogVisible"
         @created="getApikeys()"
         @closed="setVisible(false)"
       />
-    </v-card-actions>
+      <v-btn
+        icon
+        @click.stop="getApikeys()"
+      >
+        <v-icon>mdi-reload</v-icon>
+      </v-btn>
+    </v-toolbar>
 
     <v-row
       v-if="apikeys.length === 0"

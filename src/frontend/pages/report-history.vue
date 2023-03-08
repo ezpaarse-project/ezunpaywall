@@ -1,19 +1,31 @@
 <template>
   <section>
-    <v-row
-      v-if="reports.length === 0"
-      align="center"
-      justify="center"
-    >
-      <v-col class="text-center" sm="4" cols="12">
-        {{ $t("reportHistory.noReport") }}
-      </v-col>
-    </v-row>
-    <v-row v-else>
-      <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
-        <ReportCard :report="report" :status="getStatusOfReport(report)" />
-      </v-col>
-    </v-row>
+    <v-card class="my-3">
+      <v-toolbar color="secondary" dark flat dense>
+        <v-toolbar-title> {{ $t('reportHistory.title') }} </v-toolbar-title>
+        <v-spacer />
+        <v-btn
+          icon
+          @click.stop="getReports()"
+        >
+          <v-icon>mdi-reload</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-row
+        v-if="reports.length === 0"
+        align="center"
+        justify="center"
+      >
+        <v-col class="text-center" sm="4" cols="12">
+          {{ $t("reportHistory.noReport") }}
+        </v-col>
+      </v-row>
+      <v-row v-else>
+        <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
+          <ReportCard :report="report" :status="getStatusOfReport(report)" />
+        </v-col>
+      </v-row>
+    </v-card>
   </section>
 </template>
 
@@ -58,6 +70,7 @@ export default {
 
       let report
 
+      this.reports = []
       for (let i = 0; i < filenames.length; i += 1) {
         report = await this.getReport(filenames[i])
         this.reports.push(

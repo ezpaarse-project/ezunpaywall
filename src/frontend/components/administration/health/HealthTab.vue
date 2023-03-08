@@ -3,7 +3,12 @@
     <v-toolbar color="secondary" dark flat dense>
       <v-toolbar-title v-text="$t('administration.health.title')" />
       <v-spacer />
-      <v-icon>mdi-security</v-icon>
+      <v-btn
+        icon
+        @click.stop="getHealths()"
+      >
+        <v-icon>mdi-reload</v-icon>
+      </v-btn>
     </v-toolbar>
 
     <v-row
@@ -47,10 +52,10 @@ export default {
     }
   },
   async mounted () {
-    await this.getHealth()
+    await this.getHealths()
   },
   methods: {
-    async getHealth () {
+    async getHealths () {
       let res
       this.loading = true
       try {
