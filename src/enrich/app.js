@@ -54,7 +54,7 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, () => {
   logger.info('ezunpaywall enrich service listening on 3000');
-  logConfig();
+  logConfig(true);
   pingRedis();
   cronDeleteOutFiles.start();
 });
