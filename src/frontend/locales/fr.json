@@ -206,6 +206,9 @@
   },
   "reportHistory": {
     "title": "Dernières mises à jour",
+    "reloadReports": "Recharger les rapports",
+    "source": "Les fichiers de mises à jours proviennent d'unpaywall.org",
+    "goTo": "Voir la liste",
     "noReport": "Pas de rapport disponible",
     "reportsError": "Impossible de récupérer les rapports de mises à jour",
     "reportError": "Impossible de récupérer le rapport de mises à jour",

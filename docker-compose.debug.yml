@@ -182,6 +182,7 @@ services:
       - NODE_ENV=development
       - ELASTIC_ENV=development
       - VERSION=development
+      - UNPAYWALL_HOST
       - GRAPHQL_HOST
       - UPDATE_HOST
       - ENRICH_HOST

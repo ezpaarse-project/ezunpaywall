@@ -3,6 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   publicRuntimeConfig: {
     environment: process.env.NODE_ENV || 'development',
+    unpaywallHost: process.env.UNPAYWALL_HOST || 'http://localhost:59799',
     graphqlHost: process.env.GRAPHQL_HOST || 'http://localhost:59701',
     updateHost: process.env.UPDATE_HOST || 'http://localhost:59702',
     enrichHost: process.env.ENRICH_HOST || 'http://localhost:59703',

@@ -207,6 +207,9 @@
   },
   "reportHistory": {
     "title": "Last updates",
+    "reloadReports": "Reload reports",
+    "source": "The update files come from unpaywall.org",
+    "goTo": "See the registry",
     "noReport": "No report availables",
     "reportsError": "Cannot get update reports",
     "reportError": "Cannot get update report",
