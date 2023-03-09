@@ -18,7 +18,7 @@ const createApiKey = async (config) => {
   if (!apikeyConfig?.owner) apikeyConfig.owner = '';
   if (!apikeyConfig?.description) apikeyConfig.description = '';
   if (typeof apikeyConfig?.allowed !== 'boolean') apikeyConfig.allowed = true;
-  apikeyConfig.createAt = format(new Date(), 'yyyy-MM-dd');
+  apikeyConfig.createdAt = format(new Date(), 'yyyy-MM-dd');
 
   try {
     await redisClient.set(id, `${JSON.stringify(apikeyConfig)}`);
