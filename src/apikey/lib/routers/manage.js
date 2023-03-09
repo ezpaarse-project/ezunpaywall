@@ -118,9 +118,7 @@ router.post('/keys', checkAuth, async (req, res, next) => {
 
   if (error) return res.status(400).json({ message: error?.details?.[0]?.message });
 
-  const {
-    name, owner, description, attributes, access, allowed,
-  } = value;
+  const { name } = value;
 
   let keys;
 
@@ -156,9 +154,7 @@ router.post('/keys', checkAuth, async (req, res, next) => {
   let apikey;
 
   try {
-    apikey = await createApiKey({
-      name, owner, description, access, attributes, allowed,
-    });
+    apikey = await createApiKey(value);
   } catch (err) {
     logger.error(err);
     return next({ message: 'Cannot create apikey key', stackTrace: err });
@@ -200,9 +196,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     return res.status(400).json({ message: checkBody?.error?.details[0].message });
   }
 
-  const {
-    name, attributes, access, allowed, owner, description,
-  } = checkBody.value;
+  const { name } = checkBody.value;
 
   // check if apikey exist
   let key;
@@ -262,9 +256,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
 
   // update
   try {
-    await updateApiKey(apikey, {
-      name, owner, description, access, attributes, allowed,
-    });
+    await updateApiKey(apikey, checkBody.value);
   } catch (err) {
     logger.error(`Cannot update apikey [${apikey}]`);
     logger.error(err);
