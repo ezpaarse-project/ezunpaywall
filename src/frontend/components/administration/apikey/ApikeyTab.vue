@@ -86,10 +86,7 @@ export default {
           }
         })
       } catch (e) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('administration.errorApikey')
-        )
+        this.$store.dispatch('snacks/error', this.$t('administration.errorApikey'))
         this.loading = false
         return
       }

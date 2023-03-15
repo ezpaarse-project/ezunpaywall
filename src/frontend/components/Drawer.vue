@@ -156,7 +156,7 @@ export default {
         return this.$store.state.drawer.status
       },
       set (newVal) {
-        this.$store.dispatch('drawer/setDrawer', newVal)
+        this.$store.commit('drawer/setDrawer', newVal)
       }
     }
   }
