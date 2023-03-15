@@ -153,7 +153,7 @@ export default {
   computed: {
     drawer: {
       get () {
-        return this.$store.state.drawer.status
+        return this.$store.getters['drawer/getStatus']
       },
       set (newVal) {
         this.$store.commit('drawer/setDrawer', newVal)

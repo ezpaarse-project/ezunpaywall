@@ -4,6 +4,14 @@ export default {
     isAdmin: false,
     password: ''
   }),
+  getters: {
+    getPassword (state) {
+      return state.password
+    },
+    getIsAdmin (state) {
+      return state.isAdmin
+    }
+  },
   mutations: {
     setIsAdmin (state, value) {
       state.isAdmin = value

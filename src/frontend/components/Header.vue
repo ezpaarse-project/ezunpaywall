@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     drawer () {
-      return this.$store.state.drawer.status
+      return this.$store.getters['drawer/getStatus']
     }
   },
   methods: {
