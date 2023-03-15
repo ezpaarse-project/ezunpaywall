@@ -6,8 +6,16 @@ export default {
     apikey: 'demo',
     attributes: []
   }),
-  actions: {},
   getters: {
+    getFiles (state) {
+      return state.files
+    },
+    getType (state) {
+      return state.type
+    },
+    getApikey (state) {
+      return state.apikey
+    },
     getAttributes (state) {
       return state.attributes
     }

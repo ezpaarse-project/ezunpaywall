@@ -102,11 +102,11 @@ export default {
   },
   computed: {
     type () {
-      return this.$store.state.enrich.type
+      return this.$store.getters['enrich/getType']
     },
     apikey: {
       get () {
-        return this.$store.state.enrich.apikey
+        return this.$store.getters['enrich/getApikey']
       },
       set (newVal) {
         this.$store.commit('enrich/setApikey', newVal)
@@ -154,13 +154,13 @@ export default {
     },
     nextStep (step) {
       this.$emit('nextStep', step)
-      const attributes = this.$store.state.enrich.attributes
+      const attributes = this.$store.getters['enrich/getAttributes']
       if (step === 3) {
         this.$root.$emit('startEnrich', {
           apikey: this.apikey,
           attributes,
-          files: this.$store.state.enrich.files,
-          type: this.$store.state.enrich.type
+          files: this.$store.getters['enrich/getFiles'],
+          type: this.$store.getters['enrich/getType']
         })
       }
     }

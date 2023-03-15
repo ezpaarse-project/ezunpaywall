@@ -82,7 +82,7 @@ export default {
   computed: {
     files: {
       get () {
-        return this.$store.state.enrich.files
+        return this.$store.getters['enrich/getFiles']
       },
       set (newVal) {
         this.$store.commit('enrich/setFiles', newVal)

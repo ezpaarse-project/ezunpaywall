@@ -74,7 +74,7 @@ export default {
       return Array.isArray(this.files) && this.files.length > 0
     },
     files () {
-      return this.$store.state.enrich.files
+      return this.$store.getters['enrich/getFiles']
     }
   },
   methods: {

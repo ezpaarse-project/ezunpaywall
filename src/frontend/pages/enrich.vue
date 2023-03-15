@@ -83,10 +83,10 @@ export default {
   },
   computed: {
     files () {
-      return this.$store.state.enrich.files
+      return this.$store.getters['enrich/getFiles']
     },
     attributes () {
-      return this.$store.state.enrich.attributes
+      return this.$store.getters['enrich/getAttributes']
     },
     filesRule () {
       return Array.isArray(this.files) && this.files.length > 0

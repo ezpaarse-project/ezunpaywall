@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     isAdmin () {
-      return this.$store.state.admin.isAdmin
+      return this.$store.getters['admin/getIsAdmin']
     }
   },
   methods: {
