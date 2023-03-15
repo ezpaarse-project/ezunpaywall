@@ -1,0 +1,172 @@
+<template>
+  <div>
+    <v-row align-center class="my-5 mx-1">
+      <v-btn class="body-2" color="primary" @click="nextStep(1)">
+        {{ $t("enrich.settings") }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        class="body-2"
+        color="primary"
+        :disabled="!unpaywallAttributesRule"
+        @click="nextStep(3)"
+      >
+        {{ $t("enrich.startProcess") }}
+      </v-btn>
+    </v-row>
+
+    <v-toolbar class="secondary" dark dense flat>
+      <v-toolbar-title> {{ $t("enrich.settings") }} </v-toolbar-title>
+    </v-toolbar>
+
+    <v-text-field
+      v-model="apikey"
+      :append-icon="apiKeyVisible ? 'mdi-eye' : 'mdi-eye-off'"
+      :rules="[apiKeyRules.required]"
+      :type="apiKeyVisible ? 'text' : 'password'"
+      :label="$t('enrich.apikey')"
+      filled
+      @click:append="apiKeyVisible = !apiKeyVisible"
+    />
+    <v-row class="mb-3 ml-1">
+      <div class="mr-1" v-text="$t('enrich.fileExtension')" />
+      <v-chip label text-color="white" :color="extensionFileColor">
+        {{ type }}
+      </v-chip>
+    </v-row>
+
+    <v-toolbar class="secondary" dark dense flat>
+      <v-toolbar-title>
+        {{ $t("enrich.unpaywallAttributes") }}
+      </v-toolbar-title>
+      <v-menu
+        v-model="unpaywallArgsHelp"
+        :close-on-content-click="false"
+        :nudge-width="200"
+        max-width="500"
+        offset-x
+        transition="slide-x-transition"
+      >
+        <template #activator="{ on }">
+          <v-btn class="mr-5" icon v-on="on">
+            <v-icon>mdi-help-circle</v-icon>
+          </v-btn>
+        </template>
+
+        <v-card class="text-justify">
+          <v-card-text>
+            {{ $t("unpaywallArgs.help", { url: dataFormatURL }) }}
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn class="body-2" text @click="unpaywallArgsHelp = false">
+              {{ $t("close") }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-menu>
+    </v-toolbar>
+
+    <SettingsAttributes
+      :hide-oa-locations="type === 'csv' ? true : false"
+      :simple="attributesSimple"
+      :best-oa-location="attributesBestOaLocation"
+      :first-oa-location="attributesFirstOaLocation"
+      :oa-locations="attributesOaLocations"
+      :z-authors="attributesZAuthors"
+      @attributes="getAttributes"
+    />
+  </div>
+</template>
+
+<script>
+import SettingsAttributes from '~/components/unpaywallArgs/SettingsAttributes.vue'
+
+export default {
+  components: {
+    SettingsAttributes
+  },
+  data: () => {
+    return {
+      apiKeyVisible: true,
+      apiKeyRules: {
+        required: value => !!value || 'Required.'
+      },
+      unpaywallArgsHelp: false,
+      authorizedFile: [
+        { name: 'csv', color: 'green' },
+        { name: 'jsonl', color: 'orange' }
+      ],
+      dataFormatURL: 'https://unpaywall.org/data-format'
+    }
+  },
+  computed: {
+    type () {
+      return this.$store.state.enrich.type
+    },
+    apikey: {
+      get () {
+        return this.$store.state.enrich.apikey
+      },
+      set (newVal) {
+        this.$store.commit('enrich/setApikey', newVal)
+      }
+    },
+    attributes: {
+      get () {
+        return this.$store.getters['enrich/getAttributes']
+      },
+      set (newVal) {
+        this.$store.commit('enrich/setAttributes', newVal)
+      }
+    },
+    attributesSimple () {
+      return this.attributes?.filter(e => !e.includes('.'))
+    },
+    attributesBestOaLocation () {
+      return this.attributes?.filter(e => e.includes('best_oa_location')).map(e => e.split('.')[1])
+    },
+    attributesFirstOaLocation () {
+      return this.attributes?.filter(e => e.includes('first_oa_location')).map(e => e.split('.')[1])
+    },
+    attributesOaLocations () {
+      return this.attributes?.filter(e => e.includes('oa_locations')).map(e => e.split('.')[1])
+    },
+    attributesZAuthors () {
+      return this.attributes?.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
+    },
+    unpaywallAttributesRule () {
+      return Array.isArray(this.attributes) && this.attributes.length > 0
+    },
+    extensionFileColor () {
+      const extension = this.authorizedFile.find(
+        file => file.name === this.type
+      )
+      return extension?.color || 'gray'
+    }
+  },
+  methods: {
+    getAttributes (attributesSelected) {
+      this.$store.commit('enrich/setAttributes', attributesSelected)
+    },
+    getApikey () {
+      this.$store.commit('enrich/setApikey', this.extensionSelected())
+    },
+    nextStep (step) {
+      this.$emit('nextStep', step)
+      const attributes = this.$store.state.enrich.attributes
+      if (step === 3) {
+        this.$root.$emit('startEnrich', {
+          apikey: this.apikey,
+          attributes,
+          files: this.$store.state.enrich.files,
+          type: this.$store.state.enrich.type
+        })
+      }
+    }
+  }
+}
+</script>
+
+<style>
+</style>
