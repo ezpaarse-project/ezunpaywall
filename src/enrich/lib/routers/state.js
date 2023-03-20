@@ -92,7 +92,7 @@ router.get('/states/:filename', checkAuth, async (req, res, next) => {
   try {
     state = await getState(filename, apikey);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next({ message: err });
   }
   return res.status(200).json(state);
 });

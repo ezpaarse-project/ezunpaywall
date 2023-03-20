@@ -11,8 +11,7 @@ const deleteFile = async (filename) => {
   try {
     await fs.remove(filepath);
   } catch (err) {
-    logger.error(`Cannot remove ${filepath}`);
-    logger.error(err);
+    logger.error(`[file] Cannot remove [${filepath}]`, err);
   }
 };
 

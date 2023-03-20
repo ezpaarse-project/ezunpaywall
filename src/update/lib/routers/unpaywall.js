@@ -16,7 +16,7 @@ router.get('/unpaywall/changefiles', async (req, res, next) => {
   try {
     snapshotsInfo = await getChangefiles(interval, new Date(0), new Date());
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next({ message: err });
   }
 
   // delete apikey

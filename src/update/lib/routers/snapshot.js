@@ -37,7 +37,7 @@ router.get('/snapshots', async (req, res, next) => {
     try {
       latestSnapshot = await getMostRecentFile(snapshotsDir);
     } catch (err) {
-      return next({ message: 'Cannot get the lastest snapshot', stackTrace: err });
+      return next({ message: 'Cannot get the lastest snapshot' });
     }
     return res.status(200).json(latestSnapshot?.filename);
   }
@@ -76,7 +76,7 @@ router.delete('/snapshots/:filename', async (req, res, next) => {
   try {
     await deleteFile(filename);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next({ message: err });
   }
 
   return res.status(200).json({ messsage: `File [${filename}] deleted` });

@@ -19,7 +19,7 @@ async function PromiseOnHealthWithTimeout(p1, name) {
   try {
     reply = await Promise.race([p1, p2]);
   } catch (err) {
-    logger.error(`[${name}] ${err}`);
+    logger.error(`[${name}]`, err);
     return {
       name, elapsedTime: Date.now() - start, error: err?.message, healthy: false,
     };
@@ -43,7 +43,7 @@ async function health(name, host) {
       url: `${host}/health`,
     });
   } catch (err) {
-    logger.error(`Cannot request ${name} service at ${host}/health`);
+    logger.error(`[${name}] Cannot request ${host}/health`, err);
     return false;
   }
   return res.data;
@@ -61,7 +61,7 @@ async function promiseWithTimeout(p1, name) {
   try {
     reply = await Promise.race([p1, p2]);
   } catch (err) {
-    logger.error(`[${name}] ${err}`);
+    logger.error(`[${name}]`, err);
     return {
       name, elapsedTime: Date.now() - start, error: err?.message, healthy: false,
     };
@@ -84,10 +84,10 @@ async function ping(name, host) {
   try {
     await axios({
       method: 'GET',
-      url: `${host}`,
+      url: host,
     });
   } catch (err) {
-    logger.error(`Cannot request ${name} service at ${host}`);
+    logger.error(`[${name}] Cannot request ${host}`, err);
     return err?.message;
   }
   return true;

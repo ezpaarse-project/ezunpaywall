@@ -32,7 +32,7 @@ router.get('/reports', async (req, res, next) => {
     try {
       latestFile = await getMostRecentFile(reportsDir);
     } catch (err) {
-      return next({ message: err, stackTrace: err });
+      return next({ message: err });
     }
 
     if (!latestFile) {
@@ -43,7 +43,7 @@ router.get('/reports', async (req, res, next) => {
     try {
       report = await getReport(latestFile?.filename);
     } catch (err) {
-      return next({ message: `Cannot get [${latestFile?.filename}] latest report`, stackTrace: err });
+      return next({ message: `Cannot get [${latestFile?.filename}] latest report` });
     }
     return res.status(200).json(report);
   }
@@ -84,7 +84,7 @@ router.get('/reports/:filename', async (req, res, next) => {
   try {
     report = await getReport(filename);
   } catch (err) {
-    return next({ message: `Cannot get ${filename} report`, stackTrace: err });
+    return next({ message: `Cannot get ${filename} report` });
   }
   return res.status(200).json(report);
 });

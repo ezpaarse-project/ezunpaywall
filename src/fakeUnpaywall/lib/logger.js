@@ -52,4 +52,14 @@ const logger = createLogger({
   format: devFormat(),
 });
 
+logger.logError = logger.error;
+
+function error(text, err) {
+  logger.logError(text);
+  if (err) {
+    logger.logError(err);
+  }
+}
+logger.error = error;
+
 module.exports = logger;

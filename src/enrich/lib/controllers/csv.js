@@ -170,8 +170,7 @@ const writeInFileCSV = async (data, headers, separator, enrichedFile, stateName)
     });
     await fs.writeFile(enrichedFile, `${unparse}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error(`Cannot write ${unparse}\\r\\n in ${enrichedFile}`);
-    logger.error(err);
+    logger.error(`[job csv] Cannot write [${unparse}] in [${enrichedFile}]`, err);
     await fail(stateName);
   }
 };
@@ -227,8 +226,7 @@ const writeHeaderCSV = async (header, separator, enrichedFile) => {
   try {
     await fs.writeFile(enrichedFile, `${header.join(separator)}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error(`Cannot write ${header.join(separator)}\\r\\n in ${enrichedFile}`);
-    logger.error(err);
+    logger.error(`[job csv] Cannot write [${header.join(separator)}] in [${enrichedFile}]`, err);
   }
 };
 
@@ -260,8 +258,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   try {
     await fs.ensureFile(enrichedFile);
   } catch (err) {
-    logger.error(`Cannot ensure ${enrichedFile}`);
-    logger.error(err);
+    logger.error(`[job csv] Cannot ensure ${enrichedFile}`, err);
     throw err;
   }
 
@@ -303,8 +300,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
           try {
             response = await requestGraphql(copyData, args, stateName, index, apikey);
           } catch (err) {
-            logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
-            logger.error(JSON.stringify(err?.response?.data?.errors));
+            logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
             await fail(stateName, apikey);
             return;
           }
@@ -330,8 +326,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
     try {
       response = await requestGraphql(data, args, stateName, index, apikey);
     } catch (err) {
-      logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
-      logger.error(JSON.stringify(err?.response?.data?.errors));
+      logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
       await fail(stateName, apikey);
       return;
     }
@@ -347,7 +342,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
     await updateStateInFile(state, stateName);
   }
 
-  logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
+  logger.info(`[job csv] ${state.enrichedLines}/${state.linesRead} enriched lines`);
 };
 
 module.exports = processEnrichCSV;

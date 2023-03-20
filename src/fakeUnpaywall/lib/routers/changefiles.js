@@ -28,23 +28,22 @@ router.patch('/changefiles', async (req, res, next) => {
   try {
     await fs.ensureFile(changefilesPath);
   } catch (err) {
-    logger.error(err);
-    return next({ message: err, stackTrace: err });
+    logger.error(`[changefiles] Cannot create file [${path.resolve(snapshotsDir, `changefiles-${interval}.json`)}]`, err);
+    return next({ message: err });
   }
 
   try {
     await fs.writeFile(changefilesPath, JSON.stringify(changefilesExample, null, 2), 'utf8');
   } catch (err) {
-    logger.error(`Cannot write ${JSON.stringify(changefilesExample, null, 2)} in file "${changefilesPath}"`);
-    logger.error(err);
-    return next({ message: err, stackTrace: err });
+    logger.error(`[changefiles] Cannot write [${JSON.stringify(changefilesExample, null, 2)}] in file [${changefilesPath}]`, err);
+    return next({ message: err });
   }
 
   try {
     await updateChangefilesExample(interval);
   } catch (err) {
-    logger.error(err);
-    return next({ message: err, stackTrace: err });
+    logger.error('[changefiles] Cannot update example changefiles', err);
+    return next({ message: err });
   }
 
   return res.set('Location', changefilesPath).status(200).end();
