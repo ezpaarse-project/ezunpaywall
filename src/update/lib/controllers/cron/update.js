@@ -17,6 +17,9 @@ const updateConfig = {
   interval: cron.interval,
 };
 
+/**
+ * Starts an update daily process if no update process is started.
+ */
 async function task() {
   const status = getStatus();
   if (status) {
@@ -38,6 +41,11 @@ async function task() {
 
 const updateCron = new Cron('update', '0 0 0 * * *', task, active);
 
+/**
+ * Update config of update process and config of cron.
+ *
+ * @param {Object} config - Global config.
+ */
 function update(config) {
   if (config.time) updateCron.setSchedule(config.time);
 
@@ -47,6 +55,11 @@ function update(config) {
   if (config.index || config.interval) updateCron.setTask(task);
 }
 
+/**
+ * Get config of update process and config of cron.
+ *
+ * @returns {Object} Config of update process and config of cron.
+ */
 function getGlobalConfig() {
   const config = updateCron.getConfig();
   return { ...config, ...updateConfig };

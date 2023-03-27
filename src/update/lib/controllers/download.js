@@ -20,12 +20,11 @@ const {
 const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 
 /**
- * Update the step the percentage in download regularly until the download is complete
- * @param {String} filepath - path where the file is downloaded
- * @param {Object} size - size of file
- * @param {String}  - state filename
- * @param {Object} state - state in JSON format
- * @param {Date} start - download start date
+ * Update the step the percentage in download regularly until the download is complete.
+ *
+ * @param {String} filepath - Path where the file is downloaded.
+ * @param {Number} size - Size of file.
+ * @param {Date} start - Download start date.
  */
 async function updatePercentStepDownload(filepath, size, start) {
   const state = getState();
@@ -51,7 +50,14 @@ async function updatePercentStepDownload(filepath, size, start) {
   updatePercentStepDownload(filepath, size, start);
 }
 
-const download = async (file, filepath, size) => {
+/**
+ * Download file
+ *
+ * @param {Readable} file - File.
+ * @param {String} filepath - Filepath of file.
+ * @param {Number} size - Size of file.
+ */
+async function download(file, filepath, size) {
   const step = getLatestStep();
   if (file instanceof Readable) {
     await new Promise((resolve, reject) => {
@@ -82,13 +88,13 @@ const download = async (file, filepath, size) => {
     writeStream.write(file);
     writeStream.end();
   }
-};
+}
 
 /**
- * Start the download of the update file from unpaywall
- * @param {String}  - state filename
- * @param {String} info - information of the file to download
- * @param {String} interval - type of changefile (day or week)
+ * Start the download of the changefile from unpaywall.
+ *
+ * @param {String} info - Information of the file to download.
+ * @param {String} interval - Type of changefile (day or week).
  */
 const downloadChangefile = async (info, interval) => {
   let stats;
@@ -124,9 +130,9 @@ const downloadChangefile = async (info, interval) => {
 };
 
 /**
- * Start the download of the big file from unpaywall
- * @param {String}  - state filename
- * @param {String} info - information of the file to download
+ * Start the download of the big snapshot from unpaywall.
+ *
+ * @param {String} info - Information of the snapshot to download.
  */
 const downloadBigSnapshot = async () => {
   const filename = `snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`;

@@ -56,5 +56,4 @@ async function deleteFilesInDir(directory, maxAgeInDays) {
 module.exports = {
   getMostRecentFile,
   deleteFilesInDir,
-  orderRecentFiles,
 };

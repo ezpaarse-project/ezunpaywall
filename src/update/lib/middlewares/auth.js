@@ -1,8 +1,8 @@
 const { apikey } = require('config');
 
 /**
- * @param {Object} req - HTTP request
- * @param {Object} res - HTTP response
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
  * @param {function} next - do the following
  * @returns {Object|function} res or next
  */
