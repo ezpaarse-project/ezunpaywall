@@ -7,6 +7,17 @@ const pingRedisWithClient = require('../services/redis');
 const pingElasticWithClient = require('../services/elastic');
 
 const healthTimeout = config.get('healthTimeout');
+
+/**
+ * Executes a promise but cuts it off after a while if it has not been resolved.
+ * this function is used for healthcheck routes.
+ *
+ * @param {Promise} p1 - Promise to be executed which will be stopped
+ * if it does not solve after a certain time.
+ * @param {String} name - Name of service.
+ *
+ * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
+ */
 async function PromiseOnHealthWithTimeout(p1, name) {
   const start = Date.now();
 
@@ -35,6 +46,14 @@ async function PromiseOnHealthWithTimeout(p1, name) {
   };
 }
 
+/**
+ * Get health of serivce.
+ *
+ * @param {String} name - Name of service.
+ * @param {String} host - Host of service.
+ *
+ * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
+ */
 async function health(name, host) {
   let res;
   try {
@@ -49,6 +68,16 @@ async function health(name, host) {
   return res.data;
 }
 
+/**
+ * Executes a promise but cuts it off after a while if it has not been resolved.
+ * This function is used for healthcheck routes.
+ *
+ * @param {*} p1 - Promise to be executed which will be stopped
+ * if it does not solve after a certain time.
+ * @param {*} name - Name of service
+ *
+ * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
+ */
 async function promiseWithTimeout(p1, name) {
   const start = Date.now();
 
@@ -80,6 +109,14 @@ async function promiseWithTimeout(p1, name) {
   };
 }
 
+/**
+ * Ping service.
+ *
+ * @param {String} name - Name of service.
+ * @param {String} host - Host of service.
+ *
+ * @returns {Boolean} ping
+ */
 async function ping(name, host) {
   try {
     await axios({
@@ -88,11 +125,17 @@ async function ping(name, host) {
     });
   } catch (err) {
     logger.error(`Cannot request ${name} service at ${host}`);
-    return err?.message;
+    return false;
   }
   return true;
 }
 
+/**
+ * Health and ping all service on ezunpaywall.
+ *
+ * @returns {Object} Sist of status of healthcheck with name, time, optionnal error and healthy
+ * for each service.
+ */
 async function pingAll() {
   const graphqlHost = config.get('graphqlHost');
   const healthGraphql = PromiseOnHealthWithTimeout(health('graphql', graphqlHost), 'graphql');
