@@ -15,6 +15,11 @@
       label="first_oa_location"
       source="enrich"
     />
+    <SelectAttributes
+      :items="z_authors"
+      label="z_authors"
+      source="enrich"
+    />
   </div>
 </template>
 <script>
@@ -102,6 +107,7 @@ export default {
       return [
         { name: 'family', info: this.$t('unpaywallArgs.z_authors.family') },
         { name: 'given', info: this.$t('unpaywallArgs.z_authors.given') },
+        { name: 'sequence', info: this.$t('unpaywallArgs.z_authors.sequence') },
         { name: 'ORCID', info: this.$t('unpaywallArgs.z_authors.ORCID') }
       ]
     }

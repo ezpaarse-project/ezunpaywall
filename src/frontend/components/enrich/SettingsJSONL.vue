@@ -77,6 +77,7 @@ export default {
       return [
         { name: 'family', info: this.$t('unpaywallArgs.z_authors.family') },
         { name: 'given', info: this.$t('unpaywallArgs.z_authors.given') },
+        { name: 'sequence', info: this.$t('unpaywallArgs.z_authors.sequence') },
         { name: 'ORCID', info: this.$t('unpaywallArgs.z_authors.ORCID') }
       ]
     }
