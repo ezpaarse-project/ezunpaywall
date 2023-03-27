@@ -3,6 +3,13 @@ const { notifications } = require('config');
 const logger = require('../logger');
 const { sendMail, generateMail } = require('../mail');
 
+/**
+ * Send mail contact
+ *
+ * @param {String} email - Sender email
+ * @param {String} subject - Mail subject
+ * @param {String} message - Mail message
+ */
 async function sendMailContact(email, subject, message) {
   try {
     await sendMail({

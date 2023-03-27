@@ -4,8 +4,20 @@ const checkAuth = require('../middlewares/auth');
 const sendMailContact = require('../controllers/contact');
 
 const { sendMailUpdateStarted, sendMailUpdateReport } = require('../controllers/update');
-
-router.post('/contact', checkAuth, async (req, res, next) => {
+/**
+ * Send a contact mail
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeBody {String} email - Email of sender.
+ * @routeBody {String} subject - Subject of mail.
+ * @routeBody {String} message -  Message of mail.
+ *
+ * @returns {Object} HTTP response.
+ */
+router.post('/contact', checkAuth, async (req, res) => {
   const {
     email, subject, message,
   } = req.body;
@@ -33,18 +45,36 @@ router.post('/contact', checkAuth, async (req, res, next) => {
   return res.status(202).json();
 });
 
-router.post('/update-start', checkAuth, async (req, res, next) => {
+/**
+ * Route that sends a mail that inform that an update has started start.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeBody {String} config - Config.
+ *
+ * @returns {Object} HTTP response.
+ */
+router.post('/update-start', checkAuth, async (req, res) => {
   const config = req.body;
-  // TODO test config
 
   sendMailUpdateStarted(config);
 
   return res.status(202).json();
 });
 
-router.post('/update-end', checkAuth, async (req, res, next) => {
+/**
+ * Route that send update mail report.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @returns {Object} HTTP response.
+ */
+router.post('/update-end', checkAuth, async (req, res) => {
   const state = req.body;
-  // TODO test state
 
   sendMailUpdateReport(state);
 

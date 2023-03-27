@@ -6,6 +6,11 @@ const logger = require('../logger');
 
 const { sendMail, generateMail } = require('../mail');
 
+/**
+ * Sends a mail that inform that an update has started start.
+ *
+ * @param {String} config - Config of mail that content.
+ */
 async function sendMailUpdateStarted(config) {
   try {
     await sendMail({
@@ -25,6 +30,11 @@ async function sendMailUpdateStarted(config) {
   logger.info('send update started mail');
 }
 
+/**
+ * Sends the update report email.
+ *
+ * @param {String} state - report of update process.
+ */
 async function sendMailUpdateReport(state) {
   const status = state.error === true ? 'error' : 'success';
 
