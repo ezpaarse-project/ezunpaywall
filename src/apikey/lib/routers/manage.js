@@ -22,7 +22,17 @@ const {
 } = require('../controllers/attributes');
 
 /**
- * Get config of apikey entered in parameter
+ * Route that get config of apikey.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeParams {String} apikey - Key of apikey.
+ *
+ * @routeResponse {Object} Apikey config.
+ *
+ * @returns {Object} HTTP response.
  */
 router.get('/keys/:apikey', async (req, res, next) => {
   const { apikey } = req.params;
@@ -56,7 +66,15 @@ router.get('/keys/:apikey', async (req, res, next) => {
 });
 
 /**
- * Get list of all apikeys
+ * Get list of all apikeys.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeResponse {Array<Object>} Array of apikey with key and config
+ *
+ * @returns {Object} HTTP response.
  */
 router.get('/keys', checkAuth, async (req, res, next) => {
   let keys;
@@ -104,7 +122,23 @@ router.get('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Create new apikey with config in body
+ * Route that create new apikey.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeBody {String} name - Name of apikey.
+ * @routeBody {Array<String>} attributes - Attributes names of the unpaywall attributes
+ * to which the key has access.
+ * Only accept attributes from ./attributes.js.
+ * @routeBody {Array<String>} access - Names of the services to which the key has access.
+ * Only accept graphql and enrich.
+ * @routeBody {Boolean} allowed - Indicates if the key is authorized or not.
+ *
+ * @routeResponse {Object} Key of apikey and its config.
+ *
+ * @return {res} HTTP response.
  */
 router.post('/keys', checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
@@ -173,7 +207,25 @@ router.post('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Update apikey entered in parameter with new config in body
+ * Route that update existing apikey
+ * Auth required
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeParams {string} Key of apikey.
+ *
+ * @routeBody {String} name - Name of apikey.
+ * @routeBody {Array<String>} attributes - Names of the unpaywall attributes
+ * to which the key has access.
+ * Only accept attributes from ./attributes.js.
+ * @routeBody {Array<String>} access - Names of the services to which the key has access.
+ * Only accept graphql and enrich
+ * @routeBody {Boolean} allowed - Indicates if the key is authorized or not.
+ *
+ * @routeResponse {Object} Apikey config.
+ *
+ * @returns {Object} HTTP response.
  */
 router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
   const checkParams = joi.string().trim().required().validate(req.params.apikey);
@@ -287,7 +339,15 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Delete the apikey entered in parameter
+ * Route that delete existing apikey
+ * Auth required
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeParams {string} Key of apikey.
+ *
+ * @returns {Object} HTTP response.
  */
 router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.apikey);
@@ -321,7 +381,14 @@ router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Delete all apikeys
+ * Route that delete all apikeys.
+ * Using for test.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @returns {Object} HTTP response.
  */
 router.delete('/keys', checkAuth, async (req, res, next) => {
   try {
@@ -335,7 +402,16 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Load apikeys entered in body
+ * Route that load apikeys.
+ * Using for test.
+ * Auth required.
+ *
+ * @routeBody {Array<Object>} - Array of apikey (key + config)
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @returns {Object} HTTP response.
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
   const { error, value } = joi.array().validate(req.body);
@@ -361,7 +437,14 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Load dev apikeys for development or test
+ * Route that load dev apikeys.
+ * using for test.
+ * auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @returns {Object} HTTP response.
  */
 router.post('/keys/loadDev', checkAuth, async (req, res, next) => {
   try {

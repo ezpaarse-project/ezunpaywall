@@ -29,9 +29,12 @@ redisClient.on('error', (err) => {
   logger.error(`Error in redis ${err}`);
 });
 
+/**
+ * Load the dev apikeys on redis from apikey-dev.json.
+ * Using for test.
+ */
 async function load() {
-  const filename = 'apikey-dev.json';
-  apiKeys = await fs.readFile(path.resolve(__dirname, '..', '..', filename), 'utf8');
+  apiKeys = await fs.readFile(path.resolve(__dirname, '..', '..', 'apikey-dev.json'), 'utf8');
   apiKeys = JSON.parse(apiKeys);
 
   for (let i = 0; i < apiKeys.length; i += 1) {
@@ -48,6 +51,10 @@ async function load() {
   }
 }
 
+/**
+ * Load the dev apikeys on redis from apikey-dev.json.
+ * Using for test.
+ */
 async function pingRedis() {
   try {
     await redisClient.ping();
@@ -58,6 +65,9 @@ async function pingRedis() {
   return true;
 }
 
+/**
+ * Load the demo apikey on redis which has a limit of 100 000 DOI.
+ */
 async function loadDemoAPIKey() {
   const configAPIKey = {
     name: 'demo',

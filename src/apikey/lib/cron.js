@@ -3,6 +3,9 @@ const logger = require('./logger');
 
 const { redisClient } = require('./services/redis');
 
+/**
+ * Cron that runs every day to resets the DOI limit to be requested from demo apikey.
+ */
 const cronDemo = new CronJob('0 0 0 * * *', async () => {
   let key;
   try {

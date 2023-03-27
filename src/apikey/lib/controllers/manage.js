@@ -4,6 +4,18 @@ const redis = require('redis');
 const { redisClient } = require('../services/redis');
 const logger = require('../logger');
 
+/**
+ * Create an apikey on redis according to its configuration.
+ *
+ * @param {String} name - Name of apikey.
+ * @param {Array<String>} access - Names of the services to which the key has access.
+ * Only accept graphql and enrich
+ * @param {Array<String>} attributes - Names of the unpaywall attributes.
+ * to which the key has access. Only accept attributes from ./attributes.js.
+ * @param {Boolean} allowed - Indicates if the key is authorized or not.
+ *
+ * @returns {String} The randomly generated api key.
+ */
 const createApiKey = async (name, access, attributes, allowed) => {
   const currentDate = Date.now();
   const random = Math.random().toString();
@@ -30,6 +42,18 @@ const createApiKey = async (name, access, attributes, allowed) => {
   return id;
 };
 
+/**
+ * Update an apikey on redis according to its key and its configuration.
+ *
+ * @param {String} id - Key of apikey.
+ * @param {String} name - Name of apikey.
+ * @param {Array<String>} access - Names of the services to which the key has access.
+ * Only accept graphql and enrich.
+ * @param {Array<String>} attributes - Names of the unpaywall attributes
+ * to which the key has access. Only accept attributes from ./attributes.js.
+ * @param {Boolean} allowed - Indicates if the key is authorized or not.
+ * @returns {Object} Config of apikey.
+ */
 const updateApiKey = async (id, name, access, attributes, allowed) => {
   let config = await redisClient.get(id);
   config = JSON.parse(config);
@@ -45,8 +69,15 @@ const updateApiKey = async (id, name, access, attributes, allowed) => {
     logger.error(`Cannot update apikey [${id}] for [${name}]`);
     return Promise.reject(err);
   }
+
+  return config;
 };
 
+/**
+ * Delete an apikey on redis according to its key.
+ *
+ * @param {String} id - key of apikey.
+ */
 const deleteApiKey = async (id) => {
   await redisClient.del(id, redis.print);
 };
