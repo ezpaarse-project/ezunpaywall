@@ -4,6 +4,11 @@ const fs = require('fs-extra');
 const changefilesWeek = require('../../snapshots/changefiles-week-example.json');
 const changefilesDay = require('../../snapshots/changefiles-day-example.json');
 
+/**
+ * Update to_date, last_modified, from_date of changefiles.
+ *
+ * @param {String} interval - Interval of changefiles.
+ */
 async function updateChangefilesExample(interval) {
   const changefilesWeekPath = path.resolve(__dirname, '..', '..', 'snapshots', 'changefiles-week.json');
   const changefilesDayPath = path.resolve(__dirname, '..', '..', 'snapshots', 'changefiles-day.json');

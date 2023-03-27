@@ -38,6 +38,11 @@ const processConfiguration = [
   new (transports.Console)(),
 ];
 
+/**
+ * Message logger format.
+ *
+ * @returns {Format} Logger format.
+ */
 function devFormat() {
   const formatMessage = (info) => `${info.timestamp} ${info.level}: ${info.message}`;
   const formatError = (info) => `${info.timestamp} ${info.level}: ${info.message}\n\n${info.stack}\n`;

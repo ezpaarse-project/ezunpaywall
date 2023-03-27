@@ -10,6 +10,17 @@ const logger = require('../logger');
 
 const updateChangefilesExample = require('../controllers/changefiles');
 
+/**
+ * Route that update changefiles.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeQuery {String} interval - Interval of changefile
+ * week of day is allowed.
+ *
+ * @return {res} HTTP response
+ */
 router.patch('/changefiles', async (req, res, next) => {
   const { interval } = req.query;
   if (!interval) {
