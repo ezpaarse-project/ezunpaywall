@@ -9,6 +9,17 @@ const enrichedDir = path.resolve(__dirname, '..', '..', 'data', 'enriched');
 const checkAuth = require('../middlewares/auth');
 const upload = require('../middlewares/multer');
 
+/**
+ * Route that get list of enriched filename.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeResponse {Object} List of enriched filename.
+ *
+ * @returns {Object} HTTP response.
+ */
 router.get('/enriched', checkAuth, async (req, res) => {
   const apikey = req.get('x-api-key');
 
@@ -24,6 +35,17 @@ router.get('/enriched', checkAuth, async (req, res) => {
   return res.status(200).json(files);
 });
 
+/**
+ * Route that get list of uploaded filename.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeResponse {Object} list of uploaded filename
+ *
+ * @returns {Object} HTTP response.
+ */
 router.get('/upload', checkAuth, async (req, res) => {
   const apikey = req.get('x-api-key');
 
@@ -39,6 +61,19 @@ router.get('/upload', checkAuth, async (req, res) => {
   return res.status(200).json(files);
 });
 
+/**
+ * Route that get enriched file.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeParams {String} Enriched filename.
+ *
+ * @routeResponse {Object} Enriched file.
+ *
+ * @returns {Object} HTTP response.
+ */
 router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
   const { filename } = req.params;
 
@@ -55,6 +90,17 @@ router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
   return res.sendFile(path.resolve(enrichedDir, apikey, filename));
 });
 
+/**
+ * Route that upload file.
+ * Auth required.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeResponse {Object} Filename of uploaded file.
+ *
+ * @returns {Object} HTTP response.
+ */
 router.post('/upload', checkAuth, upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ message: 'File not sent' });
   const { filename } = req?.file;

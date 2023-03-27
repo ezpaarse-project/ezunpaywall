@@ -3,16 +3,18 @@ const fs = require('fs-extra');
 const path = require('path');
 
 /**
- * get the files in a dir in order by date
- * @param {String} dir - dir path
- * @returns {array<string>} files path in order
+ * Get files in a directory in date order.
+ *
+ * @param {String} directoryPath - Directory path.
+ *
+ * @returns {array<string>} list of filepath in date order.
  */
-async function orderRecentFiles(dir) {
-  const filenames = await fs.readdir(dir);
+async function orderRecentFiles(directoryPath) {
+  const filenames = await fs.readdir(directoryPath);
 
   const files = await Promise.all(
     filenames.map(async (filename) => {
-      const filePath = path.resolve(dir, filename);
+      const filePath = path.resolve(directoryPath, filename);
       return {
         filename,
         stat: await fs.lstat(filePath),
@@ -25,28 +27,38 @@ async function orderRecentFiles(dir) {
     .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
 }
 /**
- * get the most recent file in a dir
- * @param {String} dir - dir path
- * @returns {String} most recent file path
+ * get the most recent file in a directory
+ *
+ * @param {String} directoryPath directory path
+ *
+ * @returns {String} most recent filepath
  */
-const getMostRecentFile = async (dir) => {
-  const files = await orderRecentFiles(dir);
+async function getMostRecentFile(directoryPath) {
+  const files = await orderRecentFiles(directoryPath);
   return files.length ? files[0] : undefined;
-};
+}
 
-async function deleteFilesInDir(directory, maxAgeInDays) {
-  const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;
+/**
+ * Delete files in directory when the last updated of file is more than n days.
+ *
+ * @param {String} directoryPath directory path
+ * @param {*} numberOfDays number of days
+ *
+ * @returns {Array<String>} List of filename of deleted file
+ */
+async function deleteFilesInDir(directoryPath, numberOfDays) {
+  const time = 1 * 24 * 60 * 60 * 1000 * numberOfDays;
   const threshold = Date.now() - time;
 
-  const files = await fs.readdir(directory);
+  const files = await fs.readdir(directoryPath);
 
   const deletedFiles = [];
 
   for (const file of files) {
-    const stat = await fs.stat(path.join(directory, file));
+    const stat = await fs.stat(path.join(directoryPath, file));
     if (stat.mtime < threshold) {
       deletedFiles.push(file);
-      await fs.unlink(path.join(directory, file));
+      await fs.unlink(path.join(directoryPath, file));
     }
   }
 

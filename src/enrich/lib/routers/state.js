@@ -5,6 +5,8 @@ const fs = require('fs-extra');
 
 const checkAuth = require('../middlewares/auth');
 
+const getMostRecentFile = require('../controllers/file');
+
 const {
   getState,
 } = require('../models/state');
@@ -12,33 +14,17 @@ const {
 const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
 
 /**
- * get the files in a dir in order by date
- * @param {String} dir - dir path
- * @returns {array<string>} files path in order
+ * Route that give list of filename of state or the content of latest
+ * state.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeResponse {Array<String>} List of filename of state
+ * @routeResponse {Object} Content of latest state in json
+ *
+ * @returns {Object} HTTP response.
  */
-async function orderRecentFiles(dir) {
-  const filenames = await fs.readdir(dir);
-
-  const files = await Promise.all(
-    filenames.map(async (filename) => {
-      const filePath = path.resolve(dir, filename);
-      return {
-        filename,
-        stat: await fs.lstat(filePath),
-      };
-    }),
-  );
-
-  return files
-    .filter((file) => file.stat.isFile())
-    .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
-}
-
-const getMostRecentFile = async (dir) => {
-  const files = await orderRecentFiles(dir);
-  return Array.isArray(files) ? files[0] : undefined;
-};
-
 router.get('/states', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
   if (error) return res.status(400).json({ message: error.details[0].message });
@@ -73,6 +59,18 @@ router.get('/states', checkAuth, async (req, res, next) => {
   return res.status(200).json(states);
 });
 
+/**
+ * Route that give the content of state.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeParams {String} Filename of state.
+ *
+ * @routeResponse {Object} Content of latest state in json
+ *
+ * @returns {Object} HTTP response.
+ */
 router.get('/states/:filename', checkAuth, async (req, res, next) => {
   const { filename } = req.params;
 

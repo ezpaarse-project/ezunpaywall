@@ -9,15 +9,16 @@ const graphql = axios.create({
 graphql.host = config.get('graphql.host');
 
 /**
- * ask ezunpaywall to get informations of unpaywall to enrich a file
- * @param {array<string>} data - array of line that we will enrich
- * @param {String} args - attributes that we will enrich
- * @param {String} stateName  state filename
- * @param {String} index - index name of mapping
- * @param {String} apikey - apikey of user
- * @return {Array} ezunpaywall response
+ * Request graphql service to get unpaywall data.
+ *
+ * @param {array<string>} data - Array of line that we will enrich.
+ * @param {String} args - Requested graphql attributes.
+ * @param {String} index - Requested index elastic.
+ * @param {String} apikey - Apikey of user.
+ *
+ * @return {Array<Object>} graphql data ezunpaywall response
  */
-async function requestGraphql(data, args, stateName, index, apikey) {
+async function requestGraphql(data, args, index, apikey) {
   let dois = [];
   let res = [];
   // contain index of doi
@@ -42,6 +43,11 @@ async function requestGraphql(data, args, stateName, index, apikey) {
   return res?.data?.data?.GetByDOI;
 }
 
+/**
+ * Ping ezunpaywall graphql service.
+ *
+ * @returns {Boolean} ping
+ */
 async function pingGraphql() {
   let res;
   try {

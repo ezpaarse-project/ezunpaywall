@@ -20,79 +20,46 @@ const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 const enriched = path.resolve(__dirname, '..', '..', 'data', 'enriched');
 
 /**
- * getter of all the unpaywall attributes that can be used for enrichment in graphql format
- * @returns {String} all attributs in graphql format
+ * get graphql params to get all unpaywall attributes.
  */
-const allArgs = () => `
+const graphqlConfigWithAllAttributes = ` 
 {
-  data_standard,
-  doi_url,
-  genre,
-  is_paratext,
-  has_repository_copy,
-  is_oa,
-  journal_is_in_doaj,
-  journal_is_oa,
-  journal_issns,
-  journal_issn_l,
-  journal_name,
-  oa_status,
-  published_date,
-  publisher,
-  title,
-  updated,
-  year,
+  data_standard,doi_url,genre,is_paratext,has_repository_copy,is_oa,journal_is_in_doaj,journal_is_oa,
+  journal_issns,journal_issn_l,journal_name,oa_status,published_date,publisher,title,updated,year,
   best_oa_location {
-    endpoint_id,
-    evidence,
-    host_type,
-    is_best,
-    license,
-    pmh_id,
-    repository_institution,
-    updated,
-    url,
-    url_for_landing_page,
-    url_for_pdf,
-    version
+    endpoint_id,evidence,host_type,is_best,license,pmh_id,repository_institution,
+    updated,url,url_for_landing_page,url_for_pdf,version
   },
-  first_oa_location {
-    endpoint_id,
-    evidence,
-    host_type,
-    is_best,
-    license,
-    pmh_id,
-    repository_institution,
-    updated,
-    url,
-    url_for_landing_page,
-    url_for_pdf,
-    version
+  first_oa_location { 
+    endpoint_id,evidence,host_type,is_best,license,pmh_id,repository_institution,
+    updated,url,url_for_landing_page,url_for_pdf,version
   },
   z_authors {
-    family,
-    given
+    family,given
   }
 }`;
 
 /**
- * add attribute doi to args to be used with Map
- * @param {String} args graphql args
- * @returns {String} args with doi
+ * Add attribute doi to graphql params.
+ *
+ * @param {String} args - Graphql params.
+ *
+ * @returns {String} Graphql params with doi
  */
-const addDOItoGraphqlRequest = (args) => {
+function addDOItoGraphqlRequest(args) {
   args = args.replace(/\s/g, '');
   return `{ doi, ${args.substring(1)}`;
-};
+}
 
 /**
- * Flatten nested properties of an object by seperating keys with dots
+ * Flatten nested properties of an object by seperating keys with dots.
  * Example: { foo: { bar: 'foo' } } => { 'foo.bar': 'foo' }
- * @param {Object} obj object need to be flatten
- * @returns {Object} flatten object
+ *
+ * @param {Object} obj - Object need to be flatten.
+ *
+ * @returns {Object} Flatten object.
  */
-const flatten = (obj) => {
+function flatten(obj) {
   const flattened = {};
   function flattenProp(data, keys) {
     Object.entries(data).forEach(([key, value]) => {
@@ -111,20 +78,22 @@ const flatten = (obj) => {
   }
   flattenProp(obj, []);
   return flattened;
-};
+}
 
 /**
- * enrich file data with data from a ezunpaywall
- * @param {array<object>} data - array of line that we will enrich
- * @param {array<object>} response - response from ezunpaywall
- * @returns {array<object>} enriched data
+ * Enrich data with response from ezunpaywall
+ *
+ * @param {array<object>} data - Array of line that we will enrich.
+ * @param {array<object>} response - Response from ezunpaywall.
+ *
+ * @returns {array<object>} Number of line enriched and enriched data.
  */
-const enrichTab = (data, response) => {
-  const enrichedTab = data;
+function enrichArray(data, response) {
+  const enrichedArray = data;
   let lineEnriched = 0;
 
   if (!response) {
-    return enrichedTab;
+    return enrichedArray;
   }
 
   const results = new Map();
@@ -135,7 +104,7 @@ const enrichTab = (data, response) => {
     }
   });
 
-  enrichedTab.forEach((el) => {
+  enrichedArray.forEach((el) => {
     if (!el.doi) {
       return;
     }
@@ -148,18 +117,19 @@ const enrichTab = (data, response) => {
     el = Object.assign(el, res);
   });
 
-  return { lineEnriched, enrichedTab };
-};
+  return { enrichedArray, lineEnriched };
+}
 
 /**
- * write enriched date in enriched file
- * @param {array<object>} data array of line enriched
- * @param {String} headers headers
- * @param {char} separator separator of enriched file
- * @param {String} enrichedFile filepath of enriched file
- * @param {String} stateName - state filename
+ * Write enriched data in enriched file.
+ *
+ * @param {array<object>} data - Array of line enriched
+ * @param {String} headers - Headers
+ * @param {char} separator - Separator of enriched file
+ * @param {String} enrichedFile - Filepath of enriched file
+ * @param {String} stateName - State filename
  */
-const writeInFileCSV = async (data, headers, separator, enrichedFile, stateName) => {
+async function writeInFileCSV(data, headers, separator, enrichedFile, stateName) {
   const parsedTab = JSON.stringify(data);
   let unparse;
   try {
@@ -174,15 +144,17 @@ const writeInFileCSV = async (data, headers, separator, enrichedFile, stateName)
     logger.error(err);
     await fail(stateName);
   }
-};
+}
 
 /**
- * enrich header with graphql args
- * @param {array<string>} header - header
- * @param {String} args - graphql args
- * @returns {array<string>} header enriched
+ * Enrich the csv header with graphql args.
+ *
+ * @param {array<string>} header - csv header.
+ * @param {String} args - Graphql args.
+ *
+ * @returns {array<string>} header enriched.
  */
-const enrichHeaderCSV = (header, args) => {
+async function enrichHeaderCSV(header, args) {
   args = args.replace(/\s/g, '').substring(1);
   args = args.substring(0, args.length - 1);
   const regex = /,([a-z_]+){(.*?)}/gm;
@@ -215,33 +187,40 @@ const enrichHeaderCSV = (header, args) => {
   // delete doublon
   const uSet = new Set(header.concat(args.split(',')));
   return [...uSet];
-};
+}
 
 /**
- * write header in the enriched file
- * @param {array<string>} header - header enriched
- * @param {char} separator - separator of file
- * @param {String} enrichedFile - pathfile of enriched file
+ * Write csv header in the enriched file.
+ *
+ * @param {array<string>} header - Csv header.
+ * @param {char} separator - Separator of csv file.
+ * @param {String} filePath - Path of the file to write the csv header.
  */
-const writeHeaderCSV = async (header, separator, enrichedFile) => {
+async function writeHeaderCSV(header, separator, filePath) {
   try {
-    await fs.writeFile(enrichedFile, `${header.join(separator)}\r\n`, { flag: 'a' });
+    await fs.writeFile(filePath, `${header.join(separator)}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error(`Cannot write ${header.join(separator)}\\r\\n in ${enrichedFile}`);
+    logger.error(`Cannot write ${header.join(separator)}\\r\\n in ${filePath}`);
     logger.error(err);
   }
-};
+}
 
 /**
- * starts the enrichment process for files CSV
- * @param {readable} readStream - readstream of the file you want to enrich
- * @param {String} args - attributes will be add
- * @param {String} separator - separator of enriched file
- * @param {String} id - id of process
- * @param {String} index - index name of mapping
- * @param {String} apikey - apikey of user
+ * Starts the enrichment process for CSV file.
+ * step :
+ * - read file by paquet of 1000
+ * - enrich the paquet
+ * - write the enriched data in enriched file
+ *
+ * A state is updated during the job.
+ *
+ * @param {String} id - Id of process.
+ * @param {String} index - Index name of mapping.
+ * @param {String} args - Attributes will be add.
+ * @param {String} apikey - Apikey of user.
+ * @param {String} separator - separator of enriched file.
  */
-const processEnrichCSV = async (id, index, args, apikey, separator) => {
+async function processEnrichCSV(id, index, args, apikey, separator) {
   const filename = `${id}.csv`;
 
   const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, filename));
@@ -252,7 +231,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   const enrichedFile = path.resolve(enriched, apikey, filename);
 
   if (!args) {
-    args = allArgs();
+    args = graphqlConfigWithAllAttributes;
   }
 
   args = addDOItoGraphqlRequest(args);
@@ -301,7 +280,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
 
           let response;
           try {
-            response = await requestGraphql(copyData, args, stateName, index, apikey);
+            response = await requestGraphql(copyData, args, index, apikey);
           } catch (err) {
             logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
             logger.error(JSON.stringify(err?.response?.data?.errors));
@@ -309,9 +288,9 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
             return;
           }
           // enrichment
-          const enrichedData = enrichTab(copyData, response);
-          const { enrichedTab, lineEnriched } = enrichedData;
-          await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
+          const enrichedData = enrichArray(copyData, response);
+          const { enrichedArray, lineEnriched } = enrichedData;
+          await writeInFileCSV(enrichedArray, headers, separator, enrichedFile);
 
           // state
           state.linesRead += 1000;
@@ -328,7 +307,7 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   if (data.length !== 0) {
     let response;
     try {
-      response = await requestGraphql(data, args, stateName, index, apikey);
+      response = await requestGraphql(data, args, index, apikey);
     } catch (err) {
       logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
       logger.error(JSON.stringify(err?.response?.data?.errors));
@@ -336,9 +315,9 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
       return;
     }
     // enrichment
-    const enrichedData = enrichTab(data, response);
-    const { enrichedTab, lineEnriched } = enrichedData;
-    await writeInFileCSV(enrichedTab, headers, separator, enrichedFile);
+    const enrichedData = enrichArray(data, response);
+    const { enrichedArray, lineEnriched } = enrichedData;
+    await writeInFileCSV(enrichedArray, headers, separator, enrichedFile);
 
     // state
     state.linesRead += data.length || 0;
@@ -348,6 +327,6 @@ const processEnrichCSV = async (id, index, args, apikey, separator) => {
   }
 
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
-};
+}
 
 module.exports = processEnrichCSV;

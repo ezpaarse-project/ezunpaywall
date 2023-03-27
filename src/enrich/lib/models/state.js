@@ -6,10 +6,13 @@ const logger = require('../logger');
 const stateDir = path.resolve(__dirname, '..', '..', 'data', 'states');
 
 /**
- * create a new file on folder "data/enrich/state" containing the enrich state
- * @param {String} id - id of process
+ * Create a new State in file on folder data/state/<apikey>/<id>.json
+ * containing the enrich state.
+ *
+ * @param {String} id - Id of process.
+ * @param {String} apikey - Apikey of user.
  */
-const createState = async (id, apikey) => {
+async function createState(id, apikey) {
   const state = {
     done: false,
     loaded: 0,
@@ -39,12 +42,15 @@ const createState = async (id, apikey) => {
     logger.error(err);
     throw err;
   }
-};
+}
 
 /**
- * get state from the folder "data/enrich/state"
- * @param {String} filename - state filename
- * @returns {Object} - state in JSON format
+ * Get the content of state from a file in the folder data/state/<apikey>/<filename>.
+ *
+ * @param {String} filename - State filename.
+ * @param {String} apikey - Apikey of user.
+ *
+ * @returns {Object} State of enrich process in JSON format.
  */
 const getState = async (filename, apikey) => {
   const filenamePath = path.resolve(stateDir, apikey, filename);
@@ -71,9 +77,10 @@ const getState = async (filename, apikey) => {
 };
 
 /**
- * write the latest version of the state to the file
- * @param {Object} state - state in JSON format
- * @param {String} filename - state filename
+ * Write the latest version of the state of enrich process to the file.
+ *
+ * @param {Object} state - State in JSON format.
+ * @param {String} filename - State filename.
  */
 const updateStateInFile = async (state, filename) => {
   const { apikey } = state;
@@ -93,8 +100,10 @@ const updateStateInFile = async (state, filename) => {
 };
 
 /**
- * update the state when there is an error
- * @param {String} filename - state filename
+ * Update the state of enrich process when there is an error.
+ *
+ * @param {String} filename - State filename.
+ * @param {String} apikey - Apikey of user.
  */
 const fail = async (filename, apikey) => {
   const state = await getState(filename, apikey);
@@ -105,8 +114,10 @@ const fail = async (filename, apikey) => {
 };
 
 /**
- * update the state when the process is finished
- * @param {String} filename - state filename
+ * Update the state of enrich process when the process is finished.
+ *
+ * @param {String} id - Id of process.
+ * @param {String} apikey - Apikey of user.
  */
 const endState = async (id, apikey) => {
   const state = await getState(`${id}.json`, apikey);

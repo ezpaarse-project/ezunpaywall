@@ -13,9 +13,19 @@ const checkAuth = require('../middlewares/auth');
 const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 
 /**
+ * route that start a enrich job
  *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
  *
- * @return name of enriched file to download it
+ * @routeBody {String} [type] type of file : csv or jsonl available
+ * @routeBody {String} [args] graphql attributes added to the enriched file
+ * @routeBody {String} [index] elastic index for enrich process
+ * @routeBody {String} [separotor] enriched file separator
+ *
+ * @routeResponse {String} id of process
+ *
+ * @returns {Object} HTTP response.
  */
 router.post('/job/:filename', checkAuth, async (req, res, next) => {
   const checkParams = joi.string().trim().required().validate(req.params.filename);

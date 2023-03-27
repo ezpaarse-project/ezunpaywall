@@ -8,12 +8,12 @@ const processEnrichJSON = require('./json');
 const processEnrichCSV = require('./csv');
 
 /**
- * start an enrich process with a file give by user
- * @param {readStream} readStream - file need to be enriched
- * @param {String} args - graphql args for enrichment
- * @param {String} id - id of process
- * @param {String} index - index name of mapping
- * @param {String} apikey - apikey of user
+ * Start an JSONL enrichment process based on an id and its config.
+ *
+ * @param {String} id - Name of uploaded file without the extension file.
+ * @param {String} index - Index name of mapping.
+ * @param {String} args - Graphql args for enrichment.
+ * @param {String} apikey - Apikey of user.
  */
 const enrichJSON = async (id, index, args, apikey) => {
   await createState(id, apikey);
@@ -22,13 +22,13 @@ const enrichJSON = async (id, index, args, apikey) => {
 };
 
 /**
- * start an enrich process with a file give by user
- * @param {readStream} readStream - file need to be enriched
- * @param {String} args - graphql args for enrichment
- * @param {String} id - id of process
- * @param {String} separator - separator of enriched file
- * @param {String} index - index name of mapping
- * @param {String} apikey - apikey of user
+ * Start an CSV enrichment process based on an id and its config.
+ *
+ * @param {String} id - Name of uploaded file without the extension file.
+ * @param {String} index - Index name of mapping.
+ * @param {String} args - Graphql args for enrichment.
+ * @param {String} apikey - Apikey of user.
+ * @param {String} separator - Separator of enriched csv file.
  */
 const enrichCSV = async (id, index, args, apikey, separator) => {
   await createState(id, apikey);

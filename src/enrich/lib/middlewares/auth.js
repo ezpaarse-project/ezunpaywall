@@ -3,11 +3,14 @@ const { redisClient } = require('../services/redis');
 const logger = require('../logger');
 
 /**
- * check the user's api key
- * @param {Object} req - HTTP request
- * @param {Object} res - HTTP response
- * @param {function} next - do the following
- * @returns {Object|function} res or next
+ * Authentication middleware that checks if the content of the x-api-key header
+ * matches the apikey in redis and the apikey config.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ * @param {function} next - Function that do the following in error handler.
+ *
+ * @returns {Object|function} HTTP response or next.
  */
 const checkAuth = async (req, res, next) => {
   // TODO check in query

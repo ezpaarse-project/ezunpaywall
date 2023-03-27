@@ -5,6 +5,10 @@ const fs = require('fs-extra');
 
 const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 
+/**
+ * Download middleware for the enrichment process.
+ * It names the downloaded file with a uuid and puts it ./data/<apikey>.
+ */
 const storage = multer.diskStorage(
   {
     destination: (req, file, cb) => {

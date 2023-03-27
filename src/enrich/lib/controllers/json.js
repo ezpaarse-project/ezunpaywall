@@ -21,93 +21,53 @@ const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 const enrichedDir = path.resolve(__dirname, '..', '..', 'data', 'enriched');
 
 /**
- * getter of all the unpaywall attributes that can be used for enrichment in graphql format
- * @returns {String} all attributs in graphql format
+ * Get graphql params to get all unpaywall attributes.
  */
-const allArgs = () => `
+const graphqlConfigWithAllAttributes = ` 
 {
-  data_standard,
-  doi_url,
-  genre,
-  is_paratext,
-  has_repository_copy,
-  is_oa,
-  journal_is_in_doaj,
-  journal_is_oa,
-  journal_issns,
-  journal_issn_l,
-  journal_name,
-  oa_status,
-  published_date,
-  publisher,
-  title,
-  updated,
-  year,
+  data_standard,doi_url,genre,is_paratext,has_repository_copy,is_oa,journal_is_in_doaj,journal_is_oa,
+  journal_issns,journal_issn_l,journal_name,oa_status,published_date,publisher,title,updated,year,
   best_oa_location {
-    endpoint_id,
-    evidence,
-    host_type,
-    is_best,
-    license,
-    pmh_id,
-    repository_institution,
-    updated,
-    url,
-    url_for_landing_page,
-    url_for_pdf,
-    version,
+    endpoint_id,evidence,host_type,is_best,license,pmh_id,repository_institution,
+    updated,url,url_for_landing_page,url_for_pdf,version
   },
-  first_oa_location {
-    endpoint_id,
-    evidence,
-    host_type,
-    is_best,
-    license,
-    pmh_id,
-    repository_institution,
-    updated,
-    url,
-    url_for_landing_page,
-    url_for_pdf,
-    version,
+  oa_locations { 
+    endpoint_id,evidence,host_type,is_best,license,pmh_id,repository_institution,
+    updated,url,url_for_landing_page,url_for_pdf,version
   },
-  oa_locations {
-    endpoint_id,
-    evidence,
-    host_type,
-    is_best,
-    license,
-    pmh_id,
-    repository_institution,
-    updated,
-    url,
-    url_for_landing_page,
-    url_for_pdf,
-    version,
+  first_oa_location { 
+    endpoint_id,evidence,host_type,is_best,license,pmh_id,repository_institution,
+    updated,url,url_for_landing_page,url_for_pdf,version
   },
   z_authors {
-    family,
-    given,
+    family,given
   }
 }`;
 
 /**
- * add attribute doi to args to be used with Map
- * @param {String} args graphql args
- * @returns {String} args with doi
+ * Add attribute doi to graphql params.
+ *
+ * @param {String} args - Graphql params.
+ *
+ * @returns {String} Graphql params with doi
  */
-const addDOItoGraphqlRequest = (args) => {
+function addDOItoGraphqlRequest(args) {
   args = args.replace(/\s/g, '');
   return `{ doi, ${args.substring(1)}`;
-};
+}
 
 /**
- * concat data from file and response from unpaywall
- * @param {Array} data - array of line that we will enrich
- * @param {Object} response - response from ezunpaywall
- * @returns {Map} map of enrich
+ * Enrich data with response from ezunpaywall.
+ *
+ * @param {array<object>} data - Array of line that we will enrich.
+ * @param {array<object>} response - Response from ezunpaywall.
+ *
+ * @returns {array<object>} Number of line enriched and enriched data.
  */
-const enrichTab = (data, response) => {
+const enrichArray = (data, response) => {
+  const enrichedArray = data;
+  let lineEnriched = 0;
+
   if (!response) {
     return data;
   }
@@ -120,7 +80,7 @@ const enrichTab = (data, response) => {
     }
   });
 
-  data.forEach((el) => {
+  enrichedArray.forEach((el) => {
     if (!el.doi) {
       return;
     }
@@ -128,15 +88,20 @@ const enrichTab = (data, response) => {
     if (!res) {
       return;
     }
+    lineEnriched += 1;
     el = Object.assign(el, res);
   });
-  return data;
+
+  return { lineEnriched, enrichedArray };
 };
 
 /**
- * write the array of line enriched in a out file JSON
- * @param {Array} data - array of line enriched
- * @param {String} stateName  state filename
+ * Write enriched data in enriched file.
+ *
+ * @param {array<object>} data - Array of line enriched.
+ * @param {String} enrichedFile - Filepath of enriched file.
+ * @param {String} stateName - State filename.
+ * @param {String} apikey //TODO
  */
 const writeInFileJSON = async (data, enrichedFile, stateName, apikey) => {
   const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
@@ -150,17 +115,23 @@ const writeInFileJSON = async (data, enrichedFile, stateName, apikey) => {
 };
 
 /**
- * starts the enrichment process for files JSON
- * @param {readable} readStream - readstream of the file you want to enrich
- * @param {String} args - attributes will be add
- * @param {String} id - id of process
- * @param {String} index - index name of mapping
- * @param {String} apikey - apikey of user
+ * Starts the enrichment process for JSONL file.
+ * step :
+ * - read file by paquet of 1000
+ * - enrich the paquet
+ * - write the enriched data in enriched file
+ *
+ * A state is updated during the job.
+ *
+ * @param {String} id - Id of process.
+ * @param {String} index - Index name of mapping.
+ * @param {String} args - Attributes will be add.
+ * @param {String} apikey - Apikey of user.
  */
-const processEnrichJSON = async (id, index, args, apikey) => {
+async function processEnrichJSON(id, index, args, apikey) {
   const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, `${id}.jsonl`));
   if (!args) {
-    args = allArgs();
+    args = graphqlConfigWithAllAttributes;
   }
   args = addDOItoGraphqlRequest(args);
   const stateName = `${id}.json`;
@@ -189,19 +160,19 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   let data = [];
 
   for await (const line of rl) {
-    let li;
+    let parsedLine;
     try {
-      li = JSON.parse(line);
+      parsedLine = JSON.parse(line);
     } catch (err) {
       logger.error(`Cannot parse "${line}" in json format`);
       logger.error(err);
     }
-    data.push(li);
+    data.push(parsedLine);
 
     if (data.length === 1000) {
       let response;
       try {
-        response = await requestGraphql(data, args, stateName, index, apikey);
+        response = await requestGraphql(data, args, index, apikey);
       } catch (err) {
         logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
         logger.error(JSON.stringify(err?.response?.data?.errors));
@@ -209,8 +180,9 @@ const processEnrichJSON = async (id, index, args, apikey) => {
         return;
       }
       // enrichment
-      enrichTab(data, response);
-      await writeInFileJSON(data, enrichedFile, stateName, apikey);
+      const enrichedData = enrichArray(data, response);
+      const { enrichedArray } = enrichedData;
+      await writeInFileJSON(enrichedArray, enrichedFile, stateName, apikey);
       data = [];
 
       state.linesRead += 1000;
@@ -224,7 +196,7 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   if (data.length !== 0) {
     let response;
     try {
-      response = await requestGraphql(data, args, stateName, index, apikey);
+      response = await requestGraphql(data, args, index, apikey);
     } catch (err) {
       logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
       logger.error(JSON.stringify(err?.response?.data?.errors));
@@ -232,8 +204,9 @@ const processEnrichJSON = async (id, index, args, apikey) => {
       return;
     }
     // enrichment
-    data = enrichTab(data, response);
-    await writeInFileJSON(data, enrichedFile, stateName, apikey);
+    const enrichedData = enrichArray(data, response);
+    const { enrichedArray } = enrichedData;
+    await writeInFileJSON(enrichedArray, enrichedFile, stateName, apikey);
     // state
     state.linesRead += data?.length || 0;
     state.enrichedLines += response?.length || 0;
@@ -242,6 +215,6 @@ const processEnrichJSON = async (id, index, args, apikey) => {
   }
 
   logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
-};
+}
 
 module.exports = processEnrichJSON;
