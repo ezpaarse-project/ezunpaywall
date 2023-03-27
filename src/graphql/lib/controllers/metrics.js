@@ -12,11 +12,17 @@ let metrics = {
   closedOA: 0,
 };
 
+/**
+ * Get the metrics from unpaywall and cache them.
+ */
 async function setMetrics() {
   metrics = await getMetrics();
   logger.info('daily metrics updated');
 }
 
+/**
+ * Get cached metrics
+ */
 function getDailyMetrics() { return metrics; }
 
 module.exports = {

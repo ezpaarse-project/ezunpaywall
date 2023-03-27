@@ -12,13 +12,18 @@ const redisClient = redis.createClient({
 redisClient.get = util.promisify(redisClient.get);
 redisClient.ping = util.promisify(redisClient.ping);
 
+/**
+ * Ping redis service.
+ *
+ * @returns {Boolean} ping
+ */
 async function pingRedis() {
   try {
     await redisClient.ping();
   } catch (err) {
     logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
     logger.error(err?.message);
-    return err?.message;
+    return false;
   }
   return true;
 }
