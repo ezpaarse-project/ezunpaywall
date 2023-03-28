@@ -6,8 +6,9 @@ const logger = require('../logger');
 const reportsDir = path.resolve(__dirname, '..', '..', 'data', 'reports');
 
 /**
- * create report on the folder "data/update/report" on behalf of the date of treatment
- * @param {String}  - state filename
+ * Create report on the folder "data/update/report" on behalf of the date of treatment.
+ *
+ * @param {String} state - State filename.
  */
 const createReport = async (state) => {
   const pathfile = path.resolve(reportsDir, `${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}.json`);
@@ -19,10 +20,12 @@ const createReport = async (state) => {
   }
 };
 
-/**-
- * get report from the folder "data/update/report"
- * @param {String} filename - report filename
- * @returns {Object} report
+/**
+ * Get report from the folder "data/update/report".
+ *
+ * @param {String} filename - Report filename.
+ *
+ * @returns {Object} Report in json format.
  */
 const getReport = async (filename) => {
   let report;

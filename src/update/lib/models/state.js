@@ -23,8 +23,9 @@ function setState(key, value) {
 }
 
 /**
- * create a new file on folder "data/update/state" containing the update state
- * @return {String} name of the file where the state is saved
+ * Create a new file on folder "data/update/state" containing the update state
+ *
+ * @return {String} name of the file where the state is saved.
  */
 async function createState() {
   state = {
@@ -37,7 +38,7 @@ async function createState() {
 }
 
 /**
- * add step "getChangefiles" in steps attributes of state
+ * Add step "getChangefiles" in steps attributes of state.
  */
 function addStepGetChangefiles() {
   logger.info('step - ask unpaywall');
@@ -50,8 +51,9 @@ function addStepGetChangefiles() {
 }
 
 /**
- * add step "download" in steps attributes of state
- * @param {String} downloadFile - unpaywall data update filename
+ * Add step "download" in steps attributes of state.
+ *
+ * @param {String} downloadFile - Upaywall data update filename.
  */
 function addStepDownload(downloadFile) {
   logger.info('step - download file');
@@ -66,8 +68,9 @@ function addStepDownload(downloadFile) {
 }
 
 /**
- * add step "download" in steps attributes of state
- * @param {String} downloadFile - unpaywall data update file name
+ * Add step "download" in steps attributes of state.
+ *
+ * @param {String} downloadFile - Unpaywall data update file name.
  */
 function addStepInsert(downloadFile) {
   logger.info('step - insert file');
@@ -87,20 +90,24 @@ function addStepInsert(downloadFile) {
 }
 
 /**
- * get the latest step in state
+ * Get the latest step in state.
  */
 function getLatestStep() {
   return state.steps[state.steps.length - 1];
 }
 
 /**
- * update latest step in state
- * @param {*} step - latest step
+ * Update latest step in state.
+ *
+ * @param {Object} step - Latest step.
  */
 function updateLatestStep(step) {
   state.steps[state.steps.length - 1] = step;
 }
 
+/**
+ * Enrich the state by adding the end of treatment attributes.
+ */
 function end() {
   state.done = true;
   state.endAt = new Date();
@@ -120,8 +127,9 @@ function end() {
 }
 
 /**
- * update the state when there is an error
- * @param {Array<String>} stackTrace - log of error
+ * Update the state when there is an error
+ *
+ * @param {Array<String>} stackTrace - Log of error.
  */
 async function fail(stackTrace) {
   logger.error('[update process]: fail');
@@ -134,7 +142,7 @@ async function fail(stackTrace) {
 }
 
 /**
- * update the state when the process is finished
+ * Update the state when the process is finished succefully.
  */
 async function endState() {
   logger.info('[update process]: end process');

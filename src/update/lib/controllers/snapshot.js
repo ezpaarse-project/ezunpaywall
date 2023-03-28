@@ -6,6 +6,11 @@ const logger = require('../logger');
 
 const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 
+/**
+ * Delete file installed on ezunpaywall on "/data/snapshots".
+ *
+ * @param {String} filename - Filename.
+ */
 const deleteFile = async (filename) => {
   const filepath = path.resolve(snapshotsDir, filename);
   try {

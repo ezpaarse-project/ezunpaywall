@@ -3,9 +3,11 @@ const fs = require('fs-extra');
 const path = require('path');
 
 /**
- * get the files in a dir in order by date
- * @param {String} dir - dir path
- * @returns {array<string>} files path in order
+ * Get the files in a directory in order by date.
+ *
+ * @param {String} dir - Directory path.
+ *
+ * @returns {Array<String>} Filenames in order by date.
  */
 async function orderRecentFiles(dir) {
   const filenames = await fs.readdir(dir);
@@ -25,17 +27,26 @@ async function orderRecentFiles(dir) {
     .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
 }
 /**
- * get the most recent file in a dir
- * @param {String} dir - dir path
- * @returns {String} most recent file path
+ * Get the most recent file in a directory
+ *
+ * @param {String} dir - Directory path.
+ * @returns {String} Filenames of most recent file.
  */
 const getMostRecentFile = async (dir) => {
   const files = await orderRecentFiles(dir);
   return files.length ? files[0] : undefined;
 };
 
-async function deleteFilesInDir(directory, maxAgeInDays) {
-  const time = 1 * 24 * 60 * 60 * 1000 * maxAgeInDays;
+/**
+ * Deletes files in a directory that are older than n time
+ *
+ * @param {String} directory - Directory path.
+ * @param {Integer} numberOfDays - Number of days
+ *
+ * @returns {Array<String>} List of deleted files
+ */
+async function deleteFilesInDir(directory, numberOfDays) {
+  const time = 1 * 24 * 60 * 60 * 1000 * numberOfDays;
   const threshold = Date.now() - time;
 
   const files = await fs.readdir(directory);
