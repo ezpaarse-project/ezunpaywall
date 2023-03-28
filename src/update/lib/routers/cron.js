@@ -42,9 +42,11 @@ router.post('/cron/stop', checkAuth, async (req, res, next) => {
  * @param {Object} req - HTTP request.
  * @param {Object} res - HTTP response.
  *
- * @routeBody {String} [time] - Schedule of cron.
- * @routeBody {String} [index] - Index where the data will be inserted.
- * @routeBody {String} [interval] - Interval of changefile, day or week are available.
+ * @routeBody {String} time - Schedule of cron.
+ * @routeBody {String} index - Index where the data will be inserted.
+ * @routeBody {String} interval - Interval of changefile, day or week are available.
+ *
+ * @routeResponse {Object} config - Config of cron.
  *
  * @returns {Object} HTTP response.
  */
@@ -67,7 +69,14 @@ router.patch('/cron', checkAuth, async (req, res) => {
 });
 
 /**
+ * Route that get the config of update cron.
  *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeResponse {Object} config of update cron.
+ *
+ * @returns {Object} HTTP response.
  */
 router.get('/cron', async (req, res) => {
   const config = cron.getGlobalConfig();

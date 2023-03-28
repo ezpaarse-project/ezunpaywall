@@ -26,6 +26,11 @@ const processConfiguration = [
   new (transports.Console)(),
 ];
 
+/**
+ * Message logger format.
+ *
+ * @returns {Format} Logger format.
+ */
 function devFormat() {
   const formatMessage = (info) => `${info.timestamp} ${info.level}: ${info.message}`;
   const formatError = (info) => `${info.timestamp} ${info.level}: ${info.message}\n\n${info.stack}\n`;
@@ -40,7 +45,12 @@ const logger = createLogger({
   format: devFormat(),
 });
 
-const errorRequest = (err) => {
+/**
+ * Custom log error message from axios error
+ *
+ * @param {Object} err - Error from axios
+ */
+function errorRequest(err) {
   let url = `${err?.config?.baseURL}${err?.config?.url}`;
 
   if (err?.config?.params) {
@@ -58,7 +68,7 @@ const errorRequest = (err) => {
     return;
   }
   logger.error(`Cannot ${err?.config?.method} ${url} - ${err?.response?.status}`);
-};
+}
 
 logger.errorRequest = errorRequest;
 

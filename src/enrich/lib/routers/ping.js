@@ -10,7 +10,7 @@ const { pingGraphql } = require('../services/graphql');
  * @param {Object} req - HTTP request.
  * @param {Object} res - HTTP response.
  *
- * @routeResponse {String} name of service
+ * @routeResponse {String} name of service.
  *
  * @returns {Object} HTTP response.
  */

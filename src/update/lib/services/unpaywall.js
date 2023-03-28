@@ -8,9 +8,11 @@ const unpaywall = axios.create({
 unpaywall.baseURL = config.get('unpaywall.host');
 
 const apiKey = config.get('unpaywall.apikey');
+
 /**
- * get the latest snapshot
- * @returns {Readable}
+ * Get the current snapshot.
+ *
+ * @returns {Readable} Stream of snapshot.
  */
 const getSnapshot = async () => {
   let res;
@@ -31,11 +33,13 @@ const getSnapshot = async () => {
 };
 
 /**
- * get list of changefiles with interval and between period
- * @param {String} interval
- * @param {Date} startDate
- * @param {Date} endDate
- * @returns {Object}
+ * Get the Unpaywall changefile registry with interval and between period.
+ *
+ * @param {String} interval - Interval of changefile, day or week are available.
+ * @param {String} startDate - Start date for the changefile period.
+ * @param {String} endDate - End date for the changefile period.
+ *
+ * @returns {Object} Unpaywall changefile registry in json format.
  */
 const getChangefiles = async (interval, startDate, endDate) => {
   let res;
@@ -78,10 +82,12 @@ const getChangefiles = async (interval, startDate, endDate) => {
 };
 
 /**
- * get changefile from unpaywall with his filename
- * @param {String} filename filename of changefile
- * @param {String} interval type of changefile (day or week)
- * @returns Readable
+ * Get changefile from unpaywall with his filename.
+ *
+ * @param {String} filename - Filename of changefile.
+ * @param {String} interval - Type of changefile (day or week).
+ *
+ * @returns {Readable} Stream of changefile.
  */
 const getChangefile = async (filename, interval) => {
   let res;

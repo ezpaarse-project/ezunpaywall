@@ -1,8 +1,11 @@
 const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
-const multer = require('multer');
 const joi = require('joi').extend(require('@hapi/joi-date'));
+
+const upload = require('../middlewares/multer');
+
+const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 
 const {
   deleteFile,
@@ -12,19 +15,19 @@ const {
   getMostRecentFile,
 } = require('../controllers/file');
 
-const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
-
-const storage = multer.diskStorage(
-  {
-    destination: snapshotsDir,
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    },
-  },
-);
-
-const upload = multer({ storage });
-
+/**
+ * Route that give the list of snapshots installed on ezunpaywall of the most recent file.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeQuery {String} latest - indicate if it gave latest snapshot or not.
+ *
+ * @routeResponse {Array<String>|<File>} List of filename of snapshot
+ * or the latest snapshot
+ *
+ * @returns {Object} HTTP response.
+ */
 router.get('/snapshots', async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req.query.latest);
 
@@ -46,21 +49,27 @@ router.get('/snapshots', async (req, res, next) => {
 });
 
 /**
- * @apiError 500 internal server error
- * @apiError 403 file not send
+ * Route that upload a file on ezunpaywall.
  *
- * @return 200 file added
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @returns {Object} HTTP response.
  */
 router.post('/snapshots', upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ messsage: 'File not sent' });
-  return res.status(200).json({ messsage: 'File added' });
+  return res.status(202).json();
 });
 
 /**
- * @apiError 400 filename expected
- * @apiError 404 File not found
+ * Route that delete a file on ezunpaywall.
  *
- * @return 200 <filename> deleted
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeParam {String} filename - Filename.
+ *
+ * @returns {Object} HTTP response.
  */
 router.delete('/snapshots/:filename', async (req, res, next) => {
   const { error, value } = joi.string().required().validate(req.params.filename);
@@ -79,7 +88,7 @@ router.delete('/snapshots/:filename', async (req, res, next) => {
     return next({ message: err, stackTrace: err });
   }
 
-  return res.status(200).json({ messsage: `File [${filename}] deleted` });
+  return res.status(202).json();
 });
 
 module.exports = router;

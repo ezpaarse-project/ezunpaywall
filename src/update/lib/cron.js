@@ -3,6 +3,14 @@ const { CronJob } = require('cron');
 const logger = require('./logger');
 
 class Cron {
+  /**
+   * @constructor
+   *
+   * @param {String} name - Name of cron
+   * @param {String} schedule - Schedule of cron
+   * @param {Function} task - Function that will be executed by the cron
+   * @param {Boolean} active - Indicates whether it is active or not
+   */
   constructor(name, schedule, task, active) {
     this.name = name;
     this.schedule = schedule;
@@ -15,6 +23,11 @@ class Cron {
     }
   }
 
+  /**
+   * Getter of config of cron.
+   *
+   * @returns {Object} config of cron.
+   */
   getConfig() {
     return {
       name: this.name,
@@ -23,6 +36,11 @@ class Cron {
     };
   }
 
+  /**
+   * Set new task for cron.
+   *
+   * @param {Function} task
+   */
   setTask(task) {
     this.process.stop();
     this.task = task;
@@ -31,6 +49,11 @@ class Cron {
     if (this.active) this.process.start();
   }
 
+  /**
+   * Set new schedule for cron.
+   *
+   * @param {String} schedule
+   */
   setSchedule(schedule) {
     this.process.stop();
     this.schedule = schedule;
@@ -41,6 +64,9 @@ class Cron {
     if (this.active) this.process.start();
   }
 
+  /**
+   * Make active to true.
+   */
   start() {
     try {
       this.process.start();
@@ -54,6 +80,9 @@ class Cron {
     this.active = true;
   }
 
+  /**
+   * Make active to false.
+   */
   stop() {
     try {
       this.process.stop();

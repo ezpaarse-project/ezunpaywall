@@ -14,9 +14,17 @@ const {
 const reportsDir = path.resolve(__dirname, '..', '..', 'data', 'reports');
 
 /**
- * get the most recent report in JSON format
+ * Route that give the list of reports or the content of most recent report in JSON format.
  *
- * @return report
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeQuery {String} latest - indicate if it gave latest report or not.
+ *
+ * @routeResponse {Array<String>|<Object>} List of filename of report
+ * or the content of latest report
+ *
+ * @returns {Object} HTTP response.
  */
 router.get('/reports', async (req, res, next) => {
   const { error, value } = joi.object({
@@ -60,12 +68,13 @@ router.get('/reports', async (req, res, next) => {
 });
 
 /**
- * get report in JSON format
+ * Route that give the content of report in JSON format.
  *
- * @apiError 400 filename expected
- * @apiError 404 File not found
+ * @routeParam {String} filename - Filename of report.
  *
- * @return report
+ * @routeResponse {Object} report - Content of report in JSON format.
+ *
+ * @returns {Object} HTTP response.
  */
 router.get('/reports/:filename', async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.filename);

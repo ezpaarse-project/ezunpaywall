@@ -10,6 +10,13 @@ const mail = axios.create({
 });
 mail.host = config.get('mail.host');
 
+/**
+ * Send update mail report.
+ *
+ * @param {Object} state - Report of update process.
+ *
+ * @returns {String} Data response of mail service.
+ */
 async function sendMailUpdateReport(state) {
   let res;
   try {
@@ -29,6 +36,13 @@ async function sendMailUpdateReport(state) {
   return res?.body;
 }
 
+/**
+ * Send a mail that inform that an update has started start.
+ *
+ * @param {Object} info - Config of job.
+ *
+ * @returns {String} Data response of mail service.
+ */
 async function sendMailUpdateStarted(info) {
   let res;
   try {

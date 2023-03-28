@@ -37,6 +37,11 @@ const elasticClient = new Client({
   requestTimeout: elasticsearch.timeout,
 });
 
+/**
+ * Ping elastic service
+ *
+ * @returns {Boolean} ping
+ */
 const pingElastic = async () => {
   let elasticStatus;
   try {
@@ -53,9 +58,11 @@ const pingElastic = async () => {
 };
 
 /**
- * check if index exit
- * @param {String} index Name of index
- * @returns {boolean} if exist
+ * Check if index exit.
+ *
+ * @param {String} index Name of index.
+ *
+ * @returns {boolean} If index exist.
  */
 const checkIfIndexExist = async (index) => {
   const { body } = await elasticClient.indices.exists({ index });
@@ -63,9 +70,10 @@ const checkIfIndexExist = async (index) => {
 };
 
 /**
- * create index if it doesn't exist
- * @param {String} index Name of index
- * @param {JSON} mapping mapping in JSON format
+ * Create index if it doesn't exist.
+ *
+ * @param {String} index Name of index.
+ * @param {Object} mapping mapping in JSON format.
  */
 const createIndex = async (index, mapping) => {
   const exist = await checkIfIndexExist(index);
@@ -77,6 +85,13 @@ const createIndex = async (index, mapping) => {
   }
 };
 
+/**
+ * Create alias on elastic.
+ *
+ * @param {String} indexName - Name of index
+ * @param {Object} mapping - Mapping of index
+ * @param {String} aliasName - Name of alias
+ */
 const initAlias = async (indexName, mapping, aliasName) => {
   try {
     await createIndex(indexName, mapping);

@@ -16,6 +16,16 @@ const checkStatus = require('../middlewares/status');
 
 const checkAuth = require('../middlewares/auth');
 
+/**
+ * Route that download the current snapshot of unpaywall and insert his content.
+ * Auth required.
+ * No update process should be in progress.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @returns {Object} HTTP response.
+ */
 router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().default('unpaywall').validate(req.body.index);
 
@@ -33,6 +43,21 @@ router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
   return res.status(202).json();
 });
 
+/**
+ * Route that download and insert on elastic the changefiles from unpaywall between a period.
+ * Auth required.
+ * No update process should be in progress.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeBody {String} index - Name of the index to which the data will be inserted.
+ * @routeBody {String} interval - Interval of changefile, day or week are available.
+ * @routeBody {String} startDate - Start date for the changefile period.
+ * @routeBody {String} endDate - End date for the changefile period.
+ *
+ * @returns {Object} HTTP response.
+ */
 router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
     index: joi.string().trim().default('unpaywall'),
@@ -84,6 +109,20 @@ router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
   return res.status(202).json();
 });
 
+/**
+ * Route that insert on elastic the content of file installed on ezunpaywall.
+ * Auth required.
+ * No update process should be in progress.
+ *
+ * @param {Object} req - HTTP request.
+ * @param {Object} res - HTTP response.
+ *
+ * @routeBody {String} index - Name of the index to which the data will be inserted.
+ * @routeBody {Integer} offset - Line of the snapshot at which the data insertion starts.
+ * @routeBody {Integer} limit - Line in the file where the insertion stops.
+ *
+ * @returns {Object} HTTP response.
+ */
 router.post('/job/changefile/:filename', checkStatus, checkAuth, async (req, res, next) => {
   const { filename } = req.params;
 

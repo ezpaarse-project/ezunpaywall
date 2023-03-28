@@ -26,7 +26,7 @@ const {
 } = require('../services/unpaywall');
 
 /**
- * Download the current snapshot of unpaywall and insert his content
+ * Download the current snapshot of unpaywall and insert his content.
  *
  * @param {Object} jobConfig - Config of job that content :
  * @param {String} index - Name of the index to which the data will be inserted.
