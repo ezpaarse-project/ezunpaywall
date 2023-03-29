@@ -25,6 +25,10 @@ const {
   getChangefiles,
 } = require('../services/unpaywall');
 
+const {
+  sendMailNoChangefile,
+} = require('../services/mail');
+
 const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);
   await createState();
@@ -59,6 +63,13 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
   step.took = (new Date() - start) / 1000;
   step.status = 'success';
   updateLatestStep(step);
+
+  if (snapshotsInfo.length === 0) {
+    sendMailNoChangefile(startDate, endDate);
+    await endState();
+    return;
+  }
+
   let success = true;
   for (let i = 0; i < snapshotsInfo.length; i += 1) {
     success = await downloadChangefile(snapshotsInfo[i], interval);

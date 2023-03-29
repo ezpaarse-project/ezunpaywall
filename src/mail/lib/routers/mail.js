@@ -3,7 +3,7 @@ const checkAuth = require('../middlewares/auth');
 
 const sendMailContact = require('../controllers/contact');
 
-const { sendMailUpdateStarted, sendMailUpdateReport } = require('../controllers/update');
+const { sendMailUpdateStarted, sendMailUpdateReport, sendMailNoChangefile } = require('../controllers/update');
 
 router.post('/contact', checkAuth, async (req, res, next) => {
   const {
@@ -47,6 +47,15 @@ router.post('/update-end', checkAuth, async (req, res, next) => {
   // TODO test state
 
   sendMailUpdateReport(state);
+
+  return res.status(202).json();
+});
+
+router.post('/nochangefile', checkAuth, async (req, res, next) => {
+  const { startDate, endDate } = req.body;
+  // TODO test startDate, endDate
+
+  sendMailNoChangefile(startDate, endDate);
 
   return res.status(202).json();
 });
