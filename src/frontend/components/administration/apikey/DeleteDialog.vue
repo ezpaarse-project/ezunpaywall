@@ -67,7 +67,7 @@ export default {
           method: 'DELETE',
           url: `/keys/${this.apikey}`,
           headers: {
-            'X-API-KEY': this.$store.state.admin.password
+            'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
       } catch (e) {
