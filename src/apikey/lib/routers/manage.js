@@ -339,7 +339,6 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
   const { error, value } = joi.array().validate(req.body);
-
   if (error) return res.status(400).json({ message: error.details[0].message });
 
   const loadKeys = value;

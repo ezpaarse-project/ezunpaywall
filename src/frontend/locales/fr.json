@@ -31,8 +31,7 @@
     "emailIsRequired": "L'adresse électronique est requise",
     "emailMustBeValid": "L'adresse électronique doit être valide",
     "contentIsRequired": "Un message est requis",
-    "subjectIsRequired": "L'objet est requis",
-    "send": "Envoyer"
+    "subjectIsRequired": "L'objet est requis"
   },
   "enrich": {
     "general": "Cette page vous permet de tester la fonction d'enrichissement de fichiers jsonl et csv avec des attributs unpaywall.",
@@ -104,6 +103,10 @@
       "access": "Accès",
       "allowed": "Active",
       "notAllowed": "Désactivé",
+      "import": "Importation de clé d'API",
+      "export": "Export des clés d'API",
+      "copyAPIkey": "Les clés d'API ont été copiées",
+      "errorCopyAPIkey": "Impossible de copier les clés d'API",
       "create": "Création d'une nouvelle clé d'API",
       "infoCreated": "La clé d'API a été créée",
       "errorCreate": "La clé d'API n'a pas pu être créée",
@@ -219,6 +222,9 @@
     "dark": "Thème sombre",
     "light": "Thème clair"
   },
+  "download": "Télécharger",
+  "copy": "Copier",
+  "send": "Envoyer",
   "create": "Créer",
   "createdAt": "Créé le",
   "required": "Requis",

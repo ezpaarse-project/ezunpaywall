@@ -5,14 +5,37 @@
       <v-spacer />
       <v-btn
         icon
-        @click.stop="setVisible(true)"
+        @click.stop="setVisible('importDialogVisible', true)"
+      >
+        <v-icon>mdi-file-import</v-icon>
+      </v-btn>
+      <ImportDialog
+        v-model="importDialogVisible"
+        @imported="getApikeys()"
+        @closed="setVisible('importDialogVisible', false)"
+      />
+      <v-btn
+        icon
+        @click.stop="setVisible('exportDialogVisible', true)"
+      >
+        <v-icon>mdi-export-variant</v-icon>
+      </v-btn>
+      <ExportDialog
+        v-model="exportDialogVisible"
+        :apikeys="apikeys"
+        @created="getApikeys()"
+        @closed="setVisible('exportDialogVisible', false)"
+      />
+      <v-btn
+        icon
+        @click.stop="setVisible('createDialogVisible', true)"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
       <CreateDialog
         v-model="createDialogVisible"
         @created="getApikeys()"
-        @closed="setVisible(false)"
+        @closed="setVisible('createDialogVisible', false)"
       />
       <v-btn
         icon
@@ -56,18 +79,24 @@
 
 <script>
 import CreateDialog from '~/components/administration/apikey/CreateDialog.vue'
+import ImportDialog from '~/components/administration/apikey/ImportDialog.vue'
+import ExportDialog from '~/components/administration/apikey/ExportDialog.vue'
 import ApikeyCard from '~/components/administration/apikey/ApikeyCard.vue'
 
 export default {
   name: 'ApikeyTab',
   components: {
     CreateDialog,
+    ImportDialog,
+    ExportDialog,
     ApikeyCard
   },
   data () {
     return {
       loading: false,
       createDialogVisible: false,
+      importDialogVisible: false,
+      exportDialogVisible: false,
       apikeys: []
     }
   },
@@ -75,8 +104,8 @@ export default {
     await this.getApikeys()
   },
   methods: {
-    setVisible (value) {
-      this.createDialogVisible = value
+    setVisible (key, value) {
+      this[key] = value
     },
     async getApikeys () {
       let res

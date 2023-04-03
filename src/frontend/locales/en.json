@@ -31,8 +31,7 @@
     "emailIsRequired": "The email address is required",
     "emailMustBeValid": "The email address must be valid",
     "contentIsRequired": "A message is required",
-    "subjectIsRequired": "Subject is required",
-    "send": "Send"
+    "subjectIsRequired": "Subject is required"
   },
   "enrich": {
     "general": "This page allows you to test the enrichment function of jsonl and csv files with unpaywall attributes.",
@@ -104,10 +103,14 @@
       "attributes": "Unpaywall Attributes",
       "allowed": "Allowed",
       "notAllowed": "Not Allowed",
+      "import": "Import apikey",
+      "export": "Export apikeys",
+      "copyAPIkey": "API keys have been copied",
+      "errorCopyAPIkey": "Cannot copy API keys",
       "create": "Creation of a new API key",
       "infoCreated": "The API key has been created",
       "errorCreate": "The API key could not be created",
-      "update": "Update Api key",
+      "update": "Update API key",
       "infoUpdate": "The API key has been updated",
       "errorUpdate": "The API key could not be updated",
       "delete": "Deleting the API key",
@@ -220,6 +223,9 @@
     "dark": "Dark theme",
     "light": "Light theme"
   },
+  "download": "Download",
+  "copy": "Copy",
+  "send": "Send",
   "create": "Create",
   "createdAt": "Created at",
   "required": "Required",
