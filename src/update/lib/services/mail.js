@@ -15,7 +15,7 @@ mail.host = config.get('mail.host');
  *
  * @param {Object} state - Report of update process.
  *
- * @returns {String} Data response of mail service.
+ * @returns {string} Data response of mail service.
  */
 async function sendMailUpdateReport(state) {
   let res;
@@ -41,7 +41,7 @@ async function sendMailUpdateReport(state) {
  *
  * @param {Object} info - Config of job.
  *
- * @returns {String} Data response of mail service.
+ * @returns {string} Data response of mail service.
  */
 async function sendMailUpdateStarted(info) {
   let res;

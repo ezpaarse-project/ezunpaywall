@@ -7,12 +7,12 @@ const {
 /**
  * Route that give the most recent state in JSON format.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  * *
  * @routeResponse {Object} The content of latest report.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/states', async (req, res) => {
   const state = getState();

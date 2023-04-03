@@ -16,9 +16,10 @@ const client = new Client({
 });
 
 /**
- * check if index exit
- * @param {String} name Name of index
- * @returns {boolean} if exist
+ * Check if index exit.
+ *
+ * @param {string} name - Name of index.
+ * @returns {boolean} isExist
  */
 const checkIfIndexExist = async (name) => {
   let res;
@@ -33,9 +34,9 @@ const checkIfIndexExist = async (name) => {
 };
 
 /**
- * create index if it doesn't exist
- * @param {String} name Name of index
- * @param {JSON} index index in JSON format
+ * Create index if it doesn't exist.
+ * @param {string} name - Name of index.
+ * @param {Object} index - mapping in JSON format.
  */
 const createIndex = async (name, index) => {
   const exist = await checkIfIndexExist(name);
@@ -52,8 +53,8 @@ const createIndex = async (name, index) => {
 };
 
 /**
- * delete index if it exist
- * @param {String} name Name of index
+ * Delete index if it exist.
+ * @param {string} name - Name of index.
  */
 const deleteIndex = async (name) => {
   const exist = await checkIfIndexExist(name);
@@ -98,9 +99,10 @@ const insertDataUnpaywall = async () => {
 };
 
 /**
- * count how many documents there are in an index
- * @param {String} name Name of index
- * @returns {Integer} number of document
+ * Count how many documents there are in an index.
+ *
+ * @param {string} name - Name of index.
+ * @returns {number} number of document.
  */
 const countDocuments = async (name) => {
   const exist = await checkIfIndexExist(name);

@@ -22,7 +22,7 @@ const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 /**
  * Update the step the percentage in download regularly until the download is complete.
  *
- * @param {String} filepath - Path where the file is downloaded.
+ * @param {string} filepath - Path where the file is downloaded.
  * @param {Number} size - Size of file.
  * @param {Date} start - Download start date.
  */
@@ -54,7 +54,7 @@ async function updatePercentStepDownload(filepath, size, start) {
  * Download file
  *
  * @param {Readable} file - File.
- * @param {String} filepath - Filepath of file.
+ * @param {string} filepath - Filepath of file.
  * @param {Number} size - Size of file.
  */
 async function download(file, filepath, size) {
@@ -93,8 +93,8 @@ async function download(file, filepath, size) {
 /**
  * Start the download of the changefile from unpaywall.
  *
- * @param {String} info - Information of the file to download.
- * @param {String} interval - Type of changefile (day or week).
+ * @param {string} info - Information of the file to download.
+ * @param {string} interval - Type of changefile (day or week).
  */
 const downloadChangefile = async (info, interval) => {
   let stats;
@@ -132,7 +132,7 @@ const downloadChangefile = async (info, interval) => {
 /**
  * Start the download of the big snapshot from unpaywall.
  *
- * @param {String} info - Information of the snapshot to download.
+ * @param {string} info - Information of the snapshot to download.
  */
 const downloadBigSnapshot = async () => {
   const filename = `snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`;

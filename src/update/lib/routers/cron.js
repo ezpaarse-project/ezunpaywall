@@ -9,10 +9,10 @@ const cron = require('../controllers/cron/update');
  * Route that start the update cron.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/cron/start', checkAuth, async (req, res, next) => {
   cron.updateCron.start();
@@ -24,10 +24,10 @@ router.post('/cron/start', checkAuth, async (req, res, next) => {
  * Route that stop the update cron.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/cron/stop', checkAuth, async (req, res, next) => {
   cron.updateCron.stop();
@@ -39,16 +39,16 @@ router.post('/cron/stop', checkAuth, async (req, res, next) => {
  * Route that update the update cron.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeBody {String} time - Schedule of cron.
- * @routeBody {String} index - Index where the data will be inserted.
- * @routeBody {String} interval - Interval of changefile, day or week are available.
+ * @routeBody {string} time - Schedule of cron.
+ * @routeBody {string} index - Index where the data will be inserted.
+ * @routeBody {string} interval - Interval of changefile, day or week are available.
  *
  * @routeResponse {Object} config - Config of cron.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.patch('/cron', checkAuth, async (req, res) => {
   const { error, value } = joi.object({
@@ -71,12 +71,12 @@ router.patch('/cron', checkAuth, async (req, res) => {
 /**
  * Route that get the config of update cron.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
  * @routeResponse {Object} config of update cron.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/cron', async (req, res) => {
   const config = cron.getGlobalConfig();

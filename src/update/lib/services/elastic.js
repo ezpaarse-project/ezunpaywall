@@ -38,9 +38,9 @@ const elasticClient = new Client({
 });
 
 /**
- * Ping elastic service
+ * Ping elastic service.
  *
- * @returns {Boolean} ping
+ * @returns {boolean} ping.
  */
 const pingElastic = async () => {
   let elasticStatus;
@@ -60,7 +60,7 @@ const pingElastic = async () => {
 /**
  * Check if index exit.
  *
- * @param {String} index Name of index.
+ * @param {string} index - Name of index.
  *
  * @returns {boolean} If index exist.
  */
@@ -72,7 +72,7 @@ const checkIfIndexExist = async (index) => {
 /**
  * Create index if it doesn't exist.
  *
- * @param {String} index Name of index.
+ * @param {string} index - Name of index.
  * @param {Object} mapping mapping in JSON format.
  */
 const createIndex = async (index, mapping) => {
@@ -88,9 +88,9 @@ const createIndex = async (index, mapping) => {
 /**
  * Create alias on elastic.
  *
- * @param {String} indexName - Name of index
- * @param {Object} mapping - Mapping of index
- * @param {String} aliasName - Name of alias
+ * @param {string} indexName - Name of index.
+ * @param {Object} mapping - Mapping of index.
+ * @param {string} aliasName - Name of alias.
  */
 const initAlias = async (indexName, mapping, aliasName) => {
   try {

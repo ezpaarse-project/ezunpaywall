@@ -16,10 +16,10 @@ nunjucks.configure(templatesDir);
 const images = fs.readdirSync(imagesDir);
 
 /**
- * Generate a mail
+ * Generate a mail.
  *
- * @param {String} templateName - Name of template
- * @param {*} locals - Local of mail
+ * @param {string} templateName - Name of template.
+ * @param {Object} locals - Local of mail.
  *
  * @returns {Object} general email with his html and his text
  */
@@ -34,10 +34,10 @@ function generateMail(templateName, locals = {}) {
 }
 
 /**
- * Send a mail
+ * Send a mail.
  *
  * @param {Object} options - Options of mail that content:
- * sender, receivers, subjet, attachments, content of mail
+ * sender, receivers, subjet, attachments, content of mail.
  */
 function sendMail(options) {
   const mailOptions = options || {};
@@ -65,7 +65,7 @@ function sendMail(options) {
 /**
  * Ping SMTP service.
  *
- * @returns {Boolean} ping
+ * @returns {boolean} ping
  */
 async function pingSMTP() {
   try {

@@ -6,7 +6,7 @@ const { healthTimeout } = require('config');
  *
  * @param {Promise} p1 - Promise to be executed which will be stopped
  * if it does not solve after a certain time.
- * @param {String} name - Name of service.
+ * @param {string} name - Name of service.
  * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
  */
 async function promiseWithTimeout(p1, name) {

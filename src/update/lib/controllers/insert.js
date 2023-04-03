@@ -33,7 +33,7 @@ const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
  *
  * @param {Array<Object>} data - Array of unpaywall data.
  *
- * @returns {Boolean} Success or not.
+ * @returns {boolean} Success or not.
  */
 const insertDataInElastic = async (data) => {
   const step = getLatestStep();
@@ -85,14 +85,14 @@ const insertDataInElastic = async (data) => {
 /**
  * Inserts the contents of an unpaywall data update file.
  *
- * @param {Object} insertConfig - Config of insertion that content :
- * @param {String} filename - Name of the snapshot file from which the data will
+ * @param {Object} insertConfig - Config of insertion.
+ * @param {string} insertConfig.filename - Name of the snapshot file from which the data will
  * be retrieved to be inserted into elastic.
- * @param {String} index - Name of the index to which the data will be inserted.
- * @param {Integer} offset - Line of the snapshot at which the data insertion starts.
- * @param {Integer} limit - Line in the file where the insertion stops.
+ * @param {string} insertConfig.index - Name of the index to which the data will be inserted.
+ * @param {number} insertConfig.offset - Line of the snapshot at which the data insertion starts.
+ * @param {number} insertConfig.limit - Line in the file where the insertion stops.
  *
- * @returns {Boolean} Success or not.
+ * @returns {boolean} Success or not.
  */
 const insertDataUnpaywall = async (insertConfig) => {
   const {

@@ -15,7 +15,7 @@ redisClient.ping = util.promisify(redisClient.ping);
 /**
  * Ping redis service.
  *
- * @returns {Boolean} ping
+ * @returns {boolean} ping
  */
 async function pingRedis() {
   try {

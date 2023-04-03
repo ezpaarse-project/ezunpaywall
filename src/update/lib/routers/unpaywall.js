@@ -6,15 +6,15 @@ const { getChangefiles } = require('../services/unpaywall');
 /**
  * Route that give the changefiles registry from unpaywall without apikey.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeQuery {String} latest - indicate if it gave latest changefile or not.
- * @routeBody {String} interval - Interval of changefile, day or week are available.
+ * @routeQuery {string} latest - indicate if it gave latest changefile or not.
+ * @routeBody {string} interval - Interval of changefile, day or week are available.
  *
  * @routeResponse {Object} Registry of changefile.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/unpaywall/changefiles', async (req, res, next) => {
   const { error, value } = joi.string().trim().valid('week', 'day').default('day')

@@ -11,8 +11,9 @@ const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:59799';
 
 /**
- * delete a snapshot in ezunpaywall
- * @param {String} filename name of file needed to be delete on ezunpaywall
+ * Delete a snapshot in ezunpaywall.
+ *
+ * @param {string} filename name of file needed to be delete on ezunpaywall.
  */
 const deleteFile = async (filename) => {
   try {
@@ -25,8 +26,9 @@ const deleteFile = async (filename) => {
 };
 
 /**
- * add a snapshot in ezunpaywall
- * @param {String} filename name of file needed to be add on ezunpaywall
+ * Add a snapshot in ezunpaywall.
+ *
+ * @param {string} filename - Filename needed to be add on ezunpaywall.
  */
 const addSnapshot = async (filename) => {
   try {
@@ -40,7 +42,9 @@ const addSnapshot = async (filename) => {
 };
 
 /**
- *
+ * Update the registry of changefiles of fakeUnpaywall.
+ * 
+ * @param {string} interval - Interval of registry.
  */
 const updateChangeFile = async (interval) => {
   try {

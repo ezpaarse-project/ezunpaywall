@@ -13,13 +13,14 @@ const updateChangefilesExample = require('../controllers/changefiles');
 /**
  * Route that update changefiles.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
- * @routeQuery {String} interval - Interval of changefile
+ * @routeQuery {string} interval - Interval of changefile
  * week of day is allowed.
  *
- * @return {res} HTTP response
+ * @return {import('express').Response} HTTP response.
  */
 router.patch('/changefiles', async (req, res, next) => {
   const { interval } = req.query;

@@ -6,35 +6,35 @@ const { pingRedis } = require('../services/redis');
 /**
  * Route that give the name of service.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeResponse {String} name of service.
+ * @routeResponse {string} name of service.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/', (req, res) => res.status(200).json('apikey service'));
 
 /**
  * Route that ping the service.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/ping', (req, res) => res.status(204).end());
 
 /**
  * route that gives the state of health of the service.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
  * @routeResponse {Array<Object>} List of status of healthcheck
  * with name, time, optionnal error and healthy.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/health', async (req, res) => {
   const start = Date.now();
@@ -56,15 +56,15 @@ router.get('/health', async (req, res) => {
 /**
  * Route that gives the state of health of redis.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
  * @routeResponse {Object} status of healthcheck
  * with name, time, optionnal error and healthy.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
-router.get('/health/redis', async (req, res, next) => {
+router.get('/health/redis', async (req, res) => {
   const resultPing = await promiseWithTimeout(pingRedis(), 'redis');
 
   return res.status(200).json(resultPing);

@@ -5,17 +5,17 @@ const sendMailContact = require('../controllers/contact');
 
 const { sendMailUpdateStarted, sendMailUpdateReport } = require('../controllers/update');
 /**
- * Send a contact mail
+ * Send a contact mail.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeBody {String} email - Email of sender.
- * @routeBody {String} subject - Subject of mail.
- * @routeBody {String} message -  Message of mail.
+ * @routeBody {string} email - Email of sender.
+ * @routeBody {string} subject - Subject of mail.
+ * @routeBody {string} message -  Message of mail.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/contact', checkAuth, async (req, res) => {
   const {
@@ -49,12 +49,12 @@ router.post('/contact', checkAuth, async (req, res) => {
  * Route that sends a mail that inform that an update has started start.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeBody {String} config - Config.
+ * @routeBody {string} config - Config.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/update-start', checkAuth, async (req, res) => {
   const config = req.body;
@@ -68,10 +68,10 @@ router.post('/update-start', checkAuth, async (req, res) => {
  * Route that send update mail report.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/update-end', checkAuth, async (req, res) => {
   const state = req.body;

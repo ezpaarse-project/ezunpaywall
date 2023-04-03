@@ -25,7 +25,7 @@ function setState(key, value) {
 /**
  * Create a new file on folder "data/update/state" containing the update state
  *
- * @return {String} name of the file where the state is saved.
+ * @return {string} name of the file where the state is saved.
  */
 async function createState() {
   state = {
@@ -53,7 +53,7 @@ function addStepGetChangefiles() {
 /**
  * Add step "download" in steps attributes of state.
  *
- * @param {String} downloadFile - Upaywall data update filename.
+ * @param {string} downloadFile - Upaywall data update filename.
  */
 function addStepDownload(downloadFile) {
   logger.info('step - download file');
@@ -70,7 +70,7 @@ function addStepDownload(downloadFile) {
 /**
  * Add step "download" in steps attributes of state.
  *
- * @param {String} downloadFile - Unpaywall data update file name.
+ * @param {string} downloadFile - Unpaywall data update file name.
  */
 function addStepInsert(downloadFile) {
   logger.info('step - insert file');
@@ -127,9 +127,9 @@ function end() {
 }
 
 /**
- * Update the state when there is an error
+ * Update the state when there is an error.
  *
- * @param {Array<String>} stackTrace - Log of error.
+ * @param {Array<string>} stackTrace - Log of error.
  */
 async function fail(stackTrace) {
   logger.error('[update process]: fail');

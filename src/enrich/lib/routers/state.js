@@ -17,13 +17,14 @@ const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  * Route that give list of filename of state or the content of latest
  * state.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
- * @routeResponse {Array<String>} List of filename of state
+ * @routeResponse {Array<string>} List of filename of state
  * @routeResponse {Object} Content of latest state in json
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/states', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
@@ -62,14 +63,14 @@ router.get('/states', checkAuth, async (req, res, next) => {
 /**
  * Route that give the content of state.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeParams {String} Filename of state.
+ * @routeParams {string} Filename of state.
  *
  * @routeResponse {Object} Content of latest state in json
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/states/:filename', checkAuth, async (req, res, next) => {
   const { filename } = req.params;

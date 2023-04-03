@@ -17,10 +17,12 @@ const binaryParser = (res, cb) => {
 };
 
 /**
- * compares the content of 2 files and indicates whether they are identical or not
- * @param {String} path1 filepath of the first file
- * @param {String} path2 filepath of the second file
- * @returns {boolean} if identical
+ * compares the content of 2 files and indicates whether they are identical or not.
+ *
+ * @param {string} path1 filepath of the first file.
+ * @param {string} path2 filepath of the second file.
+ *
+ * @returns {boolean} is identical.
  */
 const compareFile = async (path1, path2) => {
   const file1 = await fs.readFile(path1, 'utf-8');

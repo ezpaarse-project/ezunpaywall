@@ -16,14 +16,14 @@ router.use('/snapshots', express.static(path.resolve(snapshotsDir)));
 /**
  * Route that give a weekly changefile.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeParams {String} file - Name of weekly changefile.
+ * @routeParams {string} file - Name of weekly changefile.
  *
  * @routeResponse {File} Weekly changefile.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/feed/changefile/:file', async (req, res) => {
   const { error, value } = joi.string().trim().validate(req.params.file);
@@ -42,14 +42,14 @@ router.get('/feed/changefile/:file', async (req, res) => {
 /**
  * Route that give a daily changefile.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeParams {String} file - Name of daily changefile.
+ * @routeParams {string} file - Name of daily changefile.
  *
  * @routeResponse {File} Daily changefile.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/daily-feed/changefile/:file', async (req, res) => {
   const { error, value } = joi.string().trim().validate(req.params.file);
@@ -68,15 +68,15 @@ router.get('/daily-feed/changefile/:file', async (req, res) => {
 /**
  * Route that give the changefile registry.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeQuery {String} interval - interval of changefile,
+ * @routeQuery {string} interval - interval of changefile,
  * day or week are available.
  *
  * @routeResponse {Object} Registry of changefile.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/feed/changefiles', checkAuth, async (req, res) => {
   const { error, value } = joi.string().trim().valid('day', 'week').default('day')
@@ -93,12 +93,12 @@ router.get('/feed/changefiles', checkAuth, async (req, res) => {
 /**
  * Route that the current snapshot.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
  * @routeResponse {File} Current snapshot.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/feed/snapshot', checkAuth, async (req, res) => res.sendFile(path.resolve(snapshotsDir, 'snapshot.jsonl.gz')));
 

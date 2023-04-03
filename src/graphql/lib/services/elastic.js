@@ -67,7 +67,7 @@ async function pingElastic() {
  * count of oa_status: 'green'
  * count of oa_status: 'closed'
  *
- * @param {String} index elastic index to request
+ * @param {string} index elastic index to request
  *
  * @returns {Object} metrics
  */

@@ -7,14 +7,14 @@ const logger = require('../logger');
 /**
  * Create an apikey on redis according to its configuration.
  *
- * @param {String} name - Name of apikey.
- * @param {Array<String>} access - Names of the services to which the key has access.
- * Only accept graphql and enrich
- * @param {Array<String>} attributes - Names of the unpaywall attributes.
+ * @param {string} name - Name of apikey.
+ * @param {Array<string>} access - Names of the services to which the key has access.
+ * Only accept graphql and enrich.
+ * @param {Array<string>} attributes - Names of the unpaywall attributes.
  * to which the key has access. Only accept attributes from ./attributes.js.
- * @param {Boolean} allowed - Indicates if the key is authorized or not.
+ * @param {boolean} allowed - Indicates if the key is authorized or not.
  *
- * @returns {String} The randomly generated api key.
+ * @returns {string} The randomly generated API key.
  */
 const createApiKey = async (name, access, attributes, allowed) => {
   const currentDate = Date.now();
@@ -45,13 +45,14 @@ const createApiKey = async (name, access, attributes, allowed) => {
 /**
  * Update an apikey on redis according to its key and its configuration.
  *
- * @param {String} id - Key of apikey.
- * @param {String} name - Name of apikey.
- * @param {Array<String>} access - Names of the services to which the key has access.
+ * @param {string} id - Key of apikey.
+ * @param {string} name - Name of apikey.
+ * @param {Array<string>} access - Names of the services to which the key has access.
  * Only accept graphql and enrich.
- * @param {Array<String>} attributes - Names of the unpaywall attributes
+ * @param {Array<string>} attributes - Names of the unpaywall attributes
  * to which the key has access. Only accept attributes from ./attributes.js.
- * @param {Boolean} allowed - Indicates if the key is authorized or not.
+ * @param {boolean} allowed - Indicates if the key is authorized or not.
+ *
  * @returns {Object} Config of apikey.
  */
 const updateApiKey = async (id, name, access, attributes, allowed) => {
@@ -76,7 +77,7 @@ const updateApiKey = async (id, name, access, attributes, allowed) => {
 /**
  * Delete an apikey on redis according to its key.
  *
- * @param {String} id - key of apikey.
+ * @param {string} id - key of apikey.
  */
 const deleteApiKey = async (id) => {
   await redisClient.del(id, redis.print);

@@ -5,9 +5,9 @@ const {
 /**
  * Middleware that blocks simultaneous updates of unpaywall data.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
- * @param {function} next - do the following
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
  * @returns {Object|function} res or next
  */

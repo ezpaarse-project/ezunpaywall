@@ -13,12 +13,12 @@ const upload = require('../middlewares/multer');
  * Route that get list of enriched filename.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
  * @routeResponse {Object} List of enriched filename.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/enriched', checkAuth, async (req, res) => {
   const apikey = req.get('x-api-key');
@@ -39,12 +39,12 @@ router.get('/enriched', checkAuth, async (req, res) => {
  * Route that get list of uploaded filename.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
  * @routeResponse {Object} list of uploaded filename
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/upload', checkAuth, async (req, res) => {
   const apikey = req.get('x-api-key');
@@ -65,16 +65,16 @@ router.get('/upload', checkAuth, async (req, res) => {
  * Route that get enriched file.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeParams {String} Enriched filename.
+ * @routeParams {string} Enriched filename.
  *
  * @routeResponse {Object} Enriched file.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
-router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
+router.get('/enriched/:filename', checkAuth, async (req, res) => {
   const { filename } = req.params;
 
   const { error } = joi.string().trim().required().validate(filename);
@@ -94,12 +94,13 @@ router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
  * Route that upload file.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
  * @routeResponse {Object} Filename of uploaded file.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/upload', checkAuth, upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ message: 'File not sent' });

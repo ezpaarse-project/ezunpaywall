@@ -16,15 +16,15 @@ const reportsDir = path.resolve(__dirname, '..', '..', 'data', 'reports');
 /**
  * Route that give the list of reports or the content of most recent report in JSON format.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeQuery {String} latest - indicate if it gave latest report or not.
+ * @routeQuery {string} latest - indicate if it gave latest report or not.
  *
- * @routeResponse {Array<String>|<Object>} List of filename of report
- * or the content of latest report
+ * @routeResponse {Array<string>|<Object>} List of filename of report
+ * or the content of latest report.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/reports', async (req, res, next) => {
   const { error, value } = joi.object({
@@ -70,11 +70,11 @@ router.get('/reports', async (req, res, next) => {
 /**
  * Route that give the content of report in JSON format.
  *
- * @routeParam {String} filename - Filename of report.
+ * @routeParam {string} filename - Filename of report.
  *
  * @routeResponse {Object} report - Content of report in JSON format.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/reports/:filename', async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.filename);

@@ -25,14 +25,15 @@ const {
  * Route that get config of apikey.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
- * @routeParams {String} apikey - Key of apikey.
+ * @routeParams {string} apikey - Key of apikey.
  *
  * @routeResponse {Object} Apikey config.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/keys/:apikey', async (req, res, next) => {
   const { apikey } = req.params;
@@ -69,12 +70,13 @@ router.get('/keys/:apikey', async (req, res, next) => {
  * Get list of all apikeys.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
  * @routeResponse {Array<Object>} Array of apikey with key and config
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/keys', checkAuth, async (req, res, next) => {
   let keys;
@@ -125,16 +127,17 @@ router.get('/keys', checkAuth, async (req, res, next) => {
  * Route that create new apikey.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
- * @routeBody {String} name - Name of apikey.
- * @routeBody {Array<String>} attributes - Attributes names of the unpaywall attributes
+ * @routeBody {string} name - Name of apikey.
+ * @routeBody {Array<string>} attributes - Attributes names of the unpaywall attributes
  * to which the key has access.
  * Only accept attributes from ./attributes.js.
- * @routeBody {Array<String>} access - Names of the services to which the key has access.
+ * @routeBody {Array<string>} access - Names of the services to which the key has access.
  * Only accept graphql and enrich.
- * @routeBody {Boolean} allowed - Indicates if the key is authorized or not.
+ * @routeBody {boolean} allowed - Indicates if the key is authorized or not.
  *
  * @routeResponse {Object} Key of apikey and its config.
  *
@@ -210,22 +213,23 @@ router.post('/keys', checkAuth, async (req, res, next) => {
  * Route that update existing apikey
  * Auth required
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
  * @routeParams {string} Key of apikey.
  *
- * @routeBody {String} name - Name of apikey.
- * @routeBody {Array<String>} attributes - Names of the unpaywall attributes
+ * @routeBody {string} name - Name of apikey.
+ * @routeBody {Array<string>} attributes - Names of the unpaywall attributes
  * to which the key has access.
  * Only accept attributes from ./attributes.js.
- * @routeBody {Array<String>} access - Names of the services to which the key has access.
+ * @routeBody {Array<string>} access - Names of the services to which the key has access.
  * Only accept graphql and enrich
- * @routeBody {Boolean} allowed - Indicates if the key is authorized or not.
+ * @routeBody {boolean} allowed - Indicates if the key is authorized or not.
  *
  * @routeResponse {Object} Apikey config.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
   const checkParams = joi.string().trim().required().validate(req.params.apikey);
@@ -342,12 +346,13 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
  * Route that delete existing apikey
  * Auth required
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
  * @routeParams {string} Key of apikey.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.apikey);
@@ -385,10 +390,11 @@ router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
  * Using for test.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.delete('/keys', checkAuth, async (req, res, next) => {
   try {
@@ -408,10 +414,11 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
  *
  * @routeBody {Array<Object>} - Array of apikey (key + config)
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
   const { error, value } = joi.array().validate(req.body);
@@ -441,10 +448,11 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
  * using for test.
  * auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following in error handler.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/keys/loadDev', checkAuth, async (req, res, next) => {
   try {

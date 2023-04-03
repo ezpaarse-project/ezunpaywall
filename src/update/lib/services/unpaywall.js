@@ -35,9 +35,9 @@ const getSnapshot = async () => {
 /**
  * Get the Unpaywall changefile registry with interval and between period.
  *
- * @param {String} interval - Interval of changefile, day or week are available.
- * @param {String} startDate - Start date for the changefile period.
- * @param {String} endDate - End date for the changefile period.
+ * @param {string} interval - Interval of changefile, day or week are available.
+ * @param {string} startDate - Start date for the changefile period.
+ * @param {string} endDate - End date for the changefile period.
  *
  * @returns {Object} Unpaywall changefile registry in json format.
  */
@@ -84,8 +84,8 @@ const getChangefiles = async (interval, startDate, endDate) => {
 /**
  * Get changefile from unpaywall with his filename.
  *
- * @param {String} filename - Filename of changefile.
- * @param {String} interval - Type of changefile (day or week).
+ * @param {string} filename - Filename of changefile.
+ * @param {string} interval - Type of changefile (day or week).
  *
  * @returns {Readable} Stream of changefile.
  */

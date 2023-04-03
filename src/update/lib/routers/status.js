@@ -6,12 +6,12 @@ const { getStatus, setInUpdate } = require('../controllers/status');
 /**
  * Route that indicate if an update is in progress.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeResponse {Boolean} - Indicate if an update is in progress.
+ * @routeResponse {boolean} - Indicate if an update is in progress.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/status', (req, res) => {
   const status = getStatus();
@@ -22,12 +22,12 @@ router.get('/status', (req, res) => {
  * Route that reverses the status.
  * Auth required.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeResponse {Boolean} - Indicate if an update is in progress.
+ * @routeResponse {boolean} - Indicate if an update is in progress.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.patch('/status', checkAuth, (req, res) => {
   const status = getStatus();

@@ -47,9 +47,9 @@ const graphqlConfigWithAllAttributes = `
 /**
  * Add attribute doi to graphql params.
  *
- * @param {String} args - Graphql params.
+ * @param {string} args - Graphql params.
  *
- * @returns {String} Graphql params with doi
+ * @returns {string} Graphql params with doi
  */
 function addDOItoGraphqlRequest(args) {
   args = args.replace(/\s/g, '');
@@ -59,10 +59,10 @@ function addDOItoGraphqlRequest(args) {
 /**
  * Enrich data with response from ezunpaywall.
  *
- * @param {array<object>} data - Array of line that we will enrich.
- * @param {array<object>} response - Response from ezunpaywall.
+ * @param {Array<Object>} data - Array of line that we will enrich.
+ * @param {Array<Object>} response - Response from ezunpaywall.
  *
- * @returns {array<object>} Number of line enriched and enriched data.
+ * @returns {Array<Object>} Number of line enriched and enriched data.
  */
 const enrichArray = (data, response) => {
   const enrichedArray = data;
@@ -98,10 +98,10 @@ const enrichArray = (data, response) => {
 /**
  * Write enriched data in enriched file.
  *
- * @param {array<object>} data - Array of line enriched.
- * @param {String} enrichedFile - Filepath of enriched file.
- * @param {String} stateName - State filename.
- * @param {String} apikey //TODO
+ * @param {Array<Object>} data - Array of line enriched.
+ * @param {string} enrichedFile - Filepath of enriched file.
+ * @param {string} stateName - State filename.
+ * @param {string} apikey //TODO
  */
 const writeInFileJSON = async (data, enrichedFile, stateName, apikey) => {
   const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
@@ -123,10 +123,10 @@ const writeInFileJSON = async (data, enrichedFile, stateName, apikey) => {
  *
  * A state is updated during the job.
  *
- * @param {String} id - Id of process.
- * @param {String} index - Index name of mapping.
- * @param {String} args - Attributes will be add.
- * @param {String} apikey - Apikey of user.
+ * @param {string} id - Id of process.
+ * @param {string} index - Index name of mapping.
+ * @param {string} args - Attributes will be add.
+ * @param {string} apikey - Apikey of user.
  */
 async function processEnrichJSON(id, index, args, apikey) {
   const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, `${id}.jsonl`));

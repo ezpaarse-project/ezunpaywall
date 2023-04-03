@@ -4,11 +4,11 @@ const logger = require('../logger');
 const { sendMail, generateMail } = require('../mail');
 
 /**
- * Send mail contact
+ * Send mail contact.
  *
- * @param {String} email - Sender email
- * @param {String} subject - Mail subject
- * @param {String} message - Mail message
+ * @param {string} email - Sender email.
+ * @param {string} subject - Mail subject.
+ * @param {string} message - Mail message.
  */
 async function sendMailContact(email, subject, message) {
   try {

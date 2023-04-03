@@ -9,8 +9,8 @@ const stateDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  * Create a new State in file on folder data/state/<apikey>/<id>.json
  * containing the enrich state.
  *
- * @param {String} id - Id of process.
- * @param {String} apikey - Apikey of user.
+ * @param {string} id - Id of process.
+ * @param {string} apikey - Apikey of user.
  */
 async function createState(id, apikey) {
   const state = {
@@ -47,8 +47,8 @@ async function createState(id, apikey) {
 /**
  * Get the content of state from a file in the folder data/state/<apikey>/<filename>.
  *
- * @param {String} filename - State filename.
- * @param {String} apikey - Apikey of user.
+ * @param {string} filename - State filename.
+ * @param {string} apikey - Apikey of user.
  *
  * @returns {Object} State of enrich process in JSON format.
  */
@@ -80,7 +80,7 @@ const getState = async (filename, apikey) => {
  * Write the latest version of the state of enrich process to the file.
  *
  * @param {Object} state - State in JSON format.
- * @param {String} filename - State filename.
+ * @param {string} filename - State filename.
  */
 const updateStateInFile = async (state, filename) => {
   const { apikey } = state;
@@ -102,8 +102,8 @@ const updateStateInFile = async (state, filename) => {
 /**
  * Update the state of enrich process when there is an error.
  *
- * @param {String} filename - State filename.
- * @param {String} apikey - Apikey of user.
+ * @param {string} filename - State filename.
+ * @param {string} apikey - Apikey of user.
  */
 const fail = async (filename, apikey) => {
   const state = await getState(filename, apikey);
@@ -116,8 +116,8 @@ const fail = async (filename, apikey) => {
 /**
  * Update the state of enrich process when the process is finished.
  *
- * @param {String} id - Id of process.
- * @param {String} apikey - Apikey of user.
+ * @param {string} id - Id of process.
+ * @param {string} apikey - Apikey of user.
  */
 const endState = async (id, apikey) => {
   const state = await getState(`${id}.json`, apikey);

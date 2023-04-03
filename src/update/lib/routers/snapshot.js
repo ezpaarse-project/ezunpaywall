@@ -18,15 +18,15 @@ const {
 /**
  * Route that give the list of snapshots installed on ezunpaywall of the most recent file.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeQuery {String} latest - indicate if it gave latest snapshot or not.
+ * @routeQuery {string} latest - indicate if it gave latest snapshot or not.
  *
- * @routeResponse {Array<String>|<File>} List of filename of snapshot
- * or the latest snapshot
+ * @routeResponse {Array<string>|<File>} List of filename of snapshot
+ * or the latest snapshot.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.get('/snapshots', async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req.query.latest);
@@ -51,10 +51,10 @@ router.get('/snapshots', async (req, res, next) => {
 /**
  * Route that upload a file on ezunpaywall.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.post('/snapshots', upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ messsage: 'File not sent' });
@@ -64,12 +64,12 @@ router.post('/snapshots', upload.single('file'), async (req, res, next) => {
 /**
  * Route that delete a file on ezunpaywall.
  *
- * @param {Object} req - HTTP request.
- * @param {Object} res - HTTP response.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
  *
- * @routeParam {String} filename - Filename.
+ * @routeParam {string} filename - Filename.
  *
- * @returns {Object} HTTP response.
+ * @return {import('express').Response} HTTP response.
  */
 router.delete('/snapshots/:filename', async (req, res, next) => {
   const { error, value } = joi.string().required().validate(req.params.filename);

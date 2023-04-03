@@ -12,9 +12,9 @@ graphql.host = config.get('graphql.host');
  * Request graphql service to get unpaywall data.
  *
  * @param {array<string>} data - Array of line that we will enrich.
- * @param {String} args - Requested graphql attributes.
- * @param {String} index - Requested index elastic.
- * @param {String} apikey - Apikey of user.
+ * @param {string} args - Requested graphql attributes.
+ * @param {string} index - Requested index elastic.
+ * @param {string} apikey - Apikey of user.
  *
  * @return {Array<Object>} graphql data ezunpaywall response
  */
@@ -46,7 +46,7 @@ async function requestGraphql(data, args, index, apikey) {
 /**
  * Ping ezunpaywall graphql service.
  *
- * @returns {Boolean} ping
+ * @returns {boolean} ping
  */
 async function pingGraphql() {
   let res;

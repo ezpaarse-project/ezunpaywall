@@ -14,7 +14,7 @@ const healthTimeout = config.get('healthTimeout');
  *
  * @param {Promise} p1 - Promise to be executed which will be stopped
  * if it does not solve after a certain time.
- * @param {String} name - Name of service.
+ * @param {string} name - Name of service.
  *
  * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
  */
@@ -49,8 +49,8 @@ async function PromiseOnHealthWithTimeout(p1, name) {
 /**
  * Get health of serivce.
  *
- * @param {String} name - Name of service.
- * @param {String} host - Host of service.
+ * @param {string} name - Name of service.
+ * @param {string} host - Host of service.
  *
  * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
  */
@@ -72,9 +72,9 @@ async function health(name, host) {
  * Executes a promise but cuts it off after a while if it has not been resolved.
  * This function is used for healthcheck routes.
  *
- * @param {*} p1 - Promise to be executed which will be stopped
+ * @param {Promise} p1 - Promise to be executed which will be stopped
  * if it does not solve after a certain time.
- * @param {*} name - Name of service
+ * @param {string} name - Name of service.
  *
  * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
  */
@@ -112,10 +112,10 @@ async function promiseWithTimeout(p1, name) {
 /**
  * Ping service.
  *
- * @param {String} name - Name of service.
- * @param {String} host - Host of service.
+ * @param {string} name - Name of service.
+ * @param {string} host - Host of service.
  *
- * @returns {Boolean} ping
+ * @returns {boolean} ping
  */
 async function ping(name, host) {
   try {

@@ -42,9 +42,9 @@ const graphqlConfigWithAllAttributes = `
 /**
  * Add attribute doi to graphql params.
  *
- * @param {String} args - Graphql params.
+ * @param {string} args - Graphql params.
  *
- * @returns {String} Graphql params with doi
+ * @returns {string} Graphql params with doi
  */
 function addDOItoGraphqlRequest(args) {
   args = args.replace(/\s/g, '');
@@ -83,10 +83,10 @@ function flatten(obj) {
 /**
  * Enrich data with response from ezunpaywall
  *
- * @param {array<object>} data - Array of line that we will enrich.
- * @param {array<object>} response - Response from ezunpaywall.
+ * @param {Array<Object>} data - Array of line that we will enrich.
+ * @param {Array<Object>} response - Response from ezunpaywall.
  *
- * @returns {array<object>} Number of line enriched and enriched data.
+ * @returns {Array<Object>} Number of line enriched and enriched data.
  */
 function enrichArray(data, response) {
   const enrichedArray = data;
@@ -123,11 +123,11 @@ function enrichArray(data, response) {
 /**
  * Write enriched data in enriched file.
  *
- * @param {array<object>} data - Array of line enriched
- * @param {String} headers - Headers
- * @param {char} separator - Separator of enriched file
- * @param {String} enrichedFile - Filepath of enriched file
- * @param {String} stateName - State filename
+ * @param {Array<Object>} data - Array of line enriched.
+ * @param {string} headers - Headers.
+ * @param {string} separator - Separator of enriched file.
+ * @param {string} enrichedFile - Filepath of enriched file.
+ * @param {string} stateName - State filename.
  */
 async function writeInFileCSV(data, headers, separator, enrichedFile, stateName) {
   const parsedTab = JSON.stringify(data);
@@ -149,10 +149,10 @@ async function writeInFileCSV(data, headers, separator, enrichedFile, stateName)
 /**
  * Enrich the csv header with graphql args.
  *
- * @param {array<string>} header - csv header.
- * @param {String} args - Graphql args.
+ * @param {Array<string>} header - csv header.
+ * @param {string} args - Graphql args.
  *
- * @returns {array<string>} header enriched.
+ * @returns {Array<string>} header enriched.
  */
 async function enrichHeaderCSV(header, args) {
   args = args.replace(/\s/g, '').substring(1);
@@ -193,8 +193,8 @@ async function enrichHeaderCSV(header, args) {
  * Write csv header in the enriched file.
  *
  * @param {array<string>} header - Csv header.
- * @param {char} separator - Separator of csv file.
- * @param {String} filePath - Path of the file to write the csv header.
+ * @param {string} separator - Separator of csv file.
+ * @param {string} filePath - Path of the file to write the csv header.
  */
 async function writeHeaderCSV(header, separator, filePath) {
   try {
@@ -214,11 +214,11 @@ async function writeHeaderCSV(header, separator, filePath) {
  *
  * A state is updated during the job.
  *
- * @param {String} id - Id of process.
- * @param {String} index - Index name of mapping.
- * @param {String} args - Attributes will be add.
- * @param {String} apikey - Apikey of user.
- * @param {String} separator - separator of enriched file.
+ * @param {string} id - Id of process.
+ * @param {string} index - Index name of mapping.
+ * @param {string} args - Attributes will be add.
+ * @param {string} apikey - Apikey of user.
+ * @param {string} separator - separator of enriched file.
  */
 async function processEnrichCSV(id, index, args, apikey, separator) {
   const filename = `${id}.csv`;
