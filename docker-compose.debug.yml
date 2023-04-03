@@ -145,6 +145,7 @@ services:
     image: node:18.12.1
     container_name: ezunpaywall-mail-dev
     environment:
+      - NODE_CONFIG
       - MAIL_SMTP_HOST=maildev
       - MAIL_SMTP_PORT
       - MAIL_NOTIFICATIONS_SENDER
@@ -223,6 +224,8 @@ services:
     working_dir: /usr/src/app
     volumes:
       - ./src/health:/usr/src/app
+    environment:
+      - NODE_CONFIG
     command: "npm run dev"
     ports:
       - ${HEALTH_PORT:-59707}:3000
