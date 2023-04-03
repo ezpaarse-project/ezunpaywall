@@ -5,11 +5,11 @@ export default {
     password: ''
   }),
   getters: {
-    getPassword (state) {
-      return state.password
-    },
     getIsAdmin (state) {
       return state.isAdmin
+    },
+    getPassword (state) {
+      return state.password
     }
   },
   mutations: {

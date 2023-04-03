@@ -45,7 +45,7 @@
             />
           </v-card-actions>
           <SettingsAttributes
-            :all="attributesAll"
+            :all="allSelected"
             :simple="attributesSimple"
             :best-oa-location="attributesBestOaLocation"
             :first-oa-location="attributesFirstOaLocation"
@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import SettingsAttributes from '~/components/administration/SettingsAttributes.vue'
+import SettingsAttributes from '~/components/unpaywallArgs/SettingsAttributes.vue'
 
 export default {
   name: 'ApikeyUpdateDialog',
@@ -138,8 +138,8 @@ export default {
     attributesZAuthors () {
       return this.attributes?.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
     },
-    attributesAll () {
-      return this.attributes?.includes('*')
+    allSelected () {
+      return this.attributes.includes('*')
     }
   },
   mounted () {
@@ -177,7 +177,12 @@ export default {
       this.updateVisible(false)
     },
     updateAttributes (attributesSelected) {
-      this.attributes = attributesSelected
+      // TODO 50 is the sum of attributes available through ezunpaywall
+      if (attributesSelected.length === 50) {
+        this.attributes = ['*']
+      } else {
+        this.attributes = attributesSelected
+      }
     }
   }
 }

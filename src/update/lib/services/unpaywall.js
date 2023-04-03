@@ -7,7 +7,7 @@ const unpaywall = axios.create({
 });
 unpaywall.baseURL = config.get('unpaywall.host');
 
-const apiKey = config.get('unpaywall.apikey');
+const apikey = config.get('unpaywall.apikey');
 /**
  * get the latest snapshot
  * @returns {Readable}
@@ -20,7 +20,7 @@ const getSnapshot = async () => {
       url: '/feed/snapshot',
       responseType: 'stream',
       params: {
-        api_key: apiKey,
+        api_key: apikey,
       },
     });
   } catch (err) {
@@ -45,7 +45,7 @@ const getChangefiles = async (interval, startDate, endDate) => {
       url: '/feed/changefiles',
       params: {
         interval,
-        api_key: apiKey,
+        api_key: apikey,
       },
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -98,7 +98,7 @@ const getChangefile = async (filename, interval) => {
       url: `/${feed}/changefile/${filename}`,
       responseType: 'stream',
       params: {
-        api_key: apiKey,
+        api_key: apikey,
       },
     });
   } catch (err) {

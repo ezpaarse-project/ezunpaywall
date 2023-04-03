@@ -18,7 +18,7 @@
         <v-icon>mdi-api</v-icon>
       </v-toolbar>
       <v-card-text>
-        <v-text-field v-model="apiKey" :label="$t('graphql.apiKey')" />
+        <v-text-field v-model="apikey" :label="$t('graphql.apikey')" />
         <v-text-field v-model="doi" label="DOIs" />
       </v-card-text>
 
@@ -56,7 +56,14 @@
         </v-menu>
       </v-toolbar>
       <v-card-text>
-        <SettingsGraphql />
+        <SettingsAttributes
+          :simple="attributesSimple"
+          :best-oa-location="attributesBestOaLocation"
+          :first-oa-location="attributesFirstOaLocation"
+          :oa-locations="attributesOaLocations"
+          :z-authors="attributesZAuthors"
+          @attributes="getAttributes"
+        />
       </v-card-text>
     </v-card>
     <v-card class="mx-auto">
@@ -78,7 +85,7 @@
         <v-spacer />
         <v-btn
           :loading="loading"
-          :disabled="!getSetting"
+          :disabled="!attributes.length"
           @click="graphqlRequest"
           v-text="$t('graphql.start')"
         />
@@ -96,6 +103,7 @@
             <v-btn
               :href="linkGraphql"
               target="_blank"
+              :disabled="!attributes.length"
               v-text="$t('graphql.linkAPI')"
             />
           </v-card-actions>
@@ -106,18 +114,19 @@
 </template>
 
 <script>
-import SettingsGraphql from '~/components/unpaywallArgs/SettingsGraphql.vue'
+import SettingsAttributes from '~/components/unpaywallArgs/SettingsAttributes.vue'
 
 export default {
   name: 'Graphql',
   components: {
-    SettingsGraphql
+    SettingsAttributes
   },
   transition: 'slide-x-transition',
   data: () => {
     return {
-      apiKey: 'demo',
+      apikey: 'demo',
       doi: '10.1001/jama.2016.9797',
+      attributes: ['doi', 'best_oa_location.evidence', 'best_oa_location.is_best', 'first_oa_location.url_for_pdf', 'z_authors.family', 'z_authors.given'],
       loading: false,
       result: '',
       // help
@@ -135,14 +144,38 @@ export default {
       const dois = this.doi.split(',')
       return `"${dois.join('", "')}"`
     },
-    getSetting () {
-      const {
-        simple,
-        best_oa_location,
-        first_oa_location,
-        oa_locations,
-        z_authors
-      } = this.$store.state.graphql
+    attributesSimple () {
+      return this.attributes?.filter(e => !e.includes('.'))
+    },
+    attributesBestOaLocation () {
+      return this.attributes?.filter(e => e.includes('best_oa_location')).map(e => e.split('.')[1])
+    },
+    attributesFirstOaLocation () {
+      return this.attributes?.filter(e => e.includes('first_oa_location')).map(e => e.split('.')[1])
+    },
+    attributesOaLocations () {
+      return this.attributes?.filter(e => e.includes('oa_locations')).map(e => e.split('.')[1])
+    },
+    attributesZAuthors () {
+      return this.attributes?.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
+    },
+    query () {
+      return `{ GetByDOI(dois: [${this.formatDOIs}]) ${this.parseUnpaywallAttributesToGraphqlAttributes(this.attributes)} }`
+    },
+    linkGraphql () {
+      return `${this.$graphql.defaults.baseURL}/graphql?query=${this.query}&apikey=demo`
+    },
+    stringifiedGraphqlResult () {
+      return JSON.stringify(this.result.data, null, 2)
+    }
+  },
+  methods: {
+    parseUnpaywallAttributesToGraphqlAttributes (attributes) {
+      const simple = attributes.filter((e) => { return !e.includes('.') })
+      let best_oa_location = attributes.filter((e) => { return e.includes('best_oa_location') })
+      let first_oa_location = attributes.filter((e) => { return e.includes('first_oa_location') })
+      let oa_locations = attributes.filter((e) => { return e.includes('oa_locations') })
+      let z_authors = attributes.filter((e) => { return e.includes('z_authors') })
 
       if (
         !simple.length &&
@@ -153,37 +186,31 @@ export default {
       ) {
         return ''
       }
-
       const attrs = []
-
       if (simple.length) {
         attrs.push(simple.join(', '))
       }
       if (best_oa_location.length) {
+        best_oa_location = best_oa_location.map((e) => { return e.split('.')[1] })
         attrs.push(`best_oa_location { ${best_oa_location.join(', ')} }`)
       }
       if (first_oa_location.length) {
+        first_oa_location = first_oa_location.map((e) => { return e.split('.')[1] })
         attrs.push(`first_oa_location { ${first_oa_location.join(', ')} }`)
       }
       if (oa_locations.length) {
+        oa_locations = oa_locations.map((e) => { return e.split('.')[1] })
         attrs.push(`oa_locations { ${oa_locations.join(', ')} }`)
       }
       if (z_authors.length) {
+        z_authors = z_authors.map((e) => { return e.split('.')[1] })
         attrs.push(`z_authors { ${z_authors.join(', ')} }`)
       }
       return `{ ${attrs.join(', ')} }`
     },
-    query () {
-      return `{ GetByDOI(dois: [${this.formatDOIs}]) ${this.getSetting} }`
+    getAttributes (attributesSelected) {
+      this.attributes = attributesSelected
     },
-    linkGraphql () {
-      return `${this.$graphql.defaults.baseURL}/graphql?query=${this.query}&apikey=demo`
-    },
-    stringifiedGraphqlResult () {
-      return JSON.stringify(this.result.data, null, 2)
-    }
-  },
-  methods: {
     /**
      * Necessary on preprod
      * (http environment)
@@ -226,7 +253,7 @@ export default {
             query: this.query
           },
           headers: {
-            'x-api-key': this.apiKey
+            'x-api-key': this.apikey
           }
         })
         this.$vuetify.goTo('#graphqlResult')
