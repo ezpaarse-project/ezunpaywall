@@ -28,5 +28,5 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, async () => {
   logger.info('ezunpaywall health service listening on 3000');
-  getConfig(true);
+  getConfig();
 });
