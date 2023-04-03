@@ -55,22 +55,16 @@ async function sendMailUpdateStarted(info) {
  *
  * @returns {String} Data response of mail service.
  */
-async function sendMailNoChangefile(startDate, endDate) {
-  let res;
-  try {
-    res = await mail({
-      method: 'POST',
-      url: '/nochangefile',
-      data: { startDate, endDate },
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'x-api-key': apikey,
-      },
-    });
-  } catch (err) {
-    logger.errorRequest(err);
-  }
-  return res?.body;
+function sendMailNoChangefile(startDate, endDate) {
+  return mail({
+    method: 'POST',
+    url: '/nochangefile',
+    data: { startDate, endDate },
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-api-key': apikey,
+    },
+  });
 }
 
 module.exports = {
