@@ -100,7 +100,7 @@ const getByDOI = {
         await redisClient.set(apikey, `${JSON.stringify(apiKeyConfig)}`);
       } catch (err) {
         logger.error(`[redis] Cannot update apikey [${apikey}] with config [${JSON.stringify(apiKeyConfig)}]`, err);
-        return Promise.reject(err);
+        throw err;
       }
     }
 

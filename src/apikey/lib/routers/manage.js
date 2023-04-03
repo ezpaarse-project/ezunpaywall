@@ -34,8 +34,9 @@ router.get('/keys/:apikey', async (req, res, next) => {
   try {
     apikeyConfig = await redisClient.get(apikey);
   } catch (err) {
-    logger.error(`[redis] Cannot get config for apikey [${apikey}]`, err);
-    return next({ message: `Cannot get config for apikey [${apikey}]` });
+    const message = `Cannot get config for apikey [${apikey}]`;
+    logger.error(`[redis] ${message}`, err);
+    return next({ message });
   }
 
   if (!apikeyConfig) {

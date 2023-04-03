@@ -76,7 +76,7 @@ router.delete('/snapshots/:filename', async (req, res, next) => {
   try {
     await deleteFile(filename);
   } catch (err) {
-    return next({ message: err });
+    return next({ message: err.message });
   }
 
   return res.status(200).json({ messsage: `File [${filename}] deleted` });

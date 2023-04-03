@@ -22,14 +22,14 @@ const checkAuth = async (req, res, next) => {
     apikeyConfig = await redisClient.get(apikey);
   } catch (err) {
     logger.error(`[redis] Cannot get [${apikey}] on redis`, err);
-    return next({ message: err });
+    return next({ message: err.message });
   }
 
   try {
     apikeyConfig = JSON.parse(apikeyConfig);
   } catch (err) {
     logger.error(`[redis] Cannot parse [${apikeyConfig}]`, err);
-    return next({ message: err });
+    return next({ message: err.message });
   }
 
   if (!Array.isArray(apikeyConfig?.access) || !apikeyConfig?.access?.includes('enrich') || !apikeyConfig?.allowed) {

@@ -32,7 +32,7 @@ router.get('/reports', async (req, res, next) => {
     try {
       latestFile = await getMostRecentFile(reportsDir);
     } catch (err) {
-      return next({ message: err });
+      return next({ message: err.message });
     }
 
     if (!latestFile) {
