@@ -21,7 +21,7 @@ const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
  * @routeBody {String} [type] type of file : csv or jsonl available
  * @routeBody {String} [args] graphql attributes added to the enriched file
  * @routeBody {String} [index] elastic index for enrich process
- * @routeBody {String} [separotor] enriched file separator
+ * @routeBody {String} [separator] enriched file separator
  *
  * @routeResponse {String} id of process
  *
