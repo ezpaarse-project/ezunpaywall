@@ -5,6 +5,12 @@ const defaultConfig = require('../config/default.json');
 
 const copyConfig = JSON.parse(JSON.stringify(config));
 
+/**
+ * Get config of service.
+ * @param {boolean} verbose indicate verbose or not.
+ *
+ * @returns {Object} Config of service.
+ */
 function getConfig(verbose) {
   if (verbose) {
     if (copyConfig.unpaywall.apikey === defaultConfig.unpaywall.apikey) {
