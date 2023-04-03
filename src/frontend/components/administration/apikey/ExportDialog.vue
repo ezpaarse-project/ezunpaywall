@@ -45,9 +45,7 @@ export default {
       element.setAttribute('href', `data:text/plain;charset=utf-8,${stringifiedApikey}`)
       element.setAttribute('download', `${this.$dateFns.format(new Date(), 'yyyy-MM-dd')}.apikeys-export.json`)
       element.style.display = 'none'
-      document.body.appendChild(element)
       element.click()
-      document.body.removeChild(element)
     },
     /**
      * Necessary on preprod
@@ -57,7 +55,6 @@ export default {
       const textArea = document.createElement('textarea')
       textArea.value = text
       textArea.setAttribute('display', 'none')
-      document.body.appendChild(textArea)
       textArea.focus()
       textArea.select()
       try {
@@ -68,7 +65,6 @@ export default {
           this.$t('apikey.errorCopyRequest')
         )
       }
-      document.body.removeChild(textArea)
     },
     copyText () {
       try {

@@ -5,18 +5,18 @@
       <v-spacer />
       <v-btn
         icon
-        @click.stop="setVisible('importDialogVisible', true)"
+        @click.stop="importDialogVisible = true"
       >
         <v-icon>mdi-file-import</v-icon>
       </v-btn>
       <ImportDialog
         v-model="importDialogVisible"
         @imported="getApikeys()"
-        @closed="setVisible('importDialogVisible', false)"
+        @closed="importDialogVisible = false"
       />
       <v-btn
         icon
-        @click.stop="setVisible('exportDialogVisible', true)"
+        @click.stop="exportDialogVisible = true"
       >
         <v-icon>mdi-export-variant</v-icon>
       </v-btn>
@@ -24,18 +24,18 @@
         v-model="exportDialogVisible"
         :apikeys="apikeys"
         @created="getApikeys()"
-        @closed="setVisible('exportDialogVisible', false)"
+        @closed="exportDialogVisible = false"
       />
       <v-btn
         icon
-        @click.stop="setVisible('createDialogVisible', true)"
+        @click.stop="createDialogVisible = true"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
       <CreateDialog
         v-model="createDialogVisible"
         @created="getApikeys()"
-        @closed="setVisible('createDialogVisible', false)"
+        @closed="createDialogVisible = false"
       />
       <v-btn
         icon
@@ -104,9 +104,6 @@ export default {
     await this.getApikeys()
   },
   methods: {
-    setVisible (key, value) {
-      this[key] = value
-    },
     async getApikeys () {
       let res
       this.loading = true
