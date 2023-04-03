@@ -1,15 +1,15 @@
 <template>
   <div>
     <v-row align-center class="my-5 mx-1">
-      <v-btn class="body-2" color="primary" @click="nextStep(1)">
+      <v-btn class="body-2" color="primary" @click="setStep(1)">
         {{ $t("enrich.settings") }}
       </v-btn>
       <v-spacer />
       <v-btn
         class="body-2"
         color="primary"
-        :disabled="!unpaywallAttributesRule"
-        @click="nextStep(3)"
+        :disabled="!hasUnpaywallAttributes"
+        @click="setStep(3)"
       >
         {{ $t("enrich.startProcess") }}
       </v-btn>
@@ -68,7 +68,7 @@
     </v-toolbar>
 
     <SettingsAttributes
-      :hide-oa-locations="type === 'csv' ? true : false"
+      :hide-oa-locations="type === 'csv'"
       :simple="attributesSimple"
       :best-oa-location="attributesBestOaLocation"
       :first-oa-location="attributesFirstOaLocation"
@@ -135,7 +135,7 @@ export default {
     attributesZAuthors () {
       return this.attributes?.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
     },
-    unpaywallAttributesRule () {
+    hasUnpaywallAttributes () {
       return Array.isArray(this.attributes) && this.attributes.length > 0
     },
     extensionFileColor () {
@@ -152,16 +152,10 @@ export default {
     getApikey () {
       this.$store.commit('enrich/setApikey', this.extensionSelected())
     },
-    nextStep (step) {
-      this.$emit('nextStep', step)
-      const attributes = this.$store.getters['enrich/getAttributes']
+    setStep (step) {
+      this.$emit('setStep', step)
       if (step === 3) {
-        this.$root.$emit('startEnrich', {
-          apikey: this.apikey,
-          attributes,
-          files: this.$store.getters['enrich/getFiles'],
-          type: this.$store.getters['enrich/getType']
-        })
+        this.$root.$emit('startEnrich')
       }
     }
   }

@@ -12,38 +12,33 @@
 
     <SelectAttributes
       v-if="!hideSimple"
+      v-model="simpleSelected"
       :items="unpaywallAttr"
       label="simple"
-      :selected="simpleSelected"
-      @simple="setAttributes('simpleSelected', $event)"
     />
     <SelectAttributes
       v-if="!hideBestOaLocation"
+      v-model="bestOaLocationSelected"
       :items="oaLocationAttr"
       label="best_oa_location"
-      :selected="bestOaLocationSelected"
-      @best_oa_location="setAttributes('bestOaLocationSelected', $event)"
     />
     <SelectAttributes
       v-if="!hideFirstOaLocation"
+      v-model="firstOaLocationSelected"
       :items="oaLocationAttr"
       label="first_oa_location"
-      :selected="firstOaLocationSelected"
-      @first_oa_location="setAttributes('firstOaLocationSelected', $event)"
     />
     <SelectAttributes
       v-if="!hideOaLocations"
+      v-model="oaLocationsSelected"
       :items="oaLocationAttr"
       label="oa_locations"
-      :selected="oaLocationsSelected"
-      @oa_locations="setAttributes('oaLocationsSelected', $event)"
     />
     <SelectAttributes
       v-if="!hideZAuthor"
+      v-model="zAuthorsSelected"
       :items="zAuthorsAttr"
       label="z_authors"
-      :selected="zAuthorsSelected"
-      @z_authors="setAttributes('zAuthorsSelected', $event)"
     />
   </div>
 </template>
@@ -153,13 +148,16 @@ export default {
       ]
     },
     attributes () {
-      return this.hideSimple
-        ? []
-        : this.simpleSelected
-          .concat(this.hideOBestOaLocation ? [] : this.flatten(this.bestOaLocationSelected, 'best_oa_location'))
-          .concat(this.hideOFirstLocation ? [] : this.flatten(this.firstOaLocationSelected, 'first_oa_location'))
-          .concat(this.hideOaLocations ? [] : this.flatten(this.oaLocationsSelected, 'oa_locations'))
-          .concat(this.hideZAuthor ? [] : this.flatten(this.zAuthorsSelected, 'z_authors'))
+      return (this.hideSimple ? [] : this.simpleSelected)
+        .concat(this.hideOBestOaLocation ? [] : this.flatten(this.bestOaLocationSelected, 'best_oa_location'))
+        .concat(this.hideOFirstLocation ? [] : this.flatten(this.firstOaLocationSelected, 'first_oa_location'))
+        .concat(this.hideOaLocations ? [] : this.flatten(this.oaLocationsSelected, 'oa_locations'))
+        .concat(this.hideZAuthor ? [] : this.flatten(this.zAuthorsSelected, 'z_authors'))
+    }
+  },
+  watch: {
+    attributes () {
+      this.$emit('attributes', this.attributes)
     }
   },
   mounted () {
@@ -188,11 +186,6 @@ export default {
       this.firstOaLocationSelected = []
       this.oaLocationsSelected = []
       this.zAuthorsSelected = []
-      this.$emit('attributes', this.attributes)
-    },
-    setAttributes (key, e) {
-      if (!this[key]) { return false }
-      this[key] = e
       this.$emit('attributes', this.attributes)
     },
     flatten (e, attr) {

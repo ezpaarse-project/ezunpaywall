@@ -12,25 +12,25 @@
         <v-stepper-header>
           <v-stepper-step
             edit-icon="mdi-check"
-            :editable="!processingInProgress"
-            :complete="filesRule"
+            :editable="!isProcessing"
+            :complete="hasFiles"
             step="1"
           >
             {{ $t("enrich.filesSelection") }}
           </v-stepper-step>
 
-          <v-divider :color="filesRule && step > 1 ? 'primary' : ''" />
+          <v-divider :color="hasFiles && step > 1 ? 'primary' : ''" />
 
           <v-stepper-step
             edit-icon="mdi-check"
-            :editable="filesRule && !processingInProgress"
+            :editable="hasFiles && !isProcessing"
             :complete="step > 2"
             step="2"
           >
             {{ $t("enrich.settings") }}
           </v-stepper-step>
 
-          <v-divider :color="unpaywallAttributesRule && step > 2 ? 'primary' : ''" />
+          <v-divider :color="hasUnpaywallAttributes && step > 2 ? 'primary' : ''" />
 
           <v-stepper-step step="3">
             {{ $t("enrich.enrich") }}
@@ -39,15 +39,15 @@
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <LogFileTab @nextStep="setStep($event)" />
+            <LogFileTab @setStep="setStep($event)" />
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <SelectAttributesTab @nextStep="setStep($event)" />
+            <SelectAttributesTab @setStep="setStep($event)" />
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <ProcessTab ref="process" @processingInProgress="setProcessingInProgress($event)" @status="setProcessingInProgress($event)" />
+            <ProcessTab ref="process" @isProcessing="setIsProcessing($event)" @status="setIsProcessing($event)" />
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -73,7 +73,7 @@ export default {
       // stepper
       step: 1,
       // status
-      processingInProgress: false
+      isProcessing: false
     }
   },
   head () {
@@ -88,10 +88,10 @@ export default {
     attributes () {
       return this.$store.getters['enrich/getAttributes']
     },
-    filesRule () {
+    hasFiles () {
       return Array.isArray(this.files) && this.files.length > 0
     },
-    unpaywallAttributesRule () {
+    hasUnpaywallAttributes () {
       return Array.isArray(this.attributes) && this.attributes.length > 0
     }
   },
@@ -99,8 +99,8 @@ export default {
     setStep (step) {
       this.step = step
     },
-    setProcessingInProgress (processingInProgress) {
-      this.processingInProgress = processingInProgress
+    setIsProcessing (isProcessing) {
+      this.isProcessing = isProcessing
     }
   }
 }

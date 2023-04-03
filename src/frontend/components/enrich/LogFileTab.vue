@@ -42,8 +42,8 @@
       <v-btn
         class="body-2"
         color="primary"
-        :disabled="!filesRule"
-        @click="nextStep(2)"
+        :disabled="!hasFiles"
+        @click="setStep(2)"
       >
         {{ $t("enrich.continue") }}
       </v-btn>
@@ -70,7 +70,7 @@ export default {
     }
   },
   computed: {
-    filesRule () {
+    hasFiles () {
       return Array.isArray(this.files) && this.files.length > 0
     },
     files () {
@@ -78,8 +78,8 @@ export default {
     }
   },
   methods: {
-    nextStep (step) {
-      this.$emit('nextStep', step)
+    setStep (step) {
+      this.$emit('setStep', step)
     }
   }
 }

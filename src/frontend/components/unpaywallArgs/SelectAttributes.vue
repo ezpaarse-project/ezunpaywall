@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-autocomplete
-      :value="selected"
+      :value="value"
       :label="label"
       :items="items"
       item-text="name"
@@ -32,7 +32,7 @@ export default {
       type: Array,
       default: () => []
     },
-    selected: {
+    value: {
       type: Array,
       default: () => []
     }
@@ -40,11 +40,10 @@ export default {
   data: () => {
     return {}
   },
-  computed: {},
 
   methods: {
     updateModel (value) {
-      this.$emit(this.label, value)
+      this.$emit('input', value)
     }
   }
 }

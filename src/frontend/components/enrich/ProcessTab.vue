@@ -1,14 +1,14 @@
 <template>
   <v-card>
     <v-layout justify-end class="mb-3">
-      <v-btn :disabled="processingInProgress || error" @click="download()">
+      <v-btn :disabled="isProcessing || error" @click="download()">
         <v-icon left>
           mdi-download
         </v-icon>
         {{ $t("enrich.download") }}
       </v-btn>
     </v-layout>
-    <v-container v-if="processingInProgress" class="text-center">
+    <v-container v-if="isProcessing" class="text-center">
       <v-progress-circular
         :size="70"
         :width="7"
@@ -50,7 +50,7 @@ export default {
     stepTitle: '',
     timer: undefined,
     time: 0,
-    processingInProgress: false,
+    isProcessing: false,
     error: false,
     id: ''
   }),
@@ -60,15 +60,14 @@ export default {
     }
   },
   mounted () {
-    this.$root.$on('startEnrich', async (config) => {
-      this.type = config.type
-      this.apikey = config.apikey
+    this.$root.$on('startEnrich', async () => {
+      this.attributes = this.$store.getters['enrich/getAttributes']
+      this.type = this.$store.getters['enrich/getType']
+      this.apikey = this.$store.getters['enrich/getApikey']
       if (this.type === 'csv') {
-        this.attributes = config.attributes.filter(e => !e.includes('oa_locations'))
-      } else {
-        this.attributes = config.attributes
+        this.attributes = this.attributes.filter(e => !e.includes('oa_locations'))
       }
-      this.files = config.files
+      this.files = this.$store.getters['enrich/getFiles']
       await this.enrich()
     })
   },
@@ -142,8 +141,8 @@ export default {
       this.time = 0
       this.error = false
       this.startTimer(Date.now())
-      this.processingInProgress = true
-      this.$emit('processingInProgress', true)
+      this.isProcessing = true
+      this.$emit('isProcessing', true)
 
       const graphqlAttributes = this.parseUnpaywallAttributesToGraphqlAttributes(this.attributes)
       const id = await this.upload()
@@ -163,8 +162,8 @@ export default {
       }
 
       this.stopTimer()
-      this.processingInProgress = false
-      this.$emit('processingInProgress', false)
+      this.isProcessing = false
+      this.$emit('isProcessing', false)
       this.id = id
     },
 
@@ -208,7 +207,7 @@ export default {
     errored () {
       this.stopTimer()
       this.error = true
-      this.processingInProgress = false
+      this.isProcessing = false
       this.state = {}
       this.id = ''
     },

@@ -32,8 +32,8 @@ export default {
   },
   methods: {
     logOut () {
-      this.$store.dispatch('admin/setIsAdmin', false)
-      this.$store.dispatch('admin/setPassword', '')
+      this.$store.commit('admin/setIsAdmin', false)
+      this.$store.commit('admin/setPassword', '')
     }
   }
 }

@@ -177,6 +177,7 @@ export default {
       this.updateVisible(false)
     },
     updateAttributes (attributesSelected) {
+      // TODO 50 is the sum of attributes available through ezunpaywall
       if (attributesSelected.length === 50) {
         this.attributes = ['*']
       } else {

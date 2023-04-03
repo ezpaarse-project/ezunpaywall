@@ -32,7 +32,7 @@
       <template #body="{ items }">
         <tr v-for="(item, index) in items" :key="index">
           <td class="text-center pl-4 py-1">
-            <v-icon small @click="removeLogsFile(item.id)">
+            <v-icon small @click="removeFile(item.id)">
               mdi-delete
             </v-icon>
           </td>
@@ -133,7 +133,7 @@ export default {
       })
       this.$refs.filesLoaded.value = ''
     },
-    removeLogsFile (id) {
+    removeFile (id) {
       this.files = this.files.filter(file => file.id !== id)
       this.$store.commit('enrich/setFiles', this.files)
       this.$store.commit('enrich/setType', '')
