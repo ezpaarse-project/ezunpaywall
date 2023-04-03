@@ -62,7 +62,7 @@ router.get('/health', async (req, res, next) => {
  * @param {import('express').Response} res - HTTP response.
  *
  * @routeResponse {Object} status of healthcheck.
- * with name, time, optionnal error and healthy.
+ * with name, time, optional error and healthy.
  *
  * @return {import('express').Response} HTTP response.
  */

@@ -53,7 +53,7 @@ function addStepGetChangefiles() {
 /**
  * Add step "download" in steps attributes of state.
  *
- * @param {string} downloadFile - Upaywall data update filename.
+ * @param {String} downloadFile - Unpaywall data update filename.
  */
 function addStepDownload(downloadFile) {
   logger.info('step - download file');
@@ -142,7 +142,7 @@ async function fail(stackTrace) {
 }
 
 /**
- * Update the state when the process is finished succefully.
+ * Update the state when the process is finished successfully.
  */
 async function endState() {
   logger.info('[update process]: end process');

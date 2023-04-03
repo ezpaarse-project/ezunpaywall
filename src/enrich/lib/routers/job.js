@@ -13,15 +13,15 @@ const checkAuth = require('../middlewares/auth');
 const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 
 /**
- * route that start a enrich job
+ * Route that start a enrich job.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
  *
- * @routeBody {string} [type] type of file : csv or jsonl available
- * @routeBody {string} [args] graphql attributes added to the enriched file
- * @routeBody {string} [index] elastic index for enrich process
- * @routeBody {string} [separotor] enriched file separator
+ * @routeBody {string} [type] - type of file : csv or jsonl available.
+ * @routeBody {string} [args] - graphql attributes added to the enriched file.
+ * @routeBody {string} [index] - elastic index for enrich process.
+ * @routeBody {string} [separotor] - enriched file separator.
  *
  * @routeResponse {string} id of process
  *

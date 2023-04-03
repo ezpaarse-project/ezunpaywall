@@ -33,7 +33,7 @@ router.get('/ping', (req, res) => res.status(204).end());
  * @param {import('express').Response} res - HTTP response.
  *
  * @routeResponse {Array<Object>} List of status of healthcheck
- * with name, time, optionnal error and healthy.
+ * with name, time, optional error and healthy.
  *
  * @return {import('express').Response} HTTP response.
  */

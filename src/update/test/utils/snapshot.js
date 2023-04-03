@@ -43,7 +43,7 @@ const addSnapshot = async (filename) => {
 
 /**
  * Update the registry of changefiles of fakeUnpaywall.
- * 
+ *
  * @param {string} interval - Interval of registry.
  */
 const updateChangeFile = async (interval) => {
