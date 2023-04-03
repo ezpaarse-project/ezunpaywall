@@ -162,6 +162,7 @@
     "z_authors": {
       "family": "Nom de famille",
       "given": "Prénom",
+      "sequence": "Indique si c'est le premier auteur ou un auteur secondaire",
       "ORCID": " URL d'un identifiant ORCID",
       "authenticated-orcid": "Si vrai, le propriétaire de l'enregistrement affirme que l'utilisateur ORCID a terminé l'authentification ORCID OAuth"
     }

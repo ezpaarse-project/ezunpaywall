@@ -119,6 +119,7 @@
         "properties": {
           "family": { "type": "keyword" },
           "given": { "type": "keyword" },
+          "sequence": { "type": "keyword" },
           "ORCID": { "type": "keyword" },
           "authenticated-orcid": { "type": "boolean" },
           "affiliation": {

@@ -12,6 +12,7 @@ const authorType = new GraphQLObjectType({
     ORCID: { type: GraphQLString },
     family: { type: GraphQLString },
     given: { type: GraphQLString },
+    sequence: { type: GraphQLString },
   },
 });
 
@@ -21,6 +22,7 @@ const authorInput = new GraphQLInputObjectType({
     ORCID: { type: GraphQLString },
     family: { type: GraphQLString },
     given: { type: GraphQLString },
+    sequence: { type: GraphQLString },
   },
 });
 

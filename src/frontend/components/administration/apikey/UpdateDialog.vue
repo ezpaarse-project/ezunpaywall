@@ -163,7 +163,7 @@ export default {
             allowed: this.allowed
           },
           headers: {
-            'X-API-KEY': this.$store.state.admin.password
+            'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
       } catch (e) {

@@ -8,4 +8,7 @@
   ],
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
+  "conventionalCommits.scopes": [
+    "update"
+  ],
 }
