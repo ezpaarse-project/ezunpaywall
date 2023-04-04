@@ -3,14 +3,23 @@
     <v-toolbar color="secondary" dark flat dense>
       <v-toolbar-title> {{ $t('reportHistory.title') }} </v-toolbar-title>
       <v-spacer />
-      <v-col class="text-right">
-        <v-btn
-          @click.stop="setDialogVisible(true)"
-        >
-          {{ $t('update') }}
-        </v-btn>
-      </v-col>
-      <UpdateDialog :dialog="dialogVisible" @closed="setDialogVisible(false)" />
+      <v-btn
+        icon
+        @click.stop="setDialogVisible(true)"
+      >
+        <v-icon>mdi-download-circle</v-icon>
+      </v-btn>
+      <UpdateDialog
+        :dialog="dialogVisible"
+        @closed="setDialogVisible(false)"
+      />
+      <v-btn
+        icon
+        :disabled="loading"
+        @click.stop="getReports()"
+      >
+        <v-icon>mdi-reload</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-row
       v-if="loading"
@@ -82,7 +91,7 @@ export default {
       let report
 
       filenames = filenames.slice(0, 8)
-
+      this.reports = []
       for (let i = 0; i < filenames.length; i += 1) {
         report = await this.getReport(filenames[i])
         this.reports.push(
@@ -93,6 +102,7 @@ export default {
           }
         )
       }
+      this.loading = false
     },
     async getReport (filename) {
       let report

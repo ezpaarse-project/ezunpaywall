@@ -3,6 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   publicRuntimeConfig: {
     environment: process.env.NODE_ENV || 'development',
+    unpaywallHost: process.env.UNPAYWALL_HOST || 'http://localhost:59799',
     graphqlHost: process.env.GRAPHQL_HOST || 'http://localhost:59701',
     updateHost: process.env.UPDATE_HOST || 'http://localhost:59702',
     enrichHost: process.env.ENRICH_HOST || 'http://localhost:59703',
@@ -46,7 +47,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/axios.js' },
-    { src: '~/plugins/dateFns.js' }
+    { src: '~/plugins/dateFns.js' },
+    { src: '~/plugins/highlightjs.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -57,8 +59,7 @@ export default {
     // https://go.nuxtjs.dev/eslint
     // '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
-    'nuxt-highlightjs'
+    '@nuxtjs/vuetify'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules

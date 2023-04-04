@@ -5,7 +5,13 @@
         {{ $t("administration.health.title") }}
       </v-toolbar-title>
       <v-spacer />
-      <v-icon>mdi-security</v-icon>
+      <v-btn
+        icon
+        :disabled="loading"
+        @click.stop="getHealths()"
+      >
+        <v-icon>mdi-reload</v-icon>
+      </v-btn>
     </v-toolbar>
 
     <v-row v-if="loading" align="center" justify="center" class="ma-2">
@@ -50,10 +56,10 @@ export default {
     }
   },
   async mounted () {
-    await this.getHealth()
+    await this.getHealths()
   },
   methods: {
-    async getHealth () {
+    async getHealths () {
       let res
       this.loading = true
       try {

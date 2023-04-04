@@ -35,6 +35,8 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('new-name');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('user dev apikey');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
@@ -53,6 +55,8 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('user dev apikey');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
@@ -71,6 +75,8 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('user dev apikey');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['doi']);
     expect(res.body).have.property('allowed').equal(true);
@@ -89,6 +95,8 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('user dev apikey');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['doi', 'is_oa']);
     expect(res.body).have.property('allowed').equal(true);
@@ -107,9 +115,69 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('user dev apikey');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(false);
+  });
+
+  it('Should update config.owner to "new-owner"', async () => {
+    const res = await chai
+      .request(apikeyURL)
+      .put('/keys/user')
+      .send({
+        owner: 'new-owner',
+      })
+      .set('x-api-key', 'changeme');
+
+    expect(res).have.status(200);
+
+    expect(res.body).have.property('apikey').equal('user');
+    expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('new-owner');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
+    expect(res.body).have.property('allowed').equal(true);
+  });
+
+  it('Should update config.owner to empty string', async () => {
+    const res = await chai
+      .request(apikeyURL)
+      .put('/keys/user')
+      .send({
+        owner: '',
+      })
+      .set('x-api-key', 'changeme');
+
+    expect(res).have.status(200);
+
+    expect(res.body).have.property('apikey').equal('user');
+    expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
+    expect(res.body).have.property('allowed').equal(true);
+  });
+
+  it('Should update config.description to "new-description"', async () => {
+    const res = await chai
+      .request(apikeyURL)
+      .put('/keys/user')
+      .send({
+        description: 'new-description',
+      })
+      .set('x-api-key', 'changeme');
+
+    expect(res).have.status(200);
+
+    expect(res.body).have.property('apikey').equal('user');
+    expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('new-description');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
+    expect(res.body).have.property('allowed').equal(true);
   });
 
   it('Should update config.allowed to "true" for the apikey "notAllowed"', async () => {
@@ -125,6 +193,8 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('notAllowed');
     expect(res.body).have.property('name').equal('notAllowed');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('notAllowed dev apikey');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);
@@ -144,6 +214,8 @@ describe('Test: Update apikey', () => {
 
     expect(res.body).have.property('apikey').equal('user');
     expect(res.body).have.property('name').equal('new-user');
+    expect(res.body).have.property('owner').equal('dev');
+    expect(res.body).have.property('description').equal('user dev apikey');
     expect(res.body).have.property('access').to.be.an('array').eql(['graphql']);
     expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
     expect(res.body).have.property('allowed').equal(true);

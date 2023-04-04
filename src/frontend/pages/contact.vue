@@ -56,7 +56,7 @@
           :loading="loading"
           color="primary"
           @click="validate"
-          v-text="$t('contact.send')"
+          v-text="$t('send')"
         />
       </v-card-actions>
     </v-card>

@@ -12,15 +12,33 @@
           <v-text-field
             v-model="name"
             :rules="nameRule"
-            label="Name"
+            :label="$t('administration.apikey.name')"
             name="name"
             outlined
             clearable
             required
             autofocus
           />
+          <v-text-field
+            v-model="owner"
+            :label="$t('administration.apikey.owner')"
+            name="owner"
+            outlined
+            clearable
+            required
+            autofocus
+          />
+          <v-text-field
+            v-model="description"
+            :label="$t('administration.apikey.description')"
+            name="description"
+            outlined
+            clearable
+            required
+            autofocus
+          />
           <v-card-actions>
-            <span class="mr-2" v-text="$t('administration.apikey.access')" />
+            <span class="mr-2" v-text="`${$t('administration.apikey.access')}`" />
             <v-checkbox
               v-model="graphql"
               class="mr-2"
@@ -37,6 +55,8 @@
               v-model="allowed"
             />
           </v-card-actions>
+          <v-divider />
+          <v-card-title> {{ $t('administration.apikey.attributes') }} </v-card-title>
           <SettingsAttributes
             :simple="attributesSimple"
             :best-oa-location="attributesBestOaLocation"
@@ -90,6 +110,8 @@ export default {
       loading: false,
       valid: false,
       name: '',
+      owner: '',
+      description: '',
       enrich: false,
       graphql: true,
       attributes: ['doi'],
@@ -137,6 +159,8 @@ export default {
           url: '/keys',
           data: {
             name: this.name,
+            owner: this.owner,
+            description: this.description,
             attributes: this.attributes,
             access: this.access,
             allowed: this.allowed
