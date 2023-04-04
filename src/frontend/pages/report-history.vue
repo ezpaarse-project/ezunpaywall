@@ -18,7 +18,7 @@
           </template>
           <v-card class="text-justify">
             <v-card-text>
-              {{ $t('reportHistory.source') }}
+              {{ $t("reportHistory.source") }}
             </v-card-text>
 
             <v-card-actions>
@@ -29,15 +29,11 @@
                 target="_blank"
                 @click="showHelp = false"
               >
-                {{ $t('reportHistory.goTo') }}
+                {{ $t("reportHistory.goTo") }}
               </v-btn>
               <v-spacer />
-              <v-btn
-                class="body-2"
-                text
-                @click="showHelp = false"
-              >
-                {{ $t('close') }}
+              <v-btn class="body-2" text @click="showHelp = false">
+                {{ $t("close") }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -56,18 +52,20 @@
           {{ $t("reportHistory.reloadReports") }}
         </v-tooltip>
       </v-toolbar>
-      <v-row v-if="reports.length === 0" align="center" justify="center">
-        <v-col class="text-center" sm="4" cols="12">
-          {{ $t("reportHistory.noReport") }}
-        </v-col>
+      <v-row v-if="loading" align="center" justify="center" class="ma-2">
+        <Loader />
       </v-row>
-      <v-row v-else>
+      <NoData
+        v-else-if="reports.length === 0"
+        :text="$t('reportHistory.noReport')"
+      />
+      <v-row v-else class="pa-1">
         <v-col
           v-for="report in reports"
           :id="report.id"
           :key="report.id"
           cols="12"
-          class="mt-1 py-1"
+          class="pa-2"
         >
           <ReportCard :report="report" :status="getStatusOfReport(report)" />
         </v-col>
@@ -78,11 +76,15 @@
 
 <script>
 import ReportCard from '~/components/report/ReportCard.vue'
+import Loader from '~/components/Loader.vue'
+import NoData from '~/components/NoData.vue'
 
 export default {
   name: 'UpdateHistory',
   components: {
-    ReportCard
+    ReportCard,
+    Loader,
+    NoData
   },
   transition: 'slide-x-transition',
   data () {
@@ -126,8 +128,10 @@ export default {
           'snacks/error',
           this.$t('reportHistory.reportsError')
         )
+        this.loading = false
         return
       }
+      this.loading = false
 
       const filenames = res.data.sort((a, b) => b.createdAt - a.createdAt)
 

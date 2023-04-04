@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title v-text="$t('administration.apikey.title')" />
+      <v-toolbar-title> {{ $t('administration.apikey.title') }} </v-toolbar-title>
       <v-spacer />
       <v-btn
         icon
@@ -47,15 +47,14 @@
     </v-toolbar>
 
     <v-row
-      v-if="apikeys.length === 0"
+      v-if="loading"
       align="center"
       justify="center"
       class="ma-2"
     >
-      <v-col class="text-center" cols="12" sm="4">
-        {{ $t("administration.apikey.noApikeys") }}
-      </v-col>
+      <Loader />
     </v-row>
+    <NoData v-else-if="!apikeys || apikeys.length === 0" :text="$t('administration.apikey.noApikeys')" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="(key) in apikeys"
@@ -81,6 +80,8 @@
 import CreateDialog from '~/components/administration/apikey/CreateDialog.vue'
 import ImportDialog from '~/components/administration/apikey/ImportDialog.vue'
 import ExportDialog from '~/components/administration/apikey/ExportDialog.vue'
+import Loader from '~/components/Loader.vue'
+import NoData from '~/components/NoData.vue'
 import ApikeyCard from '~/components/administration/apikey/ApikeyCard.vue'
 
 export default {
@@ -89,6 +90,8 @@ export default {
     CreateDialog,
     ImportDialog,
     ExportDialog,
+    Loader,
+    NoData,
     ApikeyCard
   },
   data () {
@@ -112,14 +115,11 @@ export default {
           method: 'GET',
           url: '/keys',
           headers: {
-            'X-API-KEY': this.$store.state.admin.password
+            'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
       } catch (e) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('administration.errorApikey')
-        )
+        this.$store.dispatch('snacks/error', this.$t('administration.errorApikey'))
         this.loading = false
         return
       }

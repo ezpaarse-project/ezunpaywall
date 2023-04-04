@@ -1,4 +1,7 @@
 /* eslint-disable no-param-reassign */
+
+const logger = require('../logger');
+
 const {
   endState, fail,
 } = require('../models/state');
@@ -25,6 +28,10 @@ const {
   getChangefiles,
 } = require('../services/unpaywall');
 
+const {
+  sendMailNoChangefile,
+} = require('../services/mail');
+
 const downloadAndInsertSnapshot = async (jobConfig) => {
   setInUpdate(true);
   await createState();
@@ -47,9 +54,9 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
   const start = new Date();
   addStepGetChangefiles();
   const step = getLatestStep();
-  const snapshotsInfo = await getChangefiles(interval, startDate, endDate);
+  const changefilesInfo = await getChangefiles(interval, startDate, endDate);
 
-  if (!snapshotsInfo) {
+  if (!changefilesInfo) {
     step.status = 'error';
     updateLatestStep(step);
     await fail();
@@ -59,11 +66,20 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
   step.took = (new Date() - start) / 1000;
   step.status = 'success';
   updateLatestStep(step);
+
+  if (changefilesInfo.length === 0) {
+    sendMailNoChangefile(startDate, endDate).catch((err) => {
+      logger.errorRequest(err);
+    });
+    await endState();
+    return;
+  }
+
   let success = true;
-  for (let i = 0; i < snapshotsInfo.length; i += 1) {
-    success = await downloadChangefile(snapshotsInfo[i], interval);
+  for (let i = 0; i < changefilesInfo.length; i += 1) {
+    success = await downloadChangefile(changefilesInfo[i], interval);
     if (!success) return;
-    jobConfig.filename = snapshotsInfo[i].filename;
+    jobConfig.filename = changefilesInfo[i].filename;
     success = await insertDataUnpaywall(jobConfig);
     if (!success) return;
   }

@@ -26,6 +26,7 @@ const {
  */
 router.get('/keys/:apikey', async (req, res, next) => {
   const { apikey } = req.params;
+
   const { error } = joi.string().trim().required().validate(apikey);
 
   if (error) return res.status(400).json({ message: error.details[0].message });
@@ -40,7 +41,7 @@ router.get('/keys/:apikey', async (req, res, next) => {
   }
 
   if (!key) {
-    return res.status(404).json({ message: `Key [${key}] not found` });
+    return res.status(404).json({ message: `Key [${apikey}] not found` });
   }
 
   let config;

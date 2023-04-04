@@ -35,8 +35,9 @@
           text
           class="red--text"
           @click.stop="closeDialog()"
-          v-text="$t('cancel')"
-        />
+        >
+          {{ $t('cancel') }}
+        </v-btn>
         <v-spacer />
         <v-btn
           text
@@ -45,8 +46,9 @@
           :disabled="!valid"
           :loading="loading"
           class="green--text"
-          v-text="$t('create')"
-        />
+        >
+          {{ $t('create') }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -96,7 +98,7 @@ export default {
             endDate: this.endDate
           },
           headers: {
-            'X-API-KEY': this.$store.state.admin.password
+            'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
       } catch (e) {

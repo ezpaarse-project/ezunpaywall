@@ -32,7 +32,7 @@
       <template #body="{ items }">
         <tr v-for="(item, index) in items" :key="index">
           <td class="text-center pl-4 py-1">
-            <v-icon small @click="removeLogsFile(item.id)">
+            <v-icon small @click="removeFile(item.id)">
               mdi-delete
             </v-icon>
           </td>
@@ -76,11 +76,18 @@ export default {
   },
   data: () => {
     return {
-      files: [],
       fileId: 1
     }
   },
   computed: {
+    files: {
+      get () {
+        return this.$store.getters['enrich/getFiles']
+      },
+      set (newVal) {
+        this.$store.commit('enrich/setFiles', newVal)
+      }
+    },
     headers () {
       return [
         {
@@ -120,19 +127,21 @@ export default {
           this.$store.dispatch('snacks/error', this.$t('enrich.errorManyFile'))
           return
         }
-        this.files.push({ id: this.fileId, file })
+        this.$store.commit('enrich/setFiles', [{ id: this.fileId, file }])
+        this.$store.commit('enrich/setType', ext)
         this.fileId += 1
       })
       this.$refs.filesLoaded.value = ''
-      this.$emit('files', this.files)
     },
-    removeLogsFile (id) {
+    removeFile (id) {
       this.files = this.files.filter(file => file.id !== id)
-      this.$emit('files', this.files)
+      this.$store.commit('enrich/setFiles', this.files)
+      this.$store.commit('enrich/setType', '')
     },
     clearList () {
       this.files = []
-      this.$emit('files', this.files)
+      this.$store.commit('enrich/setFiles', this.files)
+      this.$store.commit('enrich/setType', '')
     },
     dragAndDrop (event) {
       if (this.$refs && this.$refs.dropZone) {
