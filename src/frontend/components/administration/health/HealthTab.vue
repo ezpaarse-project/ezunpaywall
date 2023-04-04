@@ -7,7 +7,7 @@
     </v-toolbar>
 
     <Loader v-if="loading" />
-    <NoData v-else-if="Object.keys(healths).length === 0" :local-key="'administration.health.noHealth'" />
+    <NoData v-else-if="!healths || Object.keys(healths).length === 0" :local-key="$t('administration.health.noHealth')" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="(health, name) in healths"

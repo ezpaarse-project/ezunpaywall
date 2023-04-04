@@ -24,15 +24,13 @@
           <v-icon size="22" class="pr-1">
             mdi-update
           </v-icon>
-          {{ report.data.totalUpdatedDocs }}
-          {{ $t("reportHistory.updatedDocs") }}
+          {{ $t("reportHistory.updatedDocs", { "updatedDocs": report.data.totalUpdatedDocs }) }}
         </v-layout>
         <v-layout row>
           <v-icon size="22" class="pr-1">
             mdi-plus
           </v-icon>
-          {{ report.data.totalInsertedDocs }}
-          {{ $t("reportHistory.insertedDocs") }}
+          {{ $t("reportHistory.insertedDocs", { "insertedDocs": report.data.totalInsertedDocs }) }}
         </v-layout>
       </v-container>
       <v-spacer />
@@ -77,16 +75,16 @@ export default {
       return 'inprogress'
     },
     color () {
-      if (this.status === 'success') {
-        return 'green darken-2'
+      switch (this.status) {
+        case 'success':
+          return 'green darken-2'
+        case 'inprogress':
+          return 'blue darken-2'
+        case 'error':
+          return 'red darken-2'
+        default:
+          return 'orange darken-2'
       }
-      if (this.status === 'inprogress') {
-        return 'blue darken-2'
-      }
-      if (this.status === 'error') {
-        return 'red darken-2'
-      }
-      return 'orange darken-2'
     }
   },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <section>
     <Loader v-if="loading" />
-    <NoData v-else-if="reports.length === 0" :local-key="'reportHistory.noReport'" />
+    <NoData v-else-if="reports.length === 0" :local-key="$t('reportHistory.noReport')" />
     <v-row v-else>
       <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
         <ReportCard :report="report" :status="getStatusOfReport(report)" />

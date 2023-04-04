@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    v-model="help"
+    v-model="isShowed"
     bottom
     offset-y
     :close-on-content-click="false"
@@ -31,7 +31,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn class="body-2" text @click="help = false">
+        <v-btn class="body-2" text @click="isShowed = false">
           {{ $t("close") }}
         </v-btn>
       </v-card-actions>
@@ -43,7 +43,7 @@
 export default {
   data: () => {
     return {
-      help: false,
+      isShowed: false,
       timeout: '',
       inUpdate: false,
       state: null

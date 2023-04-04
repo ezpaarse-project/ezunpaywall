@@ -1,7 +1,7 @@
 <template>
   <v-row align="center" justify="center">
     <v-col class="text-center" cols="12" sm="4">
-      {{ $t(localKey) }}
+      {{ $t(text) }}
     </v-col>
   </v-row>
 </template>
@@ -9,9 +9,9 @@
 <script>
 export default {
   props: {
-    localKey: {
+    text: {
       type: String,
-      default: 'noData'
+      default: ''
     }
   }
 }

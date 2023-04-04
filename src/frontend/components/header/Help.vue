@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    v-model="help"
+    v-model="isShowed"
     :close-on-content-click="false"
     :nudge-width="200"
     max-width="500"
@@ -19,7 +19,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn class="body-2" text @click="help = false">
+        <v-btn class="body-2" text @click="isShowed = false">
           {{ $t("close") }}
         </v-btn>
       </v-card-actions>
@@ -31,7 +31,7 @@
 export default {
   data: () => {
     return {
-      help: false
+      isShowed: false
     }
   }
 }

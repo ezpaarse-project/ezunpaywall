@@ -208,8 +208,8 @@
     "noReport": "Pas de rapport disponible",
     "reportsError": "Impossible de récupérer les rapports de mises à jour",
     "reportError": "Impossible de récupérer le rapport de mises à jour",
-    "insertedDocs": "nouvelles lignes",
-    "updatedDocs": "lignes mises à jour"
+    "insertedDocs": "{insertedDocs} nouvelles lignes",
+    "updatedDocs": "{updatedDocs} lignes mises à jour"
   },
   "theme": {
     "dark": "Thème sombre",
