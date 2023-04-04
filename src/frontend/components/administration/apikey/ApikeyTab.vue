@@ -19,8 +19,15 @@
       />
     </v-card-actions>
 
-    <Loader v-if="loading" />
-    <NoData v-else-if="!apikeys || apikeys.length === 0" :local-key="$t('administration.apikey.noApikeys')" />
+    <v-row
+      v-if="loading"
+      align="center"
+      justify="center"
+      class="ma-2"
+    >
+      <Loader />
+    </v-row>
+    <NoData v-else-if="!apikeys || apikeys.length === 0" :text="$t('administration.apikey.noApikeys')" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="(key) in apikeys"

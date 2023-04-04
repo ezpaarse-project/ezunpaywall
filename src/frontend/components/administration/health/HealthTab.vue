@@ -1,13 +1,20 @@
 <template>
   <v-card>
     <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title> {{ $t('administration.health.title') }} </v-toolbar-title>
+      <v-toolbar-title>
+        {{ $t("administration.health.title") }}
+      </v-toolbar-title>
       <v-spacer />
       <v-icon>mdi-security</v-icon>
     </v-toolbar>
 
-    <Loader v-if="loading" />
-    <NoData v-else-if="!healths || Object.keys(healths).length === 0" :local-key="$t('administration.health.noHealth')" />
+    <v-row v-if="loading" align="center" justify="center" class="ma-2">
+      <Loader />
+    </v-row>
+    <NoData
+      v-else-if="!healths || Object.keys(healths).length === 0"
+      :text="$t('administration.health.noHealth')"
+    />
     <v-row v-else class="ma-2">
       <v-col
         v-for="(health, name) in healths"
@@ -52,7 +59,10 @@ export default {
       try {
         res = await this.$health.get('/health')
       } catch (e) {
-        this.$store.dispatch('snacks/error', this.$t('administration.health.errorHealth'))
+        this.$store.dispatch(
+          'snacks/error',
+          this.$t('administration.health.errorHealth')
+        )
         this.loading = false
         return
       }

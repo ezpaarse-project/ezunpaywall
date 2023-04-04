@@ -1,17 +1,11 @@
 <template>
-  <v-row
-    align="center"
-    justify="center"
-    class="ma-2"
-  >
-    <v-progress-circular
-      class="ma-8"
-      :size="size"
-      :width="width"
-      indeterminate
-      :color="color"
-    />
-  </v-row>
+  <v-progress-circular
+    class="ma-8"
+    :size="size"
+    :width="width"
+    indeterminate
+    :color="color"
+  />
 </template>
 
 <script>

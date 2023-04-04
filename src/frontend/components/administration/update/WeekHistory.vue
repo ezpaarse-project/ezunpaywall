@@ -12,8 +12,15 @@
       </v-col>
       <UpdateDialog :dialog="dialogVisible" @closed="setDialogVisible(false)" />
     </v-toolbar>
-    <Loader v-if="loading" />
-    <NoData v-else-if="reports.length === 0" :local-key="$t('reportHistory.noReport')" />
+    <v-row
+      v-if="loading"
+      align="center"
+      justify="center"
+      class="ma-2"
+    >
+      <Loader />
+    </v-row>
+    <NoData v-else-if="!reports || reports.length === 0" :text="$t('reportHistory.noReport')" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="report in reports"
