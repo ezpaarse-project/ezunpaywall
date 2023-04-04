@@ -1,25 +1,23 @@
 <template>
   <div>
-    <v-container fluid>
-      <v-autocomplete
-        :value="selectedComputed"
-        :label="label"
-        :items="items"
-        item-text="name"
-        small-chips
-        clearable
-        deletable-chips
-        multiple
-        @input="updateModel"
-      >
-        <template slot="item" slot-scope="{ item }">
-          <v-list-item-content>
-            <v-list-item-title> {{ item.name }} </v-list-item-title>
-            <v-list-item-subtitle> {{ item.info }} </v-list-item-subtitle>
-          </v-list-item-content>
-        </template>
-      </v-autocomplete>
-    </v-container>
+    <v-autocomplete
+      :value="value"
+      :label="label"
+      :items="items"
+      item-text="name"
+      small-chips
+      clearable
+      deletable-chips
+      multiple
+      @input="updateModel"
+    >
+      <template slot="item" slot-scope="{ item }">
+        <v-list-item-content>
+          <v-list-item-title> {{ item.name }} </v-list-item-title>
+          <v-list-item-subtitle> {{ item.info }} </v-list-item-subtitle>
+        </v-list-item-content>
+      </template>
+    </v-autocomplete>
   </div>
 </template>
 
@@ -34,30 +32,18 @@ export default {
       type: Array,
       default: () => []
     },
-    selected: {
+    value: {
       type: Array,
       default: () => []
-    },
-    source: {
-      type: String,
-      default: () => ''
     }
   },
   data: () => {
     return {}
   },
-  computed: {
-    selectedComputed () {
-      return this.selected
-    }
-  },
 
   methods: {
     updateModel (value) {
-      this.$store.dispatch(`${this.source}/update`, {
-        source: this.label,
-        attrs: value
-      })
+      this.$emit('input', value)
     }
   }
 }

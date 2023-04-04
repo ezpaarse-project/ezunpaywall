@@ -85,14 +85,11 @@ export default {
           method: 'GET',
           url: '/keys',
           headers: {
-            'X-API-KEY': this.$store.state.admin.password
+            'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
       } catch (e) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('administration.errorApikey')
-        )
+        this.$store.dispatch('snacks/error', this.$t('administration.errorApikey'))
         this.loading = false
         return
       }

@@ -20,12 +20,12 @@ export default {
   },
   computed: {
     drawer () {
-      return this.$store.state.drawer.status
+      return this.$store.getters['drawer/getStatus']
     }
   },
   methods: {
     setDrawer () {
-      this.$store.dispatch('drawer/setDrawer', !this.drawer)
+      this.$store.commit('drawer/setDrawer', !this.drawer)
     },
     getTitle () {
       if (this.$config.environment === 'integration') {

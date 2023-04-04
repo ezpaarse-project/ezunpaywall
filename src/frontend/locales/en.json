@@ -44,7 +44,7 @@
     "continue": "Continue",
     "explainationLogs": "Files you want to be enriched by ezUnpaywall. The only condition is that they contain a DOI field.",
     "explainationTestsLogs": "Need files to test this service? We provide some on <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
-    "apiKey": "API Key",
+    "apikey": "API Key",
     "fileExtension": "File extension recognized :",
     "unpaywallAttributes": "Unpaywall attributes",
     "startProcess": "Start enrichment",
@@ -69,7 +69,7 @@
     "general3": "The demonstrator builds the request and you can send the request to the server and see the answer. Use the help in the interface to get more information about the use of the form data.",
     "general4": "If you are a developer, you can also use the documentation section (swagger) to test the different API routes.",
     "constructor": "Graphql Demostrator",
-    "apiKey": "API key",
+    "apikey": "API key",
     "settings": "Unpaywall attributes to retrieve",
     "request": "GraphQL request",
     "start": "Launch request",
@@ -162,6 +162,7 @@
     "z_authors": {
       "family": "Family name",
       "given": "Given name",
+      "sequence": "Indicates whether it is the first author or a secondary author",
       "ORCID": "URL-form of an ORCID identifier",
       "authenticated-orcid": "If true, record owner asserts that the ORCID user completed ORCID OAuth authentication"
     }

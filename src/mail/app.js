@@ -5,6 +5,7 @@ const path = require('path');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
+const getConfig = require('./lib/config');
 
 const routerPing = require('./lib/routers/ping');
 const routerMail = require('./lib/routers/mail');
@@ -37,4 +38,5 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 
 app.listen(3000, () => {
   logger.info('ezunpaywall mail service listening on 3000');
+  getConfig();
 });

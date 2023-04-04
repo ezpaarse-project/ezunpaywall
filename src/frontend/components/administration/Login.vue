@@ -67,8 +67,8 @@ export default {
         this.loading = false
         return
       }
-      this.$store.dispatch('admin/setIsAdmin', true)
-      this.$store.dispatch('admin/setPassword', this.password)
+      this.$store.commit('admin/setIsAdmin', true)
+      this.$store.commit('admin/setPassword', this.password)
       this.loading = false
       this.$store.dispatch(
         'snacks/info',

@@ -72,7 +72,9 @@ const allArgs = () => `
   },
   z_authors {
     family,
-    given
+    given,
+    sequence,
+    ORCID
   }
 }`;
 
@@ -99,8 +101,6 @@ const flatten = (obj) => {
       const newKeys = [...keys, key];
       if (key === 'z_authors') {
         value = value.map((item) => JSON.stringify(item));
-        value = value.join(' & ');
-        value = value.replace(/{|}|"|:|family|given/g, '').replace(/,/g, ' ');
       }
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         flattenProp(value, newKeys);
