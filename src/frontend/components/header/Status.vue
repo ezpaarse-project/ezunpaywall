@@ -1,22 +1,49 @@
 <template>
-  <v-chip v-if="inUpdate">
-    <div>
-      {{ $t('status.inUpdate') }} - {{ latestTask }} - {{ percent }}%
-      <v-progress-circular right :size="20" :width="3" indeterminate color="green" />
-    </div>
-  </v-chip>
-  <v-chip v-else>
-    {{ $t('status.noInUpdate') }}
-    <v-icon right>
-      mdi-check
-    </v-icon>
-  </v-chip>
+  <v-menu
+    v-model="isShowed"
+    bottom
+    offset-y
+    :close-on-content-click="false"
+    :nudge-width="200"
+  >
+    <template #activator="{ on }">
+      <v-btn icon v-on="on">
+        <v-progress-circular
+          v-if="inUpdate"
+          :size="20"
+          :width="3"
+          indeterminate
+          color="white"
+        />
+        <v-icon v-else>
+          mdi-check-circle
+        </v-icon>
+      </v-btn>
+    </template>
+
+    <v-card class="text-justify">
+      <v-card-text v-if="inUpdate">
+        {{ $t("status.inUpdate", { latestTaskName, percent } ) }}
+      </v-card-text>
+      <v-card-text v-else>
+        {{ $t("status.noInUpdate") }}
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer />
+        <v-btn class="body-2" text @click="isShowed = false">
+          {{ $t("close") }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-menu>
 </template>
 
 <script>
 export default {
   data: () => {
     return {
+      isShowed: false,
       timeout: '',
       inUpdate: false,
       state: null
@@ -29,7 +56,7 @@ export default {
       }
       return null
     },
-    latestTask () {
+    latestTaskName () {
       return this.latestStep?.task
     },
     percent () {

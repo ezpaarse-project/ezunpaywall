@@ -1,14 +1,14 @@
 <template>
   <section>
     <v-row
-      v-if="reports.length === 0"
+      v-if="loading"
       align="center"
       justify="center"
+      class="ma-2"
     >
-      <v-col class="text-center" sm="4" cols="12">
-        {{ $t("reportHistory.noReport") }}
-      </v-col>
+      <Loader />
     </v-row>
+    <NoData v-else-if="reports.length === 0" :text="$t('reportHistory.noReport')" />
     <v-row v-else>
       <v-col v-for="report in reports" :id="report.id" :key="report.id" cols="12" class="pa-2">
         <ReportCard :report="report" :status="getStatusOfReport(report)" />
@@ -18,18 +18,23 @@
 </template>
 
 <script>
+
 import ReportCard from '~/components/report/ReportCard.vue'
+import Loader from '~/components/Loader.vue'
+import NoData from '~/components/NoData.vue'
 
 export default {
   name: 'UpdateHistory',
   components: {
-    ReportCard
+    ReportCard,
+    Loader,
+    NoData
   },
   transition: 'slide-x-transition',
   data () {
     return {
-      reports: [],
-      id: ''
+      loading: false,
+      reports: []
     }
   },
   async mounted () {
@@ -51,13 +56,14 @@ export default {
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('reportHistory.reportsError'))
+        this.loading = false
         return
       }
+      this.loading = false
 
       const filenames = res.data.sort((a, b) => b.createdAt - a.createdAt)
 
       let report
-
       for (let i = 0; i < filenames.length; i += 1) {
         report = await this.getReport(filenames[i])
         this.reports.push(
@@ -68,7 +74,6 @@ export default {
           }
         )
       }
-      this.loaded = false
     },
     async getReport (filename) {
       let report

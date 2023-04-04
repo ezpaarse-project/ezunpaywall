@@ -13,8 +13,8 @@
     >
       <template slot="item" slot-scope="{ item }">
         <v-list-item-content>
-          <v-list-item-title v-text="item.name" />
-          <v-list-item-subtitle v-text="item.info" />
+          <v-list-item-title> {{ item.name }} </v-list-item-title>
+          <v-list-item-subtitle> {{ item.info }} </v-list-item-subtitle>
         </v-list-item-content>
       </template>
     </v-autocomplete>

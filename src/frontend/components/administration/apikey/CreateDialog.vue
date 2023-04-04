@@ -52,8 +52,9 @@
           text
           class="red--text"
           @click.stop="updateVisible(false)"
-          v-text="$t('cancel')"
-        />
+        >
+          {{ $t('cancel') }}
+        </v-btn>
         <v-spacer />
         <v-btn
           text
@@ -62,8 +63,9 @@
           :disabled="!valid"
           :loading="loading"
           class="green--text"
-          v-text="$t('create')"
-        />
+        >
+          {{ $t('create') }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

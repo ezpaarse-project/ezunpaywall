@@ -17,8 +17,9 @@
         <v-btn
           text
           @click.stop="closeDialog()"
-          v-text="$t('close')"
-        />
+        >
+          {{ $t('close') }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

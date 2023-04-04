@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title v-text="$t('administration.apikey.title')" />
+      <v-toolbar-title> {{ $t('administration.apikey.title') }} </v-toolbar-title>
       <v-spacer />
       <v-icon>mdi-security</v-icon>
     </v-toolbar>
@@ -9,9 +9,9 @@
       <v-spacer />
       <v-btn
         @click.stop="setVisible(true)"
-        v-text="$t('administration.apikey.buttonCreate')"
-      />
-
+      >
+        {{ $t('administration.apikey.buttonCreate') }}
+      </v-btn>
       <CreateDialog
         v-model="createDialogVisible"
         @created="getApikeys()"
@@ -20,15 +20,14 @@
     </v-card-actions>
 
     <v-row
-      v-if="apikeys.length === 0"
+      v-if="loading"
       align="center"
       justify="center"
       class="ma-2"
     >
-      <v-col class="text-center" cols="12" sm="4">
-        {{ $t("administration.apikey.noApikeys") }}
-      </v-col>
+      <Loader />
     </v-row>
+    <NoData v-else-if="!apikeys || apikeys.length === 0" :text="$t('administration.apikey.noApikeys')" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="(key) in apikeys"
@@ -52,12 +51,16 @@
 
 <script>
 import CreateDialog from '~/components/administration/apikey/CreateDialog.vue'
+import Loader from '~/components/Loader.vue'
+import NoData from '~/components/NoData.vue'
 import ApikeyCard from '~/components/administration/apikey/ApikeyCard.vue'
 
 export default {
   name: 'ApikeyTab',
   components: {
     CreateDialog,
+    Loader,
+    NoData,
     ApikeyCard
   },
   data () {
