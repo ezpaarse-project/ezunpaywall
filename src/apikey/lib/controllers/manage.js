@@ -40,8 +40,8 @@ const updateApiKey = async (id, newConfig) => {
   if (name) config.name = name;
   if (access) config.access = access;
   if (attributes) config.attributes = attributes;
-  if (owner !== undefined) config.owner = owner;
-  if (description !== undefined) config.description = description;
+  if (typeof owner === 'string') config.owner = owner;
+  if (typeof description === 'string') config.description = description;
   if (typeof allowed === 'boolean') config.allowed = allowed;
 
   try {

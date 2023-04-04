@@ -107,7 +107,7 @@ router.get('/keys', checkAuth, async (req, res, next) => {
  * Create new apikey with config in body
  */
 router.post('/keys', checkAuth, async (req, res, next) => {
-  const { error, value } = joi.object({
+  const { error, value: apikeyConfig } = joi.object({
     name: joi.string().trim().required(),
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql']),
@@ -118,7 +118,7 @@ router.post('/keys', checkAuth, async (req, res, next) => {
 
   if (error) return res.status(400).json({ message: error?.details?.[0]?.message });
 
-  const { name } = value;
+  const { name } = apikeyConfig;
 
   let keys;
 
@@ -154,7 +154,7 @@ router.post('/keys', checkAuth, async (req, res, next) => {
   let apikey;
 
   try {
-    apikey = await createApiKey(value);
+    apikey = await createApiKey(apikeyConfig);
   } catch (err) {
     logger.error(err);
     return next({ message: 'Cannot create apikey key', stackTrace: err });
@@ -183,7 +183,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
   }
   const apikey = checkParams?.value;
 
-  const checkBody = joi.object({
+  const { error, value: apikeyConfig } = joi.object({
     name: joi.string().trim(),
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql', 'enrich']),
@@ -192,11 +192,11 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
     allowed: joi.boolean().default(true),
   }).validate(req.body);
 
-  if (checkBody?.error) {
-    return res.status(400).json({ message: checkBody?.error?.details[0].message });
+  if (error) {
+    return res.status(400).json({ message: error?.details[0].message });
   }
 
-  const { name } = checkBody.value;
+  const { name } = apikeyConfig;
 
   // check if apikey exist
   let key;
@@ -256,7 +256,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
 
   // update
   try {
-    await updateApiKey(apikey, checkBody.value);
+    await updateApiKey(apikey, apikeyConfig);
   } catch (err) {
     logger.error(`Cannot update apikey [${apikey}]`);
     logger.error(err);

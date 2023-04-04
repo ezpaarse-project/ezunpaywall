@@ -141,6 +141,25 @@ describe('Test: Update apikey', () => {
     expect(res.body).have.property('allowed').equal(true);
   });
 
+  it('Should update config.owner to empty string', async () => {
+    const res = await chai
+      .request(apikeyURL)
+      .put('/keys/user')
+      .send({
+        owner: '',
+      })
+      .set('x-api-key', 'changeme');
+
+    expect(res).have.status(200);
+
+    expect(res.body).have.property('apikey').equal('user');
+    expect(res.body).have.property('name').equal('user');
+    expect(res.body).have.property('owner').equal('');
+    expect(res.body).have.property('access').to.be.an('array').eql(['graphql', 'enrich']);
+    expect(res.body).have.property('attributes').to.be.an('array').eql(['*']);
+    expect(res.body).have.property('allowed').equal(true);
+  });
+
   it('Should update config.description to "new-description"', async () => {
     const res = await chai
       .request(apikeyURL)

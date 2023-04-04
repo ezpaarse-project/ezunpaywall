@@ -5,7 +5,7 @@
         <v-toolbar-title> {{ $t("reportHistory.title") }} </v-toolbar-title>
         <v-spacer />
         <v-menu
-          v-model="help"
+          v-model="showHelp"
           :close-on-content-click="false"
           :nudge-width="200"
           max-width="500"
@@ -27,7 +27,7 @@
                 text
                 :href="linkUnpaywall"
                 target="_blank"
-                @click="help = false"
+                @click="showHelp = false"
               >
                 {{ $t('reportHistory.goTo') }}
               </v-btn>
@@ -35,7 +35,7 @@
               <v-btn
                 class="body-2"
                 text
-                @click="help = false"
+                @click="showHelp = false"
               >
                 {{ $t('close') }}
               </v-btn>
@@ -88,7 +88,7 @@ export default {
   data () {
     return {
       loading: false,
-      help: false,
+      showHelp: false,
       reports: [],
       id: ''
     }

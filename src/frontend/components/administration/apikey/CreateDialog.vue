@@ -38,7 +38,7 @@
             autofocus
           />
           <v-card-actions>
-            <span class="mr-2" v-text="`${$t('administration.apikey.access')} :`" />
+            <span class="mr-2" v-text="`${$t('administration.apikey.access')}`" />
             <v-checkbox
               v-model="graphql"
               class="mr-2"
@@ -56,7 +56,7 @@
             />
           </v-card-actions>
           <v-divider />
-          <v-card-title> {{ $t('administration.apikey.attributes') }} : </v-card-title>
+          <v-card-title> {{ $t('administration.apikey.attributes') }} </v-card-title>
           <SettingsAttributes
             :all="attributesAll"
             :simple="attributesSimple"

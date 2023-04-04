@@ -5,20 +5,18 @@
         {{ config.name }}
         <v-spacer />
         <template v-if="config.allowed">
-          <span
-            class="green--text"
-            v-text="$t('administration.apikey.allowed')"
-          />
+          <span class="green--text">
+            {{ $t('administration.apikey.allowed') }}
+          </span>
           <v-icon size="30" right color="green">
             mdi-check
           </v-icon>
         </template>
 
         <template v-else>
-          <span
-            class="red--text"
-            v-text="$t('administration.apikey.notAllowed')"
-          />
+          <span class="red--text">
+            {{ $t('administration.apikey.notAllowed') }}
+          </span>
           <v-icon size="30" right color="red">
             mdi-close
           </v-icon>
@@ -37,25 +35,25 @@
         <v-icon class="mr-3">
           mdi-account-circle
         </v-icon>
-        {{ $t("administration.apikey.owner") }} : {{ config.owner }}
+        {{ $t("administration.apikey.owner", { owner: config.owner }) }}
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-text-account
         </v-icon>
-        {{ $t("administration.apikey.description") }} : {{ config.description }}
+        {{ $t("administration.apikey.description", { description: config.description }) }}
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-calendar-account-outline
         </v-icon>
-        <span> {{ $t("createdAt") }} : {{ config.createdAt }} </span>
+        <span> {{ $t("administration.apikey.createdAt", { date: config.createdAt }) }} </span>
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-security
         </v-icon>
-        <span v-text="`${$t('administration.apikey.access')} :`" />
+        <span> {{ $t('administration.apikey.access') }} </span>
         <v-chip
           v-for="access in config.access"
           :key="access"
@@ -71,7 +69,7 @@
       <v-icon class="mr-2 ml-4">
         mdi-code-json
       </v-icon>
-      <span v-text="`${$t('administration.apikey.attributes')} :`" />
+      <span> {{ $t('administration.apikey.attributes') }} </span>
       <v-chip
         v-for="attribute in config.attributes"
         :key="attribute"

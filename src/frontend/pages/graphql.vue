@@ -87,9 +87,7 @@
         <div v-if="result">
           <v-card-title v-text="$t('graphql.result')" />
           <v-card-text>
-            <pre>
-                <code v-highlight class="json" v-text="stringifiedGraphqlResult" />
-            </pre>
+            <highlightjs language="json" :code="stringifiedGraphqlResult" />
           </v-card-text>
           <v-card-actions>
             <v-spacer />

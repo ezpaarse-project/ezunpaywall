@@ -11,6 +11,7 @@
         <v-textarea
           v-model="apikeys"
           outlined
+          rows="15"
           label="apikeys"
           :value="apikeys"
           class="mt-4"
@@ -49,11 +50,9 @@ export default {
     },
     async loadApikeys () {
       let parsedApikeys
-      console.log(this.apikeys)
       try {
         parsedApikeys = JSON.parse(this.apikeys)
       } catch (err) {
-        console.log(err)
         this.$store.dispatch('snacks/error', this.$t('administration.apikey.errorParse'))
         return
       }
@@ -70,11 +69,11 @@ export default {
           }
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('administration.apikey.errorLoad'))
+        this.$store.dispatch('snacks/error', this.$t('administration.apikey.errorImported'))
         this.loading = false
         return
       }
-      this.$store.dispatch('snacks/info', this.$t('apikey.copyRequest'))
+      this.$store.dispatch('snacks/info', this.$t('apikey.infoImported'))
       this.$emit('imported')
       this.loading = false
       this.updateVisible(false)

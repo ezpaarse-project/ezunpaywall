@@ -6,7 +6,7 @@
       </v-toolbar>
       <v-card-text>
         <pre>
-          <code v-highlight class="json"> {{ apikeys }} </code>
+          <highlightjs language="json" :code="apikeysStringified" />
         </pre>
       </v-card-text>
       <v-card-actions>
@@ -36,6 +36,11 @@ export default {
     apikeys: {
       type: Array,
       default: () => []
+    }
+  },
+  computed: {
+    apikeysStringified () {
+      return JSON.stringify(this.apikeys, null, 2)
     }
   },
   methods: {
