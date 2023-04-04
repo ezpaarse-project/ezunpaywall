@@ -175,7 +175,7 @@
     "total": "Total"
   },
   "status": {
-    "inUpdate": "Update in progress",
+    "inUpdate": "Update in progress: {latestTaskName} - {percent}%",
     "noInUpdate": "The data is up to date",
     "errorState": "Cannot get state of enrichment",
     "errorStatus": "Cannot get state of enrichment"

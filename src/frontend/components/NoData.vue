@@ -1,7 +1,7 @@
 <template>
   <v-row align="center" justify="center">
     <v-col class="text-center" cols="12" sm="4">
-      {{ $t(text) }}
+      {{ text }}
     </v-col>
   </v-row>
 </template>

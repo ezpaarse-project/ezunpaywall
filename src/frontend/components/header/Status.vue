@@ -23,7 +23,7 @@
 
     <v-card class="text-justify">
       <v-card-text v-if="inUpdate">
-        {{ $t("status.inUpdate") }} - {{ latestTask }} - {{ percent }}%
+        {{ $t("status.inUpdate", { latestTaskName, percent } ) }}
       </v-card-text>
       <v-card-text v-else>
         {{ $t("status.noInUpdate") }}
@@ -56,7 +56,7 @@ export default {
       }
       return null
     },
-    latestTask () {
+    latestTaskName () {
       return this.latestStep?.task
     },
     percent () {

@@ -175,7 +175,7 @@
     "total": "au total"
   },
   "status": {
-    "inUpdate": "Mise à jour en cours",
+    "inUpdate": "Mise à jour en cours : {latestTaskName} - {percent}%",
     "noInUpdate": "Les données sont à jour",
     "errorState": "Impossible d'obtenir l'état",
     "errorStatus": "Impossible d'obtenir le statut"
