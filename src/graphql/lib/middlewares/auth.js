@@ -10,7 +10,6 @@ const logger = require('../logger');
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  *
- * @return {import('express').Response | import('express').NextFunction}
  * Do the following in route or in error handler.
  */
 const checkAuth = async (req, res, next) => {
