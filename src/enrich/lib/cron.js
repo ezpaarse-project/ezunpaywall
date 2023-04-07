@@ -60,7 +60,7 @@ class Cron {
   setSchedule(schedule) {
     this.process.stop();
     this.schedule = schedule;
-    logger.info(`[cron ${this.name}] config - schedule is updated [${this.schedule}]`);
+    logger.info(`[cron: ${this.name}] config - schedule is updated [${this.schedule}]`);
     this.process = new CronJob(this.schedule, async () => {
       await this.task();
     }, null, false, 'Europe/Paris');
@@ -74,10 +74,9 @@ class Cron {
     try {
       this.process.start();
       logger.info(`[cron ${this.name}] started`);
-      logger.info(`[cron ${this.name}] config : schedule: [${this.schedule}]`);
+      logger.info(`[cron ${this.name}] config: schedule: [${this.schedule}]`);
     } catch (err) {
-      logger.error(`[cron ${this.name}] error in start`);
-      logger.error(err);
+      logger.error(`[cron ${this.name}] error in start`, err);
       return;
     }
     this.active = true;
@@ -89,10 +88,9 @@ class Cron {
   stop() {
     try {
       this.process.stop();
-      logger.info(`[cron ${this.name}] stoped`);
+      logger.info(`[cron: ${this.name}] stoped`);
     } catch (err) {
-      logger.error(`[cron ${this.name}] error in stop`);
-      logger.error(err);
+      logger.error(`[cron ${this.name}] error in stop`, err);
       return;
     }
     this.active = false;

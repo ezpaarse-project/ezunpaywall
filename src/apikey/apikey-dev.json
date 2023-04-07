@@ -3,6 +3,9 @@
     "apikey": "demo",
     "config": {
       "name": "demo",
+      "owner": "dev",
+      "description": "demo apikey, limited at 100 000 graphql requests per days",
+      "createdAt": "2021-06-01",
       "access": ["graphql", "enrich"],
       "attributes": ["*"],
       "allowed": true,
@@ -13,6 +16,9 @@
     "apikey": "user",
     "config": {
       "name": "user",
+      "owner": "dev",
+      "description": "user dev apikey",
+      "createdAt": "2021-06-01",
       "access": ["graphql", "enrich"],
       "attributes": ["*"],
       "allowed": true
@@ -22,6 +28,9 @@
     "apikey": "userRestricted",
     "config": {
       "name": "userRestricted",
+      "owner": "dev",
+      "description": "userRestricted dev apikey",
+      "createdAt": "2021-06-01",
       "access": ["graphql", "enrich"],
       "attributes": ["doi", "is_oa", "best_oa_location.license"],
       "allowed": true
@@ -31,6 +40,9 @@
     "apikey": "graphql",
     "config": {
       "name": "graphql",
+      "owner": "dev",
+      "description": "graphql dev apikey",
+      "createdAt": "2021-06-01",
       "access": ["graphql"],
       "attributes": ["*"],
       "allowed": true
@@ -40,6 +52,9 @@
     "apikey": "enrich",
     "config": {
       "name": "enrich",
+      "owner": "dev",
+      "description": "enrich dev apikey",
+      "createdAt": "2021-06-01",
       "access": ["enrich"],
       "attributes": ["*"],
       "allowed": true
@@ -49,6 +64,9 @@
     "apikey": "notAllowed",
     "config": {
       "name": "notAllowed",
+      "owner": "dev",
+      "description": "notAllowed dev apikey",
+      "createdAt": "2021-06-01",
       "access": ["graphql", "enrich"],
       "attributes": ["*"],
       "allowed": false

@@ -23,11 +23,10 @@ async function sendMailUpdateStarted(config) {
       }),
     });
   } catch (err) {
-    logger.error(`Cannot send update started mail ${err}`);
-    logger.error(err);
+    logger.error('[mail] Cannot send update started mail', err);
     return;
   }
-  logger.info('send update started mail');
+  logger.info('[mail] Update start mail was sent');
 }
 
 /**
@@ -61,14 +60,33 @@ async function sendMailUpdateReport(state) {
       }),
     });
   } catch (err) {
-    logger.error(`Cannot send update report mail ${err}`);
+    logger.error('[mail] Cannot send update report mail', err);
+    return;
+  }
+  logger.info('[mail] Update report mail was sent');
+}
+
+async function sendMailNoChangefile(startDate, endDate) {
+  try {
+    await sendMail({
+      from: notifications.sender,
+      to: notifications.receivers,
+      subject: `ezunpaywall ${notifications.machine} - Aucune mise à jour n'est disponible`,
+      ...generateMail('noChangefile', {
+        startDate: format(new Date(startDate), 'dd-MM-yyyy'),
+        endDate: format(new Date(endDate), 'dd-MM-yyyy'),
+      }),
+    });
+  } catch (err) {
+    logger.error(`Cannot send no changefile mail ${err}`);
     logger.error(err);
     return;
   }
-  logger.info('send update report mail');
+  logger.info('send no changefile mail');
 }
 
 module.exports = {
   sendMailUpdateStarted,
   sendMailUpdateReport,
+  sendMailNoChangefile,
 };

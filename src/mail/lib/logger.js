@@ -1,4 +1,7 @@
 const path = require('path');
+const { nodeEnv } = require('config');
+
+const isProd = (nodeEnv === 'production');
 
 const {
   createLogger,
@@ -44,5 +47,19 @@ const logger = createLogger({
   transports: processConfiguration,
   format: devFormat(),
 });
+
+logger.logError = logger.error;
+
+function error(text, err) {
+  logger.logError(text);
+  if (err) {
+    if (isProd) {
+      logger.logError(err?.message);
+    } else {
+      logger.logError(err);
+    }
+  }
+}
+logger.error = error;
 
 module.exports = logger;

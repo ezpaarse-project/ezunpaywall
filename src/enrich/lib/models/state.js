@@ -38,8 +38,7 @@ async function createState(id, apikey) {
   try {
     await fs.writeFile(filenamePath, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${filenamePath}`);
-    logger.error(err);
+    logger.error(`[state]: Cannot write [${JSON.stringify(state, null, 2)}] in [${filenamePath}]`, err);
     throw err;
   }
 }
@@ -60,16 +59,14 @@ const getState = async (filename, apikey) => {
   try {
     state = await fs.readFile(filenamePath, 'utf8');
   } catch (err) {
-    logger.error(`[state]: Cannot read "${filenamePath}" file`);
-    logger.error(err);
+    logger.error(`[state]: Cannot read ["${filenamePath}"] file`, err);
     throw err;
   }
 
   try {
     state = JSON.parse(state);
   } catch (err) {
-    logger.error(`[state]: Cannot parse "${state}" in json format`);
-    logger.error(err);
+    logger.error(`[state]: Cannot parse [${state}] in json format`, err);
     throw err;
   }
 
@@ -95,7 +92,7 @@ const updateStateInFile = async (state, filename) => {
   try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`);
+    logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`, err);
   }
 };
 

@@ -25,7 +25,7 @@ app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${re
 app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
 app.listen(3000, async () => {
-  logger.info('fakeUnpaywall service listening on 3000');
+  logger.info('[express] fakeUnpaywall service listening on 3000');
   await updateChangefilesExample('day');
   await updateChangefilesExample('week');
 });

@@ -17,21 +17,19 @@ const checkAuth = async (req, res, next) => {
 
   if (!apikey) return next();
 
-  let key;
+  let apikeyConfig;
   try {
-    key = await redisClient.get(apikey);
+    apikeyConfig = await redisClient.get(apikey);
   } catch (err) {
-    logger.error(`Cannot get ${apikey} on redis`);
-    logger.error(err);
+    logger.error(`[redis] Cannot get [${apikey}]`, err);
     return next();
   }
 
   let config;
   try {
-    config = JSON.parse(key);
+    config = JSON.parse(apikeyConfig);
   } catch (err) {
-    logger.error(`Cannot parse ${key}`);
-    logger.error(err);
+    logger.error(`[redis] Cannot parse [${apikeyConfig}]`, err);
     return next();
   }
 

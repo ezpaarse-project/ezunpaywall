@@ -21,11 +21,10 @@ async function sendMailContact(email, subject, message) {
       }),
     });
   } catch (err) {
-    logger.error(`Cannot send contact mail ${err}`);
-    logger.error(err);
+    logger.error('[mail] Cannot send contact mail', err);
     return;
   }
-  logger.info('send update start mail');
+  logger.info('[mail] contact mail was sent');
 }
 
 module.exports = sendMailContact;

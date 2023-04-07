@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const logger = require('./lib/logger');
+const getConfig = require('./lib/config');
 
 const routerPing = require('./lib/routers/ping');
 const routerOpenapi = require('./lib/routers/openapi');
@@ -26,5 +27,6 @@ app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${re
 app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
 app.listen(3000, async () => {
-  logger.info('ezunpaywall health service listening on 3000');
+  logger.info('[express] ezunpaywall health service listening on 3000');
+  getConfig();
 });

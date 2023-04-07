@@ -41,8 +41,7 @@ const insertDataInElastic = async (data) => {
   try {
     res = await elasticClient.bulk({ body: data });
   } catch (err) {
-    logger.error('Cannot bulk on elastic');
-    logger.error(err);
+    logger.error('[elastic] Cannot bulk', err);
     await fail(err?.[0]?.reason);
     return false;
   }
@@ -67,9 +66,9 @@ const insertDataInElastic = async (data) => {
   });
 
   if (errors.length > 0) {
-    logger.error('Error in bulk insertion');
+    logger.error('[elastic] Error in bulk insertion');
     errors.forEach((error) => {
-      logger.error(JSON.stringify(error, null, 2));
+      logger.error(`[elastic] ${JSON.stringify(error, null, 2)}`);
     });
     step.status = 'error';
     updateLatestStep(step);
@@ -110,8 +109,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   try {
     await createIndex(index, unpaywallMapping);
   } catch (err) {
-    logger.error(`Cannot create index [${index}]`);
-    logger.error(err);
+    logger.error(`[elastic] Cannot create index [${index}]`, err);
     await fail(err);
     return false;
   }
@@ -120,14 +118,13 @@ const insertDataUnpaywall = async (insertConfig) => {
     const { body: aliasExists } = await elasticClient.indices.existsAlias({ name: indexAlias });
 
     if (aliasExists) {
-      logger.info(`Alias [${indexAlias}] already exists`);
+      logger.info(`[elastic] Alias [${indexAlias}] pointing to index [${index}] already exists`);
     } else {
-      logger.info(`Creating alias [${indexAlias}] pointing to index [${index}]`);
+      logger.info(`[elastic] Creating alias [${indexAlias}] pointing to index [${index}]`);
       await elasticClient.indices.putAlias({ index, name: indexAlias });
     }
   } catch (err) {
-    logger.error(`Cannot create alias [${indexAlias}] pointing to index [${index}]`);
-    logger.error(err);
+    logger.error(`[elastic] Cannot create alias [${indexAlias}] pointing to index [${index}]`, err);
     await fail(err);
     return false;
   }
@@ -139,8 +136,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    logger.error(`Cannot stat ${filePath}`);
-    logger.error(err);
+    logger.error(`[job: insert] Cannot stat [${filePath}]`, err);
     await fail(err);
     return false;
   }
@@ -150,8 +146,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   try {
     readStream = fs.createReadStream(filePath);
   } catch (err) {
-    logger.error(`Cannot read ${filePath}`);
-    logger.error(err);
+    logger.error(`[job: insert] Cannot read [${filePath}]`, err);
     await fail(err);
     return false;
   }
@@ -166,8 +161,7 @@ const insertDataUnpaywall = async (insertConfig) => {
   try {
     decompressedStream = readStream.pipe(zlib.createGunzip());
   } catch (err) {
-    logger.error(`Cannot pipe ${readStream?.filename}`);
-    logger.error(err);
+    logger.error(`[job: insert] Cannot pipe [${readStream?.filename}]`, err);
     await fail(err);
     return false;
   }
@@ -182,7 +176,7 @@ const insertDataUnpaywall = async (insertConfig) => {
 
   let success;
 
-  logger.info(`Start insert with ${filename}`);
+  logger.info(`[job: insert] Start insert with [${filename}]`);
 
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
@@ -202,8 +196,7 @@ const insertDataUnpaywall = async (insertConfig) => {
         bulkOps.push({ index: { _index: index, _id: doc.doi } });
         bulkOps.push(doc);
       } catch (err) {
-        logger.error(`Cannot parse "${line}" in json format`);
-        logger.error(err);
+        logger.error(`[job: insert] Cannot parse [${line}] in json format`, err);
         await fail(err);
         return false;
       }
@@ -219,7 +212,7 @@ const insertDataUnpaywall = async (insertConfig) => {
       updateLatestStep(step);
     }
     if (step.linesRead % 100000 === 0) {
-      logger.info(`${step.linesRead} Lines reads`);
+      logger.info(`[job: insert] ${step.linesRead} Lines reads`);
       updateLatestStep(step);
     }
   }
@@ -230,12 +223,12 @@ const insertDataUnpaywall = async (insertConfig) => {
     bulkOps = [];
   }
 
-  logger.info('step - end insertion');
+  logger.info('[job: insert] insertion completed');
 
   try {
     await elasticClient.indices.refresh({ index });
-  } catch (e) {
-    logger.warn(`step - failed to refresh the index: ${e.message}`);
+  } catch (err) {
+    logger.warn('[elastic] Cannot refresh the index', err);
   }
 
   // last update of step

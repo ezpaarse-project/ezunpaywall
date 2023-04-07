@@ -15,8 +15,7 @@ const createReport = async (state) => {
   try {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`);
-    logger.error(err);
+    logger.error(`[report] Cannot write [${JSON.stringify(state, null, 2)}] in ${pathfile}`, err);
   }
 };
 
@@ -32,15 +31,13 @@ const getReport = async (filename) => {
   try {
     report = await fs.readFile(path.resolve(reportsDir, filename));
   } catch (err) {
-    logger.error(`Cannot read ${path.resolve(reportsDir, filename)}`);
-    logger.error(err);
+    logger.error(`[report] Cannot read [${path.resolve(reportsDir, filename)}]`, err);
     return undefined;
   }
   try {
     report = JSON.parse(report);
   } catch (err) {
-    logger.error(`Cannot parse "${report}" at json format`);
-    logger.error(err);
+    logger.error(`[report] Cannot parse [${report}] at json format`, err);
     return undefined;
   }
   return report;

@@ -16,8 +16,8 @@ if (isProd) {
   const caPath = path.resolve(__dirname, '..', '..', 'certs', 'ca.crt');
   try {
     ca = fs.readFileSync(caPath, 'utf8');
-  } catch {
-    logger.error(`Cannot read elastic certificate file in ${caPath}`);
+  } catch (err) {
+    logger.error(`[elastic] Cannot read elastic certificate file in [${caPath}]`, err);
   }
   ssl = {
     ca,
@@ -47,11 +47,11 @@ const pingElastic = async () => {
   try {
     elasticStatus = await elasticClient.ping();
   } catch (err) {
-    logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${err}`);
+    logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
     return err.message;
   }
   if (elasticStatus?.statusCode !== 200) {
-    logger.error(`Cannot ping ${elasticsearch.host}:${elasticsearch.port}`);
+    logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);
     return false;
   }
   return true;
@@ -96,8 +96,7 @@ const initAlias = async (indexName, mapping, aliasName) => {
   try {
     await createIndex(indexName, mapping);
   } catch (err) {
-    logger.error(`Cannot create index [${indexName}]`);
-    logger.error(err);
+    logger.error(`[elastic] Cannot create index [${indexName}]`, err);
     return;
   }
 
@@ -105,14 +104,13 @@ const initAlias = async (indexName, mapping, aliasName) => {
     const { body: aliasExists } = await elasticClient.indices.existsAlias({ name: aliasName });
 
     if (aliasExists) {
-      logger.info(`Alias [${aliasName}] already exists`);
+      logger.info(`[elastic] Alias [${aliasName}] already exists`);
     } else {
-      logger.info(`Creating alias [${aliasName}] pointing to index [${indexName}]`);
+      logger.info(`[elastic] Creating alias [${aliasName}] pointing to index [${indexName}]`);
       await elasticClient.indices.putAlias({ index: indexName, name: aliasName });
     }
   } catch (err) {
-    logger.error(`Cannot create alias [${aliasName}] pointing to index [${indexName}]`);
-    logger.error(err);
+    logger.error(`[elastic] Cannot create alias [${aliasName}] pointing to index [${indexName}]`, err);
   }
 };
 

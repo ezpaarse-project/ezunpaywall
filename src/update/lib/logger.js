@@ -1,4 +1,7 @@
 const path = require('path');
+const { nodeEnv } = require('config');
+
+const isProd = (nodeEnv === 'production');
 
 const {
   createLogger,
@@ -69,6 +72,20 @@ function errorRequest(err) {
   }
   logger.error(`Cannot ${err?.config?.method} ${url} - ${err?.response?.status}`);
 }
+
+logger.logError = logger.error;
+
+function error(text, err) {
+  logger.logError(text);
+  if (err) {
+    if (isProd) {
+      logger.logError(err?.message);
+    } else {
+      logger.logError(err);
+    }
+  }
+}
+logger.error = error;
 
 logger.errorRequest = errorRequest;
 

@@ -12,15 +12,33 @@
           <v-text-field
             v-model="name"
             :rules="nameRule"
-            label="Name"
+            :label="$t('administration.apikey.name')"
             name="name"
             outlined
             clearable
             required
             autofocus
           />
+          <v-text-field
+            v-model="owner"
+            :label="$t('administration.apikey.owner')"
+            name="owner"
+            outlined
+            clearable
+            required
+            autofocus
+          />
+          <v-text-field
+            v-model="description"
+            :label="$t('administration.apikey.description')"
+            name="description"
+            outlined
+            clearable
+            required
+            autofocus
+          />
           <v-card-actions>
-            <span class="mr-2" v-text="$t('administration.apikey.access')" />
+            <span class="mr-2" v-text="`${$t('administration.apikey.access')}`" />
             <v-checkbox
               v-model="graphql"
               class="mr-2"
@@ -37,8 +55,9 @@
               v-model="allowed"
             />
           </v-card-actions>
+          <v-divider />
+          <v-card-title> {{ $t('administration.apikey.attributes') }} </v-card-title>
           <SettingsAttributes
-            :all="attributesAll"
             :simple="attributesSimple"
             :best-oa-location="attributesBestOaLocation"
             :first-oa-location="attributesFirstOaLocation"
@@ -53,8 +72,9 @@
           text
           class="red--text"
           @click.stop="updateVisible(false)"
-          v-text="$t('cancel')"
-        />
+        >
+          {{ $t('cancel') }}
+        </v-btn>
         <v-spacer />
         <v-btn
           text
@@ -63,15 +83,16 @@
           :disabled="!valid"
           :loading="loading"
           class="green--text"
-          v-text="$t('create')"
-        />
+        >
+          {{ $t('create') }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import SettingsAttributes from '~/components/administration/SettingsAttributes.vue'
+import SettingsAttributes from '~/components/unpaywallArgs/SettingsAttributes.vue'
 
 export default {
   name: 'ApikeyCreateDialog',
@@ -89,6 +110,8 @@ export default {
       loading: false,
       valid: false,
       name: '',
+      owner: '',
+      description: '',
       enrich: false,
       graphql: true,
       attributes: ['doi'],
@@ -122,9 +145,6 @@ export default {
     },
     attributesZAuthors () {
       return this.attributes?.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
-    },
-    attributesAll () {
-      return this.attributes.includes('*')
     }
   },
   methods: {
@@ -139,12 +159,14 @@ export default {
           url: '/keys',
           data: {
             name: this.name,
+            owner: this.owner,
+            description: this.description,
             attributes: this.attributes,
             access: this.access,
             allowed: this.allowed
           },
           headers: {
-            'X-API-KEY': this.$store.state.admin.password
+            'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
       } catch (err) {
@@ -158,7 +180,12 @@ export default {
       this.updateVisible(false)
     },
     updateAttributes (attributesSelected) {
-      this.attributes = attributesSelected
+      // TODO 50 is the sum of attributes available through ezunpaywall
+      if (attributesSelected.length === 50) {
+        this.attributes = ['*']
+      } else {
+        this.attributes = attributesSelected
+      }
     }
   }
 }

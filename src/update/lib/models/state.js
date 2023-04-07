@@ -41,7 +41,7 @@ async function createState() {
  * Add step "getChangefiles" in steps attributes of state.
  */
 function addStepGetChangefiles() {
-  logger.info('step - ask unpaywall');
+  logger.info('[job: state] add step of check unpaywall update file registry');
   const step = {
     task: 'getChangefiles',
     took: 0,
@@ -56,7 +56,7 @@ function addStepGetChangefiles() {
  * @param {string} downloadFile - Unpaywall data update filename.
  */
 function addStepDownload(downloadFile) {
-  logger.info('step - download file');
+  logger.info('[job: state] add step of download update file from unpaywall');
   const step = {
     task: 'download',
     file: downloadFile,
@@ -73,7 +73,7 @@ function addStepDownload(downloadFile) {
  * @param {string} downloadFile - Unpaywall data update file name.
  */
 function addStepInsert(downloadFile) {
-  logger.info('step - insert file');
+  logger.info('[job: state] add step of insert the content of update file from unpaywall');
   const step = {
     task: 'insert',
     index: 'unpaywall',

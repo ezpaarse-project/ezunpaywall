@@ -36,8 +36,7 @@ async function updatePercentStepDownload(filepath, size, start) {
   try {
     bytes = await fs.stat(filepath);
   } catch (err) {
-    logger.error(`Cannot stat ${filepath}`);
-    logger.error(err);
+    logger.error(`[job: dowload] Cannot stat [${filepath}]`, err);
     return;
   }
   if (bytes?.size >= size) {
@@ -73,12 +72,12 @@ async function download(file, filepath, size) {
         step.took = (new Date() - start) / 1000;
         step.percent = 100;
         updateLatestStep(step);
-        logger.info('step - end download');
+        logger.info('[job: dowload] File download completed');
         return resolve();
       });
 
       writeStream.on('error', async (err) => {
-        logger.error(err);
+        logger.error('[job: dowload] Error on stream', err);
         await fail(err);
         return reject(err);
       });
@@ -104,7 +103,7 @@ const downloadChangefile = async (info, interval) => {
   const alreadyInstalled = await fs.pathExists(filepath);
   if (alreadyInstalled) stats = await fs.stat(filepath);
   if (alreadyInstalled && stats.size === info.size) {
-    logger.info(`File "${info.filename}"" already installed`);
+    logger.info(`[job: download] File [${info.filename}] is already installed`);
     return true;
   }
 

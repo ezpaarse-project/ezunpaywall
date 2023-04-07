@@ -21,8 +21,7 @@ async function pingRedis() {
   try {
     await redisClient.ping();
   } catch (err) {
-    logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
-    logger.error(err?.message);
+    logger.error(`[redis] Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
     return false;
   }
   return true;

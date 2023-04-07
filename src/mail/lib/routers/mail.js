@@ -3,7 +3,8 @@ const checkAuth = require('../middlewares/auth');
 
 const sendMailContact = require('../controllers/contact');
 
-const { sendMailUpdateStarted, sendMailUpdateReport } = require('../controllers/update');
+const { sendMailUpdateStarted, sendMailUpdateReport, sendMailNoChangefile } = require('../controllers/update');
+
 /**
  * Route that send a contact mail.
  * Auth required.
@@ -56,6 +57,15 @@ router.post('/update-end', checkAuth, async (req, res) => {
   const state = req.body;
 
   sendMailUpdateReport(state);
+
+  return res.status(202).json();
+});
+
+router.post('/nochangefile', checkAuth, async (req, res) => {
+  const { startDate, endDate } = req.body;
+  // TODO test startDate, endDate
+
+  sendMailNoChangefile(startDate, endDate);
 
   return res.status(202).json();
 });

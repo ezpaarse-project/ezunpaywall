@@ -40,7 +40,10 @@ const graphqlConfigWithAllAttributes = `
     updated,url,url_for_landing_page,url_for_pdf,version
   },
   z_authors {
-    family,given
+    family,
+    given,
+    sequence,
+    ORCID
   }
 }`;
 
@@ -108,8 +111,7 @@ const writeInFileJSON = async (data, enrichedFile, stateName, apikey) => {
   try {
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
-    logger.error(`Cannot write ${stringTab} in ${enrichedFile}`);
-    logger.error(err);
+    logger.error(`[job jsonl] Cannot write [${stringTab}] in [${enrichedFile}]`, err);
     await fail(stateName, apikey);
   }
 };
@@ -142,8 +144,7 @@ async function processEnrichJSON(id, index, args, apikey) {
   try {
     await fs.ensureFile(enrichedFile);
   } catch (err) {
-    logger.error(`Cannot ensure ${enrichedFile}`);
-    logger.error(err);
+    logger.error(`[job jsonl] Cannot ensure [${enrichedFile}]`, err);
   }
 
   let loaded = 0;
@@ -164,8 +165,7 @@ async function processEnrichJSON(id, index, args, apikey) {
     try {
       parsedLine = JSON.parse(line);
     } catch (err) {
-      logger.error(`Cannot parse "${line}" in json format`);
-      logger.error(err);
+      logger.error(`[job jsonl] Cannot parse [${line}] in json format`, err);
     }
     data.push(parsedLine);
 
@@ -174,8 +174,7 @@ async function processEnrichJSON(id, index, args, apikey) {
       try {
         response = await requestGraphql(data, args, index, apikey);
       } catch (err) {
-        logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
-        logger.error(JSON.stringify(err?.response?.data?.errors));
+        logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
         await fail(stateName, apikey);
         return;
       }
@@ -198,8 +197,7 @@ async function processEnrichJSON(id, index, args, apikey) {
     try {
       response = await requestGraphql(data, args, index, apikey);
     } catch (err) {
-      logger.error(`Cannot request graphql service at ${config.get('graphql.host')}/graphql`);
-      logger.error(JSON.stringify(err?.response?.data?.errors));
+      logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
       await fail(stateName, apikey);
       return;
     }
@@ -213,8 +211,7 @@ async function processEnrichJSON(id, index, args, apikey) {
     state.loaded += loaded;
     await updateStateInFile(state, stateName);
   }
-
-  logger.info(`${state.enrichedLines}/${state.linesRead} enriched lines`);
+  logger.info(`[job jsonl] ${state.enrichedLines}/${state.linesRead} enriched lines`);
 }
 
 module.exports = processEnrichJSON;

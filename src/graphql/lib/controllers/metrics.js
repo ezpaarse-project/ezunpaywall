@@ -17,7 +17,7 @@ let metrics = {
  */
 async function setMetrics() {
   metrics = await getMetrics();
-  logger.info('daily metrics updated');
+  logger.info('[metrics] metrics is updated');
 }
 
 /**
