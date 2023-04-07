@@ -15,7 +15,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.home')" />
+          <v-list-item-title> {{ $t('drawer.home') }} </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -25,7 +25,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.enrich')" />
+          <v-list-item-title>{{ $t('drawer.enrich') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -35,7 +35,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.graphql')" />
+          <v-list-item-title>{{ $t('drawer.graphql') }} </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -45,7 +45,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.openapi')" />
+          <v-list-item-title>{{ $t('drawer.openapi') }} </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -55,7 +55,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.updateHistory')" />
+          <v-list-item-title> {{ $t('drawer.updateHistory') }} </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -65,7 +65,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.contact')" />
+          <v-list-item-title>{{ $t('drawer.contact') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -75,7 +75,7 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title v-text="$t('drawer.administration')" />
+          <v-list-item-title>{{ $t('drawer.administration') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -88,8 +88,9 @@
       <template #activator>
         <v-list-item-title
           class="body-2"
-          v-text="$t('drawer.language')"
-        />
+        >
+          {{ $t('drawer.language') }}
+        </v-list-item-title>
       </template>
 
       <v-list-item
@@ -97,7 +98,9 @@
         :key="locale.code"
         @click="$i18n.setLocale(locale.code)"
       >
-        <v-list-item-title class="body-2" v-text="locale.name" />
+        <v-list-item-title class="body-2">
+          {{ locale.name }}
+        </v-list-item-title>
         <v-list-item-icon>
           <img width="24" :src="require(`@/static/img/${locale.code}.png`)">
         </v-list-item-icon>
@@ -153,10 +156,10 @@ export default {
   computed: {
     drawer: {
       get () {
-        return this.$store.state.drawer.status
+        return this.$store.getters['drawer/getStatus']
       },
       set (newVal) {
-        this.$store.dispatch('drawer/setDrawer', newVal)
+        this.$store.commit('drawer/setDrawer', newVal)
       }
     }
   }

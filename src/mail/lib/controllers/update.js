@@ -56,7 +56,27 @@ async function sendMailUpdateReport(state) {
   logger.info('[mail] Update report mail was sent');
 }
 
+async function sendMailNoChangefile(startDate, endDate) {
+  try {
+    await sendMail({
+      from: notifications.sender,
+      to: notifications.receivers,
+      subject: `ezunpaywall ${notifications.machine} - Aucune mise à jour n'est disponible`,
+      ...generateMail('noChangefile', {
+        startDate: format(new Date(startDate), 'dd-MM-yyyy'),
+        endDate: format(new Date(endDate), 'dd-MM-yyyy'),
+      }),
+    });
+  } catch (err) {
+    logger.error(`Cannot send no changefile mail ${err}`);
+    logger.error(err);
+    return;
+  }
+  logger.info('send no changefile mail');
+}
+
 module.exports = {
   sendMailUpdateStarted,
   sendMailUpdateReport,
+  sendMailNoChangefile,
 };

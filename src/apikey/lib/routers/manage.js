@@ -26,6 +26,7 @@ const {
  */
 router.get('/keys/:apikey', async (req, res, next) => {
   const { apikey } = req.params;
+
   const { error } = joi.string().trim().required().validate(apikey);
 
   if (error) return res.status(400).json({ message: error.details[0].message });
@@ -110,18 +111,20 @@ router.get('/keys', checkAuth, async (req, res, next) => {
  * Create new apikey with config in body
  */
 router.post('/keys', checkAuth, async (req, res, next) => {
-  const { error, value } = joi.object({
+  const { error, value: apikeyConfig } = joi.object({
     name: joi.string().trim().required(),
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql']),
+    owner: joi.string().trim().optional().allow(''),
+    description: joi.string().trim().optional().allow(''),
     allowed: joi.boolean().default(true),
   }).validate(req?.body);
 
   if (error) return res.status(400).json({ message: error?.details?.[0]?.message });
 
   const {
-    name, attributes, access, allowed,
-  } = value;
+    name, attributes, access, owner, description, allowed,
+  } = apikeyConfig;
 
   let keys;
 
@@ -157,10 +160,10 @@ router.post('/keys', checkAuth, async (req, res, next) => {
   let apikey;
 
   try {
-    apikey = await createApiKey(name, access, attributes, allowed);
+    apikey = await createApiKey(apikeyConfig);
   } catch (err) {
     logger.error(`[apikey] Cannot create apikey with config [${{
-      name, access, attributes, allowed,
+      name, access, attributes, owner, description, allowed,
     }}]`, err);
     return next({ message: 'Cannot create apikey key' });
   }
@@ -188,20 +191,20 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
   }
   const apikey = checkParams?.value;
 
-  const checkBody = joi.object({
+  const { error, value: apikeyConfig } = joi.object({
     name: joi.string().trim(),
     attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
     access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql', 'enrich']),
+    owner: joi.string().trim().optional().allow(''),
+    description: joi.string().trim().optional().allow(''),
     allowed: joi.boolean().default(true),
   }).validate(req.body);
 
-  if (checkBody?.error) {
-    return res.status(400).json({ message: checkBody?.error?.details[0].message });
+  if (error) {
+    return res.status(400).json({ message: error?.details[0].message });
   }
 
-  const {
-    name, attributes, access, allowed,
-  } = checkBody.value;
+  const { name } = apikeyConfig;
 
   // check if apikey exist
   let configApikey;
@@ -260,7 +263,7 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
 
   // update
   try {
-    await updateApiKey(apikey, name, access, attributes, allowed);
+    await updateApiKey(apikey, apikeyConfig);
   } catch (err) {
     logger.error(`[router] Cannot update apikey [${apikey}]`, err);
     return next({ message: `Cannot update apikey [${apikey}]` });
@@ -337,7 +340,6 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
   const { error, value } = joi.array().validate(req.body);
-
   if (error) return res.status(400).json({ message: error.details[0].message });
 
   const loadKeys = value;

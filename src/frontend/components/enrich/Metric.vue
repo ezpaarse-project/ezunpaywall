@@ -5,7 +5,7 @@
         tile
         size="58"
         :color="color"
-        style="border-radius: 4px;"
+        style="border-radius: 4px"
         class="elevation-1"
       >
         <v-icon size="40" dark>
@@ -14,8 +14,12 @@
       </v-list-item-avatar>
 
       <v-list-item-content class="text-right">
-        <v-list-item-title class="headline mb-1" v-text="value" />
-        <v-list-item-subtitle v-text="$t(`enrich.${label}`)" />
+        <v-list-item-title class="headline mb-1">
+          {{ value }}
+        </v-list-item-title>
+        <v-list-item-subtitle>
+          {{ $t(`enrich.${label}`) }}
+        </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
   </v-card>

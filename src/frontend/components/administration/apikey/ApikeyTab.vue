@@ -1,34 +1,60 @@
 <template>
   <v-card>
     <v-toolbar color="secondary" dark flat dense>
-      <v-toolbar-title v-text="$t('administration.apikey.title')" />
-      <v-spacer />
-      <v-icon>mdi-security</v-icon>
-    </v-toolbar>
-    <v-card-actions>
+      <v-toolbar-title> {{ $t('administration.apikey.title') }} </v-toolbar-title>
       <v-spacer />
       <v-btn
-        @click.stop="setVisible(true)"
-        v-text="$t('administration.apikey.buttonCreate')"
+        icon
+        @click.stop="importDialogVisible = true"
+      >
+        <v-icon>mdi-file-import</v-icon>
+      </v-btn>
+      <ImportDialog
+        v-model="importDialogVisible"
+        @imported="getApikeys()"
+        @closed="importDialogVisible = false"
       />
-
+      <v-btn
+        icon
+        @click.stop="exportDialogVisible = true"
+      >
+        <v-icon>mdi-export-variant</v-icon>
+      </v-btn>
+      <ExportDialog
+        v-model="exportDialogVisible"
+        :apikeys="apikeys"
+        @created="getApikeys()"
+        @closed="exportDialogVisible = false"
+      />
+      <v-btn
+        icon
+        @click.stop="createDialogVisible = true"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
       <CreateDialog
         v-model="createDialogVisible"
         @created="getApikeys()"
-        @closed="setVisible(false)"
+        @closed="createDialogVisible = false"
       />
-    </v-card-actions>
+      <v-btn
+        icon
+        :disabled="loading"
+        @click.stop="getApikeys()"
+      >
+        <v-icon>mdi-reload</v-icon>
+      </v-btn>
+    </v-toolbar>
 
     <v-row
-      v-if="apikeys.length === 0"
+      v-if="loading"
       align="center"
       justify="center"
       class="ma-2"
     >
-      <v-col class="text-center" cols="12" sm="4">
-        {{ $t("administration.apikey.noApikeys") }}
-      </v-col>
+      <Loader />
     </v-row>
+    <NoData v-else-if="!apikeys || apikeys.length === 0" :text="$t('administration.apikey.noApikeys')" />
     <v-row v-else class="ma-2">
       <v-col
         v-for="(key) in apikeys"
@@ -52,18 +78,28 @@
 
 <script>
 import CreateDialog from '~/components/administration/apikey/CreateDialog.vue'
+import ImportDialog from '~/components/administration/apikey/ImportDialog.vue'
+import ExportDialog from '~/components/administration/apikey/ExportDialog.vue'
+import Loader from '~/components/Loader.vue'
+import NoData from '~/components/NoData.vue'
 import ApikeyCard from '~/components/administration/apikey/ApikeyCard.vue'
 
 export default {
   name: 'ApikeyTab',
   components: {
     CreateDialog,
+    ImportDialog,
+    ExportDialog,
+    Loader,
+    NoData,
     ApikeyCard
   },
   data () {
     return {
       loading: false,
       createDialogVisible: false,
+      importDialogVisible: false,
+      exportDialogVisible: false,
       apikeys: []
     }
   },
@@ -71,9 +107,6 @@ export default {
     await this.getApikeys()
   },
   methods: {
-    setVisible (value) {
-      this.createDialogVisible = value
-    },
     async getApikeys () {
       let res
       this.loading = true
@@ -82,14 +115,11 @@ export default {
           method: 'GET',
           url: '/keys',
           headers: {
-            'X-API-KEY': this.$store.state.admin.password
+            'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
       } catch (e) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('administration.errorApikey')
-        )
+        this.$store.dispatch('snacks/error', this.$t('administration.errorApikey'))
         this.loading = false
         return
       }

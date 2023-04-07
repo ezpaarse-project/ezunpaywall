@@ -88,6 +88,8 @@ const allArgs = () => `
   z_authors {
     family,
     given,
+    sequence,
+    ORCID
   }
 }`;
 

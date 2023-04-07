@@ -3,9 +3,9 @@ export default {
   state: () => ({
     status: true
   }),
-  actions: {
-    setDrawer ({ commit }, value) {
-      commit('setDrawer', value)
+  getters: {
+    getStatus (state) {
+      return state.status
     }
   },
   mutations: {

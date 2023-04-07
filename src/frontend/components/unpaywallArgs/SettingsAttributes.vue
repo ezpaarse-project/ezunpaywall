@@ -1,49 +1,49 @@
 <template>
   <div>
     <v-card-actions>
-      <v-btn @click="selectAll()">
-        <span v-text="$t('unpaywallArgs.selectAll')" />
-      </v-btn>
-      <v-spacer />
       <v-btn @click="unselectAll()">
         <span v-text="$t('unpaywallArgs.unselectAll')" />
+      </v-btn>
+      <v-spacer />
+      <v-btn @click="selectAll()">
+        <span v-text="$t('unpaywallArgs.selectAll')" />
       </v-btn>
     </v-card-actions>
 
     <SelectAttributes
+      v-if="!hideSimple"
+      v-model="simpleSelected"
       :items="unpaywallAttr"
       label="simple"
-      :selected="simpleSelected"
-      @simple="setAttributes('simpleSelected', $event)"
     />
     <SelectAttributes
+      v-if="!hideBestOaLocation"
+      v-model="bestOaLocationSelected"
       :items="oaLocationAttr"
       label="best_oa_location"
-      :selected="bestOaLocationSelected"
-      @best_oa_location="setAttributes('bestOaLocationSelected', $event)"
     />
     <SelectAttributes
+      v-if="!hideFirstOaLocation"
+      v-model="firstOaLocationSelected"
       :items="oaLocationAttr"
       label="first_oa_location"
-      :selected="firstOaLocationSelected"
-      @first_oa_location="setAttributes('firstOaLocationSelected', $event)"
     />
     <SelectAttributes
+      v-if="!hideOaLocations"
+      v-model="oaLocationsSelected"
       :items="oaLocationAttr"
       label="oa_locations"
-      :selected="oaLocationsSelected"
-      @oa_locations="setAttributes('oaLocationsSelected', $event)"
     />
     <SelectAttributes
+      v-if="!hideZAuthor"
+      v-model="zAuthorsSelected"
       :items="zAuthorsAttr"
       label="z_authors"
-      :selected="zAuthorsSelected"
-      @z_authors="setAttributes('zAuthorsSelected', $event)"
     />
   </div>
 </template>
 <script>
-import SelectAttributes from '~/components/administration/SelectAttributes.vue'
+import SelectAttributes from '~/components/unpaywallArgs/SelectAttributes.vue'
 
 export default {
   components: {
@@ -73,6 +73,26 @@ export default {
     zAuthors: {
       type: Array,
       default: () => []
+    },
+    hideSimple: {
+      type: Boolean,
+      default: () => false
+    },
+    hideBestOaLocation: {
+      type: Boolean,
+      default: () => false
+    },
+    hideFirstOaLocation: {
+      type: Boolean,
+      default: () => false
+    },
+    hideOaLocations: {
+      type: Boolean,
+      default: () => false
+    },
+    hideZAuthor: {
+      type: Boolean,
+      default: () => false
     }
   },
   data: () => {
@@ -85,10 +105,6 @@ export default {
     }
   },
   computed: {
-    allSelected () {
-      return this.simpleSelected.length + this.bestOaLocationSelected.length + this.firstOaLocationSelected.length + this.oaLocationsSelected.length + this.zAuthorsSelected.length ===
-        this.unpaywallAttr.length + (this.oaLocationAttr.length * 3) + this.zAuthorsAttr.length
-    },
     unpaywallAttr () {
       return [
         { name: 'doi', info: this.$t('unpaywallArgs.general.doi') },
@@ -132,33 +148,36 @@ export default {
       ]
     },
     attributes () {
-      return this.allSelected
-        ? ['*']
-        : this.simpleSelected
-          .concat(this.flatten(this.bestOaLocationSelected, 'best_oa_location'))
-          .concat(this.flatten(this.firstOaLocationSelected, 'first_oa_location'))
-          .concat(this.flatten(this.oaLocationsSelected, 'oa_locations'))
-          .concat(this.flatten(this.zAuthorsSelected, 'z_authors'))
+      return (this.hideSimple ? [] : this.simpleSelected)
+        .concat(this.hideOBestOaLocation ? [] : this.flatten(this.bestOaLocationSelected, 'best_oa_location'))
+        .concat(this.hideOFirstLocation ? [] : this.flatten(this.firstOaLocationSelected, 'first_oa_location'))
+        .concat(this.hideOaLocations ? [] : this.flatten(this.oaLocationsSelected, 'oa_locations'))
+        .concat(this.hideZAuthor ? [] : this.flatten(this.zAuthorsSelected, 'z_authors'))
+    }
+  },
+  watch: {
+    attributes () {
+      this.$emit('attributes', this.attributes)
     }
   },
   mounted () {
     if (this.all) {
       this.selectAll()
     } else {
-      this.simpleSelected = this.simple
-      this.bestOaLocationSelected = this.bestOaLocation
-      this.firstOaLocationSelected = this.firstOaLocation
-      this.oaLocationsSelected = this.oaLocations
-      this.zAuthorsSelected = this.zAuthors
+      this.simpleSelected = this.hideSimple ? [] : this.simple
+      this.bestOaLocationSelected = this.hideOBestOaLocation ? [] : this.bestOaLocation
+      this.firstOaLocationSelected = this.hideOFirstLocation ? [] : this.firstOaLocation
+      this.oaLocationsSelected = this.hideOaLocations ? [] : this.oaLocations
+      this.zAuthorsSelected = this.hideZAuthor ? [] : this.zAuthors
     }
   },
   methods: {
     selectAll () {
-      this.simpleSelected = this.unpaywallAttr.map(e => e.name)
-      this.bestOaLocationSelected = this.oaLocationAttr.map(e => e.name)
-      this.firstOaLocationSelected = this.oaLocationAttr.map(e => e.name)
-      this.oaLocationsSelected = this.oaLocationAttr.map(e => e.name)
-      this.zAuthorsSelected = this.zAuthorsAttr.map(e => e.name)
+      this.simpleSelected = this.hideSimple ? [] : this.unpaywallAttr.map(e => e.name)
+      this.bestOaLocationSelected = this.hideOBestOaLocation ? [] : this.oaLocationAttr.map(e => e.name)
+      this.firstOaLocationSelected = this.hideOFirstLocation ? [] : this.oaLocationAttr.map(e => e.name)
+      this.oaLocationsSelected = this.hideOaLocations ? [] : this.oaLocationAttr.map(e => e.name)
+      this.zAuthorsSelected = this.hideZAuthor ? [] : this.zAuthorsAttr.map(e => e.name)
       this.$emit('attributes', this.attributes)
     },
     unselectAll () {
@@ -167,11 +186,6 @@ export default {
       this.firstOaLocationSelected = []
       this.oaLocationsSelected = []
       this.zAuthorsSelected = []
-      this.$emit('attributes', this.attributes)
-    },
-    setAttributes (key, e) {
-      if (!this[key]) { return false }
-      this[key] = e
       this.$emit('attributes', this.attributes)
     },
     flatten (e, attr) {

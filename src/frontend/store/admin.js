@@ -4,12 +4,12 @@ export default {
     isAdmin: false,
     password: ''
   }),
-  actions: {
-    setIsAdmin ({ commit }, value) {
-      commit('setIsAdmin', value)
+  getters: {
+    getIsAdmin (state) {
+      return state.isAdmin
     },
-    setPassword ({ commit }, value) {
-      commit('setPassword', value)
+    getPassword (state) {
+      return state.password
     }
   },
   mutations: {
