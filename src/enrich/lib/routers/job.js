@@ -15,17 +15,8 @@ const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 /**
  * Route that start a enrich job.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeBody {string} [type] - type of file : csv or jsonl available.
- * @routeBody {string} [args] - graphql attributes added to the enriched file.
- * @routeBody {string} [index] - elastic index for enrich process.
- * @routeBody {string} [separotor] - enriched file separator.
- *
- * @routeResponse {string} id of process
- *
- * @return {import('express').Response} HTTP response.
+ * This route need a body that contains a config of job
+ * and a param filename which corresponds to the upload filename
  */
 router.post('/job/:filename', checkAuth, async (req, res) => {
   const checkParams = joi.string().trim().required().validate(req.params.filename);

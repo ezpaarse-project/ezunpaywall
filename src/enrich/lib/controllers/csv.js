@@ -192,7 +192,7 @@ async function enrichHeaderCSV(header, args) {
 /**
  * Write csv header in the enriched file.
  *
- * @param {array<string>} header - Csv header.
+ * @param {Array<string>} header - Csv header.
  * @param {string} separator - Separator of csv file.
  * @param {string} filePath - Path of the file to write the csv header.
  */

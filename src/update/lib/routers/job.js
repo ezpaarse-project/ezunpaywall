@@ -21,10 +21,7 @@ const checkAuth = require('../middlewares/auth');
  * Auth required.
  * No update process should be in progress.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @return {import('express').Response} HTTP response.
+ * This route need a body that contains a config of job.
  */
 router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().default('unpaywall').validate(req.body.index);
@@ -48,15 +45,7 @@ router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
  * Auth required.
  * No update process should be in progress.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeBody {string} index - Name of the index to which the data will be inserted.
- * @routeBody {string} interval - Interval of changefile, day or week are available.
- * @routeBody {string} startDate - Start date for the changefile period.
- * @routeBody {string} endDate - End date for the changefile period.
- *
- * @return {import('express').Response} HTTP response.
+ * This route need a body that contains a config of job.
  */
 router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
@@ -114,14 +103,8 @@ router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
  * Auth required.
  * No update process should be in progress.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeBody {string} index - Name of the index to which the data will be inserted.
- * @routeBody {number} offset - Line of the snapshot at which the data insertion starts.
- * @routeBody {number} limit - Line in the file where the insertion stops.
- *
- * @return {import('express').Response} HTTP response.
+ * This route need a body that contains a config of job
+ * and a param which corresponds to the filename.
  */
 router.post('/job/changefile/:filename', checkStatus, checkAuth, async (req, res, next) => {
   const { filename } = req.params;

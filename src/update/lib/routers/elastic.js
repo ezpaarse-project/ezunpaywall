@@ -7,11 +7,6 @@ const unpaywallMapping = require('../../mapping/unpaywall.json');
 
 /**
  * Route that init unpaywall elastic alias with local mapping.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.post('/elastic/alias', checkAuth, async (req, res, next) => {
   try {

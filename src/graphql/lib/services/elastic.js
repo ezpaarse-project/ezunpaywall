@@ -40,7 +40,7 @@ const elasticClient = new Client({
 /**
  * Ping elastic service.
  *
- * @returns {Boolean|String} ping
+ * @returns {boolean|string} ping
  */
 async function pingElastic() {
   let elasticStatus;

@@ -17,14 +17,7 @@ const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  * Route that give list of filename of state or the content of latest
  * state.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following in error handler.
- *
- * @routeResponse {Array<string>} List of filename of state
- * @routeResponse {Object} Content of latest state in json
- *
- * @return {import('express').Response} HTTP response.
+ * This route can take a param latest.
  */
 router.get('/states', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
@@ -63,14 +56,7 @@ router.get('/states', checkAuth, async (req, res, next) => {
 /**
  * Route that give the content of state.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeParams {string} Filename of state.
- *
- * @routeResponse {Object} Content of latest state in json
- *
- * @return {import('express').Response} HTTP response.
+ * This route need a param which corresponds to the filename of state.
  */
 router.get('/states/:filename', checkAuth, async (req, res, next) => {
   const { filename } = req.params;

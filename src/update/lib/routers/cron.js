@@ -8,11 +8,6 @@ const cron = require('../controllers/cron/update');
 /**
  * Route that start the update cron.
  * Auth required.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.post('/cron/start', checkAuth, async (req, res, next) => {
   cron.updateCron.start();
@@ -23,11 +18,6 @@ router.post('/cron/start', checkAuth, async (req, res, next) => {
 /**
  * Route that stop the update cron.
  * Auth required.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.post('/cron/stop', checkAuth, async (req, res, next) => {
   cron.updateCron.stop();
@@ -39,16 +29,7 @@ router.post('/cron/stop', checkAuth, async (req, res, next) => {
  * Route that update the update cron.
  * Auth required.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeBody {string} time - Schedule of cron.
- * @routeBody {string} index - Index where the data will be inserted.
- * @routeBody {string} interval - Interval of changefile, day or week are available.
- *
- * @routeResponse {Object} config - Config of cron.
- *
- * @return {import('express').Response} HTTP response.
+ * This route need a body that contains a config of cron.
  */
 router.patch('/cron', checkAuth, async (req, res) => {
   const { error, value } = joi.object({
@@ -70,13 +51,6 @@ router.patch('/cron', checkAuth, async (req, res) => {
 
 /**
  * Route that get the config of update cron.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeResponse {Object} config of update cron.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.get('/cron', async (req, res) => {
   const config = cron.getGlobalConfig();

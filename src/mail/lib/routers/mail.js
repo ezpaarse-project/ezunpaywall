@@ -5,17 +5,8 @@ const sendMailContact = require('../controllers/contact');
 
 const { sendMailUpdateStarted, sendMailUpdateReport } = require('../controllers/update');
 /**
- * Send a contact mail.
+ * Route that send a contact mail.
  * Auth required.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeBody {string} email - Email of sender.
- * @routeBody {string} subject - Subject of mail.
- * @routeBody {string} message -  Message of mail.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.post('/contact', checkAuth, async (req, res) => {
   const {
@@ -48,13 +39,6 @@ router.post('/contact', checkAuth, async (req, res) => {
 /**
  * Route that sends a mail that inform that an update has started start.
  * Auth required.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeBody {string} config - Config.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.post('/update-start', checkAuth, async (req, res) => {
   const config = req.body;
@@ -67,11 +51,6 @@ router.post('/update-start', checkAuth, async (req, res) => {
 /**
  * Route that send update mail report.
  * Auth required.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.post('/update-end', checkAuth, async (req, res) => {
   const state = req.body;

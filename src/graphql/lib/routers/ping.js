@@ -6,36 +6,16 @@ const { pingElastic } = require('../services/elastic');
 
 /**
  * Route that give the name of service.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeResponse {string} name of service.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.get('/', (req, res) => res.status(200).json('graphql service'));
 
 /**
  * Route that ping the service.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.get('/ping', (req, res) => res.status(204).end());
 
 /**
  * route that gives the state of health of the service.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeResponse {Array<Object>} List of status of healthcheck
- * with name, time, optionnal error and healthy.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.get('/health', async (req, res) => {
   const start = Date.now();
@@ -58,14 +38,6 @@ router.get('/health', async (req, res) => {
 
 /**
  * route that gives the state of health of the redis.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeResponse {Array<Object>} List of status of healthcheck
- * with name, time, optionnal error and healthy.
- *
- * @return {import('express').Response} HTTP response.
  */
 router.get('/health/redis', async (req, res) => {
   const resultPing = await promiseWithTimeout(pingRedis(), 'redis');
@@ -75,14 +47,6 @@ router.get('/health/redis', async (req, res) => {
 
 /**
  * route that gives the state of health of elastic.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeResponse {Object} status of healthcheck
- * with name, time, optionnal error and healthy
- *
- * @return {import('express').Response} HTTP response.
  */
 router.get('/health/elastic', async (req, res) => {
   const resultPing = await promiseWithTimeout(pingElastic(), 'elastic');

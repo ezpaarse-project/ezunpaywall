@@ -10,8 +10,9 @@ const accessLogDir = path.resolve(__dirname, '..', 'log', 'access');
 /**
  * Get the name of access file.
  *
- * @param {Date} date date
- * @returns {string} name of access file
+ * @param {number} Date - date.
+ *
+ * @returns {string} Name of access file.
  */
 function logFilename(time) {
   if (!time) return 'access.log';

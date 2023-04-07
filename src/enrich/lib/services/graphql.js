@@ -11,7 +11,7 @@ graphql.host = config.get('graphql.host');
 /**
  * Request graphql service to get unpaywall data.
  *
- * @param {array<string>} data - Array of line that we will enrich.
+ * @param {Array<string>} data - Array of line that we will enrich.
  * @param {string} args - Requested graphql attributes.
  * @param {string} index - Requested index elastic.
  * @param {string} apikey - Apikey of user.

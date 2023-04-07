@@ -7,7 +7,7 @@ const path = require('path');
  *
  * @param {string} directoryPath - Directory path.
  *
- * @returns {array<string>} list of filepath in date order.
+ * @returns {Array<string>} list of filepath in date order.
  */
 async function orderRecentFiles(directoryPath) {
   const filenames = await fs.readdir(directoryPath);

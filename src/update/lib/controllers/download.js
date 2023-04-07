@@ -23,8 +23,8 @@ const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
  * Update the step the percentage in download regularly until the download is complete.
  *
  * @param {string} filepath - Path where the file is downloaded.
- * @param {Number} size - Size of file.
- * @param {Date} start - Download start date.
+ * @param {number} size - Size of file.
+ * @param {number} start - Download start date.
  */
 async function updatePercentStepDownload(filepath, size, start) {
   const state = getState();
@@ -55,7 +55,7 @@ async function updatePercentStepDownload(filepath, size, start) {
  *
  * @param {Readable} file - File.
  * @param {string} filepath - Filepath of file.
- * @param {Number} size - Size of file.
+ * @param {number} size - Size of file.
  */
 async function download(file, filepath, size) {
   const step = getLatestStep();

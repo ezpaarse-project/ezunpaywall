@@ -4,6 +4,7 @@ const path = require('path');
 const joi = require('joi').extend(require('@hapi/joi-date'));
 
 const upload = require('../middlewares/multer');
+const checkAuth = require('../middlewares/auth');
 
 const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 
@@ -17,18 +18,11 @@ const {
 
 /**
  * Route that give the list of snapshots installed on ezunpaywall of the most recent file.
+ * Auth required.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeQuery {string} latest - indicate if it gave latest snapshot or not.
- *
- * @routeResponse {Array<string>|<File>} List of filename of snapshot
- * or the latest snapshot.
- *
- * @return {import('express').Response} HTTP response.
+ * This route can take a param latest.
  */
-router.get('/snapshots', async (req, res, next) => {
+router.get('/snapshots', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req.query.latest);
 
   if (error) return res.status(400).json({ message: error.details[0].message });
@@ -50,28 +44,21 @@ router.get('/snapshots', async (req, res, next) => {
 
 /**
  * Route that upload a file on ezunpaywall.
+ * Auth required.
+ * Using for test.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @return {import('express').Response} HTTP response.
+ * This route need a body that contains the file to upload.
  */
-router.post('/snapshots', upload.single('file'), async (req, res, next) => {
+router.post('/snapshots', checkAuth, upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ messsage: 'File not sent' });
   return res.status(202).json();
 });
 
 /**
  * Route that delete a file on ezunpaywall.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- *
- * @routeParam {string} filename - Filename.
- *
- * @return {import('express').Response} HTTP response.
+ * Auth required.
  */
-router.delete('/snapshots/:filename', async (req, res, next) => {
+router.delete('/snapshots/:filename', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().required().validate(req.params.filename);
 
   if (error) return res.status(400).json({ message: error.details[0].message });

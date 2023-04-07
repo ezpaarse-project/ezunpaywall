@@ -53,7 +53,7 @@ function addStepGetChangefiles() {
 /**
  * Add step "download" in steps attributes of state.
  *
- * @param {String} downloadFile - Unpaywall data update filename.
+ * @param {string} downloadFile - Unpaywall data update filename.
  */
 function addStepDownload(downloadFile) {
   logger.info('step - download file');
