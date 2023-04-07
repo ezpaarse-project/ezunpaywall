@@ -7,10 +7,11 @@ chai.use(chaiHttp);
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
 /**
- * get state of update
- * @returns {JSON} state
+ * Get state of update.
+ *
+ * @returns {Promise<Object>} state
  */
-const getState = async () => {
+async function getState() {
   let res;
   try {
     res = await chai.request(updateURL)
@@ -21,7 +22,7 @@ const getState = async () => {
     process.exit(1);
   }
   return res?.body;
-};
+}
 
 module.exports = {
   getState,

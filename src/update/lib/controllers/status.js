@@ -12,7 +12,7 @@ const setInUpdate = (status) => {
 /**
  * Getter of inUpdate.
  *
- * @returns {boolean} - inUpdate
+ * @returns {boolean} inUpdate
  */
 const getStatus = () => inUpdate;
 

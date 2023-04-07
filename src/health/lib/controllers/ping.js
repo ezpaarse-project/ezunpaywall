@@ -16,7 +16,7 @@ const healthTimeout = config.get('healthTimeout');
  * if it does not solve after a certain time.
  * @param {string} name - Name of service.
  *
- * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
+ * @returns {Promise<Object>} Status of healthcheck with name, time, optionnal error and healthy.
  */
 async function PromiseOnHealthWithTimeout(p1, name) {
   const start = Date.now();
@@ -52,7 +52,7 @@ async function PromiseOnHealthWithTimeout(p1, name) {
  * @param {string} name - Name of service.
  * @param {string} host - Host of service.
  *
- * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
+ * @returns {Promise<Object>} Status of healthcheck with name, time, optionnal error and healthy.
  */
 async function health(name, host) {
   let res;
@@ -76,7 +76,7 @@ async function health(name, host) {
  * if it does not solve after a certain time.
  * @param {string} name - Name of service.
  *
- * @returns {Object} Status of healthcheck with name, time, optionnal error and healthy.
+ * @returns {Promise<Object>} Status of healthcheck with name, time, optionnal error and healthy.
  */
 async function promiseWithTimeout(p1, name) {
   const start = Date.now();
@@ -115,7 +115,7 @@ async function promiseWithTimeout(p1, name) {
  * @param {string} name - Name of service.
  * @param {string} host - Host of service.
  *
- * @returns {boolean} ping
+ * @returns {Promise<boolean>} ping
  */
 async function ping(name, host) {
   try {
@@ -133,8 +133,8 @@ async function ping(name, host) {
 /**
  * Health and ping all service on ezunpaywall.
  *
- * @returns {Object} Sist of status of healthcheck with name, time, optionnal error and healthy
- * for each service.
+ * @returns {Promise<Object>} Sist of status of healthcheck with
+ * name, time, optionnal error and healthy for each service.
  */
 async function pingAll() {
   const graphqlHost = config.get('graphqlHost');

@@ -16,9 +16,9 @@ const logger = require('../logger');
  * to which the key has access. Only accept attributes from ./attributes.js.
  * @param {boolean} config.allowed - Indicates if the key is authorized or not.
  *
- * @returns {string} The randomly generated API key.
+ * @returns {Promise<string>} The randomly generated API key.
  */
-const createApiKey = async (config) => {
+async function createApiKey(config) {
   const apikeyConfig = config;
 
   const currentDate = Date.now();
@@ -40,7 +40,7 @@ const createApiKey = async (config) => {
     throw err;
   }
   return id;
-};
+}
 
 /**
  * Update an apikey on redis according to its key and its configuration.
@@ -54,9 +54,9 @@ const createApiKey = async (config) => {
  * to which the key has access. Only accept attributes from ./attributes.js.
  * @param {boolean} newConfig.allowed - Indicates if the key is authorized or not.
  *
- * @returns {Object} Config of apikey.
+ * @returns {Promise<Object>} Config of apikey.
  */
-const updateApiKey = async (id, newConfig) => {
+async function updateApiKey(id, newConfig) {
   const {
     name, access, owner, description, attributes, allowed,
   } = newConfig;
@@ -79,16 +79,18 @@ const updateApiKey = async (id, newConfig) => {
   }
 
   return config;
-};
+}
 
 /**
  * Delete an apikey on redis according to its key.
  *
  * @param {string} id - key of apikey.
+ *
+ * @returns {Promise<void>}
  */
-const deleteApiKey = async (id) => {
+async function deleteApiKey(id) {
   await redisClient.del(id, redis.print);
-};
+}
 
 module.exports = {
   createApiKey,

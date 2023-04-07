@@ -11,6 +11,8 @@ const updateConfig = {
 
 /**
  * Starts an update daily process if no update process is started.
+ *
+ * @returns {Promise<void>}
  */
 async function task() {
   const week = (updateConfig.interval === 'week');
@@ -42,7 +44,7 @@ function update(config) {
 }
 
 /**
- * gGet config of update process and config of cron.
+ * Get config of update process and config of cron.
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {

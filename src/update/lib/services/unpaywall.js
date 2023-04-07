@@ -8,12 +8,13 @@ const unpaywall = axios.create({
 unpaywall.baseURL = config.get('unpaywall.host');
 
 const apikey = config.get('unpaywall.apikey');
+
 /**
  * Get the current snapshot.
  *
  * @returns {Readable} Stream of snapshot.
  */
-const getSnapshot = async () => {
+async function getSnapshot() {
   let res;
   try {
     res = await unpaywall({
@@ -29,7 +30,7 @@ const getSnapshot = async () => {
     return false;
   }
   return res;
-};
+}
 
 /**
  * Get the Unpaywall changefile registry with interval and between period.
@@ -38,9 +39,9 @@ const getSnapshot = async () => {
  * @param {string} startDate - Start date for the changefile period.
  * @param {string} endDate - End date for the changefile period.
  *
- * @returns {Object} Unpaywall changefile registry in json format.
+ * @returns {Promise<Object>} Unpaywall changefile registry in json format.
  */
-const getChangefiles = async (interval, startDate, endDate) => {
+async function getChangefiles(interval, startDate, endDate) {
   let res;
   try {
     res = await unpaywall({
@@ -78,7 +79,7 @@ const getChangefiles = async (interval, startDate, endDate) => {
   }
 
   return snapshotsInfo;
-};
+}
 
 /**
  * Get changefile from unpaywall with his filename.
@@ -88,7 +89,7 @@ const getChangefiles = async (interval, startDate, endDate) => {
  *
  * @returns {Readable} Stream of changefile.
  */
-const getChangefile = async (filename, interval) => {
+async function getChangefile(filename, interval) {
   let res;
 
   let feed = 'feed';
@@ -111,7 +112,7 @@ const getChangefile = async (filename, interval) => {
     return false;
   }
   return res;
-};
+}
 
 module.exports = {
   getSnapshot,

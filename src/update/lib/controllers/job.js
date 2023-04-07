@@ -39,8 +39,10 @@ const {
  * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
  * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
  * @param {number} jobConfig.limit - Line in the file where the insertion stops.
+ *
+ * @returns {Promise<void>}
  */
-const downloadAndInsertSnapshot = async (jobConfig) => {
+async function downloadAndInsertSnapshot(jobConfig) {
   setInUpdate(true);
   await createState();
   const filename = await downloadBigSnapshot(jobConfig);
@@ -51,7 +53,7 @@ const downloadAndInsertSnapshot = async (jobConfig) => {
   jobConfig.filename = filename;
   await insertDataUnpaywall(jobConfig);
   await endState();
-};
+}
 
 /**
  * Download and insert on elastic the changefiles from unpaywall between a period.
@@ -63,8 +65,10 @@ const downloadAndInsertSnapshot = async (jobConfig) => {
  * @param {string} jobConfig.endDate - End date for the changefile period.
  * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
  * @param {number} jobConfig.limit - Line in the file where the insertion stops.
+ *
+ * @returns {Promise<void>}
  */
-const insertChangefilesOnPeriod = async (jobConfig) => {
+async function insertChangefilesOnPeriod(jobConfig) {
   setInUpdate(true);
   const {
     interval, startDate, endDate,
@@ -103,7 +107,7 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
     if (!success) return;
   }
   await endState();
-};
+}
 
 /**
  * Insert on elastic the content of file installed on ezunpaywall.
@@ -112,15 +116,17 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
  * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
  * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
  * @param {number} jobConfig.limit - Line in the file where the insertion stops.
+ *
+ * @returns {Promise<void>}
  */
-const insertChangefile = async (jobConfig) => {
+async function insertChangefile(jobConfig) {
   setInUpdate(true);
   await createState();
   const success = await insertDataUnpaywall(jobConfig);
   if (success) {
     await endState();
   }
-};
+}
 
 module.exports = {
   downloadAndInsertSnapshot,

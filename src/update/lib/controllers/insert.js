@@ -33,9 +33,9 @@ const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
  *
  * @param {Array<Object>} data - Array of unpaywall data.
  *
- * @returns {boolean} Success or not.
+ * @returns {Promise<boolean>} Success or not.
  */
-const insertDataInElastic = async (data) => {
+async function insertDataInElastic(data) {
   const step = getLatestStep();
   let res;
   try {
@@ -79,7 +79,7 @@ const insertDataInElastic = async (data) => {
   updateLatestStep(step);
 
   return true;
-};
+}
 
 /**
  * Inserts the contents of an unpaywall data update file.
@@ -91,9 +91,9 @@ const insertDataInElastic = async (data) => {
  * @param {number} insertConfig.offset - Line of the snapshot at which the data insertion starts.
  * @param {number} insertConfig.limit - Line in the file where the insertion stops.
  *
- * @returns {boolean} Success or not.
+ * @returns {Promise<boolean>} Success or not.
  */
-const insertDataUnpaywall = async (insertConfig) => {
+async function insertDataUnpaywall(insertConfig) {
   const {
     filename, index, offset, limit,
   } = insertConfig;
@@ -237,6 +237,6 @@ const insertDataUnpaywall = async (insertConfig) => {
   step.percent = 100;
   updateLatestStep(step);
   return true;
-};
+}
 
 module.exports = insertDataUnpaywall;

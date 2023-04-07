@@ -19,9 +19,10 @@ const elasticClient = new Client({
  * Check if index exit.
  *
  * @param {string} name - Name of index.
- * @returns {boolean} is exist.
+ *
+ * @returns {Promise<boolean>} is exist.
  */
-const checkIfIndexExist = async (name) => {
+async function checkIfIndexExist(name) {
   let res;
   try {
     res = await elasticClient.indices.exists({
@@ -31,9 +32,14 @@ const checkIfIndexExist = async (name) => {
     console.error(`Cannot check if index [${name}] exist : ${err}`);
   }
   return res.body;
-};
+}
 
-const insertDataUnpaywall = async () => {
+/**
+ * Insert the content of fake1.jsonl in elastic.
+ *
+ * @returns {Promise<void>}
+ */
+async function insertDataUnpaywall() {
   const filepath = path.resolve(__dirname, '..', 'sources', 'fake1.jsonl');
   let readStream;
   try {
@@ -60,15 +66,17 @@ const insertDataUnpaywall = async () => {
   } catch (err) {
     console.error(err);
   }
-};
+}
 
 /**
  * Create index if it doesn't exist.
  *
  * @param {string} name - Name of index.
  * @param {Object} index - Mapping in JSON format.
+ *
+ * @returns {Promise<void>}
  */
-const createIndex = async (name, index) => {
+async function createIndex(name, index) {
   const exist = await checkIfIndexExist(name);
   if (!exist) {
     try {
@@ -80,14 +88,16 @@ const createIndex = async (name, index) => {
       console.error(`Cannot create index [${name}]: ${err}`);
     }
   }
-};
+}
 
 /**
  * Delete index if it exist.
  *
  * @param {string} name - Name of index.
+ *
+ * @returns {Promise<void>}
  */
-const deleteIndex = async (name) => {
+async function deleteIndex(name) {
   const exist = await checkIfIndexExist(name);
   if (exist) {
     try {
@@ -98,7 +108,7 @@ const deleteIndex = async (name) => {
       console.error(`Cannot delete index [${name}]: ${err}`);
     }
   }
-};
+}
 
 module.exports = {
   elasticClient,

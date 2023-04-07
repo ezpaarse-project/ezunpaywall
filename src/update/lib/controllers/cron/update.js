@@ -19,6 +19,8 @@ const updateConfig = {
 
 /**
  * Starts an update daily process if no update process is started.
+ *
+ * @returns {Promise<void>}
  */
 async function task() {
   const status = getStatus();

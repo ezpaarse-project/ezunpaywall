@@ -125,10 +125,12 @@ function enrichArray(data, response) {
  * Write enriched data in enriched file.
  *
  * @param {Array<Object>} data - Array of line enriched.
- * @param {string} headers - Headers.
+ * @param {Array<string>} headers - Headers.
  * @param {string} separator - Separator of enriched file.
  * @param {string} enrichedFile - Filepath of enriched file.
  * @param {string} stateName - State filename.
+ *
+ * @returns {Promise<void>}
  */
 async function writeInFileCSV(data, headers, separator, enrichedFile, stateName) {
   const parsedTab = JSON.stringify(data);
@@ -152,7 +154,7 @@ async function writeInFileCSV(data, headers, separator, enrichedFile, stateName)
  * @param {Array<string>} header - csv header.
  * @param {string} args - Graphql args.
  *
- * @returns {Array<string>} header enriched.
+ * @returns {Promise<Array<string>>} header enriched.
  */
 async function enrichHeaderCSV(header, args) {
   args = args.replace(/\s/g, '').substring(1);
@@ -195,6 +197,8 @@ async function enrichHeaderCSV(header, args) {
  * @param {Array<string>} header - Csv header.
  * @param {string} separator - Separator of csv file.
  * @param {string} filePath - Path of the file to write the csv header.
+ *
+ * @returns {Promise<void>}
  */
 async function writeHeaderCSV(header, separator, filePath) {
   try {
@@ -218,6 +222,8 @@ async function writeHeaderCSV(header, separator, filePath) {
  * @param {string} args - Attributes will be add.
  * @param {string} apikey - Apikey of user.
  * @param {string} separator - separator of enriched file.
+ *
+ * @returns {Promise<void>}
  */
 async function processEnrichCSV(id, index, args, apikey, separator) {
   const filename = `${id}.csv`;

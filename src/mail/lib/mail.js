@@ -65,7 +65,7 @@ function sendMail(options) {
 /**
  * Ping SMTP service.
  *
- * @returns {boolean} ping
+ * @returns {Promise<boolean>} ping
  */
 async function pingSMTP() {
   try {

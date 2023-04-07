@@ -9,6 +9,8 @@ const { sendMail, generateMail } = require('../mail');
  * @param {string} email - Sender email.
  * @param {string} subject - Mail subject.
  * @param {string} message - Mail message.
+ *
+ * @returns {Promise<void>}
  */
 async function sendMailContact(email, subject, message) {
   try {

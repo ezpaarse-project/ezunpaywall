@@ -40,7 +40,7 @@ const elasticClient = new Client({
 /**
  * Ping elastic service.
  *
- * @returns {boolean|string} ping
+ * @returns {Promise<boolean>} ping
  */
 async function pingElastic() {
   let elasticStatus;
@@ -69,7 +69,7 @@ async function pingElastic() {
  *
  * @param {string} index elastic index to request
  *
- * @returns {Object} metrics
+ * @returns {Promise<Object>} metrics
  */
 async function getMetrics(index) {
   let res;

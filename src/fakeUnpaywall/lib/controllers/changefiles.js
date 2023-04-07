@@ -7,7 +7,7 @@ const changefilesDay = require('../../snapshots/changefiles-day-example.json');
 /**
  * Update to_date, last_modified, from_date of changefiles.
  *
- * @param {string} interval - Interval of changefiles.
+ * @param {Promise<string>} interval - Interval of changefiles.
  */
 async function updateChangefilesExample(interval) {
   const changefilesWeekPath = path.resolve(__dirname, '..', '..', 'snapshots', 'changefiles-week.json');

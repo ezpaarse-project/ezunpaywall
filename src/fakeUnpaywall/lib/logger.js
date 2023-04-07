@@ -41,7 +41,7 @@ const processConfiguration = [
 /**
  * Message logger format.
  *
- * @returns {Format} Logger format.
+ * @returns {import('winston').Logger.format} Logger format.
  */
 function devFormat() {
   const formatMessage = (info) => `${info.timestamp} ${info.level}: ${info.message}`;

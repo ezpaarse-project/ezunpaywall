@@ -28,6 +28,8 @@ redisClient.on('error', (err) => {
 /**
  * Load the dev apikeys on redis from apikey-dev.json.
  * Using for test.
+ *
+ * @returns {Promise<void>}
  */
 async function load() {
   apiKeys = await fs.readFile(path.resolve(__dirname, '..', '..', 'apikey-dev.json'), 'utf8');
@@ -49,19 +51,23 @@ async function load() {
 /**
  * Load the dev apikeys on redis from apikey-dev.json.
  * Using for test.
+ *
+ * @returns {Promise<boolean>} ping
  */
 async function pingRedis() {
   try {
     await redisClient.ping();
   } catch (err) {
     logger.error(`[redis] Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
-    return err?.message;
+    return false;
   }
   return true;
 }
 
 /**
  * Load the demo apikey on redis which has a limit of 100 000 DOI.
+ *
+ * @returns {Promise<void>}
  */
 async function loadDemoAPIKey() {
   const configAPIKey = {
@@ -77,7 +83,7 @@ async function loadDemoAPIKey() {
     await redisClient.set('demo', `${JSON.stringify(configAPIKey)}`);
   } catch (err) {
     logger.error('[redis] Cannot create [demo] apikey');
-    return Promise.reject(err);
+    throw err;
   }
   logger.info('[redis] Demo apikey is loaded');
 }

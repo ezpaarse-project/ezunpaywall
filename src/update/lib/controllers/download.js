@@ -25,6 +25,8 @@ const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
  * @param {string} filepath - Path where the file is downloaded.
  * @param {number} size - Size of file.
  * @param {number} start - Download start date.
+ *
+ * @returns {Promise<void>}
  */
 async function updatePercentStepDownload(filepath, size, start) {
   const state = getState();
@@ -55,6 +57,8 @@ async function updatePercentStepDownload(filepath, size, start) {
  * @param {Readable} file - File.
  * @param {string} filepath - Filepath of file.
  * @param {number} size - Size of file.
+ *
+ * @returns {Promise<void>}
  */
 async function download(file, filepath, size) {
   const step = getLatestStep();
@@ -94,8 +98,10 @@ async function download(file, filepath, size) {
  *
  * @param {string} info - Information of the file to download.
  * @param {string} interval - Type of changefile (day or week).
+ *
+ * @returns {Promise<boolean>} success or not
  */
-const downloadChangefile = async (info, interval) => {
+async function downloadChangefile(info, interval) {
   let stats;
 
   const filepath = path.resolve(snapshotsDir, info.filename);
@@ -126,14 +132,14 @@ const downloadChangefile = async (info, interval) => {
 
   await download(changefile, filepath, size);
   return true;
-};
+}
 
 /**
  * Start the download of the big snapshot from unpaywall.
  *
- * @param {string} info - Information of the snapshot to download.
+ * @returns {Promise<string>} filename of snapshot
  */
-const downloadBigSnapshot = async () => {
+async function downloadBigSnapshot() {
   const filename = `snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`;
   const filepath = path.resolve(snapshotsDir, filename);
 
@@ -150,7 +156,7 @@ const downloadBigSnapshot = async () => {
 
   await download(snapshot, filepath, size);
   return filename;
-};
+}
 
 module.exports = {
   downloadChangefile,

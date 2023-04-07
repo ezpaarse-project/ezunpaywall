@@ -105,16 +105,19 @@ const enrichArray = (data, response) => {
  * @param {string} enrichedFile - Filepath of enriched file.
  * @param {string} stateName - State filename.
  * @param {string} apikey //TODO
+ *
+ * @returns {Promise<void>}
  */
-const writeInFileJSON = async (data, enrichedFile, stateName, apikey) => {
+async function writeInFileJSON(data, enrichedFile, stateName, apikey) {
   const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
   try {
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
     logger.error(`[job jsonl] Cannot write [${stringTab}] in [${enrichedFile}]`, err);
     await fail(stateName, apikey);
+    throw err;
   }
-};
+}
 
 /**
  * Starts the enrichment process for JSONL file.
@@ -129,6 +132,8 @@ const writeInFileJSON = async (data, enrichedFile, stateName, apikey) => {
  * @param {string} index - Index name of mapping.
  * @param {string} args - Attributes will be add.
  * @param {string} apikey - Apikey of user.
+ *
+ * @returns {Promise<void>}
  */
 async function processEnrichJSON(id, index, args, apikey) {
   const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, `${id}.jsonl`));

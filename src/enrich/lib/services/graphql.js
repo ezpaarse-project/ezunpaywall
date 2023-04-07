@@ -16,7 +16,7 @@ graphql.host = config.get('graphql.host');
  * @param {string} index - Requested index elastic.
  * @param {string} apikey - Apikey of user.
  *
- * @return {Array<Object>} graphql data ezunpaywall response
+ * @return {Promise<Array<Object>>} graphql data ezunpaywall response
  */
 async function requestGraphql(data, args, index, apikey) {
   let dois = [];
@@ -46,7 +46,7 @@ async function requestGraphql(data, args, index, apikey) {
 /**
  * Ping ezunpaywall graphql service.
  *
- * @returns {boolean} ping
+ * @returns {Promise<boolean>} ping
  */
 async function pingGraphql() {
   let res;

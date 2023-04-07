@@ -10,6 +10,8 @@ const { sendMail, generateMail } = require('../mail');
  * Sends a mail that inform that an update has started start.
  *
  * @param {string} config - Config of mail that content.
+ *
+ * @returns {Promise<void>}
  */
 async function sendMailUpdateStarted(config) {
   try {
@@ -24,7 +26,7 @@ async function sendMailUpdateStarted(config) {
     });
   } catch (err) {
     logger.error('[mail] Cannot send update started mail', err);
-    return;
+    throw err;
   }
   logger.info('[mail] Update start mail was sent');
 }
@@ -33,6 +35,8 @@ async function sendMailUpdateStarted(config) {
  * Sends the update report email.
  *
  * @param {string} state - report of update process.
+ *
+ * @returns {Promise<void>}
  */
 async function sendMailUpdateReport(state) {
   const status = state.error === true ? 'error' : 'success';
@@ -61,11 +65,19 @@ async function sendMailUpdateReport(state) {
     });
   } catch (err) {
     logger.error('[mail] Cannot send update report mail', err);
-    return;
+    throw err;
   }
   logger.info('[mail] Update report mail was sent');
 }
 
+/**
+ * Sends an email indicating that no changefiles are available during a period.
+ *
+ * @param {String} startDate - Start date in the format YYYY-MM-DD
+ * @param {String} endDate - End date in the format YYYY-MM-DD
+ *
+ * @returns {Promise<void>}
+ */
 async function sendMailNoChangefile(startDate, endDate) {
   try {
     await sendMail({
@@ -79,8 +91,7 @@ async function sendMailNoChangefile(startDate, endDate) {
     });
   } catch (err) {
     logger.error(`Cannot send no changefile mail ${err}`);
-    logger.error(err);
-    return;
+    throw err;
   }
   logger.info('send no changefile mail');
 }

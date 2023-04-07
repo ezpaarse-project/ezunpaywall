@@ -40,9 +40,9 @@ const elasticClient = new Client({
 /**
  * Ping elastic service.
  *
- * @returns {boolean} ping.
+ * @returns {Promise<boolean>} ping.
  */
-const pingElastic = async () => {
+async function pingElastic() {
   let elasticStatus;
   try {
     elasticStatus = await elasticClient.ping();
@@ -55,27 +55,29 @@ const pingElastic = async () => {
     return false;
   }
   return true;
-};
+}
 
 /**
  * Check if index exit.
  *
  * @param {string} index - Name of index.
  *
- * @returns {boolean} If index exist.
+ * @returns {Promise<boolean>} If index exist.
  */
-const checkIfIndexExist = async (index) => {
+async function checkIfIndexExist(index) {
   const { body } = await elasticClient.indices.exists({ index });
   return body;
-};
+}
 
 /**
  * Create index if it doesn't exist.
  *
  * @param {string} index - Name of index.
  * @param {Object} mapping mapping in JSON format.
+ *
+ * @returns {Promise<void>}
  */
-const createIndex = async (index, mapping) => {
+async function createIndex(index, mapping) {
   const exist = await checkIfIndexExist(index);
   if (!exist) {
     await elasticClient.indices.create({
@@ -83,7 +85,7 @@ const createIndex = async (index, mapping) => {
       body: mapping,
     });
   }
-};
+}
 
 /**
  * Create alias on elastic.
@@ -91,8 +93,10 @@ const createIndex = async (index, mapping) => {
  * @param {string} indexName - Name of index.
  * @param {Object} mapping - Mapping of index.
  * @param {string} aliasName - Name of alias.
+ *
+ * @returns {Promise<void>}
  */
-const initAlias = async (indexName, mapping, aliasName) => {
+async function initAlias(indexName, mapping, aliasName) {
   try {
     await createIndex(indexName, mapping);
   } catch (err) {
@@ -112,7 +116,7 @@ const initAlias = async (indexName, mapping, aliasName) => {
   } catch (err) {
     logger.error(`[elastic] Cannot create alias [${aliasName}] pointing to index [${indexName}]`, err);
   }
-};
+}
 
 module.exports = {
   elasticClient,

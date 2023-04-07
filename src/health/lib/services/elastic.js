@@ -9,7 +9,12 @@ const logger = require('../logger');
 
 const isProd = (nodeEnv === 'production');
 
-const pingElasticWithClient = async () => {
+/**
+ * Ping elastic service.
+ *
+ * @returns {Promise<boolean>}
+ */
+async function pingElasticWithClient() {
   let ssl;
 
   if (isProd) {
@@ -49,6 +54,6 @@ const pingElasticWithClient = async () => {
     return false;
   }
   return true;
-};
+}
 
 module.exports = pingElasticWithClient;

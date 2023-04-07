@@ -8,6 +8,8 @@ const apikeyHost = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 /**
  * ping apikey service to see if they are available
+ *
+ * @returns {Promise<void>}
  */
 async function ping() {
   const apikey = await chai.request(apikeyHost).get('/ping');

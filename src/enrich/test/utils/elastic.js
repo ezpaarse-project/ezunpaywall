@@ -19,9 +19,10 @@ const client = new Client({
  * Check if index exit.
  *
  * @param {string} name - Name of index.
- * @returns {boolean} isExist
+ *
+ * @returns {Promise<boolean>} isExist
  */
-const checkIfIndexExist = async (name) => {
+async function checkIfIndexExist(name) {
   let res;
   try {
     res = await client.indices.exists({
@@ -31,14 +32,17 @@ const checkIfIndexExist = async (name) => {
     console.error(`indices.exists in checkIfIndexExist: ${err}`);
   }
   return res.body;
-};
+}
 
 /**
  * Create index if it doesn't exist.
+ *
  * @param {string} name - Name of index.
  * @param {Object} index - mapping in JSON format.
+ *
+ * @returns {Promise<void>}
  */
-const createIndex = async (name, index) => {
+async function createIndex(name, index) {
   const exist = await checkIfIndexExist(name);
   if (!exist) {
     try {
@@ -50,13 +54,16 @@ const createIndex = async (name, index) => {
       console.error(`indices.create in createIndex: ${err}`);
     }
   }
-};
+}
 
 /**
  * Delete index if it exist.
- * @param {string} name - Name of index.
+ *
+ * @param {<string>} name - Name of index.
+ *
+ * @returns {Promise<void>}
  */
-const deleteIndex = async (name) => {
+async function deleteIndex(name) {
   const exist = await checkIfIndexExist(name);
   if (exist) {
     try {
@@ -67,9 +74,14 @@ const deleteIndex = async (name) => {
       console.error(`deleteIndex: ${err}`);
     }
   }
-};
+}
 
-const insertDataUnpaywall = async () => {
+/**
+ * Insert the content of fake1.jsonl in elastic.
+ *
+ * @returns {Promise<void>}
+ */
+async function insertDataUnpaywall() {
   const filepath = path.resolve(__dirname, '..', 'sources', 'unpaywall', 'fake1.jsonl');
   let readStream;
   try {
@@ -96,15 +108,16 @@ const insertDataUnpaywall = async () => {
   } catch (err) {
     console.error(`insertDataUnpaywall: ${err}`);
   }
-};
+}
 
 /**
  * Count how many documents there are in an index.
  *
  * @param {string} name - Name of index.
- * @returns {number} number of document.
+ *
+ * @returns {Promise<number>} number of document.
  */
-const countDocuments = async (name) => {
+async function countDocuments(name) {
   const exist = await checkIfIndexExist(name);
   let data;
   if (exist) {
@@ -117,7 +130,7 @@ const countDocuments = async (name) => {
     }
   }
   return data.body.count ? data.body.count : 0;
-};
+}
 
 module.exports = {
   client,

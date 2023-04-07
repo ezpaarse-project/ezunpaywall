@@ -14,6 +14,8 @@ let metrics = {
 
 /**
  * Get the metrics from unpaywall and cache them.
+ *
+ * @returns {Promise<void>}
  */
 async function setMetrics() {
   metrics = await getMetrics();

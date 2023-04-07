@@ -11,6 +11,8 @@ const stateDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  *
  * @param {string} id - Id of process.
  * @param {string} apikey - Apikey of user.
+ *
+ * @returns {Promise<void>}
  */
 async function createState(id, apikey) {
   const state = {
@@ -49,9 +51,9 @@ async function createState(id, apikey) {
  * @param {string} filename - State filename.
  * @param {string} apikey - Apikey of user.
  *
- * @returns {Object} State of enrich process in JSON format.
+ * @returns {Promise<Object>} State of enrich process in JSON format.
  */
-const getState = async (filename, apikey) => {
+async function getState(filename, apikey) {
   const filenamePath = path.resolve(stateDir, apikey, filename);
 
   let state;
@@ -71,15 +73,17 @@ const getState = async (filename, apikey) => {
   }
 
   return state;
-};
+}
 
 /**
  * Write the latest version of the state of enrich process to the file.
  *
  * @param {Object} state - State in JSON format.
  * @param {string} filename - State filename.
+ *
+ * @returns {Promise<void>}
  */
-const updateStateInFile = async (state, filename) => {
+async function updateStateInFile(state, filename) {
   const { apikey } = state;
   const pathfile = path.resolve(stateDir, apikey, filename);
   const isPathExist = await fs.pathExists(pathfile);
@@ -93,35 +97,40 @@ const updateStateInFile = async (state, filename) => {
     await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`, err);
+    throw err;
   }
-};
+}
 
 /**
  * Update the state of enrich process when there is an error.
  *
  * @param {string} filename - State filename.
  * @param {string} apikey - Apikey of user.
+ *
+ * @returns {Promise<void>}
  */
-const fail = async (filename, apikey) => {
+async function fail(filename, apikey) {
   const state = await getState(filename, apikey);
   state.done = true;
   state.endAt = new Date();
   state.error = true;
   await updateStateInFile(state, filename);
-};
+}
 
 /**
  * Update the state of enrich process when the process is finished.
  *
  * @param {string} id - Id of process.
- * @param {string} apikey - Apikey of user.
+ * @param {string} apikey - Apikey of user
+ *
+ * @returns {Promise<void>}.
  */
-const endState = async (id, apikey) => {
+async function endState(id, apikey) {
   const state = await getState(`${id}.json`, apikey);
   state.endAt = new Date();
   state.done = true;
   updateStateInFile(state, `${id}.json`);
-};
+}
 
 module.exports = {
   createState,

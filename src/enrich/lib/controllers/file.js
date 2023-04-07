@@ -7,7 +7,7 @@ const path = require('path');
  *
  * @param {string} directoryPath - Directory path.
  *
- * @returns {Array<string>} list of filepath in date order.
+ * @returns {Promise<Array<string>>} list of filepath in date order.
  */
 async function orderRecentFiles(directoryPath) {
   const filenames = await fs.readdir(directoryPath);
@@ -31,7 +31,7 @@ async function orderRecentFiles(directoryPath) {
  *
  * @param {string} directoryPath directory path
  *
- * @returns {string} most recent filepath
+ * @returns {Primose<string>} most recent filepath
  */
 async function getMostRecentFile(directoryPath) {
   const files = await orderRecentFiles(directoryPath);
@@ -44,7 +44,7 @@ async function getMostRecentFile(directoryPath) {
  * @param {string} directoryPath directory path
  * @param {number} numberOfDays number of days
  *
- * @returns {Array<string>} List of filename of deleted file
+ * @returns {Promise<Array<string>>} List of filename of deleted file
  */
 async function deleteFilesInDir(directoryPath, numberOfDays) {
   const time = 1 * 24 * 60 * 60 * 1000 * numberOfDays;

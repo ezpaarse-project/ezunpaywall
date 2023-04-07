@@ -25,7 +25,7 @@ function setState(key, value) {
 /**
  * Create a new file on folder "data/update/state" containing the update state
  *
- * @return {string} name of the file where the state is saved.
+ * @return {Promise<string>} name of the file where the state is saved.
  */
 async function createState() {
   state = {
@@ -129,7 +129,7 @@ function end() {
 /**
  * Update the state when there is an error.
  *
- * @param {Array<string>} stackTrace - Log of error.
+ * @param {Promise<Array<string>>} stackTrace - Log of error.
  */
 async function fail(stackTrace) {
   logger.error('[update process]: fail');
@@ -137,12 +137,16 @@ async function fail(stackTrace) {
   state.error = true;
   state.stackTrace = stackTrace;
   await createReport(state);
-  await sendMailUpdateReport(state);
+  sendMailUpdateReport(state).catch((err) => {
+    logger.errorRequest(err);
+  });
   setInUpdate(false);
 }
 
 /**
  * Update the state when the process is finished successfully.
+ *
+ * @returns {Promise<void>}
  */
 async function endState() {
   logger.info('[update process]: end process');

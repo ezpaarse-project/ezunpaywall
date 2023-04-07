@@ -20,9 +20,7 @@ const {
   getReport,
 } = require('./utils/report');
 
-const {
-  checkIfInUpdate,
-} = require('./utils/status');
+const checkIfInUpdate = require('./utils/status');
 
 const ping = require('./utils/ping');
 
