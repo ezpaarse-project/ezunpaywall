@@ -17,7 +17,7 @@ const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  * Route that give list of filename of state or the content of latest
  * state.
  *
- * This route can take a param latest.
+ * This route can take in query latest.
  */
 router.get('/states', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);

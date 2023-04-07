@@ -20,7 +20,7 @@ const {
  * Route that give the list of snapshots installed on ezunpaywall of the most recent file.
  * Auth required.
  *
- * This route can take a param latest.
+ * This route can take in query latest.
  */
 router.get('/snapshots', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req.query.latest);

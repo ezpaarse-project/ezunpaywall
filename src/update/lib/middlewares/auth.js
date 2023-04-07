@@ -3,12 +3,6 @@ const { apikey } = require('config');
 /**
  * Authentication middleware that checks if the content of the x-api-key header
  * matches the environment variable used as password.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
- *
- * Do the following in route or in error handler.
  */
 const checkAuth = (req, res, next) => {
   const key = req.get('x-api-key');

@@ -13,14 +13,7 @@ const updateChangefilesExample = require('../controllers/changefiles');
 /**
  * Route that update changefiles.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following in error handler.
- *
- * @routeQuery {string} interval - Interval of changefile
- * week of day is allowed.
- *
- * @return {import('express').Response} HTTP response.
+ * This route need a query that contains the interval of registry.
  */
 router.patch('/changefiles', async (req, res, next) => {
   const { interval } = req.query;

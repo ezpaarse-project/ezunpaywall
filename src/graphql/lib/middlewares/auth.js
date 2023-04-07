@@ -5,12 +5,6 @@ const logger = require('../logger');
 /**
  * Authentication middleware that checks if the content of the x-api-key header
  * matches the apikey in redis and the apikey config.
- *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
- *
- * Do the following in route or in error handler.
  */
 const checkAuth = async (req, res, next) => {
   // TODO check in query
