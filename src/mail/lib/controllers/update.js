@@ -18,11 +18,10 @@ async function sendMailUpdateStarted(config) {
       }),
     });
   } catch (err) {
-    logger.error(`Cannot send update started mail ${err}`);
-    logger.error(err);
+    logger.error('[mail] Cannot send update started mail', err);
     return;
   }
-  logger.info('send update started mail');
+  logger.info('[mail] Update start mail was sent');
 }
 
 async function sendMailUpdateReport(state) {
@@ -51,11 +50,10 @@ async function sendMailUpdateReport(state) {
       }),
     });
   } catch (err) {
-    logger.error(`Cannot send update report mail ${err}`);
-    logger.error(err);
+    logger.error('[mail] Cannot send update report mail', err);
     return;
   }
-  logger.info('send update report mail');
+  logger.info('[mail] Update report mail was sent');
 }
 
 async function sendMailNoChangefile(startDate, endDate) {

@@ -50,7 +50,7 @@ async function pingGraphql() {
       url: '/ping',
     });
   } catch (err) {
-    logger.error(err);
+    logger.error('[graphql] Cannot request graphql', err);
     return err?.message;
   }
   if (res?.status === 204) return true;

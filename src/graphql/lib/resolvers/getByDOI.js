@@ -74,8 +74,7 @@ const getByDOI = {
     try {
       key = await redisClient.get(apikey);
     } catch (err) {
-      logger.error(`Cannot get ${apikey} on redis`);
-      logger.error(err);
+      logger.error(`[redis] Cannot get [${apikey}]`, err);
       throw Error('Internal server error');
     }
 
@@ -83,8 +82,7 @@ const getByDOI = {
     try {
       apiKeyConfig = JSON.parse(key);
     } catch (err) {
-      logger.error(`Cannot parse ${key}`);
-      logger.error(err);
+      logger.error(`[redis] Cannot parse [${key}]`, err);
       throw Error('Internal server error');
     }
 
@@ -101,8 +99,8 @@ const getByDOI = {
       try {
         await redisClient.set(apikey, `${JSON.stringify(apiKeyConfig)}`);
       } catch (err) {
-        logger.error(`Cannot update apikey [${apikey}] for [count]`);
-        return Promise.reject(err);
+        logger.error(`[redis] Cannot update apikey [${apikey}] with config [${JSON.stringify(apiKeyConfig)}]`, err);
+        throw err;
       }
     }
 
@@ -168,8 +166,7 @@ const getByDOI = {
 
       });
     } catch (err) {
-      logger.error('Cannot request elastic');
-      logger.error(err);
+      logger.error('[elastic] Cannot request elastic', err);
       return null;
     }
     // eslint-disable-next-line no-underscore-dangle

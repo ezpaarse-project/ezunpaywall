@@ -52,13 +52,13 @@ router.get('/states', checkAuth, async (req, res, next) => {
     try {
       latestFile = await getMostRecentFile(path.resolve(statesDir, apikey));
     } catch (err) {
-      return next({ message: err });
+      return next({ message: err.message });
     }
     let state;
     try {
       state = await getState(latestFile?.filename, apikey);
     } catch (err) {
-      return next({ message: err });
+      return next({ message: err.message });
     }
     return res.status(200).json(state);
   }
@@ -67,7 +67,7 @@ router.get('/states', checkAuth, async (req, res, next) => {
   try {
     states = await fs.readdir(path.resolve(statesDir, apikey));
   } catch (err) {
-    return next({ message: err });
+    return next({ message: err.message });
   }
 
   return res.status(200).json(states);
@@ -92,7 +92,7 @@ router.get('/states/:filename', checkAuth, async (req, res, next) => {
   try {
     state = await getState(filename, apikey);
   } catch (err) {
-    return next({ message: err, stackTrace: err });
+    return next({ message: err.message });
   }
   return res.status(200).json(state);
 });

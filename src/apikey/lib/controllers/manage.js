@@ -23,8 +23,8 @@ const createApiKey = async (config) => {
   try {
     await redisClient.set(id, `${JSON.stringify(apikeyConfig)}`);
   } catch (err) {
-    logger.error(`Cannot create apikey [${id}] for [${apikeyConfig.name}]`);
-    return Promise.reject(err);
+    logger.error(`[redis] Cannot create apikey [${id}] for [${apikeyConfig.name}]`, err);
+    throw err;
   }
   return id;
 };
@@ -47,8 +47,8 @@ const updateApiKey = async (id, newConfig) => {
   try {
     await redisClient.set(id, `${JSON.stringify(config)}`);
   } catch (err) {
-    logger.error(`Cannot update apikey [${id}] for [${name}]`);
-    return Promise.reject(err);
+    logger.error(`[redis] Cannot update apikey [${id}] for [${name}]`, err);
+    throw err;
   }
 };
 

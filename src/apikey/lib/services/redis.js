@@ -8,10 +8,6 @@ const logger = require('../logger');
 
 let apiKeys;
 
-if (!fs.pathExists('../apikey.json')) {
-  logger.warn('No API key are set');
-}
-
 const redisClient = redis.createClient({
   host: config.get('redis.host'),
   port: config.get('redis.port'),
@@ -26,7 +22,7 @@ redisClient.keys = util.promisify(redisClient.keys);
 redisClient.flushall = util.promisify(redisClient.flushall);
 
 redisClient.on('error', (err) => {
-  logger.error(`Error in redis ${err}`);
+  logger.error('[redis] error on client', err);
 });
 
 async function load() {
@@ -40,10 +36,9 @@ async function load() {
 
     try {
       await redisClient.set(apikey, JSON.stringify(configApikey));
-      logger.info(`[load] ${configApikey.name} loaded`);
+      logger.info(`[redis] ${configApikey.name} is loaded`);
     } catch (err) {
-      logger.error(`Cannot load [${apikey}] with config [${JSON.stringify(config)}] on redis`);
-      logger.error(err);
+      logger.error(`[redis] Cannot load [${apikey}] with config [${JSON.stringify(config)}]`, err);
     }
   }
 }
@@ -52,7 +47,7 @@ async function pingRedis() {
   try {
     await redisClient.ping();
   } catch (err) {
-    logger.error(`Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`);
+    logger.error(`[redis] Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
     return err?.message;
   }
   return true;
@@ -71,10 +66,10 @@ async function loadDemoAPIKey() {
   try {
     await redisClient.set('demo', `${JSON.stringify(configAPIKey)}`);
   } catch (err) {
-    logger.error('Cannot create [demo] apikey');
+    logger.error('[redis] Cannot create [demo] apikey');
     return Promise.reject(err);
   }
-  logger.info('Demo apikey are loaded');
+  logger.info('[redis] Demo apikey is loaded');
 }
 
 module.exports = {

@@ -52,7 +52,7 @@ async function pingSMTP() {
   try {
     await transporter.verify();
   } catch (err) {
-    logger.error(`Cannot ping ${smtp.host}:${smtp.port} - ${err}`);
+    logger.error(`[smtp] Cannot ping ${smtp.host}:${smtp.port}`, err);
     return err?.message;
   }
   return true;

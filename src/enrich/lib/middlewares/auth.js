@@ -17,32 +17,28 @@ const checkAuth = async (req, res, next) => {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
-  let key;
+  let apikeyConfig;
   try {
-    key = await redisClient.get(apikey);
+    apikeyConfig = await redisClient.get(apikey);
   } catch (err) {
-    logger.error(`Cannot get ${apikey} on redis`);
-    logger.error(err);
-    return next({ message: err, stackTrace: err });
+    logger.error(`[redis] Cannot get [${apikey}] on redis`, err);
+    return next({ message: err.message });
   }
 
-  let config;
-
   try {
-    config = JSON.parse(key);
+    apikeyConfig = JSON.parse(apikeyConfig);
   } catch (err) {
-    logger.error(`Cannot parse ${key}`);
-    logger.error(err);
-    return next({ message: err, stackTrace: err });
+    logger.error(`[redis] Cannot parse [${apikeyConfig}]`, err);
+    return next({ message: err.message });
   }
 
-  if (!Array.isArray(config?.access) || !config?.access?.includes('enrich') || !config?.allowed) {
+  if (!Array.isArray(apikeyConfig?.access) || !apikeyConfig?.access?.includes('enrich') || !apikeyConfig?.allowed) {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
   let { args } = req.body;
 
-  if (!config.attributes?.includes('*')) {
+  if (!apikeyConfig.attributes?.includes('*')) {
     if (!args) {
       return res.status(401).json({ message: 'Not authorized' });
     }
@@ -56,7 +52,7 @@ const checkAuth = async (req, res, next) => {
     args = args.split(',');
 
     args.forEach((attribute) => {
-      if (!config?.attributes?.includes(attribute)) {
+      if (!apikeyConfig?.attributes?.includes(attribute)) {
         error = true;
         errors.push(attribute);
       }
