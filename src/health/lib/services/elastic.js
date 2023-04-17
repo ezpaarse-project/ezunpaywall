@@ -24,6 +24,7 @@ async function pingElasticWithClient() {
       ca = await fs.readFile(caPath, 'utf8');
     } catch (err) {
       logger.error(`[elastic] Cannot read certificate file in ${caPath}`, err);
+      return false;
     }
     ssl = {
       ca,
@@ -47,7 +48,7 @@ async function pingElasticWithClient() {
     elasticStatus = await elasticClient.ping();
   } catch (err) {
     logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
-    return err.message;
+    return false;
   }
   if (elasticStatus?.statusCode !== 200) {
     logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);

@@ -34,7 +34,7 @@ async function sendMailUpdateStarted(config) {
 /**
  * Sends the update report email.
  *
- * @param {string} state - report of update process.
+ * @param {Object} state - report of update process.
  *
  * @returns {Promise<void>}
  */
@@ -73,8 +73,8 @@ async function sendMailUpdateReport(state) {
 /**
  * Sends an email indicating that no changefiles are available during a period.
  *
- * @param {String} startDate - Start date in the format YYYY-MM-DD
- * @param {String} endDate - End date in the format YYYY-MM-DD
+ * @param {string} startDate - Start date in the format YYYY-MM-DD.
+ * @param {string} endDate - End date in the format YYYY-MM-DD.
  *
  * @returns {Promise<void>}
  */

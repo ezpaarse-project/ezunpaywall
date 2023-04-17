@@ -65,7 +65,8 @@ function addDOItoGraphqlRequest(args) {
  * @param {Array<Object>} data - Array of line that we will enrich.
  * @param {Array<Object>} response - Response from ezunpaywall.
  *
- * @returns {Array<Object>} Number of line enriched and enriched data.
+ * @returns {{ lineEnriched: number, enrichedArray: Array<Object> }} Number of lines
+ * enriched and enriched data.
  */
 const enrichArray = (data, response) => {
   const enrichedArray = data;
@@ -169,10 +170,12 @@ async function processEnrichJSON(id, index, args, apikey) {
     let parsedLine;
     try {
       parsedLine = JSON.parse(line);
+      data.push(parsedLine);
     } catch (err) {
       logger.error(`[job jsonl] Cannot parse [${line}] in json format`, err);
+      await fail(stateName, apikey);
+      return;
     }
-    data.push(parsedLine);
 
     if (data.length === 1000) {
       let response;

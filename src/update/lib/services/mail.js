@@ -49,8 +49,8 @@ async function sendMailUpdateStarted(info) {
 /**
  * Send a mail that inform that no changefile are avaiblable between the period.
  *
- * @param {String} startDate - Start date at format YYYY-mm-dd.
- * @param {String} endDate - Start date at format YYYY-mm-dd.
+ * @param {string} startDate - Start date at format YYYY-mm-dd.
+ * @param {string} endDate - Start date at format YYYY-mm-dd.
  *
  * @returns {Promise<string>} Data response of mail service.
  */

@@ -7,7 +7,8 @@ const path = require('path');
  *
  * @param {string} dir - Directory path.
  *
- * @returns {Promise<Array<string>>} Filenames in order by date.
+ * @returns {Promise<Array<{filename: string, stat: import('fs').Stats}>>} list of files
+ * sorted by modification date.
  */
 async function orderRecentFiles(dir) {
   const filenames = await fs.readdir(dir);
@@ -31,7 +32,8 @@ async function orderRecentFiles(dir) {
  * Get the most recent file in a directory.
  *
  * @param {string} dir - Directory path.
- * @returns {Promise<string>} Filenames of most recent file.
+ *
+ * @returns {Promise<{filename: string, stat: import('fs').Stats}|void>} most recent filepath.
  */
 async function getMostRecentFile(dir) {
   const files = await orderRecentFiles(dir);

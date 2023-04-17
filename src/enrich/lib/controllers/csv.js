@@ -87,14 +87,15 @@ function flatten(obj) {
  * @param {Array<Object>} data - Array of line that we will enrich.
  * @param {Array<Object>} response - Response from ezunpaywall.
  *
- * @returns {Array<Object>} Number of line enriched and enriched data.
+ * @returns {{ lineEnriched: number, enrichedArray: Array<Object> }} Number of lines
+ * enriched and enriched data.
  */
 function enrichArray(data, response) {
   const enrichedArray = data;
   let lineEnriched = 0;
 
   if (!response) {
-    return enrichedArray;
+    return { enrichedArray, lineEnriched };
   }
 
   const results = new Map();
@@ -151,12 +152,12 @@ async function writeInFileCSV(data, headers, separator, enrichedFile, stateName)
 /**
  * Enrich the csv header with graphql args.
  *
- * @param {Array<string>} header - csv header.
+ * @param {Array<string>} headers - csv header.
  * @param {string} args - Graphql args.
  *
  * @returns {Promise<Array<string>>} header enriched.
  */
-async function enrichHeaderCSV(header, args) {
+async function enrichHeaderCSV(headers, args) {
   args = args.replace(/\s/g, '').substring(1);
   args = args.substring(0, args.length - 1);
   const regex = /,([a-z_]+){(.*?)}/gm;
@@ -169,7 +170,7 @@ async function enrichHeaderCSV(header, args) {
       // exception with z_authors because it's a array
       if (res[1] === 'z_authors') {
         deleted.push(res[0]);
-        header.push('z_authors');
+        headers.push('z_authors');
       } else {
         deleted.push(res[0]);
         // split graphql object
@@ -177,7 +178,7 @@ async function enrichHeaderCSV(header, args) {
         const slaves = res[2].split(',');
         // add object graphql on header in csv format
         slaves.forEach((slave) => {
-          header.push(`${master}.${slave}`);
+          headers.push(`${master}.${slave}`);
         });
       }
     }
@@ -187,24 +188,24 @@ async function enrichHeaderCSV(header, args) {
     args = args.replace(el, '');
   });
   // delete doublon
-  const uSet = new Set(header.concat(args.split(',')));
+  const uSet = new Set(headers.concat(args.split(',')));
   return [...uSet];
 }
 
 /**
  * Write csv header in the enriched file.
  *
- * @param {Array<string>} header - Csv header.
+ * @param {Array<string>} headers - Csv header.
  * @param {string} separator - Separator of csv file.
  * @param {string} filePath - Path of the file to write the csv header.
  *
  * @returns {Promise<void>}
  */
-async function writeHeaderCSV(header, separator, filePath) {
+async function writeHeaderCSV(headers, separator, filePath) {
   try {
-    await fs.writeFile(filePath, `${header.join(separator)}\r\n`, { flag: 'a' });
+    await fs.writeFile(filePath, `${headers.join(separator)}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error(`[job csv] Cannot write [${header.join(separator)}] in [${filePath}]`, err);
+    logger.error(`[job csv] Cannot write [${headers.join(separator)}] in [${filePath}]`, err);
   }
 }
 
