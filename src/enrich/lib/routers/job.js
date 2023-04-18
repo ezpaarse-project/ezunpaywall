@@ -13,11 +13,12 @@ const checkAuth = require('../middlewares/auth');
 const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 
 /**
+ * Route that start a enrich job.
  *
- *
- * @return name of enriched file to download it
+ * This route need a body that contains a config of job
+ * and a param filename which corresponds to the upload filename
  */
-router.post('/job/:filename', checkAuth, async (req, res, next) => {
+router.post('/job/:filename', checkAuth, async (req, res) => {
   const checkParams = joi.string().trim().required().validate(req.params.filename);
 
   if (checkParams?.error) {

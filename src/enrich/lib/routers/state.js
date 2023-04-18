@@ -5,6 +5,8 @@ const fs = require('fs-extra');
 
 const checkAuth = require('../middlewares/auth');
 
+const getMostRecentFile = require('../controllers/file');
+
 const {
   getState,
 } = require('../models/state');
@@ -12,33 +14,11 @@ const {
 const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
 
 /**
- * get the files in a dir in order by date
- * @param {String} dir - dir path
- * @returns {array<string>} files path in order
+ * Route that give list of filename of state or the content of latest
+ * state.
+ *
+ * This route can take in query latest.
  */
-async function orderRecentFiles(dir) {
-  const filenames = await fs.readdir(dir);
-
-  const files = await Promise.all(
-    filenames.map(async (filename) => {
-      const filePath = path.resolve(dir, filename);
-      return {
-        filename,
-        stat: await fs.lstat(filePath),
-      };
-    }),
-  );
-
-  return files
-    .filter((file) => file.stat.isFile())
-    .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
-}
-
-const getMostRecentFile = async (dir) => {
-  const files = await orderRecentFiles(dir);
-  return Array.isArray(files) ? files[0] : undefined;
-};
-
 router.get('/states', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
   if (error) return res.status(400).json({ message: error.details[0].message });
@@ -73,6 +53,11 @@ router.get('/states', checkAuth, async (req, res, next) => {
   return res.status(200).json(states);
 });
 
+/**
+ * Route that give the content of state.
+ *
+ * This route need a param which corresponds to the filename of state.
+ */
 router.get('/states/:filename', checkAuth, async (req, res, next) => {
   const { filename } = req.params;
 

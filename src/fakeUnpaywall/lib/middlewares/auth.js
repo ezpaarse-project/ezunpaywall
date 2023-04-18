@@ -1,12 +1,14 @@
 /**
- * check the user's api key
- * @param {Object} req - HTTP request
- * @param {Object} res - HTTP response
- * @param {function} next - do the following
- * @returns {Object|function} res or next
+ * Authentication middleware that checks if the content of the x-api-key header
+ * matches default used as password.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ *
+ * This middleware need a header that contains the apikey.
  */
-const checkAuth = async (req, res, next) => {
-  // TODO check in query
+async function checkAuth(req, res, next) {
   const { api_key } = req.query;
 
   if (!api_key) {
@@ -18,6 +20,6 @@ const checkAuth = async (req, res, next) => {
   }
 
   return next();
-};
+}
 
 module.exports = checkAuth;

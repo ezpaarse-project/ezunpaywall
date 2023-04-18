@@ -11,6 +11,8 @@ const fakeUnpaywallHost = process.env.FAKE_UNPAYWALL_URL || 'http://localhost:59
 
 /**
  * ping all services to see if they are available
+ *
+ * @returns {Promise<void>}
  */
 async function ping() {
   const update = await chai.request(updateHost).get('/ping');

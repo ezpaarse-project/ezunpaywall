@@ -1,5 +1,15 @@
 const { healthTimeout } = require('config');
 
+/**
+ * Executes a promise but cuts it off after a while if it has not been resolved.
+ * this function is used for healthcheck routes.
+ *
+ * @param {Promise} p1 - Promise to be executed which will be stopped
+ * if it does not solve after a certain time.
+ * @param {string} name - Name of service.
+ *
+ * @returns {Promise<Object>} Status of healthcheck with name, time, optionnal error and healthy.
+ */
 async function promiseWithTimeout(p1, name) {
   const start = Date.now();
 

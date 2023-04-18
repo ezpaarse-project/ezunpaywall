@@ -5,7 +5,11 @@ const sendMailContact = require('../controllers/contact');
 
 const { sendMailUpdateStarted, sendMailUpdateReport, sendMailNoChangefile } = require('../controllers/update');
 
-router.post('/contact', checkAuth, async (req, res, next) => {
+/**
+ * Route that send a contact mail.
+ * Auth required.
+ */
+router.post('/contact', checkAuth, async (req, res) => {
   const {
     email, subject, message,
   } = req.body;
@@ -33,25 +37,31 @@ router.post('/contact', checkAuth, async (req, res, next) => {
   return res.status(202).json();
 });
 
-router.post('/update-start', checkAuth, async (req, res, next) => {
+/**
+ * Route that sends a mail that inform that an update has started start.
+ * Auth required.
+ */
+router.post('/update-start', checkAuth, async (req, res) => {
   const config = req.body;
-  // TODO test config
 
   sendMailUpdateStarted(config);
 
   return res.status(202).json();
 });
 
-router.post('/update-end', checkAuth, async (req, res, next) => {
+/**
+ * Route that send update mail report.
+ * Auth required.
+ */
+router.post('/update-end', checkAuth, async (req, res) => {
   const state = req.body;
-  // TODO test state
 
   sendMailUpdateReport(state);
 
   return res.status(202).json();
 });
 
-router.post('/nochangefile', checkAuth, async (req, res, next) => {
+router.post('/nochangefile', checkAuth, async (req, res) => {
   const { startDate, endDate } = req.body;
   // TODO test startDate, endDate
 

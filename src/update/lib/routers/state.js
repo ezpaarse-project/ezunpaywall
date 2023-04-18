@@ -5,10 +5,9 @@ const {
 } = require('../models/state');
 
 /**
- * get the most recent state in JSON format
- * @return state
+ * Route that give the most recent state in JSON format.
  */
-router.get('/states', async (req, res, next) => {
+router.get('/states', async (req, res) => {
   const state = getState();
   return res.status(200).json(state);
 });

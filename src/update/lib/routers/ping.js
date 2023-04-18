@@ -4,10 +4,19 @@ const promiseWithTimeout = require('../controllers/ping');
 
 const { pingElastic } = require('../services/elastic');
 
+/**
+ * Route that give the name of service.
+ */
 router.get('/', (req, res) => res.status(200).json('update service'));
 
+/**
+ * Route that ping the service.
+ */
 router.get('/ping', (req, res, next) => res.status(204).end());
 
+/**
+ * route that gives the state of health of the service.
+ */
 router.get('/health', async (req, res, next) => {
   const start = Date.now();
 
@@ -26,6 +35,9 @@ router.get('/health', async (req, res, next) => {
   return res.status(200).json({ ...result, elapsedTime: Date.now() - start, healthy });
 });
 
+/**
+ * Route that gives the state of health of elastic.
+ */
 router.get('/health/elastic', async (req, res, next) => {
   const resultPing = await promiseWithTimeout(pingElastic(), 'elastic');
 

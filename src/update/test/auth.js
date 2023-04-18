@@ -13,9 +13,7 @@ const {
 
 const ping = require('./utils/ping');
 
-const {
-  checkIfInUpdate,
-} = require('./utils/status');
+const checkIfInUpdate = require('./utils/status');
 
 chai.use(chaiHttp);
 

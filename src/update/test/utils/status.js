@@ -7,10 +7,11 @@ chai.use(chaiHttp);
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
 /**
- * checks if an update process is being processed
- * @returns {boolean} if in update
+ * Checks if an update process is being processed
+ *
+ * @returns {Promise<boolean>} if in update
  */
-const checkIfInUpdate = async () => {
+async function checkIfInUpdate() {
   let res = true;
   try {
     res = await chai.request(updateURL).get('/status');
@@ -18,8 +19,6 @@ const checkIfInUpdate = async () => {
     console.error(`checkIfInUpdate : ${err}`);
   }
   return res?.body;
-};
+}
 
-module.exports = {
-  checkIfInUpdate,
-};
+module.exports = checkIfInUpdate;

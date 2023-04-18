@@ -37,21 +37,40 @@ const elasticClient = new Client({
   requestTimeout: 2000,
 });
 
-const pingElastic = async () => {
+/**
+ * Ping elastic service.
+ *
+ * @returns {Promise<boolean>} ping
+ */
+async function pingElastic() {
   let elasticStatus;
   try {
     elasticStatus = await elasticClient.ping();
   } catch (err) {
     logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
-    return err.message;
+    return false;
   }
   if (elasticStatus?.statusCode !== 200) {
     logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);
     return false;
   }
   return true;
-};
+}
 
+/**
+ * Get metrics of unpaywall data in elastic.
+ * count of doi
+ * count of is_oa
+ * count of oa_status: 'gold'
+ * count of oa_status: 'hybrid'
+ * count of oa_status: 'bronze'
+ * count of oa_status: 'green'
+ * count of oa_status: 'closed'
+ *
+ * @param {string} index elastic index to request
+ *
+ * @returns {Promise<Object>} metrics
+ */
 async function getMetrics(index) {
   let res;
 

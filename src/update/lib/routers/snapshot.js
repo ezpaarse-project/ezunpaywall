@@ -1,8 +1,12 @@
 const router = require('express').Router();
 const fs = require('fs-extra');
 const path = require('path');
-const multer = require('multer');
 const joi = require('joi').extend(require('@hapi/joi-date'));
+
+const upload = require('../middlewares/multer');
+const checkAuth = require('../middlewares/auth');
+
+const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 
 const {
   deleteFile,
@@ -12,20 +16,13 @@ const {
   getMostRecentFile,
 } = require('../controllers/file');
 
-const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
-
-const storage = multer.diskStorage(
-  {
-    destination: snapshotsDir,
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    },
-  },
-);
-
-const upload = multer({ storage });
-
-router.get('/snapshots', async (req, res, next) => {
+/**
+ * Route that give the list of snapshots installed on ezunpaywall of the most recent file.
+ * Auth required.
+ *
+ * This route can take in query latest.
+ */
+router.get('/snapshots', checkAuth, async (req, res, next) => {
   const { error, value } = joi.boolean().default(false).validate(req.query.latest);
 
   if (error) return res.status(400).json({ message: error.details[0].message });
@@ -46,23 +43,22 @@ router.get('/snapshots', async (req, res, next) => {
 });
 
 /**
- * @apiError 500 internal server error
- * @apiError 403 file not send
+ * Route that upload a file on ezunpaywall.
+ * Auth required.
+ * Using for test.
  *
- * @return 200 file added
+ * This route need a body that contains the file to upload.
  */
-router.post('/snapshots', upload.single('file'), async (req, res, next) => {
+router.post('/snapshots', checkAuth, upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ messsage: 'File not sent' });
-  return res.status(200).json({ messsage: 'File added' });
+  return res.status(202).json();
 });
 
 /**
- * @apiError 400 filename expected
- * @apiError 404 File not found
- *
- * @return 200 <filename> deleted
+ * Route that delete a file on ezunpaywall.
+ * Auth required.
  */
-router.delete('/snapshots/:filename', async (req, res, next) => {
+router.delete('/snapshots/:filename', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().required().validate(req.params.filename);
 
   if (error) return res.status(400).json({ message: error.details[0].message });
@@ -79,7 +75,7 @@ router.delete('/snapshots/:filename', async (req, res, next) => {
     return next({ message: err.message });
   }
 
-  return res.status(200).json({ messsage: `File [${filename}] deleted` });
+  return res.status(202).json();
 });
 
 module.exports = router;

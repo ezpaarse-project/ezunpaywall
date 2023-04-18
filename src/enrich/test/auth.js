@@ -131,15 +131,7 @@ describe('Test: auth service in enrich service', () => {
 
         expect(res).have.status(401);
       });
-    });/**
-    * start an enrich process with a file give by user
-    * @param {readStream} readStream - file need to be enriched
-    * @param {String} args - graphql args for enrichment
-    * @param {String} id - id of process
-    * @param {String} separator - separator of enriched file
-    * @param {String} index - index name of mapping
-    * @param {String} apikey - apikey of user
-    */
+    });
 
     describe('Test with userRestricted API key', () => {
       it('Should return a error message', async () => {

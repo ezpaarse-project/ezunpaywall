@@ -7,9 +7,16 @@ const { accessLogRotate } = require('config');
 
 const accessLogDir = path.resolve(__dirname, '..', 'log', 'access');
 
-function logFilename(time) {
-  if (!time) return 'access.log';
-  return `${format(new Date(time) - 1000 * 60 * 60 * 24, 'yyyy-MM-dd')}-access.log`;
+/**
+ * Get the name of access file.
+ *
+ * @param {number} date - Date in minisecond
+ *
+ * @returns {string} Name of access file.
+ */
+function logFilename(date) {
+  if (!date) return 'access.log';
+  return `${format(new Date(date) - 1000 * 60 * 60 * 24, 'yyyy-MM-dd')}-access.log`;
 }
 
 let accessLogStream;

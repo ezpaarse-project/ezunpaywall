@@ -10,6 +10,11 @@ const logger = require('../logger');
 
 const updateChangefilesExample = require('../controllers/changefiles');
 
+/**
+ * Route that update changefiles.
+ *
+ * This route need a query that contains the interval of registry.
+ */
 router.patch('/changefiles', async (req, res, next) => {
   const { interval } = req.query;
   if (!interval) {

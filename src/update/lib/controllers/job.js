@@ -32,7 +32,17 @@ const {
   sendMailNoChangefile,
 } = require('../services/mail');
 
-const downloadAndInsertSnapshot = async (jobConfig) => {
+/**
+ * Download the current snapshot of unpaywall and insert his content.
+ *
+ * @param {Object} jobConfig - Config of job.
+ * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
+ * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
+ * @param {number} jobConfig.limit - Line in the file where the insertion stops.
+ *
+ * @returns {Promise<void>}
+ */
+async function downloadAndInsertSnapshot(jobConfig) {
   setInUpdate(true);
   await createState();
   const filename = await downloadBigSnapshot(jobConfig);
@@ -43,9 +53,22 @@ const downloadAndInsertSnapshot = async (jobConfig) => {
   jobConfig.filename = filename;
   await insertDataUnpaywall(jobConfig);
   await endState();
-};
+}
 
-const insertChangefilesOnPeriod = async (jobConfig) => {
+/**
+ * Download and insert on elastic the changefiles from unpaywall between a period.
+ *
+ * @param {Object} jobConfig - Config of job.
+ * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
+ * @param {string} jobConfig.interval - Interval of changefile, day or week are available.
+ * @param {string} jobConfig.startDate - Start date for the changefile period.
+ * @param {string} jobConfig.endDate - End date for the changefile period.
+ * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
+ * @param {number} jobConfig.limit - Line in the file where the insertion stops.
+ *
+ * @returns {Promise<void>}
+ */
+async function insertChangefilesOnPeriod(jobConfig) {
   setInUpdate(true);
   const {
     interval, startDate, endDate,
@@ -84,16 +107,26 @@ const insertChangefilesOnPeriod = async (jobConfig) => {
     if (!success) return;
   }
   await endState();
-};
+}
 
-const insertChangefile = async (jobConfig) => {
+/**
+ * Insert on elastic the content of file installed on ezunpaywall.
+ *
+ * @param {Object} jobConfig - Config of job.
+ * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
+ * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
+ * @param {number} jobConfig.limit - Line in the file where the insertion stops.
+ *
+ * @returns {Promise<void>}
+ */
+async function insertChangefile(jobConfig) {
   setInUpdate(true);
   await createState();
   const success = await insertDataUnpaywall(jobConfig);
   if (success) {
     await endState();
   }
-};
+}
 
 module.exports = {
   downloadAndInsertSnapshot,

@@ -3,11 +3,20 @@ const router = require('express').Router();
 const promiseWithTimeout = require('../controllers/ping');
 const { pingRedis } = require('../services/redis');
 
+/**
+ * Route that give the name of service.
+ */
 router.get('/', (req, res) => res.status(200).json('apikey service'));
 
-router.get('/ping', (req, res, next) => res.status(204).end());
+/**
+ * Route that ping the service.
+ */
+router.get('/ping', (req, res) => res.status(204).end());
 
-router.get('/health', async (req, res, next) => {
+/**
+ * route that gives the state of health of the service.
+ */
+router.get('/health', async (req, res) => {
   const start = Date.now();
   const p1 = promiseWithTimeout(pingRedis(), 'redis');
 
@@ -24,7 +33,10 @@ router.get('/health', async (req, res, next) => {
   return res.status(200).json({ ...result, elapsedTime: Date.now() - start, healthy });
 });
 
-router.get('/health/redis', async (req, res, next) => {
+/**
+ * Route that gives the state of health of redis.
+ */
+router.get('/health/redis', async (req, res) => {
   const resultPing = await promiseWithTimeout(pingRedis(), 'redis');
 
   return res.status(200).json(resultPing);

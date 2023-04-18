@@ -8,7 +8,12 @@ const {
 
 const resetCronConfig = require('./cron');
 
-const reset = async () => {
+/**
+ * Reset ezunpaywall
+ *
+ * @returns {Promise<void>}
+ */
+async function reset() {
   await deleteFile('fake1.jsonl.gz');
   await deleteFile('fake2.jsonl.gz');
   await deleteFile('fake3.jsonl.gz');
@@ -16,6 +21,6 @@ const reset = async () => {
   await deleteFile('snapshot.jsonl.gz');
   await deleteIndex('unpaywall-test');
   await resetCronConfig();
-};
+}
 
 module.exports = reset;

@@ -6,9 +6,11 @@ chai.use(chaiHttp);
 const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 
 /**
- * load default dev apikey
+ * Load default dev apikey.
+ *
+ * @returns {Promise<void>}
  */
-const loadDevAPIKey = async () => {
+async function loadDevAPIKey() {
   try {
     await chai.request(apikeyURL)
       .post('/loadDev')
@@ -17,12 +19,14 @@ const loadDevAPIKey = async () => {
     console.error('Cannot request apikey service');
     console.error(err);
   }
-};
+}
 
 /**
- * delete all apikey from redis
+ * Delete all apikey from redis.
+ *
+ * @returns {Promise<void>}
  */
-const deleteAllAPIKey = async () => {
+async function deleteAllAPIKey() {
   try {
     await chai.request(apikeyURL)
       .delete('/all')
@@ -31,7 +35,7 @@ const deleteAllAPIKey = async () => {
     console.error('Cannot request apikey service');
     console.error(err);
   }
-};
+}
 
 module.exports = {
   loadDevAPIKey,

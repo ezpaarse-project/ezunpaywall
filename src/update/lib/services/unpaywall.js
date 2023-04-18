@@ -8,11 +8,13 @@ const unpaywall = axios.create({
 unpaywall.baseURL = config.get('unpaywall.host');
 
 const apikey = config.get('unpaywall.apikey');
+
 /**
- * get the latest snapshot
- * @returns {Readable}
+ * Get the current snapshot.
+ *
+ * @returns {Readable} Stream of snapshot.
  */
-const getSnapshot = async () => {
+async function getSnapshot() {
   let res;
   try {
     res = await unpaywall({
@@ -28,16 +30,18 @@ const getSnapshot = async () => {
     return false;
   }
   return res;
-};
+}
 
 /**
- * get list of changefiles with interval and between period
- * @param {String} interval
- * @param {Date} startDate
- * @param {Date} endDate
- * @returns {Object}
+ * Get the Unpaywall changefile registry with interval and between period.
+ *
+ * @param {string} interval - Interval of changefile, day or week are available.
+ * @param {string} startDate - Start date for the changefile period.
+ * @param {string} endDate - End date for the changefile period.
+ *
+ * @returns {Promise<Object>} Unpaywall changefile registry in json format.
  */
-const getChangefiles = async (interval, startDate, endDate) => {
+async function getChangefiles(interval, startDate, endDate) {
   let res;
   try {
     res = await unpaywall({
@@ -75,15 +79,17 @@ const getChangefiles = async (interval, startDate, endDate) => {
   }
 
   return snapshotsInfo;
-};
+}
 
 /**
- * get changefile from unpaywall with his filename
- * @param {String} filename filename of changefile
- * @param {String} interval type of changefile (day or week)
- * @returns Readable
+ * Get changefile from unpaywall with his filename.
+ *
+ * @param {string} filename - Filename of changefile.
+ * @param {string} interval - Type of changefile (day or week).
+ *
+ * @returns {Readable} Stream of changefile.
  */
-const getChangefile = async (filename, interval) => {
+async function getChangefile(filename, interval) {
   let res;
 
   let feed = 'feed';
@@ -106,7 +112,7 @@ const getChangefile = async (filename, interval) => {
     return false;
   }
   return res;
-};
+}
 
 module.exports = {
   getSnapshot,

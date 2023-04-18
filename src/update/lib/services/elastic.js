@@ -37,7 +37,12 @@ const elasticClient = new Client({
   requestTimeout: elasticsearch.timeout,
 });
 
-const pingElastic = async () => {
+/**
+ * Ping elastic service.
+ *
+ * @returns {Promise<boolean>} ping.
+ */
+async function pingElastic() {
   let elasticStatus;
   try {
     elasticStatus = await elasticClient.ping();
@@ -50,24 +55,29 @@ const pingElastic = async () => {
     return false;
   }
   return true;
-};
+}
 
 /**
- * check if index exit
- * @param {String} index Name of index
- * @returns {boolean} if exist
+ * Check if index exit.
+ *
+ * @param {string} index - Name of index.
+ *
+ * @returns {Promise<boolean>} If index exist.
  */
-const checkIfIndexExist = async (index) => {
+async function checkIfIndexExist(index) {
   const { body } = await elasticClient.indices.exists({ index });
   return body;
-};
+}
 
 /**
- * create index if it doesn't exist
- * @param {String} index Name of index
- * @param {JSON} mapping mapping in JSON format
+ * Create index if it doesn't exist.
+ *
+ * @param {string} index - Name of index.
+ * @param {Object} mapping mapping in JSON format.
+ *
+ * @returns {Promise<void>}
  */
-const createIndex = async (index, mapping) => {
+async function createIndex(index, mapping) {
   const exist = await checkIfIndexExist(index);
   if (!exist) {
     await elasticClient.indices.create({
@@ -75,9 +85,18 @@ const createIndex = async (index, mapping) => {
       body: mapping,
     });
   }
-};
+}
 
-const initAlias = async (indexName, mapping, aliasName) => {
+/**
+ * Create alias on elastic.
+ *
+ * @param {string} indexName - Name of index.
+ * @param {Object} mapping - Mapping of index.
+ * @param {string} aliasName - Name of alias.
+ *
+ * @returns {Promise<void>}
+ */
+async function initAlias(indexName, mapping, aliasName) {
   try {
     await createIndex(indexName, mapping);
   } catch (err) {
@@ -97,7 +116,7 @@ const initAlias = async (indexName, mapping, aliasName) => {
   } catch (err) {
     logger.error(`[elastic] Cannot create alias [${aliasName}] pointing to index [${indexName}]`, err);
   }
-};
+}
 
 module.exports = {
   elasticClient,

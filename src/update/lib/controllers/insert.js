@@ -29,11 +29,13 @@ const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 
 /**
- * insert data on elastic with elastic bulk request
- * @param {Array} data array of unpaywall data
- * @param {String}  - state filename
+ * Insert data on elastic with elastic bulk request.
+ *
+ * @param {Array<Object>} data - Array of unpaywall data.
+ *
+ * @returns {Promise<boolean>} Success or not.
  */
-const insertDataInElastic = async (data) => {
+async function insertDataInElastic(data) {
   const step = getLatestStep();
   let res;
   try {
@@ -77,17 +79,21 @@ const insertDataInElastic = async (data) => {
   updateLatestStep(step);
 
   return true;
-};
+}
 
 /**
- * Inserts the contents of an unpaywall data update file
- * @param {String}  - state filename
- * @param {String} index name of the index to which the data will be saved
- * @param {String} filename - snapshot filename which the data will be inserted
- * @param {Integer} offset - offset
- * @param {Integer} limit - limit
+ * Inserts the contents of an unpaywall data update file.
+ *
+ * @param {Object} insertConfig - Config of insertion.
+ * @param {string} insertConfig.filename - Name of the snapshot file from which the data will
+ * be retrieved to be inserted into elastic.
+ * @param {string} insertConfig.index - Name of the index to which the data will be inserted.
+ * @param {number} insertConfig.offset - Line of the snapshot at which the data insertion starts.
+ * @param {number} insertConfig.limit - Line in the file where the insertion stops.
+ *
+ * @returns {Promise<boolean>} Success or not.
  */
-const insertDataUnpaywall = async (insertConfig) => {
+async function insertDataUnpaywall(insertConfig) {
   const {
     filename, index, offset, limit,
   } = insertConfig;
@@ -231,6 +237,6 @@ const insertDataUnpaywall = async (insertConfig) => {
   step.percent = 100;
   updateLatestStep(step);
   return true;
-};
+}
 
 module.exports = insertDataUnpaywall;

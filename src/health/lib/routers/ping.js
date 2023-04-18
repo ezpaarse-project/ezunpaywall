@@ -2,11 +2,20 @@ const router = require('express').Router();
 
 const pingAll = require('../controllers/ping');
 
+/**
+ * Route that give the name of service.
+ */
 router.get('/', (req, res) => res.status(200).json('health service'));
 
-router.get('/ping', (req, res, next) => res.status(204).end());
+/**
+ * Route that ping the service.
+ */
+router.get('/ping', (req, res) => res.status(204).end());
 
-router.get('/health', async (req, res, next) => {
+/**
+ * route that gives the state of health of services
+ */
+router.get('/health', async (req, res) => {
   let resultPing = await pingAll();
   resultPing = resultPing.map((e) => e.value);
   const result = {};

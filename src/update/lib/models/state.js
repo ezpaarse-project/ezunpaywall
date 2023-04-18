@@ -23,8 +23,9 @@ function setState(key, value) {
 }
 
 /**
- * create a new file on folder "data/update/state" containing the update state
- * @return {String} name of the file where the state is saved
+ * Create a new file on folder "data/update/state" containing the update state
+ *
+ * @return {Promise<string>} name of the file where the state is saved.
  */
 async function createState() {
   state = {
@@ -37,7 +38,7 @@ async function createState() {
 }
 
 /**
- * add step "getChangefiles" in steps attributes of state
+ * Add step "getChangefiles" in steps attributes of state.
  */
 function addStepGetChangefiles() {
   logger.info('[job: state] add step of check unpaywall update file registry');
@@ -50,8 +51,9 @@ function addStepGetChangefiles() {
 }
 
 /**
- * add step "download" in steps attributes of state
- * @param {String} downloadFile - unpaywall data update filename
+ * Add step "download" in steps attributes of state.
+ *
+ * @param {string} downloadFile - Unpaywall data update filename.
  */
 function addStepDownload(downloadFile) {
   logger.info('[job: state] add step of download update file from unpaywall');
@@ -66,8 +68,9 @@ function addStepDownload(downloadFile) {
 }
 
 /**
- * add step "download" in steps attributes of state
- * @param {String} downloadFile - unpaywall data update file name
+ * Add step "download" in steps attributes of state.
+ *
+ * @param {string} downloadFile - Unpaywall data update file name.
  */
 function addStepInsert(downloadFile) {
   logger.info('[job: state] add step of insert the content of update file from unpaywall');
@@ -87,20 +90,24 @@ function addStepInsert(downloadFile) {
 }
 
 /**
- * get the latest step in state
+ * Get the latest step in state.
  */
 function getLatestStep() {
   return state.steps[state.steps.length - 1];
 }
 
 /**
- * update latest step in state
- * @param {*} step - latest step
+ * Update latest step in state.
+ *
+ * @param {Object} step - Latest step.
  */
 function updateLatestStep(step) {
   state.steps[state.steps.length - 1] = step;
 }
 
+/**
+ * Enrich the state by adding the end of treatment attributes.
+ */
 function end() {
   state.done = true;
   state.endAt = new Date();
@@ -120,8 +127,9 @@ function end() {
 }
 
 /**
- * update the state when there is an error
- * @param {Array<String>} stackTrace - log of error
+ * Update the state when there is an error.
+ *
+ * @param {Promise<Array<string>>} stackTrace - Log of error.
  */
 async function fail(stackTrace) {
   logger.error('[update process]: fail');
@@ -129,12 +137,16 @@ async function fail(stackTrace) {
   state.error = true;
   state.stackTrace = stackTrace;
   await createReport(state);
-  await sendMailUpdateReport(state);
+  sendMailUpdateReport(state).catch((err) => {
+    logger.errorRequest(err);
+  });
   setInUpdate(false);
 }
 
 /**
- * update the state when the process is finished
+ * Update the state when the process is finished successfully.
+ *
+ * @returns {Promise<void>}
  */
 async function endState() {
   logger.info('[update process]: end process');

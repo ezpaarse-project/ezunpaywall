@@ -22,7 +22,10 @@ const {
 } = require('../controllers/attributes');
 
 /**
- * Get config of apikey entered in parameter
+ * Route that get config of apikey.
+ * Auth required.
+ *
+ * This route takes a param which corresponds to the API key.
  */
 router.get('/keys/:apikey', async (req, res, next) => {
   const { apikey } = req.params;
@@ -56,7 +59,8 @@ router.get('/keys/:apikey', async (req, res, next) => {
 });
 
 /**
- * Get list of all apikeys
+ * Get list of all apikeys.
+ * Auth required.
  */
 router.get('/keys', checkAuth, async (req, res, next) => {
   let keys;
@@ -108,7 +112,10 @@ router.get('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Create new apikey with config in body
+ * Route that create new apikey.
+ * Auth required.
+ *
+ * This route need a body that contains a config of new apikey.
  */
 router.post('/keys', checkAuth, async (req, res, next) => {
   const { error, value: apikeyConfig } = joi.object({
@@ -181,7 +188,10 @@ router.post('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Update apikey entered in parameter with new config in body
+ * Route that update existing apikey.
+ * Auth required.
+ *
+ * This route need a body that contains a config of new apikey.
  */
 router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
   const checkParams = joi.string().trim().required().validate(req.params.apikey);
@@ -291,7 +301,8 @@ router.put('/keys/:apikey', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Delete the apikey entered in parameter
+ * Route that delete existing apikey.
+ * Auth required.
  */
 router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().required().validate(req.params.apikey);
@@ -323,7 +334,9 @@ router.delete('/keys/:apikey', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Delete all apikeys
+ * Route that delete all apikeys.
+ * Using for test.
+ * Auth required.
  */
 router.delete('/keys', checkAuth, async (req, res, next) => {
   try {
@@ -336,7 +349,8 @@ router.delete('/keys', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Load apikeys entered in body
+ * Route that load apikeys.
+ * Auth required.
  */
 router.post('/keys/load', checkAuth, async (req, res, next) => {
   const { error, value } = joi.array().validate(req.body);
@@ -360,7 +374,9 @@ router.post('/keys/load', checkAuth, async (req, res, next) => {
 });
 
 /**
- * Load dev apikeys for development or test
+ * Route that load dev apikeys.
+ * Using for test.
+ * Auth required.
  */
 router.post('/keys/loadDev', checkAuth, async (req, res, next) => {
   try {

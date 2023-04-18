@@ -17,6 +17,14 @@ const {
   GraphQLID,
 } = graphql;
 
+/**
+ * Flatten nested properties of an object by seperating keys with dots.
+ * Example: { foo: { bar: 'foo' } } => { 'foo.bar': 'foo' }
+ *
+ * @param {Object} obj - Object need to be flatten.
+ *
+ * @returns {Object} Flatten object.
+ */
 function flatten(obj) {
   const flattened = [];
 
@@ -38,24 +46,6 @@ function flatten(obj) {
 
   return flattened;
 }
-
-/**
- * convert a unpaywall deep attr into elastic readable object
- *
- * example
- * attr = best_oa_location
- * args = { dois: [ '10.1186/s40510-015-0109-6' ], best_oa_location: { license: 'cc-by' } }
- * return { terms: { 'best_oa_location.license': [ 'cc-by' ] } }
- *
- * @param {String} attr name of attribute
- * @param {Object} args graphql arguments
- * @returns {Object} elatic readable object
- */
-const parseTerms = (attr, args) => {
-  const subAttr = args[attr];
-  const [filters] = Object.entries(subAttr).map(([key, value]) => ({ terms: { [`${attr}.${key}`]: [value] } }));
-  return filters;
-};
 
 const getByDOI = {
   type: new GraphQLList(unpaywallType),
@@ -127,26 +117,12 @@ const getByDOI = {
 
     req.countDOI = args?.dois?.length;
 
-    // normalize request
+    // Normalize request
     args.dois.forEach((doi) => {
       dois.push(doi.toLowerCase());
     });
 
     const filter = [{ terms: { doi: dois } }];
-
-    for (const attr in args) {
-      const deepAttrs = new Set(['best_oa_location', 'oa_locations', 'first_oa_location']);
-      if (deepAttrs.has(attr)) {
-        filter.push(parseTerms(attr, args));
-      } else if (attr !== 'dois') {
-        const value = args[attr];
-        if (Array.isArray(value)) {
-          filter.push({ terms: { [attr]: value } });
-        } else {
-          filter.push({ term: { [attr]: value } });
-        }
-      }
-    }
 
     const query = {
       bool: {

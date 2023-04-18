@@ -9,6 +9,11 @@ const updateConfig = {
   interval: 'day',
 };
 
+/**
+ * Starts an update daily process if no update process is started.
+ *
+ * @returns {Promise<void>}
+ */
 async function task() {
   const week = (updateConfig.interval === 'week');
   const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
@@ -25,6 +30,11 @@ async function task() {
 
 const cron = new Cron('update', '0 0 0 * * *', task);
 
+/**
+ * Update config of update process and config of cron.
+ *
+ * @param {Object} config - Global config.
+ */
 function update(config) {
   if (config.time) updateConfig.time = config.time;
   if (config.index) updateConfig.index = config.index;
@@ -33,6 +43,10 @@ function update(config) {
   cron.setTask(task);
 }
 
+/**
+ * Get config of update process and config of cron.
+ * @returns {Object} Config of update process and config of cron.
+ */
 function getGlobalConfig() {
   const config = cron.getConfig();
   return { ...config, ...updateConfig };

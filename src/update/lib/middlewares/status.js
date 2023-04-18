@@ -3,11 +3,7 @@ const {
 } = require('../controllers/status');
 
 /**
- * middleware that blocks simultaneous updates of unpaywall data
- * @param {Object} req - HTTP request
- * @param {Object} res - HTTP response
- * @param {function} next - do the following
- * @returns {Object|function} res or next
+ * Middleware that blocks simultaneous updates of unpaywall data.
  */
 const checkStatus = (req, res, next) => {
   const status = getStatus();

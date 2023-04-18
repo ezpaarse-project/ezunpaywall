@@ -21,9 +21,7 @@ const {
   deleteIndex,
 } = require('./utils/elastic');
 
-const {
-  checkIfInUpdate,
-} = require('./utils/status');
+const checkIfInUpdate = require('./utils/status');
 
 const ping = require('./utils/ping');
 

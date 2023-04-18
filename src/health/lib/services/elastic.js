@@ -9,7 +9,12 @@ const logger = require('../logger');
 
 const isProd = (nodeEnv === 'production');
 
-const pingElasticWithClient = async () => {
+/**
+ * Ping elastic service.
+ *
+ * @returns {Promise<boolean>}
+ */
+async function pingElasticWithClient() {
   let ssl;
 
   if (isProd) {
@@ -19,6 +24,7 @@ const pingElasticWithClient = async () => {
       ca = await fs.readFile(caPath, 'utf8');
     } catch (err) {
       logger.error(`[elastic] Cannot read certificate file in ${caPath}`, err);
+      return false;
     }
     ssl = {
       ca,
@@ -42,13 +48,13 @@ const pingElasticWithClient = async () => {
     elasticStatus = await elasticClient.ping();
   } catch (err) {
     logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
-    return err.message;
+    return false;
   }
   if (elasticStatus?.statusCode !== 200) {
     logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);
     return false;
   }
   return true;
-};
+}
 
 module.exports = pingElasticWithClient;

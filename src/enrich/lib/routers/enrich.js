@@ -9,6 +9,10 @@ const enrichedDir = path.resolve(__dirname, '..', '..', 'data', 'enriched');
 const checkAuth = require('../middlewares/auth');
 const upload = require('../middlewares/multer');
 
+/**
+ * Route that get list of enriched filename.
+ * Auth required.
+ */
 router.get('/enriched', checkAuth, async (req, res) => {
   const apikey = req.get('x-api-key');
 
@@ -24,6 +28,10 @@ router.get('/enriched', checkAuth, async (req, res) => {
   return res.status(200).json(files);
 });
 
+/**
+ * Route that get list of uploaded filename.
+ * Auth required.
+ */
 router.get('/upload', checkAuth, async (req, res) => {
   const apikey = req.get('x-api-key');
 
@@ -39,7 +47,13 @@ router.get('/upload', checkAuth, async (req, res) => {
   return res.status(200).json(files);
 });
 
-router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
+/**
+ * Route that get enriched file.
+ * Auth required.
+ *
+ * This route need a param which corresponds to filename.
+ */
+router.get('/enriched/:filename', checkAuth, async (req, res) => {
   const { filename } = req.params;
 
   const { error } = joi.string().trim().required().validate(filename);
@@ -55,6 +69,12 @@ router.get('/enriched/:filename', checkAuth, async (req, res, next) => {
   return res.sendFile(path.resolve(enrichedDir, apikey, filename));
 });
 
+/**
+ * Route that upload file.
+ * Auth required.
+ *
+ * This route need a body that contains the file to upload
+ */
 router.post('/upload', checkAuth, upload.single('file'), async (req, res, next) => {
   if (!req?.file) return next({ message: 'File not sent' });
   const { filename } = req?.file;

@@ -11,38 +11,48 @@ const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:59799';
 
 /**
- * delete a snapshot in ezunpaywall
- * @param {String} filename name of file needed to be delete on ezunpaywall
+ * Delete a snapshot in ezunpaywall.
+ *
+ * @param {Promise<string>} filename - Name of file needed to be delete on ezunpaywall.
  */
-const deleteFile = async (filename) => {
+async function deleteFile(filename) {
   try {
     await chai.request(updateURL)
-      .delete(`/snapshots/${filename}`);
+      .delete(`/snapshots/${filename}`)
+      .set('x-api-key', 'changeme');
   } catch (err) {
     console.error(`Cannot DELETE ${updateURL}/snapshot/${filename}`);
     process.exit(1);
   }
-};
+}
 
 /**
- * add a snapshot in ezunpaywall
- * @param {String} filename name of file needed to be add on ezunpaywall
+ * Add a snapshot in ezunpaywall.
+ *
+ * @param {string} filename - Filename needed to be add on ezunpaywall.
+ *
+ * @returns {Promise<void>}
  */
-const addSnapshot = async (filename) => {
+async function addSnapshot(filename) {
   try {
     await chai.request(updateURL)
       .post('/snapshots')
-      .attach('file', path.resolve(snapshotsDir, filename), filename);
+      .attach('file', path.resolve(snapshotsDir, filename), filename)
+      .set('x-api-key', 'changeme');
   } catch (err) {
     console.error(`Cannot POST ${updateURL}/snapshot ${err}`);
     process.exit(1);
   }
-};
+}
 
 /**
+ * Update the registry of changefiles of fakeUnpaywall.
  *
+ * @param {string} interval - Interval of registry.
+ *
+ * @returns {Promise<void>}
  */
-const updateChangeFile = async (interval) => {
+async function updateChangeFile(interval) {
   try {
     await chai.request(fakeUnpaywall)
       .patch('/changefiles')
@@ -51,7 +61,7 @@ const updateChangeFile = async (interval) => {
     console.error(`Cannot PATCH ${updateURL}/changefiles ${err}`);
     process.exit(1);
   }
-};
+}
 
 module.exports = {
   addSnapshot,

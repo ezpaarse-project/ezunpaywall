@@ -25,9 +25,14 @@ redisClient.on('error', (err) => {
   logger.error('[redis] error on client', err);
 });
 
+/**
+ * Load the dev apikeys on redis from apikey-dev.json.
+ * Using for test.
+ *
+ * @returns {Promise<void>}
+ */
 async function load() {
-  const filename = 'apikey-dev.json';
-  apiKeys = await fs.readFile(path.resolve(__dirname, '..', '..', filename), 'utf8');
+  apiKeys = await fs.readFile(path.resolve(__dirname, '..', '..', 'apikey-dev.json'), 'utf8');
   apiKeys = JSON.parse(apiKeys);
 
   for (let i = 0; i < apiKeys.length; i += 1) {
@@ -43,16 +48,27 @@ async function load() {
   }
 }
 
+/**
+ * Load the dev apikeys on redis from apikey-dev.json.
+ * Using for test.
+ *
+ * @returns {Promise<boolean>} ping
+ */
 async function pingRedis() {
   try {
     await redisClient.ping();
   } catch (err) {
     logger.error(`[redis] Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
-    return err?.message;
+    return false;
   }
   return true;
 }
 
+/**
+ * Load the demo apikey on redis which has a limit of 100 000 DOI.
+ *
+ * @returns {Promise<void>}
+ */
 async function loadDemoAPIKey() {
   const configAPIKey = {
     name: 'demo',
@@ -67,7 +83,7 @@ async function loadDemoAPIKey() {
     await redisClient.set('demo', `${JSON.stringify(configAPIKey)}`);
   } catch (err) {
     logger.error('[redis] Cannot create [demo] apikey');
-    return Promise.reject(err);
+    throw err;
   }
   logger.info('[redis] Demo apikey is loaded');
 }

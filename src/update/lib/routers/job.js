@@ -16,6 +16,13 @@ const checkStatus = require('../middlewares/status');
 
 const checkAuth = require('../middlewares/auth');
 
+/**
+ * Route that download the current snapshot of unpaywall and insert his content.
+ * Auth required.
+ * No update process should be in progress.
+ *
+ * This route need a body that contains a config of job.
+ */
 router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.string().trim().default('unpaywall').validate(req.body.index);
 
@@ -33,6 +40,13 @@ router.post('/job/snapshot', checkStatus, checkAuth, async (req, res, next) => {
   return res.status(202).json();
 });
 
+/**
+ * Route that download and insert on elastic the changefiles from unpaywall between a period.
+ * Auth required.
+ * No update process should be in progress.
+ *
+ * This route need a body that contains a config of job.
+ */
 router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
   const { error, value } = joi.object({
     index: joi.string().trim().default('unpaywall'),
@@ -84,6 +98,14 @@ router.post('/job/period', checkStatus, checkAuth, async (req, res, next) => {
   return res.status(202).json();
 });
 
+/**
+ * Route that insert on elastic the content of file installed on ezunpaywall.
+ * Auth required.
+ * No update process should be in progress.
+ *
+ * This route need a body that contains a config of job
+ * and a param which corresponds to the filename.
+ */
 router.post('/job/changefile/:filename', checkStatus, checkAuth, async (req, res, next) => {
   const { filename } = req.params;
 
