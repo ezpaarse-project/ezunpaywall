@@ -41,20 +41,20 @@ async function task() {
   });
 }
 
-const updateCron = new Cron('update', '0 0 0 * * *', task, active);
+const updateCron = new Cron('update', cron.schedule, task, active);
 
 /**
  * Update config of update process and config of cron.
  *
- * @param {Object} config - Global config.
+ * @param {Object} newConfig - Global config.
  */
-function update(config) {
-  if (config.time) updateCron.setSchedule(config.time);
+function update(newConfig) {
+  if (newConfig.time) updateCron.setSchedule(newConfig.time);
 
-  if (config.index) updateConfig.index = config.index;
-  if (config.interval) updateConfig.interval = config.interval;
+  if (newConfig.index) updateConfig.index = newConfig.index;
+  if (newConfig.interval) updateConfig.interval = newConfig.interval;
 
-  if (config.index || config.interval) updateCron.setTask(task);
+  if (newConfig.index || newConfig.interval) updateCron.setTask(task);
 }
 
 /**
@@ -63,8 +63,8 @@ function update(config) {
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {
-  const config = updateCron.getConfig();
-  return { ...config, ...updateConfig };
+  const cronConfig = updateCron.getConfig();
+  return { ...cronConfig, ...updateConfig };
 }
 
 module.exports = {
