@@ -1,7 +1,7 @@
 {
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
-    "general1": "ezUnpaywall est un miroir des données <a href=\"{unpaywallURL}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
+    "general1": "ezUnpaywall est un miroir des données <a href=\"{linkHomepageUnpaywall}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
     "general2": "Il dispose d'une interface d'enrichissement de fichier en données Open Access à partir du DOI et d'un démonstrateur d'interrogation de DOI avec des requêtes GraphQL.",
     "general3": "Ce serveur dispose d'une API interrogeable via une APIKey. Vous pouvez obtenir une APIKey sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
     "metrics": "Métriques {env}",
@@ -10,12 +10,12 @@
     "openAccess": "Accès ouvert",
     "openAccessStatus": "Statuts Open Access",
     "referencedRessourceHelp": "Nombre de référence bibliographique enregistré dans le miroir",
-    "openAccessHelp": "Nombre de référence bibliographique disponible en accès gratuit </br> (is_oa: true)",
-    "goldOAHelp": "Nombre de référence bibliographique ayant le status 'gold' </br> (oa_status: 'gold')",
-    "hybridOAHelp": "Nombre de référence bibliographique ayant le status 'hybrid' </br> (oa_status: 'hybrid')",
-    "bronzeOAHelp": "Nombre de référence bibliographique ayant le status 'bronze' </br> (oa_status: 'bronze')",
-    "greenOAHelp": "Nombre de référence bibliographique ayant le status 'green' </br> (oa_status: 'green')",
-    "closedOAHelp": "Nombre de référence bibliographique ayant le status 'closed' </br> (oa_status: 'closed')"
+    "openAccessHelp": "Nombre de référence bibliographique disponible en accès gratuit (is_oa: true)",
+    "goldOAHelp": "Nombre de référence bibliographique ayant le status 'gold' (oa_status: 'gold')",
+    "hybridOAHelp": "Nombre de référence bibliographique ayant le status 'hybrid' (oa_status: 'hybrid')",
+    "bronzeOAHelp": "Nombre de référence bibliographique ayant le status 'bronze' (oa_status: 'bronze')",
+    "greenOAHelp": "Nombre de référence bibliographique ayant le status 'green' (oa_status: 'green')",
+    "closedOAHelp": "Nombre de référence bibliographique ayant le status 'closed' (oa_status: 'closed')"
   },
   "contact": {
     "contactUs": "Nous contacter",
@@ -97,9 +97,12 @@
       "title": "Clés d'API",
       "noApikeys": "Pas de clés d'API",
       "name": "Nom",
-      "owner": "Propriétaire : {owner}",
-      "description": "Description : {description}",
-      "createdAt": "Créé le {date}",
+      "ownerValue": "Propriétaire : {owner}",
+      "descriptionValue": "Description : {description}",
+      "createdAtValue": "Créé le {date}",
+      "owner": "Propriétaire ",
+      "description": "Description",
+      "createdAt": "Créé le",
       "attributes": "Attributs unpaywall :",
       "access": "Accès :",
       "allowed": "Active",

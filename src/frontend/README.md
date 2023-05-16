@@ -7,7 +7,8 @@ Web interface to demonstrate the functionality of graphql and enrich services.
 | name | default | description |
 | --- | --- | --- |
 | NODE_ENV | development | environment of node |
-| UNPAYWALL_HOST | http://localhost:59799 | unpaywall host |
+| UNPAYWALL_API_HOST | http://api.unpaywall.org | unpaywall API host |
+| UNPAYWALL_HOMEPAGE_HOST | https://unpaywall.org | unpaywall homepage host |
 | GRAPHQL_HOST | http://localhost:59701 | graphql host |
 | UPDATE_HOST | http://localhost:59702 | update host |
 | ENRICH_HOST | http://localhost:59703 | enrich host |

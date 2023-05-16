@@ -2,10 +2,11 @@
   <section>
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title v-text="$t('home.title')" />
+        <v-toolbar-title> {{ $t('home.title') }} </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        <div v-html="$t('home.general1', { unpaywallURL })" />
+        {{ linkHomepageUnpaywall }}
+        <div v-html="$t('home.general1', { linkHomepageUnpaywall })" />
         <br>
         {{ $t("home.general2") }}
         <div v-html="$t('home.general3', { blogURL })" />
@@ -14,11 +15,9 @@
 
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title
-          v-text="$t('home.metrics', { env: getElasticEnvironment() })"
-        />
+        <v-toolbar-title> {{ $t('home.metrics', { env: getElasticEnvironment() }) }} </v-toolbar-title>
       </v-toolbar>
-      <v-card-title v-text="$t('home.globalMetrics')" />
+      <v-card-title> {{ $t('home.globalMetrics') }} </v-card-title>
       <v-card-text>
         <v-menu
           v-for="chip in metricsGlobalMetricsChips"
@@ -42,7 +41,7 @@
           </template>
 
           <v-card class="text-justify">
-            <v-card-text v-html="$t(chip.text)" />
+            <v-card-text> {{ $t(chip.text) }} </v-card-text>
 
             <v-card-actions>
               <v-spacer />
@@ -50,8 +49,9 @@
                 class="body-2"
                 text
                 @click="chip.help = false"
-                v-text="$t('close')"
-              />
+              >
+                {{ $t('close') }}
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -59,7 +59,7 @@
 
       <v-divider />
 
-      <v-card-title v-text="$t('home.openAccessStatus')" />
+      <v-card-title> {{ $t('home.openAccessStatus') }} </v-card-title>
       <v-card-text>
         <v-menu
           v-for="chip in metricsOAStatusChips"
@@ -86,7 +86,7 @@
           </template>
 
           <v-card class="text-justify">
-            <v-card-text v-html="$t(chip.text)" />
+            <v-card-text> {{ $t(chip.text) }} </v-card-text>
 
             <v-card-actions>
               <v-spacer />
@@ -94,8 +94,9 @@
                 class="body-2"
                 text
                 @click="chip.help = false"
-                v-text="$t('close')"
-              />
+              >
+                {{ $t('close') }}
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -114,7 +115,6 @@ export default {
       loaded: false,
       blogURL:
         'https://blog.ezpaarse.org/2021/05/communication-unpaywall-un-miroir-et-une-api-a-linist-cnrs/',
-      unpaywallURL: 'https://unpaywall.org/',
       metrics: {
         doi: 0,
         isOA: 0,
@@ -134,6 +134,9 @@ export default {
   computed: {
     referencedRessourceHelp () {
       return this.$t('home.referencedRessourceHelp')
+    },
+    linkHomepageUnpaywall () {
+      return this.$config.unpaywallHomepageHost
     },
     metricsOAStatusChips () {
       return [

@@ -1,7 +1,7 @@
 {
   "home": {
     "title" : "What is ezUnpaywall?",
-    "general1": "ezUnpaywall is a mirror of <a href=\"{url}\" target=\"_blank\">Unpaywall</a> hosted at Inist-CNRS and developed by ezTEAM.",
+    "general1": "ezUnpaywall is a mirror of <a href=\"{linkHomepageUnpaywall}\" target=\"_blank\">Unpaywall</a> hosted at Inist-CNRS and developed by ezTEAM.",
     "general2": "It has an interface for enriching files with Open Access data from the DOI and a demonstrator for querying DOIs with GraphQL requests. ",
     "general3": "This server has an API that can be queried via an APIKey. You can get an APIKey on request to the team (see the contact section). For more information, see the <a href=\"{blogURL}\" target=\"_blank\">blog post</a>.",
     "metrics": "Metrics {env}",
@@ -10,12 +10,12 @@
     "openAccess": "Open Access",
     "openAccessStatus": "Open Access Status",
     "referencedRessourceHelp": "Number of bibliographic references recorded in the mirror",
-    "openAccessHelp": "Number of bibliographic references available for free access  </br> (is_oa: true)",
-    "goldOAHelp": "Number of bibliographic references with 'gold' status </br> (oa_status: 'gold')",
-    "hybridOAHelp": "Number of bibliographic references with 'hybrid' status </br> (oa_status: 'hybrid')",
-    "bronzeOAHelp": "Number of bibliographic references with 'bronze' status </br> (oa_status: 'bronze')",
-    "greenOAHelp": "Number of bibliographic references with 'green' status </br> (oa_status: 'green')",
-    "closedOAHelp": "Number of bibliographic references with 'closed' status  </br> (oa_status: 'closed')"
+    "openAccessHelp": "Number of bibliographic references available for free access (is_oa: true)",
+    "goldOAHelp": "Number of bibliographic references with 'gold' status (oa_status: 'gold')",
+    "hybridOAHelp": "Number of bibliographic references with 'hybrid' status (oa_status: 'hybrid')",
+    "bronzeOAHelp": "Number of bibliographic references with 'bronze' status (oa_status: 'bronze')",
+    "greenOAHelp": "Number of bibliographic references with 'green' status (oa_status: 'green')",
+    "closedOAHelp": "Number of bibliographic references with 'closed' status (oa_status: 'closed')"
   },
   "contact": {
     "contactUs": "Contact us",
@@ -97,9 +97,12 @@
       "title": "API keys",
       "noApikeys": "no API keys",
       "name": "Name",
-      "owner": "Owner: {owner}",
-      "description": "Description: {description}",
-      "createdAt": "Created at {date}",
+      "ownerValue": "Owner: {owner}",
+      "descriptionValue": "Description: {description}",
+      "createdAtValue": "Created at {date}",
+      "owner": "Owner",
+      "description": "Description",
+      "createdAt": "Created at",
       "access": "Access:",
       "attributes": "Unpaywall Attributes:",
       "allowed": "Allowed",

@@ -2,7 +2,9 @@
   <section>
     <Login v-if="!isAdmin" />
     <div v-else>
-      <v-btn color="primary" @click="logOut()" v-text="$t('administration.logout')" />
+      <v-btn color="primary" @click="logOut()">
+        {{ $t('administration.logout') }}
+      </v-btn>
       <WeekHistory />
       <HealthTab />
       <ApikeyTab />

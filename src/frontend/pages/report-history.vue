@@ -97,7 +97,7 @@ export default {
   },
   computed: {
     linkUnpaywall () {
-      return `${this.$config.unpaywallHost}/feed/changefiles?interval=day`
+      return `${this.$config.unpaywallAPIHost}/feed/changefiles?interval=day`
     }
   },
   async mounted () {

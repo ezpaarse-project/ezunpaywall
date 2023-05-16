@@ -2,7 +2,7 @@
   <section>
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title v-text="$t('graphql.title')" />
+        <v-toolbar-title> {{ $t('graphql.title') }} </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         {{ $t('graphql.general1') }} <br>
@@ -13,7 +13,7 @@
     </v-card>
     <v-card class="my-3">
       <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title v-text="$t('graphql.constructor')" />
+        <v-toolbar-title> {{ $t('graphql.constructor') }} </v-toolbar-title>
         <v-spacer />
         <v-icon>mdi-api</v-icon>
       </v-toolbar>
@@ -23,7 +23,7 @@
       </v-card-text>
 
       <v-toolbar class="secondary" dark dense flat>
-        <v-toolbar-title v-text="$t('graphql.settings')" />
+        <v-toolbar-title> {{ $t('graphql.settings') }} </v-toolbar-title>
         <v-menu
           v-model="attrsHelp"
           :close-on-content-click="false"
@@ -39,18 +39,17 @@
           </template>
 
           <v-card>
-            <v-card-text
-              class="text-justify"
-              v-html="$t('unpaywallArgs.help', { url: dataFormatURL })"
-            />
+            <!-- eslint-disable-next-line -->
+            <v-card-text class="text-justify" v-html="$t('unpaywallArgs.help', { url: dataFormatURL })" />
             <v-card-actions>
               <v-spacer />
               <v-btn
                 class="body-2"
                 text
                 @click="attrsHelp = false"
-                v-text="$t('close')"
-              />
+              >
+                {{ $t('close') }}
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -68,7 +67,7 @@
     </v-card>
     <v-card class="mx-auto">
       <v-toolbar class="secondary" dark dense flat>
-        <v-toolbar-title v-text="$t('graphql.request')" />
+        <v-toolbar-title> {{ $t('graphql.request') }} </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-textarea
@@ -87,12 +86,13 @@
           :loading="loading"
           :disabled="!attributes.length"
           @click="graphqlRequest"
-          v-text="$t('graphql.start')"
-        />
+        >
+          {{ $t('graphql.start') }}
+        </v-btn>
       </v-card-actions>
       <div id="graphqlResult">
         <div v-if="result">
-          <v-card-title v-text="$t('graphql.result')" />
+          <v-card-title> {{ $t('graphql.result') }} </v-card-title>
           <v-card-text>
             <highlightjs language="json" :code="stringifiedGraphqlResult" />
           </v-card-text>
@@ -102,8 +102,9 @@
               :href="linkGraphql"
               target="_blank"
               :disabled="!attributes.length"
-              v-text="$t('graphql.linkAPI')"
-            />
+            >
+              {{ $t('graphql.linkAPI') }}
+            </v-btn>
           </v-card-actions>
         </div>
       </div>

@@ -27,10 +27,8 @@
         <v-card class="text-justify">
           <v-card-text> {{ $t("enrich.explainationLogs") }} </v-card-text>
           <v-divider />
-          <v-card-text>
-            {{ $t("enrich.explainationTestsLogs", { url: logSamplesUrl }) }}
-          </v-card-text>
-
+          <!-- eslint-disable-next-line -->
+          <v-card-text v-html="$t('enrich.explainationTestsLogs', { url: logSamplesUrl }) "/>
           <v-card-actions>
             <v-spacer />
             <v-btn class="body-2" text @click="fileSelectionHelp = false">

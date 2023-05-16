@@ -35,19 +35,19 @@
         <v-icon class="mr-3">
           mdi-account-circle
         </v-icon>
-        {{ $t("administration.apikey.owner", { owner: config.owner }) }}
+        {{ $t("administration.apikey.ownerValue", { owner: config.owner }) }}
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-text-account
         </v-icon>
-        {{ $t("administration.apikey.description", { description: config.description }) }}
+        {{ $t("administration.apikey.descriptionValue", { description: config.description }) }}
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-calendar-account-outline
         </v-icon>
-        <span> {{ $t("administration.apikey.createdAt", { date: config.createdAt }) }} </span>
+        <span> {{ $t("administration.apikey.createdAtValue", { date: config.createdAt }) }} </span>
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">

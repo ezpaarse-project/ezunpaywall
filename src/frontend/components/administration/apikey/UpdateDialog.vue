@@ -33,7 +33,6 @@
             outlined
             clearable
             required
-            autofocus
           />
           <v-text-field
             v-model="description"
@@ -42,7 +41,6 @@
             outlined
             clearable
             required
-            autofocus
           />
           <v-card-actions>
             <span class="mr-2" v-text="`${$t('administration.apikey.access')}`" />
