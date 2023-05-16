@@ -5,7 +5,6 @@
         <v-toolbar-title> {{ $t('home.title') }} </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        {{ linkHomepageUnpaywall }}
         <div v-html="$t('home.general1', { linkHomepageUnpaywall })" />
         <br>
         {{ $t("home.general2") }}
