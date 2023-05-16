@@ -9,7 +9,7 @@ const getConfig = require('./lib/config');
 
 const { pingRedis } = require('./lib/services/redis');
 
-const cronDeleteOutFiles = require('./lib/controllers/cron/file');
+require('./lib/controllers/cron/file');
 
 const routerPing = require('./lib/routers/ping');
 const routerJob = require('./lib/routers/job');
@@ -56,5 +56,4 @@ app.listen(3000, () => {
   logger.info('[express] ezunpaywall enrich service listening on 3000');
   getConfig();
   pingRedis();
-  cronDeleteOutFiles.start();
 });
