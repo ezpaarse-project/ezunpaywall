@@ -9,7 +9,7 @@
       </v-toolbar>
       <v-card-text>
         <pre>
-          <code v-highlight class="json">{{ stringifiedReport }}</code>
+          <highlightjs language="json" :code="stringifiedReport" />
         </pre>
       </v-card-text>
       <v-card-actions>
