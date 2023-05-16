@@ -21,8 +21,7 @@ class Cron {
     this.active = active;
     this.process = new CronJob(schedule, this.task, null, false, 'Europe/Paris');
     if (active) {
-      logger.info(`[cron ${this.name}] started`);
-      logger.info(`[cron ${this.name}] config: schedule [${this.schedule}]`);
+      this.start();
     }
   }
 

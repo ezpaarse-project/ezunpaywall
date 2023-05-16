@@ -9,7 +9,7 @@ const logger = require('../../logger');
 
 let { active } = cron;
 
-if (active === 'true') active = true;
+if (active === 'true' || active) active = true;
 else active = false;
 
 const updateConfig = {

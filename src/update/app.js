@@ -7,8 +7,6 @@ const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 const getConfig = require('./lib/config');
 
-const cronDeleteOutFiles = require('./lib/controllers/cron/file');
-
 const routerPing = require('./lib/routers/ping');
 const routerJob = require('./lib/routers/job');
 const routerReport = require('./lib/routers/report');
@@ -56,5 +54,4 @@ app.use((error, req, res) => res.status(500).json({ message: error.message }));
 app.listen(3000, async () => {
   logger.info('[express] ezunpaywall update service listening on 3000');
   getConfig();
-  cronDeleteOutFiles.start();
 });
