@@ -45,7 +45,7 @@ describe('Test: auth service in enrich service', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -60,7 +60,7 @@ describe('Test: auth service in enrich service', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'enrich');
 
@@ -154,7 +154,7 @@ describe('Test: auth service in enrich service', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -169,7 +169,7 @@ describe('Test: auth service in enrich service', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -231,7 +231,7 @@ describe('Test: auth service in enrich service', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 
@@ -246,7 +246,7 @@ describe('Test: auth service in enrich service', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'enrich');
 
@@ -262,7 +262,7 @@ describe('Test: auth service in enrich service', () => {
           const res = await chai
             .request(enrichService)
             .post('/upload')
-            .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+            .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
             .set('Content-Type', 'application/x-ndjson');
 
           expect(res).have.status(401);
@@ -276,7 +276,7 @@ describe('Test: auth service in enrich service', () => {
           const res = await chai
             .request(enrichService)
             .post('/upload')
-            .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+            .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
             .set('Content-Type', 'application/x-ndjson')
             .set('x-api-key', 'wrongapikey');
 
@@ -385,7 +385,7 @@ describe('Test: auth service in enrich service', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 

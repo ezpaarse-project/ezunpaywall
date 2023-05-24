@@ -68,7 +68,7 @@ function flatten(obj) {
     Object.entries(data).forEach(([key, value]) => {
       const newKeys = [...keys, key];
       if (key === 'z_authors') {
-        value = value.map((item) => JSON.stringify(item));
+        value = value?.map((item) => JSON.stringify(item));
       }
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         flattenProp(value, newKeys);

@@ -54,7 +54,7 @@ describe('Test: enrich service jsonl', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 
@@ -115,7 +115,7 @@ describe('Test: enrich service jsonl', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file1.jsonl');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file01.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -130,7 +130,7 @@ describe('Test: enrich service jsonl', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file2.jsonl'), 'file2.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file02.jsonl'), 'file02.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 
@@ -191,7 +191,7 @@ describe('Test: enrich service jsonl', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file2.jsonl');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file02.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -205,7 +205,7 @@ describe('Test: enrich service jsonl', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 
@@ -268,7 +268,7 @@ describe('Test: enrich service jsonl', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file3.jsonl');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file03.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -282,7 +282,7 @@ describe('Test: enrich service jsonl', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 
@@ -344,7 +344,7 @@ describe('Test: enrich service jsonl', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file4.jsonl');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file04.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -359,7 +359,7 @@ describe('Test: enrich service jsonl', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 
@@ -421,7 +421,7 @@ describe('Test: enrich service jsonl', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file5.jsonl');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file05.jsonl');
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
@@ -435,7 +435,7 @@ describe('Test: enrich service jsonl', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 
@@ -497,7 +497,7 @@ describe('Test: enrich service jsonl', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file6.jsonl');
+        const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file06.jsonl');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -511,7 +511,7 @@ describe('Test: enrich service jsonl', () => {
         const res1 = await chai
           .request(enrichService)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.jsonl'), 'file1.jsonl')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
           .set('x-api-key', 'user');
 

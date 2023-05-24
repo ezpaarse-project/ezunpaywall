@@ -52,7 +52,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -114,7 +114,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file1.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file01.csv');
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
@@ -128,7 +128,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file2.csv'), 'file2.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file02.csv'), 'file02.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -189,7 +189,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file2.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file02.csv');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -203,7 +203,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -266,7 +266,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file3.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file03.csv');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -280,7 +280,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -342,7 +342,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file4.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file04.csv');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -357,7 +357,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -419,7 +419,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file5.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file05.csv');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -434,7 +434,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -443,7 +443,7 @@ describe('Test: enrich service csv', () => {
         id = res1?.body;
       });
 
-      it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors{ family } } and download it', async () => {
+      it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors { family } } and download it', async () => {
         const res2 = await chai
           .request(enrichHost)
           .post(`/job/${id}`)
@@ -496,7 +496,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file6.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file06.csv');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -511,7 +511,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -573,7 +573,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file7.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file07.csv');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -587,7 +587,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file3.csv'), 'file3.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file03.csv'), 'file03.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -650,7 +650,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file8.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file08.csv');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -664,7 +664,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file4.csv'), 'file4.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file04.csv'), 'file04.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -727,7 +727,7 @@ describe('Test: enrich service csv', () => {
       });
 
       it('Should be the same', async () => {
-        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file9.csv');
+        const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file09.csv');
 
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
@@ -741,7 +741,7 @@ describe('Test: enrich service csv', () => {
         const res1 = await chai
           .request(enrichHost)
           .post('/upload')
-          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file1.csv'), 'file1.csv')
+          .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
@@ -781,6 +781,160 @@ describe('Test: enrich service csv', () => {
 
         expect(res1).have.status(404);
       });
+    });
+  });
+
+  describe('Do a enrichment of a csv file with 1200 lines with all unpaywall attributes sended on body', () => {
+    let id;
+    let enrichedFile;
+
+    it('Should upload the file', async () => {
+      const res1 = await chai
+        .request(enrichHost)
+        .post('/upload')
+        .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file04.csv'), 'file04.csv')
+        .set('Content-Type', 'text/csv')
+        .set('x-api-key', 'user');
+
+      expect(res1).have.status(200);
+
+      id = res1?.body;
+    });
+
+    it('Should enrich the file on 1200 lines with all unpaywall attributes and download it', async () => {
+      // start enrich process
+      const res2 = await chai
+        .request(enrichHost)
+        .post(`/job/${id}`)
+        .send({
+          type: 'csv',
+          index: 'unpaywall-test',
+          args: '{ doi, data_standard, doi_url, genre, is_oa, is_paratext, journal_is_in_doaj, journal_is_oa, journal_issn_l, journal_issns, journal_name, oa_status, published_date, publisher, title, updated, year, best_oa_location { evidence, host_type, is_best, license, pmh_id, updated, url, url_for_landing_page, url_for_pdf, version }, first_oa_location { evidence, host_type, is_best, license, pmh_id, updated, url, url_for_landing_page, url_for_pdf, version }, z_authors { family, given, ORCID } }',
+        })
+        .set('x-api-key', 'user');
+
+      expect(res2).have.status(200);
+    });
+
+    it('Should get the state of enrich', async () => {
+      let res3;
+      do {
+        res3 = await chai
+          .request(enrichHost)
+          .get(`/states/${id}.json`)
+          .set('x-api-key', 'user');
+        expect(res3).have.status(200);
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (!res3?.body?.done);
+
+      const state = res3?.body;
+
+      expect(state).have.property('done').equal(true);
+      expect(state).have.property('loaded').to.not.equal(undefined);
+      expect(state).have.property('linesRead').equal(1200);
+      expect(state).have.property('enrichedLines').equal(1200);
+      expect(state).have.property('createdAt').to.not.equal(undefined);
+      expect(state).have.property('endAt').to.not.equal(undefined);
+      expect(state).have.property('error').equal(false);
+    });
+
+    it('Should download the enrichedfile', async () => {
+      const res4 = await chai
+        .request(enrichHost)
+        .get(`/enriched/${id}.csv`)
+        .set('x-api-key', 'user')
+        .buffer()
+        .parse(binaryParser);
+
+      enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      try {
+        await fs.writeFile(enrichedFile, res4.body.toString());
+      } catch (err) {
+        console.error(`writeFile: ${err}`);
+      }
+    });
+
+    it('Should be the same', async () => {
+      const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file10.csv');
+      const same = await compareFile(reference, enrichedFile);
+      expect(same).to.be.equal(true);
+    });
+  });
+
+  describe('Do a enrichment of a csv file with 1 line with all unpaywall attributes equal to null', () => {
+    let id;
+    let enrichedFile;
+
+    it('Should upload the file', async () => {
+      const res1 = await chai
+        .request(enrichHost)
+        .post('/upload')
+        .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file05.csv'), 'file05.csv')
+        .set('Content-Type', 'text/csv')
+        .set('x-api-key', 'user');
+
+      expect(res1).have.status(200);
+
+      id = res1?.body;
+    });
+
+    it('Should enrich the file with 1 line with all unpaywall attributes and download it but z_authors is null', async () => {
+      // start enrich process
+      const res2 = await chai
+        .request(enrichHost)
+        .post(`/job/${id}`)
+        .send({
+          type: 'csv',
+          index: 'unpaywall-test',
+          args: '{ doi, data_standard, doi_url, genre, is_oa, is_paratext, journal_is_in_doaj, journal_is_oa, journal_issn_l, journal_issns, journal_name, oa_status, published_date, publisher, title, updated, year, best_oa_location { evidence, host_type, is_best, license, pmh_id, updated, url, url_for_landing_page, url_for_pdf, version }, first_oa_location { evidence, host_type, is_best, license, pmh_id, updated, url, url_for_landing_page, url_for_pdf, version }, z_authors { family, given, ORCID } }',
+        })
+        .set('x-api-key', 'user');
+
+      expect(res2).have.status(200);
+    });
+
+    it('Should get the state of enrich', async () => {
+      let res3;
+      do {
+        res3 = await chai
+          .request(enrichHost)
+          .get(`/states/${id}.json`)
+          .set('x-api-key', 'user');
+        expect(res3).have.status(200);
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } while (!res3?.body?.done);
+
+      const state = res3?.body;
+
+      expect(state).have.property('done').equal(true);
+      expect(state).have.property('loaded').to.not.equal(undefined);
+      expect(state).have.property('linesRead').equal(1);
+      expect(state).have.property('enrichedLines').equal(1);
+      expect(state).have.property('createdAt').to.not.equal(undefined);
+      expect(state).have.property('endAt').to.not.equal(undefined);
+      expect(state).have.property('error').equal(false);
+    });
+
+    it('Should download the enrichedfile', async () => {
+      const res4 = await chai
+        .request(enrichHost)
+        .get(`/enriched/${id}.csv`)
+        .set('x-api-key', 'user')
+        .buffer()
+        .parse(binaryParser);
+
+      enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.csv');
+      try {
+        await fs.writeFile(enrichedFile, res4.body.toString());
+      } catch (err) {
+        console.error(`writeFile: ${err}`);
+      }
+    });
+
+    it('Should be the same', async () => {
+      const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file11.csv');
+      const same = await compareFile(reference, enrichedFile);
+      expect(same).to.be.equal(true);
     });
   });
 
