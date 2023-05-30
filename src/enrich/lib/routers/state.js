@@ -5,7 +5,7 @@ const fs = require('fs-extra');
 
 const checkAuth = require('../middlewares/auth');
 
-const getMostRecentFile = require('../controllers/file');
+const { getMostRecentFile } = require('../controllers/file');
 
 const {
   getState,
@@ -32,6 +32,7 @@ router.get('/states', checkAuth, async (req, res, next) => {
     try {
       latestFile = await getMostRecentFile(path.resolve(statesDir, apikey));
     } catch (err) {
+      console.log(err);
       return next({ message: err.message });
     }
     let state;
