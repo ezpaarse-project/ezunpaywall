@@ -3,21 +3,21 @@ const { redisClient } = require('../services/redis');
 const logger = require('../logger');
 
 /**
- * Authentication middleware that checks if the content of the x-api-key header
- * matches the apikey in redis and the apikey config.
+ * Authentication middleware that checks if if the arguments passed
+ * in the body match the rights of the API key.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  *
- * This middleware need a header that contains the apikey.
+ * This middleware need a body that contains the args of enrich.
  *
  * @returns {
  *  Promise<import('express').NextFunction> |
  *  Promise<import('express').Request>
  * } next - Do the following.
  */
-async function checkAuth(req, res, next) {
+async function checkArgs(req, res, next) {
   const apikey = req.get('x-api-key');
 
   if (!apikey) {
@@ -43,7 +43,33 @@ async function checkAuth(req, res, next) {
     return res.status(401).json({ message: 'Not authorized' });
   }
 
+  let { args } = req.body;
+
+  if (!apikeyConfig?.attributes?.includes('*')) {
+    if (args) {
+      let error = false;
+      const errors = [];
+      args = args.substr(1);
+      args = args.substring(0, args.length - 1);
+      args = args.replace(/{/g, '.');
+      args = args.replace(/}/g, '');
+      args = args.replace(/ /g, '');
+      args = args.split(',');
+
+      args.forEach((attribute) => {
+        if (!apikeyConfig?.attributes?.includes(attribute)) {
+          error = true;
+          errors.push(attribute);
+        }
+      });
+      if (error) {
+        return res.status(401).json({ message: `You don't have access to "${errors.join(',')}" attribute(s)` });
+      }
+    }
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+
   return next();
 }
 
-module.exports = checkAuth;
+module.exports = checkArgs;

@@ -9,6 +9,7 @@ const {
 } = require('../controllers/job');
 
 const checkAuth = require('../middlewares/auth');
+const checkArgs = require('../middlewares/args');
 
 const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 
@@ -18,7 +19,7 @@ const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
  * This route need a body that contains a config of job
  * and a param filename which corresponds to the upload filename
  */
-router.post('/job/:filename', checkAuth, async (req, res) => {
+router.post('/job/:filename', checkAuth, checkArgs, async (req, res) => {
   const checkParams = joi.string().trim().required().validate(req.params.filename);
 
   if (checkParams?.error) {

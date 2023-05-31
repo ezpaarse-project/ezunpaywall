@@ -27,12 +27,26 @@ router.get('/states', checkAuth, async (req, res, next) => {
 
   const latest = value;
 
+  let dirExist = false;
+  try {
+    dirExist = await fs.exists(path.resolve(statesDir, apikey));
+  } catch (err) {
+    return next({ message: err.message });
+  }
+
+  if (!dirExist) {
+    try {
+      await fs.mkdir(path.resolve(statesDir, apikey));
+    } catch (err) {
+      return next({ message: err.message });
+    }
+  }
+
   if (latest) {
     let latestFile;
     try {
       latestFile = await getMostRecentFile(path.resolve(statesDir, apikey));
     } catch (err) {
-      console.log(err);
       return next({ message: err.message });
     }
     let state;
