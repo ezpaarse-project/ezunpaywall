@@ -4,40 +4,19 @@
       <v-toolbar color="secondary" dark flat dense>
         <v-toolbar-title> {{ $t("reportHistory.title") }} </v-toolbar-title>
         <v-spacer />
-        <v-menu
-          v-model="showHelp"
-          :close-on-content-click="false"
-          :nudge-width="200"
-          max-width="500"
-          offset-x
-        >
+        <v-tooltip bottom>
           <template #activator="{ on }">
-            <v-btn icon v-on="on">
+            <v-btn
+              icon
+              :href="linkUnpaywall"
+              target="_blank"
+              v-on="on"
+            >
               <v-icon>mdi-help-circle</v-icon>
             </v-btn>
           </template>
-          <v-card class="text-justify">
-            <v-card-text>
-              {{ $t("reportHistory.source") }}
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn
-                class="body-2"
-                text
-                :href="linkUnpaywall"
-                target="_blank"
-                @click="showHelp = false"
-              >
-                {{ $t("reportHistory.goTo") }}
-              </v-btn>
-              <v-spacer />
-              <v-btn class="body-2" text @click="showHelp = false">
-                {{ $t("close") }}
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
+          {{ $t("reportHistory.source") }}
+        </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{ on }">
             <v-btn
@@ -80,7 +59,6 @@ export default {
   data () {
     return {
       loading: false,
-      showHelp: false,
       reports: [],
       id: ''
     }
