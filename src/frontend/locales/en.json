@@ -223,8 +223,8 @@
     "noReport": "No report availables",
     "reportsError": "Cannot get update reports",
     "reportError": "Cannot get update report",
-    "insertedDocs": "{insertedDocs} new Lines",
-    "updatedDocs": "{updatedDocs} updated Lines"
+    "insertedDocs": "New lines",
+    "updatedDocs": "Updated lines"
   },
   "theme": {
     "dark": "Dark theme",

@@ -30,19 +30,7 @@
       <Loader />
     </v-row>
     <NoData v-else-if="!reports || reports.length === 0" :text="$t('reportHistory.noReport')" />
-    <v-row v-else class="ma-2">
-      <v-col
-        v-for="report in reports"
-        :id="report.id"
-        :key="report.id"
-        cols="12"
-        sm="12"
-        md="6"
-        lg="3"
-      >
-        <ReportCard :report="report" />
-      </v-col>
-    </v-row>
+    <ReportsDataTable v-else :reports="reports" />
   </v-card>
 </template>
 
@@ -50,7 +38,7 @@
 import UpdateDialog from '~/components/administration/update/UpdateProcessDialog.vue'
 import Loader from '~/components/Loader.vue'
 import NoData from '~/components/NoData.vue'
-import ReportCard from '~/components/report/ReportCard.vue'
+import ReportsDataTable from '~/components/report/ReportsDataTable.vue'
 
 export default {
   name: 'WeekHistory',
@@ -58,7 +46,7 @@ export default {
     UpdateDialog,
     Loader,
     NoData,
-    ReportCard
+    ReportsDataTable
   },
   data () {
     return {
@@ -90,7 +78,7 @@ export default {
 
       let report
 
-      filenames = filenames.slice(0, 8)
+      filenames = filenames.slice(0, 7)
       this.reports = []
       for (let i = 0; i < filenames.length; i += 1) {
         report = await this.getReport(filenames[i])

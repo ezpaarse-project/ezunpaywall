@@ -59,32 +59,22 @@
         v-else-if="reports.length === 0"
         :text="$t('reportHistory.noReport')"
       />
-      <v-row v-else class="pa-1">
-        <v-col
-          v-for="report in reports"
-          :id="report.id"
-          :key="report.id"
-          cols="12"
-          class="pa-2"
-        >
-          <ReportCard :report="report" :status="getStatusOfReport(report)" />
-        </v-col>
-      </v-row>
+      <ReportsDataTable v-else :loading="loading" :reports="reports" />
     </v-card>
   </section>
 </template>
 
 <script>
-import ReportCard from '~/components/report/ReportCard.vue'
 import Loader from '~/components/Loader.vue'
 import NoData from '~/components/NoData.vue'
+import ReportsDataTable from '~/components/report/ReportsDataTable.vue'
 
 export default {
   name: 'UpdateHistory',
   components: {
-    ReportCard,
     Loader,
-    NoData
+    NoData,
+    ReportsDataTable
   },
   transition: 'slide-x-transition',
   data () {
@@ -104,17 +94,6 @@ export default {
     await this.getReports()
   },
   methods: {
-    getStatusOfReport (report) {
-      if (!report.data.error && report.data.done) {
-        return 'success'
-      }
-      if (!report.data.error && !report.data.done) {
-        return 'inprogress'
-      }
-      if (report.data.error) {
-        return 'error'
-      }
-    },
     async getReports () {
       this.loading = true
       let res
