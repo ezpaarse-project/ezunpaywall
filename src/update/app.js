@@ -18,7 +18,7 @@ const routerCron = require('./lib/routers/cron');
 const routerElastic = require('./lib/routers/elastic');
 const routerOpenapi = require('./lib/routers/openapi');
 
-require('./lib/controllers/cron/file');
+require('./lib/cron/file');
 
 const dataDir = path.resolve(__dirname, 'data');
 fs.ensureDir(path.resolve(dataDir));

@@ -1,22 +1,17 @@
-let inUpdate = false;
+const { getStatus, setInUpdate } = require('../status');
 
-/**
- * Setter of inUpdate.
- *
- * @param {boolean} status - indicates if a job is in progress.
- */
-const setInUpdate = (status) => {
-  inUpdate = status;
-};
+function getUpdateStatus(req, res) {
+  const status = getStatus();
+  return res.status(200).json(status);
+}
 
-/**
- * Getter of inUpdate.
- *
- * @returns {boolean} inUpdate
- */
-const getStatus = () => inUpdate;
+function patchUpdateStatus(req, res) {
+  const status = setInUpdate();
+  setInUpdate(!status);
+  return res.status(200).json(!status);
+}
 
 module.exports = {
-  setInUpdate,
-  getStatus,
+  getUpdateStatus,
+  patchUpdateStatus,
 };

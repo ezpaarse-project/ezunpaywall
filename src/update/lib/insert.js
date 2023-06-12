@@ -8,25 +8,25 @@ const readline = require('readline');
 const config = require('config');
 const zlib = require('zlib');
 
-const logger = require('../logger');
-const unpaywallMapping = require('../../mapping/unpaywall.json');
+const logger = require('./logger');
+const unpaywallMapping = require('../mapping/unpaywall.json');
 
 const {
   addStepInsert,
   getLatestStep,
   updateLatestStep,
   fail,
-} = require('../models/state');
+} = require('./models/state');
 
 const {
   elasticClient,
   createIndex,
-} = require('../services/elastic');
+} = require('./services/elastic');
 
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 
-const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
+const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 /**
  * Insert data on elastic with elastic bulk request.

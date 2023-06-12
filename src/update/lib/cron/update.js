@@ -1,11 +1,11 @@
 const { format, subDays } = require('date-fns');
 const { cron } = require('config');
 
-const Cron = require('../../cron');
+const Cron = require('../models/cron');
 const { getStatus } = require('../status');
 
 const { insertChangefilesOnPeriod } = require('../job');
-const logger = require('../../logger');
+const logger = require('../logger');
 
 let { active } = cron;
 
