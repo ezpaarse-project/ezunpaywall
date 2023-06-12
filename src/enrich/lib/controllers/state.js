@@ -7,6 +7,13 @@ const { getState } = require('../models/state');
 
 const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
 
+/**
+ * Controller to get list of states of enrich job of user.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function getStates(req, res, next) {
   const apikey = req.get('x-api-key');
 
@@ -38,6 +45,13 @@ async function getStates(req, res, next) {
   return res.status(200).json(states);
 }
 
+/**
+ * Controller to get state of enrich job of user by filename.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function getStateByFilename(req, res, next) {
   const filename = req.data;
 

@@ -5,7 +5,14 @@ const joi = require('joi');
 const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
 const enrichedDir = path.resolve(__dirname, '..', '..', 'data', 'enriched');
 
-async function getEnrichedFile(req, res, next) {
+/**
+ * Controller to get list of enriched files of user.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function getEnrichedFiles(req, res, next) {
   const apikey = req.get('x-api-key');
 
   let files;
@@ -20,6 +27,13 @@ async function getEnrichedFile(req, res, next) {
   return res.status(200).json(files);
 }
 
+/**
+ * Controller to get list of uploaded files of user.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function getUploadedFile(req, res, next) {
   const apikey = req.get('x-api-key');
 
@@ -35,6 +49,13 @@ async function getUploadedFile(req, res, next) {
   return res.status(200).json(files);
 }
 
+/**
+ * Controller to get enriched file of user by filename.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function getEnrichedFileByFilename(req, res, next) {
   const { filename } = req.params;
 
@@ -51,6 +72,13 @@ async function getEnrichedFileByFilename(req, res, next) {
   return res.sendFile(path.resolve(enrichedDir, apikey, filename));
 }
 
+/**
+ * Controller to upload file.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function uploadFile(req, res, next) {
   if (!req?.file) return next({ message: 'File not sent' });
   const { filename } = req?.file;
@@ -58,7 +86,7 @@ async function uploadFile(req, res, next) {
 }
 
 module.exports = {
-  getEnrichedFile,
+  getEnrichedFiles,
   getUploadedFile,
   getEnrichedFileByFilename,
   uploadFile,

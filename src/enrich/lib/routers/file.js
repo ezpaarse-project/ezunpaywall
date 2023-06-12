@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const {
-  getEnrichedFile,
+  getEnrichedFiles,
   getUploadedFile,
   getEnrichedFileByFilename,
   uploadFile,
@@ -14,7 +14,7 @@ const upload = require('../middlewares/multer');
  * Route that get list of enriched filename.
  * Auth required.
  */
-router.get('/enriched', checkAuth, getEnrichedFile);
+router.get('/enriched', checkAuth, getEnrichedFiles);
 
 /**
  * Route that get list of uploaded filename.

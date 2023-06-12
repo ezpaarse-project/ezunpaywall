@@ -2,7 +2,7 @@ const promiseWithTimeout = require('../ping');
 const { pingRedis } = require('../services/redis');
 
 /**
- * Controller to get config of apikey.
+ * Controller to get health of all services connected to apikey service.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
@@ -26,7 +26,7 @@ async function health(req, res, next) {
 }
 
 /**
- * Controller to get config of apikey.
+ *  Controller to get health of redis service.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.

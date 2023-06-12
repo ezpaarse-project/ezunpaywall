@@ -2,6 +2,13 @@ const promiseWithTimeout = require('../ping');
 const { pingRedis } = require('../services/redis');
 const { pingGraphql } = require('../services/graphql');
 
+/**
+ * Controller to get health of all services connected to apikey service.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function health(req, res, next) {
   const start = Date.now();
 
@@ -21,12 +28,26 @@ async function health(req, res, next) {
   return res.status(200).json({ ...result, elapsedTime: Date.now() - start, healthy });
 }
 
+/**
+ * Controller to get health of redis service.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function healthRedis(req, res, next) {
   const resultPing = await promiseWithTimeout(pingRedis(), 'redis');
 
   return res.status(200).json(resultPing);
 }
 
+/**
+ * Controller to get health of graphql service.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function healthGraphql(req, res, next) {
   const resultPing = await promiseWithTimeout(pingGraphql(), 'graphql');
 

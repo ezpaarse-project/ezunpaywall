@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { health, healthRedis } = require('../controllers/ping');
+const { health, healthRedis } = require('../controllers/health');
 
 /**
  * Route that give the name of service.
