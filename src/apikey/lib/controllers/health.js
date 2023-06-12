@@ -26,7 +26,7 @@ async function health(req, res, next) {
 }
 
 /**
- *  Controller to get health of redis service.
+ * Controller to get health of redis service.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.

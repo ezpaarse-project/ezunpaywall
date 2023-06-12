@@ -1,10 +1,10 @@
 const axios = require('axios');
 const config = require('config');
 
-const logger = require('../logger');
+const logger = require('./logger');
 
-const pingRedisWithClient = require('../services/redis');
-const pingElasticWithClient = require('../services/elastic');
+const pingRedisWithClient = require('./services/redis');
+const pingElasticWithClient = require('./services/elastic');
 
 const healthTimeout = config.get('healthTimeout');
 
@@ -136,7 +136,7 @@ async function ping(name, host) {
  * @returns {Promise<Object>} Sist of status of healthcheck with
  * name, time, optionnal error and healthy for each service.
  */
-async function pingAll() {
+async function healthAll() {
   const graphqlHost = config.get('graphqlHost');
   const healthGraphql = PromiseOnHealthWithTimeout(health('graphql', graphqlHost), 'graphql');
 
@@ -173,4 +173,4 @@ async function pingAll() {
   return result;
 }
 
-module.exports = pingAll;
+module.exports = healthAll;
