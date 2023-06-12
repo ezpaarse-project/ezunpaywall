@@ -7,18 +7,18 @@ const readline = require('readline');
 const path = require('path');
 const config = require('config');
 
-const logger = require('../logger');
+const logger = require('./logger');
 
 const {
   getState,
   updateStateInFile,
   fail,
-} = require('../models/state');
+} = require('./models/state');
 
-const { requestGraphql } = require('../services/graphql');
+const { requestGraphql } = require('./services/graphql');
 
-const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
-const enrichedDir = path.resolve(__dirname, '..', '..', 'data', 'enriched');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
+const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
 
 /**
  * Get graphql params to get all unpaywall attributes.

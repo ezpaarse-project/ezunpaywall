@@ -6,18 +6,18 @@ const Papa = require('papaparse');
 const path = require('path');
 const config = require('config');
 
-const logger = require('../logger');
+const logger = require('./logger');
 
 const {
   getState,
   updateStateInFile,
   fail,
-} = require('../models/state');
+} = require('./models/state');
 
-const { requestGraphql } = require('../services/graphql');
+const { requestGraphql } = require('./services/graphql');
 
-const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
-const enriched = path.resolve(__dirname, '..', '..', 'data', 'enriched');
+const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
+const enriched = path.resolve(__dirname, '..', 'data', 'enriched');
 
 /**
  * get graphql params to get all unpaywall attributes.

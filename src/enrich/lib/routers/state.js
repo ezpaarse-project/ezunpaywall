@@ -1,17 +1,12 @@
 const router = require('express').Router();
-const path = require('path');
-const joi = require('joi');
-const fs = require('fs-extra');
 
 const checkAuth = require('../middlewares/auth');
 
-const { getMostRecentFile } = require('../controllers/file');
+const validateLatest = require('../middlewares/latest');
+const validateFilename = require('../middlewares/filename');
+const upsertDirectoryOfUser = require('../middlewares/state');
 
-const {
-  getState,
-} = require('../models/state');
-
-const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
+const { getStates, getStateByFilename } = require('../controllers/state');
 
 /**
  * Route that give list of filename of state or the content of latest
@@ -19,82 +14,13 @@ const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  *
  * This route can take in query latest.
  */
-router.get('/states', checkAuth, async (req, res, next) => {
-  const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
-  if (error) return res.status(400).json({ message: error.details[0].message });
-
-  const apikey = req.get('x-api-key');
-
-  const latest = value;
-
-  let dirExist = false;
-  try {
-    dirExist = await fs.exists(path.resolve(statesDir, apikey));
-  } catch (err) {
-    return next({ message: err.message });
-  }
-
-  if (!dirExist) {
-    try {
-      await fs.mkdir(path.resolve(statesDir, apikey));
-    } catch (err) {
-      return next({ message: err.message });
-    }
-  }
-
-  if (latest) {
-    let latestFile;
-    try {
-      latestFile = await getMostRecentFile(path.resolve(statesDir, apikey));
-    } catch (err) {
-      return next({ message: err.message });
-    }
-    let state;
-    try {
-      state = await getState(latestFile?.filename, apikey);
-    } catch (err) {
-      return next({ message: err.message });
-    }
-    return res.status(200).json(state);
-  }
-  let states;
-
-  try {
-    states = await fs.readdir(path.resolve(statesDir, apikey));
-  } catch (err) {
-    return next({ message: err.message });
-  }
-
-  return res.status(200).json(states);
-});
+router.get('/states', checkAuth, validateLatest, upsertDirectoryOfUser, getStates);
 
 /**
  * Route that give the content of state.
  *
  * This route need a param which corresponds to the filename of state.
  */
-router.get('/states/:filename', checkAuth, async (req, res, next) => {
-  const { filename } = req.params;
-
-  const { errorParam } = joi.string().trim().required().validate(filename);
-  if (errorParam) return res.status(400).json({ message: errorParam.details[0].message });
-
-  const apikey = req.get('x-api-key');
-
-  const { errorHeader } = joi.string().trim().required().validate(apikey);
-  if (errorHeader) return res.status(400).json({ message: errorHeader.details[0].message });
-
-  if (!await fs.pathExists(path.resolve(statesDir, apikey, filename))) {
-    return res.status(404).json({ message: `File [${filename}] not found` });
-  }
-
-  let state;
-  try {
-    state = await getState(filename, apikey);
-  } catch (err) {
-    return next({ message: err.message });
-  }
-  return res.status(200).json(state);
-});
+router.get('/states/:filename', checkAuth, validateFilename, upsertDirectoryOfUser, getStateByFilename);
 
 module.exports = router;
