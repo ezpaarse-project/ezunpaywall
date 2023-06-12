@@ -1,7 +1,7 @@
 const joi = require('joi');
 
 /**
- * Joi middlewaire to check if config of job is correct.
+ * Joi middleware to check if config of job is correct.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.

@@ -6,7 +6,7 @@ const {
 } = require('../attributes');
 
 /**
- * Joi middlewaire to check if apikey is in params.
+ * Joi middleware to check if apikey is in params.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
@@ -23,7 +23,7 @@ async function validateApikey(req, res, next) {
 }
 
 /**
- * Joi middlewaire to check if apikey config in body matches the schema.
+ * Joi middleware to check if apikey config in body matches the schema.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
@@ -46,7 +46,7 @@ async function validateCreateApikey(req, res, next) {
 }
 
 /**
- * Joi middlewaire to check if apikey is in params and if apikey config in body matches the schema.
+ * Joi middleware to check if apikey is in params and if apikey config in body matches the schema.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
@@ -80,7 +80,7 @@ async function validateUpdateApiKey(req, res, next) {
 }
 
 /**
- * Joi middlewaire to check if apikeys config is in an array
+ * Joi middleware to check if apikeys config is in an array
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
