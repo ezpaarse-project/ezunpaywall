@@ -1,5 +1,12 @@
 const { getChangefiles } = require('../services/unpaywall');
 
+/**
+ * Controller to get list of changefiles on unpaywall.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function getChangefilesOfUnpaywall(req, res, next) {
   const interval = req.data;
 

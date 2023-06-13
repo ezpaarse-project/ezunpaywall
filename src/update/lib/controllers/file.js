@@ -8,6 +8,13 @@ const {
   deleteFile,
 } = require('../file');
 
+/**
+ * Controller to start list of files or latest file downloaded on update service.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function getFiles(req, res, next) {
   const latest = req.data;
 
@@ -24,11 +31,25 @@ async function getFiles(req, res, next) {
   return res.status(200).json(files);
 }
 
+/**
+ * Controller to upload a file with unpaywall data.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function uploadFile(req, res, next) {
   if (!req?.file) return next({ messsage: 'File not sent' });
   return res.status(202).json();
 }
 
+/**
+ * Controller to delete file that content unpaywall data.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function deleteFileInstalled(req, res, next) {
   const filename = req.data;
 

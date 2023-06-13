@@ -1,5 +1,12 @@
 const { getState } = require('../models/state');
 
+/**
+ * Controller to get the state of update.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 function getCurrentState(req, res, next) {
   let state = {};
   try {

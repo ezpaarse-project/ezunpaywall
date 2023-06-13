@@ -6,6 +6,13 @@ const { getReport } = require('../report');
 
 const reportsDir = path.resolve(__dirname, '..', '..', 'data', 'reports');
 
+/**
+ * Controller to get list of reports or latest report.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function getReports(req, res, next) {
   const latest = req.data;
 
@@ -41,6 +48,13 @@ async function getReports(req, res, next) {
   return res.status(200).json(reports);
 }
 
+/**
+ * Controller to get report by filename.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function getReportByFilename(req, res, next) {
   const filename = req.data;
 

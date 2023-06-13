@@ -10,6 +10,13 @@ const {
   insertChangefile,
 } = require('../job');
 
+/**
+ * Controller to start job that download and insert snapshot.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function downloadAndInsertSnapshotJob(req, res, next) {
   const index = req.data;
 
@@ -23,6 +30,13 @@ async function downloadAndInsertSnapshotJob(req, res, next) {
   return res.status(202).json();
 }
 
+/**
+ * Controller to start job that download ans insert changefiles on period.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function insertChangefilesOnPeriodJob(req, res, next) {
   const {
     startDate,
@@ -65,6 +79,13 @@ async function insertChangefilesOnPeriodJob(req, res, next) {
   return res.status(202).json();
 }
 
+/**
+ * Controller to start job that insert file already installed.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 async function insertChangefileJob(req, res, next) {
   const {
     filename, index, offset, limit,
