@@ -5,6 +5,13 @@ const {
   noChangefileMail,
 } = require('../mail');
 
+/**
+ * Controller to send contact mail.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 function sendMailContact(req, res, next) {
   const {
     email, subject, message,
@@ -33,6 +40,13 @@ function sendMailContact(req, res, next) {
   return res.status(202).json();
 }
 
+/**
+ * Controller to send a mail to inform that the update has started.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 function sendMailUpdateStarted(req, res, next) {
   const config = req.body;
 
@@ -41,6 +55,13 @@ function sendMailUpdateStarted(req, res, next) {
   return res.status(202).json();
 }
 
+/**
+ * Controller to send a mail with the report of update process.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 function sendMailUpdateReport(req, res, next) {
   const state = req.body;
 
@@ -49,6 +70,13 @@ function sendMailUpdateReport(req, res, next) {
   return res.status(202).json();
 }
 
+/**
+ * Controller to send a mail to inform that no changefiles are available.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
 function sendMailNoChangefile(req, res, next) {
   const { startDate, endDate } = req.body;
   // TODO test startDate, endDate
