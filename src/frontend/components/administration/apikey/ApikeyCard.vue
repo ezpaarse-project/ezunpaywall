@@ -84,10 +84,8 @@
     </v-list>
 
     <v-card-actions>
-      <v-btn color="orange" @click.stop="setUpdateDialogVisible(true)">
-        <v-icon color="white">
-          mdi-pencil
-        </v-icon>
+      <v-btn text color="orange" @click.stop="setUpdateDialogVisible(true)">
+        <span> {{ $t("edit") }} </span>
       </v-btn>
       <UpdateDialog
         v-model="updateDialogVisible"
@@ -97,10 +95,8 @@
         @updated="emitUpdated()"
       />
       <v-spacer />
-      <v-btn color="red" @click.stop="setDeleteDialogVisible(true)">
-        <v-icon color="white">
-          mdi-delete
-        </v-icon>
+      <v-btn color="red" text @click.stop="setDeleteDialogVisible(true)">
+        <span> {{ $t("delete") }} </span>
       </v-btn>
       <DeleteDialog
         v-model="deleteDialogVisible"

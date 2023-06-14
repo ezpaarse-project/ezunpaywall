@@ -229,6 +229,8 @@
     "dark": "Thème sombre",
     "light": "Thème clair"
   },
+  "edit": "Modifier",
+  "delete": "Supprimer",
   "download": "Télécharger",
   "copy": "Copier",
   "send": "Envoyer",

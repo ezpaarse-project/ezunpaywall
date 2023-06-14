@@ -230,6 +230,8 @@
     "dark": "Dark theme",
     "light": "Light theme"
   },
+  "edit": "Edit",
+  "delete": "Delete",
   "download": "Download",
   "copy": "Copy",
   "send": "Send",
