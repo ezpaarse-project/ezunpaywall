@@ -60,20 +60,14 @@ export default {
           }
         })
       } catch (e) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('administration.errorLogin')
-        )
+        this.$store.dispatch('snacks/error', this.$t('error.admininistration.login'))
         this.loading = false
         return
       }
       this.$store.commit('admin/setIsAdmin', true)
       this.$store.commit('admin/setPassword', this.password)
       this.loading = false
-      this.$store.dispatch(
-        'snacks/info',
-        this.$t('administration.loginSuccess')
-      )
+      this.$store.dispatch('snacks/info', this.$t('info.admininistration.login'))
     }
   }
 }

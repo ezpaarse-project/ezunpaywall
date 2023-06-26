@@ -168,11 +168,11 @@ export default {
           }
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('administration.apikey.errorCreate'))
+        this.$store.dispatch('snacks/error', this.$t('error.apikey.create'))
         this.loading = false
         return
       }
-      this.$store.dispatch('snacks/info', this.$t('administration.apikey.infoCreated'))
+      this.$store.dispatch('snacks/info', this.$t('info.apikey.created'))
       this.$emit('created')
       this.loading = false
       this.updateVisible(false)

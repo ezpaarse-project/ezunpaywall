@@ -224,7 +224,7 @@ export default {
       try {
         document.execCommand('copy')
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('graphql.errorCopyRequest'))
+        this.$store.dispatch('snacks/error', this.$t('error.graphql.copy'))
       }
       document.body.removeChild(textArea)
     },
@@ -235,10 +235,11 @@ export default {
         } else {
           this.unsecuredCopyToClipboard(this.query)
         }
-        this.$store.dispatch('snacks/info', this.$t('graphql.copyRequest'))
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('graphql.errorCopyRequest'))
+        this.$store.dispatch('snacks/error', this.$t('error.graphql.copyRequest'))
+        return
       }
+      this.$store.dispatch('snacks/info', this.$t('info.graphql.copyResult'))
     },
     async graphqlRequest () {
       this.loading = true
@@ -257,7 +258,7 @@ export default {
         })
         this.$vuetify.goTo('#graphqlResult')
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
+        this.$store.dispatch('snacks/error', this.$t('error.graphql.request'))
       }
 
       this.result = res?.data

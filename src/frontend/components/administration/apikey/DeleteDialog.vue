@@ -61,17 +61,11 @@ export default {
           }
         })
       } catch (e) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('administration.apikey.errorDelete')
-        )
+        this.$store.dispatch('snacks/error', this.$t('error.apikey.delete'))
         this.loading = false
         return
       }
-      this.$store.dispatch(
-        'snacks/info',
-        this.$t('administration.apikey.infoDeleted')
-      )
+      this.$store.dispatch('snacks/info', this.$t('info.apikey.deleted'))
       this.$emit('deleted')
       this.loading = false
       this.updateVisible(false)

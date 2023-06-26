@@ -91,7 +91,7 @@ export default {
           responseType: 'json'
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
+        this.$store.dispatch('snacks/error', this.$t('error.enrich.uploadFile'))
         return this.errored()
       }
       const id = upload.data
@@ -110,7 +110,7 @@ export default {
           responseType: 'json'
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('enrich.errorEnrich'))
+        this.$store.dispatch('snacks/error', this.$t('error.enrich.job'))
         return this.errored()
       }
     },
@@ -130,7 +130,7 @@ export default {
           })
           this.state = state?.data
         } catch (err) {
-          this.$store.dispatch('snacks/error', this.$t('enrich.errorState'))
+          this.$store.dispatch('snacks/error', this.$t('error.enrich.state'))
           return this.errored()
         }
         await new Promise(resolve => setTimeout(resolve, 1000))
@@ -179,7 +179,7 @@ export default {
           responseType: 'blob'
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('enrich.errorUpload'))
+        this.$store.dispatch('snacks/error', this.$t('error.enrich.download'))
         return this.errored()
       }
       this.forceFileDownload(download)

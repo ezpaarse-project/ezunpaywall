@@ -81,10 +81,7 @@ export default {
           url: '/reports'
         })
       } catch (err) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('reportHistory.reportsError')
-        )
+        this.$store.dispatch('snacks/error', this.$t('error.report.getAll'))
         this.loading = false
         return
       }
@@ -114,10 +111,7 @@ export default {
           url: `/reports/${filename}`
         })
       } catch (err) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('reportHistory.reportError')
-        )
+        this.$store.dispatch('snacks/error', this.$t('error.report.get'))
         return
       }
       return report.data

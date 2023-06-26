@@ -23,8 +23,6 @@
     "subject": "Subject",
     "content": "Message content",
     "sendNavigatorVersion": "Send my browser version",
-    "emailSent": "Your contact request has just been sent to the team.",
-    "failed": "Sending the contact form failed.",
     "requestInformation": "Information request",
     "bugReport": "Bug report",
     "requestApikey": "Request an API key",
@@ -53,13 +51,7 @@
     "end": "Enrichment complete",
     "readLines": "Read lines",
     "enrichedLines": "Enriched lines",
-    "duration": "Processing time (in seconds)",
-    "error": "An error occured",
-    "errorManyFile": "The number of files allowed is 1",
-    "errorUploadFile": "only .csv and. jsonl files are allowed",
-    "errorUpload": "Cannot upload file",
-    "errorEnrich": "Cannot enrich file",
-    "errorState": "Cannot get state of enrichment"
+    "duration": "Processing time (in seconds)"
   },
   "graphql": {
     "title": "Graphql",
@@ -73,25 +65,17 @@
     "request": "GraphQL request",
     "start": "Launch request",
     "result": "Result",
-    "linkAPI": "See on the API",
-    "copyRequest": "Copy GraphQL request",
-    "copyResult": "Copy result",
-    "errorRequest": "Cannot do GraphQL request",
-    "errorCopyRequest": "Error while saving GraphQL request",
-    "errorCopyResult": "Error while to saving response"
+    "linkAPI": "See on the API"
   },
   "administration": {
     "title": "Administration",
     "loginForm": "Login form",
     "login": "Login",
     "logout": "Logout",
-    "loginSuccess": "Successful connection",
-    "errorLogin": "Incorrect password",
     "password": "Password",
     "health": {
       "title": "Services status",
-      "noHealth": "No service status",
-      "errorHealth": "Cannot get healths"
+      "noHealth": "No service status"
     },
     "apikey": {
       "title": "API keys",
@@ -109,25 +93,13 @@
       "notAllowed": "Not Allowed",
       "import": "Import API keys in JSON format",
       "export": "Export API keys in JSON format",
-      "infoImported": "API keys have been successfully imported",
-      "errorImported": "Cannot import API keys",
-      "copyAPIkey": "API keys have been copied",
-      "errorCopyAPIkey": "Cannot copy API keys",
       "create": "Creation of a new API key",
-      "infoCreated": "The API key has been created",
-      "errorCreate": "The API key could not be created",
       "update": "Update API key",
-      "infoUpdate": "The API key has been updated",
-      "errorUpdate": "The API key could not be updated",
       "delete": "Deleting the API key",
-      "deleteMessage": "Are you sure you want to delete this API key (irreversible action)",
-      "infoDeleted": "The API key has been deleted",
-      "errorDelete": "Cannot delete apikey"
+      "deleteMessage": "Are you sure you want to delete this API key (irreversible action)"
     },
     "update" : {
       "title": "Launch an update",
-      "infoUpdate": "The update process has started",
-      "errorUpdate": "Cannot start update process",
       "future": "The date is after today",
       "interval": "Interval",
       "startDate": "Start date",
@@ -188,9 +160,7 @@
   },
   "status": {
     "inUpdate": "Update in progress: {latestTaskName} - {percent}%",
-    "noInUpdate": "The data is up to date",
-    "errorState": "Cannot get state of enrichment",
-    "errorStatus": "Cannot get state of enrichment"
+    "noInUpdate": "The data is up to date"
   },
   "state": {
     "createdAt": "Created at",
@@ -221,14 +191,84 @@
     "source": "The update files come from unpaywall.org",
     "goTo": "See the registry",
     "noReport": "No report availables",
-    "reportsError": "Cannot get update reports",
-    "reportError": "Cannot get update report",
     "insertedDocs": "New lines",
     "updatedDocs": "Updated lines"
   },
   "theme": {
     "dark": "Dark theme",
     "light": "Light theme"
+  },
+  "error" : {
+    "error": "An error occured",
+    "enrich": {
+      "manyFile": "The number of files allowed is 1",
+      "typeOfFile": "only .csv and. jsonl files are allowed",
+      "uploadFile": "Cannot upload file",
+      "download": "Cannot download the enriched file",
+      "job": "Cannot enrich file"
+    },
+    "graphql": {
+      "request": "Cannot do GraphQL request",
+      "copyRequest": "Error while saving GraphQL request",
+      "copyResult": "Error while to saving response"
+    },
+    "apikey": {
+      "import": "Cannot import API keys",
+      "copy": "Cannot copy API keys",
+      "get": "Cannot get API keys",
+      "parse": "Cannot parse the config of API key to JSON",
+      "create": "The API key could not be created",
+      "update": "The API key could not be updated",
+      "delete": "Cannot delete apikey"
+    },
+    "status": {
+      "state": "Cannot get state of enrichment",
+      "status": "Cannot get state of enrichment"
+    },
+    "update": {
+      "start": "Cannot start update process"
+    },
+    "cron": {
+      "get": "Cannot get config of update cron",
+      "update": "Cannot update config of update cron",
+      "start": "Cannot start update cron",
+      "stop": "Cannot stop update cron"
+    },
+    "report": {
+      "getAll": "Cannot get update reports",
+      "get": "Cannot get update report"
+    },
+    "health": {
+      "get": "Cannot get healths"
+    },
+    "admininistration": {
+      "invalidPassword": "Incorrect password"
+    },
+    "contact": {
+      "failed": "Sending the contact form failed."
+    }
+  },
+  "info" : {
+    "apikey": {
+      "imported": "API keys have been successfully imported",
+      "created": "The API key has been created",
+      "update": "The API key has been updated",
+      "deleted": "The API key has been deleted",
+      "copied": "API keys have been copied"
+    },
+    "update" : {
+      "started": "The update process has started"
+    },
+    "graphql": {
+      "copyResult": "Copy result",
+      "copyRequest": "Copy GraphQL request"
+    },
+    "admininistration": {
+      "login": "Successful connection"
+    },
+    "contact": {
+      "mailSent": "Your request has been sent to the team."
+    }
   },
   "edit": "Edit",
   "delete": "Delete",

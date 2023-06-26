@@ -219,7 +219,7 @@ export default {
           }
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('graphql.errorRequest'))
+        this.$store.dispatch('snacks/error', this.$t('error.graphql.request'))
       }
       if (res?.data?.data?.DailyMetrics) {
         this.metrics = res?.data?.data?.DailyMetrics

@@ -62,14 +62,7 @@ export default {
       textArea.setAttribute('display', 'none')
       textArea.focus()
       textArea.select()
-      try {
-        document.execCommand('copy')
-      } catch (err) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('apikey.errorCopyRequest')
-        )
-      }
+      document.execCommand('copy')
     },
     copyText () {
       try {
@@ -78,13 +71,12 @@ export default {
         } else {
           this.unsecuredCopyToClipboard(JSON.stringify(this.apikeys, null, 2))
         }
-        this.$store.dispatch('snacks/info', this.$t('administration.apikey.copyAPIkey'))
+        this.$store.dispatch('snacks/info', this.$t('info.apikey.copied'))
       } catch (err) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('apikey.errorCopyRequest')
-        )
+        this.$store.dispatch('snacks/error', this.$t('error.apikey.copy'))
+        return
       }
+      this.$store.dispatch('snacks/info', this.$t('info.apikey.copied'))
     },
     updateVisible (visible) {
       this.$emit('input', visible)

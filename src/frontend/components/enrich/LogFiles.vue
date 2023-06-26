@@ -120,11 +120,11 @@ export default {
       Array.from(this.$refs.filesLoaded.files).forEach((file) => {
         const ext = file.name.split('.').pop()
         if (!['csv', 'jsonl'].includes(ext)) {
-          this.$store.dispatch('snacks/error', this.$t('enrich.errorUploadFile'))
+          this.$store.dispatch('snacks/error', this.$t('error.enrich.uploadFile'))
           return
         }
         if (this.files.length >= 1) {
-          this.$store.dispatch('snacks/error', this.$t('enrich.errorManyFile'))
+          this.$store.dispatch('snacks/error', this.$t('error.enrich.manyFile'))
           return
         }
         this.$store.commit('enrich/setFiles', [{ id: this.fileId, file }])

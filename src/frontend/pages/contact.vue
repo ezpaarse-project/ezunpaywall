@@ -122,7 +122,7 @@ export default {
             subject: this.subject?.text,
             message: this.message
           })
-          this.$store.dispatch('snacks/success', this.$t('contact.emailSent'))
+          this.$store.dispatch('snacks/success', this.$t('info.contact.mailSent'))
           this.email = ''
           this.subject = {}
           this.message = ''
@@ -130,7 +130,7 @@ export default {
           this.$refs.form.resetValidation()
           this.loading = false
         } catch (e) {
-          this.$store.dispatch('snacks/error', this.$t('contact.failed'))
+          this.$store.dispatch('snacks/error', this.$t('error.contact.failed'))
           this.loading = false
         }
       }

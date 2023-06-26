@@ -9,24 +9,7 @@
       </v-toolbar>
       <v-card-text>
         <v-container fluid>
-          <v-form id="form" v-model="valid" @submit.prevent="startUpdate()">
-            <v-select
-              v-model="interval"
-              class="mt-4"
-              :items="intervals"
-              :label="$t('administration.update.interval')"
-            />
-            <v-text-field
-              v-model="startDate"
-              :label="$t('administration.update.startDate')"
-              :rules="[dateFormatRule, dateIsFutureRule]"
-              autofocus
-            />
-            <v-text-field
-              v-model="endDate"
-              :label="$t('administration.update.endDate')"
-              :rules="[dateFormatRule, dateIsFutureRule]"
-            />
+          <v-form id="form">
           </v-form>
         </v-container>
       </v-card-text>
@@ -61,18 +44,14 @@ export default {
     dialog: {
       type: Boolean,
       default: false
+    },
+    config: {
+      type: Object,
+      default: () => {}
     }
   },
   data () {
     return {
-      valid: true,
-      loading: false,
-      interval: 'day',
-      intervals: ['day', 'week'],
-      startDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
-      endDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
-      dateFormatRule: value => this.$dateFns.isMatch(value, 'yyyy-MM-dd') || 'YYYY-MM-DD',
-      dateIsFutureRule: value => Date.now() > new Date(value) || this.$t('administration.update.future')
     }
   },
   computed: {
@@ -86,28 +65,23 @@ export default {
     }
   },
   methods: {
-    async startUpdate () {
+    async updateCron () {
       this.loading = true
       try {
         await this.$update({
           method: 'POST',
-          url: '/job/period',
-          data: {
-            interval: this.interval,
-            startDate: this.startDate,
-            endDate: this.endDate
-          },
+          url: '/cron/patch',
           headers: {
             'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
       } catch (e) {
-        this.$store.dispatch('snacks/error', this.$t('error.update.start'))
+        this.$store.dispatch('snacks/error', this.$t('error.cron.update'))
         this.loading = false
         return
       }
       this.loading = false
-      this.$store.dispatch('snacks/info', this.$t('info.update.started'))
+      this.$store.dispatch('snacks/info', this.$t('info.cron.updated'))
       this.closeDialog()
     },
     closeDialog () {

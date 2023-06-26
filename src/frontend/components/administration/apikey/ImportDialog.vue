@@ -53,7 +53,7 @@ export default {
       try {
         parsedApikeys = JSON.parse(this.apikeys)
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('administration.apikey.errorParse'))
+        this.$store.dispatch('snacks/error', this.$t('error..apikey.parse'))
         return
       }
 
@@ -69,11 +69,11 @@ export default {
           }
         })
       } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('administration.apikey.errorImported'))
+        this.$store.dispatch('snacks/error', this.$t('error.apikey.import'))
         this.loading = false
         return
       }
-      this.$store.dispatch('snacks/info', this.$t('apikey.infoImported'))
+      this.$store.dispatch('snacks/info', this.$t('info.apikey.imported'))
       this.$emit('imported')
       this.loading = false
       this.updateVisible(false)

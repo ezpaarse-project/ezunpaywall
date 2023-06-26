@@ -191,11 +191,11 @@ export default {
           }
         })
       } catch (e) {
-        this.$store.dispatch('snacks/error', this.$t('administration.apikey.errorUpdate'))
+        this.$store.dispatch('snacks/error', this.$t('error.apikey.update'))
         this.loading = false
         return
       }
-      this.$store.dispatch('snacks/info', this.$t('administration.apikey.infoUpdate'))
+      this.$store.dispatch('snacks/info', this.$t('info.apikey.updated'))
       this.$emit('updated')
       this.loading = false
       this.updateVisible(false)

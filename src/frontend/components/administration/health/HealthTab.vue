@@ -65,10 +65,7 @@ export default {
       try {
         res = await this.$health.get('/health')
       } catch (e) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('administration.health.errorHealth')
-        )
+        this.$store.dispatch('snacks/error', this.$t('error.health.get'))
         this.loading = false
         return
       }
