@@ -5,13 +5,19 @@
         {{ $t("administration.health.title") }}
       </v-toolbar-title>
       <v-spacer />
-      <v-btn
-        icon
-        :disabled="loading"
-        @click.stop="getHealths()"
-      >
-        <v-icon>mdi-reload</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template #activator="{ on }">
+          <v-btn
+            icon
+            :disabled="loading"
+            @click.stop="getHealths()"
+            v-on="on"
+          >
+            <v-icon>mdi-reload</v-icon>
+          </v-btn>
+        </template>
+        {{ $t("administration.health.reload") }}
+      </v-tooltip>
     </v-toolbar>
 
     <v-row v-if="loading" align="center" justify="center" class="ma-2">

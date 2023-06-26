@@ -16,6 +16,7 @@
         <v-spacer />
         <v-btn
           text
+          class="red--text"
           @click.stop="closeDialog()"
         >
           {{ $t('close') }}

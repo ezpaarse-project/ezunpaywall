@@ -75,10 +75,12 @@
     "password": "Password",
     "health": {
       "title": "Services status",
+      "reload": "Reload healths",
       "noHealth": "No service status"
     },
     "apikey": {
       "title": "API keys",
+      "reload": "Reload API keys",
       "noApikeys": "no API keys",
       "name": "Name",
       "ownerValue": "Owner: {owner}",
@@ -104,6 +106,13 @@
       "interval": "Interval",
       "startDate": "Start date",
       "endDate": "End date"
+    },
+    "cron": {
+      "title": "Config of the cron update process for unpaywall data",
+      "interval": "Interval",
+      "schedule": "Schedule (cron format)",
+      "index": "Elastic index",
+      "active": "Active"
     }
   },
   "unpaywallArgs": {
@@ -188,6 +197,7 @@
   "reportHistory": {
     "title": "Last updates",
     "reloadReports": "Reload reports",
+    "reload": "Reload update history",
     "source": "The update files come from unpaywall.org",
     "goTo": "See the registry",
     "noReport": "No report availables",
@@ -198,8 +208,8 @@
     "dark": "Dark theme",
     "light": "Light theme"
   },
-  "error" : {
-    "error": "An error occured",
+  "error": {
+    "default": "An error occured",
     "enrich": {
       "manyFile": "The number of files allowed is 1",
       "typeOfFile": "only .csv and. jsonl files are allowed",
@@ -268,6 +278,11 @@
     },
     "contact": {
       "mailSent": "Your request has been sent to the team."
+    },
+    "cron": {
+      "updated": "The update cron has beed updated",
+      "activated": "The update cron has beed activated",
+      "stoped": "The update cron has beed stoped"
     }
   },
   "edit": "Edit",

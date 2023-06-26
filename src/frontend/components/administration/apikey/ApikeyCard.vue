@@ -83,8 +83,10 @@
       </v-chip>
     </v-list>
 
+    <v-divider class="mx-2" />
+
     <v-card-actions>
-      <v-btn text color="orange" @click.stop="setUpdateDialogVisible(true)">
+      <v-btn text @click.stop="setUpdateDialogVisible(true)">
         <span> {{ $t("edit") }} </span>
       </v-btn>
       <UpdateDialog
@@ -95,7 +97,7 @@
         @updated="emitUpdated()"
       />
       <v-spacer />
-      <v-btn color="red" text @click.stop="setDeleteDialogVisible(true)">
+      <v-btn class="red--text" text @click.stop="setDeleteDialogVisible(true)">
         <span> {{ $t("delete") }} </span>
       </v-btn>
       <DeleteDialog

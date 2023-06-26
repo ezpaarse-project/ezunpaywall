@@ -24,7 +24,7 @@
       <v-icon v-else size="70" color="green darken-2">
         mdi-check
       </v-icon>
-      <div v-if="error" v-text="$t('enrich.error')" />
+      <div v-if="error" v-text="$t('error.enrich.job')" />
       <div v-else v-text="$t('enrich.end')" />
     </v-container>
     <v-container>

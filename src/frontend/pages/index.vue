@@ -18,15 +18,10 @@
       </v-toolbar>
       <v-card-title> {{ $t('home.globalMetrics') }} </v-card-title>
       <v-card-text>
-        <v-menu
+        <v-tooltip
           v-for="chip in metricsGlobalMetricsChips"
           :key="chip.name"
-          v-model="chip.help"
-          offset-y
           bottom
-          right
-          transition="scale-transition"
-          origin="top left"
         >
           <template #activator="{ on }">
             <v-chip
@@ -38,37 +33,18 @@
               {{ $t(chip.title) }} : {{ chip.value }}
             </v-chip>
           </template>
-
-          <v-card class="text-justify">
-            <v-card-text> {{ $t(chip.text) }} </v-card-text>
-
-            <v-card-actions>
-              <v-spacer />
-              <v-btn
-                class="body-2"
-                text
-                @click="chip.help = false"
-              >
-                {{ $t('close') }}
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
+          {{ $t(chip.text) }}
+        </v-tooltip>
       </v-card-text>
 
       <v-divider />
 
       <v-card-title> {{ $t('home.openAccessStatus') }} </v-card-title>
       <v-card-text>
-        <v-menu
+        <v-tooltip
           v-for="chip in metricsOAStatusChips"
           :key="chip.name"
-          v-model="chip.help"
-          offset-y
           bottom
-          right
-          transition="scale-transition"
-          origin="top left"
         >
           <template #activator="{ on }">
             <v-chip
@@ -83,22 +59,8 @@
               {{ chip.name }} : {{ chip.value }}
             </v-chip>
           </template>
-
-          <v-card class="text-justify">
-            <v-card-text> {{ $t(chip.text) }} </v-card-text>
-
-            <v-card-actions>
-              <v-spacer />
-              <v-btn
-                class="body-2"
-                text
-                @click="chip.help = false"
-              >
-                {{ $t('close') }}
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
+          {{ $t(chip.text) }}
+        </v-tooltip>
       </v-card-text>
     </v-card>
   </section>
@@ -144,7 +106,6 @@ export default {
           color: '#FFC000',
           icon: 'mdi-lock-open',
           text: 'home.goldOAHelp',
-          help: false,
           value: this.metrics.goldOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
         },
         {
@@ -152,7 +113,6 @@ export default {
           color: '#DD7931',
           icon: 'mdi-lock-open',
           text: 'home.hybridOAHelp',
-          help: false,
           value: this.metrics.hybridOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
         },
         {
@@ -160,7 +120,6 @@ export default {
           color: '#DD7931',
           icon: 'mdi-lock-open',
           text: 'home.bronzeOAHelp',
-          help: false,
           value: this.metrics.bronzeOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
         },
         {
@@ -168,7 +127,6 @@ export default {
           color: '#4CAF50',
           icon: 'mdi-lock-open',
           text: 'home.greenOAHelp',
-          help: false,
           value: this.metrics.greenOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
         },
         {
@@ -176,7 +134,6 @@ export default {
           color: '#BBBBBB',
           icon: 'mdi-lock',
           text: 'home.closedOAHelp',
-          help: false,
           value: this.metrics.closedOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
         }
       ]
@@ -188,7 +145,6 @@ export default {
           title: 'home.referencedResources',
           color: 'grey darken-2',
           text: 'home.referencedRessourceHelp',
-          help: false,
           value: this.metrics.doi.toLocaleString(this.$i18n.locale, { useGrouping: true })
         },
         {
@@ -196,7 +152,6 @@ export default {
           title: 'home.openAccess',
           color: 'grey darken-2',
           text: 'home.openAccessHelp',
-          help: false,
           value: this.metrics.isOA.toLocaleString(this.$i18n.locale, { useGrouping: true })
         }
       ]

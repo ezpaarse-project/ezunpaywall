@@ -3,33 +3,52 @@
     <v-toolbar color="secondary" dark flat dense>
       <v-toolbar-title> {{ $t('reportHistory.title') }} </v-toolbar-title>
       <v-spacer />
-      <v-btn
-        icon
-        @click.stop="setUpdateCronDialogVisible(true)"
-      >
-        <v-icon>mdi-update</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template #activator="{ on }">
+          <v-btn
+            icon
+            @click.stop="setUpdateCronDialogVisible(true)"
+            v-on="on"
+          >
+            <v-icon>mdi-update</v-icon>
+          </v-btn>
+        </template>
+        {{ $t("administration.cron.title") }}
+      </v-tooltip>
       <UpdateCronDialog
         :dialog="updateCronDialogVisible"
+        :config="cronConfig"
         @closed="setUpdateCronDialogVisible(false)"
       />
-      <v-btn
-        icon
-        @click.stop="setUpdateProcessDialogVisible(true)"
-      >
-        <v-icon>mdi-download-circle</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template #activator="{ on }">
+          <v-btn
+            icon
+            @click.stop="setUpdateProcessDialogVisible(true)"
+            v-on="on"
+          >
+            <v-icon>mdi-download-circle</v-icon>
+          </v-btn>
+        </template>
+        {{ $t("administration.update.title") }}
+      </v-tooltip>
       <UpdateProcessDialog
         :dialog="updateProcessDialogVisible"
         @closed="setUpdateProcessDialogVisible(false)"
       />
-      <v-btn
-        icon
-        :disabled="loading"
-        @click.stop="getReports()"
-      >
-        <v-icon>mdi-reload</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template #activator="{ on }">
+          <v-btn
+            icon
+            :disabled="loading"
+            @click.stop="getReports()"
+            v-on="on"
+          >
+            <v-icon>mdi-reload</v-icon>
+          </v-btn>
+        </template>
+        {{ $t("reportHistory.reload") }}
+      </v-tooltip>
     </v-toolbar>
     <v-row
       v-if="loading"
@@ -63,14 +82,14 @@ export default {
   data () {
     return {
       loading: false,
+      cronConfig: {},
       updateCronDialogVisible: false,
       updateProcessDialogVisible: false,
-      cronConfig: {},
       reports: []
     }
   },
-  mounted () {
-    this.getReports()
+  async mounted () {
+    await this.getReports()
   },
   methods: {
     async getReports () {
@@ -121,21 +140,6 @@ export default {
       }
       this.loading = false
       return report?.data
-    },
-    async getUpdateCronConfig () {
-      let cronConfig
-      try {
-        cronConfig = await this.$update({
-          method: 'GET',
-          url: '/cron'
-        })
-      } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error.cron.get'))
-        this.loading = false
-        return
-      }
-      this.loading = false
-      this.cronConfig = cronConfig?.data
     },
     setUpdateProcessDialogVisible (value) {
       this.updateProcessDialogVisible = value

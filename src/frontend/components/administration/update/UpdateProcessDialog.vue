@@ -56,7 +56,7 @@
 
 <script>
 export default {
-  name: 'UpdateDialog',
+  name: 'UpdateProcessDialog',
   props: {
     dialog: {
       type: Boolean,
@@ -101,7 +101,7 @@ export default {
             'X-API-KEY': this.$store.getters['admin/getPassword']
           }
         })
-      } catch (e) {
+      } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('error.update.start'))
         this.loading = false
         return

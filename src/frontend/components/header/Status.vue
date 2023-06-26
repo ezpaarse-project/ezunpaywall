@@ -1,11 +1,5 @@
 <template>
-  <v-menu
-    v-model="isShowed"
-    bottom
-    offset-y
-    :close-on-content-click="false"
-    :nudge-width="200"
-  >
+  <v-tooltip bottom>
     <template #activator="{ on }">
       <v-btn icon v-on="on">
         <v-progress-circular
@@ -20,30 +14,19 @@
         </v-icon>
       </v-btn>
     </template>
-
-    <v-card class="text-justify">
-      <v-card-text v-if="inUpdate">
-        {{ $t("status.inUpdate", { latestTaskName, percent } ) }}
-      </v-card-text>
-      <v-card-text v-else>
-        {{ $t("status.noInUpdate") }}
-      </v-card-text>
-
-      <v-card-actions>
-        <v-spacer />
-        <v-btn class="body-2" text @click="isShowed = false">
-          {{ $t("close") }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-menu>
+    <label v-if="inUpdate">
+      {{ $t("status.inUpdate", { latestTaskName, percent } ) }}
+    </label>
+    <label v-else>
+      {{ $t("status.noInUpdate") }}
+    </label>
+  </v-tooltip>
 </template>
 
 <script>
 export default {
   data: () => {
     return {
-      isShowed: false,
       timeout: '',
       inUpdate: false,
       state: null

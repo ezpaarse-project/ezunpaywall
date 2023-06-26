@@ -75,10 +75,12 @@
     "password": "Mot de passe",
     "health": {
       "title": "État des services",
+      "reload": "Recharger les états de santé",
       "noHealth": "Aucun état de service"
     },
     "apikey": {
       "title": "Clés d'API",
+      "reload": "Recharger les clés d'API",
       "noApikeys": "Pas de clés d'API",
       "name": "Nom",
       "ownerValue": "Propriétaire : {owner}",
@@ -101,9 +103,16 @@
     "update" : {
       "title": "Lancement d'une mise à jour",
       "future": "La date est après aujourd'hui",
-      "interval": "Interval",
+      "interval": "Intervalle",
       "startDate": "Date de début",
       "endDate": "Date de fin"
+    },
+    "cron": {
+      "title": "Config de la cron de mise à jour des données Unpaywall",
+      "interval": "Intervalle",
+      "schedule": "Periode (format de cron)",
+      "index": "Index elastic",
+      "active": "Active"
     }
   },
   "unpaywallArgs": {
@@ -188,6 +197,7 @@
   "reportHistory": {
     "title": "Dernières mises à jour",
     "reloadReports": "Recharger les rapports",
+    "reload": "Recharger l'historique des mises à jour",
     "source": "Les fichiers de mises à jours proviennent d'unpaywall.org",
     "goTo": "Voir la liste",
     "noReport": "Pas de rapport disponible",
@@ -198,8 +208,8 @@
     "dark": "Thème sombre",
     "light": "Thème clair"
   },
-  "error" : {
-    "error": "Une erreur est survenue",
+  "error": {
+    "default": "Une erreur est survenue",
     "enrich": {
       "manyFile": "Le nombre de fichier autorisé est de 1",
       "typeOfFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
@@ -268,6 +278,11 @@
     },
     "contact": {
       "mailSent": "Votre demande vient d'être envoyée à l'équipe."
+    },
+    "cron": {
+      "updated": "La cron de mise à jour a été mise à jour",
+      "activated": "La cron de mise à jour a été activé",
+      "stoped": "La cron de mise à jour a été arrêter"
     }
   },
   "edit": "Modifier",
