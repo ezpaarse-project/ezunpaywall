@@ -37,6 +37,7 @@
 import Report from '~/components/enrich/Report.vue'
 
 export default {
+  name: 'EnrichProcessTab',
   components: {
     Report
   },
@@ -45,6 +46,7 @@ export default {
     files: [],
     apikey: 'demo',
     attributes: ['doi'],
+    separator: ',',
     type: '',
     state: {},
     stepTitle: '',
@@ -64,6 +66,7 @@ export default {
       this.attributes = this.$store.getters['enrich/getAttributes']
       this.type = this.$store.getters['enrich/getType']
       this.apikey = this.$store.getters['enrich/getApikey']
+      this.separator = this.$store.getters['enrich/getEnrichedFileSeparator']
       if (this.type === 'csv') {
         this.attributes = this.attributes.filter(e => !e.includes('oa_locations'))
       }
@@ -151,7 +154,7 @@ export default {
         const data = {
           type: this.type,
           args: graphqlAttributes,
-          separator: ','
+          separator: this.separator
         }
         await this.startEnrichJob(id, data)
       }

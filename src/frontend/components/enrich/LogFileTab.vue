@@ -46,6 +46,7 @@
 import LogFiles from '~/components/enrich/LogFiles.vue'
 
 export default {
+  name: 'EnrichLogFileTab',
   components: {
     LogFiles
   },

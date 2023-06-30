@@ -27,6 +27,7 @@
 
 <script>
 export default {
+  name: 'EnrichMetric',
   props: {
     label: {
       type: String,

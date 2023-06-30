@@ -4,7 +4,9 @@ export default {
     files: [],
     type: '',
     apikey: 'demo',
-    attributes: []
+    attributes: [],
+    fileSeparator: ',',
+    enrichedFileSeparator: ','
   }),
   getters: {
     getFiles (state) {
@@ -18,6 +20,12 @@ export default {
     },
     getAttributes (state) {
       return state.attributes
+    },
+    getFileSeparator (state) {
+      return state.fileSeparator
+    },
+    getEnrichedFileSeparator (state) {
+      return state.enrichedFileSeparator
     }
   },
   mutations: {
@@ -32,6 +40,12 @@ export default {
     },
     setAttributes (state, value) {
       state.attributes = value
+    },
+    setFileSeparator (state, value) {
+      state.fileSeparator = value
+    },
+    setEnrichedFileSeparator (state, value) {
+      state.enrichedFileSeparator = value
     }
   }
 }

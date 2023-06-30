@@ -71,7 +71,7 @@ import NoData from '~/components/NoData.vue'
 import ReportsDataTable from '~/components/report/ReportsDataTable.vue'
 
 export default {
-  name: 'WeekHistory',
+  name: 'ReportWeekHistory',
   components: {
     UpdateProcessDialog,
     UpdateCronDialog,

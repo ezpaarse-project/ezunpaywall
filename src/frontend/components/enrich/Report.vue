@@ -23,6 +23,7 @@
 import Metric from '~/components/enrich/Metric.vue'
 
 export default {
+  name: 'EnrichReport',
   components: {
     Metric
   },

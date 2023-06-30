@@ -20,6 +20,8 @@
       </v-chip>
     </v-row>
 
+    <SelectSeparator />
+
     <v-toolbar class="secondary" dark dense flat>
       <v-toolbar-title>
         {{ $t("enrich.unpaywallAttributes") }}
@@ -66,10 +68,13 @@
 
 <script>
 import SettingsAttributes from '~/components/unpaywallArgs/SettingsAttributes.vue'
+import SelectSeparator from '~/components/enrich/SelectSeparator.vue'
 
 export default {
+  name: 'EnrichSelectAttributesTab',
   components: {
-    SettingsAttributes
+    SettingsAttributes,
+    SelectSeparator
   },
   data: () => {
     return {

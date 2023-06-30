@@ -67,6 +67,7 @@
 <script>
 import prettyBytes from 'pretty-bytes'
 export default {
+  name: 'EnrichLogFiles',
   filters: {
     prettyBytes (val) {
       let size = parseInt(val, 10)
