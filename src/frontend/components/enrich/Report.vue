@@ -34,7 +34,7 @@ export default {
     },
     time: {
       type: Number,
-      default: () => (0)
+      default: 0
     }
   },
   computed: {
