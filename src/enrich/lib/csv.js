@@ -210,7 +210,7 @@ async function writeHeaderCSV(headers, separator, filePath) {
 }
 
 /**
- * Do a graphql request to enrich data and write it on enriched File.
+ * Do a graphql request to enrich data and write it on enriched file.
  *
  * @param {Array<String>} data - Data that will be enrich.
  * @param {Object} enrichConfig - Config of enrich.
