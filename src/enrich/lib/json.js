@@ -10,7 +10,6 @@ const config = require('config');
 const logger = require('./logger');
 
 const {
-  getState,
   updateStateInFile,
   fail,
 } = require('./models/state');
@@ -68,7 +67,7 @@ function addDOItoGraphqlRequest(args) {
  * @returns {{ lineEnriched: number, enrichedArray: Array<Object> }} Number of lines
  * enriched and enriched data.
  */
-const enrichArray = (data, response) => {
+function enrichArray(data, response) {
   const enrichedArray = data;
   let lineEnriched = 0;
 
@@ -97,27 +96,63 @@ const enrichArray = (data, response) => {
   });
 
   return { lineEnriched, enrichedArray };
-};
+}
 
 /**
  * Write enriched data in enriched file.
  *
  * @param {Array<Object>} data - Array of line enriched.
  * @param {string} enrichedFile - Filepath of enriched file.
- * @param {string} stateName - State filename.
- * @param {string} apikey //TODO
+ * @param {string} state - State of job.
  *
  * @returns {Promise<void>}
  */
-async function writeInFileJSON(data, enrichedFile, stateName, apikey) {
+async function writeInFileJSON(data, enrichedFile, state) {
   const stringTab = `${data.map((el) => JSON.stringify(el)).join('\n')}\n`;
   try {
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
     logger.error(`[job jsonl] Cannot write [${stringTab}] in [${enrichedFile}]`, err);
-    await fail(stateName, apikey);
+    await fail(state);
     throw err;
   }
+}
+
+/**
+ * Do a graphql request to enrich data and write it on enriched File.
+ *
+ * @param {Array<String>} data - Data that will be enrich.
+ * @param {Object} enrichConfig - Config of enrich.
+ * @param {Object} state - State of job.
+ *
+ * @returns {Promise<void>}
+ */
+async function enrichInFile(data, enrichConfig, state) {
+  const {
+    enrichedFile,
+    args,
+    index,
+    loaded,
+  } = enrichConfig;
+
+  let response;
+  try {
+    response = await requestGraphql(data, args, index, state.apikey);
+  } catch (err) {
+    logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
+    await fail(state);
+    return;
+  }
+  // enrichment
+  const enrichedData = enrichArray(data, response);
+  const { enrichedArray } = enrichedData;
+  await writeInFileJSON(enrichedArray, enrichedFile, state);
+
+  state.linesRead += data?.length;
+  state.enrichedLines += response?.length || 0;
+  state.loaded += loaded;
+
+  await updateStateInFile(state);
 }
 
 /**
@@ -132,20 +167,20 @@ async function writeInFileJSON(data, enrichedFile, stateName, apikey) {
  * @param {string} id - Id of process.
  * @param {string} index - Index name of mapping.
  * @param {string} args - Attributes will be add.
- * @param {string} apikey - Apikey of user.
+ * @param {string} state - State of job.
  *
  * @returns {Promise<void>}
  */
-async function processEnrichJSON(id, index, args, apikey) {
-  const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, `${id}.jsonl`));
+async function processEnrichJSON(id, index, args, state) {
+  const enrichedFilename = `${id}.jsonl`;
+  const enrichedFile = path.resolve(enrichedDir, state.apikey, enrichedFilename);
+  const uploadFile = path.resolve(uploadDir, state.apikey, `${id}.jsonl`);
+
+  const readStream = fs.createReadStream(uploadFile);
   if (!args) {
     args = graphqlConfigWithAllAttributes;
   }
   args = addDOItoGraphqlRequest(args);
-  const stateName = `${id}.json`;
-  const state = await getState(stateName, apikey);
-  const file = `${id}.jsonl`;
-  const enrichedFile = path.resolve(enrichedDir, apikey, file);
 
   try {
     await fs.ensureFile(enrichedFile);
@@ -166,6 +201,13 @@ async function processEnrichJSON(id, index, args, apikey) {
 
   let data = [];
 
+  const enrichConfig = {
+    enrichedFile,
+    args,
+    index,
+    loaded,
+  };
+
   for await (const line of rl) {
     let parsedLine;
     try {
@@ -173,51 +215,19 @@ async function processEnrichJSON(id, index, args, apikey) {
       data.push(parsedLine);
     } catch (err) {
       logger.error(`[job jsonl] Cannot parse [${line}] in json format`, err);
-      await fail(stateName, apikey);
+      await fail(state);
       return;
     }
 
     if (data.length === 1000) {
-      let response;
-      try {
-        response = await requestGraphql(data, args, index, apikey);
-      } catch (err) {
-        logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
-        await fail(stateName, apikey);
-        return;
-      }
-      // enrichment
-      const enrichedData = enrichArray(data, response);
-      const { enrichedArray } = enrichedData;
-      await writeInFileJSON(enrichedArray, enrichedFile, stateName, apikey);
+      await enrichInFile(data, enrichConfig, state);
       data = [];
-
-      state.linesRead += 1000;
-      state.enrichedLines += response?.length || 0;
-      state.loaded += loaded;
-      await updateStateInFile(state, stateName);
     }
   }
 
   // last insertion
   if (data.length !== 0) {
-    let response;
-    try {
-      response = await requestGraphql(data, args, index, apikey);
-    } catch (err) {
-      logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
-      await fail(stateName, apikey);
-      return;
-    }
-    // enrichment
-    const enrichedData = enrichArray(data, response);
-    const { enrichedArray } = enrichedData;
-    await writeInFileJSON(enrichedArray, enrichedFile, stateName, apikey);
-    // state
-    state.linesRead += data?.length || 0;
-    state.enrichedLines += response?.length || 0;
-    state.loaded += loaded;
-    await updateStateInFile(state, stateName);
+    await enrichInFile(data, enrichConfig, state);
   }
   logger.info(`[job jsonl] ${state.enrichedLines}/${state.linesRead} enriched lines`);
 }

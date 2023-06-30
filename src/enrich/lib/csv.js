@@ -9,7 +9,6 @@ const config = require('config');
 const logger = require('./logger');
 
 const {
-  getState,
   updateStateInFile,
   fail,
 } = require('./models/state');
@@ -17,7 +16,7 @@ const {
 const { requestGraphql } = require('./services/graphql');
 
 const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
-const enriched = path.resolve(__dirname, '..', 'data', 'enriched');
+const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
 
 /**
  * get graphql params to get all unpaywall attributes.
@@ -133,11 +132,12 @@ function enrichArray(data, response) {
  *
  * @returns {Promise<void>}
  */
-async function writeInFileCSV(data, headers, separator, enrichedFile, stateName) {
-  const parsedTab = JSON.stringify(data);
+async function writeInFileCSV(data, headers, separator, enrichedFile, state) {
+  const stringifiedData = JSON.stringify(data);
+
   let unparse;
   try {
-    unparse = await Papa.unparse(parsedTab, {
+    unparse = await Papa.unparse(stringifiedData, {
       header: false,
       delimiter: separator,
       columns: headers,
@@ -145,7 +145,7 @@ async function writeInFileCSV(data, headers, separator, enrichedFile, stateName)
     await fs.writeFile(enrichedFile, `${unparse}\r\n`, { flag: 'a' });
   } catch (err) {
     logger.error(`[job csv] Cannot write [${unparse}] in [${enrichedFile}]`, err);
-    await fail(stateName);
+    await fail(state);
   }
 }
 
@@ -210,6 +210,47 @@ async function writeHeaderCSV(headers, separator, filePath) {
 }
 
 /**
+ * Do a graphql request to enrich data and write it on enriched File.
+ *
+ * @param {Array<String>} data - Data that will be enrich.
+ * @param {Object} enrichConfig - Config of enrich.
+ * @param {Object} state - State of job.
+ *
+ * @returns {Promise<void>}
+ */
+async function enrichInFile(data, enrichConfig, state) {
+  const {
+    enrichedFile,
+    args,
+    index,
+    headers,
+    separator,
+    loaded,
+  } = enrichConfig;
+
+  let response;
+
+  try {
+    response = await requestGraphql(data, args, index, state.apikey);
+  } catch (err) {
+    logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
+    await fail(state);
+    return;
+  }
+
+  // enrichment
+  const enrichedData = enrichArray(data, response);
+  const { enrichedArray, lineEnriched } = enrichedData;
+  await writeInFileCSV(enrichedArray, headers, separator, enrichedFile, state);
+
+  // state
+  state.linesRead += data.length;
+  state.enrichedLines += lineEnriched || 0;
+  state.loaded += loaded;
+  await updateStateInFile(state);
+}
+
+/**
  * Starts the enrichment process for CSV file.
  * step :
  * - read file by paquet of 1000
@@ -221,20 +262,17 @@ async function writeHeaderCSV(headers, separator, filePath) {
  * @param {string} id - Id of process.
  * @param {string} index - Index name of mapping.
  * @param {string} args - Attributes will be add.
- * @param {string} apikey - Apikey of user.
+ * @param {string} state - State of job.
  * @param {string} separator - separator of enriched file.
  *
  * @returns {Promise<void>}
  */
-async function processEnrichCSV(id, index, args, apikey, separator) {
-  const filename = `${id}.csv`;
+async function processEnrichCSV(id, index, args, state, separator) {
+  const enrichedFilename = `${id}.csv`;
+  const enrichedFile = path.resolve(enrichedDir, state.apikey, enrichedFilename);
+  const uploadFile = path.resolve(uploadDir, state.apikey, `${id}.csv`);
 
-  const readStream = fs.createReadStream(path.resolve(uploadDir, apikey, filename));
-
-  const stateName = `${id}.json`;
-  const state = await getState(stateName, apikey);
-
-  const enrichedFile = path.resolve(enriched, apikey, filename);
+  const readStream = fs.createReadStream(uploadFile);
 
   if (!args) {
     args = graphqlConfigWithAllAttributes;
@@ -259,6 +297,15 @@ async function processEnrichCSV(id, index, args, apikey, separator) {
   let headers = [];
   let head = true;
 
+  const enrichConfig = {
+    enrichedFile,
+    args,
+    index,
+    headers,
+    separator,
+    loaded,
+  };
+
   await new Promise((resolve) => {
     Papa.parse(readStream, {
       delimiter: ',',
@@ -274,6 +321,7 @@ async function processEnrichCSV(id, index, args, apikey, separator) {
           await parser.pause();
           head = false;
           headers = await enrichHeaderCSV(headers, args);
+          enrichConfig.headers = headers;
           await writeHeaderCSV(headers, separator, enrichedFile);
           await parser.resume();
         }
@@ -283,24 +331,7 @@ async function processEnrichCSV(id, index, args, apikey, separator) {
           data = [];
           await parser.pause();
 
-          let response;
-          try {
-            response = await requestGraphql(copyData, args, index, apikey);
-          } catch (err) {
-            logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
-            await fail(stateName, apikey);
-            return;
-          }
-          // enrichment
-          const enrichedData = enrichArray(copyData, response);
-          const { enrichedArray, lineEnriched } = enrichedData;
-          await writeInFileCSV(enrichedArray, headers, separator, enrichedFile);
-
-          // state
-          state.linesRead += 1000;
-          state.enrichedLines += lineEnriched || 0;
-          state.loaded += loaded;
-          await updateStateInFile(state, stateName);
+          await enrichInFile(copyData, enrichConfig, state);
           await parser.resume();
         }
       },
@@ -309,24 +340,12 @@ async function processEnrichCSV(id, index, args, apikey, separator) {
   });
   // last insertion
   if (data.length !== 0) {
-    let response;
-    try {
-      response = await requestGraphql(data, args, index, apikey);
-    } catch (err) {
-      logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
-      await fail(stateName, apikey);
-      return;
+    if (head) {
+      headers = await enrichHeaderCSV(headers, args);
+      enrichConfig.headers = headers;
+      await writeHeaderCSV(headers, separator, enrichedFile);
     }
-    // enrichment
-    const enrichedData = enrichArray(data, response);
-    const { enrichedArray, lineEnriched } = enrichedData;
-    await writeInFileCSV(enrichedArray, headers, separator, enrichedFile);
-
-    // state
-    state.linesRead += data.length || 0;
-    state.enrichedLines += lineEnriched || 0;
-    state.loaded += loaded;
-    await updateStateInFile(state, stateName);
+    await enrichInFile(data, enrichConfig, state);
   }
 
   logger.info(`[job csv] ${state.enrichedLines}/${state.linesRead} enriched lines`);

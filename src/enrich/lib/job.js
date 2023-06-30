@@ -18,9 +18,9 @@ const processEnrichCSV = require('./csv');
  * @returns {Promise<void>}
  */
 async function enrichJSON(id, index, args, apikey) {
-  await createState(id, apikey);
-  await processEnrichJSON(id, index, args, apikey);
-  await endState(id, apikey);
+  const state = await createState(id, apikey);
+  await processEnrichJSON(id, index, args, state);
+  await endState(state);
 }
 
 /**
@@ -35,9 +35,9 @@ async function enrichJSON(id, index, args, apikey) {
  * @returns {Promise<void>}
  */
 async function enrichCSV(id, index, args, apikey, separator) {
-  await createState(id, apikey);
-  await processEnrichCSV(id, index, args, apikey, separator);
-  await endState(id, apikey);
+  const state = await createState(id, apikey);
+  await processEnrichCSV(id, index, args, state, separator);
+  await endState(state);
 }
 
 module.exports = {

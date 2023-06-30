@@ -651,7 +651,6 @@ describe('Test: enrich service csv', () => {
 
       it('Should be the same', async () => {
         const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file08.csv');
-
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
@@ -673,7 +672,7 @@ describe('Test: enrich service csv', () => {
         id = res1?.body;
       });
 
-      it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
+      it('Should enrich the file on 1200 lines with args {is_oa} and download it', async () => {
         const res2 = await chai
           .request(enrichHost)
           .post(`/job/${id}`)
@@ -728,7 +727,6 @@ describe('Test: enrich service csv', () => {
 
       it('Should be the same', async () => {
         const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file09.csv');
-
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
