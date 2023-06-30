@@ -1,20 +1,5 @@
 <template>
   <div>
-    <v-row align-center class="my-5 mx-1">
-      <v-btn class="body-2" color="primary" @click="setStep(1)">
-        {{ $t("enrich.settings") }}
-      </v-btn>
-      <v-spacer />
-      <v-btn
-        class="body-2"
-        color="primary"
-        :disabled="!hasUnpaywallAttributes"
-        @click="setStep(3)"
-      >
-        {{ $t("enrich.startProcess") }}
-      </v-btn>
-    </v-row>
-
     <v-toolbar class="secondary" dark dense flat>
       <v-toolbar-title> {{ $t("enrich.settings") }} </v-toolbar-title>
     </v-toolbar>
@@ -135,9 +120,6 @@ export default {
     attributesZAuthors () {
       return this.attributes?.filter(e => e.includes('z_authors')).map(e => e.split('.')[1])
     },
-    hasUnpaywallAttributes () {
-      return Array.isArray(this.attributes) && this.attributes.length > 0
-    },
     extensionFileColor () {
       const extension = this.authorizedFile.find(
         file => file.name === this.type
@@ -151,12 +133,6 @@ export default {
     },
     getApikey () {
       this.$store.commit('enrich/setApikey', this.extensionSelected())
-    },
-    setStep (step) {
-      this.$emit('setStep', step)
-      if (step === 3) {
-        this.$root.$emit('startEnrich')
-      }
     }
   }
 }

@@ -39,11 +39,36 @@
 
         <v-stepper-items>
           <v-stepper-content step="1">
-            <LogFileTab @setStep="setStep($event)" />
+            <v-row class="my-3 mx-1">
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                color="primary"
+                :disabled="!hasFiles"
+                @click="setStep(2)"
+              >
+                {{ $t("enrich.continue") }}
+              </v-btn>
+            </v-row>
+            <LogFileTab />
           </v-stepper-content>
 
           <v-stepper-content step="2">
-            <SelectAttributesTab @setStep="setStep($event)" />
+            <v-row align-center class="my-3 mx-1">
+              <v-btn class="body-2" color="primary" @click="setStep(1)">
+                {{ $t("enrich.settings") }}
+              </v-btn>
+              <v-spacer />
+              <v-btn
+                class="body-2"
+                color="primary"
+                :disabled="!hasUnpaywallAttributes"
+                @click="setStep(3)"
+              >
+                {{ $t("enrich.startProcess") }}
+              </v-btn>
+            </v-row>
+            <SelectAttributesTab />
           </v-stepper-content>
 
           <v-stepper-content step="3">
@@ -98,6 +123,9 @@ export default {
   methods: {
     setStep (step) {
       this.step = step
+      if (step === 3) {
+        this.$root.$emit('startEnrich')
+      }
     },
     setIsProcessing (isProcessing) {
       this.isProcessing = isProcessing

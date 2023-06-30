@@ -37,14 +37,6 @@
           </v-card-actions>
         </v-card>
       </v-menu>
-      <v-btn
-        class="body-2"
-        color="primary"
-        :disabled="!hasFiles"
-        @click="setStep(2)"
-      >
-        {{ $t("enrich.continue") }}
-      </v-btn>
     </v-row>
     <LogFiles class="ma-1" />
   </div>
@@ -73,11 +65,6 @@ export default {
     },
     files () {
       return this.$store.getters['enrich/getFiles']
-    }
-  },
-  methods: {
-    setStep (step) {
-      this.$emit('setStep', step)
     }
   }
 }
