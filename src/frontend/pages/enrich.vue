@@ -1,6 +1,19 @@
 <template>
   <section>
-    <div v-html="$t('enrich.general')" />
+    <div v-text="$t('enrich.general')" />
+    <div v-text="$t('enrich.example')" />
+    <v-btn @click="download()">
+      <v-icon left>
+        mdi-download
+      </v-icon>
+      csv
+    </v-btn>
+    <v-btn @click="download()">
+      <v-icon left>
+        mdi-download
+      </v-icon>
+      jsonl
+    </v-btn>
     <v-card class="my-3">
       <v-toolbar class="secondary" dark dense flat>
         <v-toolbar-title> {{ $t('enrich.enrichFile') }} </v-toolbar-title>
@@ -68,7 +81,7 @@
                 {{ $t("enrich.startProcess") }}
               </v-btn>
             </v-row>
-            <SelectAttributesTab />
+            <ConfigJobTab />
           </v-stepper-content>
 
           <v-stepper-content step="3">
@@ -82,14 +95,14 @@
 
 <script>
 import LogFileTab from '~/components/enrich/LogFileTab.vue'
-import SelectAttributesTab from '~/components/enrich/SelectAttributesTab.vue'
+import ConfigJobTab from '~/components/enrich/ConfigJobTab.vue'
 import ProcessTab from '~/components/enrich/ProcessTab.vue'
 
 export default {
   name: 'Enrich',
   components: {
     LogFileTab,
-    SelectAttributesTab,
+    ConfigJobTab,
     ProcessTab
   },
   transition: 'slide-x-transition',
@@ -98,7 +111,8 @@ export default {
       // stepper
       step: 1,
       // status
-      isProcessing: false
+      isProcessing: false,
+      type: 'csv'
     }
   },
   head () {
@@ -129,6 +143,30 @@ export default {
     },
     setIsProcessing (isProcessing) {
       this.isProcessing = isProcessing
+    },
+    async download () {
+      let download
+      try {
+        download = await this.$enrich({
+          method: 'GET',
+          url: `/example/${this.type}`,
+          responseType: 'blob'
+        })
+      } catch (err) {
+        this.$store.dispatch('snacks/error', this.$t('error.enrich.download'))
+        return this.errored()
+      }
+      this.forceFileDownload(download)
+    },
+
+    forceFileDownload (response) {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      console.log(response.data)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', this.resultID)
+      document.body.appendChild(link)
+      link.click()
     }
   }
 }

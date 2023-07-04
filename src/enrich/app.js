@@ -11,6 +11,7 @@ const { pingRedis } = require('./lib/services/redis');
 
 require('./lib/controllers/cron/file');
 
+const routerExample = require('./lib/routers/example');
 const routerPing = require('./lib/routers/ping');
 const routerJob = require('./lib/routers/job');
 const routerEnrich = require('./lib/routers/enrich');
@@ -41,6 +42,7 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(routerExample);
 app.use(routerJob);
 app.use(routerEnrich);
 app.use(routerState);

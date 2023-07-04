@@ -33,6 +33,7 @@
   },
   "enrich": {
     "general": "This page allows you to test the enrichment function of jsonl and csv files with unpaywall attributes.",
+    "example": "Example files with DOIs are available for enrichment testing.",
     "enrichFile": "Enrich your file",
     "filesSelection": "Select files",
     "settings": "Settings",
@@ -40,7 +41,6 @@
     "authorizedFile": "Allowed types of file :",
     "continue": "Continue",
     "explainationLogs": "Files you want to be enriched by ezUnpaywall. The only condition is that they contain a DOI field.",
-    "explainationTestsLogs": "Need files to test this service? We provide some on <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
     "apikey": "API Key",
     "fileExtension": "File extension recognized :",
     "unpaywallAttributes": "Unpaywall attributes",
