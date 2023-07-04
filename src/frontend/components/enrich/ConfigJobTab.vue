@@ -20,7 +20,7 @@
       </v-chip>
     </v-row>
 
-    <SelectSeparator />
+    <SelectSeparator v-if="type === 'csv'" />
 
     <v-toolbar class="secondary" dark dense flat>
       <v-toolbar-title>

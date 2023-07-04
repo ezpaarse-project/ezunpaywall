@@ -193,9 +193,6 @@ export default {
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', this.resultID)
-      console.log(link)
-      console.log(url)
-      console.log(this.resultID)
       document.body.appendChild(link)
       link.click()
     },
