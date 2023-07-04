@@ -26,9 +26,6 @@
 
         <v-card class="text-justify">
           <v-card-text> {{ $t("enrich.explainationLogs") }} </v-card-text>
-          <v-divider />
-          <!-- eslint-disable-next-line -->
-          <v-card-text v-html="$t('enrich.explainationTestsLogs', { url: logSamplesUrl }) "/>
           <v-card-actions>
             <v-spacer />
             <v-btn class="body-2" text @click="fileSelectionHelp = false">
@@ -53,7 +50,6 @@ export default {
   data: () => {
     return {
       fileSelectionHelp: false,
-      logSamplesUrl: 'https://github.com/ezpaarse-project/ezunpaywall',
       authorizedFile: [
         { name: 'csv', color: 'green' },
         { name: 'jsonl', color: 'orange' }

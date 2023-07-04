@@ -2,9 +2,23 @@
   <section>
     <Login v-if="!isAdmin" />
     <div v-else>
-      <v-btn color="primary" @click="logOut()">
-        {{ $t('administration.logout') }}
-      </v-btn>
+      <v-row class="ma-1">
+        <v-btn color="primary" @click="logOut()">
+          {{ $t('administration.logout') }}
+        </v-btn>
+        <v-spacer />
+        <v-btn
+          :href="dashbordHost"
+          target="_blank"
+        >
+          <img
+            style="max-width: 35px"
+            :src="require(`@/static/img/ezmesure-logo.svg`)"
+            alt="ezmesure-logo"
+          >
+          ezMESURE
+        </v-btn>
+      </v-row>
       <WeekHistory />
       <HealthTab />
       <ApikeyTab />
@@ -30,6 +44,9 @@ export default {
   computed: {
     isAdmin () {
       return this.$store.getters['admin/getIsAdmin']
+    },
+    dashbordHost () {
+      return this.$config.dashbordHost
     }
   },
   methods: {

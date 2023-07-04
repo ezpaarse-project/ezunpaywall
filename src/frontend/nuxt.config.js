@@ -5,6 +5,7 @@ export default {
     environment: process.env.NODE_ENV || 'development',
     unpaywallHomepageHost: process.env.UNPAYWALL_HOMEPAGE_HOST || 'https://unpaywall.org/',
     unpaywallAPIHost: process.env.UNPAYWALL_API_HOST || 'http://api.unpaywall.org',
+    dashbordHost: process.env.DASHBOARD_HOST || 'https://ezmesure.couperin.org/kibana/s/ezunpaywall/app/dashboards',
     graphqlHost: process.env.GRAPHQL_HOST || 'http://localhost:59701',
     updateHost: process.env.UPDATE_HOST || 'http://localhost:59702',
     enrichHost: process.env.ENRICH_HOST || 'http://localhost:59703',

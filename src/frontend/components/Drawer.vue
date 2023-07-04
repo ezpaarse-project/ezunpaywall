@@ -102,7 +102,7 @@
           {{ locale.name }}
         </v-list-item-title>
         <v-list-item-icon>
-          <img width="24" :src="require(`@/static/img/${locale.code}.png`)">
+          <img width="24" :src="require(`@/static/img/lang/${locale.code}.png`)">
         </v-list-item-icon>
       </v-list-item>
     </v-list-group>
