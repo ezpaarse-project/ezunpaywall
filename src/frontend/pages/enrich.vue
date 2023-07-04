@@ -2,13 +2,13 @@
   <section>
     <div v-text="$t('enrich.general')" />
     <div v-text="$t('enrich.example')" />
-    <v-btn @click="download()">
+    <v-btn @click="download('csv')">
       <v-icon left>
         mdi-download
       </v-icon>
       csv
     </v-btn>
-    <v-btn @click="download()">
+    <v-btn @click="download('jsonl')">
       <v-icon left>
         mdi-download
       </v-icon>
@@ -111,8 +111,7 @@ export default {
       // stepper
       step: 1,
       // status
-      isProcessing: false,
-      type: 'csv'
+      isProcessing: false
     }
   },
   head () {
@@ -144,27 +143,26 @@ export default {
     setIsProcessing (isProcessing) {
       this.isProcessing = isProcessing
     },
-    async download () {
+    async download (type) {
       let download
       try {
         download = await this.$enrich({
           method: 'GET',
-          url: `/example/${this.type}`,
+          url: `/example/${type}`,
           responseType: 'blob'
         })
       } catch (err) {
         this.$store.dispatch('snacks/error', this.$t('error.enrich.download'))
         return this.errored()
       }
-      this.forceFileDownload(download)
+      this.forceFileDownload(download, type)
     },
 
-    forceFileDownload (response) {
+    forceFileDownload (response, type) {
       const url = window.URL.createObjectURL(new Blob([response.data]))
-      console.log(response.data)
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', this.resultID)
+      link.setAttribute('download', `example.${type}`)
       document.body.appendChild(link)
       link.click()
     }
