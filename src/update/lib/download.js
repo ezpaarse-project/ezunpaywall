@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const { Readable } = require('stream');
 const { format } = require('date-fns');
-const logger = require('../logger');
+const logger = require('./logger');
 
 const {
   getState,
@@ -10,14 +10,14 @@ const {
   addStepDownload,
   fail,
   updateLatestStep,
-} = require('../models/state');
+} = require('./models/state');
 
 const {
   getSnapshot,
   getChangefile,
-} = require('../services/unpaywall');
+} = require('./services/unpaywall');
 
-const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
+const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 /**
  * Update the step the percentage in download regularly until the download is complete.
@@ -38,7 +38,7 @@ async function updatePercentStepDownload(filepath, size, start) {
   try {
     bytes = await fs.stat(filepath);
   } catch (err) {
-    logger.error(`[job: dowload] Cannot stat [${filepath}]`, err);
+    logger.error(`[job: download] Cannot stat [${filepath}]`, err);
     return;
   }
   if (bytes?.size >= size) {
@@ -76,12 +76,12 @@ async function download(file, filepath, size) {
         step.took = (new Date() - start) / 1000;
         step.percent = 100;
         updateLatestStep(step);
-        logger.info('[job: dowload] File download completed');
+        logger.info('[job: download] File download completed');
         return resolve();
       });
 
       writeStream.on('error', async (err) => {
-        logger.error('[job: dowload] Error on stream', err);
+        logger.error('[job: download] Error on stream', err);
         await fail(err);
         return reject(err);
       });

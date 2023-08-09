@@ -69,7 +69,7 @@ export default {
       let res
       this.loading = true
       try {
-        res = await this.$health.get('/health')
+        res = await this.$health.get('/status')
       } catch (e) {
         this.$store.dispatch('snacks/error', this.$t('error.health.get'))
         this.loading = false

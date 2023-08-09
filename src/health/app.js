@@ -6,7 +6,7 @@ const path = require('path');
 const logger = require('./lib/logger');
 const getConfig = require('./lib/config');
 
-const routerPing = require('./lib/routers/ping');
+const routerHealth = require('./lib/routers/health');
 const routerOpenapi = require('./lib/routers/openapi');
 
 const logDir = path.resolve(__dirname, 'log');
@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use(routerPing);
+app.use(routerHealth);
 app.use(routerOpenapi);
 
 /* Errors and unknown routes */

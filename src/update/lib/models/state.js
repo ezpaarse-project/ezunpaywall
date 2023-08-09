@@ -1,6 +1,6 @@
 const {
   createReport,
-} = require('../controllers/report');
+} = require('../report');
 
 const {
   sendMailUpdateReport,
@@ -8,7 +8,7 @@ const {
 
 const {
   setInUpdate,
-} = require('../controllers/status');
+} = require('../status');
 
 const logger = require('../logger');
 

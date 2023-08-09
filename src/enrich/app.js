@@ -9,12 +9,12 @@ const getConfig = require('./lib/config');
 
 const { pingRedis } = require('./lib/services/redis');
 
-require('./lib/controllers/cron/file');
+require('./lib/cron');
 
 const routerExample = require('./lib/routers/example');
 const routerPing = require('./lib/routers/ping');
 const routerJob = require('./lib/routers/job');
-const routerEnrich = require('./lib/routers/enrich');
+const routerFile = require('./lib/routers/file');
 const routerState = require('./lib/routers/state');
 const routerOpenapi = require('./lib/routers/openapi');
 
@@ -44,7 +44,7 @@ app.use(express.json());
 
 app.use(routerExample);
 app.use(routerJob);
-app.use(routerEnrich);
+app.use(routerFile);
 app.use(routerState);
 app.use(routerOpenapi);
 app.use(routerPing);
