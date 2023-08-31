@@ -6,7 +6,7 @@ ARG ENRICH_HOST
 ARG APIKEY_HOST
 ARG MAIL_HOST
 WORKDIR /usr/src/app
-COPY package*.json .
+COPY package*.json ./
 RUN npm i
 COPY . .
 RUN npm run build
