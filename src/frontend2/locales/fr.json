@@ -1,0 +1,305 @@
+{
+  "home": {
+    "title" : "ezUnpaywall, qu'est-ce que c'est ?",
+    "general1": "ezUnpaywall est un miroir des données <a href=\"{linkUnpaywall}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
+    "general2": "Il dispose d'une interface d'enrichissement de fichier en données Open Access à partir du DOI et d'un démonstrateur d'interrogation de DOI avec des requêtes GraphQL.",
+    "general3": "Ce serveur dispose d'une API interrogeable via une clé d'API. Vous pouvez obtenir une clé d'API sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
+    "metrics": "Métriques {env}",
+    "globalMetrics": "Métriques globales",
+    "referencedResources": "Ressources référencées",
+    "openAccess": "Accès ouvert",
+    "openAccessStatus": "Statuts Open Access",
+    "referencedRessourceHelp": "Nombre de référence bibliographique enregistré dans le miroir",
+    "openAccessHelp": "Nombre de référence bibliographique disponible en accès gratuit (is_oa: true)",
+    "goldOAHelp": "Nombre de référence bibliographique ayant le status 'gold' (oa_status: 'gold')",
+    "hybridOAHelp": "Nombre de référence bibliographique ayant le status 'hybrid' (oa_status: 'hybrid')",
+    "bronzeOAHelp": "Nombre de référence bibliographique ayant le status 'bronze' (oa_status: 'bronze')",
+    "greenOAHelp": "Nombre de référence bibliographique ayant le status 'green' (oa_status: 'green')",
+    "closedOAHelp": "Nombre de référence bibliographique ayant le status 'closed' (oa_status: 'closed')"
+  },
+  "contact": {
+    "contactUs": "Nous contacter",
+    "email": "Adresse électronique",
+    "subject": "Objet",
+    "content": "Contenu du message",
+    "sendNavigatorVersion": "Envoyer la version de mon navigateur",
+    "requestInformation": "Demande d'information",
+    "bugReport": "Signaler un bug",
+    "requestApikey": "Demander une clé d'API",
+    "emailIsRequired": "L'adresse électronique est requise",
+    "emailMustBeValid": "L'adresse électronique doit être valide",
+    "contentIsRequired": "Un message est requis",
+    "subjectIsRequired": "L'objet est requis"
+  },
+  "enrich": {
+    "general": "Cette page vous permet de tester la fonction d'enrichissement de fichiers jsonl et csv avec des attributs unpaywall.",
+    "example": "Des fichiers d'exemples avec des DOI sont disponible pour tester l'enrichissement.", 
+    "enrichFile": "Enrichir votre fichier",
+    "filesSelection": "Sélection des fichiers",
+    "settings": "Paramètres",
+    "enrich": "Enrichissement",
+    "authorizedFile": "Types de fichier autorisés :",
+    "continue": "Continuer",
+    "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezUnpaywall. Ils doivent simplement contenir un champ DOI.",
+    "apikey": "Clé d'API",
+    "fileExtension": "Extension de fichier reconnue :",
+    "unpaywallAttributes": "Attributs unpaywall",
+    "startProcess": "Démarrer l'enrichissement",
+    "stepUpload": "Envoi du fichier en cours",
+    "stepEnrich": "Enrichissement en cours",
+    "download": "Télécharger le fichier enrichi",
+    "end": "Enrichissement terminé",
+    "readLines": "Lignes lues",
+    "enrichedLines": "Lignes enrichies",
+    "duration": "Temps de traitement (en secondes)"
+  },
+  "graphql": {
+    "title": "Graphql",
+    "general1": "Ce démonstrateur GraphQL vous permet de construire une requête d'interrogation de l'API.",
+    "general2": "Il suffit de préciser en entrée le DOI ou les DOIs recherchés séparé par une virgule, votre clé d'API les champs Unpaywall désirés en sortie.",
+    "general3": "Le démonstrateur construit la requête et vous pouvez envoyer la requête au serveur et voir la réponse. Utiliser les aides dans l'interface pour avoir plus d'informations sur l'usage des données du formulaire.",
+    "general4": "Si vous êtes développeur, vous pouvez aussi utiliser la section documentation (swagger) pour tester les différentes routes de l'API.",
+    "constructor": "Démostrateur graphql",
+    "apikey": "clé d'API",
+    "settings": "Attributs unpaywall à récuperer",
+    "request": "Requête GraphQL",
+    "start": "Lancer la requête",
+    "result": "Résultat",
+    "linkAPI": "Voir sur l'API"
+  },
+  "administration": {
+    "title": "Administration",
+    "loginForm": "Formulaire de connexion",
+    "login": "Connexion",
+    "logout": "Deconnexion",
+    "password": "Mot de passe",
+    "health": {
+      "title": "État des services",
+      "reload": "Recharger les états de santé",
+      "noHealth": "Aucun état de service"
+    },
+    "apikey": {
+      "title": "Clés d'API",
+      "reload": "Recharger les clés d'API",
+      "noApikeys": "Pas de clés d'API",
+      "name": "Nom",
+      "ownerValue": "Propriétaire : {owner}",
+      "descriptionValue": "Description : {description}",
+      "createdAtValue": "Créé le {date}",
+      "owner": "Propriétaire ",
+      "description": "Description",
+      "createdAt": "Créé le",
+      "attributes": "Attributs unpaywall :",
+      "access": "Accès :",
+      "allowed": "Active",
+      "notAllowed": "Désactivé",
+      "import": "Importer des clés d'API en format JSON",
+      "export": "Exporter des clés d'API en format JSON",
+      "create": "Création d'une nouvelle clé d'API",
+      "update": "Mise à jour de la clé d'API",
+      "delete": "Suppression de la clé d'API",
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)"
+    },
+    "update" : {
+      "title": "Lancement d'une mise à jour",
+      "future": "La date est après aujourd'hui",
+      "interval": "Intervalle",
+      "startDate": "Date de début",
+      "endDate": "Date de fin"
+    },
+    "cron": {
+      "title": "Config de la cron de mise à jour des données Unpaywall",
+      "interval": "Intervalle",
+      "schedule": "Periode (format de cron)",
+      "index": "Index elastic",
+      "active": "Active"
+    }
+  },
+  "unpaywallArgs": {
+    "title": "Paramètres",
+    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez cliquer sur ce bouton pour voir le format de données unpaywall",
+    "selectAll": "Tout sélectionner",
+    "unselectAll": "Tout désélectionner",
+    "general": {
+      "doi": "Digital Object Identifier",
+      "data_standard": "Approches de collectes de données utilisées pour cette ressource",
+      "doi_url": "DOI sous forme de lien hypertexte",
+      "genre": "Type de ressource",
+      "is_oa": "Existe-t-il une version OA de cette ressource",
+      "is_paratext": "Cet élément est-il une partie auxiliaire d'un journal, comme une table des matières",
+      "journal_is_in_doaj": "Cette ressource est-elle publiée dans une revue indexée par le DOAJ",
+      "journal_is_oa": "Cette ressource est-elle publiée dans une revue entièrement en libre accès",
+      "journal_issn_l": "Un seul ISSN pour la revue qui publie cette ressource",
+      "journal_issns": "Tous les ISSN attribués à la revue publiant cette ressource",
+      "journal_name": "Nom de la revue qui publie cette ressource",
+      "oa_status": "Statut OA, ou la couleur, de cette ressource",
+      "published_date": "Date à laquelle cette ressource a été publiée",
+      "publisher": "Nom de l'éditeur de cette ressource",
+      "title": "Titre de cette ressource",
+      "updated": "Heure de la dernière mise à jour des données pour cette ressource",
+      "year": "Année de publication de cette ressource"
+    },
+    "oa_locations": {
+      "evidence": "Comment Unpaywall a trouvé cet emplacement OA",
+      "host_type": "Type d'hôte qui dessert cet emplacement OA",
+      "is_best": "Cet emplacement est-il le best_oa_location pour la ressource",
+      "license": "Licence sous laquelle cette copie est publiée",
+      "pmh_id": "Point de terminaison OAI-PMH où nous avons trouvé cet emplacement",
+      "updated": "Heure de la dernière mise à jour des données de cet emplacement",
+      "url": "URL d'une page de destination décrivant cette copie OA",
+      "url_for_landing_page": "URL d'une page de destination décrivant cette copie OA",
+      "url_for_pdf": "URL avec une version PDF de cette copie OA",
+      "version": "Version du contenu accessible à cet emplacement"
+    },
+    "z_authors": {
+      "family": "Nom de famille",
+      "given": "Prénom",
+      "sequence": "Indique si c'est le premier auteur ou un auteur secondaire",
+      "ORCID": " URL d'un identifiant ORCID",
+      "authenticated-orcid": "Si vrai, le propriétaire de l'enregistrement affirme que l'utilisateur ORCID a terminé l'authentification ORCID OAuth"
+    }
+  },
+  "fileSelector": {
+    "filename": "Nom des fichiers",
+    "size": "Taille",
+    "clickToAdd": "Cliquer ou déposer pour ajouter",
+    "removeList": "Supprimer la liste",
+    "selectedFiles": "fichiers sélectionnés",
+    "total": "au total"
+  },
+  "status": {
+    "inUpdate": "Mise à jour en cours : {latestTaskName} - {percent}%",
+    "noInUpdate": "Les données sont à jour"
+  },
+  "state": {
+    "createdAt": "Crée le",
+    "tasks": "Tâches",
+    "task": "Tâche",
+    "took": "Temps",
+    "percent": "Pourcentage",
+    "file": "Fichier",
+    "linesRead": "Lignes lues",
+    "status": "Statut"
+  },
+  "header": {
+    "help": "Les données du miroir Unpaywall sont mises à jour quotidiennement à 12:30"
+  },
+  "drawer": {
+    "home": "Accueil",
+    "enrich": "Enrichissement de fichier",
+    "graphql": "Démonstrateur GraphQL",
+    "updateHistory": "Historique de mises à jour",
+    "openapi": "Documentation",
+    "language": "Langue",
+    "contact": "Nous contacter",
+    "administration": "Administration"
+  },
+  "reportHistory": {
+    "title": "Dernières mises à jour",
+    "reloadReports": "Recharger les rapports",
+    "reload": "Recharger l'historique des mises à jour",
+    "source": "Les fichiers de mises à jours proviennent d'unpaywall.org",
+    "goTo": "Voir la liste",
+    "noReport": "Pas de rapport disponible",
+    "status": "Statut",
+    "insertedDocs": "Nouvelles lignes",
+    "updatedDocs": "Lignes mises à jour"
+  },
+  "theme": {
+    "dark": "Thème sombre",
+    "light": "Thème clair"
+  },
+  "error": {
+    "default": "Une erreur est survenue",
+    "enrich": {
+      "manyFile": "Le nombre de fichier autorisé est de 1",
+      "typeOfFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
+      "uploadFile": "Erreur lors de l'envoi du fichier",
+      "download": "Impossible de télécharger le fichier enrichis",
+      "job": "Erreur dans l'enrichissement"
+    },
+    "graphql": {
+      "request": "Impossible de lancer la requête graphql",
+      "copyRequest": "Impossible de sauvegarder la requête GraphQL",
+      "copyResult": "Impossible de sauvegarder la réponse"
+    },
+    "apikey":{
+      "import": "Impossible d'importer les clé d'API",
+      "copy": "Impossible de copier les clés d'API",
+      "get": "Impossible de récuperer les clés d'API",
+      "parse": "Impossible de parser la config de la clé d'API en format JSON",
+      "create": "La clé d'API n'a pas pu être créée",
+      "update": "La clé d'API n'a pas pu être mise à jour",
+      "delete": "Impossible de supprimer la clé d'API"
+    },
+    "status": {
+      "state": "Impossible d'obtenir l'état",
+      "status": "Impossible d'obtenir le statut"
+    },
+    "update": {
+      "start": "Erreur lors du lancement de la mise à jour"
+    },
+    "cron": {
+      "get": "Impossible de récupérer la configuration de la cron de mise à jour",
+      "update": "Impossible de mettre à jour la configuration de la cron de mise à jour",
+      "start": "Impossible de démarrer la cron de mise à jour",
+      "stop": "Impossible d'arrêter la cron de mise à jour"
+    },
+    "report":{
+      "getAll": "Impossible de récupérer les rapports de mises à jour",
+      "get": "Impossible de récupérer le rapport de mises à jour"
+    },
+    "health": {
+      "get": "Impossible de récupérer les états de santé"
+    },
+    "admininistration": {
+      "invalidPassword": "Mot de passe incorrect"
+    },
+    "contact": {
+      "failed": "L'envoi du formulaire de contact a échoué."
+    }
+  },
+  "info" : {
+    "apikey": {
+      "imported": "Les clés d'API ont bien été importées",
+      "created": "La clé d'API a été créée",
+      "update": "La clé d'API a été mise à jour",
+      "deleted": "La clé d'API a été supprimée",
+      "copied": "Les clés d'API ont été copiées"
+    },
+    "update": {
+      "started": "La mise à jour a démarré"
+    },
+    "graphql": {
+      "copyResult": "Résultat copié",
+      "copyRequest": "Requête GraphQL copié"
+    },
+    "admininistration": {
+      "login": "Connexion réussie"
+    },
+    "contact": {
+      "mailSent": "Votre demande vient d'être envoyée à l'équipe."
+    },
+    "cron": {
+      "updated": "La cron de mise à jour a été mise à jour",
+      "activated": "La cron de mise à jour a été activé",
+      "stoped": "La cron de mise à jour a été arrêter"
+    }
+  },
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "download": "Télécharger",
+  "copy": "Copier",
+  "send": "Envoyer",
+  "create": "Créer",
+  "createdAt": "Créé le",
+  "required": "Requis",
+  "cancel": "Annuler",
+  "update": "Mettre à jour",
+  "close": "Fermer",
+  "yes": "Oui",
+  "no": "Non",
+  "detail": "Détail",
+  "development": "développement",
+  "integration": "integration"
+}

@@ -36,7 +36,6 @@ async function getEnrichedFiles(req, res, next) {
  */
 async function getUploadedFile(req, res, next) {
   const apikey = req.get('x-api-key');
-
   let files;
   try {
     files = await fs.readdir(path.resolve(uploadDir, apikey));
