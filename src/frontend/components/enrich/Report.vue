@@ -1,6 +1,6 @@
 <template>
-  <v-layout row wrap>
-    <v-flex
+  <v-row no-gutters>
+    <v-col
       v-for="metric in metrics"
       :key="metric.label"
       class="pa-2"
@@ -9,57 +9,50 @@
       lg4
       x4
     >
-      <Metric
+      <MetricCard
         :label="metric.label"
         :icon="metric.icon"
         :color="metric.iconColor"
-        :value="metric.value"
+        :value="metric?.value?.toString()"
       />
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
-<script>
-import Metric from '~/components/enrich/Metric.vue'
+<script setup>
 
-export default {
-  name: 'EnrichReport',
-  components: {
-    Metric
+import MetricCard from '@/components/enrich/MetricCard.vue';
+
+const props = defineProps({
+  state: {
+    type: Object,
+    default: () => ({}),
   },
-  props: {
-    state: {
-      type: Object,
-      default: () => ({})
-    },
-    time: {
-      type: Number,
-      default: 0
-    }
+  time: {
+    type: Number,
+    default: 0,
   },
-  computed: {
-    metrics () {
-      return [
-        {
-          label: 'readLines',
-          icon: 'mdi-file-search-outline',
-          iconColor: 'amber',
-          value: this.state.linesRead
-        },
-        {
-          label: 'enrichedLines',
-          icon: 'mdi-file-search-outline',
-          iconColor: 'light-green',
-          value: this.state.enrichedLines
-        },
-        {
-          label: 'duration',
-          icon: 'mdi-timer',
-          iconColor: 'blue-grey',
-          value: this.time
-        }
-      ]
-    }
-  }
-}
+});
+
+const metrics = computed(() => [
+  {
+    label: 'readLines',
+    icon: 'mdi-file-search-outline',
+    iconColor: 'bg-amber text-white',
+    value: props.state.linesRead,
+  },
+  {
+    label: 'enrichedLines',
+    icon: 'mdi-file-search-outline',
+    iconColor: 'bg-light-green text-white',
+    value: props.state.enrichedLines,
+  },
+  {
+    label: 'duration',
+    icon: 'mdi-timer',
+    iconColor: 'bg-blue-grey text-white',
+    value: props.time,
+  },
+]);
+
 </script>

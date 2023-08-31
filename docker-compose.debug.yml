@@ -263,7 +263,7 @@ services:
     container_name: ezunpaywall-nginx-dev
     environment:
       # host of service
-      - NGINX_HOST
+      - NGINX_HOST=localhost
       - FRONTEND_HOST=http://frontend:3000/
       - GRAPHQL_HOST=http://graphql:3000/
       - UPDATE_HOST=http://update:3000/

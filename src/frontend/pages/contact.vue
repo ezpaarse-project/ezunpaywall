@@ -1,14 +1,24 @@
 <template>
-  <section>
+  <section class="ma-3">
     <v-card>
-      <v-toolbar color="secondary" dark flat dense>
-        <v-toolbar-title>{{ $t('contact.contactUs') }} </v-toolbar-title>
+      <v-toolbar
+        color="secondary"
+        dark
+        flat
+        dense
+      >
+        <v-toolbar-title>{{ t('contact.contactUs') }} </v-toolbar-title>
         <v-spacer />
-        <v-icon>mdi-email-edit</v-icon>
+        <v-app-bar-nav-icon>
+          <v-icon>mdi-email-edit</v-icon>
+        </v-app-bar-nav-icon>
       </v-toolbar>
 
       <v-card-text>
-        <v-form ref="form" v-model="valid">
+        <v-form
+          ref="form"
+          v-model="valid"
+        >
           <v-text-field
             v-model="email"
             :rules="emailRules"
@@ -21,9 +31,9 @@
           <v-select
             v-model="subject"
             :items="subjects"
+            item-title="name"
             :rules="subjectRules"
-            :label="$t('contact.subject')"
-            name="subject"
+            :label="t('contact.subject')"
             outlined
             required
             return-object
@@ -31,7 +41,7 @@
           <v-textarea
             v-model="message"
             :rules="messageRules"
-            :label="$t('contact.content')"
+            :label="t('contact.content')"
             name="message"
             outlined
             required
@@ -39,7 +49,7 @@
           <v-checkbox
             v-if="subject.value === 'bugs'"
             v-model="sendBrowser"
-            :label="$t('contact.sendNavigatorVersion')"
+            :label="t('contact.sendNavigatorVersion')"
           />
         </v-form>
       </v-card-text>
@@ -47,94 +57,78 @@
       <v-card-actions>
         <v-spacer />
         <v-btn
-          color="error"
-          @click="$router.go(-1)"
-        >
-          {{ $t('cancel') }}
-        </v-btn>
-        <v-btn
           :disabled="!valid"
           :loading="loading"
           color="primary"
           @click="validate"
         >
-          {{ $t('send') }}
+          {{ t('send') }}
         </v-btn>
       </v-card-actions>
     </v-card>
   </section>
 </template>
 
-<script>
-export default {
-  transition: 'slide-x-transition',
-  data: () => ({
-    email: '',
-    message: '',
-    subject: {},
-    sendBrowser: true,
-    valid: true,
-    loading: false
-  }),
-  head () {
-    return {
-      title: 'Contact'
-    }
+<script setup>
+
+import { useSnacksStore } from '@/store/snacks';
+
+const { t } = useI18n();
+const snackStore = useSnacksStore();
+const { $mail } = useNuxtApp();
+
+const form = ref(null);
+const email = ref('');
+const message = ref('');
+const subject = ref(t('contact.requestInformation'));
+const sendBrowser = ref(true);
+const valid = ref(false);
+const loading = ref(false);
+
+const subjects = computed(() => [
+  {
+    value: 'informations',
+    name: t('contact.requestInformation'),
   },
-  computed: {
-    subjects () {
-      return [
-        {
-          value: 'informations',
-          text: this.$t('contact.requestInformation')
-        },
-        {
-          value: 'bugs',
-          text: this.$t('contact.bugReport')
-        },
-        {
-          value: 'apikey',
-          text: this.$t('contact.requestApikey')
-        }
-      ]
-    },
-    emailRules () {
-      return [
-        v => !!v || this.$t('contact.emailIsRequired'),
-        v => /.+@.+\..+/.test(v) || this.$t('contact.emailMustBeValid')
-      ]
-    },
-    messageRules () {
-      return [v => !!v || this.$t('contact.contentIsRequired')]
-    },
-    subjectRules () {
-      return [v => !!v || this.$t('contact.subjectIsRequired')]
-    }
+  {
+    value: 'bugs',
+    name: t('contact.bugReport'),
   },
-  methods: {
-    async validate () {
-      this.$refs.form.validate()
-      if (this.valid) {
-        this.loading = true
-        try {
-          await this.$mail.post('/contact', {
-            email: this.email,
-            subject: this.subject?.text,
-            message: this.message
-          })
-          this.$store.dispatch('snacks/success', this.$t('info.contact.mailSent'))
-          this.email = ''
-          this.subject = {}
-          this.message = ''
-          this.sendBrowser = true
-          this.$refs.form.resetValidation()
-          this.loading = false
-        } catch (e) {
-          this.$store.dispatch('snacks/error', this.$t('error.contact.failed'))
-          this.loading = false
-        }
-      }
+  {
+    value: 'apikey',
+    name: t('contact.requestApikey'),
+  },
+]);
+
+const emailRules = computed(() => [
+  (v) => !!v || t('contact.emailIsRequired'),
+  (v) => /.+@.+\..+/.test(v) || t('contact.emailMustBeValid'),
+]);
+
+const messageRules = computed(() => [(v) => !!v || t('contact.contentIsRequired')]);
+
+const subjectRules = computed(() => [(v) => !!v || t('contact.subjectIsRequired')]);
+
+function resetForm() {
+  message.value = ' ';
+}
+
+async function validate() {
+  if (valid) {
+    loading.true = true;
+    try {
+      await $mail.post('/contact', {
+        email: email.value,
+        subject: subject.value,
+        message: message.value,
+      });
+      resetForm();
+      snackStore.success(t('info.contact.mailSent'));
+    } catch (e) {
+      snackStore.error(t('error.contact.failed'));
     }
+    loading.value = false;
   }
 }
+
 </script>

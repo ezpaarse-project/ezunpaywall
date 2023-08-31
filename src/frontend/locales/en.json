@@ -1,7 +1,7 @@
 {
   "home": {
     "title" : "What is ezUnpaywall?",
-    "general1": "ezUnpaywall is a mirror of <a href=\"{linkHomepageUnpaywall}\" target=\"_blank\">Unpaywall</a> hosted at Inist-CNRS and developed by ezTEAM.",
+    "general1": "ezUnpaywall is a mirror of <a href=\"{linkUnpaywall}\" target=\"_blank\">Unpaywall</a> hosted at Inist-CNRS and developed by ezTEAM.",
     "general2": "It has an interface for enriching files with Open Access data from the DOI and a demonstrator for querying DOIs with GraphQL requests. ",
     "general3": "This server has an API that can be queried via an APIKey. You can get an APIKey on request to the team (see the contact section). For more information, see the <a href=\"{blogURL}\" target=\"_blank\">blog post</a>.",
     "metrics": "Metrics {env}",
@@ -117,7 +117,7 @@
   },
   "unpaywallArgs": {
     "title": "Settings",
-    "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can watch the <a href=\"{url}\" target=\"_blank\">unpaywall data format</a>",
+    "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can click to this button to see the unpaywall data format",
     "selectAll": "Select all",
     "unselectAll": "Unselect all",
     "general": {
@@ -201,6 +201,7 @@
     "source": "The update files come from unpaywall.org",
     "goTo": "See the registry",
     "noReport": "No report availables",
+    "status": "Status",
     "insertedDocs": "New lines",
     "updatedDocs": "Updated lines"
   },

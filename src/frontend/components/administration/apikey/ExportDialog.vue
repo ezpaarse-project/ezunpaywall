@@ -1,89 +1,91 @@
 <template>
-  <v-dialog :value="value" max-width="1000px" @input="updateVisible($event)">
+  <v-dialog
+    :value="value"
+    max-width="1000px"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <v-card>
-      <v-toolbar color="primary" dark>
-        {{ $t("administration.apikey.export") }}
+      <v-toolbar
+        color="primary"
+        dark
+      >
+        <v-toolbar-title>
+          {{ t('administration.apikey.export') }}
+        </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        <pre>
-          <highlightjs language="json" :code="apikeysStringified" />
-        </pre>
+        <JSONView
+          :code="apikeysStringified"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn @click="downloadItem()">
-          {{ $t("download") }}
+          {{ t("download") }}
         </v-btn>
         <v-btn @click="copyText()">
-          {{ $t("copy") }}
+          {{ t("copy") }}
         </v-btn>
-        <v-btn @click.stop="updateVisible(false)">
-          {{ $t("close") }}
+        <v-btn @click.stop="emit('update:modelValue', false)">
+          {{ t("close") }}
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
-export default {
-  name: 'ExportApikeyDialog',
-  props: {
-    value: {
-      type: Boolean,
-      default: false
-    },
-    apikeys: {
-      type: Array,
-      default: () => []
-    }
-  },
-  computed: {
-    apikeysStringified () {
-      return JSON.stringify(this.apikeys, null, 2)
-    }
-  },
-  methods: {
-    downloadItem () {
-      const element = document.createElement('a')
-      const stringifiedApikey = encodeURIComponent(JSON.stringify(this.apikeys, null, 2))
-      element.setAttribute('href', `data:text/plain;charset=utf-8,${stringifiedApikey}`)
-      element.setAttribute('download', `${this.$dateFns.format(new Date(), 'yyyy-MM-dd')}.apikeys-export.json`)
-      element.style.display = 'none'
-      element.click()
-    },
-    /**
-     * Necessary on preprod
-     * (http environment)
-     */
-    unsecuredCopyToClipboard (text) {
-      const textArea = document.createElement('textarea')
-      textArea.value = text
-      textArea.setAttribute('display', 'none')
-      textArea.focus()
-      textArea.select()
-      document.execCommand('copy')
-    },
-    copyText () {
-      try {
-        if (window.isSecureContext && navigator.clipboard) {
-          navigator.clipboard.writeText(JSON.stringify(this.apikeys, null, 2))
-        } else {
-          this.unsecuredCopyToClipboard(JSON.stringify(this.apikeys, null, 2))
-        }
-        this.$store.dispatch('snacks/info', this.$t('info.apikey.copied'))
-      } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error.apikey.copy'))
-        return
-      }
-      this.$store.dispatch('snacks/info', this.$t('info.apikey.copied'))
-    },
-    updateVisible (visible) {
-      this.$emit('input', visible)
-    }
-  }
-}
-</script>
+<script setup>
 
-<style>
-</style>
+import JSONView from '@/components/skeleton/JSONView.vue';
+
+import { useSnacksStore } from '@/store/snacks';
+
+const { t } = useI18n();
+const snackStore = useSnacksStore();
+const { $dateFns } = useNuxtApp();
+
+const value = ref('false');
+
+const props = defineProps({
+  apikeys: { type: Array, default: () => [] },
+});
+
+const apikeysStringified = computed(() => JSON.stringify(props.apikeys, null, 2));
+
+function downloadItem() {
+  const element = document.createElement('a');
+  const stringifiedApikey = encodeURIComponent(JSON.stringify(props.apikeys, null, 2));
+  element.setAttribute('href', `data:text/plain;charset=utf-8,${stringifiedApikey}`);
+  element.setAttribute('download', `${$dateFns.format(new Date(), 'yyyy-MM-dd')}.apikeys-export.json`);
+  element.style.display = 'none';
+  element.click();
+}
+
+function unsecuredCopyToClipboard(text) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.setAttribute('display', 'none');
+  textArea.focus();
+  textArea.select();
+  document.execCommand('copy');
+}
+function copyText() {
+  try {
+    if (window.isSecureContext && navigator.clipboard) {
+      navigator.clipboard.writeText(JSON.stringify(props.apikeys, null, 2));
+    } else {
+      unsecuredCopyToClipboard(JSON.stringify(props.apikeys, null, 2));
+    }
+    snackStore.info(t('info.apikey.copied'));
+  } catch (err) {
+    snackStore.error(t('error.apikey.copy'));
+    return;
+  }
+  snackStore.info(t('info.apikey.copied'));
+}
+
+const emit = defineEmits({
+  'update:modelValue': () => true,
+});
+
+</script>

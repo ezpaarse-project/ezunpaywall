@@ -6,18 +6,26 @@
         <v-spacer />
         <template v-if="config.allowed">
           <span class="green--text">
-            {{ $t('administration.apikey.allowed') }}
+            {{ t('administration.apikey.allowed') }}
           </span>
-          <v-icon size="30" right color="green">
+          <v-icon
+            size="30"
+            right
+            color="green"
+          >
             mdi-check
           </v-icon>
         </template>
 
         <template v-else>
           <span class="red--text">
-            {{ $t('administration.apikey.notAllowed') }}
+            {{ t('administration.apikey.notAllowed') }}
           </span>
-          <v-icon size="30" right color="red">
+          <v-icon
+            size="30"
+            right
+            color="red"
+          >
             mdi-close
           </v-icon>
         </template>
@@ -35,25 +43,25 @@
         <v-icon class="mr-3">
           mdi-account-circle
         </v-icon>
-        {{ $t("administration.apikey.ownerValue", { owner: config.owner }) }}
+        {{ t("administration.apikey.ownerValue", { owner: config.owner }) }}
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-text-account
         </v-icon>
-        {{ $t("administration.apikey.descriptionValue", { description: config.description }) }}
+        {{ t("administration.apikey.descriptionValue", { description: config.description }) }}
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-calendar-account-outline
         </v-icon>
-        <span> {{ $t("administration.apikey.createdAtValue", { date: config.createdAt }) }} </span>
+        <span> {{ t("administration.apikey.createdAtValue", { date: config.createdAt }) }} </span>
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-security
         </v-icon>
-        <span> {{ $t('administration.apikey.access') }} </span>
+        <span> {{ t('administration.apikey.access') }} </span>
         <v-chip
           v-for="access in config.access"
           :key="access"
@@ -69,7 +77,7 @@
       <v-icon class="mr-2 ml-4">
         mdi-code-json
       </v-icon>
-      <span> {{ $t('administration.apikey.attributes') }} </span>
+      <span> {{ t('administration.apikey.attributes') }} </span>
       <v-chip
         v-for="attribute in config.attributes"
         :key="attribute"
@@ -86,23 +94,30 @@
     <v-divider class="mx-2" />
 
     <v-card-actions>
-      <v-btn text @click.stop="setUpdateDialogVisible(true)">
-        <span> {{ $t("edit") }} </span>
+      <v-btn
+        text
+        @click.stop="setUpdateDialogVisible(true)"
+      >
+        <span> {{ t("edit") }} </span>
       </v-btn>
       <UpdateDialog
         v-model="updateDialogVisible"
-        :apikey="apikey"
+        :apikey="props.apikey"
         :config="config"
         @closed="setUpdateDialogVisible(false)"
         @updated="emitUpdated()"
       />
       <v-spacer />
-      <v-btn class="red--text" text @click.stop="setDeleteDialogVisible(true)">
-        <span> {{ $t("delete") }} </span>
+      <v-btn
+        class="red--text"
+        text
+        @click.stop="setDeleteDialogVisible(true)"
+      >
+        <span> {{ t("delete") }} </span>
       </v-btn>
       <DeleteDialog
         v-model="deleteDialogVisible"
-        :apikey="apikey"
+        :apikey="props.apikey"
         @closed="setDeleteDialogVisible(false)"
         @deleted="emitDeleted()"
       />
@@ -110,45 +125,37 @@
   </v-card>
 </template>
 
-<script>
-import DeleteDialog from '~/components/administration/apikey/DeleteDialog.vue'
-import UpdateDialog from '~/components/administration/apikey/UpdateDialog.vue'
+<script setup>
 
-export default {
-  name: 'ApikeyCard',
-  components: {
-    DeleteDialog,
-    UpdateDialog
-  },
-  props: {
-    apikey: {
-      type: String,
-      default: ''
-    },
-    config: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  data () {
-    return {
-      updateDialogVisible: false,
-      deleteDialogVisible: false
-    }
-  },
-  methods: {
-    setUpdateDialogVisible (value) {
-      this.updateDialogVisible = value
-    },
-    emitUpdated () {
-      this.$emit('updated')
-    },
-    setDeleteDialogVisible (value) {
-      this.deleteDialogVisible = value
-    },
-    emitDeleted () {
-      this.$emit('deleted')
-    }
-  }
+import DeleteDialog from '@/components/administration/apikey/DeleteDialog.vue';
+import UpdateDialog from '@/components/administration/apikey/UpdateDialog.vue';
+
+const { t } = useI18n();
+
+const props = defineProps({
+  apikey: { type: String, default: '' },
+  config: { type: Object, default: () => {} },
+});
+
+const emit = defineEmits({
+  updated: () => true,
+  deleted: () => true,
+});
+
+const updateDialogVisible = ref(false);
+const deleteDialogVisible = ref(false);
+
+function setUpdateDialogVisible(value) {
+  updateDialogVisible.value = value;
 }
+function emitUpdated() {
+  emit('updated');
+}
+function setDeleteDialogVisible(value) {
+  deleteDialogVisible.value = value;
+}
+function emitDeleted() {
+  emit('deleted');
+}
+
 </script>

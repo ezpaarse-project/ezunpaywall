@@ -1,20 +1,63 @@
-# ezunpaywall-frontend
+# Nuxt 3 Minimal Starter
 
-Web interface to demonstrate the functionality of graphql and enrich services.
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Service environment variables
+## Setup
 
-| name | default | description |
-| --- | --- | --- |
-| NODE_ENV | development | environment of node |
-| UNPAYWALL_API_HOST | http://api.unpaywall.org | unpaywall API host |
-| UNPAYWALL_HOMEPAGE_HOST | https://unpaywall.org | unpaywall homepage host |
-| GRAPHQL_HOST | http://localhost:59701 | graphql host |
-| UPDATE_HOST | http://localhost:59702 | update host |
-| ENRICH_HOST | http://localhost:59703 | enrich host |
-| APIKEY_HOST | http://localhost:59704 | apikey host |
-| MAIL_HOST | http://localhost:59705 | mail host |
-| MAIL_APIKEY | changeme | apikey of mail |
-| HEALTH_HOST | http://localhost:59707 | health host |
-| ELASTIC_ENV | development | elastic environment displayed on metrics page |
-| VERSION | development | version of ezunpaywall displayed on menu |
+Make sure to install the dependencies:
+
+```bash
+# npm
+npm install
+
+# pnpm
+pnpm install
+
+# yarn
+yarn install
+```
+
+## Development Server
+
+Start the development server on `http://localhost:3000`:
+
+```bash
+# npm
+npm run dev
+
+# pnpm
+pnpm run dev
+
+# yarn
+yarn dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+# npm
+npm run build
+
+# pnpm
+pnpm run build
+
+# yarn
+yarn build
+```
+
+Locally preview production build:
+
+```bash
+# npm
+npm run preview
+
+# pnpm
+pnpm run preview
+
+# yarn
+yarn preview
+```
+
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

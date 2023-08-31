@@ -14,20 +14,24 @@ export default defineNuxtConfig({
       mailHost: process.env.MAIL_HOST || 'http://localhost:59705',
       healthHost: process.env.HEALTH_HOST || 'http://localhost:59707',
       elasticEnv: process.env.ELASTIC_ENV || 'development',
-      version: process.env.VERSION || 'development'
-    }
+      version: process.env.VERSION || 'development',
+    },
+  },
+  devServer: {
+    host: '0.0.0.0',
+    port: 3000,
   },
   devtools: { enabled: true },
   modules: ['@pinia/nuxt', '@nuxtjs/i18n'],
   build: {
-    transpile: ['vuetify'],
+    transpile: ['vuetify', 'date-fns', '@intlify/core-base'],
   },
   i18n: {
-    vueI18n: './config/i18n.js'
+    vueI18n: './config/i18n.js',
   },
   css: [
     'swagger-ui/dist/swagger-ui.css',
     'vuetify/lib/styles/main.sass',
     '@mdi/font/css/materialdesignicons.min.css',
   ],
-})
+});

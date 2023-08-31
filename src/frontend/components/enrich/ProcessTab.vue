@@ -1,258 +1,237 @@
 <template>
   <v-card>
-    <v-layout justify-end class="mb-3">
-      <v-btn :disabled="isProcessing || error" @click="download()">
-        <v-icon left>
-          mdi-download
-        </v-icon>
-        {{ $t("enrich.download") }}
-      </v-btn>
-    </v-layout>
-    <v-container v-if="isProcessing" class="text-center">
+    <div
+      v-if="isProcessing"
+      class="text-center"
+    >
       <v-progress-circular
         :size="70"
         :width="7"
         indeterminate
         color="green"
       />
-      <div v-text="stepTitle" />
-    </v-container>
-    <v-container v-else class="text-center">
-      <v-icon v-if="error" size="70" color="orange darken-2">
+      <p> {{ stepTitle }} </p>
+    </div>
+    <div
+      v-else
+      class="text-center"
+    >
+      <v-icon
+        v-if="isError"
+        size="70"
+        color="orange darken-2"
+      >
         mdi-alert-circle
       </v-icon>
-      <v-icon v-else size="70" color="green darken-2">
+      <v-icon
+        v-else
+        size="70"
+        color="green darken-2"
+      >
         mdi-check
       </v-icon>
-      <div v-if="error" v-text="$t('error.enrich.job')" />
-      <div v-else v-text="$t('enrich.end')" />
-    </v-container>
-    <v-container>
-      <Report :time="time" :state="state" />
-    </v-container>
+      <div
+        v-if="isError"
+        v-text="t('error.enrich.job')"
+      />
+      <div
+        v-else
+        v-text="t('enrich.end')"
+      />
+    </div>
+    <Report
+      :time="time"
+      :state="state"
+    />
   </v-card>
 </template>
 
-<script>
-import Report from '~/components/enrich/Report.vue'
+<script setup>
 
-export default {
-  name: 'EnrichProcessTab',
-  components: {
-    Report
-  },
-  data: () => ({
-    // process
-    files: [],
-    apikey: 'demo',
-    attributes: ['doi'],
-    separator: ',',
-    type: '',
-    state: {},
-    stepTitle: '',
-    timer: undefined,
-    time: 0,
-    isProcessing: false,
-    error: false,
-    id: ''
-  }),
-  computed: {
-    resultID () {
-      return `${this.id}.${this.type}`
-    }
-  },
-  mounted () {
-    this.$root.$on('startEnrich', async () => {
-      this.attributes = this.$store.getters['enrich/getAttributes']
-      this.type = this.$store.getters['enrich/getType']
-      this.apikey = this.$store.getters['enrich/getApikey']
-      this.separator = this.$store.getters['enrich/getEnrichedFileSeparator']
-      if (this.type === 'csv') {
-        this.attributes = this.attributes.filter(e => !e.includes('oa_locations'))
-      }
-      this.files = this.$store.getters['enrich/getFiles']
-      await this.enrich()
-    })
-  },
-  methods: {
-    async upload () {
-      const formData = new FormData()
-      formData.append('file', this.files[0].file)
+/* eslint-disable camelcase */
+/* eslint-disable no-await-in-loop */
 
-      let upload
+import { storeToRefs } from 'pinia';
 
-      this.stepTitle = this.$t('enrich.stepUpload')
-      try {
-        upload = await this.$enrich({
-          method: 'POST',
-          url: '/upload',
-          data: formData,
-          headers: {
-            'Content-Type': 'text/csv',
-            'x-api-key': this.apikey
-          },
-          responseType: 'json'
-        })
-      } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error.enrich.uploadFile'))
-        return this.errored()
-      }
-      const id = upload.data
+import Report from '@/components/enrich/Report.vue';
 
-      return id
-    },
-    async startEnrichJob (id, data) {
-      try {
-        await this.$enrich({
-          method: 'POST',
-          url: `/job/${id}`,
-          data,
-          headers: {
-            'x-api-key': this.apikey
-          },
-          responseType: 'json'
-        })
-      } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error.enrich.job'))
-        return this.errored()
-      }
-    },
+import { useEnrichStore } from '@/store/enrich';
+import { useSnacksStore } from '@/store/snacks';
 
-    async getStateOfEnrichJob (id) {
-      let state
+const { t } = useI18n();
+const enrichStore = useEnrichStore();
+const snackStore = useSnacksStore();
+const { $enrich } = useNuxtApp();
+const { $emitter } = useNuxtApp();
 
-      do {
-        try {
-          state = await this.$enrich({
-            method: 'GET',
-            url: `/states/${id}.json`,
-            responseType: 'json',
-            headers: {
-              'x-api-key': this.apikey
-            }
-          })
-          this.state = state?.data
-        } catch (err) {
-          this.$store.dispatch('snacks/error', this.$t('error.enrich.state'))
-          return this.errored()
-        }
-        await new Promise(resolve => setTimeout(resolve, 1000))
-      } while (!state?.data?.done)
-    },
+const {
+  isProcessing, type, apikey, attributes, fileSeparator, files, isError,
+} = storeToRefs(enrichStore);
 
-    async enrich () {
-      this.time = 0
-      this.error = false
-      this.startTimer(Date.now())
-      this.isProcessing = true
-      this.$emit('isProcessing', true)
+const state = ref({});
+const stepTitle = ref('');
+const timer = ref(undefined);
+const time = ref(0);
 
-      const graphqlAttributes = this.parseUnpaywallAttributesToGraphqlAttributes(this.attributes)
-      const id = await this.upload()
-
-      if (!this.error) {
-        const data = {
-          type: this.type,
-          args: graphqlAttributes,
-          separator: this.separator
-        }
-        await this.startEnrichJob(id, data)
-      }
-
-      if (!this.error) {
-        this.stepTitle = this.$t('enrich.stepEnrich')
-        await this.getStateOfEnrichJob(id)
-      }
-
-      this.stopTimer()
-      this.isProcessing = false
-      this.$emit('isProcessing', false)
-      this.id = id
-    },
-
-    async download () {
-      let download
-      try {
-        download = await this.$enrich({
-          method: 'GET',
-          url: `/enriched/${this.resultID}`,
-          headers: {
-            'x-api-key': this.apikey
-          },
-          responseType: 'blob'
-        })
-      } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error.enrich.download'))
-        return this.errored()
-      }
-      this.forceFileDownload(download)
-    },
-
-    forceFileDownload (response) {
-      const url = window.URL.createObjectURL(new Blob([response.data]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', this.resultID)
-      document.body.appendChild(link)
-      link.click()
-    },
-
-    startTimer (startTime) {
-      this.timer = setInterval(() => {
-        this.time = Math.ceil((Date.now() - startTime) / 1000)
-      }, 500)
-    },
-
-    stopTimer () {
-      clearInterval(this.timer)
-    },
-
-    errored () {
-      this.stopTimer()
-      this.error = true
-      this.isProcessing = false
-      this.state = {}
-      this.id = ''
-    },
-
-    parseUnpaywallAttributesToGraphqlAttributes (attributes) {
-      const simple = attributes.filter((e) => { return !e.includes('.') })
-      let best_oa_location = attributes.filter((e) => { return e.includes('best_oa_location') })
-      let first_oa_location = attributes.filter((e) => { return e.includes('first_oa_location') })
-      let oa_locations = attributes.filter((e) => { return e.includes('oa_locations') })
-      let z_authors = attributes.filter((e) => { return e.includes('z_authors') })
-
-      if (
-        !simple.length &&
-        !best_oa_location.length &&
-        !first_oa_location.length &&
-        !oa_locations.length &&
-        !z_authors.length
-      ) {
-        return ''
-      }
-      const attrs = []
-      if (simple.length) {
-        attrs.push(simple.join(', '))
-      }
-      if (best_oa_location.length) {
-        best_oa_location = best_oa_location.map((e) => { return e.split('.')[1] })
-        attrs.push(`best_oa_location { ${best_oa_location.join(', ')} }`)
-      }
-      if (first_oa_location.length) {
-        first_oa_location = first_oa_location.map((e) => { return e.split('.')[1] })
-        attrs.push(`first_oa_location { ${first_oa_location.join(', ')} }`)
-      }
-      if (oa_locations.length) {
-        oa_locations = oa_locations.map((e) => { return e.split('.')[1] })
-        attrs.push(`oa_locations { ${oa_locations.join(', ')} }`)
-      }
-      if (z_authors.length) {
-        z_authors = z_authors.map((e) => { return e.split('.')[1] })
-        attrs.push(`z_authors { ${z_authors.join(', ')} }`)
-      }
-      return `{ ${attrs.join(', ')} }`
-    }
+const attributesFiltered = computed(() => {
+  if (type.value === 'csv') {
+    return attributes.value.filter((e) => !e.includes('oa_locations'));
   }
+  return attributes.value;
+});
+
+function startTimer(startTime) {
+  timer.value = setInterval(() => {
+    time.value = Math.ceil((Date.now() - startTime) / 1000);
+  }, 500);
 }
+
+function stopTimer() {
+  clearInterval(timer.value);
+}
+
+function errored() {
+  stopTimer();
+  enrichStore.setIsError(true);
+  enrichStore.setIsProcessing(false);
+  state.value = {};
+}
+
+async function upload() {
+  const formData = new FormData();
+  formData.append('file', files.value[0]);
+
+  let res;
+
+  stepTitle.value = t('enrich.stepUpload');
+  try {
+    res = await $enrich({
+      method: 'POST',
+      url: '/upload',
+      data: formData,
+      headers: {
+        'Content-Type': 'text/csv',
+        'x-api-key': apikey.value,
+      },
+      responseType: 'json',
+    });
+  } catch (err) {
+    snackStore.error(t('error.enrich.uploadFile'));
+    return errored();
+  }
+  const id = res.data;
+
+  return id;
+}
+
+async function enrich(id, data) {
+  try {
+    await $enrich({
+      method: 'POST',
+      url: `/job/${id}`,
+      data,
+      headers: {
+        'x-api-key': apikey.value,
+      },
+      responseType: 'json',
+    });
+  } catch (err) {
+    snackStore.error(t('error.enrich.job'));
+    return errored();
+  }
+  return true;
+}
+
+function parseUnpaywallAttributesToGraphqlAttributes(args) {
+  const simple = args.filter((e) => !e.includes('.'));
+  let best_oa_location = args.filter((e) => e.includes('best_oa_location'));
+  let first_oa_location = args.filter((e) => e.includes('first_oa_location'));
+  let oa_locations = args.filter((e) => e.includes('oa_locations'));
+  let z_authors = args.filter((e) => e.includes('z_authors'));
+
+  if (
+    !simple.length
+    && !best_oa_location.length
+    && !first_oa_location.length
+    && !oa_locations.length
+    && !z_authors.length
+  ) {
+    return '';
+  }
+  const attrs = [];
+  if (simple.length) {
+    attrs.push(simple.join(', '));
+  }
+  if (best_oa_location.length) {
+    best_oa_location = best_oa_location.map((e) => e.split('.')[1]);
+    attrs.push(`best_oa_location { ${best_oa_location.join(', ')} }`);
+  }
+  if (first_oa_location.length) {
+    first_oa_location = first_oa_location.map((e) => e.split('.')[1]);
+    attrs.push(`first_oa_location { ${first_oa_location.join(', ')} }`);
+  }
+  if (oa_locations.length) {
+    oa_locations = oa_locations.map((e) => e.split('.')[1]);
+    attrs.push(`oa_locations { ${oa_locations.join(', ')} }`);
+  }
+  if (z_authors.length) {
+    z_authors = z_authors.map((e) => e.split('.')[1]);
+    attrs.push(`z_authors { ${z_authors.join(', ')} }`);
+  }
+  return `{ ${attrs.join(', ')} }`;
+}
+
+async function getStateOfEnrichJob(id) {
+  let stateEnrich;
+
+  do {
+    try {
+      stateEnrich = await $enrich({
+        method: 'GET',
+        url: `/states/${id}.json`,
+        responseType: 'json',
+        headers: {
+          'x-api-key': apikey.value,
+        },
+      });
+      state.value = stateEnrich?.data;
+    } catch (err) {
+      snackStore.error(t('error.enrich.state'));
+      return errored();
+    }
+    await new Promise((resolve) => { setTimeout(resolve, 1000); });
+  } while (!stateEnrich?.data?.done);
+  return true;
+}
+
+async function startEnrich() {
+  time.value = 0;
+  enrichStore.setIsError(false);
+  enrichStore.setIsProcessing(true);
+  startTimer(Date.now());
+
+  const graphqlAttributes = parseUnpaywallAttributesToGraphqlAttributes(attributesFiltered.value);
+  const idProcess = await upload();
+
+  if (!isError.value) {
+    const data = {
+      type: type.value,
+      args: graphqlAttributes,
+      separator: fileSeparator.value,
+    };
+    await enrich(idProcess, data);
+  }
+
+  if (!isError.value) {
+    stepTitle.value = t('enrich.stepEnrich');
+    await getStateOfEnrichJob(idProcess);
+  }
+
+  stopTimer();
+  enrichStore.setIsProcessing(false);
+  enrichStore.setResultID(idProcess);
+}
+
+$emitter.on('enrich:start', startEnrich());
+
 </script>

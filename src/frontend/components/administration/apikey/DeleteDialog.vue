@@ -1,18 +1,38 @@
 <template>
-  <v-dialog :value="value" max-width="1000px" @input="updateVisible($event)">
+  <v-dialog
+    :value="value"
+    max-width="1000px"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <v-card>
-      <v-toolbar color="primary" dark>
-        <span class="mr-2" v-text="$t('administration.apikey.delete')" />
-        <v-chip label color="secondary" text-color="white">
-          {{ apikey }}
-        </v-chip>
+      <v-toolbar
+        color="primary"
+        dark
+      >
+        <v-toolbar-title>
+          {{ t('administration.apikey.delete') }}
+          <v-chip
+            label
+            color="secondary"
+            text-color="white"
+          >
+            {{ apikey }}
+          </v-chip>
+        </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        <div class="pa-12" v-text="$t('administration.apikey.deleteMessage')" />
+        <div
+          class="pa-12"
+          v-text="t('administration.apikey.deleteMessage')"
+        />
       </v-card-text>
       <v-card-actions>
-        <v-btn text class="red--text" @click.stop="updateVisible(false)">
-          {{ $t("no") }}
+        <v-btn
+          text
+          class="red--text"
+          @click.stop="emit('update:modelValue', false)"
+        >
+          {{ t("no") }}
         </v-btn>
         <v-spacer />
         <v-btn
@@ -21,55 +41,58 @@
           class="green--text"
           @click="deleteApikey()"
         >
-          {{ $t("yes") }}
+          {{ t("yes") }}
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
-export default {
-  name: 'ApikeyDeleteDialog',
-  props: {
-    value: {
-      type: Boolean,
-      default: false
-    },
-    apikey: {
-      type: String,
-      default: ''
-    }
-  },
-  data () {
-    return {
-      loading: false
-    }
-  },
-  methods: {
-    updateVisible (visible) {
-      this.$emit('input', visible)
-    },
-    async deleteApikey () {
-      this.loading = true
-      try {
-        await this.$apikey({
-          method: 'DELETE',
-          url: `/keys/${this.apikey}`,
-          headers: {
-            'X-API-KEY': this.$store.getters['admin/getPassword']
-          }
-        })
-      } catch (e) {
-        this.$store.dispatch('snacks/error', this.$t('error.apikey.delete'))
-        this.loading = false
-        return
-      }
-      this.$store.dispatch('snacks/info', this.$t('info.apikey.deleted'))
-      this.$emit('deleted')
-      this.loading = false
-      this.updateVisible(false)
-    }
+<script setup>
+
+import { storeToRefs } from 'pinia';
+
+import { useSnacksStore } from '@/store/snacks';
+import { useAdminStore } from '@/store/admin';
+
+const { t } = useI18n();
+const snackStore = useSnacksStore();
+const adminStore = useAdminStore();
+const { $apikey } = useNuxtApp();
+
+const { password } = storeToRefs(adminStore);
+
+const props = defineProps({
+  apikey: { type: String, default: '' },
+});
+
+const emit = defineEmits({
+  'update:modelValue': () => true,
+  deleted: () => true,
+});
+
+const value = ref('false');
+const loading = ref(false);
+
+async function deleteApikey() {
+  loading.value = true;
+  try {
+    await $apikey({
+      method: 'DELETE',
+      url: `/keys/${props.apikey}`,
+      headers: {
+        'X-API-KEY': password,
+      },
+    });
+  } catch (e) {
+    snackStore.error(t('error.apikey.delete'));
+    loading.value = false;
+    return;
   }
+  snackStore.info(t('info.apikey.deleted'));
+  emit('deleted');
+  loading.value = false;
+  emit('update:modelValue', false);
 }
+
 </script>
