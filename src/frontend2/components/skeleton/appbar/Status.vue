@@ -1,9 +1,9 @@
 <template>
   <v-tooltip location="bottom">
-    <template #activator="{ on }">
+    <template #activator="{ props }">
       <v-btn
         icon
-        v-bind="on"
+        v-bind="props"
       >
         <v-progress-circular
           v-if="inUpdate"

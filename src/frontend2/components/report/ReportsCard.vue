@@ -104,7 +104,6 @@ async function getReports() {
       data: report,
       createdAt: $dateFns.format(report.createdAt),
     });
-    // TODO dateFns.format on createdAt
   }
   reports.value = r;
   loading.value = false;

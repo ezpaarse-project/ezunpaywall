@@ -1,12 +1,10 @@
 <template>
   <v-tooltip location="bottom">
-    <template #activator="{ on }">
+    <template #activator="{ props }">
       <v-btn
-        icon
-        v-bind="on"
-      >
-        <v-icon>mdi-help-circle</v-icon>
-      </v-btn>
+        icon="mdi-help-circle"
+        v-bind="props"
+      />
     </template>
     <span> {{ t('header.help') }}</span>
   </v-tooltip>

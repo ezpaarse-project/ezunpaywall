@@ -1,22 +1,13 @@
 <template>
   <v-card class="my-3">
-    <v-toolbar
-      color="secondary"
-      dark
-      dense
-      flat
-    >
+    <v-toolbar color="secondary" dark dense flat>
       <v-toolbar-title> {{ t('enrich.enrichFile') }} </v-toolbar-title>
       <v-spacer />
       <v-app-bar-nav-icon>
         <v-icon>mdi-code-json</v-icon>
       </v-app-bar-nav-icon>
     </v-toolbar>
-    <v-stepper
-      v-model="step"
-      hide-actions
-      :items="['Select files', 'Settings', 'Enrich']"
-    >
+    <v-stepper v-model="step" hide-actions editable :items="['1. Select files', '2. Settings', '3. Enrich']">
       <template #item.1>
         <v-card flat>
           <v-card-actions>

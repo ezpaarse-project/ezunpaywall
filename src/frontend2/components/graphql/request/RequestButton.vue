@@ -23,7 +23,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits({
-  graphqlData: (data) => data,
+  'graphql-data': (data) => data,
 });
 
 const loading = ref(false);
@@ -43,13 +43,12 @@ async function graphqlRequest() {
         'x-api-key': props.apikey,
       },
     });
-    // TODO
-    // $vuetify.goTo('#graphqlResult')
   } catch (err) {
     snackStore.error(t('error.graphql.request'));
   }
+  document.getElementById('graphqlResult').scrollIntoView({ behavior: 'smooth' });
   loading.value = false;
-  emit('graphqlData', res?.data?.data);
+  emit('graphql-data', res?.data?.data);
 }
 
 </script>

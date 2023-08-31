@@ -3,7 +3,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import colors from 'vuetify/lib/util/colors';
 import { VDataTable } from 'vuetify/labs/VDataTable';
-import { VStepper } from 'vuetify/labs/VStepper';
+import { VStepper, VStepperHeader } from 'vuetify/labs/VStepper';
 
 import { defineNuxtPlugin } from '#imports';
 
@@ -14,6 +14,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       ...components,
       VDataTable,
       VStepper,
+      VStepperHeader,
     },
     directives,
     theme: {

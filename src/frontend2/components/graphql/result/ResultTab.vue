@@ -1,10 +1,9 @@
 <template>
   <div id="graphqlResult">
-    <div v-if="visible">
+    <div v-if="props.visible">
       <v-card-title> {{ t('graphql.result') }} </v-card-title>
       <v-card-text>
-        <highlightjs
-          language="json"
+        <JSONView
           :code="stringifiedGraphqlResult"
         />
       </v-card-text>
@@ -22,6 +21,8 @@
 </template>
 
 <script setup>
+
+import JSONView from '@/components/skeleton/JSONView.vue';
 
 const { t } = useI18n();
 const runtimeConfig = useRuntimeConfig();

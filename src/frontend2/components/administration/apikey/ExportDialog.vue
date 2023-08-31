@@ -14,8 +14,7 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        <highlightjs
-          langage="json"
+        <JSONView
           :code="apikeysStringified"
         />
       </v-card-text>
@@ -36,6 +35,8 @@
 </template>
 
 <script setup>
+
+import JSONView from '@/components/skeleton/JSONView.vue';
 
 import { useSnacksStore } from '@/store/snacks';
 

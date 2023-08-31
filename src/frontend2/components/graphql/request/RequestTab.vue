@@ -16,7 +16,7 @@
         :query="query"
         :apikey="apikey"
         :disabled="disabled"
-        @graphq-data="setGraphqlData"
+        @graphql-data="setGraphqlData"
       />
     </v-card-actions>
   </div>
@@ -40,7 +40,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits({
-  graphqlData: (data) => data,
+  'graphql-data': (data) => data,
   query: (data) => data,
 });
 
@@ -127,7 +127,7 @@ function copyText() {
 }
 
 function setGraphqlData(data) {
-  emit('graphqlData', data);
+  emit('graphql-data', data);
 }
 
 watch(

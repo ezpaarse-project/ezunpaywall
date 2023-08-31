@@ -1,10 +1,10 @@
+import 'highlight.js/styles/stackoverflow-light.css'
 import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
+import json from 'highlight.js/lib/languages/json';
 import highlightJS from '@highlightjs/vue-plugin';
-
 import { defineNuxtPlugin } from '#imports';
 
 export default defineNuxtPlugin((nuxtApp) => {
-  hljs.registerLanguage('javascript', javascript);
+  hljs.registerLanguage('json', json);
   nuxtApp.vueApp.use(highlightJS);
 });

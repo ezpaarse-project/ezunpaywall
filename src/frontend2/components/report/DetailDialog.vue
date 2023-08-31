@@ -14,11 +14,7 @@
         </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        {{ stringifiedReport }}
-        <highlightjs
-          language="json"
-          :code="stringifiedReport"
-        />
+        <JSONView :code="stringifiedReport" />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -35,6 +31,8 @@
 </template>
 
 <script setup>
+
+import JSONView from '@/components/skeleton/JSONView.vue';
 
 const { t } = useI18n();
 
