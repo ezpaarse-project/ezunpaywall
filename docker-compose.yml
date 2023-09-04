@@ -187,10 +187,15 @@ services:
     environment:
       - NODE_ENV=production
       - ELASTIC_ENV=production
+      - VERSION=production
       # host of service
+      - UNPAYWALL_HOMEPAGE_HOST
+      - UNPAYWALL_API_HOST
+      - UNPAYWALL_HOST
       - GRAPHQL_HOST
       - UPDATE_HOST
       - ENRICH_HOST
+      - APIKEY_HOST
       - MAIL_HOST
       - MAIL_APIKEY
     healthcheck:
