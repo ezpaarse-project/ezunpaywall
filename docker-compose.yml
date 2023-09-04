@@ -185,19 +185,19 @@ services:
     ports:
      - ${FRONTEND_PORT:-59706}:3000
     environment:
-      - NODE_ENV=production
-      - ELASTIC_ENV=production
-      - VERSION=production
-      # host of service
-      - UNPAYWALL_HOMEPAGE_HOST
-      - UNPAYWALL_API_HOST
-      - UNPAYWALL_HOST
-      - GRAPHQL_HOST
-      - UPDATE_HOST
-      - ENRICH_HOST
-      - APIKEY_HOST
-      - MAIL_HOST
-      - MAIL_APIKEY
+      - NODE_ENV=development
+      - NUXT_PUBLIC_NODE_ENV=development
+      - NUXT_PUBLIC_ELASTIC_ENV=development
+      - NUXT_PUBLIC_VERSION=development
+      - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_HOST
+      - NUXT_PUBLIC_UNPAYWALL_API_HOST
+      - NUXT_PUBLIC_UNPAYWALL_HOST
+      - NUXT_PUBLIC_GRAPHQL_HOST
+      - NUXT_PUBLIC_UPDATE_HOST
+      - NUXT_PUBLIC_ENRICH_HOST
+      - NUXT_PUBLIC_APIKEY_HOST
+      - NUXT_PUBLIC_MAIL_HOST
+      - NUXT_PUBLIC_MAIL_APIKEY
     healthcheck:
       test:
         [
