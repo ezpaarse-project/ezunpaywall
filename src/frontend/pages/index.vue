@@ -7,6 +7,8 @@
 
 <script setup>
 
+console.log(useNuxtApp())
+
 import HomeCard from '@/components/home/HomeCard.vue';
 import MetricsCard from '@/components/home/MetricsCard.vue';
 

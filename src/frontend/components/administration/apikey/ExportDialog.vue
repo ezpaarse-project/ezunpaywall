@@ -42,7 +42,6 @@ import { useSnacksStore } from '@/store/snacks';
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
-const { $dateFns } = useNuxtApp();
 
 const value = ref('false');
 
@@ -56,7 +55,7 @@ function downloadItem() {
   const element = document.createElement('a');
   const stringifiedApikey = encodeURIComponent(JSON.stringify(props.apikeys, null, 2));
   element.setAttribute('href', `data:text/plain;charset=utf-8,${stringifiedApikey}`);
-  element.setAttribute('download', `${$dateFns.format(new Date(), 'yyyy-MM-dd')}.apikeys-export.json`);
+  element.setAttribute('download', `${new Date()}.apikeys-export.json`);
   element.style.display = 'none';
   element.click();
 }

@@ -55,7 +55,6 @@ const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
 const { $update } = useNuxtApp();
-const { $dateFns } = useNuxtApp();
 
 const loading = ref(false);
 const reports = ref([]);
@@ -74,6 +73,18 @@ async function getReport(filename) {
     return;
   }
   return report.data;
+}
+
+function formatDate(date) {
+  const d = new Date(date);
+  let month = `${d.getMonth() + 1}`;
+  let day = `${d.getDate()}`;
+  const year = d.getFullYear();
+
+  if (month.length < 2) { month = `0${month}`; }
+  if (day.length < 2) { day = `0${day}`; }
+
+  return [year, month, day].join('-');
 }
 
 async function getReports() {
@@ -102,7 +113,7 @@ async function getReports() {
     r.push({
       id: i,
       data: report,
-      createdAt: $dateFns.format(report.createdAt),
+      createdAt: formatDate(report.createdAt),
     });
   }
   reports.value = r;

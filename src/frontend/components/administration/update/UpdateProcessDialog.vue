@@ -74,7 +74,6 @@ import { useAdminStore } from '@/store/admin';
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $dateFns } = useNuxtApp();
 const { $update } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
@@ -83,14 +82,29 @@ const emit = defineEmits({
   'update:modelValue': () => true,
 });
 
+function formatDate(date) {
+  const d = new Date(date);
+  let month = `${d.getMonth() + 1}`;
+  let day = `${d.getDate()}`;
+  const year = d.getFullYear();
+
+  if (month.length < 2) { month = `0${month}`; }
+  if (day.length < 2) { day = `0${day}`; }
+
+  return [year, month, day].join('-');
+}
+
 const value = ref('false');
 const valid = ref(true);
 const loading = ref(false);
 const interval = ref('day');
 const intervals = ref(['day', 'week']);
-const startDate = ref($dateFns.format(new Date(), 'yyyy-MM-dd'));
-const endDate = ref($dateFns.format(new Date(), 'yyyy-MM-dd'));
-const dateFormatRule = ref((date) => $dateFns.isMatch(date, 'yyyy-MM-dd') || 'YYYY-MM-DD');
+const startDate = ref(formatDate(new Date()));
+const endDate = ref(formatDate(new Date()));
+
+const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+
+const dateFormatRule = ref((date) => dateRegex.test(date) || 'porrr');
 const dateIsFutureRule = ref((date) => Date.now() > new Date(date) || t('administration.update.future'));
 
 async function startUpdate() {

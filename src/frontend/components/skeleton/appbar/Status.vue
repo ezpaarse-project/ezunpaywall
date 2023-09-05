@@ -60,7 +60,7 @@ async function getState() {
       },
     });
   } catch (err) {
-    snackStore.error(t('error.status.state'));
+    snackStore.error(t('error.status'));
   }
   state.value = res?.data;
 }
@@ -73,7 +73,7 @@ async function checkIfUpdate() {
       url: '/status',
     });
   } catch (err) {
-    snackStore.error(t('error.status.status'));
+    snackStore.error(t('error.status'));
   }
   if (res?.data) {
     inUpdate.value = true;
@@ -89,7 +89,4 @@ onMounted(async () => {
   await checkIfUpdate();
 });
 
-// onDestroyed(() => {
-//   clearTimeout(timeout)
-// }
 </script>

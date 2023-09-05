@@ -1,4 +1,5 @@
-import 'highlight.js/styles/stackoverflow-light.css'
+/* eslint-disable import/no-extraneous-dependencies */
+import 'highlight.js/styles/stackoverflow-light.css';
 import hljs from 'highlight.js/lib/core';
 import json from 'highlight.js/lib/languages/json';
 import highlightJS from '@highlightjs/vue-plugin';

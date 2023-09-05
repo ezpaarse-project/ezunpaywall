@@ -103,6 +103,7 @@
     "update" : {
       "title": "Launch an update",
       "future": "The date is after today",
+      "invalidDate": "The date is in wrong format",
       "interval": "Interval",
       "startDate": "Start date",
       "endDate": "End date"
@@ -232,10 +233,7 @@
       "update": "The API key could not be updated",
       "delete": "Cannot delete apikey"
     },
-    "status": {
-      "state": "Cannot get state of enrichment",
-      "status": "Cannot get state of enrichment"
-    },
+    "status": "Cannot get status of update",
     "update": {
       "start": "Cannot start update process"
     },

@@ -101,7 +101,7 @@ async function getUpdateCronConfig() {
     });
   } catch (err) {
     snackStore.error(t('error.cron.get'));
-    loading = false;
+    loading.value = false;
     return;
   }
   loading.value = false;

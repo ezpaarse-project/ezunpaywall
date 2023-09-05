@@ -173,7 +173,7 @@ async function createApikey() {
     });
   } catch (err) {
     snackStore.error(t('error.apikey.create'));
-    loading = false;
+    loading.value = false;
     return;
   }
   snackStore.info(t('info.apikey.created'));
