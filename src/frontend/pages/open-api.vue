@@ -23,7 +23,7 @@ import OpenApi from '@/components/openapi/OpenApi.vue';
 
 const runtimeConfig = useRuntimeConfig();
 
-const tab = ref(1);
+const tab = ref(0);
 const items = ref([
   'Graphql',
   'Enrich',
