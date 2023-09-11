@@ -7,7 +7,7 @@ const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 const getConfig = require('./lib/config');
 
-const { pingRedis } = require('./lib/services/redis');
+const { startConnectionRedis, pingRedis } = require('./lib/services/redis');
 
 require('./lib/cron');
 
@@ -54,8 +54,9 @@ app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${re
 
 app.use((error, req, res) => res.status(500).json({ message: error.message }));
 
-app.listen(3000, () => {
+app.listen(3000, async () => {
   logger.info('[express] ezunpaywall enrich service listening on 3000');
   getConfig();
+  await startConnectionRedis();
   pingRedis();
 });

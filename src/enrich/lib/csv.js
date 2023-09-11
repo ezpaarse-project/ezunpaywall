@@ -294,7 +294,7 @@ async function processEnrichCSV(id, index, args, state, separator) {
   });
 
   let data = [];
-  let headers = [];
+  const headers = [];
   let head = true;
 
   const enrichConfig = {
@@ -320,9 +320,8 @@ async function processEnrichCSV(id, index, args, state, separator) {
         if (head) {
           await parser.pause();
           head = false;
-          headers = await enrichHeaderCSV(headers, args);
-          enrichConfig.headers = headers;
-          await writeHeaderCSV(headers, separator, enrichedFile);
+          enrichConfig.headers = await enrichHeaderCSV(headers, args);
+          await writeHeaderCSV(enrichConfig.headers, separator, enrichedFile);
           await parser.resume();
         }
 
@@ -341,8 +340,7 @@ async function processEnrichCSV(id, index, args, state, separator) {
   // last insertion
   if (data.length !== 0) {
     if (head) {
-      headers = await enrichHeaderCSV(headers, args);
-      enrichConfig.headers = headers;
+      enrichConfig.headers = await enrichHeaderCSV(headers, args);
       await writeHeaderCSV(headers, separator, enrichedFile);
     }
     await enrichInFile(data, enrichConfig, state);
