@@ -11,6 +11,7 @@
         icon="mdi-help-circle"
         :href="dataFormatURL"
         target="_blank"
+        rel="noopener noreferrer"
       />
     </template>
     <span> {{ t('unpaywallArgs.help') }} </span>

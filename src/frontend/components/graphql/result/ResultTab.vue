@@ -12,6 +12,7 @@
         <v-btn
           :href="graphqlLink"
           target="_blank"
+          rel="noopener noreferrer"
         >
           {{ t('graphql.linkAPI') }}
         </v-btn>

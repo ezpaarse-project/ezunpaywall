@@ -2,6 +2,7 @@
   <v-btn
     :href="dashbordHost"
     target="_blank"
+    rel="noopener noreferrer"
   >
     <img
       style="max-width: 35px"

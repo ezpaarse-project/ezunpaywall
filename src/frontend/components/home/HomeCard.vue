@@ -9,10 +9,30 @@
       <v-toolbar-title> {{ t('home.title') }} </v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <div v-html="t('home.general1', { linkUnpaywall: linkUnpaywall.value })" />
+      <i18n-t scope="global" keypath="home.general1" tag="p" class="my-4">
+        <template #link>
+          <a
+            :href="linkUnpaywall"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Unpaywall
+          </a>
+        </template>
+      </i18n-t>
       <br>
       {{ t("home.general2") }}
-      <div v-html="t('home.general3', { blogURL: blogURL.value })" />
+      <i18n-t scope="global" keypath="home.general3" tag="p" class="my-4">
+        <template #link>
+          <a
+            :href="blogURL"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ t('home.blogPost') }}
+          </a>
+        </template>
+      </i18n-t>
     </v-card-text>
   </v-card>
 </template>

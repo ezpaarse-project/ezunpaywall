@@ -4,7 +4,7 @@
       small
       href="https://github.com/ezpaarse-project/ezunpaywall"
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
       variant="outlined"
     >
       Version: {{ version }}

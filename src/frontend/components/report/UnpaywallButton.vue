@@ -6,6 +6,7 @@
         icon="mdi-help-circle"
         :href="unpaywallLink"
         target="_blank"
+        rel="noopener noreferrer"
       />
     </template>
     {{ t("reportHistory.source") }}

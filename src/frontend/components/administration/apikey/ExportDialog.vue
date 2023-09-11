@@ -75,7 +75,6 @@ function copyText() {
     } else {
       unsecuredCopyToClipboard(JSON.stringify(props.apikeys, null, 2));
     }
-    snackStore.info(t('info.apikey.copied'));
   } catch (err) {
     snackStore.error(t('error.apikey.copy'));
     return;
