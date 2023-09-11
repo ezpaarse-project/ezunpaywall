@@ -1,0 +1,30 @@
+{
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:vue/vue3-essential",
+    "@nuxt/eslint-config"
+  ],
+  "overrides": [
+    {
+      "files": ["nuxt.config.js"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "vue"
+  ],
+  "rules": {
+    "import/extensions": "off",
+    "import/no-unresolved": "off"
+  }
+}

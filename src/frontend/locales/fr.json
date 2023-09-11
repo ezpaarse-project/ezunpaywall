@@ -1,9 +1,10 @@
 {
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
-    "general1": "ezUnpaywall est un miroir des données <a href=\"{linkHomepageUnpaywall}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
+    "general1": "ezUnpaywall est un miroir des données {link} hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
     "general2": "Il dispose d'une interface d'enrichissement de fichier en données Open Access à partir du DOI et d'un démonstrateur d'interrogation de DOI avec des requêtes GraphQL.",
-    "general3": "Ce serveur dispose d'une API interrogeable via une APIKey. Vous pouvez obtenir une APIKey sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
+    "general3": "Ce serveur dispose d'une API interrogeable via une clé d'API. Vous pouvez obtenir une clé d'API sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire {link}.",
+    "blogPost": "l'article de blog",
     "metrics": "Métriques {env}",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
@@ -103,6 +104,7 @@
     "update" : {
       "title": "Lancement d'une mise à jour",
       "future": "La date est après aujourd'hui",
+      "invalidDate": "La date est au mauvais format",
       "interval": "Intervalle",
       "startDate": "Date de début",
       "endDate": "Date de fin"
@@ -117,7 +119,7 @@
   },
   "unpaywallArgs": {
     "title": "Paramètres",
-    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
+    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez cliquer sur ce bouton pour voir le format de données unpaywall",
     "selectAll": "Tout sélectionner",
     "unselectAll": "Tout désélectionner",
     "general": {
@@ -201,6 +203,7 @@
     "source": "Les fichiers de mises à jours proviennent d'unpaywall.org",
     "goTo": "Voir la liste",
     "noReport": "Pas de rapport disponible",
+    "status": "Statut",
     "insertedDocs": "Nouvelles lignes",
     "updatedDocs": "Lignes mises à jour"
   },

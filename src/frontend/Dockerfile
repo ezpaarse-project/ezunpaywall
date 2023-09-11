@@ -1,22 +1,33 @@
-FROM node:18.12-alpine3.17
+FROM node:18.12-alpine3.17 as build
+
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
-EXPOSE 3000
-
-ARG GRAPHQL_HOST
-ARG UPDATE_HOST
-ARG ENRICH_HOST
-ARG APIKEY_HOST
-ARG MAIL_HOST
-
-ENV NODE_ENV production
+ARG NUXT_PUBLIC_NODE_ENV
+ARG NUXT_PUBLIC_UNPAYWALL_HOST
+ARG NUXT_PUBLIC_UNPAYWALL_API_HOST
+ARG NUXT_PUBLIC_DASHBOARD_HOST
+ARG NUXT_PUBLIC_GRAPHQL_HOST
+ARG NUXT_PUBLIC_UPDATE_HOST
+ARG NUXT_PUBLIC_ENRICH_HOST
+ARG NUXT_PUBLIC_APIKEY_HOST
+ARG NUXT_PUBLIC_HEALTH_HOST
+ARG NUXT_PUBLIC_MAIL_HOST
+ARG NUXT_PUBLIC_MAIL_APIKEY
+ARG NUXT_PUBLIC_ELASTIC_ENV
+ARG NUXT_PUBLIC_VERSION
 
 WORKDIR /usr/src/app
 
-COPY package*.json /usr/src/app/
-RUN npm ci --omit=dev
-COPY . /usr/src/app
+COPY package*.json ./
+
+RUN npm i
+
+COPY . .
 
 RUN npm run build
 
-CMD [ "npm", "start" ]
+FROM node:18.12-alpine3.17
+EXPOSE 3000
+ENV NODE_ENV production
+COPY --from=build /usr/src/app/.output /usr/src/app
+CMD [ "node", "/usr/src/app/server/index.mjs" ]

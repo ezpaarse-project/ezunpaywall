@@ -1,11 +1,17 @@
 <template>
-  <v-dialog :value="value" max-width="1000px" @input="updateVisible($event)">
+  <v-dialog
+    :value="value"
+    max-width="1000px"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <v-card>
       <v-toolbar
         color="primary"
         dark
       >
-        {{ $t('administration.apikey.import') }}
+        <v-toolbar-title>
+          {{ t('administration.apikey.import') }}
+        </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-textarea
@@ -20,68 +26,68 @@
       <v-card-actions>
         <v-spacer />
         <v-btn @click.stop="loadApikeys()">
-          {{ $t('send') }}
+          {{ t('send') }}
         </v-btn>
-        <v-btn @click.stop="updateVisible(false)">
-          {{ $t('close') }}
+        <v-btn @click.stop="emit('update:modelValue', false)">
+          {{ t('close') }}
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
-export default {
-  name: 'ImportApikeyDialog',
-  props: {
-    value: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data: () => {
-    return {
-      apikeys: ''
-    }
-  },
-  methods: {
-    updateVisible (visible) {
-      this.$emit('input', visible)
-    },
-    async loadApikeys () {
-      let parsedApikeys
-      try {
-        parsedApikeys = JSON.parse(this.apikeys)
-      } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error..apikey.parse'))
-        return
-      }
+<script setup>
 
-      this.loading = true
+import { storeToRefs } from 'pinia';
 
-      try {
-        await this.$apikey({
-          method: 'POST',
-          url: '/keys/load',
-          data: parsedApikeys,
-          headers: {
-            'X-API-KEY': this.$store.state.admin.password
-          }
-        })
-      } catch (err) {
-        this.$store.dispatch('snacks/error', this.$t('error.apikey.import'))
-        this.loading = false
-        return
-      }
-      this.$store.dispatch('snacks/info', this.$t('info.apikey.imported'))
-      this.$emit('imported')
-      this.loading = false
-      this.updateVisible(false)
-    }
+import { useSnacksStore } from '@/store/snacks';
+import { useAdminStore } from '@/store/admin';
+
+const { t } = useI18n();
+const snackStore = useSnacksStore();
+const adminStore = useAdminStore();
+const { $apikey } = useNuxtApp();
+
+const { password } = storeToRefs(adminStore);
+
+const emit = defineEmits({
+  'update:modelValue': () => true,
+  imported: () => true,
+});
+
+const value = ref('false');
+const apikeys = ref([]);
+const loading = ref(false);
+
+async function loadApikeys() {
+  let parsedApikeys;
+  try {
+    parsedApikeys = JSON.parse(apikeys.value);
+  } catch (err) {
+    snackStore.error(t('error..apikey.parse'));
+    return;
   }
+
+  loading.value = true;
+
+  try {
+    await $apikey({
+      method: 'POST',
+      url: '/keys/load',
+      data: parsedApikeys,
+      headers: {
+        'X-API-KEY': password,
+      },
+    });
+  } catch (err) {
+    snackStore.error(t('error.apikey.import'));
+    loading.value = false;
+    return;
+  }
+  snackStore.info(t('info.apikey.imported'));
+  emit('imported');
+  loading.value = false;
+  emit('update:modelValue', false);
 }
+
 </script>
-
-<style>
-
-</style>
