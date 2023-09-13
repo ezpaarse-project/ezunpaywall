@@ -1,43 +1,28 @@
-const graphql = require('graphql');
-
-const {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLBoolean,
-  GraphQLInt,
-  GraphQLList,
-  GraphQLID,
-} = graphql;
-
-const { oaLocationType } = require('./oalocation');
-const { authorType } = require('./author');
-
-const unpaywallType = new GraphQLObjectType({
-  name: 'unpaywallType',
-  fields: () => ({
-    best_oa_location: { type: oaLocationType },
-    first_oa_location: { type: oaLocationType },
-    data_standard: { type: GraphQLInt },
-    doi: { type: GraphQLID },
-    doi_url: { type: GraphQLString },
-    genre: { type: GraphQLString },
-    is_paratext: { type: GraphQLBoolean },
-    has_repository_copy: { type: GraphQLBoolean },
-    is_oa: { type: GraphQLBoolean },
-    journal_is_in_doaj: { type: GraphQLBoolean },
-    journal_is_oa: { type: GraphQLBoolean },
-    journal_issns: { type: GraphQLString },
-    journal_issn_l: { type: GraphQLString },
-    journal_name: { type: GraphQLString },
-    oa_locations: { type: new GraphQLList(oaLocationType) },
-    oa_status: { type: GraphQLString },
-    published_date: { type: GraphQLString },
-    publisher: { type: GraphQLString },
-    title: { type: GraphQLString },
-    updated: { type: GraphQLString },
-    year: { type: GraphQLString },
-    z_authors: { type: new GraphQLList(authorType) },
-  }),
-});
+const unpaywallType = `
+  type UnpaywallType {
+    doi: ID
+    best_oa_location: OaLocationType
+    first_oa_location: OaLocationType
+    data_standard: Int
+    doi_url: String
+    genre: String
+    is_paratext: Boolean
+    has_repository_copy: Boolean
+    is_oa: Boolean
+    journal_is_in_doaj: Boolean
+    journal_is_oa: Boolean
+    journal_issns: String
+    journal_issn_l: String
+    journal_name: String
+    oa_locations: [OaLocationType]
+    oa_status: String
+    published_date: String
+    publisher: String
+    title: String
+    updated: String
+    year: String
+    z_authors: [ZAuthorsType]
+  }
+`;
 
 module.exports = unpaywallType;

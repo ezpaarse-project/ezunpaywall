@@ -39,7 +39,7 @@ function flatten(obj) {
   return flattened;
 }
 
-async function GetByDOI(parent, args, req, info) {
+async function unpaywall(parent, args, req, info) {
   const apikey = req.get('X-API-KEY');
 
   if (!apikey) {
@@ -135,4 +135,4 @@ async function GetByDOI(parent, args, req, info) {
   return res.body.hits.hits.map((hit) => hit._source);
 }
 
-module.exports = GetByDOI;
+module.exports = unpaywall;

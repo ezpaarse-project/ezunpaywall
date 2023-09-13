@@ -1,21 +1,13 @@
-const graphql = require('graphql');
+const MetricsType = `
+  type MetricsType {
+    doi: Int,
+    isOA: Int,
+    goldOA: Int,
+    hybridOA: Int,
+    bronzeOA: Int,
+    greenOA: Int,
+    closedOA: Int,
+  }
+`;
 
-const {
-  GraphQLObjectType,
-  GraphQLInt,
-} = graphql;
-
-const metricsType = new GraphQLObjectType({
-  name: 'metricsType',
-  fields: {
-    doi: { type: GraphQLInt },
-    isOA: { type: GraphQLInt },
-    goldOA: { type: GraphQLInt },
-    hybridOA: { type: GraphQLInt },
-    bronzeOA: { type: GraphQLInt },
-    greenOA: { type: GraphQLInt },
-    closedOA: { type: GraphQLInt },
-  },
-});
-
-module.exports = metricsType;
+module.exports = MetricsType;
