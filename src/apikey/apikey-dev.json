@@ -25,11 +25,11 @@
     }
   },
   {
-    "apikey": "userRestricted",
+    "apikey": "restrictedUser",
     "config": {
-      "name": "userRestricted",
+      "name": "restrictedUser",
       "owner": "dev",
-      "description": "userRestricted dev apikey",
+      "description": "restrictedUser dev apikey",
       "createdAt": "2021-06-01",
       "access": ["graphql", "enrich"],
       "attributes": ["doi", "is_oa", "best_oa_location.license"],

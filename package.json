@@ -14,12 +14,21 @@
       "install:health": "cd src/health; npm install",
       "install:mail": "cd src/mail; npm install",
       "install:update": "cd src/update; npm install",
-      "postinstall": "npm run install:apikey && npm run install:enrich && npm run install:fakeUnpaywall && npm run install:frontend && npm run install:graphql && npm run install:health && npm run install:mail && npm run install:update",
-      "test:apikey": "cd src/apikey && npm run test",
-      "test:enrich": "cd src/enrich && npm run test",
-      "test:graphql": "cd src/graphql && npm run test",
-      "test:update": "cd src/update && npm run test",
-      "test": "npm run test:apikey; npm run test:enrich; npm run test:graphql; npm run test:update;"
+      "postinstall": "npm run install:apikey; npm run install:enrich; npm run install:fakeUnpaywall; npm run install:frontend; npm run install:graphql; npm run install:health; npm run install:mail; npm run install:update",
+      "test:apikey": "cd src/apikey; npm run test",
+      "test:enrich": "cd src/enrich; npm run test",
+      "test:graphql": "cd src/graphql; npm run test",
+      "test:update": "cd src/update; npm run test",
+      "test": "npm run test:apikey; npm run test:enrich; npm run test:graphql; npm run test:update;",
+      "audit:apikey": "cd src/apikey; npm audit",
+      "audit:enrich": "cd src/enrich; npm audit",
+      "audit:fakeUnpaywall": "cd src/fakeUnpaywall; npm audit",
+      "audit:frontend": "cd src/frontend; npm audit",
+      "audit:graphql": "cd src/graphql; npm audit",
+      "audit:health": "cd src/health; npm audit",
+      "audit:mail": "cd src/mail; npm audit",
+      "audit:update": "cd src/update; npm audit",
+      "audit": "npm run audit:apikey; npm run audit:enrich; npm run audit:fakeUnpaywall; npm run audit:frontend; npm run audit:graphql; npm run audit:health; npm run audit:mail; npm run audit:update"
    },
    "devDependencies": {
       "husky": "^8.0.3"

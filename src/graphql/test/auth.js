@@ -58,12 +58,12 @@ describe('Test: auth service in graphql service', () => {
     });
   });
 
-  describe('Test with userRestricted API key', () => {
+  describe('Test with restrictedUser API key', () => {
     it('Should do graphql request', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa, best_oa_location { license } } }` })
-        .set('x-api-key', 'userRestricted')
+        .set('x-api-key', 'restrictedUser')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -134,12 +134,12 @@ describe('Test: auth service in graphql service', () => {
     });
   });
 
-  describe('Test with userRestricted API key but with not authorized unpaywall attributes', () => {
+  describe('Test with restrictedUser API key but with not authorized unpaywall attributes', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa, oa_status } }` })
-        .set('x-api-key', 'userRestricted')
+        .set('x-api-key', 'restrictedUser')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
@@ -147,12 +147,12 @@ describe('Test: auth service in graphql service', () => {
     });
   });
 
-  describe('Test with userRestricted API key but with not authorized unpaywall attributes', () => {
+  describe('Test with restrictedUser API key but with not authorized unpaywall attributes', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa, best_oa_location { license }, first_oa_location { license } } }` })
-        .set('x-api-key', 'userRestricted')
+        .set('x-api-key', 'restrictedUser')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
