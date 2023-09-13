@@ -1,4 +1,4 @@
-FROM node:18.12-alpine3.17 as build
+FROM node:18.17-alpine3.18 as build
 
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
@@ -26,7 +26,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:18.12-alpine3.17
+FROM node:18.17-alpine3.18
 EXPOSE 3000
 ENV NODE_ENV production
 COPY --from=build /usr/src/app/.output /usr/src/app
