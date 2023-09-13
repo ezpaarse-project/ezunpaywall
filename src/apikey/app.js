@@ -7,7 +7,7 @@ const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 const getConfig = require('./lib/config');
 
-const { pingRedis, loadDemoAPIKey } = require('./lib/services/redis');
+const { pingRedis, startConnectionRedis, loadDemoAPIKey } = require('./lib/services/redis');
 
 const cronDemo = require('./lib/cron');
 
@@ -41,6 +41,7 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 app.listen(3000, async () => {
   logger.info('[express] ezunpaywall apikey service listening on 3000');
   getConfig();
+  await startConnectionRedis();
   pingRedis();
   loadDemoAPIKey();
   cronDemo.start();

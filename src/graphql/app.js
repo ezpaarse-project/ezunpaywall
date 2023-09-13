@@ -1,9 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const { graphqlHTTP } = require('express-graphql');
-const responseTime = require('response-time');
 const fs = require('fs-extra');
 const path = require('path');
+const express = require('express');
+const responseTime = require('response-time');
+const cors = require('cors');
+const { json } = require('body-parser');
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
+
+const { pingRedis, startConnectionRedis } = require('./lib/services/redis');
 
 const auth = require('./lib/middlewares/auth');
 
@@ -16,51 +20,53 @@ const { setMetrics } = require('./lib/controllers/metrics');
 
 const { pingElastic } = require('./lib/services/elastic');
 
-const schema = require('./lib/resolvers/graphql');
-
 const routerPing = require('./lib/routers/ping');
 const routerOpenapi = require('./lib/routers/openapi');
+
+const typeDefs = require('./lib/models');
+const resolvers = require('./lib/resolvers');
 
 const logDir = path.resolve(__dirname, 'log');
 fs.ensureDir(path.resolve(logDir));
 fs.ensureDir(path.resolve(logDir, 'application'));
 fs.ensureDir(path.resolve(logDir, 'access'));
 
-const app = express();
-
-// middleware
-app.use(morgan);
-app.use(responseTime());
-app.use(cors({
-  origin: '*',
-  allowedHeaders: ['Content-Type', 'x-api-key'],
-  method: ['GET', 'POST'],
-}));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// routers
-app.use(routerPing);
-app.use(routerOpenapi);
-
-app.use('/', auth, graphqlHTTP({
-  schema,
-  graphiql: false,
-}));
-
-app.use(routerPing);
-
-/* Errors and unknown routes */
-app.use((req, res) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
-
-app.use((error, req, res) => res.status(500).json({ message: error.message }));
-
-app.listen(3000, () => {
-  logger.info('[express] ezunpaywall graphQL API listening on 3000');
-  pingElastic().then(() => {
-    setMetrics();
-  });
-  getConfig();
-
-  cronMetrics.start();
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  csrfPrevention: false,
 });
+
+(async () => {
+  const app = express();
+
+  app.use(morgan);
+  app.use(responseTime());
+
+  app.use(cors({
+    origin: '*',
+    allowedHeaders: ['Content-Type', 'x-api-key'],
+    method: ['GET', 'POST'],
+  }));
+
+  app.use(routerPing);
+  app.use(routerOpenapi);
+
+  await server.start();
+
+  app.use('/graphql', cors(), json(), auth, expressMiddleware(server, {
+    context: async ({ req }) => req,
+  }));
+
+  app.listen(3000, async () => {
+    logger.info('[express] ezunpaywall graphQL API listening on 3000');
+    pingElastic().then(() => {
+      setMetrics();
+    });
+    getConfig();
+    await startConnectionRedis();
+    pingRedis();
+
+    cronMetrics.start();
+  });
+})();

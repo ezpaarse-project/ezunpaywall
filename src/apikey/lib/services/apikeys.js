@@ -110,7 +110,13 @@ async function update(id, newConfig) {
  * @returns {Promise<void>}
  */
 async function remove(id) {
-  await redisClient.del(id, redis.print);
+  try {
+    await redisClient.del(id, redis.print);
+  } catch (err) {
+    logger.error(`[redis] Cannot delete apikey [${id}]`, err);
+    return false;
+  }
+  return true;
 }
 
 module.exports = {

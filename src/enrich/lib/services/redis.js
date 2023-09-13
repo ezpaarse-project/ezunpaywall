@@ -4,11 +4,15 @@ const config = require('config');
 const logger = require('../logger');
 
 const redisClient = redis.createClient({
-  host: config.get('redis.host'),
-  port: config.get('redis.port'),
+  legacyMode: true,
+  socket: {
+    host: config.get('redis.host'),
+    port: config.get('redis.port'),
+  },
   password: config.get('redis.password'),
 });
 
+//
 redisClient.get = util.promisify(redisClient.get);
 redisClient.ping = util.promisify(redisClient.ping);
 
@@ -24,10 +28,23 @@ async function pingRedis() {
     logger.error(`[redis] Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
     return false;
   }
+  logger.info(`[redis] ping success ${config.get('redis.host')}:${config.get('redis.port')}`);
+  return true;
+}
+
+async function startConnectionRedis() {
+  try {
+    await redisClient.connect();
+  } catch (err) {
+    logger.error(`[redis] Cannot start connection ${config.get('redis.host')}:${config.get('redis.port')}`, err);
+    return false;
+  }
+  logger.info(`[redis] connect success ${config.get('redis.host')}:${config.get('redis.port')}`);
   return true;
 }
 
 module.exports = {
   redisClient,
+  startConnectionRedis,
   pingRedis,
 };

@@ -33,15 +33,15 @@ describe('test graphql metrics request', () => {
   });
 
   describe('GET: get metrics', () => {
-    it('Should get metrics - { Metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }', async () => {
+    it('Should get metrics - { metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: '{ Metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }' })
+        .query({ query: '{ metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }' })
         .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
-      const metrics = res?.body?.data?.Metrics;
+      const metrics = res?.body?.data?.metrics;
       expect(metrics).have.property('doi').eq(50);
       expect(metrics).have.property('isOA').eq(43);
       expect(metrics).have.property('goldOA').eq(17);
@@ -58,15 +58,15 @@ describe('test graphql metrics request', () => {
       await createIndex('unpaywall-test', mappingUnpaywall);
     });
 
-    it('Should get metrics - { Metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }', async () => {
+    it('Should get metrics - { metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: '{ Metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }' })
+        .query({ query: '{ metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }' })
         .set('x-api-key', 'user')
         .set('index', 'unpaywall-test');
 
       expect(res).have.status(200);
-      const metrics = res?.body?.data?.Metrics;
+      const metrics = res?.body?.data?.metrics;
       expect(metrics).have.property('doi').eq(0);
       expect(metrics).have.property('isOA').eq(0);
       expect(metrics).have.property('goldOA').eq(0);

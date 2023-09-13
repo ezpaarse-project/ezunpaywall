@@ -9,15 +9,25 @@ const logger = require('../logger');
  */
 async function pingRedisWithClient() {
   const redisClient = redis.createClient({
-    host: config.get('redis.host'),
-    port: config.get('redis.port'),
+    legacyMode: true,
+    socket: {
+      host: config.get('redis.host'),
+      port: config.get('redis.port'),
+    },
     password: config.get('redis.password'),
   });
 
   try {
-    await redisClient.ping();
+    await redisClient.connect();
   } catch (err) {
     logger.error(`[redis] Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
+    return false;
+  }
+
+  try {
+    await redisClient.disconnect();
+  } catch (err) {
+    logger.error(`[redis] Cannot disconnect ${config.get('redis.host')}:${config.get('redis.port')}`, err);
     return false;
   }
   return true;

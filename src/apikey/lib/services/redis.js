@@ -9,8 +9,11 @@ const logger = require('../logger');
 let apiKeys;
 
 const redisClient = redis.createClient({
-  host: config.get('redis.host'),
-  port: config.get('redis.port'),
+  legacyMode: true,
+  socket: {
+    host: config.get('redis.host'),
+    port: config.get('redis.port'),
+  },
   password: config.get('redis.password'),
 });
 
@@ -64,6 +67,17 @@ async function pingRedis() {
   return true;
 }
 
+async function startConnectionRedis() {
+  try {
+    await redisClient.connect();
+  } catch (err) {
+    logger.error(`[redis] Cannot start connection ${config.get('redis.host')}:${config.get('redis.port')}`, err);
+    return false;
+  }
+  logger.info(`[redis] connect success ${config.get('redis.host')}:${config.get('redis.port')}`);
+  return true;
+}
+
 /**
  * Load the demo apikey on redis which has a limit of 100 000 DOI.
  *
@@ -91,6 +105,7 @@ async function loadDemoAPIKey() {
 module.exports = {
   redisClient,
   pingRedis,
+  startConnectionRedis,
   load,
   loadDemoAPIKey,
 };
