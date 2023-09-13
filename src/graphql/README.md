@@ -11,9 +11,9 @@ unpaywall data access service
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
-| HEALTH_TIMEOUT | 3000 | timeout to query the health route |
 | ELASTICSEARCH_HOSTS | http://elastic | elasticsearch host |
 | ELASTICSEARCH_PORT | 9200 | elasticsearch port |
 | ELASTICSEARCH_USERNAME | elastic | elasticsearch admin username |
 | ELASTICSEARCH_PASSWORD | changeme | elasticsearch admin password |
 | ELASTICSEARCH_INDEX_ALIAS | upw | graphql entry point |
+| HEALTH_TIMEOUT | 3000 | timeout to query the health route |

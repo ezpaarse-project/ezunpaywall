@@ -1,63 +1,22 @@
-# Nuxt 3 Minimal Starter
+# ezunpaywall-frontend
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+frontend service of ezunpaywall
 
-## Setup
+## Service environment variables
 
-Make sure to install the dependencies:
+| name | default | description |
+| --- | --- | --- |
+| NUXT_PUBLIC_NODE_ENV | development | environment of node |
+| NUXT_PUBLIC_UNPAYWALL_HOST | https://unpaywall.org | Host of unpaywall |
+| NUXT_PUBLIC_UNPAYWALL_API_HOST | http://api.unpaywall.org | Host of API of unpaywall |
+| NUXT_PUBLIC_DASHBOARD_HOST | https://ezmesure.couperin.org/kibana/s/ezunpaywall/app/dashboards | Host of ezmesure dashboard |
+| NUXT_PUBLIC_GRAPHQL_HOST | http://localhost:59701 | Host of ezunpaywall graphql service |
+| NUXT_PUBLIC_UPDATE_HOST | http://localhost:59702 | Host of ezunpaywall update service |
+| NUXT_PUBLIC_ENRICH_HOST | http://localhost:59703 | Host of ezunpaywall enrich service |
+| NUXT_PUBLIC_APIKEY_HOST | http://localhost:59704 | Host of ezunpaywall apikey service |
+| NUXT_PUBLIC_MAIL_APIKEY | changeme | // TODO |
+| NUXT_PUBLIC_MAIL_HOST | http://localhost:59705 | Host of ezunpaywall mail service |
+| NUXT_PUBLIC_HEALTH_HOST | http://localhost:59707 | Host of ezunpaywall health service |
+| NUXT_PUBLIC_ELASTIC_ENV | development | version of elastic |
+| NUXT_PUBLIC_VERSION | development | version displayed on frontend |
 
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
