@@ -1,6 +1,6 @@
 # ezunpaywall
 
-ezunpaywall is an API and database that queries the Unpaywall database containing free scholarly articles
+Ezunpaywall is an API and database that queries the Unpaywall database containing free scholarly articles.
 
 **Table of content**
 - [Structure](#Structure)
@@ -24,7 +24,7 @@ ezunpaywall is an API and database that queries the Unpaywall database containin
 
 ## Structure
 
-unpaywall is made up of several services which are distributed in several docker containers
+Unpaywall is made up of several services which are distributed in several docker containers.
 ![Structure](/doc/structure.png)
 
 for `apikey`, `enrich`, `graphql`, `health`, `mail` and `update` service, a **open api** is available on frontend
@@ -65,7 +65,7 @@ docker-compose -f docker-compose.debug.yml ps
 ```
 #### Tests
 
-To run tests, you need ezunpaywall to be launched in dev mode with fakeUnpaywall. With that, you can run test on 
+To run tests, you need ezunpaywall to be launched in dev mode with fakeUnpaywall. With that, you can run test on.
 
 ```bash
 # there are alias on root folder
@@ -140,8 +140,7 @@ in the update service, there is a cron that allows to automatically update the d
 ## API Graphql
 ### unpaywall
 
-get Unpaywall data with [parameters](#Object-structure). 
-You can also use intervals 
+get unpaywall data with [parameters](#Object-structure). 
 ### Examples
 #### GET
 
