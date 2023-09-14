@@ -11,7 +11,6 @@ const { startConnectionRedis, pingRedis } = require('./lib/services/redis');
 
 require('./lib/cron');
 
-const routerExample = require('./lib/routers/example');
 const routerPing = require('./lib/routers/ping');
 const routerJob = require('./lib/routers/job');
 const routerFile = require('./lib/routers/file');
@@ -42,7 +41,6 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(routerExample);
 app.use(routerJob);
 app.use(routerFile);
 app.use(routerState);

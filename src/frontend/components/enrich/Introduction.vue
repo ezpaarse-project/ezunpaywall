@@ -25,8 +25,10 @@
 
 <script setup>
 
+import { useSnacksStore } from '@/store/snacks';
+
 const { t } = useI18n();
-const { $enrich } = useNuxtApp();
+const snackStore = useSnacksStore();
 
 function forceFileDownload(response, type) {
   const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -40,11 +42,7 @@ function forceFileDownload(response, type) {
 async function download(type) {
   let res;
   try {
-    res = await $enrich({
-      method: 'GET',
-      url: `/example/${type}`,
-      responseType: 'blob',
-    });
+    res = await $fetch(`/api/enrich/${type}`);
   } catch (err) {
     snackStore.error(t('error.enrich.download'));
   }
