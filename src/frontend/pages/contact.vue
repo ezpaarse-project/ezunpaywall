@@ -117,14 +117,18 @@ async function validate() {
   if (valid) {
     loading.true = true;
     try {
-      await $mail.post('/contact', {
-        email: email.value,
-        subject: subject.value,
-        message: message.value,
+      await $fetch('/nuxt/mail', {
+        method: 'POST',
+        body: {
+          email: email.value,
+          subject: subject.value,
+          message: message.value,
+        },
       });
       resetForm();
       snackStore.success(t('info.contact.mailSent'));
     } catch (e) {
+      console.log(e);
       snackStore.error(t('error.contact.failed'));
     }
     loading.value = false;

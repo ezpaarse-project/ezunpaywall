@@ -62,7 +62,7 @@ async function getMetrics() {
       url: '/graphql',
       params: {
         query:
-          '{ DailyMetrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }',
+          '{ metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }',
       },
     });
   } catch (err) {
@@ -71,14 +71,14 @@ async function getMetrics() {
 
   loading.value = false;
 
-  if (res?.data?.data?.DailyMetrics) {
-    metrics.value.doi = res?.data?.data?.DailyMetrics.doi;
-    metrics.value.isOA = res?.data?.data?.DailyMetrics.isOA;
-    metrics.value.goldOA = res?.data?.data?.DailyMetrics.goldOA;
-    metrics.value.hybridOA = res?.data?.data?.DailyMetrics.hybridOA;
-    metrics.value.bronzeOA = res?.data?.data?.DailyMetrics.bronzeOA;
-    metrics.value.greenOA = res?.data?.data?.DailyMetrics.greenOA;
-    metrics.value.closedOA = res?.data?.data?.DailyMetrics.closedOA;
+  if (res?.data?.data?.metrics) {
+    metrics.value.doi = res?.data?.data?.metrics.doi;
+    metrics.value.isOA = res?.data?.data?.metrics.isOA;
+    metrics.value.goldOA = res?.data?.data?.metrics.goldOA;
+    metrics.value.hybridOA = res?.data?.data?.metrics.hybridOA;
+    metrics.value.bronzeOA = res?.data?.data?.metrics.bronzeOA;
+    metrics.value.greenOA = res?.data?.data?.metrics.greenOA;
+    metrics.value.closedOA = res?.data?.data?.metrics.closedOA;
   }
 }
 

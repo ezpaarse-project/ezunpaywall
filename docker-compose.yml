@@ -184,6 +184,7 @@ services:
     container_name: ezunpaywall-frontend-prod
     ports:
      - ${FRONTEND_PORT:-59706}:3000
+     - 24678:24678
     environment:
       - NODE_ENV=development
       - NUXT_PUBLIC_NODE_ENV=development
@@ -196,8 +197,8 @@ services:
       - NUXT_PUBLIC_UPDATE_HOST
       - NUXT_PUBLIC_ENRICH_HOST
       - NUXT_PUBLIC_APIKEY_HOST
-      - NUXT_PUBLIC_MAIL_HOST
-      - NUXT_PUBLIC_MAIL_APIKEY
+      - NUXT_MAIL_APIKEY
+      - NUXT_MAIL_HOST="http://mail:3000"
     healthcheck:
       test:
         [

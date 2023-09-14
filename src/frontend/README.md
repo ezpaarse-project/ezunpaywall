@@ -14,8 +14,8 @@ frontend service of ezunpaywall
 | NUXT_PUBLIC_UPDATE_HOST | http://localhost:59702 | Host of ezunpaywall update service |
 | NUXT_PUBLIC_ENRICH_HOST | http://localhost:59703 | Host of ezunpaywall enrich service |
 | NUXT_PUBLIC_APIKEY_HOST | http://localhost:59704 | Host of ezunpaywall apikey service |
-| NUXT_PUBLIC_MAIL_APIKEY | changeme | // TODO |
-| NUXT_PUBLIC_MAIL_HOST | http://localhost:59705 | Host of ezunpaywall mail service |
+| NUXT_MAIL_APIKEY | changeme | Apikey to send mail of mail service |
+| NUXT_MAIL_HOST | http://localhost:59705 | Host of ezunpaywall mail service |
 | NUXT_PUBLIC_HEALTH_HOST | http://localhost:59707 | Host of ezunpaywall health service |
 | NUXT_PUBLIC_ELASTIC_ENV | development | version of elastic |
 | NUXT_PUBLIC_VERSION | development | version displayed on frontend |
