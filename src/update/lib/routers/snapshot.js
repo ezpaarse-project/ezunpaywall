@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const upload = require('../middlewares/multer');
 const checkAuth = require('../middlewares/auth');
+const dev = require('../middlewares/dev');
 
 const validateLatest = require('../middlewares/latest');
 const validateFilename = require('../middlewares/filename');
@@ -27,12 +28,12 @@ router.get('/snapshots', checkAuth, validateLatest, getFiles);
  *
  * This route need a body that contains the file to upload.
  */
-router.post('/snapshots', checkAuth, upload.single('file'), uploadFile);
+router.post('/snapshots', dev, checkAuth, upload.single('file'), uploadFile);
 
 /**
  * Route that delete a file on ezunpaywall.
  * Auth required.
  */
-router.delete('/snapshots/:filename', checkAuth, validateFilename, deleteFileInstalled);
+router.delete('/snapshots/:filename', dev, checkAuth, validateFilename, deleteFileInstalled);
 
 module.exports = router;

@@ -20,6 +20,8 @@ const {
   loadDevApikey,
 } = require('../controllers/manage');
 
+const dev = require('../middlewares/dev');
+
 /**
  * Route that get config of apikey.
  * Auth required.
@@ -55,7 +57,7 @@ router.delete('/keys/:apikey', checkAuth, validateApikey, deleteApiKey);
  * Using for test.
  * Auth required.
  */
-router.delete('/keys', checkAuth, deleteAllApikey);
+router.delete('/keys', dev, checkAuth, deleteAllApikey);
 
 /**
  * Route that load apikeys.
@@ -68,6 +70,6 @@ router.post('/keys/load', checkAuth, validateLoadApikey, loadApikey);
  * Using for test.
  * Auth required.
  */
-router.post('/keys/loadDev', checkAuth, loadDevApikey);
+router.post('/keys/loadDev', dev, checkAuth, loadDevApikey);
 
 module.exports = router;
