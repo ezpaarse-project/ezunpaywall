@@ -6,8 +6,19 @@
     chips
     closable-chips
     multiple
+    clearable
     @update:model-value="emit('update:modelValue', $event)"
   >
+    <template #prepend-item>
+      <v-list>
+        <v-list-item
+          link
+          @click="selectAll()"
+        >
+          {{ t('unpaywallArgs.selectAll') }}
+        </v-list-item>
+      </v-list>
+    </template>
     <template #chip="{ props, item }">
       <v-chip
         v-bind="props"
@@ -32,7 +43,7 @@ defineProps({
   value: { type: Array, default: () => [] },
 });
 
-const items = computed(() => [
+const items = ref([
   'doi',
   'data_standard',
   'doi_url',
@@ -76,5 +87,13 @@ const subItems = computed(() => ({
 const emit = defineEmits({
   'update:modelValue': (data) => data,
 });
+
+async function selectAll() {
+  emit('update:modelValue', items.value);
+}
+
+async function unSelectAll() {
+  emit('update:modelValue', []);
+}
 
 </script>
