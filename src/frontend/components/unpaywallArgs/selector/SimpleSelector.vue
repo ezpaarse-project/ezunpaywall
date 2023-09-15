@@ -50,7 +50,6 @@ const items = ref([
   'genre',
   'is_oa',
   'is_paratext',
-  'text',
   'journal_is_in_doaj',
   'journal_is_oa',
   'journal_issn_l',
