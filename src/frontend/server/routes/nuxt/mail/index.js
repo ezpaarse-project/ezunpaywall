@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { email, subject, message } = body;
 
-  const { data, error } = await $fetch(
+  const { data } = await $fetch(
     `${runtimeConfig.mailHost}/contact`,
     {
       method: 'POST',
@@ -21,6 +21,5 @@ export default defineEventHandler(async (event) => {
       },
     },
   );
-  console.log(error);
   return data;
 });

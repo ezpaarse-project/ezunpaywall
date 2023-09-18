@@ -128,7 +128,6 @@ async function validate() {
       resetForm();
       snackStore.success(t('info.contact.mailSent'));
     } catch (e) {
-      console.log(e);
       snackStore.error(t('error.contact.failed'));
     }
     loading.value = false;

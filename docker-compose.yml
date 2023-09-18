@@ -182,9 +182,6 @@ services:
     build:
       context: ./src/frontend
     container_name: ezunpaywall-frontend-prod
-    ports:
-     - ${FRONTEND_PORT:-59706}:3000
-     - 24678:24678
     environment:
       - NODE_ENV=development
       - NUXT_PUBLIC_NODE_ENV=development
@@ -193,10 +190,10 @@ services:
       - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_HOST
       - NUXT_PUBLIC_UNPAYWALL_API_HOST
       - NUXT_PUBLIC_UNPAYWALL_HOST
-      - NUXT_PUBLIC_GRAPHQL_HOST
-      - NUXT_PUBLIC_UPDATE_HOST
-      - NUXT_PUBLIC_ENRICH_HOST
-      - NUXT_PUBLIC_APIKEY_HOST
+      - NUXT_PUBLIC_GRAPHQL_HOST=http://localhost/api
+      - NUXT_PUBLIC_UPDATE_HOST=http://localhost/api/update
+      - NUXT_PUBLIC_ENRICH_HOST=http://localhost/api/enrich
+      - NUXT_PUBLIC_APIKEY_HOST=http://localhost/api/apikey
       - NUXT_MAIL_APIKEY
       - NUXT_MAIL_HOST="http://mail:3000"
     healthcheck:
