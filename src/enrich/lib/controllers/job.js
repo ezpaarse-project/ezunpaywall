@@ -21,7 +21,7 @@ async function job(req, res, next) {
   const apikey = req.get('x-api-key');
 
   const {
-    type, args, index, separator,
+    type, args, index, separator, prefix,
   } = config;
 
   if (!await fs.pathExists(path.resolve(uploadDir, apikey, `${id}.${type}`))) {
@@ -29,11 +29,11 @@ async function job(req, res, next) {
   }
 
   if (type === 'jsonl') {
-    enrichJSON(id, index, args, apikey);
+    enrichJSON(id, index, args, prefix, apikey);
   }
 
   if (type === 'csv') {
-    enrichCSV(id, index, args, apikey, separator);
+    enrichCSV(id, index, args, apikey, prefix, separator);
   }
 
   return res.status(200).json(id);

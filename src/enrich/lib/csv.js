@@ -153,11 +153,12 @@ async function writeInFileCSV(data, headers, separator, enrichedFile, state) {
  * Enrich the csv header with graphql args.
  *
  * @param {Array<string>} headers - csv header.
+ * @param {string} prefix - Prefix of new column in header.
  * @param {string} args - Graphql args.
  *
  * @returns {Promise<Array<string>>} header enriched.
  */
-async function enrichHeaderCSV(headers, args) {
+async function enrichHeaderCSV(headers, prefix, args) {
   args = args.replace(/\s/g, '').substring(1);
   args = args.substring(0, args.length - 1);
   const regex = /,([a-z_]+){(.*?)}/gm;
@@ -189,7 +190,11 @@ async function enrichHeaderCSV(headers, args) {
   });
   // delete doublon
   const uSet = new Set(headers.concat(args.split(',')));
-  return [...uSet];
+  let result = [...uSet];
+  if (prefix) {
+    result = result.map((e) => `${prefix}.${e}`);
+  }
+  return result;
 }
 
 /**
@@ -263,11 +268,12 @@ async function enrichInFile(data, enrichConfig, state) {
  * @param {string} index - Index name of mapping.
  * @param {string} args - Attributes will be add.
  * @param {string} state - State of job.
+ * @param {string} prefix - Prefix of new column in header.
  * @param {string} separator - separator of enriched file.
  *
  * @returns {Promise<void>}
  */
-async function processEnrichCSV(id, index, args, state, separator) {
+async function processEnrichCSV(id, index, args, state, prefix, separator) {
   const enrichedFilename = `${id}.csv`;
   const enrichedFile = path.resolve(enrichedDir, state.apikey, enrichedFilename);
   const uploadFile = path.resolve(uploadDir, state.apikey, `${id}.csv`);
@@ -320,7 +326,7 @@ async function processEnrichCSV(id, index, args, state, separator) {
         if (head) {
           await parser.pause();
           head = false;
-          enrichConfig.headers = await enrichHeaderCSV(headers, args);
+          enrichConfig.headers = await enrichHeaderCSV(headers, prefix, args);
           await writeHeaderCSV(enrichConfig.headers, separator, enrichedFile);
           await parser.resume();
         }

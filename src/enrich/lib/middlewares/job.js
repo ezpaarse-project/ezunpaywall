@@ -20,6 +20,7 @@ async function validateJobConfig(req, res, next) {
     type: joi.string().trim().valid('jsonl', 'csv').required(),
     args: joi.string().trim(),
     index: joi.string().trim().default('unpaywall'),
+    prefix: joi.string().trim().default(''),
     separator: joi.string().trim().default(','),
   }).validate(req.body);
 

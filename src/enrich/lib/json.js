@@ -148,7 +148,7 @@ async function enrichInFile(data, enrichConfig, state) {
   const { enrichedArray } = enrichedData;
   await writeInFileJSON(enrichedArray, enrichedFile, state);
 
-  state.linesRead += data?.length;
+  state.linesRead += data.length;
   state.enrichedLines += response?.length || 0;
   state.loaded += loaded;
 
@@ -167,11 +167,12 @@ async function enrichInFile(data, enrichConfig, state) {
  * @param {string} id - Id of process.
  * @param {string} index - Index name of mapping.
  * @param {string} args - Attributes will be add.
+ * @param {string} prefix - Prefix of new key will be add.
  * @param {string} state - State of job.
  *
  * @returns {Promise<void>}
  */
-async function processEnrichJSON(id, index, args, state) {
+async function processEnrichJSON(id, index, args, prefix, state) {
   const enrichedFilename = `${id}.jsonl`;
   const enrichedFile = path.resolve(enrichedDir, state.apikey, enrichedFilename);
   const uploadFile = path.resolve(uploadDir, state.apikey, `${id}.jsonl`);
