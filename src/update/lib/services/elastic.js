@@ -118,9 +118,50 @@ async function initAlias(indexName, mapping, aliasName) {
   }
 }
 
+async function getDataByListOfDOI(dois, index) {
+  // Normalize request
+  const normalizeDOI = dois.map((doi) => doi.toLowerCase());
+
+  const filter = [{ terms: { doi: normalizeDOI } }];
+
+  const query = {
+    bool: {
+      filter,
+    },
+  };
+
+  let res;
+  try {
+    res = await elasticClient.search({
+      index,
+      size: normalizeDOI.length || 1000,
+      body: {
+        query,
+      },
+
+    });
+  } catch (err) {
+    logger.error('[elastic] Cannot request elastic', err);
+    return null;
+  }
+  // eslint-disable-next-line no-underscore-dangle
+  return res.body.hits.hits.map((hit) => hit._source);
+}
+
+async function refreshIndex(index) {
+  return elasticClient.indices.refresh({ index });
+}
+
+async function bulk(data) {
+  return elasticClient.bulk({ body: data });
+}
+
 module.exports = {
   elasticClient,
   pingElastic,
   createIndex,
   initAlias,
+  getDataByListOfDOI,
+  refreshIndex,
+  bulk,
 };

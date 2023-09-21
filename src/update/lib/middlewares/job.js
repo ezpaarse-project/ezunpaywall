@@ -72,8 +72,31 @@ async function validateInsertFile(req, res, next) {
   return next();
 }
 
+/**
+ * Joi middleware to check if job config for insert history of open access.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function validateHistoryJob(req, res, next) {
+  const { error, value } = joi.object({
+    index: joi.string().trim().default('unpaywall_history'),
+    interval: joi.string().trim().valid('day', 'week').default('day'),
+    startDate: joi.date().format('YYYY-MM-DD'),
+    endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')),
+  }).with('endDate', 'startDate').validate(req.body);
+
+  if (error) return res.status(400).json({ message: error.details[0].message });
+
+  req.data = value;
+
+  return next();
+}
+
 module.exports = {
   validateSnapshotJob,
   validateJobChangefilesConfig,
   validateInsertFile,
+  validateHistoryJob,
 };

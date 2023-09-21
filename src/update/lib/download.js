@@ -47,7 +47,7 @@ async function updatePercentStepDownload(filepath, size, start) {
   step.took = (new Date() - start) / 1000;
   step.percent = ((bytes.size / size) * 100).toFixed(2);
   updateLatestStep(step);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => { setTimeout(resolve, 1000); });
   updatePercentStepDownload(filepath, size, start);
 }
 

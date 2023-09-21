@@ -44,6 +44,24 @@
       "lines": 50,
       "size": 19896,
       "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake1.jsonl.gz?api_key=default"
+    },
+    {
+      "date": "",
+      "filename": "history1.jsonl.gz",
+      "filetype": "jsonl",
+      "last_modified": "",
+      "lines": 50,
+      "size": 19918,
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/history1.jsonl.gz?api_key=default"
+    },
+    {
+      "date": "",
+      "filename": "history2.jsonl.gz",
+      "filetype": "jsonl",
+      "last_modified": "",
+      "lines": 50,
+      "size": 19896,
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/history2.gz?api_key=default"
     }
   ]
 }
