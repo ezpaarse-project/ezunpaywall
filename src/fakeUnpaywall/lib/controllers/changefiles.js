@@ -88,6 +88,11 @@ async function updateChangefilesExample(interval) {
     changefilesDay.list[6].last_modified = new Date(now - (2 * oneYear) - (2 * oneDay))
       .toISOString().slice(0, 19);
 
+    changefilesDay.list[7].date = new Date(now - (2 * oneYear) - (3 * oneDay))
+      .toISOString().slice(0, 10);
+    changefilesDay.list[7].last_modified = new Date(now - (2 * oneYear) - (3 * oneDay))
+      .toISOString().slice(0, 19);
+
     try {
       await fs.writeFile(changefilesDayPath, JSON.stringify(changefilesDay, null, 2), 'utf8');
     } catch (err) {

@@ -22,10 +22,9 @@ const {
   getLatestStep,
 } = require('./models/state');
 
-const {
-  insertDataUnpaywall,
-  insertHistoryDataUnpaywall,
-} = require('./insert');
+const insertDataUnpaywall = require('./insert');
+
+const insertHistoryDataUnpaywall = require('./history');
 
 const {
   getChangefiles,
@@ -132,7 +131,7 @@ async function insertChangefile(jobConfig) {
 }
 
 /**
- * Download and insert on elastic the changefiles from unpaywall between a period.
+ * Download and insert on elastic the changefiles from unpaywall between a period with history.
  *
  * @param {Object} jobConfig - Config of job.
  * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
@@ -179,6 +178,7 @@ async function insertWithOaHistoryJob(jobConfig) {
     success = await downloadChangefile(changefilesInfo[i], interval);
     if (!success) return;
     jobConfig.filename = changefilesInfo[i].filename;
+    jobConfig.date = changefilesInfo[i].date;
     success = await insertHistoryDataUnpaywall(jobConfig);
     if (!success) return;
   }

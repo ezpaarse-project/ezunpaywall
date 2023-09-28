@@ -9,7 +9,8 @@ const config = require('config');
 const zlib = require('zlib');
 
 const logger = require('./logger');
-const unpaywallMapping = require('../mapping/unpaywall.json');
+const unpaywallEnrichedMapping = require('../mapping/unpaywall.json');
+const unpaywallHistoryMapping = require('../mapping/unpaywall_history.json');
 
 const {
   addStepInsert,
@@ -20,12 +21,11 @@ const {
 
 const {
   refreshIndex,
+  getDataByListOfDOI,
   bulk,
-  initAlias,
   createIndex,
 } = require('./services/elastic');
 
-const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 
 const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
@@ -37,7 +37,7 @@ const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
  *
  * @returns {Promise<boolean>} Success or not.
  */
-async function insertUnpaywallDataInElastic(data) {
+async function insertUnpaywallDataInElastic(data, index) {
   const step = getLatestStep();
   let res;
   try {
@@ -53,16 +53,16 @@ async function insertUnpaywallDataInElastic(data) {
 
   items.forEach((i) => {
     if (i?.index?.result === 'created') {
-      step.insertedDocs += 1;
+      step.index[index].insertedDocs += 1;
       return;
     }
     if (i?.index?.result === 'updated') {
-      step.updatedDocs += 1;
+      step.index[index].updatedDocs += 1;
       return;
     }
 
     if (i?.index?.error !== undefined) {
-      step.failedDocs += 1;
+      step.index[index].failedDocs += 1;
       errors.push(i?.index?.error);
     }
   });
@@ -82,45 +82,137 @@ async function insertUnpaywallDataInElastic(data) {
 
   return true;
 }
+/**
+ * // TODO DOC
+ * @param {*} listOfDoi
+ * @param {*} newData
+ * @param {*} date
+ * @param {*} step
+ * @returns
+ */
+async function insertData(listOfDoi, newData, date) {
+  // TODO not hardcode
+  const oldData = await getDataByListOfDOI(listOfDoi, 'unpaywall_enriched');
+
+  const resHistoryData = [];
+  const resData = [];
+
+  if (!oldData) {
+    newData.forEach((data) => {
+      const copyData = data;
+      copyData.referencedAt = date;
+      // classic insertion
+      // TODO not hardcode
+      resData.push({ index: { _index: 'unpaywall_enriched', _id: data.doi } });
+      resData.push(copyData);
+    });
+    return true;
+  }
+
+  const oldUnpaywallDataMap = new Map(
+    oldData.map((data) => {
+      const copyData = { ...data };
+      return [data.doi, copyData];
+    }),
+  );
+
+  newData.forEach((data) => {
+    const copyData = data;
+    copyData.referencedAt = date;
+    // history insertion
+    const oldDataUnpaywall = oldUnpaywallDataMap.get(data.doi);
+
+    if (oldDataUnpaywall) {
+      const newEntry = {
+        ...oldDataUnpaywall,
+        date,
+      };
+      newEntry.endValidity = data.updated;
+
+      // TODO not hardcode
+      resHistoryData.push({ index: { _index: 'unpaywall_history' } });
+      resHistoryData.push(newEntry);
+
+      // if data, get the old referencedAt
+      copyData.referencedAt = oldDataUnpaywall.referencedAt;
+    }
+
+    // classic insertion
+    // TODO not hardcode
+    resData.push({ index: { _index: 'unpaywall_enriched', _id: data.doi } });
+    resData.push(copyData);
+  });
+
+  // TODO not hardcode
+  await insertUnpaywallDataInElastic(resData, 'unpaywall_enriched');
+
+  if (resHistoryData.length > 0) {
+    // TODO not hardcode
+    await insertUnpaywallDataInElastic(resHistoryData, 'unpaywall_history');
+  }
+
+  return true;
+}
 
 /**
- * Inserts the contents of an unpaywall data update file.
+ * Inserts the contents of an unpaywall data update file with history.
  *
  * @param {Object} insertConfig - Config of insertion.
  * @param {string} insertConfig.filename - Name of the snapshot file from which the data will
  * be retrieved to be inserted into elastic.
+ * @param {string} insertConfig.date - Date of file.
  * @param {string} insertConfig.index - Name of the index to which the data will be inserted.
  * @param {number} insertConfig.offset - Line of the snapshot at which the data insertion starts.
  * @param {number} insertConfig.limit - Line in the file where the insertion stops.
  *
  * @returns {Promise<boolean>} Success or not.
  */
-async function insertDataUnpaywall(insertConfig) {
+async function insertHistoryDataUnpaywall(insertConfig) {
   const {
-    filename, index, offset, limit,
+    filename, date, index, offset, limit,
   } = insertConfig;
 
-  // step insertion in the state
-  const start = new Date();
-  addStepInsert(filename);
-  const step = getLatestStep();
-  step.file = filename;
-  step.index = index;
-  updateLatestStep(step);
-
   try {
-    await createIndex(index, unpaywallMapping);
+    // TODO not hardcode index
+    await createIndex('unpaywall_enriched', unpaywallEnrichedMapping);
   } catch (err) {
     logger.error(`[elastic] Cannot create index [${index}]`, err);
     await fail(err);
     return false;
   }
 
-  await initAlias(index, unpaywallMapping, indexAlias);
+  try {
+    // TODO not hardcode index
+    await createIndex('unpaywall_history', unpaywallHistoryMapping);
+  } catch (err) {
+    logger.error(`[elastic] Cannot create index [${index}]`, err);
+    await fail(err);
+    return false;
+  }
+
+  // step insertion in the state
+  const start = new Date();
+  addStepInsert(filename);
+  const step = getLatestStep();
+  step.file = filename;
+  step.index = {
+    // TODO not hardcode
+    unpaywall_enriched: {
+      insertedDocs: 0,
+      updatedDocs: 0,
+      failedDocs: 0,
+    },
+    unpaywall_history: {
+      insertedDocs: 0,
+      updatedDocs: 0,
+      failedDocs: 0,
+    },
+  };
+  updateLatestStep(step);
 
   const filePath = path.resolve(snapshotsDir, filename);
 
-  // get information "bytes" for state
+  // get information bytes for state
   let bytes;
   try {
     bytes = await fs.stat(filePath);
@@ -160,8 +252,8 @@ async function insertDataUnpaywall(insertConfig) {
     crlfDelay: Infinity,
   });
 
-  // array that will contain the packet of 1000 unpaywall data
-  let bulkOps = [];
+  let newData = [];
+  let listOfDoi = [];
 
   let success;
 
@@ -182,8 +274,9 @@ async function insertDataUnpaywall(insertConfig) {
       // fill the array
       try {
         const doc = JSON.parse(line);
-        bulkOps.push({ index: { _index: index, _id: doc.doi } });
-        bulkOps.push(doc);
+        // [history]
+        listOfDoi.push(doc.doi);
+        newData.push(doc);
       } catch (err) {
         logger.error(`[job: insert] Cannot parse [${line}] in json format`, err);
         await fail(err);
@@ -191,9 +284,11 @@ async function insertDataUnpaywall(insertConfig) {
       }
     }
     // bulk insertion
-    if (bulkOps.length >= maxBulkSize) {
-      success = await insertUnpaywallDataInElastic(bulkOps, step);
-      bulkOps = [];
+    if (newData.length >= maxBulkSize) {
+      success = await insertData(listOfDoi, newData, date);
+      listOfDoi = [];
+      newData = [];
+
       if (!success) return false;
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
@@ -205,9 +300,11 @@ async function insertDataUnpaywall(insertConfig) {
     }
   }
   // last insertion if there is data left
-  if (bulkOps.length > 0) {
-    success = await insertUnpaywallDataInElastic(bulkOps, step);
-    bulkOps = [];
+  if (newData.length > 0) {
+    // [history]
+    success = await insertData(listOfDoi, newData, date);
+    listOfDoi = [];
+    newData = [];
     if (!success) return false;
   }
 
@@ -227,4 +324,4 @@ async function insertDataUnpaywall(insertConfig) {
   return true;
 }
 
-module.exports = insertDataUnpaywall;
+module.exports = insertHistoryDataUnpaywall;

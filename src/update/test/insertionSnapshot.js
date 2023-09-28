@@ -53,7 +53,7 @@ describe('Test: download and insert snapshot from unpaywall', () => {
       let isUpdate = true;
       do {
         isUpdate = await checkIfInUpdate();
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
       } while (isUpdate);
 
       const count = await countDocuments('unpaywall-test');

@@ -58,7 +58,7 @@ describe('Week: Test: weekly update route test', () => {
     it('Should insert 50 data', async () => {
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall-test');
@@ -161,7 +161,7 @@ describe('Week: Test: weekly update route test', () => {
     it('should insert 50 data', async () => {
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall-test');

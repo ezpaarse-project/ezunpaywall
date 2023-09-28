@@ -17,124 +17,216 @@
       "@timestamp": {
         "type": "date"
       },
+      "best_oa_location": {
+        "properties": {
+          "endpoint_id": {
+            "type": "keyword"
+          },
+          "evidence": {
+            "type": "keyword"
+          },
+          "host_type": {
+            "type": "keyword"
+          },
+          "is_best": {
+            "type": "boolean"
+          },
+          "license": {
+            "type": "keyword"
+          },
+          "pmh_id": {
+            "type": "keyword"
+          },
+          "repository_instution": {
+            "type": "keyword"
+          },
+          "updated": {
+            "type": "date"
+          },
+          "url": {
+            "type": "keyword"
+          },
+          "url_for_landing_page": {
+            "type": "keyword"
+          },
+          "url_for_pdf": {
+            "type": "keyword"
+          },
+          "version": {
+            "type": "keyword"
+          }
+        }
+      },
+      "date": {
+        "type": "date"
+      },
+      "data_standard": {
+        "type": "long"
+      },
       "doi": {
         "type": "keyword"
       },
-      "history": {
+      "doi_url": {
+        "type": "keyword"
+      },
+      "endValidity": {
+        "type": "date"
+      },
+      "first_oa_location": {
         "properties": {
-          "best_oa_location": {
-            "properties": {
-              "evidence": { "type": "keyword" },
-              "host_type":{ "type": "keyword" },
-              "is_best": { "type": "boolean" },
-              "license": { "type": "keyword" },
-              "pmh_id": { "type": "keyword" },
-              "updated": { "type": "date" },
-              "url": { "type": "keyword" },
-              "url_for_landing_page": { "type": "keyword" },
-              "url_for_pdf": { "type": "keyword" },
-              "version": { "type": "keyword" }
-            }
-          },
-          "data_standard": {
-            "type": "long"
-          },
-          "doi_url": {
+          "endpoint_id": {
             "type": "keyword"
           },
-          "first_oa_location": {
-            "properties": {
-              "evidence": { "type": "keyword" },
-              "host_type":{ "type": "keyword" },
-              "is_best": { "type": "boolean" },
-              "license": { "type": "keyword" },
-              "pmh_id": { "type": "keyword" },
-              "updated": { "type": "date" },
-              "url": { "type": "keyword" },
-              "url_for_landing_page": { "type": "keyword" },
-              "url_for_pdf": { "type": "keyword" },
-              "version": { "type": "keyword" }
-            }
-          },
-          "genre": {
+          "evidence": {
             "type": "keyword"
           },
-          "has_repository_copy": {
+          "host_type": {
+            "type": "keyword"
+          },
+          "is_best": {
             "type": "boolean"
           },
-          "is_oa": {
-            "type": "boolean"
-          },
-          "is_paratext": {
-            "type": "boolean"
-          },
-          "journal_is_in_doaj": {
-            "type": "boolean"
-          },
-          "journal_is_oa": {
-            "type": "boolean"
-          },
-          "journal_issn_l": {
+          "license": {
             "type": "keyword"
           },
-          "journal_issns": {
+          "pmh_id": {
             "type": "keyword"
           },
-          "journal_name": {
+          "repository_instution": {
             "type": "keyword"
-          },
-          "oa_locations": {
-            "properties": {
-              "evidence": { "type": "keyword" },
-              "host_type":{ "type": "keyword" },
-              "is_best": { "type": "boolean" },
-              "license": { "type": "keyword" },
-              "pmh_id": { "type": "keyword" },
-              "updated": { "type": "date" },
-              "url": { "type": "keyword" },
-              "url_for_landing_page": { "type": "keyword" },
-              "url_for_pdf": { "type": "keyword" },
-              "version": { "type": "keyword" }
-            }
-          },
-          "oa_status": {
-            "type": "keyword"
-          },
-          "published_date": {
-            "type": "date",
-            "format": "iso8601"
-          },
-          "publisher": {
-            "type": "keyword"
-          },
-          "title": {
-            "type": "text"
           },
           "updated": {
-            "type": "date",
-            "format": "iso8601"
+            "type": "date"
           },
-          "year": {
+          "url": {
             "type": "keyword"
           },
-          "z_authors": {
+          "url_for_landing_page": {
+            "type": "keyword"
+          },
+          "url_for_pdf": {
+            "type": "keyword"
+          },
+          "version": {
+            "type": "keyword"
+          }
+        }
+      },
+      "genre": {
+        "type": "keyword"
+      },
+      "has_repository_copy": {
+        "type": "boolean"
+      },
+      "is_oa": {
+        "type": "boolean"
+      },
+      "is_paratext": {
+        "type": "boolean"
+      },
+      "journal_is_in_doaj": {
+        "type": "boolean"
+      },
+      "journal_is_oa": {
+        "type": "boolean"
+      },
+      "journal_issn_l": {
+        "type": "keyword"
+      },
+      "journal_issns": {
+        "type": "keyword"
+      },
+      "journal_name": {
+        "type": "keyword"
+      },
+      "oa_locations": {
+        "properties": {
+          "endpoint_id": {
+            "type": "keyword"
+          },
+          "evidence": {
+            "type": "keyword"
+          },
+          "host_type": {
+            "type": "keyword"
+          },
+          "is_best": {
+            "type": "boolean"
+          },
+          "license": {
+            "type": "keyword"
+          },
+          "pmh_id": {
+            "type": "keyword"
+          },
+          "repository_instution": {
+            "type": "keyword"
+          },
+          "updated": {
+            "type": "date"
+          },
+          "url": {
+            "type": "keyword"
+          },
+          "url_for_landing_page": {
+            "type": "keyword"
+          },
+          "url_for_pdf": {
+            "type": "keyword"
+          },
+          "version": {
+            "type": "keyword"
+          }
+        }
+      },
+      "oa_status": {
+        "type": "keyword"
+      },
+      "published_date": {
+        "type": "date",
+        "format": "iso8601"
+      },
+      "publisher": {
+        "type": "keyword"
+      },
+      "referencedAt": {
+        "type": "date"
+      },
+      "title": {
+        "type": "text"
+      },
+      "updated": {
+        "type": "date",
+        "format": "iso8601"
+      },
+      "year": {
+        "type": "keyword"
+      },
+      "z_authors": {
+        "properties": {
+          "family": {
+            "type": "keyword"
+          },
+          "given": {
+            "type": "keyword"
+          },
+          "sequence": {
+            "type": "keyword"
+          },
+          "ORCID": {
+            "type": "keyword"
+          },
+          "authenticated-orcid": {
+            "type": "boolean"
+          },
+          "affiliation": {
             "properties": {
-              "family": { "type": "keyword" },
-              "given": { "type": "keyword" },
-              "sequence": { "type": "keyword" },
-              "ORCID": { "type": "keyword" },
-              "authenticated-orcid": { "type": "boolean" },
-              "affiliation": {
-                "properties": {
-                  "name": { "type": "keyword" }
-                }
+              "name": {
+                "type": "keyword"
               }
             }
           }
         }
-      },
-      "referencedAt": {
-        "type": "date"
       }
     }
   }

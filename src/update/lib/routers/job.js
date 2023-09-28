@@ -53,6 +53,6 @@ router.post('/job/changefile/:filename', checkStatus, checkAuth, validateInsertF
  *
  * This route need a body that contains a config of job.
  */
-router.post('/job/history/insert', checkStatus, checkAuth, validateHistoryJob, insertWithOaHistory);
+router.post('/job/history', checkStatus, checkAuth, validateHistoryJob, insertWithOaHistory);
 
 module.exports = router;

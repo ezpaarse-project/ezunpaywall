@@ -61,7 +61,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       let isUpdate = true;
       do {
         isUpdate = await checkIfInUpdate();
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
       } while (isUpdate);
 
       const count = await countDocuments('unpaywall-test');

@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const { Readable } = require('stream');
 const { format } = require('date-fns');
+const { setTimeout } = require('node:timers/promises');
 const logger = require('./logger');
 
 const {
@@ -34,6 +35,7 @@ async function updatePercentStepDownload(filepath, size, start) {
     return;
   }
   const step = getLatestStep();
+  logger.debug(`updatePercentStepDownload : ${step.percent}`);
   let bytes;
   try {
     bytes = await fs.stat(filepath);
@@ -47,7 +49,7 @@ async function updatePercentStepDownload(filepath, size, start) {
   step.took = (new Date() - start) / 1000;
   step.percent = ((bytes.size / size) * 100).toFixed(2);
   updateLatestStep(step);
-  await new Promise((resolve) => { setTimeout(resolve, 1000); });
+  await setTimeout(1000);
   updatePercentStepDownload(filepath, size, start);
 }
 
@@ -68,8 +70,10 @@ async function download(file, filepath, size) {
       const writeStream = file.pipe(fs.createWriteStream(filepath));
 
       const start = new Date();
-      // update the percentage of the download step in parallel
-      updatePercentStepDownload(filepath, size, start);
+      writeStream.on('ready', async () => {
+        // update the percentage of the download step in parallel
+        updatePercentStepDownload(filepath, size, start);
+      });
 
       writeStream.on('finish', async () => {
         step.status = 'success';

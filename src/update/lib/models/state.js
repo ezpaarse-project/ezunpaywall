@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const {
   createReport,
 } = require('../report');
@@ -116,13 +117,19 @@ function end() {
   const insertSteps = state.steps.filter((e) => e.task === 'insert');
   let totalInsertedDocs = 0;
   let totalUpdatedDocs = 0;
-  insertSteps.forEach((e) => {
-    totalInsertedDocs += e?.insertedDocs || 0;
+  insertSteps.forEach((step) => {
+    totalInsertedDocs += step?.insertedDocs || 0;
+    totalUpdatedDocs += step?.updatedDocs || 0;
+    if (typeof step.index === 'object') {
+      const indices = Object.keys(step.index);
+      indices.forEach((i) => {
+        const data = step.index[i];
+        totalInsertedDocs += data.insertedDocs || 0;
+        totalUpdatedDocs += data.updatedDocs || 0;
+      });
+    }
   });
   state.totalInsertedDocs = totalInsertedDocs;
-  insertSteps.forEach((e) => {
-    totalUpdatedDocs += e?.updatedDocs || 0;
-  });
   state.totalUpdatedDocs = totalUpdatedDocs;
 }
 

@@ -73,7 +73,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall-test');
@@ -207,7 +207,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall-test');
@@ -343,7 +343,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall-test');
