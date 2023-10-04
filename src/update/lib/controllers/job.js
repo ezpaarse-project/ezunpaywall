@@ -11,6 +11,10 @@ const {
   insertChangefile,
 } = require('../job');
 
+const {
+  rollBack,
+} = require('../history');
+
 /**
  * Controller to start job that download and insert snapshot.
  *
@@ -157,9 +161,27 @@ async function insertWithOaHistory(req, res, next) {
   return res.status(202).json();
 }
 
+/**
+ * Controller to start job that download ans insert changefiles on period.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function historyRollBack(req, res, next) {
+  const {
+    startDate,
+    index,
+  } = req.data;
+
+  await rollBack(startDate, index);
+  return res.status(202).json();
+}
+
 module.exports = {
   downloadAndInsertSnapshotJob,
   insertChangefilesOnPeriodJob,
   insertChangefileJob,
   insertWithOaHistory,
+  historyRollBack,
 };

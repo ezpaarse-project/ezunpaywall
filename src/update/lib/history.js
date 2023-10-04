@@ -24,6 +24,7 @@ const {
   getDataByListOfDOI,
   bulk,
   createIndex,
+  searchOldInHistoryData,
 } = require('./services/elastic');
 
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
@@ -324,4 +325,78 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   return true;
 }
 
-module.exports = insertHistoryDataUnpaywall;
+/**
+ * Resets the unpaywall index according to a date and deletes the data in the history.
+ * @param {string} startDate - The date you wish to return to
+ */
+async function rollBack(startDate) {
+  // TODO allow to rollBack more than one day
+  // TODO go back in time with more than one data
+
+  console.log('===========================================================');
+  const bulkOps = [];
+  const bulkDelete = [];
+
+  console.log('startDate :', startDate);
+
+  const data = await searchOldInHistoryData(startDate, 'unpaywall_history');
+  console.log(data.length);
+
+  const listOfDoi = data.map((e) => e._source.doi);
+  const listOfDoiFiltered = new Set(listOfDoi);
+
+  for (const doi of listOfDoiFiltered) {
+    const doc = data.filter((e) => doi === e._source.doi);
+    let latestDoc;
+    let id;
+    doc.forEach((e) => {
+      const unpaywallData = e._source;
+      if (!latestDoc) {
+        latestDoc = unpaywallData;
+        id = e._id;
+      }
+      const date1 = new Date(startDate) - new Date(unpaywallData.endValidity);
+      const date2 = new Date(startDate) - new Date(latestDoc.endValidity);
+
+      if (date1 > date2) {
+        latestDoc = unpaywallData;
+        id = e._id;
+      }
+    });
+    const tt = await getDataByListOfDOI([latestDoc.doi], 'unpaywall_enriched');
+    console.log('oldData :', new Date(tt[0].updated));
+    console.log('Request :', new Date(startDate));
+    console.log(new Date(tt[0].updated) >= new Date(startDate));
+    console.log('=====================');
+    if (new Date(tt[0].updated) >= new Date(startDate)) {
+      bulkDelete.push({ delete: { _index: 'unpaywall_history', _id: id } });
+      bulkOps.push({ index: { _index: 'unpaywall_enriched', _id: latestDoc.doi } });
+      bulkOps.push(latestDoc);
+    }
+  }
+
+  console.log('update :', bulkOps.length / 2);
+
+  // try {
+  //   await bulk(bulkOps);
+  // } catch (err) {
+  //   logger.error('[elastic] Cannot bulk', err);
+  //   return false;
+  // }
+
+  // TODO update index "unpaywall"
+
+  console.log('delete :', bulkDelete.length);
+
+  // try {
+  //   await bulk(bulkDelete);
+  // } catch (err) {
+  //   logger.error('[elastic] Cannot bulk', err);
+  //   return false;
+  // }
+}
+
+module.exports = {
+  insertHistoryDataUnpaywall,
+  rollBack,
+};

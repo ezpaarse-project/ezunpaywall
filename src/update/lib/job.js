@@ -24,7 +24,7 @@ const {
 
 const insertDataUnpaywall = require('./insert');
 
-const insertHistoryDataUnpaywall = require('./history');
+const { insertHistoryDataUnpaywall } = require('./history');
 
 const {
   getChangefiles,

@@ -5,6 +5,7 @@ const {
   insertChangefilesOnPeriodJob,
   insertWithOaHistory,
   insertChangefileJob,
+  historyRollBack,
 } = require('../controllers/job');
 
 const {
@@ -12,6 +13,7 @@ const {
   validateJobChangefilesConfig,
   validateInsertFile,
   validateHistoryJob,
+  validateHistoryReset,
 } = require('../middlewares/job');
 
 const checkStatus = require('../middlewares/status');
@@ -54,5 +56,14 @@ router.post('/job/changefile/:filename', checkStatus, checkAuth, validateInsertF
  * This route need a body that contains a config of job.
  */
 router.post('/job/history', checkStatus, checkAuth, validateHistoryJob, insertWithOaHistory);
+
+/**
+ * Route that roll back the current and the history index according to a date.
+ * Auth required.
+ * No update process should be in progress.
+ *
+ * This route need a body that contains a config of job.
+ */
+router.post('/job/history/reset', checkStatus, checkAuth, validateHistoryReset, historyRollBack);
 
 module.exports = router;

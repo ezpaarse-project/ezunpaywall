@@ -108,12 +108,6 @@ async function unpaywall(parent, args, req, info) {
 
   const filter = [{ terms: { doi: dois } }];
 
-  const query = {
-    bool: {
-      filter,
-    },
-  };
-
   const { date } = args;
   if (date) {
     const rangeLte = {
@@ -135,6 +129,12 @@ async function unpaywall(parent, args, req, info) {
     filter.push(rangeLte);
     filter.push(rangeGte);
   }
+
+  const query = {
+    bool: {
+      filter,
+    },
+  };
 
   let res;
   try {
