@@ -1,3 +1,4 @@
+const { indexAlias } = require('config');
 const logger = require('../logger');
 
 const { getMetrics } = require('../services/elastic');
@@ -18,7 +19,7 @@ let metrics = {
  * @returns {Promise<void>}
  */
 async function setMetrics() {
-  metrics = await getMetrics();
+  metrics = await getMetrics(indexAlias);
   logger.info('[metrics] metrics is updated');
 }
 
