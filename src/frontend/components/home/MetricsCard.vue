@@ -71,14 +71,14 @@ async function getMetrics() {
 
   loading.value = false;
 
-  if (res?.data?.data?.metrics) {
-    metrics.value.doi = res?.data?.data?.metrics.doi;
-    metrics.value.isOA = res?.data?.data?.metrics.isOA;
-    metrics.value.goldOA = res?.data?.data?.metrics.goldOA;
-    metrics.value.hybridOA = res?.data?.data?.metrics.hybridOA;
-    metrics.value.bronzeOA = res?.data?.data?.metrics.bronzeOA;
-    metrics.value.greenOA = res?.data?.data?.metrics.greenOA;
-    metrics.value.closedOA = res?.data?.data?.metrics.closedOA;
+  if (res?.data?.data?.dailyMetrics) {
+    metrics.value.doi = res?.data?.data?.dailyMetrics.doi;
+    metrics.value.isOA = res?.data?.data?.dailyMetrics.isOA;
+    metrics.value.goldOA = res?.data?.data?.dailyMetrics.goldOA;
+    metrics.value.hybridOA = res?.data?.data?.dailyMetrics.hybridOA;
+    metrics.value.bronzeOA = res?.data?.data?.dailyMetrics.bronzeOA;
+    metrics.value.greenOA = res?.data?.data?.dailyMetrics.greenOA;
+    metrics.value.closedOA = res?.data?.data?.dailyMetrics.closedOA;
   }
 }
 
