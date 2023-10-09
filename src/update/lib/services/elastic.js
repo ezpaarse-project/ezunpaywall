@@ -149,57 +149,19 @@ async function getDataByListOfDOI(dois, index) {
 }
 
 /**
- * Search old data in history with date
+ * Search data with range
  * @param {string} date - The date on which you want to obtain all the changes
  * @param {string} index - Elastic index name
  * @returns {Promise<void>}
  */
-async function searchOldInHistoryData(date, index) {
+async function searchWithRange(date, param, rangeParam, index) {
   const query = {
     bool: {
       filter: [
         {
           range: {
-            endValidity: {
-              lte: date,
-            },
-          },
-        },
-      ],
-    },
-  };
-
-  let res;
-  try {
-    res = await elasticClient.search({
-      index,
-      body: {
-        query,
-        sort: 'endValidity',
-      },
-    });
-  } catch (err) {
-    logger.error('[elastic] Cannot request elastic', err);
-    return null;
-  }
-  // eslint-disable-next-line no-underscore-dangle
-  return res.body.hits.hits;
-}
-
-/**
- * Search to recent data in history with date
- * @param {string} date - The date on which you want to obtain all the changes
- * @param {string} index - Elastic index name
- * @returns {Promise<void>}
- */
-async function searchToRecentInHistoryData(date, index) {
-  const query = {
-    bool: {
-      filter: [
-        {
-          range: {
-            endValidity: {
-              gt: date,
+            [param]: {
+              [rangeParam]: date,
             },
           },
         },
@@ -227,12 +189,12 @@ async function refreshIndex(index) {
   return elasticClient.indices.refresh({ index });
 }
 
-async function bulk(data) {
+async function bulk(data, refresh = false) {
   if (data.length === 0) {
-    logger.warn('[elastic]: No data is send for bulk');
+    // logger.warn('[elastic]: No data is send for bulk');
     return [];
   }
-  return elasticClient.bulk({ body: data });
+  return elasticClient.bulk({ body: data, refresh });
 }
 
 module.exports = {
@@ -243,6 +205,5 @@ module.exports = {
   getDataByListOfDOI,
   refreshIndex,
   bulk,
-  searchOldInHistoryData,
-  searchToRecentInHistoryData,
+  searchWithRange,
 };

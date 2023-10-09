@@ -41,6 +41,7 @@ services:
     container_name: ezunpaywall-update-dev
     environment:
       - NODE_ENV=development
+      - LOG_LEVEL=debug
       # unpaywall
       - UNPAYWALL_APIKEY
       - UNPAYWALL_HOST

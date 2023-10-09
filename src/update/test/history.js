@@ -174,6 +174,6 @@ describe('Test: daily update route test with history', () => {
   });
 
   after(async () => {
-    await reset('unpaywall_history');
+    await reset();
   });
 });
