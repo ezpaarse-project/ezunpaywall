@@ -1,4 +1,3 @@
-const { indexAlias } = require('config');
 const logger = require('../logger');
 
 const { getMetrics } = require('../services/elastic');
@@ -19,7 +18,7 @@ let metrics = {
  * @returns {Promise<void>}
  */
 async function setMetrics() {
-  metrics = await getMetrics(indexAlias);
+  metrics = await getMetrics('unpaywall');
   logger.info('[metrics] metrics is updated');
 }
 
