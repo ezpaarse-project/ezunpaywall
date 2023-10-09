@@ -13,6 +13,7 @@ const typeDefs = `#graphql
     unpaywall(dois: [ID!]!): [UnpaywallType]
     GetByDOI(dois: [ID!]!): [UnpaywallType]
     metrics: MetricsType
+    dailyMetrics: MetricsType
   }
 `;
 

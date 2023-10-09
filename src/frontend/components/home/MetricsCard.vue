@@ -62,7 +62,7 @@ async function getMetrics() {
       url: '/graphql',
       params: {
         query:
-          '{ metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }',
+          '{ dailyMetrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }',
       },
     });
   } catch (err) {

@@ -25,7 +25,9 @@ async function setMetrics() {
 /**
  * Get cached metrics
  */
-function getDailyMetrics() { return metrics; }
+function getDailyMetrics() {
+  return metrics;
+}
 
 module.exports = {
   setMetrics,
