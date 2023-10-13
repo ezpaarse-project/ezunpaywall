@@ -77,7 +77,7 @@ async function insertHistoryDataUnpaywall() {
     console.error(err);
   }
 
-  const filepath2 = path.resolve(__dirname, '..', 'sources', 'unpaywall_history.jsonl');
+  const filepath2 = path.resolve(__dirname, '..', 'sources', 'unpaywall.jsonl');
   let readStream2;
   try {
     readStream2 = await fs.createReadStream(filepath2);

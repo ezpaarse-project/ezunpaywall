@@ -119,6 +119,7 @@ async function initAlias(indexName, mapping, aliasName) {
 }
 
 async function getDataByListOfDOI(dois, index) {
+  if (!dois) { return []; }
   // Normalize request
   const normalizeDOI = dois.map((doi) => doi.toLowerCase());
 

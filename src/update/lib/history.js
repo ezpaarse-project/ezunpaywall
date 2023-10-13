@@ -7,6 +7,7 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const config = require('config');
 const zlib = require('zlib');
+const { format } = require('date-fns');
 
 const logger = require('./logger');
 const unpaywallEnrichedMapping = require('../mapping/unpaywall.json');
@@ -325,201 +326,115 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   return true;
 }
 
-/**
- * Resets the unpaywall index according to a date and deletes the data in the history.
- * @param {string} startDate - The date you wish to return to
- */
-async function rollBack(startDate) {
-  // STEP 2
+async function step1(startDate) {
+  logger.debug('----------------------------------');
+  logger.debug('STEP 1');
+  logger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
+  logger.debug(`Should DELETE greater or equal than ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
+  const toRecentDataInHistoryBulk = [];
+  const toRecentDataInHistory = await searchWithRange(startDate, 'updated', 'gte', 'unpaywall_history');
+
+  toRecentDataInHistory.forEach((data) => {
+    toRecentDataInHistoryBulk.push({ delete: { _index: 'unpaywall_history', _id: data._id } });
+    logger.debug(`HISTORY: DELETE: doi: ${data._source.doi}, genre: ${data._source.genre}, updated: ${data._source.updated}`);
+  });
+
+  await bulk(toRecentDataInHistoryBulk, true);
+  logger.debug(`DELETE ${toRecentDataInHistoryBulk.length} lines`);
+  logger.debug('UNPAYWALL: REFRESH');
+  await refreshIndex('unpaywall_enriched');
+}
+
+async function step2(startDate) {
+  logger.debug('----------------------------------');
+  logger.debug('STEP 2');
+  logger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
+  logger.debug(`Should UPDATE data less than ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   const nearestDataBulk = [];
   const nearestDataDeleteBulk = [];
-  const oldData = await searchWithRange(startDate, 'endValidity', 'lt', 'unpaywall_history');
+  const oldData = await searchWithRange(startDate, 'updated', 'lt', 'unpaywall_history');
 
   const listOfDoi = oldData.map((e) => e._source.doi);
   const listOfDoiFiltered = new Set(listOfDoi);
 
   for (const doi of listOfDoiFiltered) {
-    console.log(doi);
     const docs = oldData.filter((e) => doi === e._source.doi);
     let nearestData;
-    let nearestID;
     docs.forEach((doc) => {
-      const unpaywallData = doc._source;
       if (!nearestData) {
-        nearestID = doc._id;
-        nearestData = unpaywallData;
+        nearestData = doc;
       }
-      const date1 = new Date(startDate) - new Date(unpaywallData.endValidity);
-      const date2 = new Date(startDate) - new Date(nearestData.endValidity);
+      const date1 = new Date(startDate) - new Date(doc._source.updated);
+      const date2 = new Date(startDate) - new Date(nearestData._source.updated);
 
       if (date1 < date2) {
-        nearestID = doc._id;
-        nearestData = unpaywallData;
+        nearestData = doc;
       }
     });
 
-    const oldDoc = await getDataByListOfDOI([nearestData.doi], 'unpaywall_enriched');
+    const oldDoc = await getDataByListOfDOI([nearestData._source.doi], 'unpaywall_enriched');
+    logger.info(`oldData: ${format(new Date(oldDoc[0].updated), 'yyyy-MM-dd/hh:mm:ss')} < startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
 
-    if (new Date(oldDoc[0].updated) >= new Date(startDate)) {
-      nearestDataDeleteBulk.push({ delete: { _index: 'unpaywall_history', _id: nearestID } });
-      nearestDataBulk.push({ index: { _index: 'unpaywall_enriched', _id: nearestData.doi } });
-      nearestDataBulk.push(nearestData);
+    if (new Date(startDate) < new Date(oldDoc[0].updated)) {
+      // UPDATE
+      delete nearestData._source.endValidity;
+      nearestDataBulk.push({ index: { _index: 'unpaywall_enriched', _id: nearestData._source.doi } });
+      nearestDataBulk.push(nearestData._source);
+      logger.debug(`UNPAYWALL: UPDATE: doi: ${nearestData._source.doi}, genre: ${nearestData._source.genre}, updated: ${nearestData._source.updated}`);
+
+      // DELETE
+      nearestDataDeleteBulk.push({ delete: { _index: 'unpaywall_history', _id: nearestData._id } });
+      logger.debug(`HISTORY: DELETE: doi: ${nearestData._source.doi}, genre: ${nearestData._source.genre}, updated: ${nearestData._source.updated}`);
     }
   }
 
-  // STEP 2
-  // STEP 3
+  // UPDATE
   await bulk(nearestDataBulk, true);
+  logger.debug(`UPDATE ${nearestDataBulk.length / 2} lines`);
+  logger.debug('UNPAYWALL: REFRESH');
   await refreshIndex('unpaywall_enriched');
-  console.log('Doc mit à jour dans l\'index courant', nearestDataBulk.length / 2);
-  await bulk(nearestDataDeleteBulk, true);
-  await refreshIndex('unpaywall_history');
-  console.log('Doc supprimé dans l\'historique', nearestDataDeleteBulk.length);
 
-  // STEP 4
+  // DELETE
+  await bulk(nearestDataDeleteBulk, true);
+  logger.debug(`DELETE ${nearestDataDeleteBulk.length} lines`);
+  logger.debug('HISTORY: REFRESH');
+  await refreshIndex('unpaywall_history');
+}
+
+async function step3(startDate) {
+  logger.debug('----------------------------------');
+  logger.debug('STEP 3');
+
   const toRecentDataBulk = [];
   const toRecentData = await searchWithRange(startDate, 'updated', 'gte', 'unpaywall_enriched');
-
-  const listOfIDToRecentData = toRecentData.map((e) => e._id);
-
-  listOfIDToRecentData.forEach((id) => {
-    toRecentDataBulk.push({ delete: { _index: 'unpaywall_enriched', _id: id } });
+  logger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
+  logger.debug(`Should DELETE data greater or equal than ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
+  toRecentData.forEach((data) => {
+    toRecentDataBulk.push({ delete: { _index: 'unpaywall_enriched', _id: data._id } });
+    logger.debug(`UNPAYWALL: DELETE: doi: ${data._source.doi}, genre: ${data._source.genre}, updated: ${format(new Date(data._source.updated), 'yyyy-MM-dd/hh:mm:ss')}`);
   });
 
   await bulk(toRecentDataBulk, true);
-  await refreshIndex('unpaywall_enriched');
-
-  // STEP 1
-  const toRecentDataInHistoryBulk = [];
-  const toRecentDataInHistory = await searchWithRange(startDate, 'endValidity', 'gte', 'unpaywall_history');
-
-  toRecentDataInHistory.forEach((e) => {
-    console.log(e._source.updated);
-  });
-
-  const listOfIDToRecentDataInHistory = toRecentDataInHistory.map((e) => e._id);
-
-  listOfIDToRecentDataInHistory.forEach((id) => {
-    toRecentDataInHistoryBulk.push({ delete: { _index: 'unpaywall_history', _id: id } });
-  });
-
-  await bulk(toRecentDataInHistoryBulk, true);
-  console.log('valeur trop recente', toRecentDataInHistoryBulk.length);
+  logger.debug(`DELETE ${toRecentDataBulk.length} lines`);
+  logger.debug('UNPAYWALL: REFRESH');
   await refreshIndex('unpaywall_enriched');
 }
 
-// /**
-//  * Resets the unpaywall index according to a date and deletes the data in the history.
-//  * @param {string} startDate - The date you wish to return to
-//  */
-// async function rollBack(startDate) {
-//   const bulkUpdate = [];
-//   const bulkDelete = [];
-//   const bulkHistoryDelete = [];
-//   const bulkHistoryDelete2 = [];
-
-//   let data = await searchWithRange(startDate, 'endValidity', 'lte', 'unpaywall_history');
-//   logger.debug(`unpaywall_history.length: ${data.length}`);
-//   logger.info(format(startDate, 'yyyy-MM-dd-HH'));
-
-//   const listOfDoi = data.map((e) => e._source.doi);
-//   const listOfDoiFiltered = new Set(listOfDoi);
-
-//   for (const doi of listOfDoiFiltered) {
-//     const doc = data.filter((e) => doi === e._source.doi);
-//     let latestDoc;
-//     doc.forEach((e) => {
-//       const unpaywallData = e._source;
-//       if (!latestDoc) {
-//         latestDoc = unpaywallData;
-//       }
-//       const date1 = new Date(startDate) - new Date(unpaywallData.endValidity);
-//       const date2 = new Date(startDate) - new Date(latestDoc.endValidity);
-
-//       if (date1 < date2) {
-//         latestDoc = unpaywallData;
-//       }
-//     });
-
-//     const tt = await getDataByListOfDOI([latestDoc.doi], 'unpaywall_enriched');
-
-//     logger.debug(`oldData : ${new Date(tt[0].updated)}`);
-//     logger.debug(`Request : ${new Date(startDate)}`);
-//     logger.debug(`doi : ${doi}`);
-//     if (new Date(tt[0].updated) >= new Date(startDate)) {
-//       bulkUpdate.push({ index: { _index: 'unpaywall_enriched', _id: latestDoc.doi } });
-//       bulkUpdate.push(latestDoc);
-//     }
-//     logger.debug('$$$$$$$$$$$$$$$');
-//     logger.debug(latestDoc.genre);
-//   }
-
-//   logger.debug(`[unpaywall] update : ${bulkUpdate.length / 2}`);
-
-//   // UPDATE in unpaywall index
-//   try {
-//     await bulk(bulkUpdate, true);
-//   } catch (err) {
-//     logger.error('[elastic] Cannot bulk', err);
-//     return false;
-//   }
-
-//   if (bulkUpdate.length > 0) {
-//     const dataThatWillBeDeleted =
-// await searchWithRange(startDate, 'endValidity', 'gte', 'unpaywall_history');
-
-//     const listOfID = dataThatWillBeDeleted.map((e) => e._id);
-
-//     listOfID.forEach((id) => {
-//       bulkHistoryDelete.push({ delete: { _index: 'unpaywall_history', _id: id } });
-//     });
-//   }
-
-//   logger.debug(`[unpaywall_history] delete: ${bulkHistoryDelete.length}`);
-
-//   // DELETE in history index
-//   try {
-//     await bulk(bulkHistoryDelete, true);
-//   } catch (err) {
-//     logger.error('[elastic] Cannot bulk', err);
-//     return false;
-//   }
-
-//   data = await searchWithRange(startDate, 'updated', 'gt', 'unpaywall_enriched');
-
-//   data.forEach((e) => {
-//     bulkDelete.push({ delete: { _index: 'unpaywall_enriched', _id: e._source.doi } });
-//   });
-
-//   logger.debug(`[unpaywall] delete: ${bulkDelete.length}`);
-
-//   // DELETE in unpaywall index
-//   try {
-//     await bulk(bulkDelete, true);
-//   } catch (err) {
-//     logger.error('[elastic] Cannot bulk', err);
-//     return false;
-//   }
-
-//   logger.debug(`[unpaywall_history] delete: ${bulkHistoryDelete.length}`);
-
-//   data = await searchWithRange(startDate, 'updated', 'gt', 'unpaywall_history');
-//   data.forEach((e) => {
-//     bulkHistoryDelete2.push({ delete: { _index: 'unpaywall_history', _id: e._id } });
-//   });
-
-//   logger.debug(`[unpaywall_history] second delete: ${bulkHistoryDelete2.length}`);
-
-//   // DELETE in unpaywall history index
-//   try {
-//     await bulk(bulkHistoryDelete2, true);
-//   } catch (err) {
-//     logger.error('[elastic] Cannot bulk', err);
-//     return false;
-//   }
-// }
+/**
+ * Resets the unpaywall index according to a date and deletes the data in the history.
+ * @param {string} startDate - The date you wish to return to
+ */
+async function rollBack(startDate) {
+  logger.debug('================================');
+  await step1(startDate);
+  await step2(startDate);
+  await step3(startDate);
+}
 
 module.exports = {
   insertHistoryDataUnpaywall,
   rollBack,
+  step1,
+  step2,
+  step3,
 };

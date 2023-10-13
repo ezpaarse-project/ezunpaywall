@@ -26,15 +26,8 @@ const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 chai.use(chaiHttp);
 
 describe('Test: daily update route test with history', () => {
-  const now = Date.now();
-  const oneDay = 1 * 24 * 60 * 60 * 1000;
-  const oneYear = 1 * 24 * 60 * 60 * 1000 * 365;
-
-  // create date in a format (YYYY-mm-dd) to be use by ezunpaywall
-  // 2 years - one day
-  const date1 = new Date(now - (2 * oneYear) - (1 * oneDay)).toISOString().slice(0, 10);
-  // 2 years - three days
-  const date3 = new Date(now - (2 * oneYear) - (3 * oneDay)).toISOString().slice(0, 10);
+  const date1 = '2020-01-03';
+  const date3 = '2020-01-01';
 
   before(async function () {
     this.timeout(30000);
@@ -174,6 +167,6 @@ describe('Test: daily update route test with history', () => {
   });
 
   after(async () => {
-    await reset();
+    // await reset();
   });
 });
