@@ -15,7 +15,7 @@ export default defineNuxtConfig({
       version: process.env.NUXT_PUBLIC_VERSION || 'development',
     },
     mailHost: process.env.NUXT_MAIL_HOST || 'http://localhost:59705',
-    apikeyMail: process.env.NUXT_MAIL_APIKEY || 'changeme',
+    mailApikey: process.env.NUXT_MAIL_APIKEY || 'changeme',
   },
   devServer: {
     host: '0.0.0.0',
