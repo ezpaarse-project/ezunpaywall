@@ -1,4 +1,7 @@
-
-data/
 node_modules/
 log/
+test/
+data/
+.eslintrc.json
+.gitignore
+README.md

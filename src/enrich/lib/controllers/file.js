@@ -1,73 +1,92 @@
-/* eslint-disable no-restricted-syntax */
 const fs = require('fs-extra');
 const path = require('path');
+const joi = require('joi');
+
+const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
+const enrichedDir = path.resolve(__dirname, '..', '..', 'data', 'enriched');
 
 /**
- * Get files in a directory in date order.
+ * Controller to get list of enriched files of user.
  *
- * @param {string} directoryPath - Directory path.
- *
- * @returns {Promise<Array<{filename: string, stat: import('fs').Stats}>>} list of files
- * sorted by modification date.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
  */
-async function orderRecentFiles(directoryPath) {
-  const filenames = await fs.readdir(directoryPath);
+async function getEnrichedFiles(req, res, next) {
+  const apikey = req.get('x-api-key');
 
-  const files = await Promise.all(
-    filenames.map(async (filename) => {
-      const filePath = path.resolve(directoryPath, filename);
-      return {
-        filename,
-        stat: await fs.lstat(filePath),
-      };
-    }),
-  );
-
-  return files
-    .filter((file) => file.stat.isFile())
-    .sort((a, b) => b.stat.mtime.getTime() - a.stat.mtime.getTime());
-}
-/**
- * Get the most recent file in a directory.
- *
- * @param {string} directoryPath - Directory path.
- *
- * @returns {Promise<{filename: string, stat: import('fs').Stats}|void>} Most recent filepath.
- */
-async function getMostRecentFile(directoryPath) {
-  const files = await orderRecentFiles(directoryPath);
-  return files.length ? files[0] : undefined;
-}
-
-/**
- * Delete files in directory when the last updated of file is more than n days.
- *
- * @param {string} directoryPath - Directory path.
- * @param {number} numberOfDays - Number of days.
- *
- * @returns {Promise<Array<string>>} List of filename of deleted file.
- */
-async function deleteFilesInDir(directoryPath, numberOfDays) {
-  const time = 1 * 24 * 60 * 60 * 1000 * numberOfDays;
-  const threshold = Date.now() - time;
-
-  const files = await fs.readdir(directoryPath);
-
-  const deletedFiles = [];
-
-  for (const file of files) {
-    const stat = await fs.stat(path.join(directoryPath, file));
-    if (stat.mtime < threshold) {
-      deletedFiles.push(file);
-      await fs.unlink(path.join(directoryPath, file));
+  let files;
+  try {
+    files = await fs.readdir(path.resolve(enrichedDir, apikey));
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      return res.status(500).end();
     }
+    files = [];
+  }
+  return res.status(200).json(files);
+}
+
+/**
+ * Controller to get list of uploaded files of user.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function getUploadedFile(req, res, next) {
+  const apikey = req.get('x-api-key');
+  let files;
+  try {
+    files = await fs.readdir(path.resolve(uploadDir, apikey));
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      return res.status(500).end();
+    }
+    files = [];
+  }
+  return res.status(200).json(files);
+}
+
+/**
+ * Controller to get enriched file of user by filename.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function getEnrichedFileByFilename(req, res, next) {
+  const { filename } = req.params;
+
+  const { error } = joi.string().trim().required().validate(filename);
+
+  if (error) return res.status(400).json({ message: error.details[0].message });
+
+  const apikey = req.get('x-api-key');
+
+  if (!await fs.pathExists(path.resolve(enrichedDir, apikey, filename))) {
+    return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
-  return deletedFiles;
+  return res.sendFile(path.resolve(enrichedDir, apikey, filename));
+}
+
+/**
+ * Controller to upload file.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function uploadFile(req, res, next) {
+  if (!req?.file) return next({ message: 'File not sent' });
+  const { filename } = req?.file;
+  return res.status(200).json(path.parse(filename).name);
 }
 
 module.exports = {
-  getMostRecentFile,
-  deleteFilesInDir,
-  orderRecentFiles,
+  getEnrichedFiles,
+  getUploadedFile,
+  getEnrichedFileByFilename,
+  uploadFile,
 };

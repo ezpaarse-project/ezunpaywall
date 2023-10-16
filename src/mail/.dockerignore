@@ -1,2 +1,6 @@
 node_modules/
 data/
+log/
+test/
+.eslintrc.json
+README.md

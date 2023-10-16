@@ -7,13 +7,13 @@ const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
 const getConfig = require('./lib/config');
 
-const { pingRedis } = require('./lib/services/redis');
+const { startConnectionRedis, pingRedis } = require('./lib/services/redis');
 
-require('./lib/controllers/cron/file');
+require('./lib/cron');
 
 const routerPing = require('./lib/routers/ping');
 const routerJob = require('./lib/routers/job');
-const routerEnrich = require('./lib/routers/enrich');
+const routerFile = require('./lib/routers/file');
 const routerState = require('./lib/routers/state');
 const routerOpenapi = require('./lib/routers/openapi');
 
@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(routerJob);
-app.use(routerEnrich);
+app.use(routerFile);
 app.use(routerState);
 app.use(routerOpenapi);
 app.use(routerPing);
@@ -52,8 +52,9 @@ app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method
 
 app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
-app.listen(3000, () => {
+app.listen(3000, async () => {
   logger.info('[express] ezunpaywall enrich service listening on 3000');
   getConfig();
+  await startConnectionRedis();
   pingRedis();
 });

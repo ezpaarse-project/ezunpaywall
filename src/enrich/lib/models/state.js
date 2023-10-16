@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const path = require('path');
 const fs = require('fs-extra');
 
@@ -15,7 +16,13 @@ const stateDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  * @returns {Promise<void>}
  */
 async function createState(id, apikey) {
+  const filename = `${id}.json`;
+  const filenamePath = path.resolve(stateDir, apikey, filename);
+
   const state = {
+    path: filenamePath,
+    filename,
+    apikey,
     done: false,
     loaded: 0,
     linesRead: 0,
@@ -23,11 +30,7 @@ async function createState(id, apikey) {
     createdAt: new Date(),
     endAt: null,
     error: false,
-    apikey,
   };
-
-  const filename = `${id}.json`;
-  const filenamePath = path.resolve(stateDir, apikey, filename);
 
   const dir = path.resolve(stateDir, apikey);
 
@@ -43,6 +46,7 @@ async function createState(id, apikey) {
     logger.error(`[state]: Cannot write [${JSON.stringify(state, null, 2)}] in [${filenamePath}]`, err);
     throw err;
   }
+  return state;
 }
 
 /**
@@ -83,20 +87,11 @@ async function getState(filename, apikey) {
  *
  * @returns {Promise<void>}
  */
-async function updateStateInFile(state, filename) {
-  const { apikey } = state;
-  const pathfile = path.resolve(stateDir, apikey, filename);
-  const isPathExist = await fs.pathExists(pathfile);
-
-  if (!isPathExist) {
-    logger.error(`[state]: Cannot update state because ${pathfile} doesn't exist`);
-    return;
-  }
-
+async function updateStateInFile(state) {
   try {
-    await fs.writeFile(pathfile, JSON.stringify(state, null, 2));
+    await fs.writeFile(state.path, JSON.stringify(state, null, 2));
   } catch (err) {
-    logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${pathfile}`, err);
+    logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${state.path}`, err);
     throw err;
   }
 }
@@ -109,12 +104,11 @@ async function updateStateInFile(state, filename) {
  *
  * @returns {Promise<void>}
  */
-async function fail(filename, apikey) {
-  const state = await getState(filename, apikey);
+async function fail(state) {
   state.done = true;
   state.endAt = new Date();
   state.error = true;
-  await updateStateInFile(state, filename);
+  await updateStateInFile(state);
 }
 
 /**
@@ -125,11 +119,10 @@ async function fail(filename, apikey) {
  *
  * @returns {Promise<void>}.
  */
-async function endState(id, apikey) {
-  const state = await getState(`${id}.json`, apikey);
+async function endState(state) {
   state.endAt = new Date();
   state.done = true;
-  updateStateInFile(state, `${id}.json`);
+  updateStateInFile(state);
 }
 
 module.exports = {

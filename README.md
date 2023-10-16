@@ -1,6 +1,6 @@
 # ezunpaywall
 
-ezunpaywall is an API and database that queries the Unpaywall database containing free scholarly articles
+Ezunpaywall is an API and database that queries the Unpaywall database containing free scholarly articles.
 
 **Table of content**
 - [Structure](#Structure)
@@ -16,6 +16,7 @@ ezunpaywall is an API and database that queries the Unpaywall database containin
             - [enrich](/src/enrich/README.md#ezunpaywall-enrich)
             - [frontend](/src/frontend/README.md#ezunpaywall-frontend)
             - [graphql](/src/graphql/README.md#ezunpaywall-graphql)
+            - [health](/src/health/README.md#ezunpaywall-health)
             - [mail](/src/mail/README.md#ezunpaywall-mail)
             - [update](/src/update/README.md#ezunpaywall-update)
 - [Data update](#Data-update)
@@ -23,10 +24,10 @@ ezunpaywall is an API and database that queries the Unpaywall database containin
 
 ## Structure
 
-unpaywall is made up of several services which are distributed in several docker containers
+Unpaywall is made up of several services which are distributed in several docker containers.
 ![Structure](/doc/structure.png)
 
-for apikey, enrich, update and mail service, a **open api** is available on frontend
+for `apikey`, `enrich`, `graphql`, `health`, `mail` and `update` service, a **open api** is available on frontend
 
 ## Installation
 
@@ -39,7 +40,6 @@ git clone https://github.com/ezpaarse-project/ezunpaywall
 
 The tools you need to let ezunpaywall run are :
 * docker
-* docker-compose
 * npm
 
 Command : 
@@ -65,21 +65,21 @@ docker-compose -f docker-compose.debug.yml ps
 ```
 #### Tests
 
-To run tests, you need ezunpaywall to be launched in dev mode with fakeUnpaywall. With that, you can run test on 
+To run tests, you need ezunpaywall to be launched in dev mode with fakeUnpaywall. With that, you can run test on.
 
 ```bash
 # there are alias on root folder
-$ ezunpaywall npm run test
-$ ezunpaywall npm run test:apikey
-$ ezunpaywall npm run test:enrich
-$ ezunpaywall npm run test:graphql
-$ ezunpaywall npm run test:update
+$ ~/ezunpaywall npm run test
+$ ~/ezunpaywall npm run test:apikey
+$ ~/ezunpaywall npm run test:enrich
+$ ~/ezunpaywall npm run test:graphql
+$ ~/ezunpaywall npm run test:update
 
 # you can run test for each service
-$ ezunpaywall/src/apikey npm run test
-$ ezunpaywall/src/enrich npm run test
-$ ezunpaywall/src/graphql npm run test
-$ ezunpaywall/src/update npm run test
+$ ~/ezunpaywall/src/apikey npm run test
+$ ~/ezunpaywall/src/enrich npm run test
+$ ~/ezunpaywall/src/graphql npm run test
+$ ~/ezunpaywall/src/update npm run test
 ```
 ### Deployment
 
@@ -87,7 +87,6 @@ $ ezunpaywall/src/update npm run test
 
 The tools you need to let ezunpaywall run are :
 * docker
-* docker-compose
 * unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
 
 #### Environment variables
@@ -139,10 +138,9 @@ You can update your data via update snapshots provided by unpaywall on a weekly 
 in the update service, there is a cron that allows to automatically update the data from unpaywall, weekly or daily.
 
 ## API Graphql
-### GetByDOI
+### unpaywall
 
-get Unpaywall data with [parameters](#Object-structure). 
-You can also use intervals 
+get unpaywall data with [parameters](#Object-structure). 
 ### Examples
 #### GET
 
@@ -152,7 +150,7 @@ headers: {
 }
 ```
 
-`GET "<HOST>/api/graphql?query={GetByDOI(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
+`GET "<HOST>/api/graphql?query={unpaywall(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
 
 #### POST
 
@@ -163,7 +161,7 @@ headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
 body: {
-    "query": "{GetByDOI(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
+    "query": "{unpaywall(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
 }
 ```
 
@@ -174,7 +172,7 @@ headers: {
     "x-api-key": "<YOUR_API_KEY>"
 },
 body: {
-    "query": "query ($dois: [ID!]!){ GetByDOI(dois: $dois){is_oa} }",
+    "query": "query ($dois: [ID!]!){ unpaywall(dois: $dois){is_oa} }",
     "variables": { 
         "dois": ["10.1038/2211089b0","10.1038/nature12373"],
     }
@@ -187,7 +185,7 @@ Status: 200
 ```json
 {
     "data": {
-        "GetByDOI": [
+        "unpaywall": [
             {
                 "doi": "10.1038/2211089b0",
                 "is_oa": true,

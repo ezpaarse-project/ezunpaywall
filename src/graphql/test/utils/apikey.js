@@ -13,7 +13,7 @@ const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
 async function loadDevAPIKey() {
   try {
     await chai.request(apikeyURL)
-      .post('/loadDev')
+      .post('/keys/loadDev')
       .set('x-api-key', 'changeme');
   } catch (err) {
     console.error('Cannot request apikey service');
@@ -29,7 +29,7 @@ async function loadDevAPIKey() {
 async function deleteAllAPIKey() {
   try {
     await chai.request(apikeyURL)
-      .delete('/all')
+      .delete('/keys')
       .set('x-api-key', 'changeme');
   } catch (err) {
     console.error('Cannot request apikey service');

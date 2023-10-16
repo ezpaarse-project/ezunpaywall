@@ -1,20 +1,22 @@
 # ezunpaywall-frontend
 
-Web interface to demonstrate the functionality of graphql and enrich services.
+frontend service of ezunpaywall
 
 ## Service environment variables
 
 | name | default | description |
 | --- | --- | --- |
-| NODE_ENV | development | environment of node |
-| UNPAYWALL_API_HOST | http://api.unpaywall.org | unpaywall API host |
-| UNPAYWALL_HOMEPAGE_HOST | https://unpaywall.org | unpaywall homepage host |
-| GRAPHQL_HOST | http://localhost:59701 | graphql host |
-| UPDATE_HOST | http://localhost:59702 | update host |
-| ENRICH_HOST | http://localhost:59703 | enrich host |
-| APIKEY_HOST | http://localhost:59704 | apikey host |
-| MAIL_HOST | http://localhost:59705 | mail host |
-| MAIL_APIKEY | changeme | apikey of mail |
-| HEALTH_HOST | http://localhost:59707 | health host |
-| ELASTIC_ENV | development | elastic environment displayed on metrics page |
-| VERSION | development | version of ezunpaywall displayed on menu |
+| NUXT_PUBLIC_NODE_ENV | development | environment of node |
+| NUXT_PUBLIC_UNPAYWALL_HOST | https://unpaywall.org | Host of unpaywall |
+| NUXT_PUBLIC_UNPAYWALL_API_HOST | http://api.unpaywall.org | Host of API of unpaywall |
+| NUXT_PUBLIC_DASHBOARD_HOST | https://ezmesure.couperin.org/kibana/s/ezunpaywall/app/dashboards | Host of ezmesure dashboard |
+| NUXT_PUBLIC_GRAPHQL_HOST | http://localhost:59701 | Host of ezunpaywall graphql service |
+| NUXT_PUBLIC_UPDATE_HOST | http://localhost:59702 | Host of ezunpaywall update service |
+| NUXT_PUBLIC_ENRICH_HOST | http://localhost:59703 | Host of ezunpaywall enrich service |
+| NUXT_PUBLIC_APIKEY_HOST | http://localhost:59704 | Host of ezunpaywall apikey service |
+| NUXT_MAIL_APIKEY | changeme | Apikey to send mail of mail service |
+| NUXT_MAIL_HOST | http://localhost:59705 | Host of ezunpaywall mail service |
+| NUXT_PUBLIC_HEALTH_HOST | http://localhost:59707 | Host of ezunpaywall health service |
+| NUXT_PUBLIC_ELASTIC_ENV | development | version of elastic |
+| NUXT_PUBLIC_VERSION | development | version displayed on frontend |
+

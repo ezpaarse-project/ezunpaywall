@@ -1,27 +1,44 @@
 <template>
   <v-card>
-    <v-toolbar color="secondary" dark flat dense>
+    <v-toolbar
+      color="secondary"
+      dark
+      flat
+      dense
+    >
       <v-toolbar-title>
-        {{ $t("administration.health.title") }}
+        {{ t("administration.health.title") }}
       </v-toolbar-title>
       <v-spacer />
-      <v-btn
-        icon
-        :disabled="loading"
-        @click.stop="getHealths()"
-      >
-        <v-icon>mdi-reload</v-icon>
-      </v-btn>
+      <v-tooltip location="bottom">
+        <template #activator="{ props }">
+          <v-btn
+            v-bind="props"
+            icon="mdi-reload"
+            :disabled="loading"
+            @click.stop="getHealths()"
+          />
+        </template>
+        {{ t("administration.health.reload") }}
+      </v-tooltip>
     </v-toolbar>
 
-    <v-row v-if="loading" align="center" justify="center" class="ma-2">
+    <v-row
+      v-if="loading"
+      align="center"
+      justify="center"
+      class="ma-2"
+    >
       <Loader />
     </v-row>
     <NoData
       v-else-if="!healths || Object.keys(healths).length === 0"
-      :text="$t('administration.health.noHealth')"
+      :text="t('administration.health.noHealth')"
     />
-    <v-row v-else class="ma-2">
+    <v-row
+      v-else
+      class="ma-2"
+    >
       <v-col
         v-for="(health, name) in healths"
         :key="name"
@@ -31,50 +48,49 @@
         lg="3"
         xl="3"
       >
-        <HealthCard :name="name" :health="health" />
+        <HealthCard
+          :name="name"
+          :health="health"
+        />
       </v-col>
     </v-row>
   </v-card>
 </template>
 
-<script>
-import HealthCard from '~/components/administration/health/HealthCard.vue'
-import Loader from '~/components/Loader.vue'
-import NoData from '~/components/NoData.vue'
+<script setup>
 
-export default {
-  name: 'HealthTab',
-  components: {
-    HealthCard,
-    Loader,
-    NoData
-  },
-  data () {
-    return {
-      loading: false,
-      healths: false
-    }
-  },
-  async mounted () {
-    await this.getHealths()
-  },
-  methods: {
-    async getHealths () {
-      let res
-      this.loading = true
-      try {
-        res = await this.$health.get('/health')
-      } catch (e) {
-        this.$store.dispatch(
-          'snacks/error',
-          this.$t('administration.health.errorHealth')
-        )
-        this.loading = false
-        return
-      }
-      this.healths = res?.data
-      this.loading = false
-    }
+import HealthCard from '@/components/administration/health/HealthCard.vue';
+import Loader from '@/components/skeleton/Loader.vue';
+import NoData from '@/components/skeleton/NoData.vue';
+
+import { useSnacksStore } from '@/store/snacks';
+
+const { t } = useI18n();
+const snackStore = useSnacksStore();
+const { $health } = useNuxtApp();
+
+const loading = ref(false);
+const healths = ref(false);
+
+async function getHealths() {
+  let res;
+  loading.value = true;
+  try {
+    res = await $health({
+      method: 'GET',
+      url: '/status',
+    });
+  } catch (e) {
+    snackStore.error(t('error.health.get'));
+    loading.value = false;
+    return;
   }
+  healths.value = res?.data;
+  loading.value = false;
 }
+
+onMounted(() => {
+  getHealths();
+});
+
 </script>

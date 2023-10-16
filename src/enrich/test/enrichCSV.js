@@ -83,7 +83,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -158,7 +158,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -196,7 +196,7 @@ describe('Test: enrich service csv', () => {
       });
     });
 
-    describe('Do a enrichment of a csv file with some unpaywall attributes (is_oa, best_oa_location.license, z_authors.family)', () => {
+    describe('Do a enrichment of a csv file with some unpaywall attributes (is_oa)', () => {
       let id;
       let enrichedFile;
       it('Should upload the file', async () => {
@@ -235,7 +235,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -311,7 +311,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -388,7 +388,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -465,7 +465,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -542,7 +542,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -619,7 +619,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -651,7 +651,6 @@ describe('Test: enrich service csv', () => {
 
       it('Should be the same', async () => {
         const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file08.csv');
-
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
@@ -673,7 +672,7 @@ describe('Test: enrich service csv', () => {
         id = res1?.body;
       });
 
-      it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
+      it('Should enrich the file on 1200 lines with args {is_oa} and download it', async () => {
         const res2 = await chai
           .request(enrichHost)
           .post(`/job/${id}`)
@@ -696,7 +695,7 @@ describe('Test: enrich service csv', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -728,7 +727,6 @@ describe('Test: enrich service csv', () => {
 
       it('Should be the same', async () => {
         const reference = path.resolve(enrichDir, 'enriched', 'csv', 'file09.csv');
-
         const same = await compareFile(reference, enrichedFile);
         expect(same).to.be.equal(true);
       });
@@ -824,7 +822,7 @@ describe('Test: enrich service csv', () => {
           .get(`/states/${id}.json`)
           .set('x-api-key', 'user');
         expect(res3).have.status(200);
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
       } while (!res3?.body?.done);
 
       const state = res3?.body;
@@ -901,7 +899,7 @@ describe('Test: enrich service csv', () => {
           .get(`/states/${id}.json`)
           .set('x-api-key', 'user');
         expect(res3).have.status(200);
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
       } while (!res3?.body?.done);
 
       const state = res3?.body;

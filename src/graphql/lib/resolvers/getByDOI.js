@@ -1,6 +1,5 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
-const graphql = require('graphql');
 const graphqlFields = require('graphql-fields');
 
 const config = require('config');
@@ -9,13 +8,6 @@ const { redisClient } = require('../services/redis');
 const { elasticClient } = require('../services/elastic');
 
 const logger = require('../logger');
-
-const unpaywallType = require('../models/unpaywall');
-
-const {
-  GraphQLList,
-  GraphQLID,
-} = graphql;
 
 /**
  * Flatten nested properties of an object by seperating keys with dots.
@@ -47,107 +39,100 @@ function flatten(obj) {
   return flattened;
 }
 
-const getByDOI = {
-  type: new GraphQLList(unpaywallType),
-  args: {
-    dois: { type: new GraphQLList(GraphQLID) },
-  },
-  // attr info give informations about graphql request
-  resolve: async (parent, args, req, info) => {
-    const apikey = req.get('X-API-KEY');
+async function GetByDOI(parent, args, req, info) {
+  const apikey = req.get('X-API-KEY');
 
-    if (!apikey) {
+  if (!apikey) {
+    throw Error('Not authorized');
+  }
+
+  let key;
+  try {
+    key = await redisClient.get(apikey);
+  } catch (err) {
+    logger.error(`[redis] Cannot get [${apikey}]`, err);
+    throw Error('Internal server error');
+  }
+
+  let apiKeyConfig;
+  try {
+    apiKeyConfig = JSON.parse(key);
+  } catch (err) {
+    logger.error(`[redis] Cannot parse [${key}]`, err);
+    throw Error('Internal server error');
+  }
+
+  if (!Array.isArray(apiKeyConfig?.access) || !apiKeyConfig?.access?.includes('graphql') || !apiKeyConfig?.allowed) {
+    throw Error('Not authorized');
+  }
+
+  // Demo apikey
+  if (apikey === 'demo') {
+    if ((apiKeyConfig.count - args.dois.length) < 0) {
       throw Error('Not authorized');
     }
-
-    let key;
+    apiKeyConfig.count -= args.dois.length;
     try {
-      key = await redisClient.get(apikey);
+      await redisClient.set(apikey, `${JSON.stringify(apiKeyConfig)}`);
     } catch (err) {
-      logger.error(`[redis] Cannot get [${apikey}]`, err);
-      throw Error('Internal server error');
+      logger.error(`[redis] Cannot update apikey [${apikey}] with config [${JSON.stringify(apiKeyConfig)}]`, err);
+      throw err;
     }
+  }
 
-    let apiKeyConfig;
-    try {
-      apiKeyConfig = JSON.parse(key);
-    } catch (err) {
-      logger.error(`[redis] Cannot parse [${key}]`, err);
-      throw Error('Internal server error');
-    }
+  let index = req?.get('index');
 
-    if (!Array.isArray(apiKeyConfig?.access) || !apiKeyConfig?.access?.includes('graphql') || !apiKeyConfig?.allowed) {
-      throw Error('Not authorized');
-    }
+  const { attributes } = req;
 
-    // Demo apikey
-    if (apikey === 'demo') {
-      if ((apiKeyConfig.count - args?.dois?.length) < 0) {
-        throw Error('Not authorized');
+  if (!index) {
+    index = config.get('elasticsearch.indexAlias');
+  }
+
+  if (!attributes.includes('*')) {
+    const test = graphqlFields(info);
+    const requestedField = flatten(test);
+
+    requestedField.forEach((field) => {
+      if (!attributes.includes(field)) {
+        throw Error(`You don't have access to ${field}`);
       }
-      apiKeyConfig.count -= args?.dois?.length;
-      try {
-        await redisClient.set(apikey, `${JSON.stringify(apiKeyConfig)}`);
-      } catch (err) {
-        logger.error(`[redis] Cannot update apikey [${apikey}] with config [${JSON.stringify(apiKeyConfig)}]`, err);
-        throw err;
-      }
-    }
-
-    let index = req?.get('index');
-
-    const { attributes } = req;
-
-    if (!index) {
-      index = config.get('elasticsearch.indexAlias');
-    }
-
-    if (!attributes.includes('*')) {
-      const test = graphqlFields(info);
-      const requestedField = flatten(test);
-
-      requestedField.forEach((field) => {
-        if (!attributes.includes(field)) {
-          throw Error(`You don't have access to ${field}`);
-        }
-      });
-    }
-
-    const dois = [];
-
-    req.countDOI = args?.dois?.length;
-
-    // Normalize request
-    args.dois.forEach((doi) => {
-      dois.push(doi.toLowerCase());
     });
+  }
 
-    const filter = [{ terms: { doi: dois } }];
+  const dois = [];
 
-    const query = {
-      bool: {
-        filter,
+  req.countDOI = args?.dois?.length;
+
+  // Normalize request
+  args.dois.forEach((doi) => {
+    dois.push(doi.toLowerCase());
+  });
+
+  const filter = [{ terms: { doi: dois } }];
+
+  const query = {
+    bool: {
+      filter,
+    },
+  };
+
+  let res;
+  try {
+    res = await elasticClient.search({
+      index,
+      size: dois.length || 1000,
+      body: {
+        query,
+        _source: attributes,
       },
-    };
 
-    let res;
-    try {
-      res = await elasticClient.search({
-        index,
-        size: dois.length || 1000,
-        body: {
-          query,
-          _source: attributes,
-        },
+    });
+  } catch (err) {
+    logger.error('[elastic] Cannot request elastic', err);
+    return null;
+  }
+  // eslint-disable-next-line no-underscore-dangle
+  return res.body.hits.hits.map((hit) => hit._source);
+}
 
-      });
-    } catch (err) {
-      logger.error('[elastic] Cannot request elastic', err);
-      return null;
-    }
-    // eslint-disable-next-line no-underscore-dangle
-    return res.body.hits.hits.map((hit) => hit._source);
-  },
-};
-
-module.exports = getByDOI;
+module.exports = GetByDOI;

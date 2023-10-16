@@ -1,59 +1,75 @@
-const { format, subDays } = require('date-fns');
-
-const Cron = require('../cron');
-
-const { insertChangefilesOnPeriod } = require('./job');
-
-const updateConfig = {
-  index: 'unpaywall',
-  interval: 'day',
-};
+const cron = require('../cron/update');
 
 /**
- * Starts an update daily process if no update process is started.
+ * Controller to start update cron.
  *
- * @returns {Promise<void>}
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
  */
-async function task() {
-  const week = (updateConfig.interval === 'week');
-  const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
-  const endDate = format(new Date(), 'yyyy-MM-dd');
-  await insertChangefilesOnPeriod({
-    index: updateConfig.index,
-    interval: updateConfig.interval,
-    startDate,
-    endDate,
-    offset: 0,
-    limit: -1,
-  });
+function startUpdateCron(req, res, next) {
+  try {
+    cron.updateCron.start();
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(202).json();
 }
 
-const cron = new Cron('update', '0 0 0 * * *', task);
-
 /**
- * Update config of update process and config of cron.
+ * Controller to stop update cron.
  *
- * @param {Object} config - Global config.
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
  */
-function update(config) {
-  if (config.time) updateConfig.time = config.time;
-  if (config.index) updateConfig.index = config.index;
-  if (config.interval) updateConfig.interval = config.interval;
+function stopUpdateCron(req, res, next) {
+  try {
+    cron.updateCron.stop();
+  } catch (err) {
+    return next(err);
+  }
 
-  cron.setTask(task);
+  return res.status(202).json();
 }
 
 /**
- * Get config of update process and config of cron.
- * @returns {Object} Config of update process and config of cron.
+ * Controller to update config of update cron.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
  */
-function getGlobalConfig() {
-  const config = cron.getConfig();
-  return { ...config, ...updateConfig };
+function patchUpdateCron(req, res, next) {
+  const value = req.data;
+  const { time, index, interval } = value;
+  try {
+    cron.update({ time, index, interval });
+  } catch (err) {
+    return next(err);
+  }
+
+  const config = cron.getGlobalConfig();
+
+  return res.status(200).json(config);
 }
 
+/**
+ * Controller to get config of update cron.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+function getConfigOfUpdateCron(req, res) {
+  const config = cron.getGlobalConfig();
+
+  return res.status(200).json(config);
+}
 module.exports = {
-  getGlobalConfig,
-  update,
-  cron,
+  startUpdateCron,
+  stopUpdateCron,
+  patchUpdateCron,
+  getConfigOfUpdateCron,
 };

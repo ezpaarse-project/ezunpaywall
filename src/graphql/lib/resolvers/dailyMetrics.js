@@ -1,10 +1,8 @@
-const metricsType = require('../models/metrics');
-
 const { getDailyMetrics } = require('../controllers/metrics');
 
-const dailyMetrics = {
-  type: metricsType,
-  resolve: async () => getDailyMetrics(),
+const dailyMetrics = async () => {
+  const metrics = getDailyMetrics();
+  return metrics;
 };
 
 module.exports = dailyMetrics;

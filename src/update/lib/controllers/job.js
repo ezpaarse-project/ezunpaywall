@@ -1,135 +1,114 @@
-/* eslint-disable no-param-reassign */
+const fs = require('fs-extra');
+const path = require('path');
+const { format } = require('date-fns');
 
-const logger = require('../logger');
-
-const {
-  endState, fail,
-} = require('../models/state');
+const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
 
 const {
-  setInUpdate,
-} = require('./status');
-
-const {
-  downloadBigSnapshot,
-  downloadChangefile,
-} = require('./download');
-
-const {
-  createState,
-  addStepGetChangefiles,
-  updateLatestStep,
-  getLatestStep,
-} = require('../models/state');
-
-const insertDataUnpaywall = require('./insert');
-
-const {
-  getChangefiles,
-} = require('../services/unpaywall');
-
-const {
-  sendMailNoChangefile,
-} = require('../services/mail');
-
-/**
- * Download the current snapshot of unpaywall and insert his content.
- *
- * @param {Object} jobConfig - Config of job.
- * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
- * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
- * @param {number} jobConfig.limit - Line in the file where the insertion stops.
- *
- * @returns {Promise<void>}
- */
-async function downloadAndInsertSnapshot(jobConfig) {
-  setInUpdate(true);
-  await createState();
-  const filename = await downloadBigSnapshot(jobConfig);
-  if (!filename) {
-    await fail();
-    return;
-  }
-  jobConfig.filename = filename;
-  await insertDataUnpaywall(jobConfig);
-  await endState();
-}
-
-/**
- * Download and insert on elastic the changefiles from unpaywall between a period.
- *
- * @param {Object} jobConfig - Config of job.
- * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
- * @param {string} jobConfig.interval - Interval of changefile, day or week are available.
- * @param {string} jobConfig.startDate - Start date for the changefile period.
- * @param {string} jobConfig.endDate - End date for the changefile period.
- * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
- * @param {number} jobConfig.limit - Line in the file where the insertion stops.
- *
- * @returns {Promise<void>}
- */
-async function insertChangefilesOnPeriod(jobConfig) {
-  setInUpdate(true);
-  const {
-    interval, startDate, endDate,
-  } = jobConfig;
-  await createState();
-  const start = new Date();
-  addStepGetChangefiles();
-  const step = getLatestStep();
-  const changefilesInfo = await getChangefiles(interval, startDate, endDate);
-
-  if (!changefilesInfo) {
-    step.status = 'error';
-    updateLatestStep(step);
-    await fail();
-    return;
-  }
-
-  step.took = (new Date() - start) / 1000;
-  step.status = 'success';
-  updateLatestStep(step);
-
-  if (changefilesInfo.length === 0) {
-    sendMailNoChangefile(startDate, endDate).catch((err) => {
-      logger.errorRequest(err);
-    });
-    await endState();
-    return;
-  }
-
-  let success = true;
-  for (let i = 0; i < changefilesInfo.length; i += 1) {
-    success = await downloadChangefile(changefilesInfo[i], interval);
-    if (!success) return;
-    jobConfig.filename = changefilesInfo[i].filename;
-    success = await insertDataUnpaywall(jobConfig);
-    if (!success) return;
-  }
-  await endState();
-}
-
-/**
- * Insert on elastic the content of file installed on ezunpaywall.
- *
- * @param {Object} jobConfig - Config of job.
- * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
- * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
- * @param {number} jobConfig.limit - Line in the file where the insertion stops.
- *
- * @returns {Promise<void>}
- */
-async function insertChangefile(jobConfig) {
-  setInUpdate(true);
-  await createState();
-  const success = await insertDataUnpaywall(jobConfig);
-  if (success) {
-    await endState();
-  }
-}
-
-module.exports = {
   downloadAndInsertSnapshot,
   insertChangefilesOnPeriod,
   insertChangefile,
+} = require('../job');
+
+/**
+ * Controller to start job that download and insert snapshot.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function downloadAndInsertSnapshotJob(req, res, next) {
+  const index = req.data;
+
+  const jobConfig = {
+    index,
+    offset: 0,
+    limit: -1,
+  };
+
+  downloadAndInsertSnapshot(jobConfig);
+  return res.status(202).json();
+}
+
+/**
+ * Controller to start job that download ans insert changefiles on period.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function insertChangefilesOnPeriodJob(req, res, next) {
+  const {
+    startDate,
+    endDate,
+    index,
+    interval,
+  } = req.data;
+
+  if (new Date(startDate).getTime() > Date.now()) {
+    return res.status(400).json({ message: 'startDate cannot be in the futur' });
+  }
+
+  if (startDate && endDate) {
+    if (new Date(endDate).getTime() < new Date(startDate).getTime()) {
+      return res.status(400).json({ message: 'endDate cannot be lower than startDate' });
+    }
+  }
+
+  const jobConfig = {
+    index,
+    interval,
+    startDate,
+    endDate,
+    offset: 0,
+    limit: -1,
+  };
+
+  if (!startDate && !endDate) {
+    jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
+    if (interval === 'week') jobConfig.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
+    if (interval === 'day') jobConfig.startDate = format(new Date(), 'yyyy-MM-dd');
+
+    insertChangefilesOnPeriod(jobConfig);
+    return res.status(202).json();
+  }
+
+  if (startDate && !endDate) jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
+
+  insertChangefilesOnPeriod(jobConfig);
+  return res.status(202).json();
+}
+
+/**
+ * Controller to start job that insert file already installed.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function insertChangefileJob(req, res, next) {
+  const {
+    filename, index, offset, limit,
+  } = req.data;
+
+  if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
+    return res.status(404).json({ message: `File [${filename}] not found` });
+  }
+
+  const jobConfig = {
+    filename,
+    index,
+    offset,
+    limit,
+  };
+
+  insertChangefile(jobConfig);
+
+  return res.status(202).json();
+}
+
+module.exports = {
+  downloadAndInsertSnapshotJob,
+  insertChangefilesOnPeriodJob,
+  insertChangefileJob,
 };

@@ -1,30 +1,40 @@
 <template>
-  <v-dialog :value="visible" max-width="1000px" @input="closeDialog">
+  <v-dialog
+    :value="value"
+    max-width="1000px"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <v-card>
       <v-toolbar
         color="primary"
         dark
       >
-        <span class="mr-2" v-text="$t('administration.update.title')" />
+        <v-toolbar-title>
+          {{ t('administration.update.title') }}
+        </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-container fluid>
-          <v-form id="form" v-model="valid" @submit.prevent="startUpdate()">
+          <v-form
+            id="form"
+            v-model="valid"
+            @submit.prevent="startUpdate()"
+          >
             <v-select
               v-model="interval"
               class="mt-4"
               :items="intervals"
-              :label="$t('administration.update.interval')"
+              :label="t('administration.update.interval')"
             />
             <v-text-field
               v-model="startDate"
-              :label="$t('administration.update.startDate')"
+              :label="t('administration.update.startDate')"
               :rules="[dateFormatRule, dateIsFutureRule]"
               autofocus
             />
             <v-text-field
               v-model="endDate"
-              :label="$t('administration.update.endDate')"
+              :label="t('administration.update.endDate')"
               :rules="[dateFormatRule, dateIsFutureRule]"
             />
           </v-form>
@@ -34,9 +44,9 @@
         <v-btn
           text
           class="red--text"
-          @click.stop="closeDialog()"
+          @click.stop="emit('update:modelValue', false)"
         >
-          {{ $t('cancel') }}
+          {{ t('cancel') }}
         </v-btn>
         <v-spacer />
         <v-btn
@@ -47,73 +57,79 @@
           :loading="loading"
           class="green--text"
         >
-          {{ $t('create') }}
+          {{ t('create') }}
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
-export default {
-  name: 'UpdateDialog',
-  props: {
-    dialog: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data () {
-    return {
-      valid: true,
-      loading: false,
-      interval: 'day',
-      intervals: ['day', 'week'],
-      startDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
-      endDate: this.$dateFns.format(new Date(), 'yyyy-MM-dd'),
-      dateFormatRule: value => this.$dateFns.isMatch(value, 'yyyy-MM-dd') || 'YYYY-MM-DD',
-      dateIsFutureRule: value => Date.now() > new Date(value) || this.$t('administration.update.future')
-    }
-  },
-  computed: {
-    visible: {
-      get () {
-        return this.dialog
-      },
-      set (dialog) {
-        this.$emit('input', dialog)
-      }
-    }
-  },
-  methods: {
-    async startUpdate () {
-      this.loading = true
-      try {
-        await this.$update({
-          method: 'POST',
-          url: '/job/period',
-          data: {
-            interval: this.interval,
-            startDate: this.startDate,
-            endDate: this.endDate
-          },
-          headers: {
-            'X-API-KEY': this.$store.getters['admin/getPassword']
-          }
-        })
-      } catch (e) {
-        this.$store.dispatch('snacks/error', this.$t('administration.update.errorUpdate'))
-        this.loading = false
-        return
-      }
-      this.loading = false
-      this.$store.dispatch('snacks/info', this.$t('administration.update.infoUpdate'))
-      this.closeDialog()
-    },
-    closeDialog () {
-      this.$emit('closed')
-      this.visible = false
-    }
-  }
+<script setup>
+
+import { storeToRefs } from 'pinia';
+
+import { useSnacksStore } from '@/store/snacks';
+import { useAdminStore } from '@/store/admin';
+
+const { t } = useI18n();
+const snackStore = useSnacksStore();
+const adminStore = useAdminStore();
+const { $update } = useNuxtApp();
+
+const { password } = storeToRefs(adminStore);
+
+const emit = defineEmits({
+  'update:modelValue': () => true,
+});
+
+function formatDate(date) {
+  const d = new Date(date);
+  let month = `${d.getMonth() + 1}`;
+  let day = `${d.getDate()}`;
+  const year = d.getFullYear();
+
+  if (month.length < 2) { month = `0${month}`; }
+  if (day.length < 2) { day = `0${day}`; }
+
+  return [year, month, day].join('-');
 }
+
+const value = ref('false');
+const valid = ref(true);
+const loading = ref(false);
+const interval = ref('day');
+const intervals = ref(['day', 'week']);
+const startDate = ref(formatDate(new Date()));
+const endDate = ref(formatDate(new Date()));
+
+const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+
+const dateFormatRule = ref((date) => dateRegex.test(date) || 'porrr');
+const dateIsFutureRule = ref((date) => Date.now() > new Date(date) || t('administration.update.future'));
+
+async function startUpdate() {
+  loading.value = true;
+  try {
+    await $update({
+      method: 'POST',
+      url: '/job/period',
+      data: {
+        interval: interval.value,
+        startDate: startDate.value,
+        endDate: endDate.value,
+      },
+      headers: {
+        'X-API-KEY': password.value,
+      },
+    });
+  } catch (err) {
+    snackStore.error(t('error.update.start'));
+    loading.value = false;
+    return;
+  }
+  loading.value = false;
+  snackStore.info(t('info.update.started'));
+  emit('update:modelValue', false);
+}
+
 </script>

@@ -1,42 +1,32 @@
 <template>
-  <section>
+  <section class="ma-3">
     <Login v-if="!isAdmin" />
     <div v-else>
-      <v-btn color="primary" @click="logOut()">
-        {{ $t('administration.logout') }}
-      </v-btn>
-      <WeekHistory />
-      <HealthTab />
-      <ApikeyTab />
+      <v-row class="my-2 mx-1">
+        <LogoutButton />
+        <v-spacer />
+        <EzmesureButton />
+      </v-row>
+      <WeekHistory class="my-2" />
+      <HealthTab class="my-2" />
+      <ApikeyTab class="my-2" />
     </div>
   </section>
 </template>
 
-<script>
+<script setup>
 
-import Login from '~/components/administration/Login.vue'
-import WeekHistory from '~/components/administration/update/WeekHistory.vue'
-import HealthTab from '~/components/administration/health/HealthTab.vue'
-import ApikeyTab from '~/components/administration/apikey/ApikeyTab.vue'
+import Login from '@/components/administration/Login.vue';
+import LogoutButton from '@/components/administration/LogoutButton.vue';
+import EzmesureButton from '@/components/administration/EzmesureButton.vue';
+import WeekHistory from '@/components/report/ReportsCard.vue';
+import HealthTab from '@/components/administration/health/HealthTab.vue';
+import ApikeyTab from '@/components/administration/apikey/ApikeyTab.vue';
 
-export default {
-  name: 'Administration',
-  components: {
-    Login,
-    WeekHistory,
-    HealthTab,
-    ApikeyTab
-  },
-  computed: {
-    isAdmin () {
-      return this.$store.getters['admin/getIsAdmin']
-    }
-  },
-  methods: {
-    logOut () {
-      this.$store.commit('admin/setIsAdmin', false)
-      this.$store.commit('admin/setPassword', '')
-    }
-  }
-}
+import { useAdminStore } from '@/store/admin';
+
+const adminStore = useAdminStore();
+
+const isAdmin = computed(() => adminStore.isAdmin);
+
 </script>

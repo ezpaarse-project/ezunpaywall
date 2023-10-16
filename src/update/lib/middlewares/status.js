@@ -1,6 +1,6 @@
 const {
   getStatus,
-} = require('../controllers/status');
+} = require('../status');
 
 /**
  * Middleware that blocks simultaneous updates of unpaywall data.

@@ -1,60 +1,50 @@
 <template>
-  <v-dialog :value="visible" max-width="1000px" @input="closeDialog">
+  <v-dialog
+    :value="props.value"
+    max-width="1000px"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <v-card>
       <v-toolbar
         color="primary"
         dark
       >
-        <span class="mr-2" v-text="report.createdAt" />
+        <v-toolbar-title>
+          {{ report.createdAt }}
+        </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
-        <pre>
-          <highlightjs language="json" :code="stringifiedReport" />
-        </pre>
+        <JSONView :code="stringifiedReport" />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn
           text
-          @click.stop="closeDialog()"
+          class="red--text"
+          @click.stop="emit('update:modelValue', false)"
         >
-          {{ $t('close') }}
+          {{ t('close') }}
         </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<script>
-export default {
-  props: {
-    dialog: {
-      type: Boolean,
-      default: false
-    },
-    report: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  computed: {
-    visible: {
-      get () {
-        return this.dialog
-      },
-      set (dialog) {
-        this.$emit('input', dialog)
-      }
-    },
-    stringifiedReport () {
-      return JSON.stringify(this.report.data, null, 2)
-    }
-  },
-  methods: {
-    closeDialog () {
-      this.$emit('closed')
-      this.visible = false
-    }
-  }
-}
+<script setup>
+
+import JSONView from '@/components/skeleton/JSONView.vue';
+
+const { t } = useI18n();
+
+const props = defineProps({
+  value: { type: Boolean, default: false },
+  report: { type: Object, default: () => {} },
+});
+
+const stringifiedReport = computed(() => JSON.stringify(props.report.data, null, 2));
+
+const emit = defineEmits({
+  'update:modelValue': () => true,
+});
+
 </script>

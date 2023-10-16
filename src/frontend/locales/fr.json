@@ -1,9 +1,10 @@
 {
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
-    "general1": "ezUnpaywall est un miroir des données <a href=\"{linkHomepageUnpaywall}\" target=\"_blank\">Unpaywall</a> hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
+    "general1": "ezUnpaywall est un miroir des données {link} hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
     "general2": "Il dispose d'une interface d'enrichissement de fichier en données Open Access à partir du DOI et d'un démonstrateur d'interrogation de DOI avec des requêtes GraphQL.",
-    "general3": "Ce serveur dispose d'une API interrogeable via une APIKey. Vous pouvez obtenir une APIKey sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire <a href=\"{blogURL}\" target=\"_blank\"> l'article de blog</a>.",
+    "general3": "Ce serveur dispose d'une API interrogeable via une clé d'API. Vous pouvez obtenir une clé d'API sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire {link}.",
+    "blogPost": "l'article de blog",
     "metrics": "Métriques {env}",
     "globalMetrics": "Métriques globales",
     "referencedResources": "Ressources référencées",
@@ -23,8 +24,6 @@
     "subject": "Objet",
     "content": "Contenu du message",
     "sendNavigatorVersion": "Envoyer la version de mon navigateur",
-    "emailSent": "Votre demande de contact vient d'être envoyée à l'équipe.",
-    "failed": "L'envoi du formulaire de contact a échoué.",
     "requestInformation": "Demande d'information",
     "bugReport": "Signaler un bug",
     "requestApikey": "Demander une clé d'API",
@@ -35,6 +34,7 @@
   },
   "enrich": {
     "general": "Cette page vous permet de tester la fonction d'enrichissement de fichiers jsonl et csv avec des attributs unpaywall.",
+    "example": "Des fichiers d'exemples avec des DOI sont disponible pour tester l'enrichissement.", 
     "enrichFile": "Enrichir votre fichier",
     "filesSelection": "Sélection des fichiers",
     "settings": "Paramètres",
@@ -42,7 +42,6 @@
     "authorizedFile": "Types de fichier autorisés :",
     "continue": "Continuer",
     "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezUnpaywall. Ils doivent simplement contenir un champ DOI.",
-    "explainationTestsLogs": "Besoin de fichiers à enrichir pour tester ce service ? Nous en mettons à disposition sur <a href=\"{url}\" target=\"_blank\">GitHub</a>.",
     "apikey": "Clé d'API",
     "fileExtension": "Extension de fichier reconnue :",
     "unpaywallAttributes": "Attributs unpaywall",
@@ -53,13 +52,7 @@
     "end": "Enrichissement terminé",
     "readLines": "Lignes lues",
     "enrichedLines": "Lignes enrichies",
-    "duration": "Temps de traitement (en secondes)",
-    "error": "Une erreur est survenue",
-    "errorManyFile": "Le nombre de fichier autorisé est de 1",
-    "errorUploadFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
-    "errorUpload": "Erreur lors de l'envoi du fichier",
-    "errorEnrich": "Erreur dans l'enrichissement",
-    "errorState": "Impossible d'obtenir l'état"
+    "duration": "Temps de traitement (en secondes)"
   },
   "graphql": {
     "title": "Graphql",
@@ -73,12 +66,7 @@
     "request": "Requête GraphQL",
     "start": "Lancer la requête",
     "result": "Résultat",
-    "linkAPI": "Voir sur l'API",
-    "copyRequest": "Requête GraphQL copié",
-    "copyResult": "Résultat copié",
-    "errorRequest": "Impossible de lancer la requête graphql",
-    "errorCopyRequest": "Impossible de sauvegarder la requête GraphQL",
-    "errorCopyResult": "Impossible de sauvegarder la réponse"
+    "linkAPI": "Voir sur l'API"
   },
   "administration": {
     "title": "Administration",
@@ -86,15 +74,14 @@
     "login": "Connexion",
     "logout": "Deconnexion",
     "password": "Mot de passe",
-    "loginSuccess": "Connexion réussie",
-    "errorLogin": "Mot de passe incorrect",
     "health": {
       "title": "État des services",
-      "noHealth": "Aucun état de service",
-      "errorHealth": "Impossible de récupérer les états de santé"
+      "reload": "Recharger les états de santé",
+      "noHealth": "Aucun état de service"
     },
     "apikey": {
       "title": "Clés d'API",
+      "reload": "Recharger les clés d'API",
       "noApikeys": "Pas de clés d'API",
       "name": "Nom",
       "ownerValue": "Propriétaire : {owner}",
@@ -109,34 +96,30 @@
       "notAllowed": "Désactivé",
       "import": "Importer des clés d'API en format JSON",
       "export": "Exporter des clés d'API en format JSON",
-      "infoImported": "Les clés d'API ont bien été importées",
-      "errorImported": "Impossible d'importer les clé d'API",
-      "copyAPIkey": "Les clés d'API ont été copiées",
-      "errorCopyAPIkey": "Impossible de copier les clés d'API",
       "create": "Création d'une nouvelle clé d'API",
-      "infoCreated": "La clé d'API a été créée",
-      "errorCreate": "La clé d'API n'a pas pu être créée",
       "update": "Mise à jour de la clé d'API",
-      "infoUpdate": "La clé d'API a été mise à jour",
-      "errorUpdate": "La clé d'API n'a pas pu être mise à jour",
       "delete": "Suppression de la clé d'API",
-      "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)",
-      "infoDeleted": "La clé d'API a été supprimée",
-      "errorDelete": "Impossible de supprimer la clé d'API"
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)"
     },
     "update" : {
       "title": "Lancement d'une mise à jour",
-      "infoUpdate": "La mise à jour a démarré",
-      "errorUpdate": "Erreur lors du lancement de la mise à jour",
       "future": "La date est après aujourd'hui",
-      "interval": "Interval",
+      "invalidDate": "La date est au mauvais format",
+      "interval": "Intervalle",
       "startDate": "Date de début",
       "endDate": "Date de fin"
+    },
+    "cron": {
+      "title": "Config de la cron de mise à jour des données Unpaywall",
+      "interval": "Intervalle",
+      "schedule": "Periode (format de cron)",
+      "index": "Index elastic",
+      "active": "Active"
     }
   },
   "unpaywallArgs": {
     "title": "Paramètres",
-    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez regarder le <a href=\"{url}\" target=\"_blank\">format des données unpaywall</a>",
+    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez cliquer sur ce bouton pour voir le format de données unpaywall",
     "selectAll": "Tout sélectionner",
     "unselectAll": "Tout désélectionner",
     "general": {
@@ -188,11 +171,10 @@
   },
   "status": {
     "inUpdate": "Mise à jour en cours : {latestTaskName} - {percent}%",
-    "noInUpdate": "Les données sont à jour",
-    "errorState": "Impossible d'obtenir l'état",
-    "errorStatus": "Impossible d'obtenir le statut"
+    "noInUpdate": "Les données sont à jour"
   },
   "state": {
+    "createdAt": "Crée le",
     "tasks": "Tâches",
     "task": "Tâche",
     "took": "Temps",
@@ -217,18 +199,97 @@
   "reportHistory": {
     "title": "Dernières mises à jour",
     "reloadReports": "Recharger les rapports",
+    "reload": "Recharger l'historique des mises à jour",
     "source": "Les fichiers de mises à jours proviennent d'unpaywall.org",
     "goTo": "Voir la liste",
     "noReport": "Pas de rapport disponible",
-    "reportsError": "Impossible de récupérer les rapports de mises à jour",
-    "reportError": "Impossible de récupérer le rapport de mises à jour",
-    "insertedDocs": "{insertedDocs} nouvelles lignes",
-    "updatedDocs": "{updatedDocs} lignes mises à jour"
+    "status": "Statut",
+    "insertedDocs": "Nouvelles lignes",
+    "updatedDocs": "Lignes mises à jour"
   },
   "theme": {
     "dark": "Thème sombre",
     "light": "Thème clair"
   },
+  "error": {
+    "default": "Une erreur est survenue",
+    "enrich": {
+      "manyFile": "Le nombre de fichier autorisé est de 1",
+      "typeOfFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
+      "uploadFile": "Erreur lors de l'envoi du fichier",
+      "download": "Impossible de télécharger le fichier enrichis",
+      "job": "Erreur dans l'enrichissement"
+    },
+    "graphql": {
+      "request": "Impossible de lancer la requête graphql",
+      "copyRequest": "Impossible de sauvegarder la requête GraphQL",
+      "copyResult": "Impossible de sauvegarder la réponse"
+    },
+    "apikey":{
+      "import": "Impossible d'importer les clé d'API",
+      "copy": "Impossible de copier les clés d'API",
+      "get": "Impossible de récuperer les clés d'API",
+      "parse": "Impossible de parser la config de la clé d'API en format JSON",
+      "create": "La clé d'API n'a pas pu être créée",
+      "update": "La clé d'API n'a pas pu être mise à jour",
+      "delete": "Impossible de supprimer la clé d'API"
+    },
+    "status": {
+      "state": "Impossible d'obtenir l'état",
+      "status": "Impossible d'obtenir le statut"
+    },
+    "update": {
+      "start": "Erreur lors du lancement de la mise à jour"
+    },
+    "cron": {
+      "get": "Impossible de récupérer la configuration de la cron de mise à jour",
+      "update": "Impossible de mettre à jour la configuration de la cron de mise à jour",
+      "start": "Impossible de démarrer la cron de mise à jour",
+      "stop": "Impossible d'arrêter la cron de mise à jour"
+    },
+    "report":{
+      "getAll": "Impossible de récupérer les rapports de mises à jour",
+      "get": "Impossible de récupérer le rapport de mises à jour"
+    },
+    "health": {
+      "get": "Impossible de récupérer les états de santé"
+    },
+    "admininistration": {
+      "invalidPassword": "Mot de passe incorrect"
+    },
+    "contact": {
+      "failed": "L'envoi du formulaire de contact a échoué."
+    }
+  },
+  "info" : {
+    "apikey": {
+      "imported": "Les clés d'API ont bien été importées",
+      "created": "La clé d'API a été créée",
+      "update": "La clé d'API a été mise à jour",
+      "deleted": "La clé d'API a été supprimée",
+      "copied": "Les clés d'API ont été copiées"
+    },
+    "update": {
+      "started": "La mise à jour a démarré"
+    },
+    "graphql": {
+      "copyResult": "Résultat copié",
+      "copyRequest": "Requête GraphQL copié"
+    },
+    "admininistration": {
+      "login": "Connexion réussie"
+    },
+    "contact": {
+      "mailSent": "Votre demande vient d'être envoyée à l'équipe."
+    },
+    "cron": {
+      "updated": "La cron de mise à jour a été mise à jour",
+      "activated": "La cron de mise à jour a été activé",
+      "stoped": "La cron de mise à jour a été arrêter"
+    }
+  },
+  "edit": "Modifier",
+  "delete": "Supprimer",
   "download": "Télécharger",
   "copy": "Copier",
   "send": "Envoyer",
