@@ -136,7 +136,7 @@ async function stopCron() {
       method: 'POST',
       url: '/cron/stop',
       headers: {
-        'X-API-KEY': password,
+        'X-API-KEY': password.value,
       },
     });
   } catch (err) {

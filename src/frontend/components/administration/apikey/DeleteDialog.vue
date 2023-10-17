@@ -81,7 +81,7 @@ async function deleteApikey() {
       method: 'DELETE',
       url: `/keys/${props.apikey}`,
       headers: {
-        'X-API-KEY': password,
+        'X-API-KEY': password.value,
       },
     });
   } catch (e) {
