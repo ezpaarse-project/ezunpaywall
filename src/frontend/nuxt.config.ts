@@ -10,7 +10,7 @@ export default defineNuxtConfig({
       updateHost: process.env.NUXT_PUBLIC_UPDATE_HOST || 'http://localhost:59702',
       enrichHost: process.env.NUXT_PUBLIC_ENRICH_HOST || 'http://localhost:59703',
       apikeyHost: process.env.NUXT_PUBLIC_APIKEY_HOST || 'http://localhost:59704',
-      mailHost: process.env.NUXT_PUBLIC_UPDATE_HOST || 'http://localhost:59705',
+      mailHost: process.env.NUXT_PUBLIC_MAIL_HOST || 'http://localhost:59705',
       healthHost: process.env.NUXT_PUBLIC_HEALTH_HOST || 'http://localhost:59707',
       elasticEnv: process.env.NUXT_PUBLIC_ELASTIC_ENV || 'development',
       version: process.env.NUXT_PUBLIC_VERSION || 'development',
