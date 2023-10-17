@@ -34,6 +34,7 @@ const items = ref([
 ]);
 
 const host = computed(() => {
+  if (tab.value === 0) { return runtimeConfig.public.graphqlHost; }
   if (tab.value === 1) { return runtimeConfig.public.enrichHost; }
   if (tab.value === 2) { return runtimeConfig.public.updateHost; }
   if (tab.value === 3) { return runtimeConfig.public.apikeyHost; }
