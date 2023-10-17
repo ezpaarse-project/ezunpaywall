@@ -1,3 +1,4 @@
+const cronValidator = require('cron-validator');
 const cron = require('../cron/update');
 
 /**
@@ -44,6 +45,10 @@ function stopUpdateCron(req, res, next) {
 function patchUpdateCron(req, res, next) {
   const value = req.data;
   const { time, index, interval } = value;
+
+  const validCron = cronValidator.isValidCron(time, { seconds: true });
+  if (!validCron) { return res.status(400).json('schedule is invalid'); }
+
   try {
     cron.update({ time, index, interval });
   } catch (err) {
