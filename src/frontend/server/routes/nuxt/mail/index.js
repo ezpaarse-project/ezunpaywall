@@ -23,9 +23,9 @@ export default defineEventHandler(async (event) => {
           'Content-type': 'application/json',
         },
       },
-      D,
     );
   } catch (err) {
+    console.log(err);
     return err;
   }
 
