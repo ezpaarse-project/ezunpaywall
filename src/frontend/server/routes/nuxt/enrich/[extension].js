@@ -5,6 +5,6 @@ import path from 'node:path';
 export default defineEventHandler(
   (event) => {
     const extension = getRouterParam(event, 'extension');
-    return fs.readFile(path.resolve(`server/api/enrich/sources/example.${extension}`));
+    return fs.readFile(path.resolve(`server/routes/nuxt/enrich/sources/example.${extension}`));
   },
 );
