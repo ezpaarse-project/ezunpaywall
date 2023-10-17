@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const redis = require('redis');
 const { format } = require('date-fns');
 
 const { redisClient } = require('./redis');
@@ -111,7 +110,7 @@ async function update(id, newConfig) {
  */
 async function remove(id) {
   try {
-    await redisClient.del(id, redis.print);
+    await redisClient.del(id);
   } catch (err) {
     logger.error(`[redis] Cannot delete apikey [${id}]`, err);
     return false;
