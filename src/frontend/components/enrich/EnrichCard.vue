@@ -125,7 +125,6 @@ import Report from '@/components/enrich/Report.vue';
 
 import { useSnacksStore } from '@/store/snacks';
 
-const { $emitter } = useNuxtApp();
 const enrichStore = useEnrichStore();
 
 const { t } = useI18n();
