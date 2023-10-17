@@ -19,10 +19,11 @@ export default defineEventHandler(async (event) => {
           message,
         },
         headers: {
-          'x-api-key': runtimeConfig.apikeyMail,
+          'x-api-key': runtimeConfig.mailApikey,
           'Content-type': 'application/json',
         },
       },
+      D,
     );
   } catch (err) {
     return err;

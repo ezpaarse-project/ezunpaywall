@@ -8,7 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const mail = axios.create({
     baseURL: mailHost,
     headers: {
-      'x-api-key': nuxtApp.$config.public.apikeyMail,
+      'x-api-key': nuxtApp.$config.public.mailApikey,
     },
   });
 
