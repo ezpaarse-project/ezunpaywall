@@ -62,7 +62,6 @@ const { t } = useI18n();
 const enrichStore = useEnrichStore();
 const snackStore = useSnacksStore();
 const { $enrich } = useNuxtApp();
-const { $emitter } = useNuxtApp();
 
 const {
   start, isProcessing, type, apikey, attributes, fileSeparator, files, isError,
