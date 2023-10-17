@@ -43,10 +43,11 @@ async function download(type) {
   let res;
   try {
     res = await $fetch(`/nuxt/enrich/${type}`);
+    return forceFileDownload(res, type);
   } catch (err) {
     snackStore.error(t('error.enrich.download'));
   }
-  return forceFileDownload(res, type);
+  return false;
 }
 
 </script>
