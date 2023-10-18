@@ -72,7 +72,7 @@ function enrichArray(data, response) {
   let lineEnriched = 0;
 
   if (!response) {
-    return data;
+    return { enrichedArray, lineEnriched };
   }
 
   const results = new Map();

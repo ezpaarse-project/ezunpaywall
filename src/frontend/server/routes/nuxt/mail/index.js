@@ -6,20 +6,27 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { email, subject, message } = body;
 
-  const { data } = await $fetch(
-    `${runtimeConfig.mailHost}/contact`,
-    {
-      method: 'POST',
-      body: {
-        email,
-        subject,
-        message,
+  let res;
+
+  try {
+    res = await $fetch(
+      `${runtimeConfig.mailHost}/contact`,
+      {
+        method: 'POST',
+        body: {
+          email,
+          subject,
+          message,
+        },
+        headers: {
+          'x-api-key': runtimeConfig.mailApikey,
+          'Content-type': 'application/json',
+        },
       },
-      headers: {
-        'x-api-key': runtimeConfig.apikeyMail,
-        'Content-type': 'application/json',
-      },
-    },
-  );
-  return data;
+    );
+  } catch (err) {
+    return err;
+  }
+
+  return res.data;
 });

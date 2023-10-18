@@ -46,9 +46,10 @@ async function graphqlRequest() {
   } catch (err) {
     snackStore.error(t('error.graphql.request'));
   }
+  emit('graphql-data', res?.data?.data);
+  await nextTick();
   document.getElementById('graphqlResult').scrollIntoView({ behavior: 'smooth' });
   loading.value = false;
-  emit('graphql-data', res?.data?.data);
 }
 
 </script>

@@ -65,8 +65,7 @@ const bestOaLocationSelected = ref(['evidence', 'is_best']);
 const firstOaLocationSelected = ref(['url_for_pdf']);
 const oaLocationsSelected = ref([]);
 const zAuthorsSelected = ref(['family', 'given']);
-
-const unpaywallItems = computed(() => [
+const unpaywallItems = ref([
   'doi',
   'data_standard',
   'doi_url',
@@ -85,14 +84,12 @@ const unpaywallItems = computed(() => [
   'updated',
   'year',
 ]);
-
-const zAuthorsItems = computed(() => [
+const zAuthorsItems = ref([
   'family',
   'given',
   'ORCID',
 ]);
-
-const oaLocationsItems = computed(() => [
+const oaLocationsItems = ref([
   'evidence',
   'host_type',
   'is_best',

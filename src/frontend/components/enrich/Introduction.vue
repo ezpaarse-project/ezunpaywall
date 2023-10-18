@@ -31,7 +31,7 @@ const { t } = useI18n();
 const snackStore = useSnacksStore();
 
 function forceFileDownload(response, type) {
-  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const url = window.URL.createObjectURL(new Blob([response]));
   const link = document.createElement('a');
   link.href = url;
   link.setAttribute('download', `example.${type}`);
@@ -42,11 +42,12 @@ function forceFileDownload(response, type) {
 async function download(type) {
   let res;
   try {
-    res = await $fetch(`/nuxt/enrich/${type}`);
+    res = await $fetch(`/example.${type}`);
+    return forceFileDownload(res, type);
   } catch (err) {
     snackStore.error(t('error.enrich.download'));
   }
-  return forceFileDownload(res, type);
+  return false;
 }
 
 </script>

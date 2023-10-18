@@ -20,12 +20,18 @@ describe('Test: Delete apikey', () => {
   });
 
   it('Should delete apikey', async () => {
-    const res = await chai
+    let res = await chai
       .request(apikeyURL)
       .delete('/keys/user')
       .set('x-api-key', 'changeme');
 
     expect(res).have.status(204);
+
+    res = await chai
+      .request(apikeyURL)
+      .get('/keys/user');
+
+    expect(res).have.status(404);
   });
 
   it('Shouldn\'t delete apikey because test apikey doesn\'t exist', async () => {

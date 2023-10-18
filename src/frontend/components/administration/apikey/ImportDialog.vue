@@ -76,7 +76,7 @@ async function loadApikeys() {
       url: '/keys/load',
       data: parsedApikeys,
       headers: {
-        'X-API-KEY': password,
+        'X-API-KEY': password.value,
       },
     });
   } catch (err) {

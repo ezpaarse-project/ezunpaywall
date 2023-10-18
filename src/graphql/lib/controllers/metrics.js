@@ -18,14 +18,16 @@ let metrics = {
  * @returns {Promise<void>}
  */
 async function setMetrics() {
-  metrics = await getMetrics();
+  metrics = await getMetrics('unpaywall');
   logger.info('[metrics] metrics is updated');
 }
 
 /**
  * Get cached metrics
  */
-function getDailyMetrics() { return metrics; }
+function getDailyMetrics() {
+  return metrics;
+}
 
 module.exports = {
   setMetrics,

@@ -2,6 +2,7 @@ const unpaywall = require('./unpaywall');
 const unpaywall2 = require('./unpaywall2');
 const GetByDOI = require('./getByDOI');
 const metrics = require('./metrics');
+const dailyMetrics = require('./dailyMetrics');
 
 const resolvers = {
   Query: {
@@ -9,6 +10,7 @@ const resolvers = {
     unpaywall2,
     GetByDOI,
     metrics,
+    dailyMetrics,
   },
 };
 

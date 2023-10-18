@@ -75,7 +75,6 @@ import { useSnacksStore } from '@/store/snacks';
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
-const { $mail } = useNuxtApp();
 
 const form = ref(null);
 const email = ref('');

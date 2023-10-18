@@ -62,10 +62,9 @@ const { t } = useI18n();
 const enrichStore = useEnrichStore();
 const snackStore = useSnacksStore();
 const { $enrich } = useNuxtApp();
-const { $emitter } = useNuxtApp();
 
 const {
-  isProcessing, type, apikey, attributes, fileSeparator, files, isError,
+  start, isProcessing, type, apikey, attributes, fileSeparator, files, isError,
 } = storeToRefs(enrichStore);
 
 const state = ref({});
@@ -231,7 +230,5 @@ async function startEnrich() {
   enrichStore.setIsProcessing(false);
   enrichStore.setResultID(idProcess);
 }
-
-$emitter.on('enrich:start', startEnrich());
 
 </script>

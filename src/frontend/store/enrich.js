@@ -4,6 +4,7 @@
 import { defineStore } from 'pinia';
 
 export const useEnrichStore = defineStore('enrich', () => {
+  const start = ref(false);
   const files = ref([]);
   const type = ref('');
   const apikey = ref('demo');
@@ -14,6 +15,9 @@ export const useEnrichStore = defineStore('enrich', () => {
   const isError = ref(false);
   const resultID = ref('');
 
+  function setStart(value) {
+    start.value = value;
+  }
   function setFiles(value) {
     files.value = value;
   }
@@ -43,6 +47,7 @@ export const useEnrichStore = defineStore('enrich', () => {
   }
 
   return {
+    start,
     files,
     type,
     apikey,
@@ -52,6 +57,7 @@ export const useEnrichStore = defineStore('enrich', () => {
     resultID,
     isError,
     isProcessing,
+    setStart,
     setFiles,
     setType,
     setApikey,
