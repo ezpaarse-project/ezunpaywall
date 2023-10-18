@@ -187,7 +187,7 @@ async function updateApikey() {
         allowed: allowed.value,
       },
       headers: {
-        'X-API-KEY': password,
+        'X-API-KEY': password.value,
       },
     });
   } catch (e) {

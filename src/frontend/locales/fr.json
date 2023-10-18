@@ -234,10 +234,7 @@
       "update": "La clé d'API n'a pas pu être mise à jour",
       "delete": "Impossible de supprimer la clé d'API"
     },
-    "status": {
-      "state": "Impossible d'obtenir l'état",
-      "status": "Impossible d'obtenir le statut"
-    },
+    "status": "Impossible d'obtenir le statut",
     "update": {
       "start": "Erreur lors du lancement de la mise à jour"
     },
@@ -265,7 +262,7 @@
     "apikey": {
       "imported": "Les clés d'API ont bien été importées",
       "created": "La clé d'API a été créée",
-      "update": "La clé d'API a été mise à jour",
+      "updated": "La clé d'API a été mise à jour",
       "deleted": "La clé d'API a été supprimée",
       "copied": "Les clés d'API ont été copiées"
     },

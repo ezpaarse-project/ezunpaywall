@@ -262,7 +262,7 @@
     "apikey": {
       "imported": "API keys have been successfully imported",
       "created": "The API key has been created",
-      "update": "The API key has been updated",
+      "updated": "The API key has been updated",
       "deleted": "The API key has been deleted",
       "copied": "API keys have been copied"
     },
