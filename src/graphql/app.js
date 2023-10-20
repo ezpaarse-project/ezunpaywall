@@ -9,6 +9,7 @@ const { expressMiddleware } = require('@apollo/server/express4');
 
 const { pingRedis, startConnectionRedis } = require('./lib/services/redis');
 
+const getNumberOfDOI = require('./lib/middlewares/args');
 const auth = require('./lib/middlewares/auth');
 
 const logger = require('./lib/logger');
@@ -55,7 +56,10 @@ const server = new ApolloServer({
   await server.start();
 
   app.use('/graphql', cors(), json(), auth, expressMiddleware(server, {
-    context: async ({ req }) => req,
+    context: async ({ req }) => {
+      req.countDOI = getNumberOfDOI(req);
+      return req;
+    },
   }));
 
   app.listen(3000, async () => {
