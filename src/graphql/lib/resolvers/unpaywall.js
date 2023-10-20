@@ -39,8 +39,8 @@ function flatten(obj) {
   return flattened;
 }
 
-async function unpaywall(parent, args, req, info) {
-  const apikey = req.get('X-API-KEY');
+async function unpaywall(parent, args, contextValue, info) {
+  const apikey = contextValue.get('X-API-KEY');
 
   if (!apikey) {
     throw Error('Not authorized');
@@ -80,9 +80,9 @@ async function unpaywall(parent, args, req, info) {
     }
   }
 
-  let index = req?.get('index');
+  let index = contextValue?.get('index');
 
-  const { attributes } = req;
+  const { attributes } = contextValue;
 
   if (!index) {
     index = config.get('elasticsearch.indexAlias');
@@ -100,8 +100,6 @@ async function unpaywall(parent, args, req, info) {
   }
 
   const dois = [];
-
-  req.countDOI = args?.dois?.length;
 
   // Normalize request
   args.dois.forEach((doi) => {

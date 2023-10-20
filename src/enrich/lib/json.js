@@ -140,8 +140,7 @@ async function enrichInFile(data, enrichConfig, state) {
     response = await requestGraphql(data, args, index, state.apikey);
   } catch (err) {
     logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
-    await fail(state);
-    return;
+    throw err;
   }
   // enrichment
   const enrichedData = enrichArray(data, response);
@@ -221,14 +220,26 @@ async function processEnrichJSON(id, index, args, prefix, state) {
     }
 
     if (data.length === 1000) {
-      await enrichInFile(data, enrichConfig, state);
+      try {
+        await enrichInFile(data, enrichConfig, state);
+      } catch (err) {
+        logger.error(`[job jsonl] Cannot enrich in file [${enrichedFile}]`, err);
+        await fail(state);
+        return;
+      }
       data = [];
     }
   }
 
   // last insertion
   if (data.length !== 0) {
-    await enrichInFile(data, enrichConfig, state);
+    try {
+      await enrichInFile(data, enrichConfig, state);
+    } catch (err) {
+      logger.error(`[job jsonl] Cannot enrich in file [${enrichedFile}]`, err);
+      await fail(state);
+      return;
+    }
   }
   logger.info(`[job jsonl] ${state.enrichedLines}/${state.linesRead} enriched lines`);
 }
