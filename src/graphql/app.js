@@ -58,6 +58,7 @@ const server = new ApolloServer({
   app.use('/graphql', cors(), json(), auth, expressMiddleware(server, {
     context: async ({ req }) => {
       req.countDOI = getNumberOfDOI(req);
+
       return req;
     },
   }));
