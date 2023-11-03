@@ -18,6 +18,8 @@ const routerCron = require('./lib/routers/cron');
 const routerElastic = require('./lib/routers/elastic');
 const routerOpenapi = require('./lib/routers/openapi');
 
+const routerHistoryJob = require('./lib/routers/history/job');
+
 require('./lib/cron/file');
 
 const dataDir = path.resolve(__dirname, 'data');
@@ -47,6 +49,8 @@ app.use(routerCron);
 app.use(routerElastic);
 app.use(routerOpenapi);
 app.use(routerPing);
+
+app.use(routerHistoryJob);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
