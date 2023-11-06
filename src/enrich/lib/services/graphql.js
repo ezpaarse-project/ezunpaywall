@@ -22,7 +22,9 @@ async function requestGraphql(data, args, index, apikey) {
   let dois = [];
   let res = [];
   // contain index of doi
+
   const map1 = await data.map((elem) => elem?.doi);
+
   // contain array of doi to request ezunpaywall
   dois = await map1.filter((elem) => elem !== undefined);
   dois = dois.join('","');
