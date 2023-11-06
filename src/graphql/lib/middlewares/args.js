@@ -18,9 +18,7 @@ function getNumberOfDOI(req) {
     if (match?.length >= 1) {
       let listOfDOI;
       try {
-        // FIXME
         listOfDOI = match[1].split(',').length;
-        console.log(listOfDOI);
       } catch (err) {
         logger.error(`[Apollo] Cannot parse ${match[1]}`);
       }
