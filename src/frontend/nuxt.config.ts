@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      environment: process.env.NUXT_PUBLIC_NODE_ENV || 'development',
+      environment: process.env.NUXT_PUBLIC_ENVIRONMENT || 'development',
       unpaywallHost: process.env.NUXT_PUBLIC_UNPAYWALL_HOST || 'https://unpaywall.org',
       unpaywallAPIHost: process.env.NUXT_PUBLIC_UNPAYWALL_API_HOST || 'http://api.unpaywall.org',
       dashbordHost: process.env.NUXT_PUBLIC_DASHBOARD_HOST || 'https://ezmesure.couperin.org/kibana/s/ezunpaywall/app/dashboards',

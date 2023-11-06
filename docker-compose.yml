@@ -184,7 +184,7 @@ services:
     container_name: ezunpaywall-frontend-prod
     environment:
       - NODE_ENV=development
-      - NUXT_PUBLIC_NODE_ENV=development
+      - NUXT_PUBLIC_ENVIRONMENT=development
       - NUXT_PUBLIC_ELASTIC_ENV=development
       - NUXT_PUBLIC_VERSION=development
       - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_HOST
