@@ -60,7 +60,7 @@
     "general2": "Il suffit de préciser en entrée le DOI ou les DOIs recherchés séparé par une virgule, votre clé d'API les champs Unpaywall désirés en sortie.",
     "general3": "Le démonstrateur construit la requête et vous pouvez envoyer la requête au serveur et voir la réponse. Utiliser les aides dans l'interface pour avoir plus d'informations sur l'usage des données du formulaire.",
     "general4": "Si vous êtes développeur, vous pouvez aussi utiliser la section documentation (swagger) pour tester les différentes routes de l'API.",
-    "constructor": "Démostrateur graphql",
+    "constructor": "Démonstrateur graphql",
     "apikey": "clé d'API",
     "settings": "Attributs unpaywall à récuperer",
     "request": "Requête GraphQL",

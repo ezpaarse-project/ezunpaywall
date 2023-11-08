@@ -60,7 +60,7 @@
     "general2": "You just need to specify the DOI or DOIs seperated by a comma, your API key and the desired Unpaywall fields as output.",
     "general3": "The demonstrator builds the request and you can send the request to the server and see the answer. Use the help in the interface to get more information about the use of the form data.",
     "general4": "If you are a developer, you can also use the documentation section (swagger) to test the different API routes.",
-    "constructor": "Graphql Demostrator",
+    "constructor": "Graphql demonstrator",
     "apikey": "API key",
     "settings": "Unpaywall attributes to retrieve",
     "request": "GraphQL request",
