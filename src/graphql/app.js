@@ -35,6 +35,7 @@ fs.ensureDir(path.resolve(logDir, 'access'));
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,
   csrfPrevention: false,
 });
 
