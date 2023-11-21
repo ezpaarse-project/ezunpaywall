@@ -29,14 +29,6 @@ function inputChanged() {
     snackStore.error(t('error.enrich.typeOfFile'));
     enrichStore.setFiles([]);
   }
-  if (ext === 'csv') {
-    const { type } = files.value[0];
-    console.log(type);
-    if (type !== 'text/csv') {
-      snackStore.error(t('error.enrich.typeOfFile'));
-      enrichStore.setFiles([]);
-    }
-  }
   enrichStore.setType(ext);
 }
 
