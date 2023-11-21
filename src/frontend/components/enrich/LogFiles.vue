@@ -31,6 +31,7 @@ function inputChanged() {
   }
   if (ext === 'csv') {
     const { type } = files.value[0];
+    console.log(type);
     if (type !== 'text/csv') {
       snackStore.error(t('error.enrich.typeOfFile'));
       enrichStore.setFiles([]);

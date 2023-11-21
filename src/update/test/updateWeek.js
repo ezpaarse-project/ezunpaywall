@@ -58,14 +58,14 @@ describe('Week: Test: weekly update route test', () => {
     it('Should insert 50 data', async () => {
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(50);
     });
 
-    it('Should get state with all informations from the weekly update', async () => {
+    it('Should get state with all information from the weekly update', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -101,7 +101,7 @@ describe('Week: Test: weekly update route test', () => {
       expect(state.done).be.equal(true);
     });
 
-    it('Should get report with all informations from the weekly update', async () => {
+    it('Should get report with all information from the weekly update', async () => {
       const report = await getReport();
 
       expect(report).have.property('done');
@@ -161,14 +161,14 @@ describe('Week: Test: weekly update route test', () => {
     it('should insert 50 data', async () => {
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
       const count = await countDocuments('unpaywall-test');
       expect(count).to.equal(50);
     });
 
-    it('Should get state with all informations from the weekly update', async () => {
+    it('Should get state with all information from the weekly update', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -195,7 +195,7 @@ describe('Week: Test: weekly update route test', () => {
       expect(state.steps[1]).have.property('status').equal('success');
     });
 
-    it('Should get report with all informations from the weekly update', async () => {
+    it('Should get report with all information from the weekly update', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);
