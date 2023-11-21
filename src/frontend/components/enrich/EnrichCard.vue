@@ -145,7 +145,14 @@ const snackStore = useSnacksStore();
 const { $enrich } = useNuxtApp();
 
 const {
-  start, isProcessing, type, apikey, attributes, fileSeparator, files, isError,
+  isProcessing,
+  type,
+  apikey,
+  attributes,
+  fileSeparator,
+  enrichedFileSeparator,
+  files,
+  isError,
 } = storeToRefs(enrichStore);
 
 const state = ref({});
@@ -298,7 +305,7 @@ async function startEnrich() {
     const data = {
       type: type.value,
       args: graphqlAttributes,
-      separator: fileSeparator.value,
+      separator: enrichedFileSeparator.value,
     };
     await enrich(idProcess, data);
   }
