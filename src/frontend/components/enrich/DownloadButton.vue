@@ -3,6 +3,7 @@
     <v-spacer />
     <v-btn
       :disabled="isProcessing || isError"
+      variant="tonal"
       @click="download()"
     >
       <template #prepend>

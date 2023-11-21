@@ -21,7 +21,12 @@
         <v-card flat>
           <v-card-actions>
             <v-spacer />
-            <v-btn @click="setStep(2)">
+            <v-btn
+              append-icon="mdi-chevron-right"
+              variant="tonal"
+              :disabled="!hasFile"
+              @click="setStep(2)"
+            >
               {{ t("enrich.settings") }}
             </v-btn>
           </v-card-actions>
@@ -32,11 +37,19 @@
       <template #item.2>
         <v-card flat>
           <v-card-actions>
-            <v-btn @click="setStep(1)">
+            <v-btn
+              prepend-icon="mdi-chevron-left"
+              variant="tonal"
+              @click="setStep(1)"
+            >
               {{ t("enrich.filesSelection") }}
             </v-btn>
             <v-spacer />
-            <v-btn @click="startEnrich()">
+            <v-btn
+              append-icon="mdi-chevron-right"
+              variant="tonal"
+              @click="startEnrich()"
+            >
               {{ t("enrich.startProcess") }}
             </v-btn>
           </v-card-actions>
@@ -47,7 +60,11 @@
       <template #item.3>
         <v-card flat>
           <v-card-actions>
-            <v-btn @click="setStep(2)">
+            <v-btn
+              prepend-icon="mdi-chevron-left"
+              variant="tonal"
+              @click="setStep(2)"
+            >
               {{ t("enrich.settings") }}
             </v-btn>
             <v-spacer />
@@ -166,6 +183,8 @@ const attributesFiltered = computed(() => {
   }
   return attributes.value;
 });
+
+const hasFile = computed(() => files.value.length > 0);
 
 function startTimer(startTime) {
   timer.value = setInterval(() => {
