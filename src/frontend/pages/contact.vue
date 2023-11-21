@@ -86,15 +86,15 @@ const loading = ref(false);
 
 const subjects = computed(() => [
   {
-    value: 'informations',
+    key: 'informations',
     name: t('contact.requestInformation'),
   },
   {
-    value: 'bugs',
+    key: 'bugs',
     name: t('contact.bugReport'),
   },
   {
-    value: 'apikey',
+    key: 'apikey',
     name: t('contact.requestApikey'),
   },
 ]);
@@ -120,7 +120,7 @@ async function validate() {
         method: 'POST',
         body: {
           email: email.value,
-          subject: subject.value,
+          subject: subject.value.name,
           message: message.value,
         },
       });
