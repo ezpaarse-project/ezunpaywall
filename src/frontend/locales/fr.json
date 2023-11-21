@@ -7,10 +7,10 @@
     "blogPost": "l'article de blog",
     "metrics": "Métriques {env}",
     "globalMetrics": "Métriques globales",
-    "referencedResources": "Ressources référencées",
+    "referencedResources": "resources référencées",
     "openAccess": "Accès ouvert",
     "openAccessStatus": "Statuts Open Access",
-    "referencedRessourceHelp": "Nombre de référence bibliographique enregistré dans le miroir",
+    "referencedResourceHelp": "Nombre de référence bibliographique enregistré dans le miroir",
     "openAccessHelp": "Nombre de référence bibliographique disponible en accès gratuit (is_oa: true)",
     "goldOAHelp": "Nombre de référence bibliographique ayant le status 'gold' (oa_status: 'gold')",
     "hybridOAHelp": "Nombre de référence bibliographique ayant le status 'hybrid' (oa_status: 'hybrid')",
@@ -124,27 +124,27 @@
     "unselectAll": "Tout désélectionner",
     "general": {
       "doi": "Digital Object Identifier",
-      "data_standard": "Approches de collectes de données utilisées pour cette ressource",
+      "data_standard": "Approches de collectes de données utilisées pour cette resource",
       "doi_url": "DOI sous forme de lien hypertexte",
-      "genre": "Type de ressource",
-      "is_oa": "Existe-t-il une version OA de cette ressource",
+      "genre": "Type de resource",
+      "is_oa": "Existe-t-il une version OA de cette resource",
       "is_paratext": "Cet élément est-il une partie auxiliaire d'un journal, comme une table des matières",
-      "journal_is_in_doaj": "Cette ressource est-elle publiée dans une revue indexée par le DOAJ",
-      "journal_is_oa": "Cette ressource est-elle publiée dans une revue entièrement en libre accès",
-      "journal_issn_l": "Un seul ISSN pour la revue qui publie cette ressource",
-      "journal_issns": "Tous les ISSN attribués à la revue publiant cette ressource",
-      "journal_name": "Nom de la revue qui publie cette ressource",
-      "oa_status": "Statut OA, ou la couleur, de cette ressource",
-      "published_date": "Date à laquelle cette ressource a été publiée",
-      "publisher": "Nom de l'éditeur de cette ressource",
-      "title": "Titre de cette ressource",
-      "updated": "Heure de la dernière mise à jour des données pour cette ressource",
-      "year": "Année de publication de cette ressource"
+      "journal_is_in_doaj": "Cette resource est-elle publiée dans une revue indexée par le DOAJ",
+      "journal_is_oa": "Cette resource est-elle publiée dans une revue entièrement en libre accès",
+      "journal_issn_l": "Un seul ISSN pour la revue qui publie cette resource",
+      "journal_issns": "Tous les ISSN attribués à la revue publiant cette resource",
+      "journal_name": "Nom de la revue qui publie cette resource",
+      "oa_status": "Statut OA, ou la couleur, de cette resource",
+      "published_date": "Date à laquelle cette resource a été publiée",
+      "publisher": "Nom de l'éditeur de cette resource",
+      "title": "Titre de cette resource",
+      "updated": "Heure de la dernière mise à jour des données pour cette resource",
+      "year": "Année de publication de cette resource"
     },
     "oa_locations": {
       "evidence": "Comment Unpaywall a trouvé cet emplacement OA",
       "host_type": "Type d'hôte qui dessert cet emplacement OA",
-      "is_best": "Cet emplacement est-il le best_oa_location pour la ressource",
+      "is_best": "Cet emplacement est-il le best_oa_location pour la resource",
       "license": "Licence sous laquelle cette copie est publiée",
       "pmh_id": "Point de terminaison OAI-PMH où nous avons trouvé cet emplacement",
       "updated": "Heure de la dernière mise à jour des données de cet emplacement",
@@ -218,7 +218,8 @@
       "typeOfFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
       "uploadFile": "Erreur lors de l'envoi du fichier",
       "download": "Impossible de télécharger le fichier enrichis",
-      "job": "Erreur dans l'enrichissement"
+      "job": "Erreur dans l'enrichissement",
+      "state": "Impossible d'obtenir l'état de l'enrichissement"
     },
     "graphql": {
       "request": "Impossible de lancer la requête graphql",
@@ -251,7 +252,7 @@
     "health": {
       "get": "Impossible de récupérer les états de santé"
     },
-    "admininistration": {
+    "administration": {
       "invalidPassword": "Mot de passe incorrect"
     },
     "contact": {
@@ -273,7 +274,7 @@
       "copyResult": "Résultat copié",
       "copyRequest": "Requête GraphQL copié"
     },
-    "admininistration": {
+    "administration": {
       "login": "Connexion réussie"
     },
     "contact": {
@@ -282,7 +283,7 @@
     "cron": {
       "updated": "La cron de mise à jour a été mise à jour",
       "activated": "La cron de mise à jour a été activé",
-      "stoped": "La cron de mise à jour a été arrêter"
+      "stopped": "La cron de mise à jour a été arrêter"
     }
   },
   "edit": "Modifier",

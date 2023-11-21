@@ -145,7 +145,7 @@ async function stopCron() {
     return;
   }
   loading.value = false;
-  snackStore.info(t('info.cron.stoped'));
+  snackStore.info(t('info.cron.stopped'));
   emit('update:modelValue', false);
 }
 

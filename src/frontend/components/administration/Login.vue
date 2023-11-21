@@ -65,14 +65,14 @@ async function tryLogin() {
       },
     });
   } catch (e) {
-    snackStore.error(t('error.admininistration.invalidPassword'));
+    snackStore.error(t('error.administration.invalidPassword'));
     loading.value = false;
     return;
   }
   adminStore.setIsAdmin(true);
   adminStore.setPassword(password.value);
   loading.value = false;
-  snackStore.success(t('info.admininistration.login'));
+  snackStore.success(t('info.administration.login'));
 }
 
 </script>
