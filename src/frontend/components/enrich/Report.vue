@@ -23,6 +23,8 @@
 
 import MetricCard from '@/components/enrich/MetricCard.vue';
 
+const { t } = useI18n();
+
 const props = defineProps({
   state: {
     type: Object,

@@ -64,7 +64,7 @@ const snackStore = useSnacksStore();
 const { $enrich } = useNuxtApp();
 
 const {
-  start, isProcessing, type, apikey, attributes, fileSeparator, files, isError,
+  isProcessing, type, apikey, attributes, fileSeparator, files, isError,
 } = storeToRefs(enrichStore);
 
 const state = ref({});
