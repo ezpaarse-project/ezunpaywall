@@ -184,7 +184,7 @@ const attributesFiltered = computed(() => {
   return attributes.value;
 });
 
-const hasFile = computed(() => files.value.length > 0);
+const hasFile = computed(() => files.value.length > 0 || false);
 
 function startTimer(startTime) {
   timer.value = setInterval(() => {
