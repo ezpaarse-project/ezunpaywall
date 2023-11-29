@@ -101,7 +101,7 @@ function enrichArray(data, response) {
 
   response.forEach((el) => {
     if (el.doi) {
-      results.set(el.doi, el);
+      results.set(el.doi.toLowerCase(), el);
     }
   });
 
@@ -109,7 +109,7 @@ function enrichArray(data, response) {
     if (!el.doi) {
       return;
     }
-    let res = results.get(el.doi);
+    let res = results.get(el.doi.toLowerCase());
     if (!res) {
       return;
     }
