@@ -5,7 +5,7 @@ Ezunpaywall is an API and database that queries the Unpaywall database containin
 **Table of content**
 - [Structure](#Structure)
 - [Installation](#Installation)
-    - [Developement](#Development)
+    - [Development](#Development)
         - [Prerequisites](#Prerequisites)
         - [Start](#Start)
         - [Tests](#Tests)

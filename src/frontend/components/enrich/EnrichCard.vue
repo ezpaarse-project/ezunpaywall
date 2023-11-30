@@ -63,6 +63,7 @@
             <v-btn
               prepend-icon="mdi-chevron-left"
               variant="tonal"
+              :disabled="isProcessing"
               @click="setStep(2)"
             >
               {{ t("enrich.settings") }}
