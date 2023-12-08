@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="my-4">
     <v-toolbar
       color="secondary"
       dark

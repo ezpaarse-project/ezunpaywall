@@ -6,7 +6,7 @@ frontend service of ezunpaywall
 
 | name | default | description |
 | --- | --- | --- |
-| NUXT_PUBLIC_NODE_ENV | development | environment of node |
+| NUXT_PUBLIC_ENVIRONMENT | development | environment of node |
 | NUXT_PUBLIC_UNPAYWALL_HOST | https://unpaywall.org | Host of unpaywall |
 | NUXT_PUBLIC_UNPAYWALL_API_HOST | http://api.unpaywall.org | Host of API of unpaywall |
 | NUXT_PUBLIC_DASHBOARD_HOST | https://ezmesure.couperin.org/kibana/s/ezunpaywall/app/dashboards | Host of ezmesure dashboard |

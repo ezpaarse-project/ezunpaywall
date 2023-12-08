@@ -1,11 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'fr',
+      },
+      title: 'ezUNPAYWALL: Miroir français unpaywall pour l\'enseignement supérieur de la Recherche hébergé par l\'Inist-CNRS',
+      charset: 'utf-8',
+      meta: [],
+      link: [],
+    },
+  },
   runtimeConfig: {
     public: {
-      environment: process.env.NUXT_PUBLIC_NODE_ENV || 'development',
+      environment: process.env.NUXT_PUBLIC_ENVIRONMENT || 'development',
       unpaywallHost: process.env.NUXT_PUBLIC_UNPAYWALL_HOST || 'https://unpaywall.org',
       unpaywallAPIHost: process.env.NUXT_PUBLIC_UNPAYWALL_API_HOST || 'http://api.unpaywall.org',
-      dashbordHost: process.env.NUXT_PUBLIC_DASHBOARD_HOST || 'https://ezmesure.couperin.org/kibana/s/ezunpaywall/app/dashboards',
+      dashboardHost: process.env.NUXT_PUBLIC_DASHBOARD_HOST || 'https://ezmesure.couperin.org/kibana/s/ezunpaywall/app/dashboards',
       graphqlHost: process.env.NUXT_PUBLIC_GRAPHQL_HOST || 'http://localhost:59701',
       updateHost: process.env.NUXT_PUBLIC_UPDATE_HOST || 'http://localhost:59702',
       enrichHost: process.env.NUXT_PUBLIC_ENRICH_HOST || 'http://localhost:59703',

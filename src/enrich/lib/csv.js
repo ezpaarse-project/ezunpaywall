@@ -101,7 +101,7 @@ function enrichArray(data, response) {
 
   response.forEach((el) => {
     if (el.doi) {
-      results.set(el.doi, el);
+      results.set(el.doi.toLowerCase(), el);
     }
   });
 
@@ -109,7 +109,7 @@ function enrichArray(data, response) {
     if (!el.doi) {
       return;
     }
-    let res = results.get(el.doi);
+    let res = results.get(el.doi.toLowerCase());
     if (!res) {
       return;
     }
@@ -239,8 +239,7 @@ async function enrichInFile(data, enrichConfig, state) {
     response = await requestGraphql(data, args, index, state.apikey);
   } catch (err) {
     logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
-    await fail(state);
-    return;
+    throw err;
   }
 
   // enrichment
@@ -336,7 +335,14 @@ async function processEnrichCSV(id, index, args, state, prefix, separator) {
           data = [];
           await parser.pause();
 
-          await enrichInFile(copyData, enrichConfig, state);
+          try {
+            await enrichInFile(copyData, enrichConfig, state);
+          } catch (err) {
+            logger.error(`[job csv] Cannot enrich in file [${enrichedFile}]`, err);
+            await fail(state);
+            return;
+          }
+
           await parser.resume();
         }
       },
@@ -349,9 +355,14 @@ async function processEnrichCSV(id, index, args, state, prefix, separator) {
       enrichConfig.headers = await enrichHeaderCSV(headers, args);
       await writeHeaderCSV(headers, separator, enrichedFile);
     }
-    await enrichInFile(data, enrichConfig, state);
+    try {
+      await enrichInFile(data, enrichConfig, state);
+    } catch (err) {
+      logger.error(`[job csv] Cannot enrich in file [${enrichedFile}]`, err);
+      await fail(state);
+      return;
+    }
   }
-
   logger.info(`[job csv] ${state.enrichedLines}/${state.linesRead} enriched lines`);
 }
 

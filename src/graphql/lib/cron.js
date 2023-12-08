@@ -84,7 +84,7 @@ class Cron {
   stop() {
     try {
       this.process.stop();
-      logger.info(`[cron: ${this.name}] cron process is stoped`);
+      logger.info(`[cron: ${this.name}] cron process is stopped`);
     } catch (err) {
       logger.error(`[cron ${this.name}] Cannot stop cron process`, err);
       return;

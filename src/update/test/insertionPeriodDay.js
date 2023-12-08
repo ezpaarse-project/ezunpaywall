@@ -36,7 +36,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
   // create date in a format (YYYY-mm-dd) to be use by ezunpaywall
-  // yersterday
+  // yesterday
   const date1 = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
   // 2 days before
   const date2 = new Date(now - (2 * oneDay)).toISOString().slice(0, 10);
@@ -81,7 +81,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(count).to.equal(150);
     });
 
-    it('Should get state with all informations from the download and insertion', async () => {
+    it('Should get state with all information from the download and insertion', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -132,7 +132,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(state.steps[4]).have.property('status').equal('success');
     });
 
-    it('Should get report with all informations from the download and insertion', async () => {
+    it('Should get report with all information from the download and insertion', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);
@@ -217,7 +217,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(count).to.equal(2100);
     });
 
-    it('Should get state with all informations from the download and insertion', async () => {
+    it('Should get state with all information from the download and insertion', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -268,7 +268,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(state.steps[4]).have.property('status').equal('success');
     });
 
-    it('Should get report with all informations from the download and insertion', async () => {
+    it('Should get report with all information from the download and insertion', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);
@@ -353,7 +353,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       expect(count).to.equal(0);
     });
 
-    it('Should get state with all informations from the download and insertion', async () => {
+    it('Should get state with all information from the download and insertion', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);

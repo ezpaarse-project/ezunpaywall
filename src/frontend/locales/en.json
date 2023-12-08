@@ -10,7 +10,7 @@
     "referencedResources": "Referenced resources",
     "openAccess": "Open Access",
     "openAccessStatus": "Open Access Status",
-    "referencedRessourceHelp": "Number of bibliographic references recorded in the mirror",
+    "referencedResourceHelp": "Number of bibliographic references recorded in the mirror",
     "openAccessHelp": "Number of bibliographic references available for free access (is_oa: true)",
     "goldOAHelp": "Number of bibliographic references with 'gold' status (oa_status: 'gold')",
     "hybridOAHelp": "Number of bibliographic references with 'hybrid' status (oa_status: 'hybrid')",
@@ -57,10 +57,10 @@
   "graphql": {
     "title": "Graphql",
     "general1": "This GraphQL demonstrator allows you to build an API query.",
-    "general2": "You just need to specify the DOI or DOIs seperated by a comma, your API key and the desired Unpaywall fields as output.",
+    "general2": "You just need to specify the DOI or DOIs separated by a comma, your API key and the desired Unpaywall fields as output.",
     "general3": "The demonstrator builds the request and you can send the request to the server and see the answer. Use the help in the interface to get more information about the use of the form data.",
     "general4": "If you are a developer, you can also use the documentation section (swagger) to test the different API routes.",
-    "constructor": "Graphql Demostrator",
+    "constructor": "Graphql demonstrator",
     "apikey": "API key",
     "settings": "Unpaywall attributes to retrieve",
     "request": "GraphQL request",
@@ -202,7 +202,7 @@
     "reload": "Reload update history",
     "source": "The update files come from unpaywall.org",
     "goTo": "See the registry",
-    "noReport": "No report availables",
+    "noReport": "No report available",
     "status": "Status",
     "insertedDocs": "New lines",
     "updatedDocs": "Updated lines"
@@ -212,13 +212,14 @@
     "light": "Light theme"
   },
   "error": {
-    "default": "An error occured",
+    "default": "An error occurred",
     "enrich": {
       "manyFile": "The number of files allowed is 1",
       "typeOfFile": "only .csv and. jsonl files are allowed",
       "uploadFile": "Cannot upload file",
       "download": "Cannot download the enriched file",
-      "job": "Cannot enrich file"
+      "job": "Cannot enrich file",
+      "state": "Cannot get state of enrichment"
     },
     "graphql": {
       "request": "Cannot do GraphQL request",
@@ -251,7 +252,7 @@
     "health": {
       "get": "Cannot get healths"
     },
-    "admininistration": {
+    "administration": {
       "invalidPassword": "Incorrect password"
     },
     "contact": {
@@ -273,16 +274,16 @@
       "copyResult": "Copy result",
       "copyRequest": "Copy GraphQL request"
     },
-    "admininistration": {
+    "administration": {
       "login": "Successful connection"
     },
     "contact": {
       "mailSent": "Your request has been sent to the team."
     },
     "cron": {
-      "updated": "The update cron has beed updated",
-      "activated": "The update cron has beed activated",
-      "stoped": "The update cron has beed stoped"
+      "updated": "The update cron has been updated",
+      "activated": "The update cron has been activated",
+      "stopped": "The update cron has been stopped"
     }
   },
   "edit": "Edit",

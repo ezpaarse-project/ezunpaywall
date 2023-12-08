@@ -65,7 +65,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(count).to.equal(50);
     });
 
-    it('Should get state with all informations from the insertion', async () => {
+    it('Should get state with all information from the insertion', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -87,7 +87,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state.steps[0]).have.property('status').equal('success');
     });
 
-    it('Should get report with all informations from the insertion', async () => {
+    it('Should get report with all information from the insertion', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);
@@ -144,7 +144,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(count).to.equal(10);
     });
 
-    it('Should get state with all informations from the insertion', async () => {
+    it('Should get state with all information from the insertion', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -166,7 +166,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state.steps[0]).have.property('status').equal('success');
     });
 
-    it('Should get report with all informations from the insertion', async () => {
+    it('Should get report with all information from the insertion', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);
@@ -223,7 +223,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(count).to.equal(10);
     });
 
-    it('Should get state with all informations from the insertion', async () => {
+    it('Should get state with all information from the insertion', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -245,7 +245,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state.steps[0]).have.property('status').equal('success');
     });
 
-    it('Should get report with all informations from the insertion', async () => {
+    it('Should get report with all information from the insertion', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);
@@ -303,7 +303,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(count).to.equal(10);
     });
 
-    it('Should get state with all informations from the insertion', async () => {
+    it('Should get state with all information from the insertion', async () => {
       const state = await getState();
 
       expect(state).have.property('done').equal(true);
@@ -325,7 +325,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
       expect(state.steps[0]).have.property('status').equal('success');
     });
 
-    it('Should get report with all informations from the insertion', async () => {
+    it('Should get report with all information from the insertion', async () => {
       const report = await getReport();
 
       expect(report).have.property('done').equal(true);

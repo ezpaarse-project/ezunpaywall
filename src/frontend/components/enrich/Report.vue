@@ -23,6 +23,8 @@
 
 import MetricCard from '@/components/enrich/MetricCard.vue';
 
+const { t } = useI18n();
+
 const props = defineProps({
   state: {
     type: Object,
@@ -36,19 +38,19 @@ const props = defineProps({
 
 const metrics = computed(() => [
   {
-    label: 'readLines',
+    label: t('enrich.readLines'),
     icon: 'mdi-file-search-outline',
     iconColor: 'bg-amber text-white',
     value: props.state.linesRead,
   },
   {
-    label: 'enrichedLines',
+    label: t('enrich.enrichedLines'),
     icon: 'mdi-file-search-outline',
     iconColor: 'bg-light-green text-white',
     value: props.state.enrichedLines,
   },
   {
-    label: 'duration',
+    label: t('enrich.duration'),
     icon: 'mdi-timer',
     iconColor: 'bg-blue-grey text-white',
     value: props.time,

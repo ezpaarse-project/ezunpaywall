@@ -21,7 +21,12 @@
         <v-card flat>
           <v-card-actions>
             <v-spacer />
-            <v-btn @click="setStep(2)">
+            <v-btn
+              append-icon="mdi-chevron-right"
+              variant="tonal"
+              :disabled="!hasFile"
+              @click="setStep(2)"
+            >
               {{ t("enrich.settings") }}
             </v-btn>
           </v-card-actions>
@@ -32,11 +37,19 @@
       <template #item.2>
         <v-card flat>
           <v-card-actions>
-            <v-btn @click="setStep(1)">
+            <v-btn
+              prepend-icon="mdi-chevron-left"
+              variant="tonal"
+              @click="setStep(1)"
+            >
               {{ t("enrich.filesSelection") }}
             </v-btn>
             <v-spacer />
-            <v-btn @click="startEnrich()">
+            <v-btn
+              append-icon="mdi-chevron-right"
+              variant="tonal"
+              @click="startEnrich()"
+            >
               {{ t("enrich.startProcess") }}
             </v-btn>
           </v-card-actions>
@@ -47,7 +60,12 @@
       <template #item.3>
         <v-card flat>
           <v-card-actions>
-            <v-btn @click="setStep(2)">
+            <v-btn
+              prepend-icon="mdi-chevron-left"
+              variant="tonal"
+              :disabled="isProcessing"
+              @click="setStep(2)"
+            >
               {{ t("enrich.settings") }}
             </v-btn>
             <v-spacer />
@@ -145,7 +163,14 @@ const snackStore = useSnacksStore();
 const { $enrich } = useNuxtApp();
 
 const {
-  start, isProcessing, type, apikey, attributes, fileSeparator, files, isError,
+  isProcessing,
+  type,
+  apikey,
+  attributes,
+  fileSeparator,
+  enrichedFileSeparator,
+  files,
+  isError,
 } = storeToRefs(enrichStore);
 
 const state = ref({});
@@ -159,6 +184,8 @@ const attributesFiltered = computed(() => {
   }
   return attributes.value;
 });
+
+const hasFile = computed(() => files.value.length > 0 || false);
 
 function startTimer(startTime) {
   timer.value = setInterval(() => {
@@ -298,7 +325,7 @@ async function startEnrich() {
     const data = {
       type: type.value,
       args: graphqlAttributes,
-      separator: fileSeparator.value,
+      separator: enrichedFileSeparator.value,
     };
     await enrich(idProcess, data);
   }

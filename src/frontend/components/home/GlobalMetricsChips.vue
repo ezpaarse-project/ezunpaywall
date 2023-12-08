@@ -29,7 +29,7 @@ const globalMetrics = computed(() => [
   {
     name: 'doi',
     title: 'home.referencedResources',
-    text: 'home.referencedRessourceHelp',
+    text: 'home.referencedResourceHelp',
     count: props.doi.toLocaleString($i18n.locale, { useGrouping: true }),
   },
   {

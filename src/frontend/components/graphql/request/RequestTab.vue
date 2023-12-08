@@ -123,7 +123,7 @@ function copyText() {
     snackStore.error(t('error.graphql.copyRequest'));
     return;
   }
-  snackStore.info(t('info.graphql.copyResult'));
+  snackStore.info(t('info.graphql.copyRequest'));
 }
 
 function setGraphqlData(data) {
