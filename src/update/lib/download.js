@@ -11,7 +11,7 @@ const {
   addStepDownload,
   fail,
   updateLatestStep,
-} = require('./models/state');
+} = require('./state');
 
 const {
   getSnapshot,

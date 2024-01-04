@@ -17,7 +17,7 @@ const {
   getLatestStep,
   updateLatestStep,
   fail,
-} = require('../models/state');
+} = require('../state');
 
 const {
   refreshIndex,

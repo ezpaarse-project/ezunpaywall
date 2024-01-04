@@ -7,20 +7,21 @@ const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 const getConfig = require('./lib/config');
 
-const routerPing = require('./lib/routers/ping');
-const routerJob = require('./lib/routers/job');
-const routerReport = require('./lib/routers/report');
-const routerSnapshot = require('./lib/routers/snapshot');
-const routerState = require('./lib/routers/state');
-const routerStatus = require('./lib/routers/status');
-const routerUnpaywall = require('./lib/routers/unpaywall');
-const routerCron = require('./lib/routers/cron');
-const routerElastic = require('./lib/routers/elastic');
-const routerOpenapi = require('./lib/routers/openapi');
+const routerGlobalPing = require('./lib/global/routers/ping');
+const routerGlobalElastic = require('./lib/global/routers/elastic');
+const routerGlobalOpenapi = require('./lib/global/routers/openapi');
+const routerGlobalUnpaywall = require('./lib/global/routers/unpaywall');
+const routerGlobalSnapshot = require('./lib/global/routers/snapshot');
+const routerGlobalStatus = require('./lib/global/routers/status');
 
-const routerHistoryJob = require('./lib/routers/history/job');
+const routerClassicJob = require('./lib/classic/routers/job');
+const routerClassicReport = require('./lib/classic/routers/report');
+const routerClassicState = require('./lib/classic/routers/state');
+const routerClassicCron = require('./lib/classic/routers/cron');
 
-require('./lib/cron/file');
+const routerHistoryJob = require('./lib/history/routers/job');
+
+require('./lib/classic/cron/file');
 
 const dataDir = path.resolve(__dirname, 'data');
 fs.ensureDir(path.resolve(dataDir));
@@ -39,16 +40,17 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan);
 
-app.use(routerJob);
-app.use(routerReport);
-app.use(routerSnapshot);
-app.use(routerState);
-app.use(routerStatus);
-app.use(routerUnpaywall);
-app.use(routerCron);
-app.use(routerElastic);
-app.use(routerOpenapi);
-app.use(routerPing);
+app.use(routerGlobalPing);
+app.use(routerGlobalElastic);
+app.use(routerGlobalOpenapi);
+app.use(routerGlobalUnpaywall);
+app.use(routerGlobalSnapshot);
+app.use(routerGlobalStatus);
+
+app.use(routerClassicJob);
+app.use(routerClassicReport);
+app.use(routerClassicState);
+app.use(routerClassicCron);
 
 app.use(routerHistoryJob);
 
