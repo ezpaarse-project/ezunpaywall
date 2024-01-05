@@ -7,32 +7,58 @@ const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
 const getConfig = require('./lib/config');
 
-const routerGlobalPing = require('./lib/global/routers/ping');
-const routerGlobalElastic = require('./lib/global/routers/elastic');
-const routerGlobalOpenapi = require('./lib/global/routers/openapi');
-const routerGlobalUnpaywall = require('./lib/global/routers/unpaywall');
-const routerGlobalSnapshot = require('./lib/global/routers/snapshot');
-const routerGlobalStatus = require('./lib/global/routers/status');
+const routerPing = require('./lib/routers/ping');
+const routerElastic = require('./lib/routers/elastic');
+const routerOpenapi = require('./lib/routers/openapi');
+const routerUnpaywall = require('./lib/routers/unpaywall');
+const routerStatus = require('./lib/routers/status');
+const routerState = require('./lib/routers/state');
 
-const routerClassicJob = require('./lib/classic/routers/job');
-const routerClassicReport = require('./lib/classic/routers/report');
-const routerClassicState = require('./lib/classic/routers/state');
-const routerClassicCron = require('./lib/classic/routers/cron');
+const routerUnpaywallJob = require('./lib/unpaywall/routers/job');
+const routerUnpaywallReport = require('./lib/unpaywall/routers/report');
 
-const routerHistoryJob = require('./lib/history/routers/job');
+const routerUnpaywallCron = require('./lib/unpaywall/routers/cron');
+const routerUnpaywallSnapshot = require('./lib/unpaywall/routers/snapshot');
 
-require('./lib/classic/cron/file');
+const routerUnpaywallHistoryJob = require('./lib/unpaywallHistory/routers/job');
 
+require('./lib/unpaywall/cron/file');
+
+// create data directory
 const dataDir = path.resolve(__dirname, 'data');
 fs.ensureDir(path.resolve(dataDir));
-fs.ensureDir(path.resolve(dataDir, 'reports'));
-fs.ensureDir(path.resolve(dataDir, 'states'));
-fs.ensureDir(path.resolve(dataDir, 'snapshots'));
 
+// create all directories for unpaywall
+const unpaywallDir = path.resolve(dataDir, 'unpaywall');
+
+fs.ensureDir(path.resolve(unpaywallDir));
+
+const unpaywallReportsDir = path.resolve(unpaywallDir, 'reports');
+const unpaywallStatesDir = path.resolve(unpaywallDir, 'states');
+const unpaywallSnapshotsDir = path.resolve(unpaywallDir, 'snapshots');
+
+fs.ensureDir(path.resolve(unpaywallReportsDir));
+fs.ensureDir(path.resolve(unpaywallStatesDir));
+fs.ensureDir(path.resolve(unpaywallSnapshotsDir));
+
+// create all directories for history unpaywall
+const unpaywallHistoryDir = path.resolve(dataDir, 'unpaywallHistory');
+fs.ensureDir(path.resolve(unpaywallHistoryDir));
+
+const unpaywallHistoryReportsDir = path.resolve(unpaywallHistoryDir, 'reports');
+const unpaywallHistoryStatesDir = path.resolve(unpaywallHistoryDir, 'states');
+const unpaywallHistorySnapshotsDir = path.resolve(unpaywallHistoryDir, 'snapshots');
+
+fs.ensureDir(path.resolve(unpaywallHistoryReportsDir));
+fs.ensureDir(path.resolve(unpaywallHistoryStatesDir));
+fs.ensureDir(path.resolve(unpaywallHistorySnapshotsDir));
+
+// create all directories for logs unpaywall
 const logDir = path.resolve(__dirname, 'log');
 fs.ensureDir(path.resolve(logDir));
 fs.ensureDir(path.resolve(logDir, 'application'));
 fs.ensureDir(path.resolve(logDir, 'access'));
+fs.ensureDir(path.resolve(logDir, 'healthcheck'));
 
 const app = express();
 
@@ -40,19 +66,19 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan);
 
-app.use(routerGlobalPing);
-app.use(routerGlobalElastic);
-app.use(routerGlobalOpenapi);
-app.use(routerGlobalUnpaywall);
-app.use(routerGlobalSnapshot);
-app.use(routerGlobalStatus);
+app.use(routerPing);
+app.use(routerElastic);
+app.use(routerOpenapi);
+app.use(routerUnpaywall);
+app.use(routerStatus);
+app.use(routerState);
 
-app.use(routerClassicJob);
-app.use(routerClassicReport);
-app.use(routerClassicState);
-app.use(routerClassicCron);
+app.use(routerUnpaywallJob);
+app.use(routerUnpaywallReport);
+app.use(routerUnpaywallCron);
+app.use(routerUnpaywallSnapshot);
 
-app.use(routerHistoryJob);
+app.use(routerUnpaywallHistoryJob);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

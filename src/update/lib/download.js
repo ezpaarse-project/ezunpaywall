@@ -18,7 +18,8 @@ const {
   getChangefile,
 } = require('./services/unpaywall');
 
-const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
+const { getPathOfDirectory } = require('./file');
+const pathDir = require('./path');
 
 /**
  * Update the step the percentage in download regularly until the download is complete.
@@ -100,15 +101,18 @@ async function download(file, filepath, size) {
 /**
  * Start the download of the changefile from unpaywall.
  *
+ * @param {string} type - Information of the file to download.
  * @param {string} info - Information of the file to download.
  * @param {string} interval - Type of changefile (day or week).
  *
  * @returns {Promise<boolean>} success or not
  */
-async function downloadChangefile(info, interval) {
+async function downloadChangefile(type, info, interval) {
   let stats;
 
-  const filepath = path.resolve(snapshotsDir, info.filename);
+  const pathOfDirectory = getPathOfDirectory(type, 'snapshots');
+
+  const filepath = path.resolve(pathOfDirectory, info.filename);
 
   const alreadyInstalled = await fs.pathExists(filepath);
   if (alreadyInstalled) stats = await fs.stat(filepath);
@@ -145,7 +149,7 @@ async function downloadChangefile(info, interval) {
  */
 async function downloadBigSnapshot() {
   const filename = `snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`;
-  const filepath = path.resolve(snapshotsDir, filename);
+  const filepath = path.resolve(pathDir.unpaywall.snapshotsDir, filename);
 
   addStepDownload();
   const step = getLatestStep();

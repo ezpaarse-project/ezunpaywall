@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 const {
   createReport,
-} = require('./history/report');
+} = require('./report');
 
 const {
   sendMailUpdateReport,
@@ -28,13 +28,14 @@ function setState(key, value) {
  *
  * @return {Promise<string>} name of the file where the state is saved.
  */
-async function createState() {
+async function createState(type) {
   state = {
     done: false,
     createdAt: new Date(),
     endAt: null,
     steps: [],
     error: false,
+    type,
   };
 }
 

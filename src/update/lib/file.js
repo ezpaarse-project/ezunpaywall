@@ -2,6 +2,19 @@
 const fs = require('fs-extra');
 const path = require('path');
 const logger = require('./logger');
+const dirPath = require('./path');
+
+/**
+ * Get path of directory depending on type.
+ *
+ * @param {string} process - Type of process (unpaywall or unpaywallHistory).
+ * @param {string} type - Type of file (states, reports, snapshots).
+ *
+ * @returns {string} path of directory.
+ */
+function getPathOfDirectory(process, type) {
+  return dirPath[process][`${type}Dir`];
+}
 
 /**
  * Get the files in a directory in order by date.
@@ -85,6 +98,7 @@ async function deleteFile(filepath) {
 }
 
 module.exports = {
+  getPathOfDirectory,
   getMostRecentFile,
   deleteFilesInDir,
   deleteFile,

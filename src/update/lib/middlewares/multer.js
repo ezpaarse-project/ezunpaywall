@@ -1,11 +1,10 @@
-const path = require('path');
 const multer = require('multer');
 
-const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
+const dirPath = require('../path');
 
 const storage = multer.diskStorage(
   {
-    destination: snapshotsDir,
+    destination: dirPath.unpaywall.snapshotsDir,
     filename: (req, file, cb) => {
       cb(null, file.originalname);
     },

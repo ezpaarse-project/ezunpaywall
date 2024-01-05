@@ -240,7 +240,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    logger.error(`[job: insert] Cannot stat [${filePath}]`, err);
+    logger.error(`[job: insert] Cannot get bytes [${filePath}]`, err);
     await fail(err);
     return false;
   }

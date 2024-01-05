@@ -18,7 +18,13 @@
     "indexAlias": "upw",
     "timeout": 20000
   },
-  "cron": {
+  "unpaywallCron": {
+    "schedule": "0 0 0 * * *",
+    "active": false,
+    "index": "unpaywall",
+    "interval": "day"
+  },
+  "unpaywallHistoryCron": {
     "schedule": "0 0 0 * * *",
     "active": false,
     "index": "unpaywall",
