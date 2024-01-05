@@ -11,7 +11,11 @@ async function validateLatest(req, res, next) {
   const { error, value } = joi.boolean().default(false).validate(req?.query?.latest);
   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  req.data = value;
+  if (!req.data) {
+    req.data = {};
+  }
+
+  req.data.latest = value;
 
   return next();
 }

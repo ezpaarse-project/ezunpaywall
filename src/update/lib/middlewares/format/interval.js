@@ -7,15 +7,19 @@ const joi = require('joi');
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-async function validateIntervale(req, res, next) {
+async function validateInterval(req, res, next) {
   const { error, value } = joi.string().trim().valid('week', 'day').default('day')
     .validate(req.body.interval);
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  req.data = value;
+  if (!req.data) {
+    req.data = {};
+  }
+
+  req.data.interval = value;
 
   return next();
 }
 
-module.exports = validateIntervale;
+module.exports = validateInterval;

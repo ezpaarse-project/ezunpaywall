@@ -16,7 +16,11 @@ async function validateCronConfig(req, res, next) {
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  req.data = value;
+  if (!req.data) {
+    req.data = {};
+  }
+
+  req.data.cronConfig = value;
 
   return next();
 }

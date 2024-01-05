@@ -12,7 +12,11 @@ function validateSnapshotJob(req, res, next) {
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  req.data = value;
+  if (!req.data) {
+    req.data = {};
+  }
+
+  req.data.index = value;
 
   return next();
 }
@@ -34,7 +38,11 @@ async function validateJobChangefilesConfig(req, res, next) {
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  req.data = value;
+  if (!req.data) {
+    req.data = {};
+  }
+
+  req.data.jobConfig = value;
 
   return next();
 }
@@ -65,7 +73,12 @@ async function validateInsertFile(req, res, next) {
   if (checkBody.error) return res.status(400).json({ message: checkBody.error.details[0].message });
 
   const { index, offset, limit } = checkBody.value;
-  req.data = {
+
+  if (!req.data) {
+    req.data = {};
+  }
+
+  req.data.jobConfig = {
     filename, index, offset, limit,
   };
 
@@ -89,7 +102,11 @@ async function validateHistoryJob(req, res, next) {
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  req.data = value;
+  if (!req.data) {
+    req.data = {};
+  }
+
+  req.data.jobConfig = value;
 
   return next();
 }
@@ -109,7 +126,11 @@ async function validateHistoryReset(req, res, next) {
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 
-  req.data = value;
+  if (!req.data) {
+    req.data = {};
+  }
+
+  req.data.rollBackConfig = value;
 
   return next();
 }

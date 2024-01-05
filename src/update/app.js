@@ -21,6 +21,7 @@ const routerUnpaywallCron = require('./lib/unpaywall/routers/cron');
 const routerUnpaywallSnapshot = require('./lib/unpaywall/routers/snapshot');
 
 const routerUnpaywallHistoryJob = require('./lib/unpaywallHistory/routers/job');
+const routerUnpaywallHistoryReport = require('./lib/unpaywallHistory/routers/report');
 
 require('./lib/unpaywall/cron/file');
 
@@ -79,6 +80,7 @@ app.use(routerUnpaywallCron);
 app.use(routerUnpaywallSnapshot);
 
 app.use(routerUnpaywallHistoryJob);
+app.use(routerUnpaywallHistoryReport);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

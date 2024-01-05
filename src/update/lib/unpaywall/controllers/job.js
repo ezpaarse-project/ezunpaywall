@@ -19,7 +19,7 @@ const {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function downloadAndInsertSnapshotJob(req, res, next) {
-  const index = req.data;
+  const { index } = req.data;
 
   const jobConfig = {
     index,
@@ -39,12 +39,13 @@ async function downloadAndInsertSnapshotJob(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function insertChangefilesOnPeriodJob(req, res, next) {
+  const { jobConfig } = req.data;
+
   const {
     startDate,
     endDate,
-    index,
     interval,
-  } = req.data;
+  } = jobConfig;
 
   if (new Date(startDate).getTime() > Date.now()) {
     return res.status(400).json({ message: 'startDate cannot be in the futur' });
@@ -56,14 +57,8 @@ async function insertChangefilesOnPeriodJob(req, res, next) {
     }
   }
 
-  const jobConfig = {
-    index,
-    interval,
-    startDate,
-    endDate,
-    offset: 0,
-    limit: -1,
-  };
+  jobConfig.offset = 0;
+  jobConfig.limit = -1;
 
   if (!startDate && !endDate) {
     jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
@@ -88,20 +83,13 @@ async function insertChangefilesOnPeriodJob(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function insertChangefileJob(req, res, next) {
-  const {
-    filename, index, offset, limit,
-  } = req.data;
+  const { jobConfig } = req.data;
+
+  const { filename } = jobConfig;
 
   if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
-
-  const jobConfig = {
-    filename,
-    index,
-    offset,
-    limit,
-  };
 
   insertChangefile(jobConfig);
 

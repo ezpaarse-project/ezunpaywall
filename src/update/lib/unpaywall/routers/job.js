@@ -10,7 +10,7 @@ const {
   validateSnapshotJob,
   validateJobChangefilesConfig,
   validateInsertFile,
-} = require('../../middlewares/job');
+} = require('../../middlewares/format/job');
 
 const checkStatus = require('../../middlewares/status');
 const checkAuth = require('../../middlewares/auth');

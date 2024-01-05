@@ -15,12 +15,13 @@ const {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function insertWithOaHistory(req, res, next) {
+  const { jobConfig } = req.data;
+
   const {
     startDate,
     endDate,
-    index,
     interval,
-  } = req.data;
+  } = jobConfig;
 
   if (new Date(startDate).getTime() > Date.now()) {
     return res.status(400).json({ message: 'startDate cannot be in the future' });
@@ -32,14 +33,8 @@ async function insertWithOaHistory(req, res, next) {
     }
   }
 
-  const jobConfig = {
-    index,
-    interval,
-    startDate,
-    endDate,
-    offset: 0,
-    limit: -1,
-  };
+  jobConfig.offset = 0;
+  jobConfig.limit = -1;
 
   if (!startDate && !endDate) {
     jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
@@ -64,10 +59,7 @@ async function insertWithOaHistory(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function historyRollBack(req, res, next) {
-  const {
-    startDate,
-    index,
-  } = req.data;
+  const { startDate, index } = req.data.rollBackConfig;
 
   await rollBack(startDate, index);
   return res.status(202).json();

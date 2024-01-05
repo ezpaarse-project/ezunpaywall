@@ -4,8 +4,8 @@ const upload = require('../../middlewares/multer');
 const checkAuth = require('../../middlewares/auth');
 const dev = require('../../middlewares/dev');
 
-const validateLatest = require('../../middlewares/latest');
-const validateFilename = require('../../middlewares/filename');
+const validateLatest = require('../../middlewares/format/latest');
+const validateFilename = require('../../middlewares/format/filename');
 
 const {
   getFiles,

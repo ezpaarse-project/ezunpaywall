@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const checkAuth = require('../../middlewares/auth');
-const validateCronConfig = require('../../middlewares/cron');
+const validateCronConfig = require('../../middlewares/format/cron');
 
 const {
   startUpdateCron,

@@ -18,7 +18,7 @@ const { snapshotsDir } = dirPath.unpaywall;
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function getFiles(req, res, next) {
-  const latest = req.data;
+  const { latest } = req.data;
 
   if (latest) {
     let latestSnapshot;
@@ -53,7 +53,7 @@ async function uploadFile(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function deleteInstalledFile(req, res, next) {
-  const filename = req.data;
+  const { filename } = req.data;
 
   if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });

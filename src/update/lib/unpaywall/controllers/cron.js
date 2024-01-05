@@ -43,8 +43,8 @@ function stopUpdateCron(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 function patchUpdateCron(req, res, next) {
-  const value = req.data;
-  const { time, index, interval } = value;
+  const { cronConfig } = req.data;
+  const { time, index, interval } = cronConfig;
 
   if (time) {
     const validCron = cronValidator.isValidCron(time, { seconds: true });

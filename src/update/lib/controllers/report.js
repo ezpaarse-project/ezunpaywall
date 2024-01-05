@@ -1,11 +1,10 @@
 const path = require('path');
 const fs = require('fs-extra');
 
-const { getMostRecentFile } = require('../../file');
-const { getReport } = require('../../report');
-const dirPath = require('../../path');
+const { getMostRecentFile } = require('../file');
+const { getReport } = require('../report');
+const { getPathOfDirectory } = require('../file');
 
-const { reportsDir } = dirPath.unpaywall;
 /**
  * Controller to get list of reports or latest report.
  *
@@ -14,12 +13,14 @@ const { reportsDir } = dirPath.unpaywall;
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function getReports(req, res, next) {
-  const { latest } = req.data;
+  const { latest, type } = req.data;
+
+  const pathOfDirectory = getPathOfDirectory(type, 'reports');
 
   if (latest) {
     let latestFile;
     try {
-      latestFile = await getMostRecentFile(reportsDir);
+      latestFile = await getMostRecentFile(pathOfDirectory);
     } catch (err) {
       return next({ message: err.message });
     }
@@ -30,14 +31,14 @@ async function getReports(req, res, next) {
 
     let report;
     try {
-      report = await getReport('unpaywall', latestFile?.filename);
+      report = await getReport(type, latestFile?.filename);
     } catch (err) {
       return next({ message: `Cannot get [${latestFile?.filename}] latest report` });
     }
     return res.status(200).json(report);
   }
 
-  let reports = await fs.readdir(reportsDir);
+  let reports = await fs.readdir(pathOfDirectory);
 
   reports = reports.sort((a, b) => {
     const [date1] = a.split('.');
@@ -56,17 +57,19 @@ async function getReports(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function getReportByFilename(req, res, next) {
-  const { filename } = req.data;
+  const { filename, type } = req.data;
+
+  const pathOfDirectory = getPathOfDirectory(type, 'reports');
 
   try {
-    await fs.stat(path.resolve(reportsDir, filename));
+    await fs.stat(path.resolve(pathOfDirectory, filename));
   } catch (err) {
     return next({ message: `File [${filename}] not found` });
   }
 
   let report;
   try {
-    report = await getReport('unpaywall', filename);
+    report = await getReport(type, filename);
   } catch (err) {
     return next({ message: `Cannot get ${filename} report` });
   }

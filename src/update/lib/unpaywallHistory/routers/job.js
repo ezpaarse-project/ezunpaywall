@@ -14,7 +14,7 @@ const {
 const {
   validateHistoryJob,
   validateHistoryReset,
-} = require('../../middlewares/job');
+} = require('../../middlewares/format/job');
 
 const checkStatus = require('../../middlewares/status');
 const checkAuth = require('../../middlewares/auth');
@@ -47,27 +47,22 @@ router.post('/history/job/reset', checkStatus, checkAuth, validateHistoryReset, 
 router.post('/history/job/reset', checkStatus, checkAuth, validateHistoryReset, historyRollBack);
 
 router.post('/history/job/reset/step1', checkStatus, checkAuth, validateHistoryReset, async (req, res, next) => {
-  const {
-    startDate,
-  } = req.data;
+  const { startDate } = req.data;
+  console.log(req.data);
 
   await step1(startDate);
   return res.status(202).json();
 });
 
 router.post('/history/job/reset/step2', checkStatus, checkAuth, validateHistoryReset, async (req, res, next) => {
-  const {
-    startDate,
-  } = req.data;
+  const { startDate } = req.data;
 
   await step2(startDate);
   return res.status(202).json();
 });
 
 router.post('/job/history/reset/step3', checkStatus, checkAuth, validateHistoryReset, async (req, res, next) => {
-  const {
-    startDate,
-  } = req.data;
+  const { startDate } = req.data;
 
   await step3(startDate);
   return res.status(202).json();

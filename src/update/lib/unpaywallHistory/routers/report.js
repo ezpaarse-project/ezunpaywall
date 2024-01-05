@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { getReports, getReportByFilename } = require('../controllers/report');
+const { getReports, getReportByFilename } = require('../../controllers/report');
 
 const validateLatest = require('../../middlewares/format/latest');
 const validateFilename = require('../../middlewares/format/filename');
@@ -11,13 +11,13 @@ const updateType = require('../../middlewares/type');
  *
  * This route can take in query latest.
  */
-router.get('/reports', validateLatest, updateType, getReports);
+router.get('/unpaywall/history/reports', validateLatest, updateType, getReports);
 
 /**
  * Route that give the content of report in JSON format.
  *
  * This route takes a param which corresponds to the filename of report.
  */
-router.get('/reports/:filename', validateFilename, updateType, getReportByFilename);
+router.get('/unpaywall/history/reports/:filename', validateFilename, updateType, getReportByFilename);
 
 module.exports = router;
