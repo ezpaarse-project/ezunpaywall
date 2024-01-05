@@ -48,7 +48,6 @@ router.post('/history/job/reset', checkStatus, checkAuth, validateHistoryReset, 
 
 router.post('/history/job/reset/step1', checkStatus, checkAuth, validateHistoryReset, async (req, res, next) => {
   const { startDate } = req.data;
-  console.log(req.data);
 
   await step1(startDate);
   return res.status(202).json();
