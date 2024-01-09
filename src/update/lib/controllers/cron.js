@@ -1,5 +1,6 @@
 const cronValidator = require('cron-validator');
-const cron = require('../cron/update');
+const unpaywallCron = require('../cron/unpaywall');
+const unpaywallHistoryCron = require('../cron/unpaywallHistory');
 
 /**
  * Controller to start update cron.
@@ -8,11 +9,23 @@ const cron = require('../cron/update');
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-function startUpdateCron(req, res, next) {
-  try {
-    cron.updateCron.start();
-  } catch (err) {
-    return next(err);
+function startCron(req, res, next) {
+  const { type } = req.data;
+
+  if (type === 'unpaywall') {
+    try {
+      unpaywallCron.cron.start();
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  if (type === 'unpaywallHistory') {
+    try {
+      unpaywallHistoryCron.cron.start();
+    } catch (err) {
+      return next(err);
+    }
   }
 
   return res.status(202).json();
@@ -25,11 +38,23 @@ function startUpdateCron(req, res, next) {
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-function stopUpdateCron(req, res, next) {
-  try {
-    cron.updateCron.stop();
-  } catch (err) {
-    return next(err);
+function stopCron(req, res, next) {
+  const { type } = req.data;
+
+  if (type === 'unpaywall') {
+    try {
+      unpaywallCron.cron.stop();
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  if (type === 'unpaywallHistory') {
+    try {
+      unpaywallHistoryCron.cron.stop();
+    } catch (err) {
+      return next(err);
+    }
   }
 
   return res.status(202).json();
@@ -42,8 +67,8 @@ function stopUpdateCron(req, res, next) {
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-function patchUpdateCron(req, res, next) {
-  const { cronConfig } = req.data;
+function patchCron(req, res, next) {
+  const { cronConfig, type } = req.data;
   const { time, index, interval } = cronConfig;
 
   if (time) {
@@ -51,13 +76,25 @@ function patchUpdateCron(req, res, next) {
     if (!validCron) { return res.status(400).json('schedule is invalid'); }
   }
 
-  try {
-    cron.update({ time, index, interval });
-  } catch (err) {
-    return next(err);
+  let config;
+
+  if (type === 'unpaywall') {
+    try {
+      unpaywallCron.update({ time, index, interval });
+    } catch (err) {
+      return next(err);
+    }
+    config = unpaywallCron.getGlobalConfig();
   }
 
-  const config = cron.getGlobalConfig();
+  if (type === 'unpaywallHistory') {
+    try {
+      unpaywallHistoryCron.update({ time, index, interval });
+    } catch (err) {
+      return next(err);
+    }
+    config = unpaywallHistoryCron.getGlobalConfig();
+  }
 
   return res.status(200).json(config);
 }
@@ -69,14 +106,24 @@ function patchUpdateCron(req, res, next) {
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-function getConfigOfUpdateCron(req, res) {
-  const config = cron.getGlobalConfig();
+function getConfigCron(req, res) {
+  const { type } = req.data;
+
+  let config;
+
+  if (type === 'unpaywall') {
+    config = unpaywallCron.getGlobalConfig();
+  }
+
+  if (type === 'unpaywallHistory') {
+    config = unpaywallHistoryCron.getGlobalConfig();
+  }
 
   return res.status(200).json(config);
 }
 module.exports = {
-  startUpdateCron,
-  stopUpdateCron,
-  patchUpdateCron,
-  getConfigOfUpdateCron,
+  startCron,
+  stopCron,
+  patchCron,
+  getConfigCron,
 };

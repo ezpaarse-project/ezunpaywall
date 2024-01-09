@@ -66,6 +66,7 @@ router.post('/job/history', checkStatus, checkAuth, validateHistoryJob, insertWi
  */
 router.post('/job/history/reset', checkStatus, checkAuth, validateHistoryReset, historyRollBack);
 
+// Dev
 router.post('/job/history/reset/step1', checkStatus, checkAuth, validateHistoryReset, async (req, res, next) => {
   const { startDate } = req.data;
 

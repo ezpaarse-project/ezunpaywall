@@ -8,8 +8,22 @@ const joi = require('joi');
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function validateInterval(req, res, next) {
-  const { error, value } = joi.string().trim().valid('week', 'day').default('day')
-    .validate(req.body.interval);
+  let error;
+  let value;
+
+  if (req.body.interval) {
+    const result = joi.string().trim().valid('week', 'day').default('day')
+      .validate(req.body.interval);
+    error = result?.error;
+    value = result?.value;
+  }
+
+  if (req.query.interval) {
+    const result = joi.string().trim().valid('week', 'day').default('day')
+      .validate(req.query.interval);
+    error = result?.error;
+    value = result?.value;
+  }
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 

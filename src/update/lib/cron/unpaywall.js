@@ -12,7 +12,7 @@ let { active } = unpaywallCron;
 if (active === 'true' || active) active = true;
 else active = false;
 
-const updateConfig = {
+const cronConfig = {
   index: unpaywallCron.index,
   interval: unpaywallCron.interval,
 };
@@ -28,12 +28,12 @@ async function task() {
     logger.info(`[cron: ${this.name}] conflit: an update is already in progress`);
     return;
   }
-  const week = (updateConfig.interval === 'week');
+  const week = (cronConfig.interval === 'week');
   const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
   const endDate = format(new Date(), 'yyyy-MM-dd');
   await insertChangefilesOnPeriod({
-    index: updateConfig.index,
-    interval: updateConfig.interval,
+    index: cronConfig.index,
+    interval: cronConfig.interval,
     startDate,
     endDate,
     offset: 0,
@@ -41,7 +41,7 @@ async function task() {
   });
 }
 
-const updateCron = new Cron('update', unpaywallCron.schedule, task, active);
+const cron = new Cron('update', unpaywallCron.schedule, task, active);
 
 /**
  * Update config of update process and config of cron.
@@ -49,12 +49,12 @@ const updateCron = new Cron('update', unpaywallCron.schedule, task, active);
  * @param {Object} newConfig - Global config.
  */
 function update(newConfig) {
-  if (newConfig.time) updateCron.setSchedule(newConfig.time);
+  if (newConfig.time) cron.setSchedule(newConfig.time);
 
-  if (newConfig.index) updateConfig.index = newConfig.index;
-  if (newConfig.interval) updateConfig.interval = newConfig.interval;
+  if (newConfig.index) cronConfig.index = newConfig.index;
+  if (newConfig.interval) cronConfig.interval = newConfig.interval;
 
-  if (newConfig.index || newConfig.interval) updateCron.setTask(task);
+  if (newConfig.index || newConfig.interval) cron.setTask(task);
 }
 
 /**
@@ -63,12 +63,12 @@ function update(newConfig) {
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {
-  const cronConfig = updateCron.getConfig();
-  return { ...cronConfig, ...updateConfig };
+  const { config } = cron;
+  return { ...cronConfig, ...config };
 }
 
 module.exports = {
   getGlobalConfig,
   update,
-  updateCron,
+  cron,
 };

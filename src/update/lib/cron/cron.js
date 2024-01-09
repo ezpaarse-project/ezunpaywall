@@ -48,7 +48,7 @@ function update(config) {
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {
-  const config = cron.getConfig();
+  const { config } = cron;
   return { ...config, ...updateConfig };
 }
 

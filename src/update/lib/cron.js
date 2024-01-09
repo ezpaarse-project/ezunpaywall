@@ -22,12 +22,7 @@ class Cron {
     }
   }
 
-  /**
-   * Getter of config of cron.
-   *
-   * @returns {Object} config of cron.
-   */
-  getConfig() {
+  get config() {
     return {
       name: this.name,
       schedule: this.schedule,

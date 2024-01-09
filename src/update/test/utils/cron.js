@@ -10,10 +10,10 @@ chai.use(chaiHttp);
  *
  * @returns {Promise<void>}
  */
-async function resetCronConfig() {
+async function resetCronConfig(type) {
   try {
     await chai.request(updateURL)
-      .patch('/cron')
+      .patch(`/cron/${type}`)
       .send({ time: '0 0 0 * * *', index: 'unpaywall', interval: 'day' })
       .set('x-api-key', 'changeme');
   } catch (err) {

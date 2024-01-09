@@ -24,7 +24,7 @@ describe('Test: cron manage', () => {
 
     it('Should return config of cron', async () => {
       const res = await chai.request(updateURL)
-        .get('/cron');
+        .get('/cron/unpaywall');
 
       expect(res).have.status(200);
 
@@ -42,7 +42,7 @@ describe('Test: cron manage', () => {
 
     it('Should return updated config of cron', async () => {
       const res = await chai.request(updateURL)
-        .patch('/cron')
+        .patch('/cron/unpaywall')
         .send({ time: '0 0 0 1 * *' })
         .set('x-api-key', 'changeme');
 
@@ -62,7 +62,7 @@ describe('Test: cron manage', () => {
 
     it('Should return updated config of cron', async () => {
       const res = await chai.request(updateURL)
-        .patch('/cron')
+        .patch('/cron/unpaywall')
         .send({ index: 'unpaywall2' })
         .set('x-api-key', 'changeme');
 
@@ -82,7 +82,7 @@ describe('Test: cron manage', () => {
 
     it('Should return updated config of cron', async () => {
       const res = await chai.request(updateURL)
-        .patch('/cron')
+        .patch('/cron/unpaywall')
         .send({ interval: 'week' })
         .set('x-api-key', 'changeme');
 
@@ -102,7 +102,7 @@ describe('Test: cron manage', () => {
 
     it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .patch('/cron')
+        .patch('/cron/unpaywall')
         .send({ interval: 'week' });
 
       expect(res).have.status(401);
@@ -117,7 +117,7 @@ describe('Test: cron manage', () => {
 
     it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .patch('/cron')
+        .patch('/cron/unpaywall')
         .send({ interval: 'week' })
         .set('x-api-key', 'wrong apikey');
 
@@ -132,7 +132,7 @@ describe('Test: cron manage', () => {
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/cron/start')
+        .post('/cron/unpaywall/start')
         .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
@@ -140,7 +140,7 @@ describe('Test: cron manage', () => {
 
     it('Should return updated config of cron', async () => {
       const res = await chai.request(updateURL)
-        .get('/cron');
+        .get('/cron/unpaywall');
 
       expect(res).have.status(200);
 
@@ -158,7 +158,7 @@ describe('Test: cron manage', () => {
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/cron/stop')
+        .post('/cron/unpaywall/stop')
         .set('x-api-key', 'changeme');
 
       expect(res).have.status(202);
@@ -166,7 +166,7 @@ describe('Test: cron manage', () => {
 
     it('Should return updated config of cron', async () => {
       const res = await chai.request(updateURL)
-        .get('/cron');
+        .get('/cron/unpaywall');
 
       expect(res).have.status(200);
 

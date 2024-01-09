@@ -25,7 +25,7 @@ async function reset() {
   await deleteIndex('unpaywall-test');
   await deleteIndex('unpaywall_enriched');
   await deleteIndex('unpaywall_history');
-  await resetCronConfig();
+  await resetCronConfig('unpaywall');
 }
 
 module.exports = reset;
