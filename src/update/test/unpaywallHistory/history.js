@@ -4,16 +4,12 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const { updateChangeFile } = require('../utils/snapshot');
-
 const { countDocuments } = require('../utils/elastic');
-
 const { getState } = require('../utils/state');
-const { getHistoryReport } = require('../utils/report');
-
+const getReport = require('../utils/report');
 const checkIfInUpdate = require('../utils/status');
 
 const ping = require('../utils/ping');
-
 const reset = require('../utils/reset');
 
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
@@ -38,7 +34,7 @@ describe('Test: daily update route test with history', () => {
     // test response
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/history/job')
+        .post('/job/history')
         .send({
           startDate: date3,
           endDate: date1,
@@ -161,7 +157,7 @@ describe('Test: daily update route test with history', () => {
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getHistoryReport('unpaywallHistory');
+      const report = await getReport('unpaywallHistory');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);

@@ -2,7 +2,7 @@ const { format, subDays } = require('date-fns');
 
 const Cron = require('../cron');
 
-const { insertChangefilesOnPeriod } = require('./job');
+const { insertChangefilesOnPeriod } = require('../job');
 
 const updateConfig = {
   index: 'unpaywall',

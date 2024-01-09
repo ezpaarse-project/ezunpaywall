@@ -3,26 +3,13 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const {
-  updateChangeFile,
-} = require('../utils/snapshot');
-
-const {
-  getState,
-} = require('../utils/state');
-
-const {
-  getReport,
-} = require('../utils/report');
-
-const {
-  countDocuments,
-} = require('../utils/elastic');
-
+const { updateChangeFile } = require('../utils/snapshot');
+const { getState } = require('../utils/state');
+const getReport = require('../utils/report');
+const { countDocuments } = require('../utils/elastic');
 const checkIfInUpdate = require('../utils/status');
 
 const ping = require('../utils/ping');
-
 const reset = require('../utils/reset');
 
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
@@ -34,11 +21,11 @@ describe('Week: Test: download and insert file from unpaywall between a period',
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
   // create date in a format (YYYY-mm-dd) to be use by ezunpaywall
-  // yersterday
+  // yesterday
   const date1 = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
-  // yersterday - one week
+  // yesterday - one week
   const date2 = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
-  // yersterday - two weeks
+  // yesterday - two weeks
   const date3 = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
   // these dates are for test between a short period
   const date4 = new Date(now - (4 * oneDay)).toISOString().slice(0, 10);
@@ -132,7 +119,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);
@@ -266,7 +253,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);

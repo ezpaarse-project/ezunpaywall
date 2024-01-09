@@ -1,14 +1,9 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-const dirPath = require('../../path');
+const { getMostRecentFile, deleteFile } = require('../files');
 
-const {
-  getMostRecentFile,
-  deleteFile,
-} = require('../../file');
-
-const { snapshotsDir } = dirPath.unpaywall;
+const { getPathOfDirectory } = require('../files');
 
 /**
  * Controller to start list of files or latest file downloaded on update service.
@@ -18,18 +13,20 @@ const { snapshotsDir } = dirPath.unpaywall;
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function getFiles(req, res, next) {
-  const { latest } = req.data;
+  const { latest, type } = req.data;
+
+  const pathOfDirectory = getPathOfDirectory(type, 'snapshots');
 
   if (latest) {
     let latestSnapshot;
     try {
-      latestSnapshot = await getMostRecentFile(snapshotsDir);
+      latestSnapshot = await getMostRecentFile(pathOfDirectory);
     } catch (err) {
       return next({ message: 'Cannot get the lastest snapshot' });
     }
     return res.status(200).json(latestSnapshot?.filename);
   }
-  const files = await fs.readdir(snapshotsDir);
+  const files = await fs.readdir(pathOfDirectory);
   return res.status(200).json(files);
 }
 
@@ -53,14 +50,16 @@ async function uploadFile(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function deleteInstalledFile(req, res, next) {
-  const { filename } = req.data;
+  const { filename, type } = req.data;
 
-  if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
+  const pathOfDirectory = getPathOfDirectory(type, 'snapshots');
+
+  if (!await fs.pathExists(path.resolve(pathOfDirectory, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
   try {
-    await deleteFile(path.resolve(snapshotsDir, filename));
+    await deleteFile(path.resolve(pathOfDirectory, filename));
   } catch (err) {
     return next({ message: err.message });
   }

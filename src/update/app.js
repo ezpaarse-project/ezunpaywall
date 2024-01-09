@@ -14,16 +14,12 @@ const routerUnpaywall = require('./lib/routers/unpaywall');
 const routerStatus = require('./lib/routers/status');
 const routerState = require('./lib/routers/state');
 
-const routerUnpaywallJob = require('./lib/unpaywall/routers/job');
-const routerUnpaywallReport = require('./lib/unpaywall/routers/report');
+const routerJob = require('./lib/routers/job');
+const routerReport = require('./lib/routers/report');
+const routerCron = require('./lib/routers/cron');
+const routerSnapshot = require('./lib/routers/snapshot');
 
-const routerUnpaywallCron = require('./lib/unpaywall/routers/cron');
-const routerUnpaywallSnapshot = require('./lib/unpaywall/routers/snapshot');
-
-const routerUnpaywallHistoryJob = require('./lib/unpaywallHistory/routers/job');
-const routerUnpaywallHistoryReport = require('./lib/unpaywallHistory/routers/report');
-
-require('./lib/unpaywall/cron/file');
+require('./lib/cron/file');
 
 // create data directory
 const dataDir = path.resolve(__dirname, 'data');
@@ -74,13 +70,10 @@ app.use(routerUnpaywall);
 app.use(routerStatus);
 app.use(routerState);
 
-app.use(routerUnpaywallJob);
-app.use(routerUnpaywallReport);
-app.use(routerUnpaywallCron);
-app.use(routerUnpaywallSnapshot);
-
-app.use(routerUnpaywallHistoryJob);
-app.use(routerUnpaywallHistoryReport);
+app.use(routerJob);
+app.use(routerReport);
+app.use(routerCron);
+app.use(routerSnapshot);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

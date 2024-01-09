@@ -1,9 +1,9 @@
 const { format, subDays } = require('date-fns');
 const { unpaywallCron } = require('config');
-const logger = require('../../logger');
+const logger = require('../logger');
 
-const Cron = require('../../cron');
-const { getStatus } = require('../../status');
+const Cron = require('../cron');
+const { getStatus } = require('../status');
 
 const { insertChangefilesOnPeriod } = require('../job');
 

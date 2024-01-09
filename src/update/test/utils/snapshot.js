@@ -15,10 +15,10 @@ const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:59799';
  *
  * @param {Promise<string>} filename - Name of file needed to be delete on ezunpaywall.
  */
-async function deleteFile(filename) {
+async function deleteFile(type, filename) {
   try {
     await chai.request(updateURL)
-      .delete(`/snapshots/${filename}`)
+      .delete(`/snapshots/${type}/${filename}`)
       .set('x-api-key', 'changeme');
   } catch (err) {
     console.error(`Cannot DELETE ${updateURL}/snapshot/${filename}`);
@@ -33,10 +33,10 @@ async function deleteFile(filename) {
  *
  * @returns {Promise<void>}
  */
-async function addSnapshot(filename) {
+async function addSnapshot(type, filename) {
   try {
     await chai.request(updateURL)
-      .post('/snapshots')
+      .post(`/snapshots/${type}`)
       .attach('file', path.resolve(snapshotsDir, filename), filename)
       .set('x-api-key', 'changeme');
   } catch (err) {

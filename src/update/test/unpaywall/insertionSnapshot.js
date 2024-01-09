@@ -4,22 +4,12 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { format } = require('date-fns');
 
-const {
-  countDocuments,
-} = require('../utils/elastic');
-
-const {
-  getState,
-} = require('../utils/state');
-
-const {
-  getReport,
-} = require('../utils/report');
-
+const { countDocuments } = require('../utils/elastic');
+const { getState } = require('../utils/state');
+const getReport = require('../utils/report');
 const checkIfInUpdate = require('../utils/status');
 
 const ping = require('../utils/ping');
-
 const reset = require('../utils/reset');
 
 chai.use(chaiHttp);
@@ -91,7 +81,7 @@ describe('Test: download and insert snapshot from unpaywall', () => {
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);

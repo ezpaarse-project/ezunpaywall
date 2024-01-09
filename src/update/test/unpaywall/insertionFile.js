@@ -3,26 +3,13 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const {
-  countDocuments,
-} = require('../utils/elastic');
-
-const {
-  addSnapshot,
-} = require('../utils/snapshot');
-
-const {
-  getState,
-} = require('../utils/state');
-
-const {
-  getReport,
-} = require('../utils/report');
-
+const { countDocuments } = require('../utils/elastic');
+const { addSnapshot } = require('../utils/snapshot');
+const { getState } = require('../utils/state');
+const getReport = require('../utils/report');
 const checkIfInUpdate = require('../utils/status');
 
 const ping = require('../utils/ping');
-
 const reset = require('../utils/reset');
 
 chai.use(chaiHttp);
@@ -38,7 +25,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -88,7 +75,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);
@@ -117,7 +104,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter limit=10', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -167,7 +154,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);
@@ -196,7 +183,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter offset=40', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -246,7 +233,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);
@@ -275,7 +262,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter offset=10 and limit=20', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -326,7 +313,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);
@@ -381,7 +368,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the parameter limit can\t be lower than offset', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
     });
 
     it('Should return a status code 400', async () => {

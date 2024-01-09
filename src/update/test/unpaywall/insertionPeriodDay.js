@@ -3,28 +3,13 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const {
-  deleteFile,
-  updateChangeFile,
-} = require('../utils/snapshot');
-
-const {
-  getState,
-} = require('../utils/state');
-
-const {
-  getReport,
-} = require('../utils/report');
-
-const {
-  countDocuments,
-  deleteIndex,
-} = require('../utils/elastic');
-
+const { deleteFile, updateChangeFile } = require('../utils/snapshot');
+const { getState } = require('../utils/state');
+const getReport = require('../utils/report');
+const { countDocuments, deleteIndex } = require('../utils/elastic');
 const checkIfInUpdate = require('../utils/status');
 
 const ping = require('../utils/ping');
-
 const reset = require('../utils/reset');
 
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
@@ -134,7 +119,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);
@@ -270,7 +255,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);
@@ -466,8 +451,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   after(async () => {
     await deleteIndex('unpaywall-test');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteFile('unpaywall', 'fake1.jsonl.gz');
+    await deleteFile('unpaywall', 'fake2.jsonl.gz');
+    await deleteFile('unpaywall', 'fake3.jsonl.gz');
   });
 });

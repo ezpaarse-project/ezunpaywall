@@ -1,7 +1,7 @@
-const logger = require('../../logger');
-const Cron = require('../../cron');
-const dirPath = require('../../path');
-const { deleteFilesInDir } = require('../../file');
+const logger = require('../logger');
+const Cron = require('../cron');
+const dirPath = require('../path');
+const { deleteFilesInDir } = require('../files');
 
 const { reportsDir, snapshotsDir, statesDir } = dirPath;
 

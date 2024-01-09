@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const { format } = require('date-fns');
 const logger = require('./logger');
-const { getPathOfDirectory } = require('./file');
+const { getPathOfDirectory } = require('./files');
 
 /**
  * Create report on the folder as name the date of process.

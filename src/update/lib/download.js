@@ -18,7 +18,7 @@ const {
   getChangefile,
 } = require('./services/unpaywall');
 
-const { getPathOfDirectory } = require('./file');
+const { getPathOfDirectory } = require('./files');
 const pathDir = require('./path');
 
 /**

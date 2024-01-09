@@ -9,17 +9,17 @@ const config = require('config');
 const zlib = require('zlib');
 const { format } = require('date-fns');
 
-const dirPath = require('../path');
-const logger = require('../logger');
-const unpaywallEnrichedMapping = require('../../mapping/unpaywall.json');
-const unpaywallHistoryMapping = require('../../mapping/unpaywall_history.json');
+const dirPath = require('./path');
+const logger = require('./logger');
+const unpaywallEnrichedMapping = require('../mapping/unpaywall.json');
+const unpaywallHistoryMapping = require('../mapping/unpaywall_history.json');
 
 const {
   addStepInsert,
   getLatestStep,
   updateLatestStep,
   fail,
-} = require('../state');
+} = require('./state');
 
 const {
   refreshIndex,
@@ -27,7 +27,7 @@ const {
   bulk,
   createIndex,
   searchWithRange,
-} = require('../services/elastic');
+} = require('./services/elastic');
 
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 

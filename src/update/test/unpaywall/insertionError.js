@@ -3,27 +3,13 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const {
-  countDocuments,
-} = require('../utils/elastic');
-
-const {
-  addSnapshot,
-  updateChangeFile,
-} = require('../utils/snapshot');
-
-const {
-  getState,
-} = require('../utils/state');
-
-const {
-  getReport,
-} = require('../utils/report');
-
+const { countDocuments } = require('../utils/elastic');
+const { addSnapshot, updateChangeFile } = require('../utils/snapshot');
+const { getState } = require('../utils/state');
+const getReport = require('../utils/report');
 const checkIfInUpdate = require('../utils/status');
 
 const ping = require('../utils/ping');
-
 const reset = require('../utils/reset');
 
 chai.use(chaiHttp);
@@ -40,7 +26,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a corrupted file already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1-error.jsonl.gz');
+      await addSnapshot('unpaywall', 'fake1-error.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -90,7 +76,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('createdAt').to.not.equal(undefined);

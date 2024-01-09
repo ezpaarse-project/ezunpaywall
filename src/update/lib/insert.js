@@ -8,23 +8,23 @@ const readline = require('readline');
 const config = require('config');
 const zlib = require('zlib');
 
-const dirPath = require('../path');
-const logger = require('../logger');
-const unpaywallMapping = require('../../mapping/unpaywall.json');
+const dirPath = require('./path');
+const logger = require('./logger');
+const unpaywallMapping = require('../mapping/unpaywall.json');
 
 const {
   addStepInsert,
   getLatestStep,
   updateLatestStep,
   fail,
-} = require('../state');
+} = require('./state');
 
 const {
   refreshIndex,
   bulk,
   initAlias,
   createIndex,
-} = require('../services/elastic');
+} = require('./services/elastic');
 
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');

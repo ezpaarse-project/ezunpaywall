@@ -3,27 +3,13 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const {
-  countDocuments,
-} = require('../utils/elastic');
-
-const {
-  addSnapshot,
-  updateChangeFile,
-} = require('../utils/snapshot');
-
-const {
-  getState,
-} = require('../utils/state');
-
-const {
-  getReport,
-} = require('../utils/report');
-
+const { countDocuments } = require('../utils/elastic');
+const { addSnapshot, updateChangeFile } = require('../utils/snapshot');
+const { getState } = require('../utils/state');
+const getReport = require('../utils/report');
 const checkIfInUpdate = require('../utils/status');
 
 const ping = require('../utils/ping');
-
 const reset = require('../utils/reset');
 
 chai.use(chaiHttp);
@@ -102,7 +88,7 @@ describe('Test: daily update route test', () => {
     });
 
     it('Should get report with all information from the daily update', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done');
       expect(report).have.property('steps').to.be.an('array');
@@ -204,7 +190,7 @@ describe('Test: daily update route test', () => {
     });
 
     it('Should get report with all information from the weekly update', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done');
       expect(report).have.property('steps').to.be.an('array');
@@ -290,7 +276,7 @@ describe('Test: daily update route test', () => {
     });
 
     it('Should get report with all information from the weekly update', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done');
       expect(report).have.property('steps').to.be.an('array');
@@ -325,7 +311,7 @@ describe('Test: daily update route test', () => {
   describe('Day: Do a daily update but the file is already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -379,7 +365,7 @@ describe('Test: daily update route test', () => {
     });
 
     it('Should get report with all information from the daily update', async () => {
-      const report = await getReport();
+      const report = await getReport('unpaywall');
 
       expect(report).have.property('done').equal(true);
       expect(report).have.property('steps').to.be.an('array');

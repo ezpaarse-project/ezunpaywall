@@ -24,9 +24,9 @@ describe('Test: auth service in update service', () => {
     this.timeout(30000);
     await ping();
     await updateChangeFile('week');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteFile('unpaywall', 'fake1.jsonl.gz');
+    await deleteFile('unpaywall', 'fake2.jsonl.gz');
+    await deleteFile('unpaywall', 'fake3.jsonl.gz');
     await deleteIndex('unpaywall-test');
   });
 
@@ -82,8 +82,8 @@ describe('Test: auth service in update service', () => {
 
   after(async () => {
     await deleteIndex('unpaywall-test');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteFile('unpaywall', 'fake1.jsonl.gz');
+    await deleteFile('unpaywall', 'fake2.jsonl.gz');
+    await deleteFile('unpaywall', 'fake3.jsonl.gz');
   });
 });
