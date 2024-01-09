@@ -13,6 +13,9 @@
       "url": "http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html"
     }
   },
+  "servers": [
+    { "url": "https://unpaywall.inist.fr/api/update" }
+  ],
   "paths": {
     "/update": {
       "get": {
