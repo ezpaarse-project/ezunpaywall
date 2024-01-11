@@ -93,9 +93,9 @@ async function insertUnpaywallDataInElastic(data, index) {
  * @param {*} step
  * @returns
  */
-async function insertData(listOfDoi, newData, date) {
+async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
   // TODO not hardcode
-  const oldData = await getDataByListOfDOI(listOfDoi, 'unpaywall_enriched');
+  const oldData = await getDataByListOfDOI(listOfDoi, indexBase);
 
   const resHistoryData = [];
   const resData = [];
@@ -104,8 +104,7 @@ async function insertData(listOfDoi, newData, date) {
     newData.forEach((data) => {
       const copyData = data;
       copyData.referencedAt = date;
-      // TODO not hardcode
-      resData.push({ index: { _index: 'unpaywall_enriched', _id: data.doi } });
+      resData.push({ index: { _index: indexBase, _id: data.doi } });
       resData.push(copyData);
     });
     return true;
@@ -131,25 +130,21 @@ async function insertData(listOfDoi, newData, date) {
       };
       newEntry.endValidity = data.updated;
 
-      // TODO not hardcode
-      resHistoryData.push({ index: { _index: 'unpaywall_history' } });
+      resHistoryData.push({ index: { _index: indexHistory } });
       resHistoryData.push(newEntry);
 
       // if data, get the old referencedAt
       copyData.referencedAt = oldDataUnpaywall.referencedAt;
     }
 
-    // TODO not hardcode
-    resData.push({ index: { _index: 'unpaywall_enriched', _id: data.doi } });
+    resData.push({ index: { _index: indexBase, _id: data.doi } });
     resData.push(copyData);
   });
 
-  // TODO not hardcode
-  await insertUnpaywallDataInElastic(resData, 'unpaywall_enriched');
+  await insertUnpaywallDataInElastic(resData, indexBase);
 
   if (resHistoryData.length > 0) {
-    // TODO not hardcode
-    await insertUnpaywallDataInElastic(resHistoryData, 'unpaywall_history');
+    await insertUnpaywallDataInElastic(resHistoryData, indexHistory);
   }
 
   return true;
@@ -170,23 +165,21 @@ async function insertData(listOfDoi, newData, date) {
  */
 async function insertHistoryDataUnpaywall(insertConfig) {
   const {
-    filename, date, index, offset, limit,
+    filename, date, indexBase, indexHistory, offset, limit,
   } = insertConfig;
 
   try {
-    // TODO not hardcode index
-    await createIndex('unpaywall_enriched', unpaywallEnrichedMapping);
+    await createIndex(indexBase, unpaywallEnrichedMapping);
   } catch (err) {
-    logger.error(`[elastic] Cannot create index [${index}]`, err);
+    logger.error(`[elastic] Cannot create index [${indexBase}]`, err);
     await fail(err);
     return false;
   }
 
   try {
-    // TODO not hardcode index
-    await createIndex('unpaywall_history', unpaywallHistoryMapping);
+    await createIndex(indexHistory, unpaywallHistoryMapping);
   } catch (err) {
-    logger.error(`[elastic] Cannot create index [${index}]`, err);
+    logger.error(`[elastic] Cannot create index [${indexHistory}]`, err);
     await fail(err);
     return false;
   }
@@ -197,13 +190,12 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   const step = getLatestStep();
   step.file = filename;
   step.index = {
-    // TODO not hardcode
-    unpaywall_enriched: {
+    [indexBase]: {
       insertedDocs: 0,
       updatedDocs: 0,
       failedDocs: 0,
     },
-    unpaywall_history: {
+    [indexHistory]: {
       insertedDocs: 0,
       updatedDocs: 0,
       failedDocs: 0,
@@ -275,7 +267,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
       // fill the array
       try {
         const doc = JSON.parse(line);
-        // [history]
+        // history
         listOfDoi.push(doc.doi);
         newData.push(doc);
       } catch (err) {
@@ -302,8 +294,8 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   }
   // last insertion if there is data left
   if (newData.length > 0) {
-    // [history]
-    success = await insertData(listOfDoi, newData, date);
+    // history
+    success = await insertData(listOfDoi, newData, indexBase, indexHistory, date);
     listOfDoi = [];
     newData = [];
     if (!success) return false;
@@ -325,33 +317,33 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   return true;
 }
 
-async function step1(startDate) {
+async function step1(startDate, indexBase, indexHistory) {
   logger.debug('----------------------------------');
   logger.debug('STEP 1');
   logger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   logger.debug(`Should DELETE greater or equal than ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   const toRecentDataInHistoryBulk = [];
-  const toRecentDataInHistory = await searchWithRange(startDate, 'updated', 'gte', 'unpaywall_history');
+  const toRecentDataInHistory = await searchWithRange(startDate, 'updated', 'gte', indexHistory);
 
   toRecentDataInHistory.forEach((data) => {
-    toRecentDataInHistoryBulk.push({ delete: { _index: 'unpaywall_history', _id: data._id } });
+    toRecentDataInHistoryBulk.push({ delete: { _index: indexHistory, _id: data._id } });
     logger.debug(`HISTORY: DELETE: doi: ${data._source.doi}, genre: ${data._source.genre}, updated: ${data._source.updated}`);
   });
 
   await bulk(toRecentDataInHistoryBulk, true);
   logger.debug(`DELETE ${toRecentDataInHistoryBulk.length} lines`);
   logger.debug('UNPAYWALL: REFRESH');
-  await refreshIndex('unpaywall_enriched');
+  await refreshIndex(indexBase);
 }
 
-async function step2(startDate) {
+async function step2(startDate, indexBase, indexHistory) {
   logger.debug('----------------------------------');
   logger.debug('STEP 2');
   logger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   logger.debug(`Should UPDATE data less than ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   const nearestDataBulk = [];
   const nearestDataDeleteBulk = [];
-  const oldData = await searchWithRange(startDate, 'updated', 'lt', 'unpaywall_history');
+  const oldData = await searchWithRange(startDate, 'updated', 'lt', indexHistory);
 
   const listOfDoi = oldData.map((e) => e._source.doi);
   const listOfDoiFiltered = new Set(listOfDoi);
@@ -371,18 +363,18 @@ async function step2(startDate) {
       }
     });
 
-    const oldDoc = await getDataByListOfDOI([nearestData._source.doi], 'unpaywall_enriched');
+    const oldDoc = await getDataByListOfDOI([nearestData._source.doi], indexBase);
     logger.info(`oldData: ${format(new Date(oldDoc[0].updated), 'yyyy-MM-dd/hh:mm:ss')} < startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
 
     if (new Date(startDate) < new Date(oldDoc[0].updated)) {
       // UPDATE
       delete nearestData._source.endValidity;
-      nearestDataBulk.push({ index: { _index: 'unpaywall_enriched', _id: nearestData._source.doi } });
+      nearestDataBulk.push({ index: { _index: indexBase, _id: nearestData._source.doi } });
       nearestDataBulk.push(nearestData._source);
       logger.debug(`UNPAYWALL: UPDATE: doi: ${nearestData._source.doi}, genre: ${nearestData._source.genre}, updated: ${nearestData._source.updated}`);
 
       // DELETE
-      nearestDataDeleteBulk.push({ delete: { _index: 'unpaywall_history', _id: nearestData._id } });
+      nearestDataDeleteBulk.push({ delete: { _index: indexHistory, _id: nearestData._id } });
       logger.debug(`HISTORY: DELETE: doi: ${nearestData._source.doi}, genre: ${nearestData._source.genre}, updated: ${nearestData._source.updated}`);
     }
   }
@@ -391,43 +383,42 @@ async function step2(startDate) {
   await bulk(nearestDataBulk, true);
   logger.debug(`UPDATE ${nearestDataBulk.length / 2} lines`);
   logger.debug('UNPAYWALL: REFRESH');
-  await refreshIndex('unpaywall_enriched');
+  await refreshIndex(indexBase);
 
   // DELETE
   await bulk(nearestDataDeleteBulk, true);
   logger.debug(`DELETE ${nearestDataDeleteBulk.length} lines`);
   logger.debug('HISTORY: REFRESH');
-  await refreshIndex('unpaywall_history');
+  await refreshIndex(indexHistory);
 }
 
-async function step3(startDate) {
+async function step3(startDate, indexBase) {
   logger.debug('----------------------------------');
   logger.debug('STEP 3');
 
   const toRecentDataBulk = [];
-  const toRecentData = await searchWithRange(startDate, 'updated', 'gte', 'unpaywall_enriched');
+  const toRecentData = await searchWithRange(startDate, 'updated', 'gte', indexBase);
   logger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   logger.debug(`Should DELETE data greater or equal than ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   toRecentData.forEach((data) => {
-    toRecentDataBulk.push({ delete: { _index: 'unpaywall_enriched', _id: data._id } });
+    toRecentDataBulk.push({ delete: { _index: indexBase, _id: data._id } });
     logger.debug(`UNPAYWALL: DELETE: doi: ${data._source.doi}, genre: ${data._source.genre}, updated: ${format(new Date(data._source.updated), 'yyyy-MM-dd/hh:mm:ss')}`);
   });
 
   await bulk(toRecentDataBulk, true);
   logger.debug(`DELETE ${toRecentDataBulk.length} lines`);
   logger.debug('UNPAYWALL: REFRESH');
-  await refreshIndex('unpaywall_enriched');
+  await refreshIndex(indexBase);
 }
 
 /**
  * Resets the unpaywall index according to a date and deletes the data in the history.
  * @param {string} startDate - The date you wish to return to
  */
-async function rollBack(startDate) {
-  logger.debug('================================');
-  await step1(startDate);
-  await step2(startDate);
-  await step3(startDate);
+async function rollBack(startDate, indexBase, indexHistory) {
+  await step1(startDate, indexBase, indexHistory);
+  await step2(startDate, indexBase, indexHistory);
+  await step3(startDate, indexBase);
 }
 
 module.exports = {

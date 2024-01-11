@@ -3,9 +3,9 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const reset = require('../utils/reset');
+const reset = require('./utils/reset');
 
-const ping = require('../utils/ping');
+const ping = require('./utils/ping');
 
 chai.use(chaiHttp);
 

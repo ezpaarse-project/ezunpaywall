@@ -17,9 +17,13 @@ Health service indicating the status of the connection between each service.
 | ELASTICSEARCH_PASSWORD | changeme | password of elastic super user |
 | ELASTICSEARCH_MAX_BULK_SIZE | 4000 | max bulk size of update process |
 | ELASTICSEARCH_INDEX_ALIAS | upw | default alias of unpaywall data |
-| UPDATE_CRON_SCHEDULE | 0 0 0 * * * | schedule of cron |
-| UPDATE_CRON_ACTIVE | false | state of cron |
-| UPDATE_CRON_INDEX | unpaywall | index of update process of cron |
-| UPDATE_CRON_INTERVAL | day | interval of update process of cron |
+| UNPAYWALL_CRON_SCHEDULE | 0 0 0 * * * | schedule of unpaywall cron |
+| UNPAYWALL_CRON_ACTIVE | false | state of unpaywall cron |
+| UNPAYWALL_CRON_INDEX | unpaywall | index of unpaywall process of cron |
+| UNPAYWALL_CRON_INTERVAL | day | interval of unpaywall process of cron |
+| UNPAYWALL_HISTORY_CRON_SCHEDULE | 0 0 0 * * * | schedule of unpaywall history cron |
+| UNPAYWALL_HISTORY_CRON_ACTIVE | false | state of unpaywall history cron |
+| UNPAYWALL_HISTORY_CRON_INDEX | unpaywall | index of unpaywall history process of cron |
+| UNPAYWALL_HISTORY_CRON_INTERVAL | day | interval of unpaywall history process of cron |
 | UPDATE_APIKEY | changeme | update apikey to start update process |
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |

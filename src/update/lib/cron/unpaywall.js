@@ -25,7 +25,7 @@ const cronConfig = {
 async function task() {
   const status = getStatus();
   if (status) {
-    logger.info(`[cron: ${this.name}] conflit: an update is already in progress`);
+    logger.info(`[cron: ${this.name}] conflict: an update is already in progress`);
     return;
   }
   const week = (cronConfig.interval === 'week');

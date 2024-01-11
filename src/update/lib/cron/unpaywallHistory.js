@@ -1,16 +1,20 @@
+const { format, subDays } = require('date-fns');
 const { unpaywallHistoryCron } = require('config');
 const logger = require('../logger');
 
 const Cron = require('../cron');
 const { getStatus } = require('../status');
 
+const { insertWithOaHistoryJob } = require('../job');
+
 let { active } = unpaywallHistoryCron;
 
 if (active === 'true' || active) active = true;
 else active = false;
 
-const updateConfig = {
-  index: unpaywallHistoryCron.index,
+const cronConfig = {
+  indexBase: unpaywallHistoryCron.indexBase,
+  indexHistory: unpaywallHistoryCron.indexHistory,
   interval: unpaywallHistoryCron.interval,
 };
 
@@ -22,10 +26,16 @@ const updateConfig = {
 async function task() {
   const status = getStatus();
   if (status) {
-    logger.info(`[cron: ${this.name}] conflit: an update is already in progress`);
-    // return;
+    logger.info(`[cron: ${this.name}] conflict: an update is already in progress`);
+    return;
   }
-  // TODO do update
+  const week = (cronConfig.interval === 'week');
+  const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
+  await insertWithOaHistoryJob({
+    index: cronConfig.index,
+    interval: cronConfig.interval,
+    startDate,
+  });
 }
 
 const cron = new Cron('updateHistory', unpaywallHistoryCron.schedule, task, active);
@@ -37,10 +47,8 @@ const cron = new Cron('updateHistory', unpaywallHistoryCron.schedule, task, acti
  */
 function update(newConfig) {
   if (newConfig.time) cron.setSchedule(newConfig.time);
-
-  if (newConfig.index) updateConfig.index = newConfig.index;
-  if (newConfig.interval) updateConfig.interval = newConfig.interval;
-
+  if (newConfig.indexBase) cronConfig.indexBase = newConfig.indexBase;
+  if (newConfig.interval) cronConfig.indexHistory = newConfig.indexHistory;
   if (newConfig.index || newConfig.interval) cron.setTask(task);
 }
 
@@ -50,8 +58,8 @@ function update(newConfig) {
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {
-  const cronConfig = cron.config;
-  return { ...cronConfig, ...updateConfig };
+  const { config } = cron;
+  return { ...cronConfig, ...config };
 }
 
 module.exports = {

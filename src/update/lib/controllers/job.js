@@ -153,9 +153,9 @@ async function insertWithOaHistory(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function historyRollBack(req, res, next) {
-  const { startDate, index } = req.data.rollBackConfig;
+  const { startDate, indexBase, indexHistory } = req.data.rollBackConfig;
 
-  await rollBack(startDate, index);
+  await rollBack(startDate, indexBase, indexHistory);
   return res.status(202).json();
 }
 

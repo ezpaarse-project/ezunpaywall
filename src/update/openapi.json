@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "description": "The update service allows to update the mirror data. This service queries unpaywall to get the snapshots and inserts their content in an elasticsearch index ",
+    "description": "The update service allows to update the mirror data. This service queries unpaywall to get the snapshots and inserts their content in an elasticsearch index.",
     "version": "1.0.0",
     "title": "Update service",
     "contact": {
@@ -14,30 +14,35 @@
     }
   },
   "servers": [
-    { "url": "https://unpaywall.inist.fr/api/update" }
+    {
+      "url": "https://unpaywall.inist.fr/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "cron"
+    },
+    {
+      "name": "job"
+    },
+    {
+      "name": "ping"
+    }
   ],
   "paths": {
     "/update": {
       "get": {
-        "summary": "Name of service",
+        "tags": [
+          "ping"
+        ],
+        "operationId": "get-update",
+        "summary": "Name of service.",
+        "description": "Get name of update service.",
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string",
-                  "x-examples": {
-                    "example-1": "update service"
-                  }
-                },
-                "examples": {
-                  "service": {
-                    "value": "update service"
-                  }
-                }
-              },
-              "Success": {
+              "application/json": {
                 "examples": {
                   "response": {
                     "value": {
@@ -48,19 +53,14 @@
               }
             }
           }
-        },
-        "operationId": "get-update",
-        "description": "Get name of update service",
-        "tags": [
-          "ping"
-        ]
+        }
       }
     },
     "/update/ping": {
       "get": {
-        "summary": "Ping update service",
         "operationId": "get-update-ping",
-        "description": "Ping update service",
+        "summary": "Ping update service.",
+        "description": "Ping update service.",
         "tags": [
           "ping"
         ],
@@ -73,12 +73,13 @@
     },
     "/update/health": {
       "get": {
-        "summary": "Health",
-        "operationId": "get-update-health",
-        "description": "Health on all service connected to update service",
         "tags": [
           "ping"
         ],
+        "operationId": "get-update-health",
+        "summary": "Health.",
+        "description": "Health on all service connected to update service.",
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK",
@@ -166,45 +167,53 @@
             }
           }
         }
-      },
-      "parameters": []
+      }
     },
     "/update/health/redis": {
       "get": {
-        "summary": "Health on redis service",
+        "tags": [
+          "ping"
+        ],
+        "operationId": "get-update-health-redis",
+        "summary": "Health on redis service.",
+        "description": "Health on redis.",
+        "parameters": [],
         "responses": {
           "200": {
             "$ref": "#/components/responses/Health"
           }
-        },
-        "operationId": "get-update-health-redis",
-        "description": "Health on redis",
-        "tags": [
-          "ping"
-        ]
-      },
-      "parameters": []
+        }
+      }
     },
     "/update/health/elastic": {
       "get": {
-        "summary": "Health on elastic service",
+        "tags": [
+          "ping"
+        ],
+        "operationId": "get-update-health-elastic",
+        "summary": "Health on elastic service.",
+        "description": "Health on elastic.",
+        "parameters": [],
         "responses": {
           "200": {
             "$ref": "#/components/responses/Health"
           }
-        },
-        "operationId": "get-update-health-elastic",
-        "description": "Health on elastic",
-        "tags": [
-          "ping"
-        ]
-      },
-      "parameters": []
+        }
+      }
     },
     "/update/job/snapshot": {
       "post": {
-        "summary": "Start process download and insert snapshot from unpaywall",
+        "tags": [
+          "job"
+        ],
         "operationId": "post-update-job-snapshot",
+        "summary": "Start process download and insert snapshot from unpaywall.",
+        "description": "Download and insert the latest snapshot from unpaywall.org.",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -221,43 +230,36 @@
               }
             }
           },
-          "description": "index where the unpaywall data will be inserted"
+          "description": "index where the unpaywall data will be inserted."
         },
         "responses": {
           "202": {
-            "description": "Process start"
+            "$ref": "#/components/responses/Accepted"
           },
           "401": {
             "$ref": "#/components/responses/Not-authorized"
           },
           "409": {
-            "description": "Update in progress",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "default": "changeme"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Conflict"
           }
-        },
+        }
+      }
+    },
+    "/update/job/period": {
+      "post": {
+        "tags": [
+          "job"
+        ],
+        "operationId": "post-update-job-period",
+        "summary": "Start process download and insert changefiles from unpaywall.",
+        "description": "Download and insert changefiles from unpaywall.org.",
         "security": [
           {
             "x-api-key": []
           }
         ],
-        "description": "Download and insert the latest snapshot from unpaywall.org",
-        "tags": [
-          "job"
-        ]
-      }
-    },
-    "/update/job/period": {
-      "post": {
-        "summary": "Start process download and insert changefiles from unpaywall",
-        "operationId": "post-update-job-period",
         "requestBody": {
+          "description": "config for process",
           "content": {
             "application/json": {
               "schema": {
@@ -281,68 +283,37 @@
                 }
               }
             }
-          },
-          "description": "config for process"
+          }
         },
         "responses": {
           "202": {
-            "description": "Process start"
+            "$ref": "#/components/responses/Accepted"
           },
           "400": {
-            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "default": "changeme"
-                }
-              },
-              "Test1": {
-                "examples": {
-                  "response": {
-                    "value": "changeme"
-                  }
-                }
-              },
-              "Test2": {
-                "examples": {
-                  "response": {
-                    "value": "changeme"
-                  }
-                }
-              }
-            }
+            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate."
           },
           "401": {
             "$ref": "#/components/responses/Not-authorized"
           },
           "409": {
-            "description": "Update in progress",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "default": "changeme"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Conflict"
           }
-        },
+        }
+      }
+    },
+    "/update/job/changefile/{filename}": {
+      "post": {
+        "tags": [
+          "job"
+        ],
+        "operationId": "post-update-job-changefile-$-filename",
+        "summary": "Start process insert changesfiles downloaded on ezunpaywall.",
+        "description": "Insert changefiles already downloaded on ezunpaywall.",
         "security": [
           {
             "x-api-key": []
           }
         ],
-        "description": "Download and insert changefiles from unpaywall.org",
-        "tags": [
-          "job"
-        ]
-      }
-    },
-    "/update/job/changefile/{filename}": {
-      "post": {
-        "summary": "Start process insert changesfiles downloaded on ezunpaywall",
-        "operationId": "post-update-job-changefile-$-filename",
         "parameters": [
           {
             "in": "path",
@@ -377,15 +348,18 @@
         },
         "responses": {
           "202": {
-            "description": "Process start"
+            "$ref": "#/components/responses/Accepted"
           },
           "400": {
-            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate",
+            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "string",
-                  "default": "changeme"
+                "examples": {
+                  "response": {
+                    "value": {
+                      "message": "startDate cannot be in the futur or endDate cannot be lower than startDate."
+                    }
+                  }
                 }
               }
             }
@@ -394,63 +368,138 @@
             "$ref": "#/components/responses/Not-authorized"
           },
           "404": {
-            "description": "File not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "x-examples": {
-                    "example-1": {
-                      "message": "File not found"
-                    }
-                  }
-                }
-              },
-              "File not found": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "File not found"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/File-not-found"
           },
           "409": {
-            "description": "Update in progress",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "default": "changeme"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Conflict"
           }
-        },
+        }
+      }
+    },
+    "/update/job/history": {
+      "post": {
+        "tags": [
+          "job"
+        ],
+        "operationId": "post-update-job-history",
+        "summary": "Start process download and insert changefiles from unpaywall and feed history.",
+        "description": "Download and insert changefiles from unpaywall.org and feed history.",
         "security": [
           {
             "x-api-key": []
           }
         ],
-        "description": "Insert changefiles already downloaded on ezunpaywall",
-        "tags": [
-          "job"
-        ]
+        "requestBody": {
+          "description": "config for process",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userName"
+                ],
+                "properties": {
+                  "index": {
+                    "type": "string"
+                  },
+                  "interval": {
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "type": "string"
+                  },
+                  "endDate": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/Accepted"
+          },
+          "400": {
+            "description": "startDate cannot be in the futur or endDate cannot be lower than startDate."
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
       }
     },
-    "/update/reports": {
+    "/update/job/reset": {
+      "post": {
+        "tags": [
+          "job"
+        ],
+        "operationId": "post-update-job-reset",
+        "summary": "Start process that roll back the current and the history index according to a date.",
+        "description": "roll back the current and the history index according to a date.",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "description": "config for process",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userName"
+                ],
+                "properties": {
+                  "index": {
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/Accepted"
+          },
+          "400": {
+            "description": "startDate required"
+          },
+          "401": {
+            "$ref": "#/components/responses/Not-authorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      }
+    },
+    "/update/reports/${type}": {
       "get": {
-        "summary": "Get reports",
+        "tags": [
+          "job"
+        ],
         "operationId": "get-update-reports",
-        "description": "Get list of reports or latest report",
+        "summary": "Get reports.",
+        "description": "Get list of reports or latest report.",
         "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "type of report (unpaywall or unpaywallHistory)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "in": "query",
             "name": "latest",
@@ -522,18 +571,27 @@
               }
             }
           }
-        },
-        "tags": [
-          "job"
-        ]
+        }
       }
     },
-    "/update/reports/${filename}": {
+    "/update/reports/${type}/${filename}": {
       "get": {
-        "summary": "Get report",
+        "tags": [
+          "job"
+        ],
         "operationId": "get-update-reports-$-filename",
-        "description": "Get report with his filename",
+        "summary": "Get report.",
+        "description": "Get report with his filename.",
         "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "type of report (unpaywall or unpaywallHistory)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "in": "path",
             "name": "filename",
@@ -630,46 +688,34 @@
             }
           },
           "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "x-examples": {
-                    "example-1": {
-                      "message": "File not found"
-                    }
-                  }
-                }
-              },
-              "File not found": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "File not found"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/File-not-found"
           }
-        },
-        "tags": [
-          "job"
-        ]
+        }
       }
     },
-    "/update/snapshots": {
+    "/update/snapshots/${type}": {
       "get": {
-        "summary": "Get snapshots",
+        "tags": [
+          "job"
+        ],
         "operationId": "get-update-snapshots",
-        "description": "Get list of snapshot or latest snapshot",
+        "summary": "Get snapshots.",
+        "description": "Get list of snapshot or latest snapshot.",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
         "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "type of report (unpaywall or unpaywallHistory)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "in": "query",
             "name": "latest",
@@ -698,23 +744,32 @@
           "401": {
             "$ref": "#/components/responses/Not-authorized"
           }
-        },
+        }
+      }
+    },
+    "/update/snapshots/${type}/${filename}": {
+      "get": {
+        "tags": [
+          "job"
+        ],
+        "operationId": "get-update-snapshots-$-filename",
+        "summary": "Get snapshot.",
+        "description": "Get snapshot with his filename.",
         "security": [
           {
             "x-api-key": []
           }
         ],
-        "tags": [
-          "job"
-        ]
-      }
-    },
-    "/update/snapshots/${filename}": {
-      "get": {
-        "summary": "Get snapshot",
-        "operationId": "get-update-snapshots-$-filename",
-        "description": "Get snapshot with his filename",
         "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "type of report (unpaywall or unpaywallHistory)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "in": "path",
             "name": "filename",
@@ -733,57 +788,19 @@
             "$ref": "#/components/responses/Not-authorized"
           },
           "404": {
-            "description": "File not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "x-examples": {
-                    "example-1": {
-                      "message": "File not found"
-                    }
-                  }
-                },
-                "examples": {
-                  "example-1": {
-                    "value": {
-                      "message": "string"
-                    }
-                  }
-                }
-              },
-              "File not found": {
-                "examples": {
-                  "response": {
-                    "value": {
-                      "message": "File not found"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/File-not-found"
           }
-        },
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "tags": [
-          "job"
-        ]
+        }
       }
     },
     "/update/states": {
       "get": {
-        "summary": "Get state",
+        "tags": [
+          "job"
+        ],
         "operationId": "get-update-states",
-        "description": "Get latest state",
+        "summary": "Get state.",
+        "description": "Get latest state.",
         "responses": {
           "200": {
             "description": "state",
@@ -822,14 +839,14 @@
               }
             }
           }
-        },
-        "tags": [
-          "job"
-        ]
+        }
       }
     },
     "/update/status": {
       "get": {
+        "tags": [
+          "job"
+        ],
         "summary": "Get status",
         "operationId": "get-update-status",
         "description": "Get status",
@@ -853,39 +870,33 @@
               }
             }
           }
-        },
-        "tags": [
-          "job"
-        ]
+        }
       }
     },
     "/update/unpaywall/changefiles": {
       "get": {
-        "summary": "Get changefiles from unpaywall",
+        "tags": [
+          "job"
+        ],
         "operationId": "get-update-unpaywall-changefiles",
-        "description": "Get changefiles from unpaywall",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "index": {
-                    "type": "string"
-                  }
-                }
-              },
-              "examples": {
-                "example-1": {
-                  "value": {
-                    "index": "string"
-                  }
-                }
-              }
+        "summary": "Get changefiles from unpaywall.",
+        "description": "Get changefiles from unpaywall.",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "interval",
+            "description": "interval of changefiles (\"week\" or \"day\")",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
-          },
-          "description": "interval of changefiles (\"week\" or \"day\")"
-        },
+          }
+        ],
         "responses": {
           "200": {
             "description": "status",
@@ -965,69 +976,101 @@
           "401": {
             "$ref": "#/components/responses/Not-authorized"
           }
-        },
+        }
+      }
+    },
+    "/update/cron/${type}/start": {
+      "post": {
+        "tags": [
+          "cron"
+        ],
+        "operationId": "post-cron-start",
+        "summary": "Start cron.",
+        "description": "Start update cron.",
         "security": [
           {
             "x-api-key": []
           }
         ],
-        "tags": [
-          "job"
-        ]
-      }
-    },
-    "/update/cron/start": {
-      "post": {
-        "summary": "Start update cron",
-        "operationId": "post-update-cron-start",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "type of report (unpaywall or unpaywallHistory)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "202": {
-            "description": "Accepted"
+            "$ref": "#/components/responses/Accepted"
           },
           "401": {
             "$ref": "#/components/responses/Not-authorized"
           }
-        },
-        "description": "Start update cron",
+        }
+      }
+    },
+    "/update/cron/${type}/stop": {
+      "post": {
+        "tags": [
+          "cron"
+        ],
+        "operationId": "post-cron-stop",
+        "description": "Stop cron.",
+        "summary": "Stop cron.",
         "security": [
           {
             "x-api-key": []
           }
         ],
-        "tags": [
-          "cron"
-        ]
-      }
-    },
-    "/update/cron/stop": {
-      "post": {
-        "summary": "Stop update cron",
-        "operationId": "post-update-cron-stop",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "type of report (unpaywall or unpaywallHistory)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "202": {
-            "description": "Accepted"
+            "$ref": "#/components/responses/Accepted"
           },
           "401": {
             "$ref": "#/components/responses/Not-authorized"
           }
-        },
-        "description": "Stop update cron",
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "tags": [
-          "cron"
-        ]
-      },
-      "parameters": []
+        }
+      }
     },
-    "/update/cron": {
-      "parameters": [],
+    "/update/cron/${type}": {
       "patch": {
-        "summary": "update update cron",
-        "operationId": "patch-update-cron",
+        "tags": [
+          "cron"
+        ],
+        "operationId": "patch-cron",
+        "summary": "update cron.",
+        "description": "update cron.",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "type of report (unpaywall or unpaywallHistory)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1084,15 +1127,6 @@
             "$ref": "#/components/responses/Not-authorized"
           }
         },
-        "description": "update update cron",
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "tags": [
-          "cron"
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1138,8 +1172,23 @@
         }
       },
       "get": {
-        "summary": "Get config of update cron",
-        "operationId": "get-update-cron",
+        "tags": [
+          "cron"
+        ],
+        "operationId": "get-cron",
+        "summary": "Get config of cron.",
+        "description": "Get config of cron.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "type of report (unpaywall or unpaywallHistory)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1212,63 +1261,55 @@
               }
             }
           }
-        },
-        "description": "Get config of update cron",
-        "parameters": [],
-        "tags": [
-          "cron"
-        ]
+        }
       }
     }
   },
-  "externalDocs": {
-    "description": "Find out more about Swagger",
-    "url": "http://swagger.io"
-  },
-  "tags": [
-    {
-      "name": "cron"
-    },
-    {
-      "name": "job"
-    },
-    {
-      "name": "ping"
-    }
-  ],
   "components": {
     "responses": {
+      "Accepted": {
+        "description": "Accepted",
+        "headers": {}
+      },
       "Not-authorized": {
         "description": "Not authorized",
         "headers": {},
         "content": {
-          "*/*": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
-              },
-              "x-examples": {
-                "example-1": {
-                  "message": "Not authorized"
-                }
-              }
-            },
-            "examples": {
-              "example-1": {
-                "value": {
-                  "message": "string"
-                }
-              }
-            }
-          },
-          "Not authorized": {
+          "application/json": {
             "examples": {
               "response": {
                 "value": {
                   "message": "Not authorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "headers": {},
+        "content": {
+          "application/json": {
+            "examples": {
+              "response": {
+                "value": {
+                  "message": "Update in progress."
+                }
+              }
+            }
+          }
+        }
+      },
+      "File-not-found": {
+        "description": "File not found",
+        "headers": {},
+        "content": {
+          "application/json": {
+            "examples": {
+              "response": {
+                "value": {
+                  "message": "File not found."
                 }
               }
             }

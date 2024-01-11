@@ -157,7 +157,7 @@ paths:
         description: index where the unpaywall data will be inserted.
       responses:
         '202':
-          description: Process start
+           $ref: '#/components/responses/Accepted'
         '401':
           $ref: '#/components/responses/Not-authorized'
         '409':
@@ -191,7 +191,7 @@ paths:
                   type: string
       responses:
         '202':
-          description: Process start.
+          $ref: '#/components/responses/Accepted'
         '400':
           description: startDate cannot be in the futur or endDate cannot be lower than startDate.
         '401':
@@ -230,18 +230,19 @@ paths:
         description: config for process
       responses:
         '202':
-          description: Process start
+          $ref: '#/components/responses/Accepted'
         '400':
           description: startDate cannot be in the futur or endDate cannot be lower than startDate.
           content:
             application/json:
-              schema:
-                type: string
-                default: changeme
+              examples:
+                response:
+                  value:
+                    message: startDate cannot be in the futur or endDate cannot be lower than startDate.
         '401':
           $ref: '#/components/responses/Not-authorized'
         '404':
-          description: File not found
+          $ref: '#/components/responses/File-not-found'
         '409':
           $ref: '#/components/responses/Conflict'
                 
@@ -273,7 +274,7 @@ paths:
                   type: string
       responses:
         '202':
-          description: Process start
+          $ref: '#/components/responses/Accepted'
         '400':
           description: startDate cannot be in the futur or endDate cannot be lower than startDate.
         '401':
@@ -305,7 +306,7 @@ paths:
                   type: string
       responses:
         '202':
-          description: Process start
+          $ref: '#/components/responses/Accepted'
         '400':
           description: startDate required
         '401':
@@ -313,7 +314,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /update/reports:
+  /update/reports/${type}:
     get:
       tags:
         - job
@@ -321,6 +322,12 @@ paths:
       summary: Get reports.
       description: Get list of reports or latest report.
       parameters:
+        - in: path
+          name: type
+          description: type of report (unpaywall or unpaywallHistory)
+          required: true
+          schema:
+            type: string
         - in: query
           name: latest
           description: latest
@@ -372,7 +379,7 @@ paths:
                     error: false
                     took: 0.256
   
-  /update/reports/${filename}:
+  /update/reports/${type}/${filename}:
     get:
       tags:
         - job
@@ -380,6 +387,12 @@ paths:
       summary: Get report.
       description: Get report with his filename.
       parameters:
+        - in: path
+          name: type
+          description: type of report (unpaywall or unpaywallHistory)
+          required: true
+          schema:
+            type: string
         - in: path
           name: filename
           description: filename
@@ -448,24 +461,9 @@ paths:
                     error: false
                     took: 0.256
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                x-examples:
-                  example-1:
-                    message: File not found
-            File not found:
-              examples:
-                response:
-                  value:
-                    message: File not found
+          $ref: '#/components/responses/File-not-found'
   
-  /update/snapshots:
+  /update/snapshots/${type}:
     get:
       tags:
         - job
@@ -475,6 +473,12 @@ paths:
       security:
         - x-api-key: []
       parameters:
+        - in: path
+          name: type
+          description: type of report (unpaywall or unpaywallHistory)
+          required: true
+          schema:
+            type: string
         - in: query
           name: latest
           description: latest
@@ -493,7 +497,7 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
 
-  /update/snapshots/${filename}:
+  /update/snapshots/${type}/${filename}:
     get:
       tags:
         - job
@@ -503,6 +507,12 @@ paths:
       security:
         - x-api-key: []
       parameters:
+        - in: path
+          name: type
+          description: type of report (unpaywall or unpaywallHistory)
+          required: true
+          schema:
+            type: string
         - in: path
           name: filename
           description: filename
@@ -515,26 +525,7 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
         '404':
-          description: File not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                x-examples:
-                  example-1:
-                    message: File not found
-              examples:
-                example-1:
-                  value:
-                    message: string
-            File not found:
-              examples:
-                response:
-                  value:
-                    message: File not found
+          $ref: '#/components/responses/File-not-found'
   
   /update/states:
     get:
@@ -664,48 +655,68 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
   
-  /update/cron/start:
+  /update/cron/${type}/start:
     post:
       tags:
         - cron
-      operationId: post-update-cron-start
-      summary: Start update cron.
+      operationId: post-cron-start
+      summary: Start cron.
       description: Start update cron.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: type
+          description: type of report (unpaywall or unpaywallHistory)
+          required: true
+          schema:
+            type: string
       responses:
         '202':
-          description: Accepted
+          $ref: '#/components/responses/Accepted'
         '401':
           $ref: '#/components/responses/Not-authorized'
       
-      security:
-        - x-api-key: []
       
-  /update/cron/stop:
+      
+  /update/cron/${type}/stop:
     post:
       tags:
         - cron
-      operationId: post-update-cron-stop
-      description: Stop update cron.
-      summary: Stop update cron.
+      operationId: post-cron-stop
+      description: Stop cron.
+      summary: Stop cron.
       security:
         - x-api-key: []
-      parameters: []
+      parameters:
+        - in: path
+          name: type
+          description: type of report (unpaywall or unpaywallHistory)
+          required: true
+          schema:
+            type: string
       responses:
         '202':
-          description: Accepted
+          $ref: '#/components/responses/Accepted'
         '401':
           $ref: '#/components/responses/Not-authorized'
       
-  /update/cron:
+  /update/cron/${type}:
     patch:
       tags:
         - cron
-      operationId: patch-update-cron
-      summary: update update cron.
-      description: update update cron.
+      operationId: patch-cron
+      summary: update cron.
+      description: update cron.
       security:
         - x-api-key: []
-      parameters: []
+      parameters:
+        - in: path
+          name: type
+          description: type of report (unpaywall or unpaywallHistory)
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -774,10 +785,16 @@ paths:
     get:
       tags:
         - cron
-      operationId: get-update-cron
-      summary: Get config of update cron.
-      description: Get config of update cron.
-      parameters: []
+      operationId: get-cron
+      summary: Get config of cron.
+      description: Get config of cron.
+      parameters:
+        - in: path
+          name: type
+          description: type of report (unpaywall or unpaywallHistory)
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -819,7 +836,7 @@ paths:
                       status: true
                       index: unpaywall
                       interval: day
-                'off':
+                off:
                   value:
                     config:
                       time: 0 0 0 * * *
@@ -829,6 +846,9 @@ paths:
 
 components:
   responses:
+    Accepted:
+      description: Accepted
+      headers: {}
     Not-authorized:
       description: Not authorized
       headers: {}
@@ -847,6 +867,15 @@ components:
             response:
               value:
                 message: Update in progress.
+    File-not-found:
+      description: File not found
+      headers: {}
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: File not found.
     Health:
       description: Example response
       content:

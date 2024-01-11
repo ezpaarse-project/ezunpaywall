@@ -49,7 +49,8 @@ router.post('/job/period', checkStatus, checkAuth, validateJobChangefilesConfig,
 router.post('/job/changefile/:filename', checkStatus, checkAuth, validateInsertFile, insertChangefileJob);
 
 /**
- * Route that download and insert on elastic the changefiles from unpaywall between a period.
+ * Route that download and insert on elastic the changefiles from unpaywall between a period
+ * and feed the history.
  * Auth required.
  * No update process should be in progress.
  *

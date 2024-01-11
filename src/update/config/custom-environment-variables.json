@@ -18,11 +18,17 @@
     "indexAlias": "ELASTICSEARCH_INDEX_ALIAS",
     "timeout": "ELASTICSEARCH_TIMEOUT"
   },
-  "cron": {
-    "schedule": "UPDATE_CRON_SCHEDULE",
-    "active": "UPDATE_CRON_ACTIVE",
-    "index": "UPDATE_CRON_INDEX",
-    "interval": "UPDATE_CRON_INTERVAL"
+  "unpaywallCron": {
+    "schedule": "UNPAYWALL_CRON_SCHEDULE",
+    "active": "UNPAYWALL_CRON_ACTIVE",
+    "index": "UNPAYWALL_CRON_INDEX",
+    "interval": "UNPAYWALL_CRON_INTERVAL"
+  },
+  "unpaywallHistoryCron": {
+    "schedule": "UNPAYWALL_HISTORY_CRON_SCHEDULE",
+    "active": "UNPAYWALL_HISTORY_CRON_ACTIVE",
+    "index": "UNPAYWALL_HISTORY_CRON_INDEX",
+    "interval": "UNPAYWALL_HISTORY_CRON_INTERVAL"
   },
   "apikey": "UPDATE_APIKEY",
   "healthTimeout": "HEALTH_TIMEOUT"

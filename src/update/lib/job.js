@@ -123,12 +123,11 @@ async function insertChangefile(jobConfig) {
  * Download and insert on elastic the changefiles from unpaywall between a period with history.
  *
  * @param {Object} jobConfig - Config of job.
- * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
+ * @param {string} jobConfig.indexBase - Name of the index to which the data will be inserted.
+ * @param {string} jobConfig.indexHistory - Name of the index to which the data will be inserted.
  * @param {string} jobConfig.interval - Interval of changefile, day or week are available.
  * @param {string} jobConfig.startDate - Start date for the changefile period.
  * @param {string} jobConfig.endDate - End date for the changefile period.
- * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
- * @param {number} jobConfig.limit - Line in the file where the insertion stops.
  *
  * @returns {Promise<void>}
  */
