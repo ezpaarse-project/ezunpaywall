@@ -11,6 +11,13 @@
       >
         <v-toolbar-title>
           {{ t('administration.cron.title') }}
+          <v-chip
+            label
+            class="primary"
+            text-color="white"
+          >
+            {{ title }}
+          </v-chip>
         </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
@@ -20,18 +27,29 @@
             @submit.prevent="updateCron()"
           >
             <v-select
-              v-model="interval"
+              v-model="config.interval"
               class="mt-4"
               :items="intervals"
               :label="t('administration.cron.interval')"
             />
             <v-text-field
-              v-model="schedule"
+              v-model="config.schedule"
               :label="t('administration.cron.schedule')"
             />
             <v-text-field
-              v-model="index"
-              :label="t('administration.cron.index')"
+              v-if="props.type === 'unpaywall'"
+              v-model="config.index"
+              :label="t('administration.cron.index.unpaywall')"
+            />
+            <v-text-field
+              v-if="props.type === 'unpaywallHistory'"
+              v-model="config.indexBase"
+              :label="t('administration.cron.index.basic')"
+            />
+            <v-text-field
+              v-if="props.type === 'unpaywallHistory'"
+              v-model="config.indexHistory"
+              :label="t('administration.cron.index.history')"
             />
           </v-form>
         </v-container>
@@ -40,7 +58,7 @@
             class="mr-2"
             v-text="`${t('administration.cron.active')} :`"
           />
-          <v-checkbox v-model="active" />
+          <v-checkbox v-model="config.active" />
         </v-card-actions>
       </v-card-text>
       <v-card-actions>
@@ -87,17 +105,25 @@ const emit = defineEmits({
 const value = ref('false');
 const loading = ref(false);
 const intervals = ref(['day', 'week']);
-const index = ref('day');
-const schedule = ref('0 0 0 * * *');
-const interval = ref('unpaywall');
-const active = ref(false);
 
-async function getUpdateCronConfig() {
+const config = ref({});
+
+const props = defineProps({
+  type: { type: String, default: 'unpaywall' },
+});
+
+const title = computed(() => {
+  if (props.type === 'unpaywall') { return t('reports.basic'); }
+  if (props.type === 'unpaywallHistory') { return t('reports.history'); }
+  return null;
+});
+
+async function getCronConfig() {
   let cronConfig;
   try {
     cronConfig = await $update({
       method: 'GET',
-      url: '/cron',
+      url: `/cron/${props.type}`,
     });
   } catch (err) {
     snackStore.error(t('error.cron.get'));
@@ -105,18 +131,15 @@ async function getUpdateCronConfig() {
     return;
   }
   loading.value = false;
-  cronConfig = cronConfig?.data;
-  index.value = cronConfig.index;
-  interval.value = cronConfig.interval;
-  schedule.value = cronConfig.schedule;
-  active.value = cronConfig.active;
+
+  config.value = cronConfig?.data;
 }
 
 async function activeCron() {
   try {
     await $update({
       method: 'POST',
-      url: '/cron/start',
+      url: `/cron/${props.type}/start`,
       headers: {
         'X-API-KEY': password.value,
       },
@@ -130,11 +153,12 @@ async function activeCron() {
   snackStore.info(t('info.cron.activated'));
   emit('update:modelValue', false);
 }
+
 async function stopCron() {
   try {
     await $update({
       method: 'POST',
-      url: '/cron/stop',
+      url: `/cron/${props.type}/stop`,
       headers: {
         'X-API-KEY': password.value,
       },
@@ -151,15 +175,27 @@ async function stopCron() {
 
 async function updateCron() {
   loading.value = true;
+  let data;
+  if (type === 'unpaywall') {
+    data = {
+      index: config.index.value,
+      interval: config.value.interval,
+      time: schedule.value,
+    };
+  }
+  if (type === 'unpaywallHistory') {
+    data = {
+      indexBase: config.indexBase.value,
+      indexHistory: config.indexHistory.value,
+      interval: config.value.interval,
+      time: schedule.value,
+    };
+  }
   try {
     await $update({
       method: 'PATCH',
-      url: '/cron',
-      data: {
-        index: index.value,
-        interval: interval.value,
-        time: schedule.value,
-      },
+      url: `/cron/${props.type}`,
+      data,
       headers: {
         'X-API-KEY': password.value,
       },
@@ -180,7 +216,7 @@ async function updateCron() {
 }
 
 onMounted(() => {
-  getUpdateCronConfig();
+  getCronConfig();
 });
 
 </script>

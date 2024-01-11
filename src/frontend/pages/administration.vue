@@ -7,7 +7,11 @@
         <v-spacer />
         <EzmesureButton />
       </v-row>
-      <WeekHistory class="my-2" />
+      <ReportsCard :type="'unpaywall'" />
+      <ReportsCard
+        :type="'unpaywallHistory'"
+        class="my-4"
+      />
       <HealthTab class="my-2" />
       <ApikeyTab class="my-2" />
     </div>
@@ -19,7 +23,7 @@
 import Login from '@/components/administration/Login.vue';
 import LogoutButton from '@/components/administration/LogoutButton.vue';
 import EzmesureButton from '@/components/administration/EzmesureButton.vue';
-import WeekHistory from '@/components/report/ReportsCard.vue';
+import ReportsCard from '@/components/report/ReportsCard.vue';
 import HealthTab from '@/components/administration/health/HealthTab.vue';
 import ApikeyTab from '@/components/administration/apikey/ApikeyTab.vue';
 

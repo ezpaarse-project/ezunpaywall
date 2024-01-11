@@ -62,14 +62,14 @@ const tableHeaders = computed(() => [
     sortable: false,
     key: 'createdAt',
   },
-  { title: t('reportHistory.status'), key: 'status', sortable: false },
+  { title: t('reports.status'), key: 'status', sortable: false },
   {
-    title: t('reportHistory.updatedDocs'),
+    title: t('reports.updatedDocs'),
     key: 'data.totalUpdatedDocs',
     sortable: false,
   },
   {
-    title: t('reportHistory.insertedDocs'),
+    title: t('reports.insertedDocs'),
     key: 'data.totalInsertedDocs',
     sortable: false,
   },

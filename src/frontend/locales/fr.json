@@ -110,10 +110,14 @@
       "endDate": "Date de fin"
     },
     "cron": {
-      "title": "Config de la cron de mise à jour des données Unpaywall",
+      "title": "Config de la cron de mise à jour des données",
       "interval": "Intervalle",
       "schedule": "Periode (format de cron)",
-      "index": "Index elastic",
+      "index": {
+        "unpaywall": "Index elastic pour les données unpaywall",
+        "basic": "Index elastic pour les données unpaywall basique",
+        "history": "Index elastic pour les données unpaywall historique"
+      },
       "active": "Active"
     }
   },
@@ -196,7 +200,9 @@
     "contact": "Nous contacter",
     "administration": "Administration"
   },
-  "reportHistory": {
+  "reports": {
+    "basic": "Unpaywall basique",
+    "history": "Historique Unpaywall",
     "title": "Dernières mises à jour",
     "reloadReports": "Recharger les rapports",
     "reload": "Recharger l'historique des mises à jour",

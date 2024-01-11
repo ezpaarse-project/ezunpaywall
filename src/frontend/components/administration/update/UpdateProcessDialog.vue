@@ -104,8 +104,12 @@ const endDate = ref(formatDate(new Date()));
 
 const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 
-const dateFormatRule = ref((date) => dateRegex.test(date) || 'porrr');
+const dateFormatRule = ref((date) => dateRegex.test(date) || t('administration.update.invalidDate'));
 const dateIsFutureRule = ref((date) => Date.now() > new Date(date) || t('administration.update.future'));
+
+const props = defineProps({
+  type: { type: String, default: 'unpaywall' },
+});
 
 async function startUpdate() {
   loading.value = true;

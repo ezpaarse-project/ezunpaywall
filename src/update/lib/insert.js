@@ -101,6 +101,8 @@ async function insertDataUnpaywall(insertConfig) {
     filename, index, offset, limit,
   } = insertConfig;
 
+  console.log(index);
+
   // step insertion in the state
   const start = new Date();
   addStepInsert(filename);

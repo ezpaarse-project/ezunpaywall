@@ -6,10 +6,16 @@
       flat
       dense
     >
-      <v-toolbar-title> {{ t("reportHistory.title") }} </v-toolbar-title>
+      <v-toolbar-title> {{ title }} </v-toolbar-title>
       <v-spacer />
-      <UpdateProcessButton v-if="isAdmin" />
-      <CronButton v-if="isAdmin" />
+      <UpdateProcessButton
+        v-if="isAdmin"
+        :type="props.type"
+      />
+      <CronButton
+        v-if="isAdmin"
+        :type="props.type"
+      />
       <UnpaywallButton />
       <RefreshButton
         :loading="loading"
@@ -26,7 +32,7 @@
     </v-row>
     <NoData
       v-else-if="reports.length === 0"
-      :text="t('reportHistory.noReport')"
+      :text="t('reports.noReport')"
     />
     <ReportsDataTable
       v-else
@@ -59,14 +65,24 @@ const { $update } = useNuxtApp();
 const loading = ref(false);
 const reports = ref([]);
 
+const props = defineProps({
+  type: { type: String, default: 'unpaywall' },
+});
+
 const isAdmin = computed(() => adminStore.isAdmin);
+
+const title = computed(() => {
+  if (props.type === 'unpaywall') { return t('reports.basic'); }
+  if (props.type === 'unpaywallHistory') { return t('reports.history'); }
+  return null;
+});
 
 async function getReport(filename) {
   let report;
   try {
     report = await $update({
       method: 'GET',
-      url: `/reports/${filename}`,
+      url: `/reports/${props.type}/${filename}`,
     });
   } catch (err) {
     snackStore.error(t('error.report.get'));
@@ -93,7 +109,7 @@ async function getReports() {
   try {
     res = await $update({
       method: 'GET',
-      url: '/reports',
+      url: `/reports/${props.type}`,
     });
   } catch (err) {
     snackStore.error(t('error.report.getAll'));

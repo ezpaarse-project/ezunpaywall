@@ -1,6 +1,11 @@
 <template>
   <section class="ma-3">
-    <ReportsCard />
+    <ReportsCard :type="'unpaywall'" />
+
+    <ReportsCard
+      :type="'unpaywallHistory'"
+      class="my-4"
+    />
   </section>
 </template>
 

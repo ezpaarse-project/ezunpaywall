@@ -1,14 +1,14 @@
 <template>
   <v-tooltip location="bottom">
-    <template #activator="{ on }">
+    <template #activator="activator">
       <v-btn
-        v-bind="on"
+        v-bind="activator.props"
         icon="mdi-reload"
         :disabled="props.loading"
         @click.stop="getReports()"
       />
     </template>
-    {{ t("reportHistory.reloadReports") }}
+    {{ t("reports.reloadReports") }}
   </v-tooltip>
 </template>
 
