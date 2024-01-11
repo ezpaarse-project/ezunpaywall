@@ -14,7 +14,7 @@ watch(
   props,
   () => {
     SwaggerUI({
-      url: `${props.host}/openapi.json`,
+      url: `${props.host}/openapi.yml`,
       dom_id: '#swagger',
       deepLinking: false,
     });
@@ -23,7 +23,7 @@ watch(
 
 onMounted(() => {
   SwaggerUI({
-    url: `${props.host}/openapi.json`,
+    url: `${props.host}/openapi.yml`,
     dom_id: '#swagger',
     deepLinking: false,
   });
