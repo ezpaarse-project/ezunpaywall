@@ -25,9 +25,9 @@ describe('Test: rollback history test', () => {
 
   describe(`Rollback: history rollback at ${date1}`, () => {
     before(async () => {
-      await deleteIndex('unpaywall_enriched');
+      await deleteIndex('unpaywall_base');
       await deleteIndex('unpaywall_history');
-      await createIndex('unpaywall_enriched', unpaywallEnrichedMapping);
+      await createIndex('unpaywall_base', unpaywallEnrichedMapping);
       await createIndex('unpaywall_history', unpaywallHistoryMapping);
       await insertHistoryDataUnpaywall();
     });
@@ -66,13 +66,13 @@ describe('Test: rollback history test', () => {
     });
 
     it('Should get unpaywall data', async () => {
-      const count1 = await countDocuments('unpaywall_enriched');
+      const count1 = await countDocuments('unpaywall_base');
       expect(count1).to.equal(2);
 
       const count2 = await countDocuments('unpaywall_history');
       expect(count2).to.equal(4);
 
-      const data = await getAllData('unpaywall_enriched');
+      const data = await getAllData('unpaywall_base');
 
       data.forEach((e) => {
         expect(e.genre).to.equal('v3');
@@ -80,16 +80,16 @@ describe('Test: rollback history test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall_enriched');
+      await deleteIndex('unpaywall_base');
       await deleteIndex('unpaywall_history');
     });
   });
 
   describe(`Rollback: history rollback at ${date2}`, () => {
     before(async () => {
-      await deleteIndex('unpaywall_enriched');
+      await deleteIndex('unpaywall_base');
       await deleteIndex('unpaywall_history');
-      await createIndex('unpaywall_enriched', unpaywallEnrichedMapping);
+      await createIndex('unpaywall_base', unpaywallEnrichedMapping);
       await createIndex('unpaywall_history', unpaywallHistoryMapping);
       await insertHistoryDataUnpaywall();
     });
@@ -106,13 +106,13 @@ describe('Test: rollback history test', () => {
     });
 
     it('Should get unpaywall data', async () => {
-      const count1 = await countDocuments('unpaywall_enriched');
+      const count1 = await countDocuments('unpaywall_base');
       expect(count1).to.equal(2);
 
       const count2 = await countDocuments('unpaywall_history');
       expect(count2).to.equal(2);
 
-      const data = await getAllData('unpaywall_enriched');
+      const data = await getAllData('unpaywall_base');
 
       data.forEach((e) => {
         expect(e.genre).to.equal('v2');
@@ -120,16 +120,16 @@ describe('Test: rollback history test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall_enriched');
+      await deleteIndex('unpaywall_base');
       await deleteIndex('unpaywall_history');
     });
   });
 
   describe(`Rollback: history rollback at ${date3}`, () => {
     before(async () => {
-      await deleteIndex('unpaywall_enriched');
+      await deleteIndex('unpaywall_base');
       await deleteIndex('unpaywall_history');
-      await createIndex('unpaywall_enriched', unpaywallEnrichedMapping);
+      await createIndex('unpaywall_base', unpaywallEnrichedMapping);
       await createIndex('unpaywall_history', unpaywallHistoryMapping);
       await insertHistoryDataUnpaywall();
     });
@@ -146,13 +146,13 @@ describe('Test: rollback history test', () => {
     });
 
     it('Should get unpaywall data', async () => {
-      const count1 = await countDocuments('unpaywall_enriched');
+      const count1 = await countDocuments('unpaywall_base');
       expect(count1).to.equal(2);
 
       const count2 = await countDocuments('unpaywall_history');
       expect(count2).to.equal(0);
 
-      const data = await getAllData('unpaywall_enriched');
+      const data = await getAllData('unpaywall_base');
 
       data.forEach((e) => {
         expect(e.genre).to.equal('v1');
@@ -160,16 +160,16 @@ describe('Test: rollback history test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall_enriched');
+      await deleteIndex('unpaywall_base');
       await deleteIndex('unpaywall_history');
     });
   });
 
   describe(`Rollback: history rollback at ${date4}`, () => {
     before(async () => {
-      await deleteIndex('unpaywall_enriched');
+      await deleteIndex('unpaywall_base');
       await deleteIndex('unpaywall_history');
-      await createIndex('unpaywall_enriched', unpaywallEnrichedMapping);
+      await createIndex('unpaywall_base', unpaywallEnrichedMapping);
       await createIndex('unpaywall_history', unpaywallHistoryMapping);
       await insertHistoryDataUnpaywall();
     });
@@ -186,7 +186,7 @@ describe('Test: rollback history test', () => {
     });
 
     it('Should get unpaywall data', async () => {
-      const count1 = await countDocuments('unpaywall_enriched');
+      const count1 = await countDocuments('unpaywall_base');
       expect(count1).to.equal(0);
 
       const count2 = await countDocuments('unpaywall_history');
@@ -194,7 +194,7 @@ describe('Test: rollback history test', () => {
     });
 
     after(async () => {
-      await deleteIndex('unpaywall_enriched');
+      await deleteIndex('unpaywall_base');
       await deleteIndex('unpaywall_history');
     });
   });

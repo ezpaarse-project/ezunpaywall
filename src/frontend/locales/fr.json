@@ -101,23 +101,24 @@
       "delete": "Suppression de la clé d'API",
       "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)"
     },
-    "update" : {
+    "job" : {
       "title": "Lancement d'une mise à jour",
       "future": "La date est après aujourd'hui",
       "invalidDate": "La date est au mauvais format",
       "interval": "Intervalle",
       "startDate": "Date de début",
-      "endDate": "Date de fin"
+      "endDate": "Date de fin",
+      "index": "Index elastic pour les données unpaywall",
+      "indexBase": "Index elastic pour les données unpaywall basique",
+      "indexHistory": "Index elastic pour les données unpaywall historique"
     },
     "cron": {
       "title": "Config de la cron de mise à jour des données",
       "interval": "Intervalle",
       "schedule": "Periode (format de cron)",
-      "index": {
-        "unpaywall": "Index elastic pour les données unpaywall",
-        "basic": "Index elastic pour les données unpaywall basique",
-        "history": "Index elastic pour les données unpaywall historique"
-      },
+      "index": "Index elastic pour les données unpaywall",
+      "indexBase": "Index elastic pour les données unpaywall basique",
+      "indexHistory": "Index elastic pour les données unpaywall historique",
       "active": "Active"
     }
   },

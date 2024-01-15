@@ -23,7 +23,7 @@ async function reset() {
   await deleteFile('unpaywall', 'fake1-error.jsonl.gz');
   await deleteFile('unpaywall', 'snapshot.jsonl.gz');
   await deleteIndex('unpaywall-test');
-  await deleteIndex('unpaywall_enriched');
+  await deleteIndex('unpaywall_base');
   await deleteIndex('unpaywall_history');
   await resetCronConfig('unpaywall');
   await resetCronConfig('unpaywallHistory');

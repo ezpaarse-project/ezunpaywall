@@ -48,7 +48,8 @@ const cron = new Cron('updateHistory', unpaywallHistoryCron.schedule, task, acti
 function update(newConfig) {
   if (newConfig.time) cron.setSchedule(newConfig.time);
   if (newConfig.indexBase) cronConfig.indexBase = newConfig.indexBase;
-  if (newConfig.interval) cronConfig.indexHistory = newConfig.indexHistory;
+  if (newConfig.indexHistory) cronConfig.indexHistory = newConfig.indexHistory;
+  if (newConfig.interval) cronConfig.interval = newConfig.interval;
   if (newConfig.index || newConfig.interval) cron.setTask(task);
 }
 

@@ -7,7 +7,7 @@
         @click.stop="visible = true"
       />
     </template>
-    {{ t("administration.update.title") }}
+    {{ t("administration.job.title") }}
   </v-tooltip>
   <UpdateProcessDialog
     v-model="visible"

@@ -96,7 +96,7 @@ async function insertHistoryDataUnpaywall() {
     data2.push(JSON.parse(line));
   }
 
-  const body2 = data2.flatMap((doc) => [{ index: { _index: 'unpaywall_enriched', _id: doc.doi } }, doc]);
+  const body2 = data2.flatMap((doc) => [{ index: { _index: 'unpaywall_base', _id: doc.doi } }, doc]);
 
   try {
     await elasticClient.bulk({ refresh: true, body: body2 });

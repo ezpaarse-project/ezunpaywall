@@ -39,17 +39,17 @@
             <v-text-field
               v-if="props.type === 'unpaywall'"
               v-model="config.index"
-              :label="t('administration.cron.index.unpaywall')"
+              :label="t('administration.cron.index')"
             />
             <v-text-field
               v-if="props.type === 'unpaywallHistory'"
               v-model="config.indexBase"
-              :label="t('administration.cron.index.basic')"
+              :label="t('administration.cron.indexBase')"
             />
             <v-text-field
               v-if="props.type === 'unpaywallHistory'"
               v-model="config.indexHistory"
-              :label="t('administration.cron.index.history')"
+              :label="t('administration.cron.indexHistory')"
             />
           </v-form>
         </v-container>
@@ -179,16 +179,16 @@ async function updateCron() {
   if (type === 'unpaywall') {
     data = {
       index: config.index.value,
-      interval: config.value.interval,
-      time: schedule.value,
+      interval: config.interval.value,
+      time: config.schedule.value,
     };
   }
   if (type === 'unpaywallHistory') {
     data = {
       indexBase: config.indexBase.value,
       indexHistory: config.indexHistory.value,
-      interval: config.value.interval,
-      time: schedule.value,
+      interval: config.interval.value,
+      time: config.schedule.value,
     };
   }
   try {

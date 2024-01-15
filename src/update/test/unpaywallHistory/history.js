@@ -52,7 +52,7 @@ describe('Test: daily update route test with history', () => {
         await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
-      const count = await countDocuments('unpaywall_enriched');
+      const count = await countDocuments('unpaywall_base');
       expect(count).to.equal(2);
     });
 
@@ -100,9 +100,9 @@ describe('Test: daily update route test with history', () => {
       expect(state.steps[2]).have.property('status').equal('success');
 
       const step2 = state.steps[2].index;
-      expect(step2.unpaywall_enriched).have.property('insertedDocs').equal(2);
-      expect(step2.unpaywall_enriched).have.property('updatedDocs').equal(0);
-      expect(step2.unpaywall_enriched).have.property('failedDocs').equal(0);
+      expect(step2.unpaywall_base).have.property('insertedDocs').equal(2);
+      expect(step2.unpaywall_base).have.property('updatedDocs').equal(0);
+      expect(step2.unpaywall_base).have.property('failedDocs').equal(0);
       expect(step2.unpaywall_history).have.property('insertedDocs').equal(0);
       expect(step2.unpaywall_history).have.property('updatedDocs').equal(0);
       expect(step2.unpaywall_history).have.property('failedDocs').equal(0);
@@ -124,9 +124,9 @@ describe('Test: daily update route test with history', () => {
       expect(state.steps[4]).have.property('status').equal('success');
 
       const step4 = state.steps[4].index;
-      expect(step4.unpaywall_enriched).have.property('insertedDocs').equal(0);
-      expect(step4.unpaywall_enriched).have.property('updatedDocs').equal(2);
-      expect(step4.unpaywall_enriched).have.property('failedDocs').equal(0);
+      expect(step4.unpaywall_base).have.property('insertedDocs').equal(0);
+      expect(step4.unpaywall_base).have.property('updatedDocs').equal(2);
+      expect(step4.unpaywall_base).have.property('failedDocs').equal(0);
       expect(step4.unpaywall_history).have.property('insertedDocs').equal(2);
       expect(step4.unpaywall_history).have.property('updatedDocs').equal(0);
       expect(step4.unpaywall_history).have.property('failedDocs').equal(0);
@@ -148,9 +148,9 @@ describe('Test: daily update route test with history', () => {
       expect(state.steps[6]).have.property('status').equal('success');
 
       const step6 = state.steps[6].index;
-      expect(step6.unpaywall_enriched).have.property('insertedDocs').equal(0);
-      expect(step6.unpaywall_enriched).have.property('updatedDocs').equal(2);
-      expect(step6.unpaywall_enriched).have.property('failedDocs').equal(0);
+      expect(step6.unpaywall_base).have.property('insertedDocs').equal(0);
+      expect(step6.unpaywall_base).have.property('updatedDocs').equal(2);
+      expect(step6.unpaywall_base).have.property('failedDocs').equal(0);
       expect(step6.unpaywall_history).have.property('insertedDocs').equal(2);
       expect(step6.unpaywall_history).have.property('updatedDocs').equal(0);
       expect(step6.unpaywall_history).have.property('failedDocs').equal(0);
@@ -189,9 +189,9 @@ describe('Test: daily update route test with history', () => {
       expect(report.steps[2]).have.property('status').equal('success');
 
       const step2 = report.steps[2].index;
-      expect(step2.unpaywall_enriched).have.property('insertedDocs').equal(2);
-      expect(step2.unpaywall_enriched).have.property('updatedDocs').equal(0);
-      expect(step2.unpaywall_enriched).have.property('failedDocs').equal(0);
+      expect(step2.unpaywall_base).have.property('insertedDocs').equal(2);
+      expect(step2.unpaywall_base).have.property('updatedDocs').equal(0);
+      expect(step2.unpaywall_base).have.property('failedDocs').equal(0);
       expect(step2.unpaywall_history).have.property('insertedDocs').equal(0);
       expect(step2.unpaywall_history).have.property('updatedDocs').equal(0);
       expect(step2.unpaywall_history).have.property('failedDocs').equal(0);
@@ -213,9 +213,9 @@ describe('Test: daily update route test with history', () => {
       expect(report.steps[4]).have.property('status').equal('success');
 
       const step4 = report.steps[4].index;
-      expect(step4.unpaywall_enriched).have.property('insertedDocs').equal(0);
-      expect(step4.unpaywall_enriched).have.property('updatedDocs').equal(2);
-      expect(step4.unpaywall_enriched).have.property('failedDocs').equal(0);
+      expect(step4.unpaywall_base).have.property('insertedDocs').equal(0);
+      expect(step4.unpaywall_base).have.property('updatedDocs').equal(2);
+      expect(step4.unpaywall_base).have.property('failedDocs').equal(0);
       expect(step4.unpaywall_history).have.property('insertedDocs').equal(2);
       expect(step4.unpaywall_history).have.property('updatedDocs').equal(0);
       expect(step4.unpaywall_history).have.property('failedDocs').equal(0);
@@ -237,9 +237,9 @@ describe('Test: daily update route test with history', () => {
       expect(report.steps[6]).have.property('status').equal('success');
 
       const step6 = report.steps[6].index;
-      expect(step6.unpaywall_enriched).have.property('insertedDocs').equal(0);
-      expect(step6.unpaywall_enriched).have.property('updatedDocs').equal(2);
-      expect(step6.unpaywall_enriched).have.property('failedDocs').equal(0);
+      expect(step6.unpaywall_base).have.property('insertedDocs').equal(0);
+      expect(step6.unpaywall_base).have.property('updatedDocs').equal(2);
+      expect(step6.unpaywall_base).have.property('failedDocs').equal(0);
       expect(step6.unpaywall_history).have.property('insertedDocs').equal(2);
       expect(step6.unpaywall_history).have.property('updatedDocs').equal(0);
       expect(step6.unpaywall_history).have.property('failedDocs').equal(0);

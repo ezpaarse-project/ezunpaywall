@@ -36,6 +36,7 @@
     />
     <ReportsDataTable
       v-else
+      :type="props.type"
       :reports="reports"
     />
   </v-card>
@@ -122,17 +123,17 @@ async function getReports() {
   let report;
 
   reports.value = [];
-  const r = [];
+  const newReports = [];
   for (let i = 0; i < filenames.length; i += 1) {
     report = await getReport(filenames[i]);
 
-    r.push({
+    newReports.push({
       id: i,
       data: report,
       createdAt: formatDate(report.createdAt),
     });
   }
-  reports.value = r;
+  reports.value = newReports;
   loading.value = false;
 }
 

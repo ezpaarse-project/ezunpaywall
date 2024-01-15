@@ -94,7 +94,7 @@ async function validateInsertFile(req, res, next) {
  */
 async function validateHistoryJob(req, res, next) {
   const { error, value } = joi.object({
-    indexBase: joi.string().trim().default('unpaywall_enriched'),
+    indexBase: joi.string().trim().default('unpaywall_base'),
     indexHistory: joi.string().trim().default('unpaywall_history'),
     interval: joi.string().trim().valid('day', 'week').default('day'),
     startDate: joi.date().format('YYYY-MM-DD'),
@@ -121,7 +121,7 @@ async function validateHistoryJob(req, res, next) {
  */
 async function validateHistoryReset(req, res, next) {
   const { error, value } = joi.object({
-    indexBase: joi.string().trim().default('unpaywall_enriched'),
+    indexBase: joi.string().trim().default('unpaywall_base'),
     indexHistory: joi.string().trim().default('unpaywall_history'),
     startDate: joi.date(),
   }).with('endDate', 'startDate').validate(req.body);

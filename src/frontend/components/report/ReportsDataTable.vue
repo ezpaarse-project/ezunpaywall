@@ -48,6 +48,7 @@ import DetailDialog from '@/components/report/DetailDialog.vue';
 const { t } = useI18n();
 
 const props = defineProps({
+  type: { type: String, default: '' },
   reports: { type: Array, default: () => [] },
   loading: { type: Boolean, default: false },
 });
@@ -55,28 +56,95 @@ const props = defineProps({
 const dialogVisible = ref(false);
 const reportSelected = ref({});
 
-const tableHeaders = computed(() => [
-  {
-    title: 'Date',
-    align: 'start',
-    sortable: false,
-    key: 'createdAt',
-  },
-  { title: t('reports.status'), key: 'status', sortable: false },
-  {
-    title: t('reports.updatedDocs'),
-    key: 'data.totalUpdatedDocs',
-    sortable: false,
-  },
-  {
-    title: t('reports.insertedDocs'),
-    key: 'data.totalInsertedDocs',
-    sortable: false,
-  },
-  {
-    title: t('detail'), key: 'details', sortable: false, align: 'right',
-  },
-]);
+const tableHeaders = computed(() => {
+  if (props.type === 'unpaywall') {
+    return [
+      {
+        title: 'Date',
+        align: 'start',
+        sortable: false,
+        key: 'createdAt',
+      },
+      {
+        title: t('reports.status'),
+        key: 'status',
+        sortable: false,
+      },
+      {
+        title: 'Index',
+        key: 'data.index',
+        sortable: false,
+      },
+      {
+        title: t('reports.updatedDocs'),
+        key: 'data.totalUpdatedDocs',
+        sortable: false,
+      },
+      {
+        title: t('reports.insertedDocs'),
+        key: 'data.totalInsertedDocs',
+        sortable: false,
+      },
+      {
+        title: t('detail'),
+        key: 'details',
+        sortable: false,
+        align: 'right',
+      },
+    ];
+  }
+  if (props.type === 'unpaywallHistory') {
+    return [
+      {
+        title: 'Date',
+        align: 'start',
+        sortable: false,
+        key: 'createdAt',
+      },
+      {
+        title: t('reports.status'),
+        key: 'status',
+        sortable: false,
+      },
+      {
+        title: 'IndexBase',
+        key: 'data.indexBase',
+        sortable: false,
+      },
+      {
+        title: t('reports.updatedDocs'),
+        key: 'data.totalBaseInsertedDocs',
+        sortable: false,
+      },
+      {
+        title: t('reports.insertedDocs'),
+        key: 'data.totalBaseUpdatedDocs',
+        sortable: false,
+      },
+      {
+        title: 'IndexHistory',
+        key: 'data.indexHistory',
+        sortable: false,
+      },
+      {
+        title: t('reports.updatedDocs'),
+        key: 'data.totalHistoryInsertedDocs',
+        sortable: false,
+      },
+      {
+        title: t('reports.insertedDocs'),
+        key: 'data.totalHistoryUpdatedDocs',
+        sortable: false,
+      },
+      {
+        title: t('detail'),
+        key: 'details',
+        sortable: false,
+      },
+    ];
+  }
+  return [];
+});
 
 function showDetails(item) {
   reportSelected.value = item;

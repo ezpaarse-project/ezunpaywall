@@ -199,7 +199,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /update/job/changefile/{filename}:
+  /update/job/changefile/${filename}:
     post:
       tags:
         - job

@@ -35,7 +35,7 @@ const { sendMailNoChangefile } = require('./services/mail');
  */
 async function downloadAndInsertSnapshot(jobConfig) {
   setInUpdate(true);
-  await createState('unpaywall');
+  await createState({ type: 'unpaywall', index: jobConfig.index });
   const filename = await downloadBigSnapshot();
   if (!filename) {
     await fail();
@@ -64,7 +64,7 @@ async function insertChangefilesOnPeriod(jobConfig) {
   const {
     interval, startDate, endDate,
   } = jobConfig;
-  await createState('unpaywall');
+  await createState({ type: 'unpaywall', index: jobConfig.index });
   const start = new Date();
   addStepGetChangefiles();
   const step = getLatestStep();
@@ -112,7 +112,7 @@ async function insertChangefilesOnPeriod(jobConfig) {
  */
 async function insertChangefile(jobConfig) {
   setInUpdate(true);
-  await createState('unpaywall');
+  await createState({ type: 'unpaywall', index: jobConfig.index });
   const success = await insertDataUnpaywall(jobConfig);
   if (success) {
     await endState();
@@ -136,7 +136,7 @@ async function insertWithOaHistoryJob(jobConfig) {
   const {
     interval, startDate, endDate,
   } = jobConfig;
-  await createState('unpaywallHistory');
+  await createState({ type: 'unpaywallHistory', indexBase: jobConfig.indexBase, indexHistory: jobConfig.indexHistory });
   const start = new Date();
   addStepGetChangefiles();
   const step = getLatestStep();
