@@ -198,6 +198,21 @@ async function bulk(data, refresh = false) {
   return elasticClient.bulk({ body: data, refresh });
 }
 
+async function getIndices() {
+  const res = await elasticClient.cat.indices({ format: 'json' });
+  let indices = res.body;
+  indices = indices.filter((index) => index.index.charAt(0) !== '.');
+  return indices;
+}
+
+async function getAlias() {
+  const regexILM = /^ilm-history-[0-9]$/;
+  const res = await elasticClient.cat.aliases({ format: 'json' });
+  let alias = res.body;
+  alias = alias.filter((index) => index.index.charAt(0) !== '.').filter((index) => !regexILM.test(index.alias));
+  return alias;
+}
+
 module.exports = {
   elasticClient,
   pingElastic,
@@ -207,4 +222,6 @@ module.exports = {
   refreshIndex,
   bulk,
   searchWithRange,
+  getIndices,
+  getAlias,
 };

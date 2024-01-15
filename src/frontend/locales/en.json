@@ -74,6 +74,15 @@
     "login": "Login",
     "logout": "Logout",
     "password": "Password",
+    "elastic": {
+      "title": "Information about elastic",
+      "noInfo": "No info about elastic",
+      "reload": "Reload elastic info",
+      "aliasName": "Name of alias",
+      "indexName": "Name of index",
+      "indexCount": "Count of document",
+      "indexSize": "Size of index"
+    },
     "health": {
       "title": "Services status",
       "reload": "Reload healths",
@@ -202,8 +211,8 @@
     "administration": "Administration"
   },
   "reports": {
-    "basic": "Unpaywall basic",
-    "history": "Unpaywall history",
+    "basic": "Reports for basic Unpaywall",
+    "history": "Reports for history Unpaywall",
     "title": "Last updates",
     "reloadReports": "Reload reports",
     "reload": "Reload update history",
@@ -220,6 +229,10 @@
   },
   "error": {
     "default": "An error occurred",
+    "elastic": {
+      "aliases": "Cannot get aliases",
+      "indices": "Cannot get indices"
+    },
     "enrich": {
       "manyFile": "The number of files allowed is 1",
       "typeOfFile": "only .csv and. jsonl files are allowed",

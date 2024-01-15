@@ -2,18 +2,24 @@
   <section class="ma-3">
     <Login v-if="!isAdmin" />
     <div v-else>
-      <v-row class="my-2 mx-1">
+      <v-row class="my-4 mx-1">
         <LogoutButton />
         <v-spacer />
         <EzmesureButton />
       </v-row>
-      <ReportsCard :type="'unpaywall'" />
+      <ElasticCard
+        class="my-4"
+      />
+      <ReportsCard
+        :type="'unpaywall'"
+        class="my-4"
+      />
       <ReportsCard
         :type="'unpaywallHistory'"
         class="my-4"
       />
-      <HealthTab class="my-2" />
-      <ApikeyTab class="my-2" />
+      <HealthTab class="my-4" />
+      <ApikeyTab class="my-4" />
     </div>
   </section>
 </template>
@@ -23,6 +29,7 @@
 import Login from '@/components/administration/Login.vue';
 import LogoutButton from '@/components/administration/LogoutButton.vue';
 import EzmesureButton from '@/components/administration/EzmesureButton.vue';
+import ElasticCard from '@/components/administration/elastic/ElasticCard.vue';
 import ReportsCard from '@/components/report/ReportsCard.vue';
 import HealthTab from '@/components/administration/health/HealthTab.vue';
 import ApikeyTab from '@/components/administration/apikey/ApikeyTab.vue';

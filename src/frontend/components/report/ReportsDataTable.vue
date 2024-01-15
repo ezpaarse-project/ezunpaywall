@@ -8,7 +8,46 @@
       item-key="id"
       class="elevation-1"
     >
-      <template #[`item.status`]="{ item: { raw: item } }">
+      <template
+        v-if="props.type ==='unpaywall'"
+        #[`item.data.totalInsertedDocs`]="{ item: { raw: item } }"
+      >
+        {{ item.data.totalInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
+      </template>
+      <template
+        v-if="props.type ==='unpaywall'"
+        #[`item.data.totalUpdatedDocs`]="{ item: { raw: item } }"
+      >
+        {{ item.data.totalUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
+      </template>
+      <template
+        v-if="props.type ==='unpaywallHistory'"
+        #[`item.data.totalBaseInsertedDocs`]="{ item: { raw: item } }"
+      >
+        {{ item.data?.totalBaseInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
+      </template>
+      <template
+        v-if="props.type ==='unpaywallHistory'"
+        #[`item.data.totalBaseUpdatedDocs`]="{ item: { raw: item } }"
+      >
+        {{ item.data?.totalBaseUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
+      </template>
+      <template
+        v-if="props.type ==='unpaywallHistory'"
+        #[`item.data.totalHistoryInsertedDocs`]="{ item: { raw: item } }"
+      >
+        {{ item.data.totalHistoryInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
+      </template>
+      <template
+        v-if="props.type ==='unpaywallHistory'"
+        #[`item.data.totalHistoryUpdatedDocs`]="{ item: { raw: item } }"
+      >
+        {{ item.data.totalHistoryUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
+      </template>
+      <template
+        v-if="props.type ==='unpaywallHistory'"
+        #[`item.status`]="{ item: { raw: item } }"
+      >
         <v-icon
           v-if="!item.data.error"
           right

@@ -74,6 +74,15 @@
     "login": "Connexion",
     "logout": "Deconnexion",
     "password": "Mot de passe",
+    "elastic": {
+      "title": "Informations sur elastic",
+      "noInfo": "Aucune informations sur elastic",
+      "reload": "Recharger les informations sur elastic",
+      "aliasName": "Nom de l'alias",
+      "indexName": "Nom de l'index",
+      "indexCount": "Nombre de document",
+      "indexSize": "Taille"
+    },
     "health": {
       "title": "État des services",
       "reload": "Recharger les états de santé",
@@ -202,8 +211,8 @@
     "administration": "Administration"
   },
   "reports": {
-    "basic": "Unpaywall basique",
-    "history": "Historique Unpaywall",
+    "basic": "Rapports pour Unpaywall basique",
+    "history": "Rapports pour l'historique Unpaywall",
     "title": "Dernières mises à jour",
     "reloadReports": "Recharger les rapports",
     "reload": "Recharger l'historique des mises à jour",
@@ -220,6 +229,10 @@
   },
   "error": {
     "default": "Une erreur est survenue",
+    "elastic": {
+      "aliases": "Impossible de récuperer les alias",
+      "indices": "Impossible de récuperer les index"
+    },
     "enrich": {
       "manyFile": "Le nombre de fichier autorisé est de 1",
       "typeOfFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
