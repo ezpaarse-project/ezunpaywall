@@ -13,12 +13,11 @@
       >
         <v-text-field
           v-model="password"
-          prepend-icon="mdi-lock"
           :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+          :placeholder="t('administration.password')"
           :rules="[passwordRules]"
-          :type="passwordVisible ? 'text' : 'password'"
+          :type="'password'"
           :label="t('administration.password')"
-          autocomplete="on"
           @click:append="passwordVisible = !passwordVisible"
         />
       </v-form>
@@ -49,7 +48,7 @@ const { $apikey } = useNuxtApp();
 
 const loading = ref(false);
 const valid = ref(false);
-const password = ref('');
+const password = ref('password');
 const passwordVisible = ref(false);
 
 const passwordRules = computed(() => (value) => !!value || t('required'));
