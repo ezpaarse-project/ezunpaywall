@@ -124,6 +124,9 @@ async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
     const oldDataUnpaywall = oldUnpaywallDataMap.get(data.doi);
 
     if (oldDataUnpaywall) {
+      logger.debug(`${new Date(oldDataUnpaywall.referencedAt).getTime()} >= ${new Date(copyData.referencedAt).getTime()}`);
+      if (new Date(copyData.referencedAt).getTime()
+      >= new Date(oldDataUnpaywall.referencedAt).getTime()) {
       const newEntry = {
         ...oldDataUnpaywall,
         date,
@@ -135,16 +138,21 @@ async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
 
       // if data, get the old referencedAt
       copyData.referencedAt = oldDataUnpaywall.referencedAt;
+      }
     }
 
     resData.push({ index: { _index: indexBase, _id: data.doi } });
     resData.push(copyData);
   });
 
-  await insertUnpaywallDataInElastic(resData, indexBase);
+  let success = false;
+
+  success = await insertUnpaywallDataInElastic(resData, indexBase);
+  if (!success) return false;
 
   if (resHistoryData.length > 0) {
-    await insertUnpaywallDataInElastic(resHistoryData, indexHistory);
+    success = await insertUnpaywallDataInElastic(resHistoryData, indexHistory);
+    if (!success) return false;
   }
 
   return true;
