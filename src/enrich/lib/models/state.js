@@ -20,6 +20,7 @@ async function createState(id, apikey) {
   const filenamePath = path.resolve(stateDir, apikey, filename);
 
   const state = {
+    id,
     path: filenamePath,
     filename,
     apikey,
@@ -82,8 +83,7 @@ async function getState(filename, apikey) {
 /**
  * Write the latest version of the state of enrich process to the file.
  *
- * @param {Object} state - State in JSON format.
- * @param {string} filename - State filename.
+ * @param {Object} state - State of job.
  *
  * @returns {Promise<void>}
  */
@@ -99,12 +99,12 @@ async function updateStateInFile(state) {
 /**
  * Update the state of enrich process when there is an error.
  *
- * @param {string} filename - State filename.
- * @param {string} apikey - Apikey of user.
+ * @param {Object} state - State of job.
  *
  * @returns {Promise<void>}
  */
 async function fail(state) {
+  logger.info(`[state]: job fail with id [${state.id}]`);
   state.done = true;
   state.endAt = new Date();
   state.error = true;
