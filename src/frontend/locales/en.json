@@ -65,8 +65,7 @@
     "settings": "Unpaywall attributes to retrieve",
     "request": "GraphQL request",
     "start": "Launch request",
-    "result": "Result",
-    "linkAPI": "See on the API"
+    "result": "Result"
   },
   "administration": {
     "title": "Administration",
