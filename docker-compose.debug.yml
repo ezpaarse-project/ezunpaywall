@@ -330,7 +330,7 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - xpack.security.enabled=true
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ES_JAVA_OPTS=-Xms4g -Xmx4g
       - ELASTIC_USERNAME={ELASTICSEARCH_USERNAME:-elastic}
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     volumes:
