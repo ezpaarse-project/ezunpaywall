@@ -37,7 +37,7 @@
           "pmh_id": {
             "type": "keyword"
           },
-          "repository_instution": {
+          "repository_institution": {
             "type": "keyword"
           },
           "updated": {
@@ -86,7 +86,7 @@
           "pmh_id": {
             "type": "keyword"
           },
-          "repository_instution": {
+          "repository_institution": {
             "type": "keyword"
           },
           "updated": {
@@ -153,7 +153,7 @@
           "pmh_id": {
             "type": "keyword"
           },
-          "repository_instution": {
+          "repository_institution": {
             "type": "keyword"
           },
           "updated": {
