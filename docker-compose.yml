@@ -33,9 +33,9 @@ services:
           "CMD-SHELL",
           "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
         ]
-      interval: 10s
+      interval: 60s
       timeout: 10s
-      retries: 5
+      retries: 3
 
   update:
     build:
@@ -79,9 +79,9 @@ services:
           "CMD-SHELL",
           "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
         ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
 
   enrich:
     build:
@@ -114,9 +114,9 @@ services:
           "CMD-SHELL",
           "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
         ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
 
   apikey:
     build:
@@ -143,9 +143,9 @@ services:
           "CMD-SHELL",
           "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
         ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
     
   mail:
     build:
@@ -174,9 +174,9 @@ services:
           "CMD-SHELL",
           "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
         ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
 
   frontend:
     build:
@@ -202,9 +202,9 @@ services:
           "CMD-SHELL",
           "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
         ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
 
   redis:
     image: redis:7.2.1-alpine3.18
@@ -219,9 +219,9 @@ services:
           "CMD-SHELL",
           "redis-cli --pass changeme ping | grep PONG"
         ]
-      interval: 10s
-      timeout: 3s
-      retries: 5
+      interval: 60s
+      timeout: 5
+      retries: 3
 
   health:
     build:
@@ -250,9 +250,9 @@ services:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'" ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
 
   nginx:
     build:
@@ -288,9 +288,9 @@ services:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:80 || exit 1" ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
@@ -304,9 +304,9 @@ services:
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     healthcheck:
       test: curl --cacert $CERTS_DIR_ES/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
     ulimits:
       memlock:
         soft: -1
@@ -331,6 +331,6 @@ services:
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "curl -s --fail http://elastic:changeme@localhost:5601/api/status" ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      interval: 60s
+      timeout: 5s
+      retries: 3
