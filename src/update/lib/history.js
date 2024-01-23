@@ -86,12 +86,17 @@ async function insertUnpaywallDataInElastic(data, index) {
   return true;
 }
 /**
- * // TODO DOC
- * @param {*} listOfDoi
- * @param {*} newData
- * @param {*} date
- * @param {*} step
- * @returns
+ * Insert data in unpaywall index base and history index.
+ * that insert normally in the index base and for the history, if doi is present in
+ * index base, that will create a new entry on history index.
+ *
+ * @param {Array<string>} listOfDoi - Array of DOI that will be inserted
+ * @param {Array<Object>} newData - Array of data that will be inserted
+ * @param {string} indexBase - name of base index
+ * @param {string} indexHistory - name of history base
+ * @param {string} date - Date of file
+ *
+ * @returns {Promise<boolean>} Success or not.
  */
 async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
   logger.debug(`[job][insert] try to get [${listOfDoi.length}] documents in [${indexBase}]`);
@@ -134,7 +139,7 @@ async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
         resHistoryData.push({ index: { _index: indexHistory, _id: `${data.updated}-${data.doi}` } });
         resHistoryData.push(newEntry);
 
-        // if data, get the old referencedAt
+        // get the old referencedAt to apply it for the new entry in history
         copyData.referencedAt = oldDataUnpaywall.referencedAt;
       }
     }

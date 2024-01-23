@@ -99,6 +99,7 @@ async function validateHistoryJob(req, res, next) {
     interval: joi.string().trim().valid('day', 'week').default('day'),
     startDate: joi.date().format('YYYY-MM-DD'),
     endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')),
+    cleanFile: joi.boolean().default(false),
   }).with('endDate', 'startDate').validate(req.body);
 
   if (error) return res.status(400).json({ message: error.details[0].message });

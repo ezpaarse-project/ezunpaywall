@@ -142,7 +142,6 @@ async function searchByDoiAsID(dois, index) {
 
     });
   } catch (err) {
-    console.log('searchByDoiAsID');
     logger.error('[elastic] Cannot search documents with DOI as ID', err);
     return null;
   }

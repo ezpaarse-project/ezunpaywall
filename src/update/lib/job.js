@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+const path = require('path');
 
 const logger = require('./logger');
 
@@ -17,11 +18,15 @@ const {
 
 const insertDataUnpaywall = require('./insert');
 
+const { deleteFile } = require('./files');
+
 const { insertHistoryDataUnpaywall } = require('./history');
 
 const { getChangefiles } = require('./services/unpaywall');
 
 const { sendMailNoChangefile } = require('./services/mail');
+
+const dirPath = require('./path');
 
 /**
  * Download the current snapshot of unpaywall and insert his content.
@@ -128,13 +133,14 @@ async function insertChangefile(jobConfig) {
  * @param {string} jobConfig.interval - Interval of changefile, day or week are available.
  * @param {string} jobConfig.startDate - Start date for the changefile period.
  * @param {string} jobConfig.endDate - End date for the changefile period.
+ * @param {string} jobConfig.cleanFile - Delete file after job.
  *
  * @returns {Promise<void>}
  */
 async function insertWithOaHistoryJob(jobConfig) {
   setInUpdate(true);
   const {
-    interval, startDate, endDate,
+    interval, startDate, endDate, cleanFile,
   } = jobConfig;
   await createState({ type: 'unpaywallHistory', indexBase: jobConfig.indexBase, indexHistory: jobConfig.indexHistory });
   const start = new Date();
@@ -168,6 +174,9 @@ async function insertWithOaHistoryJob(jobConfig) {
     jobConfig.filename = changefilesInfo[i].filename;
     jobConfig.date = changefilesInfo[i].date;
     success = await insertHistoryDataUnpaywall(jobConfig);
+    if (cleanFile) {
+      await deleteFile(path.resolve(dirPath.snapshotsDir, changefilesInfo[i].filename));
+    }
     if (!success) return;
   }
   await endState();

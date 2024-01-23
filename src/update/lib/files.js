@@ -89,6 +89,7 @@ async function deleteFilesInDir(directory, numberOfDays) {
  * @returns {Promise<void>}
  */
 async function deleteFile(filepath) {
+  logger.info(`[file] delete file [${filepath}]`);
   try {
     await fs.remove(filepath);
   } catch (err) {
