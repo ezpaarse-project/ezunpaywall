@@ -25,7 +25,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -104,7 +104,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter limit=10', () => {
     before(async () => {
       await reset();
-      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -183,7 +183,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter offset=40', () => {
     before(async () => {
       await reset();
-      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -262,7 +262,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter offset=10 and limit=20', () => {
     before(async () => {
       await reset();
-      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
@@ -368,7 +368,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the parameter limit can\t be lower than offset', () => {
     before(async () => {
       await reset();
-      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     it('Should return a status code 400', async () => {

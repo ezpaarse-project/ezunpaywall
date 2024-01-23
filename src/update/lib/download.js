@@ -18,7 +18,6 @@ const {
   getChangefile,
 } = require('./services/unpaywall');
 
-const { getPathOfDirectory } = require('./files');
 const pathDir = require('./path');
 
 /**
@@ -36,12 +35,12 @@ async function updatePercentStepDownload(filepath, size, start) {
     return;
   }
   const step = getLatestStep();
-  logger.debug(`updatePercentStepDownload : ${step.percent}`);
+  logger.debug(`[job][download]: Percent of step: ${step.percent}`);
   let bytes;
   try {
     bytes = await fs.stat(filepath);
   } catch (err) {
-    logger.error(`[job: download] Cannot stat [${filepath}]`, err);
+    logger.error(`[job][download] Cannot stat [${filepath}]`, err);
     return;
   }
   if (bytes?.size >= size) {
@@ -101,21 +100,18 @@ async function download(file, filepath, size) {
 /**
  * Start the download of the changefile from unpaywall.
  *
- * @param {string} type - Information of the file to download.
  * @param {string} info - Information of the file to download.
  * @param {string} interval - Type of changefile (day or week).
  *
  * @returns {Promise<boolean>} success or not
  */
-async function downloadChangefile(type, info, interval) {
+async function downloadChangefile(info, interval) {
   let stats;
 
-  const pathOfDirectory = getPathOfDirectory(type, 'snapshots');
+  const filePath = path.resolve(pathDir.snapshotsDir, info.filename);
 
-  const filepath = path.resolve(pathOfDirectory, info.filename);
-
-  const alreadyInstalled = await fs.pathExists(filepath);
-  if (alreadyInstalled) stats = await fs.stat(filepath);
+  const alreadyInstalled = await fs.pathExists(filePath);
+  if (alreadyInstalled) stats = await fs.stat(filePath);
   if (alreadyInstalled && stats.size === info.size) {
     logger.info(`[job: download] File [${info.filename}] is already installed`);
     return true;
@@ -138,7 +134,7 @@ async function downloadChangefile(type, info, interval) {
   const changefile = res.data;
   const { size } = info;
 
-  await download(changefile, filepath, size);
+  await download(changefile, filePath, size);
   return true;
 }
 
@@ -149,7 +145,7 @@ async function downloadChangefile(type, info, interval) {
  */
 async function downloadBigSnapshot() {
   const filename = `snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`;
-  const filepath = path.resolve(pathDir.unpaywall.snapshotsDir, filename);
+  const filepath = path.resolve(pathDir.snapshotsDir, filename);
 
   addStepDownload();
   const step = getLatestStep();

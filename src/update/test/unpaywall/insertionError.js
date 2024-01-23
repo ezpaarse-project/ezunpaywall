@@ -26,7 +26,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a corrupted file already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('unpaywall', 'fake1-error.jsonl.gz');
+      await addSnapshot('fake1-error.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {

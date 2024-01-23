@@ -129,7 +129,7 @@ describe('Week: Test: weekly update route test', () => {
   describe('Week: Do a weekly update but the file is already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('unpaywall', 'fake1.jsonl.gz');
+      await addSnapshot('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {

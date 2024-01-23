@@ -3,7 +3,7 @@ const path = require('path');
 const { format } = require('date-fns');
 const dirPath = require('../path');
 
-const { snapshotsDir } = dirPath.unpaywall;
+const { snapshotsDir } = dirPath;
 
 const {
   downloadAndInsertSnapshot,

@@ -451,8 +451,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   after(async () => {
     await deleteIndex('unpaywall-test');
-    await deleteFile('unpaywall', 'fake1.jsonl.gz');
-    await deleteFile('unpaywall', 'fake2.jsonl.gz');
-    await deleteFile('unpaywall', 'fake3.jsonl.gz');
+    await deleteFile('fake1.jsonl.gz');
+    await deleteFile('fake2.jsonl.gz');
+    await deleteFile('fake3.jsonl.gz');
   });
 });

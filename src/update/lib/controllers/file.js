@@ -3,7 +3,7 @@ const path = require('path');
 
 const { getMostRecentFile, deleteFile } = require('../files');
 
-const { getPathOfDirectory } = require('../files');
+const dirPath = require('../path');
 
 /**
  * Controller to start list of files or latest file downloaded on update service.
@@ -13,20 +13,18 @@ const { getPathOfDirectory } = require('../files');
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function getFiles(req, res, next) {
-  const { latest, type } = req.data;
-
-  const pathOfDirectory = getPathOfDirectory(type, 'snapshots');
+  const { latest } = req.data;
 
   if (latest) {
     let latestSnapshot;
     try {
-      latestSnapshot = await getMostRecentFile(pathOfDirectory);
+      latestSnapshot = await getMostRecentFile(dirPath.snapshotsDir);
     } catch (err) {
-      return next({ message: 'Cannot get the lastest snapshot' });
+      return next({ message: 'Cannot get the latest snapshot' });
     }
     return res.status(200).json(latestSnapshot?.filename);
   }
-  const files = await fs.readdir(pathOfDirectory);
+  const files = await fs.readdir(dirPath.snapshotsDir);
   return res.status(200).json(files);
 }
 
@@ -38,7 +36,7 @@ async function getFiles(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function uploadFile(req, res, next) {
-  if (!req?.file) return next({ messsage: 'File not sent' });
+  if (!req?.file) return next({ message: 'File not sent' });
   return res.status(202).json();
 }
 
@@ -50,16 +48,14 @@ async function uploadFile(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function deleteInstalledFile(req, res, next) {
-  const { filename, type } = req.data;
+  const { filename } = req.data;
 
-  const pathOfDirectory = getPathOfDirectory(type, 'snapshots');
-
-  if (!await fs.pathExists(path.resolve(pathOfDirectory, filename))) {
+  if (!await fs.pathExists(path.resolve(dirPath.snapshotsDir, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
   try {
-    await deleteFile(path.resolve(pathOfDirectory, filename));
+    await deleteFile(path.resolve(dirPath.snapshotsDir, filename));
   } catch (err) {
     return next({ message: err.message });
   }

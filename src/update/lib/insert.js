@@ -29,7 +29,7 @@ const {
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 
-const { snapshotsDir } = dirPath.unpaywall;
+const { snapshotsDir } = dirPath;
 
 /**
  * Insert data on elastic with elastic bulk request.
@@ -183,6 +183,7 @@ async function insertDataUnpaywall(insertConfig) {
       // fill the array
       try {
         const doc = JSON.parse(line);
+        doc.referencedAt = doc.updated;
         bulkOps.push({ index: { _index: index, _id: doc.doi } });
         bulkOps.push(doc);
       } catch (err) {

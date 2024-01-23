@@ -91,7 +91,7 @@ async function insertChangefilesOnPeriod(jobConfig) {
 
   let success = true;
   for (let i = 0; i < changefilesInfo.length; i += 1) {
-    success = await downloadChangefile('unpaywall', changefilesInfo[i], interval);
+    success = await downloadChangefile(changefilesInfo[i], interval);
     if (!success) return;
     jobConfig.filename = changefilesInfo[i].filename;
     success = await insertDataUnpaywall(jobConfig);
@@ -163,7 +163,7 @@ async function insertWithOaHistoryJob(jobConfig) {
 
   let success = true;
   for (let i = 0; i < changefilesInfo.length; i += 1) {
-    success = await downloadChangefile('unpaywallHistory', changefilesInfo[i], interval);
+    success = await downloadChangefile(changefilesInfo[i], interval);
     if (!success) return;
     jobConfig.filename = changefilesInfo[i].filename;
     jobConfig.date = changefilesInfo[i].date;

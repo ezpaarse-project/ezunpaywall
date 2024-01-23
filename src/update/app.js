@@ -25,6 +25,9 @@ require('./lib/cron/file');
 const dataDir = path.resolve(__dirname, 'data');
 fs.ensureDir(path.resolve(dataDir));
 
+const snapshotsDir = path.resolve(dataDir, 'snapshots');
+fs.ensureDir(path.resolve(snapshotsDir));
+
 // create all directories for unpaywall
 const unpaywallDir = path.resolve(dataDir, 'unpaywall');
 
@@ -32,11 +35,9 @@ fs.ensureDir(path.resolve(unpaywallDir));
 
 const unpaywallReportsDir = path.resolve(unpaywallDir, 'reports');
 const unpaywallStatesDir = path.resolve(unpaywallDir, 'states');
-const unpaywallSnapshotsDir = path.resolve(unpaywallDir, 'snapshots');
 
 fs.ensureDir(path.resolve(unpaywallReportsDir));
 fs.ensureDir(path.resolve(unpaywallStatesDir));
-fs.ensureDir(path.resolve(unpaywallSnapshotsDir));
 
 // create all directories for history unpaywall
 const unpaywallHistoryDir = path.resolve(dataDir, 'unpaywallHistory');
@@ -44,11 +45,9 @@ fs.ensureDir(path.resolve(unpaywallHistoryDir));
 
 const unpaywallHistoryReportsDir = path.resolve(unpaywallHistoryDir, 'reports');
 const unpaywallHistoryStatesDir = path.resolve(unpaywallHistoryDir, 'states');
-const unpaywallHistorySnapshotsDir = path.resolve(unpaywallHistoryDir, 'snapshots');
 
 fs.ensureDir(path.resolve(unpaywallHistoryReportsDir));
 fs.ensureDir(path.resolve(unpaywallHistoryStatesDir));
-fs.ensureDir(path.resolve(unpaywallHistorySnapshotsDir));
 
 // create all directories for logs unpaywall
 const logDir = path.resolve(__dirname, 'log');

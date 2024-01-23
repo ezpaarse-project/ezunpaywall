@@ -14,18 +14,18 @@ const resetCronConfig = require('./cron');
  * @returns {Promise<void>}
  */
 async function reset() {
-  await deleteFile('unpaywall', 'history1.jsonl.gz');
-  await deleteFile('unpaywall', 'history2.jsonl.gz');
-  await deleteFile('unpaywall', 'history3.jsonl.gz');
-  await deleteFile('unpaywall', 'fake1.jsonl.gz');
-  await deleteFile('unpaywall', 'fake2.jsonl.gz');
-  await deleteFile('unpaywall', 'fake3.jsonl.gz');
-  await deleteFile('unpaywall', 'fake1-error.jsonl.gz');
-  await deleteFile('unpaywall', 'snapshot.jsonl.gz');
+  await deleteFile('history1.jsonl.gz');
+  await deleteFile('history2.jsonl.gz');
+  await deleteFile('history3.jsonl.gz');
+  await deleteFile('fake1.jsonl.gz');
+  await deleteFile('fake2.jsonl.gz');
+  await deleteFile('fake3.jsonl.gz');
+  await deleteFile('fake1-error.jsonl.gz');
+  await deleteFile('snapshot.jsonl.gz');
   await deleteIndex('unpaywall');
   await deleteIndex('unpaywall-test');
-  await deleteIndex('unpaywall_base');
-  await deleteIndex('unpaywall_history');
+  // await deleteIndex('unpaywall_base');
+  // await deleteIndex('unpaywall_history');
   await resetCronConfig('unpaywall');
   await resetCronConfig('unpaywallHistory');
 }
