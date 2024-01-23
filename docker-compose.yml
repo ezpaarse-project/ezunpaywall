@@ -220,7 +220,7 @@ services:
           "redis-cli --pass changeme ping | grep PONG"
         ]
       interval: 60s
-      timeout: 5
+      timeout: 5s
       retries: 3
 
   health:
