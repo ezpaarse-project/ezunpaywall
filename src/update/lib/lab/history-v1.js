@@ -24,7 +24,7 @@ const {
   bulk,
   initAlias,
   createIndex,
-  getDataByListOfDOI,
+  searchByDoiAsID,
 } = require('../services/elastic');
 
 const indexAlias = config.get('elasticsearch.indexAlias');
@@ -111,8 +111,8 @@ async function insertData(listOfDoi, newData, date) {
   // TODO date of file
   date = new Date();
 
-  const oldData = await getDataByListOfDOI(listOfDoi, 'unpaywall');
-  const historyData = await getDataByListOfDOI(listOfDoi, 'unpaywall_history');
+  const oldData = await searchByDoiAsID(listOfDoi, 'unpaywall');
+  const historyData = await searchByDoiAsID(listOfDoi, 'unpaywall_history');
 
   let oldHistoryDataMap;
   let oldUnpaywallDataMap;

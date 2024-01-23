@@ -23,7 +23,7 @@ const {
 
 const {
   refreshIndex,
-  getDataByListOfDOI,
+  searchByDoiAsID,
   bulk,
   createIndex,
   searchWithRange,
@@ -31,7 +31,7 @@ const {
 
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
 
-const { snapshotsDir } = dirPath.unpaywallHistory;
+const { snapshotsDir } = dirPath;
 
 /**
  * Insert data on elastic with elastic bulk request.
@@ -46,7 +46,7 @@ async function insertUnpaywallDataInElastic(data, index) {
   try {
     res = await bulk(data);
   } catch (err) {
-    logger.error('[elastic] Cannot bulk', err);
+    logger.error(`[elastic] Cannot bulk on index [${index}]`, err);
     await fail(err?.[0]?.reason);
     return false;
   }
@@ -94,50 +94,48 @@ async function insertUnpaywallDataInElastic(data, index) {
  * @returns
  */
 async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
-  // TODO not hardcode
-  const oldData = await getDataByListOfDOI(listOfDoi, indexBase);
-
+  logger.debug(`[job][insert] try to get [${listOfDoi.length}] documents in [${indexBase}]`);
+  const oldDataInBaseIndex = await searchByDoiAsID(listOfDoi, indexBase);
+  logger.debug(`[job][insert] get [${oldDataInBaseIndex.length}] documents in [${indexBase}]`);
   const resHistoryData = [];
   const resData = [];
 
-  if (!oldData) {
+  if (!oldDataInBaseIndex) {
     newData.forEach((data) => {
       const copyData = data;
       copyData.referencedAt = date;
       resData.push({ index: { _index: indexBase, _id: data.doi } });
       resData.push(copyData);
     });
-    return true;
   }
 
   const oldUnpaywallDataMap = new Map(
-    oldData.map((data) => {
+    oldDataInBaseIndex.map((data) => {
       const copyData = { ...data };
       return [data.doi, copyData];
     }),
   );
 
-  newData.forEach((data) => {
+  newData.forEach(async (data) => {
     const copyData = data;
     copyData.referencedAt = date;
     // history insertion
     const oldDataUnpaywall = oldUnpaywallDataMap.get(data.doi);
 
     if (oldDataUnpaywall) {
-      logger.debug(`${new Date(oldDataUnpaywall.referencedAt).getTime()} >= ${new Date(copyData.referencedAt).getTime()}`);
       if (new Date(copyData.referencedAt).getTime()
-      >= new Date(oldDataUnpaywall.referencedAt).getTime()) {
-      const newEntry = {
-        ...oldDataUnpaywall,
-        date,
-      };
-      newEntry.endValidity = data.updated;
+      > new Date(oldDataUnpaywall.referencedAt).getTime()) {
+        const newEntry = {
+          ...oldDataUnpaywall,
+          date,
+        };
+        newEntry.endValidity = data.updated;
 
-      resHistoryData.push({ index: { _index: indexHistory } });
-      resHistoryData.push(newEntry);
+        resHistoryData.push({ index: { _index: indexHistory, _id: `${data.updated}-${data.doi}` } });
+        resHistoryData.push(newEntry);
 
-      // if data, get the old referencedAt
-      copyData.referencedAt = oldDataUnpaywall.referencedAt;
+        // if data, get the old referencedAt
+        copyData.referencedAt = oldDataUnpaywall.referencedAt;
       }
     }
 
@@ -147,10 +145,12 @@ async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
 
   let success = false;
 
+  logger.debug(`[job][insert] try to insert [${resData.length / 2}] documents in [${indexBase}]`);
   success = await insertUnpaywallDataInElastic(resData, indexBase);
   if (!success) return false;
 
   if (resHistoryData.length > 0) {
+    logger.debug(`[job][insert] try to insert [${resHistoryData.length / 2}] documents in [${indexHistory}]`);
     success = await insertUnpaywallDataInElastic(resHistoryData, indexHistory);
     if (!success) return false;
   }
@@ -286,7 +286,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
     }
     // bulk insertion
     if (newData.length >= maxBulkSize) {
-      success = await insertData(listOfDoi, newData, date);
+      success = await insertData(listOfDoi, newData, indexBase, indexHistory, date);
       listOfDoi = [];
       newData = [];
 
@@ -351,7 +351,9 @@ async function step2(startDate, indexBase, indexHistory) {
   logger.debug(`Should UPDATE data less than ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   const nearestDataBulk = [];
   const nearestDataDeleteBulk = [];
+  logger.debug('searchWithRange');
   const oldData = await searchWithRange(startDate, 'updated', 'lt', indexHistory);
+  logger.debug(`oldDoc.length: ${oldData?.length}`);
 
   const listOfDoi = oldData.map((e) => e._source.doi);
   const listOfDoiFiltered = new Set(listOfDoi);
@@ -371,7 +373,10 @@ async function step2(startDate, indexBase, indexHistory) {
       }
     });
 
-    const oldDoc = await getDataByListOfDOI([nearestData._source.doi], indexBase);
+    logger.debug('step2');
+    const oldDoc = await searchByDoiAsID([nearestData._source.doi], indexBase);
+    logger.debug(`oldDoc.length:  ${oldDoc.length}`);
+
     logger.info(`oldData: ${format(new Date(oldDoc[0].updated), 'yyyy-MM-dd/hh:mm:ss')} < startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
 
     if (new Date(startDate) < new Date(oldDoc[0].updated)) {
