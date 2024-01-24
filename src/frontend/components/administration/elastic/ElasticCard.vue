@@ -58,7 +58,8 @@
           class="elevation-1"
         >
           <template #[`item.docs.count`]="{ item: { raw: item } }">
-            {{ Number.parseInt(item['docs.count'], 10).toLocaleString($i18n.locale, { useGrouping: true }) }}
+            {{ Number.parseInt(item['docs.count'], 10)
+              .toLocaleString($i18n.locale, { useGrouping: true }) }}
           </template>
         </v-data-table>
       </v-col>
