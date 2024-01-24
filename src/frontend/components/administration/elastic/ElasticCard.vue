@@ -58,7 +58,7 @@
           class="elevation-1"
         >
           <template #[`item.docs.count`]="{ item: { raw: item } }">
-            {{ item['docs.count'].toLocaleString($i18n.locale, { useGrouping: true }) }}
+            {{ Number.parseInt(item['docs.count'], 10).toLocaleString($i18n.locale, { useGrouping: true }) }}
           </template>
         </v-data-table>
       </v-col>
@@ -86,6 +86,8 @@ const { password } = storeToRefs(adminStore);
 const loading = ref(false);
 const indices = ref([]);
 const aliases = ref([]);
+
+const tt = 1000000000000000000000;
 
 const indicesHeaders = computed(() => [
   {
