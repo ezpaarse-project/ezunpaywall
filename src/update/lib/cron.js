@@ -1,4 +1,5 @@
 const { CronJob } = require('cron');
+const { timezone } = require('config');
 
 const logger = require('./logger');
 
@@ -16,7 +17,7 @@ class Cron {
     this.schedule = schedule;
     this.task = task;
     this.active = active;
-    this.process = new CronJob(schedule, this.task, null, false, 'Europe/Paris');
+    this.process = new CronJob(schedule, this.task, null, false, timezone);
     if (active) {
       this.start();
     }
@@ -38,8 +39,8 @@ class Cron {
   setTask(task) {
     this.process.stop();
     this.task = task;
-    logger.info(`[cron: ${this.name}] config - task updated`);
-    this.process = new CronJob(this.schedule, this.task, null, false, 'Europe/Paris');
+    logger.info(`[cron][${this.name}]: task updated`);
+    this.process = new CronJob(this.schedule, this.task, null, false, timezone);
     if (this.active) this.process.start();
   }
 
@@ -51,10 +52,10 @@ class Cron {
   setSchedule(schedule) {
     this.process.stop();
     this.schedule = schedule;
-    logger.info(`[cron: ${this.name}] config - schedule is updated [${this.schedule}]`);
+    logger.info(`[cron][${this.name}]: schedule is updated [${this.schedule}]`);
     this.process = new CronJob(this.schedule, async () => {
       await this.task();
-    }, null, false, 'Europe/Paris');
+    }, null, false, timezone);
     if (this.active) this.process.start();
   }
 
@@ -64,10 +65,10 @@ class Cron {
   start() {
     try {
       this.process.start();
-      logger.info(`[cron: ${this.name}] - started`);
-      logger.info(`[cron: ${this.name}] config - schedule: [${this.schedule}]`);
+      logger.info(`[cron][${this.name}]: started`);
+      logger.info(`[cron][${this.name}] schedule [${this.schedule}]`);
     } catch (err) {
-      logger.error(`[cron ${this.name}] - error in start`, err);
+      logger.error(`[cron][${this.name}]: Cannot start`, err);
       return;
     }
     this.active = true;
@@ -79,9 +80,9 @@ class Cron {
   stop() {
     try {
       this.process.stop();
-      logger.info(`[cron: ${this.name}] - stopped`);
+      logger.info(`[cron][${this.name}]: stopped`);
     } catch (err) {
-      logger.error(`[cron ${this.name}] - error in stop`, err);
+      logger.error(`[cron][${this.name}]: Cannot stop`, err);
       return;
     }
     this.active = false;

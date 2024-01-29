@@ -1,6 +1,7 @@
 {
   "nodeEnv": "development",
   "accessLogRotate": false,
+  "timezone": "Europe/Paris",
   "unpaywall": {
     "host": "http://fakeunpaywall:3000",
     "apikey": "default"
