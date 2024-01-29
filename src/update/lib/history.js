@@ -99,15 +99,16 @@ async function insertUnpaywallDataInElastic(data, index) {
  * @returns {Promise<boolean>} Success or not.
  */
 async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
-  logger.debug(`[job][insert] try to get [${listOfDoi.length}] documents in [${indexBase}]`);
+  logger.debug(`[job][insert]: try to get [${listOfDoi.length}] documents in [${indexBase}]`);
   const oldDataInBaseIndex = await searchByDoiAsID(listOfDoi, indexBase);
-  logger.debug(`[job][insert] get [${oldDataInBaseIndex.length}] documents in [${indexBase}]`);
+  logger.debug(`[job][insert]: get [${oldDataInBaseIndex.length}] documents in [${indexBase}]`);
   const resHistoryData = [];
   const resData = [];
 
   if (!oldDataInBaseIndex) {
     newData.forEach((data) => {
       const copyData = data;
+      // TODO check if referencedAt is undefined, that not erase referencedAt
       copyData.referencedAt = date;
       resData.push({ index: { _index: indexBase, _id: data.doi } });
       resData.push(copyData);
@@ -124,12 +125,13 @@ async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
   newData.forEach(async (data) => {
     const copyData = data;
     copyData.referencedAt = date;
-    // history insertion
     const oldDataUnpaywall = oldUnpaywallDataMap.get(data.doi);
 
     if (oldDataUnpaywall) {
-      if (new Date(copyData.referencedAt).getTime()
-      > new Date(oldDataUnpaywall.referencedAt).getTime()) {
+      const copyDataTime = new Date(copyData.updated).getTime();
+      const oldDataTime = new Date(oldDataUnpaywall.updated).getTime();
+      // if the data in changefile is older than the existence, don't insert it
+      if (copyDataTime > oldDataTime) {
         const newEntry = {
           ...oldDataUnpaywall,
           date,
@@ -150,12 +152,12 @@ async function insertData(listOfDoi, newData, indexBase, indexHistory, date) {
 
   let success = false;
 
-  logger.debug(`[job][insert] try to insert [${resData.length / 2}] documents in [${indexBase}]`);
+  logger.debug(`[job][insert]: try to insert [${resData.length / 2}] documents in [${indexBase}]`);
   success = await insertUnpaywallDataInElastic(resData, indexBase);
   if (!success) return false;
 
   if (resHistoryData.length > 0) {
-    logger.debug(`[job][insert] try to insert [${resHistoryData.length / 2}] documents in [${indexHistory}]`);
+    logger.debug(`[job][insert]: try to insert [${resHistoryData.length / 2}] documents in [${indexHistory}]`);
     success = await insertUnpaywallDataInElastic(resHistoryData, indexHistory);
     if (!success) return false;
   }
@@ -223,7 +225,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    logger.error(`[job: insert] Cannot get bytes [${filePath}]`, err);
+    logger.error(`[job][insert]: Cannot get bytes [${filePath}]`, err);
     await fail(err);
     return false;
   }
@@ -233,7 +235,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   try {
     readStream = fs.createReadStream(filePath);
   } catch (err) {
-    logger.error(`[job: insert] Cannot read [${filePath}]`, err);
+    logger.error(`[job][insert]: Cannot read [${filePath}]`, err);
     await fail(err);
     return false;
   }
@@ -248,7 +250,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   try {
     decompressedStream = readStream.pipe(zlib.createGunzip());
   } catch (err) {
-    logger.error(`[job: insert] Cannot pipe [${readStream?.filename}]`, err);
+    logger.error(`[job][insert]: Cannot pipe [${readStream?.filename}]`, err);
     await fail(err);
     return false;
   }
@@ -263,7 +265,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
 
   let success;
 
-  logger.info(`[job: insert] Start insert with [${filename}]`);
+  logger.info(`[job][insert]: Start insert with [${filename}]`);
 
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
@@ -284,7 +286,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
         listOfDoi.push(doc.doi);
         newData.push(doc);
       } catch (err) {
-        logger.error(`[job: insert] Cannot parse [${line}] in json format`, err);
+        logger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
         await fail(err);
         return false;
       }
@@ -301,7 +303,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
       updateLatestStep(step);
     }
     if (step.linesRead % 100000 === 0) {
-      logger.info(`[job: insert] ${step.linesRead} Lines reads`);
+      logger.info(`[job][insert]: ${step.linesRead} Lines reads`);
       updateLatestStep(step);
     }
   }
@@ -314,7 +316,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
     if (!success) return false;
   }
 
-  logger.info('[job: insert] insertion completed');
+  logger.info('[job][insert]: insertion completed');
 
   try {
     await refreshIndex();

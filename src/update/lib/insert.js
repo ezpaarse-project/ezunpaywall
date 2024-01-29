@@ -126,7 +126,7 @@ async function insertDataUnpaywall(insertConfig) {
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    logger.error(`[job: insert] Cannot get bytes [${filePath}]`, err);
+    logger.error(`[job][insert]: Cannot get bytes [${filePath}]`, err);
     await fail(err);
     return false;
   }
@@ -136,7 +136,7 @@ async function insertDataUnpaywall(insertConfig) {
   try {
     readStream = fs.createReadStream(filePath);
   } catch (err) {
-    logger.error(`[job: insert] Cannot read [${filePath}]`, err);
+    logger.error(`[job][insert]: Cannot read [${filePath}]`, err);
     await fail(err);
     return false;
   }
@@ -151,7 +151,7 @@ async function insertDataUnpaywall(insertConfig) {
   try {
     decompressedStream = readStream.pipe(zlib.createGunzip());
   } catch (err) {
-    logger.error(`[job: insert] Cannot pipe [${readStream?.filename}]`, err);
+    logger.error(`[job][insert]: Cannot pipe [${readStream?.filename}]`, err);
     await fail(err);
     return false;
   }
@@ -166,7 +166,7 @@ async function insertDataUnpaywall(insertConfig) {
 
   let success;
 
-  logger.info(`[job: insert] Start insert with [${filename}]`);
+  logger.info(`[job][insert]: Start insert with [${filename}]`);
 
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
@@ -187,7 +187,7 @@ async function insertDataUnpaywall(insertConfig) {
         bulkOps.push({ index: { _index: index, _id: doc.doi } });
         bulkOps.push(doc);
       } catch (err) {
-        logger.error(`[job: insert] Cannot parse [${line}] in json format`, err);
+        logger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
         await fail(err);
         return false;
       }
@@ -202,7 +202,7 @@ async function insertDataUnpaywall(insertConfig) {
       updateLatestStep(step);
     }
     if (step.linesRead % 100000 === 0) {
-      logger.info(`[job: insert] ${step.linesRead} Lines reads`);
+      logger.info(`[job][insert]: ${step.linesRead} Lines reads`);
       updateLatestStep(step);
     }
   }
@@ -213,7 +213,7 @@ async function insertDataUnpaywall(insertConfig) {
     if (!success) return false;
   }
 
-  logger.info('[job: insert] insertion completed');
+  logger.info('[job][insert]: insertion completed');
 
   try {
     await refreshIndex();

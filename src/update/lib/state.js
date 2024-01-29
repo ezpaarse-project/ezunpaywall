@@ -34,6 +34,7 @@ function setState(key, value) {
  * @param {string} config.indexHistory - index where are inserted history data.
  */
 async function createState(config) {
+  logger.info(`[state]: create new state for [${config.type}] process`);
   state = {
     done: false,
     createdAt: new Date(),
@@ -45,19 +46,21 @@ async function createState(config) {
     indexBase: config?.indexBase || '',
     indexHistory: config?.indexHistory || '',
   };
+  logger.debug('[state]: state is created');
 }
 
 /**
  * Add step "getChangefiles" in steps attributes of state.
  */
 function addStepGetChangefiles() {
-  logger.info('[job: state] add step of check unpaywall update file registry');
+  logger.info('[state]: add step of check unpaywall update file registry');
   const step = {
     task: 'getChangefiles',
     took: 0,
     status: 'inProgress',
   };
   state.steps.push(step);
+  logger.debug('[state]: get changefile step is added');
 }
 
 /**
@@ -66,7 +69,7 @@ function addStepGetChangefiles() {
  * @param {string} downloadFile - Unpaywall data update filename.
  */
 function addStepDownload(downloadFile) {
-  logger.info('[job: state] add step of download update file from unpaywall');
+  logger.info('[state] add step of download update file from unpaywall');
   const step = {
     task: 'download',
     file: downloadFile,
@@ -75,6 +78,7 @@ function addStepDownload(downloadFile) {
     status: 'inProgress',
   };
   state.steps.push(step);
+  logger.debug('[state]: download step is added');
 }
 
 /**
@@ -83,7 +87,7 @@ function addStepDownload(downloadFile) {
  * @param {string} downloadFile - Unpaywall data update file name.
  */
 function addStepInsert(downloadFile) {
-  logger.info('[job: state] add step of insert the content of update file from unpaywall');
+  logger.info('[state]: add step of insert the content of update file from unpaywall');
   const step = {
     task: 'insert',
     file: downloadFile,
@@ -96,6 +100,7 @@ function addStepInsert(downloadFile) {
     status: 'inProgress',
   };
   state.steps.push(step);
+  logger.debug('[state]: insert step is added');
 }
 
 /**
@@ -112,6 +117,7 @@ function getLatestStep() {
  */
 function updateLatestStep(step) {
   state.steps[state.steps.length - 1] = step;
+  logger.debug('[state]: step is updated');
 }
 
 /**
@@ -160,6 +166,7 @@ function end() {
     state.totalHistoryInsertedDocs = totalInsertHistory;
     state.totalHistoryUpdatedDocs = totalUpdateHistory;
   }
+  logger.info('[state]: the state is ended');
 }
 
 /**
@@ -168,7 +175,7 @@ function end() {
  * @param {Promise<Array<string>>} stackTrace - Log of error.
  */
 async function fail(stackTrace) {
-  logger.error('[update process]: fail');
+  logger.error('[state]: fail');
   end();
   state.error = true;
   state.stackTrace = stackTrace;
@@ -185,7 +192,7 @@ async function fail(stackTrace) {
  * @returns {Promise<void>}
  */
 async function endState() {
-  logger.info('[update process]: end process');
+  logger.info('[state]: end process');
   end();
   await createReport(state);
   setInUpdate(false);

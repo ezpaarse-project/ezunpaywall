@@ -12,6 +12,7 @@ const { getPathOfDirectory } = require('./files');
  * @returns {Promise<void>}
  */
 async function createReport(state) {
+  logger.info(`[report]: create new report for [${state.type}]`);
   const { type } = state;
   const pathOfDirectory = getPathOfDirectory(type, 'reports');
   const filepath = path.resolve(pathOfDirectory, `${format(new Date(), 'yyyy-MM-dd HH:mm:ss')}.json`);
@@ -21,6 +22,7 @@ async function createReport(state) {
     logger.error(`[report] Cannot write [${JSON.stringify(state, null, 2)}] in ${filepath}`, err);
     throw err;
   }
+  logger.debug('[report]: report created');
 }
 
 /**
@@ -38,13 +40,13 @@ async function getReport(type, filename) {
     report = await fs.readFile(path.resolve(pathOfDirectory, filename));
   } catch (err) {
     logger.error(`[report] Cannot read [${path.resolve(pathOfDirectory, filename)}]`, err);
-    return undefined;
+    throw err;
   }
   try {
     report = JSON.parse(report);
   } catch (err) {
     logger.error(`[report] Cannot parse [${report}] at json format`, err);
-    return undefined;
+    throw err;
   }
   return report;
 }

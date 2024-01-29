@@ -55,6 +55,23 @@ async function getMostRecentFile(dir) {
 }
 
 /**
+ * Delete file installed on ezunpaywall on "/data/snapshots".
+ *
+ * @param {string} filepath - Filepath.
+ *
+ * @returns {Promise<void>}
+ */
+async function deleteFile(filepath) {
+  try {
+    await fs.remove(filepath);
+  } catch (err) {
+    logger.error(`[file] Cannot remove [${filepath}]`, err);
+    throw err;
+  }
+  logger.info(`[file]: [${filepath}] deleted`);
+}
+
+/**
  * Deletes files in a directory that are older than n time.
  *
  * @param {string} directory - Directory path.
@@ -74,28 +91,11 @@ async function deleteFilesInDir(directory, numberOfDays) {
     const stat = await fs.stat(path.join(directory, file));
     if (stat.mtime < threshold) {
       deletedFiles.push(file);
-      await fs.unlink(path.join(directory, file));
+      await deleteFile(path.join(directory, file));
     }
   }
 
   return deletedFiles;
-}
-
-/**
- * Delete file installed on ezunpaywall on "/data/snapshots".
- *
- * @param {string} filepath - Filepath.
- *
- * @returns {Promise<void>}
- */
-async function deleteFile(filepath) {
-  logger.info(`[file] delete file [${filepath}]`);
-  try {
-    await fs.remove(filepath);
-  } catch (err) {
-    logger.error(`[file] Cannot remove [${filepath}]`, err);
-    throw err;
-  }
 }
 
 module.exports = {

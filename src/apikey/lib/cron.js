@@ -11,14 +11,14 @@ const cronDemo = new CronJob('0 0 0 * * *', async () => {
   try {
     apikeyConfig = await redisClient.get('demo');
   } catch (err) {
-    logger.error('[cron demo] Cannot get [demo]', err);
+    logger.error('[cron][demo]: Cannot get [demo]', err);
     return;
   }
 
   try {
     apikeyConfig = JSON.parse(apikeyConfig);
   } catch (err) {
-    logger.error(`[cron demo] Cannot parse [${apikeyConfig}]`, err);
+    logger.error(`[cron][demo]: Cannot parse [${apikeyConfig}]`, err);
     return;
   }
 
@@ -27,10 +27,10 @@ const cronDemo = new CronJob('0 0 0 * * *', async () => {
   try {
     await redisClient.set('demo', `${JSON.stringify(apikeyConfig)}`);
   } catch (err) {
-    logger.error(`[cron demo] Cannot update apikey [demo] with config [${JSON.stringify(apikeyConfig)}]`, err);
+    logger.error(`[cron][demo]: Cannot update apikey [demo] with config [${JSON.stringify(apikeyConfig)}]`, err);
     return Promise.reject(err);
   }
-  logger.info('[cron demo] Demo apikey is reseted');
+  logger.info('[cron][demo]: Demo apikey has been reset');
 }, null, true, 'Europe/Paris');
 
 module.exports = cronDemo;
