@@ -183,7 +183,7 @@
     "total": "Total"
   },
   "status": {
-    "inUpdate": "Update in progress: {latestTaskName} - {percent}%",
+    "inUpdate": "Update in progress: {task} - {percent}% for file ${file}",
     "noInUpdate": "The data is up to date"
   },
   "state": {

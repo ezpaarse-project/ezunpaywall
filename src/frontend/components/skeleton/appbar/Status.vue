@@ -18,7 +18,7 @@
       </v-btn>
     </template>
     <label v-if="inUpdate">
-      {{ t("status.inUpdate", { latestTaskName, percent }) }}
+      {{ t("status.inUpdate", { task: latestTaskName, percent, file: latestFilename }) }}
     </label>
     <label v-else>
       {{ t("status.noInUpdate") }}
@@ -45,9 +45,9 @@ const latestStep = computed(() => {
   return null;
 });
 
-const latestTaskName = computed(() => latestStep?.task);
-
-const percent = computed(() => latestStep?.percent);
+const latestTaskName = computed(() => latestStep.value.task);
+const percent = computed(() => latestStep.value.percent);
+const latestFilename = computed(() => latestStep.value.file);
 
 async function getState() {
   let res;
@@ -62,6 +62,7 @@ async function getState() {
   } catch (err) {
     snackStore.error(t('error.status'));
   }
+  console.log(res?.data);
   state.value = res?.data;
 }
 
