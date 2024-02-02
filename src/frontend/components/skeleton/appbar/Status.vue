@@ -62,7 +62,6 @@ async function getState() {
   } catch (err) {
     snackStore.error(t('error.status'));
   }
-  console.log(res?.data);
   state.value = res?.data;
 }
 

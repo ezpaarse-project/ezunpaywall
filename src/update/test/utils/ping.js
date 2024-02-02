@@ -27,7 +27,7 @@ async function ping() {
 
   const elastic = await chai.request(elasticHost).get('/');
   if (elastic?.status !== 200) {
-    throw new Error(`[elastic] Bad status : ${elastic?.status}`);
+    throw new Error(`[elastic]: Bad status : ${elastic?.status}`);
   }
 
   const apikey = await chai.request(apikeyHost).get('/ping');

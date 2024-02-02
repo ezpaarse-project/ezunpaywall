@@ -46,7 +46,7 @@ async function insertUnpaywallDataInElastic(data, index) {
   try {
     res = await bulk(data);
   } catch (err) {
-    logger.error(`[elastic] Cannot bulk on index [${index}]`, err);
+    logger.error(`[elastic]: Cannot bulk on index [${index}]`, err);
     await fail(err?.[0]?.reason);
     return false;
   }
@@ -71,9 +71,9 @@ async function insertUnpaywallDataInElastic(data, index) {
   });
 
   if (errors.length > 0) {
-    logger.error('[elastic] Error in bulk insertion');
+    logger.error('[elastic]: Error in bulk insertion');
     errors.forEach((error) => {
-      logger.error(`[elastic] ${JSON.stringify(error, null, 2)}`);
+      logger.error(`[elastic]: ${JSON.stringify(error, null, 2)}`);
     });
     step.status = 'error';
     updateLatestStep(step);
@@ -186,7 +186,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   try {
     await createIndex(indexBase, unpaywallEnrichedMapping);
   } catch (err) {
-    logger.error(`[elastic] Cannot create index [${indexBase}]`, err);
+    logger.error(`[elastic]: Cannot create index [${indexBase}]`, err);
     await fail(err);
     return false;
   }
@@ -194,7 +194,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   try {
     await createIndex(indexHistory, unpaywallHistoryMapping);
   } catch (err) {
-    logger.error(`[elastic] Cannot create index [${indexHistory}]`, err);
+    logger.error(`[elastic]: Cannot create index [${indexHistory}]`, err);
     await fail(err);
     return false;
   }
@@ -321,7 +321,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   try {
     await refreshIndex();
   } catch (err) {
-    logger.warn('[elastic] Cannot refresh the index', err);
+    logger.warn('[elastic]: Cannot refresh the index', err);
   }
 
   // last update of step

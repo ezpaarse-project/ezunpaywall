@@ -24,8 +24,9 @@ async function reset() {
   await deleteFile('snapshot.jsonl.gz');
   await deleteIndex('unpaywall');
   await deleteIndex('unpaywall-test');
-  // await deleteIndex('unpaywall_base');
-  // await deleteIndex('unpaywall_history');
+  await deleteIndex('unpaywall_base');
+  await deleteIndex('unpaywall_history');
+  await deleteIndex('unpaywall_tmp');
   await resetCronConfig('unpaywall');
   await resetCronConfig('unpaywallHistory');
 }

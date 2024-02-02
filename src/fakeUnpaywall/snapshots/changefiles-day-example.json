@@ -46,31 +46,49 @@
       "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/fake1.jsonl.gz?api_key=default"
     },
     {
-      "date": "",
-      "filename": "history1.jsonl.gz",
+      "date": "2020-01-05",
+      "filename": "2020-01-05-history.jsonl.gz",
       "filetype": "jsonl",
       "last_modified": "",
-      "lines": 50,
-      "size": 19918,
-      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/history1.jsonl.gz?api_key=default"
+      "lines": 5,
+      "size": 1000,
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/2020-01-05-history.jsonl.gz?api_key=default"
     },
     {
       "date": "",
-      "filename": "history2.jsonl.gz",
+      "filename": "2020-01-04-history.jsonl.gz",
       "filetype": "jsonl",
       "last_modified": "",
-      "lines": 50,
-      "size": 19896,
-      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/history2.gz?api_key=default"
+      "lines": 5,
+      "size": 1000,
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/2020-01-04-history.jsonl.gz?api_key=default"
     },
     {
       "date": "",
-      "filename": "history3.jsonl.gz",
+      "filename": "2020-01-03-history.jsonl.gz",
       "filetype": "jsonl",
       "last_modified": "",
-      "lines": 50,
-      "size": 19896,
-      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/history3.gz?api_key=default"
+      "lines": 5,
+      "size": 1000,
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/2020-01-03-history.jsonl.gz?api_key=default"
+    },
+    {
+      "date": "",
+      "filename": "2020-01-02-history.jsonl.gz",
+      "filetype": "jsonl",
+      "last_modified": "",
+      "lines": 5,
+      "size": 1000,
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/2020-01-02-history.jsonl.gz?api_key=default"
+    },
+    {
+      "date": "",
+      "filename": "2019-01-02-history.jsonl.gz",
+      "filetype": "jsonl",
+      "last_modified": "",
+      "lines": 5,
+      "size": 1000,
+      "url": "http://fakeUnpaywall:3000/daily-feed/changefiles/2019-01-02-history.jsonl.gz?api_key=default"
     }
   ]
 }

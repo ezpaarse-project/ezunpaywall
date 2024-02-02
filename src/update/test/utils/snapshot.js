@@ -4,6 +4,8 @@ const path = require('path');
 
 chai.use(chaiHttp);
 
+const checkIfInUpdate = require('./status');
+
 const snapshotsDir = path.resolve(__dirname, '..', 'sources');
 
 // TODO put it in config
@@ -63,8 +65,64 @@ async function updateChangeFile(interval) {
   }
 }
 
+/**
+ * insert file in ezunpaywall.
+ *
+ * @param {string} filename - Filename needed to be insert on ezunpaywall.
+ *
+ * @returns {Promise<void>}
+ */
+async function insertSnapshot(filename, index) {
+  try {
+    await chai.request(updateURL)
+      .post(`/job/changefile/${filename}`)
+      .send({
+        index,
+      })
+      .set('x-api-key', 'changeme');
+  } catch (err) {
+    console.error(`Cannot POST ${updateURL}/snapshot ${err}`);
+    process.exit(1);
+  }
+  let isUpdate = true;
+  while (isUpdate) {
+    await new Promise((resolve) => { setTimeout(resolve, 100); });
+    isUpdate = await checkIfInUpdate();
+  }
+}
+
+/**
+ * insert file in ezunpaywall.
+ *
+ * @param {string} filename - Filename needed to be insert on ezunpaywall.
+ *
+ * @returns {Promise<void>}
+ */
+async function insertInHistory(startDate, endDate) {
+  try {
+    await chai.request(updateURL)
+      .post('/job/history')
+      .send({
+        indexBase: 'unpaywall_base',
+        startDate,
+        endDate,
+      })
+      .set('x-api-key', 'changeme');
+  } catch (err) {
+    console.error(`Cannot POST ${updateURL}/snapshot ${err}`);
+    process.exit(1);
+  }
+  let isUpdate = true;
+  while (isUpdate) {
+    await new Promise((resolve) => { setTimeout(resolve, 100); });
+    isUpdate = await checkIfInUpdate();
+  }
+}
+
 module.exports = {
   addSnapshot,
   deleteFile,
   updateChangeFile,
+  insertSnapshot,
+  insertInHistory,
 };

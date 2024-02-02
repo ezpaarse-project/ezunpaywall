@@ -126,7 +126,7 @@ async function GetByDOI(parent, args, contextValue, info) {
 
     });
   } catch (err) {
-    logger.error('[elastic] Cannot request elastic', err);
+    logger.error('[elastic]: Cannot request elastic', err);
     return null;
   }
   // eslint-disable-next-line no-underscore-dangle

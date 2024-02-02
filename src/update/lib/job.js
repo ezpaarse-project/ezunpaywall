@@ -109,6 +109,7 @@ async function insertChangefilesOnPeriod(jobConfig) {
  * Insert on elastic the content of file installed on ezunpaywall.
  *
  * @param {Object} jobConfig - Config of job.
+ * @param {string} jobConfig.filename - Filename.
  * @param {string} jobConfig.index - Name of the index to which the data will be inserted.
  * @param {number} jobConfig.offset - Line of the snapshot at which the data insertion starts.
  * @param {number} jobConfig.limit - Line in the file where the insertion stops.

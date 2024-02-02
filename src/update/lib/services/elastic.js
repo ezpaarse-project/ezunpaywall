@@ -17,7 +17,7 @@ if (isProd) {
   try {
     ca = fs.readFileSync(caPath, 'utf8');
   } catch (err) {
-    logger.error(`[elastic] Cannot read elastic certificate file in [${caPath}]`, err);
+    logger.error(`[elastic]: Cannot read elastic certificate file in [${caPath}]`, err);
   }
   ssl = {
     ca,
@@ -47,11 +47,11 @@ async function pingElastic() {
   try {
     elasticStatus = await elasticClient.ping();
   } catch (err) {
-    logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
+    logger.error(`[elastic]: Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
     return err.message;
   }
   if (elasticStatus?.statusCode !== 200) {
-    logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);
+    logger.error(`[elastic]: Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);
     return false;
   }
   return true;
@@ -100,7 +100,7 @@ async function initAlias(indexName, mapping, aliasName) {
   try {
     await createIndex(indexName, mapping);
   } catch (err) {
-    logger.error(`[elastic] Cannot create index [${indexName}]`, err);
+    logger.error(`[elastic]: Cannot create index [${indexName}]`, err);
     return;
   }
 
@@ -108,13 +108,13 @@ async function initAlias(indexName, mapping, aliasName) {
     const { body: aliasExists } = await elasticClient.indices.existsAlias({ name: aliasName });
 
     if (aliasExists) {
-      logger.info(`[elastic] Alias [${aliasName}] already exists`);
+      logger.info(`[elastic]: Alias [${aliasName}] already exists`);
     } else {
-      logger.info(`[elastic] Creating alias [${aliasName}] pointing to index [${indexName}]`);
+      logger.info(`[elastic]: Creating alias [${aliasName}] pointing to index [${indexName}]`);
       await elasticClient.indices.putAlias({ index: indexName, name: aliasName });
     }
   } catch (err) {
-    logger.error(`[elastic] Cannot create alias [${aliasName}] pointing to index [${indexName}]`, err);
+    logger.error(`[elastic]: Cannot create alias [${aliasName}] pointing to index [${indexName}]`, err);
   }
 }
 
@@ -142,7 +142,7 @@ async function searchByDoiAsID(dois, index) {
 
     });
   } catch (err) {
-    logger.error('[elastic] Cannot search documents with DOI as ID', err);
+    logger.error('[elastic]: Cannot search documents with DOI as ID', err);
     return null;
   }
   // eslint-disable-next-line no-underscore-dangle
@@ -179,7 +179,7 @@ async function searchWithRange(date, param, rangeParam, index) {
       },
     });
   } catch (err) {
-    logger.error('[elastic] Cannot request elastic', err);
+    logger.error('[elastic]: Cannot request elastic', err);
     return null;
   }
   // eslint-disable-next-line no-underscore-dangle

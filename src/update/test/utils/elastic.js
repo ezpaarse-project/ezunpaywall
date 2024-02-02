@@ -201,7 +201,7 @@ async function getAllData(index) {
 
     });
   } catch (err) {
-    console.error('[elastic] Cannot request elastic', err);
+    console.error('[elastic]: Cannot request elastic', err);
     return null;
   }
   // eslint-disable-next-line no-underscore-dangle

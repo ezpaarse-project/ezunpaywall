@@ -17,7 +17,7 @@ if (isProd) {
   try {
     ca = fs.readFileSync(caPath, 'utf8');
   } catch (err) {
-    logger.error(`[elastic] Cannot read elastic certificate file in [${caPath}]`, err);
+    logger.error(`[elastic]: Cannot read elastic certificate file in [${caPath}]`, err);
   }
   ssl = {
     ca,
@@ -47,11 +47,11 @@ async function pingElastic() {
   try {
     elasticStatus = await elasticClient.ping();
   } catch (err) {
-    logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
+    logger.error(`[elastic]: Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
     return false;
   }
   if (elasticStatus?.statusCode !== 200) {
-    logger.error(`[elastic] Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);
+    logger.error(`[elastic]: Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);
     return false;
   }
   return true;
@@ -79,7 +79,7 @@ async function getMetrics(index) {
       index,
     }, { requestTimeout: '600s' });
   } catch (err) {
-    logger.error(`[elastic] Cannot count on index [${index}]`, err);
+    logger.error(`[elastic]: Cannot count on index [${index}]`, err);
     return null;
   }
 
@@ -124,7 +124,7 @@ async function getMetrics(index) {
       },
     }, { requestTimeout: '600s' });
   } catch (err) {
-    logger.error('[elastic] Cannot get unpaywall metric', err);
+    logger.error('[elastic]: Cannot get unpaywall metric', err);
     return null;
   }
 

@@ -148,7 +148,7 @@ async function unpaywall(parent, args, req, info) {
 
     });
   } catch (err) {
-    logger.error('[elastic] Cannot request elastic', err);
+    logger.error('[elastic]: Cannot request elastic', err);
     return null;
   }
   // eslint-disable-next-line no-underscore-dangle
