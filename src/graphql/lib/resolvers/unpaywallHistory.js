@@ -44,7 +44,7 @@ async function unpaywall(parent, args, req, info) {
       {
         range: {
           updated: {
-            lte: date,
+            gte: date,
           },
         },
       },
@@ -53,7 +53,7 @@ async function unpaywall(parent, args, req, info) {
       {
         range: {
           endValidity: {
-            gt: date,
+            lt: date,
           },
         },
       },

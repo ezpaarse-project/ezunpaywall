@@ -51,6 +51,7 @@ describe('Test POST 2 unpaywallHistory resolver', () => {
       expect(res).have.status(200);
 
       const data = res?.body?.data?.unpaywallHistory;
+      console.log(data);
       expect(data).be.a('array');
       expect(data[0]).have.property('doi').eq(doi1);
       expect(data[0]).have.property('is_oa').eq(true);
