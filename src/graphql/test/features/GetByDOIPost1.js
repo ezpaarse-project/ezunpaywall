@@ -2,45 +2,44 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const mappingUnpaywall = require('./mapping/unpaywall.json');
+const mappingUnpaywall = require('../mapping/unpaywall.json');
 
 const {
   createIndex,
   deleteIndex,
   insertDataUnpaywall,
-} = require('./utils/elastic');
+} = require('../utils/elastic');
 
-const ping = require('./utils/ping');
+const ping = require('../utils/ping');
 
 const {
   loadDevAPIKey,
   deleteAllAPIKey,
-} = require('./utils/apikey');
+} = require('../utils/apikey');
 
 chai.use(chaiHttp);
 
 const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
-const doi1 = '10.1186/s40510-015-0109-6'; // ligne 1 of fake1.jsonl
-const doi2 = '10.14393/ufu.di.2018.728'; // line 35 of fake1.jsonl
+const doi1 = '1';
+const doi2 = '6';
 
-describe('test graphqlRequest POST', () => {
+describe('Test POST 1 GetByDOI resolver', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
-    await deleteIndex('unpaywall-test');
-    await createIndex('unpaywall-test', mappingUnpaywall);
-    await insertDataUnpaywall();
+    await deleteIndex('unpaywall_base');
+    await createIndex('unpaywall_base', mappingUnpaywall);
+    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall_base');
   });
 
   describe('POST: get unpaywall data with one DOI', () => {
-    it(`should get unpaywall data - {GetByDOI(dois:["${doi1}"]){doi, is_oa}}`, async () => {
+    it(`should get unpaywall data - { GetByDOI(dois: ["${doi1}"]) { doi, is_oa } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
-        .send({ query: `{GetByDOI(dois:["${doi1}"]){doi, is_oa}}` })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .send({ query: `{ GetByDOI(dois: ["${doi1}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'user');
 
       expect(res).have.status(200);
 
@@ -50,12 +49,12 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('is_oa').eq(true);
     });
 
-    it('It should get empty tab - {GetByDOI(dois:["Coin Coin"]){doi, is_oa}}', async () => {
+    it('It should get empty tab - { GetByDOI(dois: ["Coin Coin"]) { doi, is_oa } }', async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
-        .send({ query: '{GetByDOI(dois:["Coin Coin"]){doi, is_oa}}' })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .send({ query: '{ GetByDOI(dois: ["Coin Coin"]) { doi, is_oa } }' })
+        .set('x-api-key', 'user');
+
       expect(res).have.status(200);
 
       const data = res?.body?.data?.GetByDOI;
@@ -64,13 +63,12 @@ describe('test graphqlRequest POST', () => {
     });
   });
 
-  describe('POST: get unpaywall data with one DOI nor normalized', () => {
-    it(`should get unpaywall data - {GetByDOI(dois:["${doi1.toUpperCase()}"]){doi, is_oa}}`, async () => {
+  describe('POST: get unpaywall data with one DOI not normalized', () => {
+    it(`should get unpaywall data - { GetByDOI(dois: ["${doi1.toUpperCase()}"]) { doi, is_oa } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
-        .send({ query: `{GetByDOI(dois:["${doi1.toUpperCase()}"]){doi, is_oa}}` })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .send({ query: `{ GetByDOI(dois: ["${doi1.toUpperCase()}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'user');
 
       expect(res).have.status(200);
 
@@ -82,12 +80,12 @@ describe('test graphqlRequest POST', () => {
   });
 
   describe('POST: get unpaywall data with two DOI', () => {
-    it(`should get unpaywall data - {GetByDOI(dois:["${doi1}","${doi2}"]){doi, is_oa}}`, async () => {
+    it(`should get unpaywall data - { GetByDOI(dois: ["${doi1}","${doi2}"]) { doi, is_oa } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
-        .send({ query: `{GetByDOI(dois:["${doi1}","${doi2}"]){doi, is_oa}}` })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .send({ query: `{ GetByDOI(dois: ["${doi1}","${doi2}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'user');
+
       expect(res).have.status(200);
 
       const data = res?.body?.data?.GetByDOI;
@@ -96,12 +94,12 @@ describe('test graphqlRequest POST', () => {
       expect(data[1]).have.property('is_oa').eq(false);
     });
 
-    it(`should get unpaywall data - {GetByDOI(dois:["${doi1}","Coin Coin"]){doi, is_oa}}`, async () => {
+    it(`should get unpaywall data - { GetByDOI(dois: ["${doi1}","Coin Coin"]) { doi, is_oa } }`, async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
-        .send({ query: `{GetByDOI(dois:["${doi1}","Coin Coin"]){doi, is_oa}}` })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .send({ query: `{ GetByDOI(dois: ["${doi1}","Coin Coin"]) { doi, is_oa } }` })
+        .set('x-api-key', 'user');
+
       expect(res).have.status(200);
 
       const data = res?.body?.data?.GetByDOI;
@@ -109,12 +107,12 @@ describe('test graphqlRequest POST', () => {
       expect(data[0]).have.property('is_oa').eq(true);
     });
 
-    it('It should get empty tab - {GetByDOI(dois:["Coin Coin","Coin Coin2"]){doi, is_oa}}', async () => {
+    it('It should get empty tab - { GetByDOI(dois: ["Coin Coin","Coin Coin2"]) { doi, is_oa } }', async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
-        .send({ query: '{GetByDOI(dois:["Coin Coin","Coin Coin2"]){doi, is_oa}}' })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .send({ query: '{ GetByDOI(dois: ["Coin Coin","Coin Coin2"]) { doi, is_oa } }' })
+        .set('x-api-key', 'user');
+
       expect(res).have.status(200);
 
       const data = res?.body?.data?.GetByDOI;

@@ -11,7 +11,8 @@
     "port": "ELASTICSEARCH_PORT",
     "user": "ELASTICSEARCH_USERNAME",
     "password": "ELASTICSEARCH_PASSWORD",
-    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS"
+    "indexBase": "ELASTICSEARCH_INDEX_BASE",
+    "indexHistory": "ELASTICSEARCH_INDEX_HISTORY"
   },
   "healthTimeout": "HEALTH_TIMEOUT"
 }

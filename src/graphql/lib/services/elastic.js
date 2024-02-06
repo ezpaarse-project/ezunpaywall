@@ -34,7 +34,7 @@ const elasticClient = new Client({
     },
     ssl,
   },
-  requestTimeout: 2000,
+  requestTimeout: 5000,
 });
 
 /**
@@ -67,19 +67,19 @@ async function pingElastic() {
  * count of oa_status: 'green'
  * count of oa_status: 'closed'
  *
- * @param {string} index elastic index to request
+ * @param {string} indexName - Index name
  *
  * @returns {Promise<Object>} metrics
  */
-async function getMetrics(index) {
+async function getMetrics(indexName) {
   let res;
 
   try {
     res = await elasticClient.count({
-      index,
+      index: indexName,
     }, { requestTimeout: '600s' });
   } catch (err) {
-    logger.error(`[elastic]: Cannot count on index [${index}]`, err);
+    logger.error(`[elastic]: Cannot count on index [${indexName}]`, err);
     return null;
   }
 
@@ -87,7 +87,7 @@ async function getMetrics(index) {
 
   try {
     res = await elasticClient.search({
-      index,
+      index: indexName,
       body: {
         aggs: {
           isOA: {
@@ -147,8 +147,33 @@ async function getMetrics(index) {
   };
 }
 
+/**
+ * Search unpaywall document in elastic
+ * @param {string} indexName - Index name
+ * @param {number} size - Size of elements requested
+ * @param {Object} body - Config of elastic request
+ *
+ * @returns {Object} - Elastic response
+ */
+async function search(indexName, size, body) {
+  let res;
+  try {
+    res = await elasticClient.search({
+      index: indexName,
+      size,
+      body,
+    });
+  } catch (err) {
+    logger.error(`[elastic]: Cannot request elastic in index [${indexName}]`, err);
+    throw err;
+  }
+  // eslint-disable-next-line no-underscore-dangle
+  return res.body.hits.hits.map((hit) => hit._source);
+}
+
 module.exports = {
   elasticClient,
   pingElastic,
   getMetrics,
+  search,
 };

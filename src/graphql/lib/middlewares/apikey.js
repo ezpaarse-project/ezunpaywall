@@ -1,14 +1,9 @@
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
 const graphqlFields = require('graphql-fields');
-
-const { redisClient } = require('../services/redis');
-const { elasticClient } = require('../services/elastic');
-
 const logger = require('../logger');
+const { redisClient } = require('../services/redis');
 
 /**
- * Flatten nested properties of an object by seperating keys with dots.
+ * Flatten nested properties of an object by separating keys with dots.
  * Example: { foo: { bar: 'foo' } } => { 'foo.bar': 'foo' }
  *
  * @param {Object} obj - Object need to be flatten.
@@ -37,7 +32,13 @@ function flatten(obj) {
   return flattened;
 }
 
-async function unpaywall(parent, args, req, info) {
+/**
+ *
+ * @param {*} req - Request
+ * @param {*} args - Graphql args
+ * @param {*} info - Info about graphql
+ */
+async function checkApikey(req, args, info) {
   const apikey = req.get('X-API-KEY');
 
   if (!apikey) {
@@ -78,13 +79,7 @@ async function unpaywall(parent, args, req, info) {
     }
   }
 
-  let index = req?.get('index');
-
   const { attributes } = req;
-
-  if (!index) {
-    index = 'unpaywall_history';
-  }
 
   if (!attributes.includes('*')) {
     const test = graphqlFields(info);
@@ -96,63 +91,6 @@ async function unpaywall(parent, args, req, info) {
       }
     });
   }
-
-  const dois = [];
-
-  req.countDOI = args?.dois?.length;
-
-  // Normalize request
-  args.dois.forEach((doi) => {
-    dois.push(doi.toLowerCase());
-  });
-
-  const filter = [{ terms: { doi: dois } }];
-
-  const { date } = args;
-  if (date) {
-    const rangeLte = {
-      range: {
-        updated: {
-          lte: date,
-        },
-      },
-    };
-
-    const rangeGte = {
-      range: {
-        endValidity: {
-          gt: date,
-        },
-      },
-    };
-
-    filter.push(rangeLte);
-    filter.push(rangeGte);
-  }
-
-  const query = {
-    bool: {
-      filter,
-    },
-  };
-
-  let res;
-  try {
-    res = await elasticClient.search({
-      index,
-      body: {
-        query,
-        sort: 'updated',
-        _source: attributes,
-      },
-
-    });
-  } catch (err) {
-    logger.error('[elastic]: Cannot request elastic', err);
-    return null;
-  }
-  // eslint-disable-next-line no-underscore-dangle
-  return res.body.hits.hits.map((hit) => hit._source);
 }
 
-module.exports = unpaywall;
+module.exports = checkApikey;

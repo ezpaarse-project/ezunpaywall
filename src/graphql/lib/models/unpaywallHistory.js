@@ -1,5 +1,5 @@
-const unpaywallType2 = `
-  type UnpaywallType2 {
+const unpaywallHistoryType = `
+  type unpaywallHistoryType {
     doi: ID
     best_oa_location: OaLocationType
     first_oa_location: OaLocationType
@@ -27,4 +27,4 @@ const unpaywallType2 = `
   }
 `;
 
-module.exports = unpaywallType2;
+module.exports = unpaywallHistoryType;

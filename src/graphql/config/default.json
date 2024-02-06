@@ -11,7 +11,8 @@
     "port": 9200,
     "user": "elastic",
     "password": "changeme",
-    "indexAlias": "upw"
+    "indexBase": "unpaywall_base",
+    "indexHistory": "unpaywall_history"
   },
   "healthTimeout": 3000
 }

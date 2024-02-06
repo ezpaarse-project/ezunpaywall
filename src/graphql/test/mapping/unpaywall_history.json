@@ -57,6 +57,9 @@
           }
         }
       },
+      "date": {
+        "type": "date"
+      },
       "data_standard": {
         "type": "long"
       },
@@ -65,6 +68,9 @@
       },
       "doi_url": {
         "type": "keyword"
+      },
+      "endValidity": {
+        "type": "date"
       },
       "first_oa_location": {
         "properties": {

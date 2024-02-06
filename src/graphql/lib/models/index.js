@@ -1,19 +1,19 @@
-const unpaywallType = require('./unpaywall');
-const unpaywallType2 = require('./unpaywall2');
-const oaLocationType = require('./oalocation');
-const zauthorsType = require('./zauthors');
+const unpaywall = require('./unpaywall');
+const unpaywallHistory = require('./unpaywallHistory');
+const oaLocation = require('./oalocation');
+const zauthors = require('./zauthors');
 const metrics = require('./metrics');
 
 const typeDefs = `#graphql
-  ${unpaywallType}
-  ${unpaywallType2}
-  ${oaLocationType}
-  ${zauthorsType}
+  ${unpaywall}
+  ${unpaywallHistory}
+  ${oaLocation}
+  ${zauthors}
   ${metrics}
 
   type Query {
     unpaywall(dois: [ID!]!): [UnpaywallType]
-    unpaywall2(dois: [ID!]!, date: String): [UnpaywallType2]
+    unpaywallHistory(dois: [ID!]!, date: String): [unpaywallHistoryType]
     GetByDOI(dois: [ID!]!): [UnpaywallType]
     metrics: MetricsType
     dailyMetrics: MetricsType
