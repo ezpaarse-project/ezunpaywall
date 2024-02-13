@@ -43,22 +43,23 @@ async function unpaywall(parent, args, req, info) {
     body.query.bool.filter.push(
       {
         range: {
+          endValidity: {
+            gte: date,
+          },
+        },
+      },
+      {
+        range: {
           updated: {
             lte: date,
           },
         },
       },
     );
-    body.query.bool.filter.push(
-      {
-        range: {
-          endValidity: {
-            gt: date,
-          },
-        },
-      },
-    );
     body.sort = 'updated';
+    body.collapse = {
+      field: 'doi',
+    };
   }
 
   let historyRes = [];
@@ -69,6 +70,9 @@ async function unpaywall(parent, args, req, info) {
     logger.error(`[apollo]: Cannot search document in index [${index}]`, err);
     throw err;
   }
+
+  const DOIInResponse = new Set(historyRes.map((res) => res.doi));
+  const DOINotInResponse = dois.filter((doi) => !DOIInResponse.has(doi));
 
   if (!date) {
     let baseRes;
@@ -83,8 +87,15 @@ async function unpaywall(parent, args, req, info) {
     historyRes.unshift(baseRes[0]);
   }
 
-  if (date && historyRes.length === 0) {
+  if (date && DOINotInResponse.length !== 0) {
     cloneBody.query.bool.filter.push(
+      {
+        range: {
+          updated: {
+            lt: date,
+          },
+        },
+      },
       {
         range: {
           referencedAt: {
@@ -93,9 +104,9 @@ async function unpaywall(parent, args, req, info) {
         },
       },
     );
+    cloneBody.query.bool.filter[0].terms.doi = DOINotInResponse;
     let baseRes;
     // get current data
-    // TODO if date is less than referencedAt, get empty array
     try {
       baseRes = await search(indexBase, dois.length, cloneBody);
     } catch (err) {
@@ -103,7 +114,7 @@ async function unpaywall(parent, args, req, info) {
       throw err;
     }
 
-    return baseRes;
+    return [...historyRes, ...baseRes];
   }
 
   return historyRes;
