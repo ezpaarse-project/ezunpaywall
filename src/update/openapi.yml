@@ -463,13 +463,13 @@ paths:
         '404':
           $ref: '#/components/responses/File-not-found'
   
-  /update/snapshots:
+  /update/files:
     get:
       tags:
         - job
-      operationId: get-update-snapshots
-      summary: Get snapshots.
-      description: Get list of snapshot or latest snapshot.
+      operationId: get-update-files
+      summary: Get files.
+      description: Get list of file or latest file.
       security:
         - x-api-key: []
       parameters:
@@ -481,9 +481,9 @@ paths:
             type: boolean
       responses:
         '200':
-          description: snapshot
+          description: files
           content:
-            Lists of snapshots:
+            Lists of files:
               examples:
                 response:
                   value:
@@ -491,13 +491,13 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
 
-  /update/snapshots/${filename}:
+  /update/files/${filename}:
     get:
       tags:
         - job
-      operationId: get-update-snapshots-$-filename
-      summary: Get snapshot.
-      description: Get snapshot with his filename.
+      operationId: get-update-files-$-filename
+      summary: Get file.
+      description: Get file with his filename.
       security:
         - x-api-key: []
       parameters:
@@ -509,7 +509,7 @@ paths:
             type: string
       responses:
         '200':
-          description: snapshot
+          description: file
         '401':
           $ref: '#/components/responses/Not-authorized'
         '404':

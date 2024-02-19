@@ -15,8 +15,7 @@ async function getState() {
   let res;
   try {
     res = await chai.request(updateURL)
-      .get('/states')
-      .query({ latest: true });
+      .get('/states');
   } catch (err) {
     console.error(`Cannot GET state: ${err}`);
     process.exit(1);

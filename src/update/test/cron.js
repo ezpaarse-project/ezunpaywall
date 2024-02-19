@@ -63,14 +63,14 @@ describe('Test: cron manage', () => {
     it('Should return updated config of cron', async () => {
       const res = await chai.request(updateURL)
         .patch('/cron/unpaywall')
-        .send({ index: 'unpaywall2' })
+        .send({ index: 'unpaywall-test' })
         .set('x-api-key', 'changeme');
 
       expect(res).have.status(200);
 
       expect(res.body).have.property('schedule').equal('0 0 0 * * *');
       expect(res.body).have.property('active').equal(false);
-      expect(res.body).have.property('index').equal('unpaywall2');
+      expect(res.body).have.property('index').equal('unpaywall-test');
       expect(res.body).have.property('interval').equal('day');
     });
   });

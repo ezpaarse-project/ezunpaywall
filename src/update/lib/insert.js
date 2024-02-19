@@ -201,6 +201,7 @@ async function insertDataUnpaywall(insertConfig) {
       step.took = (new Date() - start) / 1000;
       updateLatestStep(step);
     }
+    // log
     if (step.linesRead % 100000 === 0) {
       logger.info(`[job][insert]: ${step.linesRead} Lines reads`);
       updateLatestStep(step);

@@ -7,7 +7,7 @@ const dev = require('../middlewares/dev');
 const validateLatest = require('../middlewares/format/latest');
 const validateFilename = require('../middlewares/format/filename');
 
-const { getFiles, uploadFile, deleteInstalledFile } = require('../controllers/file');
+const { getFiles, uploadFile, deleteInstalledFile } = require('../controllers/files');
 
 /**
  * Route that give the list of files installed on ezunpaywall of the most recent file.
@@ -15,7 +15,7 @@ const { getFiles, uploadFile, deleteInstalledFile } = require('../controllers/fi
  *
  * This route can take in query latest.
  */
-router.get('/snapshots', checkAuth, validateLatest, getFiles);
+router.get('/files', checkAuth, validateLatest, getFiles);
 
 /**
  * Route that upload a file on ezunpaywall.
@@ -24,12 +24,12 @@ router.get('/snapshots', checkAuth, validateLatest, getFiles);
  *
  * This route need a body that contains the file to upload.
  */
-router.post('/snapshots', dev, checkAuth, upload.single('file'), uploadFile);
+router.post('/files', dev, checkAuth, upload.single('file'), uploadFile);
 
 /**
  * Route that delete a file on ezunpaywall.
  * Auth required.
  */
-router.delete('/snapshots/:filename', dev, checkAuth, validateFilename, deleteInstalledFile);
+router.delete('/files/:filename', dev, checkAuth, validateFilename, deleteInstalledFile);
 
 module.exports = router;

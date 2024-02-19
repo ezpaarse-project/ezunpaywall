@@ -213,6 +213,51 @@ async function getAlias() {
   return alias;
 }
 
+/**
+ * delete all indices in elastic.
+ *
+ * @param {Object} requestConfig - config of request (timeouts, headers, ignore, and so on).
+ *
+ * @return {Promise<>} index.
+ */
+async function removeAllIndices(requestConfig) {
+  if (process.env.NODE_ENV !== 'dev') { return null; }
+
+  const res = await elasticClient.cat.indices({ format: 'json' });
+  let indices = res.body;
+  indices = indices.filter((index) => index.index.charAt(0) !== '.').map((index) => index.index);
+
+  if (indices.length === 0) { return null; }
+
+  return elasticClient.indices.delete({
+    index: indices,
+    requestConfig,
+  });
+}
+
+/**
+ * Count how many documents there are in an index.
+ *
+ * @param {string} indexName - Name of index.
+ *
+ * @returns {Promise<number>} number of document.
+ */
+async function countDocuments(indexName) {
+  const exist = await checkIfIndexExist(indexName);
+  let data;
+  if (exist) {
+    try {
+      data = await elasticClient.count({
+        index: indexName,
+      });
+    } catch (err) {
+      logger.error(`[elastic]: Cannot count document in index [${indexName}]`);
+      throw err;
+    }
+  }
+  return data?.body?.count ? data?.body?.count : 0;
+}
+
 module.exports = {
   elasticClient,
   pingElastic,
@@ -221,7 +266,9 @@ module.exports = {
   searchByDoiAsID,
   refreshIndex,
   bulk,
+  removeAllIndices,
   searchWithRange,
   getIndices,
   getAlias,
+  countDocuments,
 };

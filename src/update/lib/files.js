@@ -55,7 +55,7 @@ async function getMostRecentFile(dir) {
 }
 
 /**
- * Delete file installed on ezunpaywall on "/data/snapshots".
+ * Delete file installed on ezunpaywall on [/data/files].
  *
  * @param {string} filepath - Filepath.
  *
@@ -98,9 +98,47 @@ async function deleteFilesInDir(directory, numberOfDays) {
   return deletedFiles;
 }
 
+/**
+ * Copy file into data
+ *
+ * @param {*} filePath add file to data
+ * @returns {Promise<void>}
+ */
+async function addFile(filePath) {
+  if (process.env.NODE_ENV !== 'development') { return null; }
+  const filename = path.basename(filePath);
+  const destination = path.resolve(dirPath.snapshotsDir, filename);
+  try {
+    await fs.copyFile(filePath, destination);
+  } catch (err) {
+    logger.error(`[file]: Cannot add file [${filePath}]`);
+  }
+  return true;
+}
+
+/**
+ * Deletes files in [data/files].
+ *
+ * @returns {Promise<Array<string>>} List of deleted files.
+ */
+async function deleteAllFiles() {
+  const files = await fs.readdir(dirPath.snapshotsDir);
+
+  const deletedFiles = [];
+
+  for (const file of files) {
+    deletedFiles.push(file);
+    await deleteFile(path.join(dirPath.snapshotsDir, file));
+  }
+
+  return deletedFiles;
+}
+
 module.exports = {
   getPathOfDirectory,
   getMostRecentFile,
   deleteFilesInDir,
+  deleteAllFiles,
   deleteFile,
+  addFile,
 };

@@ -17,7 +17,7 @@ const routerState = require('./lib/routers/state');
 const routerJob = require('./lib/routers/job');
 const routerReport = require('./lib/routers/report');
 const routerCron = require('./lib/routers/cron');
-const routerSnapshot = require('./lib/routers/snapshot');
+const routerFiles = require('./lib/routers/files');
 
 require('./lib/cron/file');
 
@@ -72,7 +72,7 @@ app.use(routerState);
 app.use(routerJob);
 app.use(routerReport);
 app.use(routerCron);
-app.use(routerSnapshot);
+app.use(routerFiles);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));
