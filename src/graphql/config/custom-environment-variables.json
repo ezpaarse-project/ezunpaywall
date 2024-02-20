@@ -1,6 +1,7 @@
 { 
   "nodeEnv": "NODE_ENV",
   "accessLogRotate": "ACCESS_LOG_ROTATE",
+  "timezone": "TIMEZONE",
   "redis": {
     "host": "REDIS_HOST",
     "port": "REDIS_PORT",

@@ -1,6 +1,7 @@
 { 
   "nodeEnv": "development",
   "accessLogRotate": false,
+  "timezone": "Europe/Paris",
   "redis": {
     "host": "redis",
     "port": 6379,

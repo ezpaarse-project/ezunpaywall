@@ -1,4 +1,6 @@
 const { CronJob } = require('cron');
+const { timezone } = require('config');
+
 const logger = require('./logger');
 
 const { redisClient } = require('./services/redis');
@@ -31,6 +33,6 @@ const cronDemo = new CronJob('0 0 0 * * *', async () => {
     return Promise.reject(err);
   }
   logger.info('[cron][demo]: Demo apikey has been reset');
-}, null, true, 'Europe/Paris');
+}, null, true, timezone);
 
 module.exports = cronDemo;

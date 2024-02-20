@@ -14,6 +14,7 @@ warn: [config]: Elastic password has the default value
 info: {
   "nodeEnv": "development",
   "accessLogRotate": false,
+  "timezone": "Europe/Paris"
   "redis": {
     "host": "redis",
     "port": "6379",
@@ -37,6 +38,7 @@ info: {
 | --- | --- | --- |
 | NODE_ENV | development | environment of node |
 | ACCESS_LOG_ROTATE | false | Set to true if you want to use access log rotation |
+| TIMEZONE | Europe/Paris | timezone of app used in cron |
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
@@ -68,7 +70,7 @@ You can put your API key in the query or in the header.
 ```bash
 # GET
 curl --request GET \
-  --url 'http://localhost/api/graphql?query=\{unpaywall(dois:\[\"10.1001/jama.2016.9797\"\])\{doi,is_oa,oa_status,data_standard,updated,best_oa_location\{evidence\}\}\}' \
+  --url 'https://unpaywall.inist.fr/api/graphql?query=\{unpaywall(dois:\[\"10.1001/jama.2016.9797\"\])\{doi,is_oa,oa_status,data_standard,updated,best_oa_location\{evidence\}\}\}' \
   --header 'Content-type: application/json' \
   --header 'x-api-key: demo'
 
@@ -79,6 +81,10 @@ curl --request POST \
   --header 'x-api-key: demo' \
   --data '{"query":"{unpaywall(dois:[\"10.1001/jama.2016.9797\"]){doi,is_oa,oa_status,data_standard,updated,best_oa_location {endpoint_id}}}"}'
 ```
+
+## Cron
+
+One cron automatically update metrics of unpaywall data. the elastic request takes time and is saved locally.
 
 ## Log format
 

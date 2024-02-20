@@ -15,6 +15,7 @@ warn: [config]: Redis password has the default value
 info: {
   "nodeEnv": "development",
   "accessLogRotate": false,
+  "timezone": "Europe/Paris"
   "redis": {
     "host": "redis",
     "port": "6379",
@@ -31,11 +32,16 @@ info: {
 | --- | --- | --- |
 | NODE_ENV | development | environment of node |
 | ACCESS_LOG_ROTATE | false | Set to true if you want to use access log rotation |
+| TIMEZONE | Europe/Paris | timezone of app used in cron |
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
 | ADMIN_APIKEY | changeme | admin API key|
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |
+
+## Cron
+
+One cron automatically reset the counter at 100 000 of demo API key.
 
 ## Log format
 

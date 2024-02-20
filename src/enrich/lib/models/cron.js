@@ -1,4 +1,5 @@
 const { CronJob } = require('cron');
+const { timezone } = require('config');
 
 const logger = require('../logger');
 
@@ -19,7 +20,7 @@ class Cron {
     this.schedule = schedule;
     this.task = task;
     this.active = active;
-    this.process = new CronJob(schedule, this.task, null, false, 'Europe/Paris');
+    this.process = new CronJob(schedule, this.task, null, false, timezone);
     if (active) {
       this.start();
     }
@@ -47,7 +48,7 @@ class Cron {
     this.process.stop();
     this.task = task;
     logger.info(`[cron][${this.name}]: config: task updated`);
-    this.process = new CronJob(this.schedule, this.task, null, false, 'Europe/Paris');
+    this.process = new CronJob(this.schedule, this.task, null, false, timezone);
     if (this.active) this.process.start();
   }
 
@@ -62,7 +63,7 @@ class Cron {
     logger.info(`[cron][${this.name}]: config - schedule is updated [${this.schedule}]`);
     this.process = new CronJob(this.schedule, async () => {
       await this.task();
-    }, null, false, 'Europe/Paris');
+    }, null, false, timezone);
     if (this.active) this.process.start();
   }
 
