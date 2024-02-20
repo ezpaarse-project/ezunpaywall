@@ -3,14 +3,14 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const { countDocuments } = require('../utils/elastic');
-const { addSnapshot, updateChangeFile } = require('../utils/snapshot');
-const { getState } = require('../utils/state');
-const getReport = require('../utils/report');
-const checkIfInUpdate = require('../utils/status');
+const { countDocuments } = require('./utils/elastic');
+const { addSnapshot, updateChangeFile } = require('./utils/snapshot');
+const { getState } = require('./utils/state');
+const getReport = require('./utils/report');
+const checkIfInUpdate = require('./utils/status');
 
-const ping = require('../utils/ping');
-const reset = require('../utils/reset');
+const ping = require('./utils/ping');
+const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 

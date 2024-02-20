@@ -3,18 +3,18 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const ping = require('../utils/ping');
-const reset = require('../utils/reset');
+const ping = require('./utils/ping');
+const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
-const { countDocuments } = require('../utils/elastic');
-const { addSnapshot, insertSnapshot, insertInHistory } = require('../utils/snapshot');
-const { getState } = require('../utils/state');
-const getReport = require('../utils/report');
-const checkIfInUpdate = require('../utils/status');
+const { countDocuments } = require('./utils/elastic');
+const { addSnapshot, insertSnapshot, insertInHistory } = require('./utils/snapshot');
+const { getState } = require('./utils/state');
+const getReport = require('./utils/report');
+const checkIfInUpdate = require('./utils/status');
 
 const date2 = '2020-01-02';
 const date3 = '2020-01-03';

@@ -2,8 +2,8 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const unpaywallEnrichedMapping = require('../../mapping/unpaywall.json');
-const unpaywallHistoryMapping = require('../../mapping/unpaywall_history.json');
+const unpaywallEnrichedMapping = require('../mapping/unpaywall.json');
+const unpaywallHistoryMapping = require('../mapping/unpaywall_history.json');
 
 const {
   countDocuments,
@@ -11,7 +11,7 @@ const {
   deleteIndex,
   getAllData,
   createIndex,
-} = require('../utils/elastic');
+} = require('./utils/elastic');
 
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 

@@ -4,13 +4,13 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { format } = require('date-fns');
 
-const { countDocuments } = require('../utils/elastic');
-const { getState } = require('../utils/state');
-const getReport = require('../utils/report');
-const checkIfInUpdate = require('../utils/status');
+const { countDocuments } = require('./utils/elastic');
+const { getState } = require('./utils/state');
+const getReport = require('./utils/report');
+const checkIfInUpdate = require('./utils/status');
 
-const ping = require('../utils/ping');
-const reset = require('../utils/reset');
+const ping = require('./utils/ping');
+const reset = require('./utils/reset');
 
 chai.use(chaiHttp);
 

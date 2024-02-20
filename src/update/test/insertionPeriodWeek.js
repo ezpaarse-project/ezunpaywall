@@ -3,14 +3,14 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const { updateChangeFile } = require('../utils/snapshot');
-const { getState } = require('../utils/state');
-const getReport = require('../utils/report');
-const { countDocuments } = require('../utils/elastic');
-const checkIfInUpdate = require('../utils/status');
+const { updateChangeFile } = require('./utils/snapshot');
+const { getState } = require('./utils/state');
+const getReport = require('./utils/report');
+const { countDocuments } = require('./utils/elastic');
+const checkIfInUpdate = require('./utils/status');
 
-const ping = require('../utils/ping');
-const reset = require('../utils/reset');
+const ping = require('./utils/ping');
+const reset = require('./utils/reset');
 
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 

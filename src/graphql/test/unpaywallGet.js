@@ -2,20 +2,20 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const mappingUnpaywall = require('../mapping/unpaywall.json');
+const mappingUnpaywall = require('./mapping/unpaywall.json');
 
 const {
   createIndex,
   deleteIndex,
   insertDataUnpaywall,
-} = require('../utils/elastic');
+} = require('./utils/elastic');
 
-const ping = require('../utils/ping');
+const ping = require('./utils/ping');
 
 const {
   loadDevAPIKey,
   deleteAllAPIKey,
-} = require('../utils/apikey');
+} = require('./utils/apikey');
 
 chai.use(chaiHttp);
 
