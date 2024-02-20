@@ -163,3 +163,12 @@ This cron automatically updates unpaywall data and populates the history. This c
 ```
 :ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"
 ```
+
+## Test
+
+```
+# Functional tests
+npm run test
+# Unit test
+# it's your turn to play
+```

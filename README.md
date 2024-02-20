@@ -91,17 +91,17 @@ To run tests, you need ezunpaywall to be launched in dev mode with fakeUnpaywall
 
 ```bash
 # there are alias on root folder
-$ ~/ezunpaywall npm run test
-$ ~/ezunpaywall npm run test:apikey
-$ ~/ezunpaywall npm run test:enrich
-$ ~/ezunpaywall npm run test:graphql
-$ ~/ezunpaywall npm run test:update
+npm run test
+npm run test:apikey
+npm run test:enrich
+npm run test:graphql
+npm run test:update
 
 # you can run test for each service
-$ ~/ezunpaywall/src/apikey npm run test
-$ ~/ezunpaywall/src/enrich npm run test
-$ ~/ezunpaywall/src/graphql npm run test
-$ ~/ezunpaywall/src/update npm run test
+ezunpaywall/src/apikey npm run test
+ezunpaywall/src/enrich npm run test
+ezunpaywall/src/graphql npm run test
+ezunpaywall/src/update npm run test
 ```
 ### Deployment
 
@@ -109,7 +109,7 @@ $ ~/ezunpaywall/src/update npm run test
 
 * docker
 * docker compose
-* Unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
+* Unpaywall data in elastic with single node in index with 3 shards measured about 130Gb, it is necessary to provide the necessary place on the hard drive (storage for index + unpaywall file if you want to keep them).
 
 #### Environment variables
 
