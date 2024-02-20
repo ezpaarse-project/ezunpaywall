@@ -28,7 +28,8 @@
   "unpaywallHistoryCron": {
     "schedule": "UNPAYWALL_HISTORY_CRON_SCHEDULE",
     "active": "UNPAYWALL_HISTORY_CRON_ACTIVE",
-    "index": "UNPAYWALL_HISTORY_CRON_INDEX",
+    "indexBase": "UNPAYWALL_HISTORY_CRON_INDEX_BASE",
+    "indexHistory": "UNPAYWALL_HISTORY_CRON_INDEX_HISTORY",
     "interval": "UNPAYWALL_HISTORY_CRON_INTERVAL"
   },
   "apikey": "UPDATE_APIKEY",

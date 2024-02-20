@@ -1,11 +1,17 @@
-# ezunpaywall-health
+# ezunpaywall-nginx
 
-Entry point and reverse proxy of ezunpaywall.
+Entry point and reverse proxy that redirecting all services of ezunpaywall.
 
-## Docker environment variables
+## Environment variables
 
 | name | default | description |
 | --- | --- | --- |
-| NGINX_CONFIG_PATH | ./src/nginx/log/application | nginx config path |
-| NGINX_ACCESS_LOG_PATH | ./src/nginx/log/access | access log output path |
+| FRONTEND_HOST | '' | frontend host | 
+| GRAPHQL_HOST | '' | graphql host |
+| UPDATE_HOST | '' | update host |
+| ENRICH_HOST | '' | enrich host |
+| APIKEY_HOST | '' | apikey host |
+| MAIL_HOST | '' | mail host |
+| HEALTH_HOST | '' | health host |
+| NGINX_HOST | '' | nginx host |
 | NGINX_PORT | 80 | output port |

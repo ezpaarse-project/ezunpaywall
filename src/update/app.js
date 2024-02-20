@@ -34,20 +34,16 @@ const unpaywallDir = path.resolve(dataDir, 'unpaywall');
 fs.ensureDir(path.resolve(unpaywallDir));
 
 const unpaywallReportsDir = path.resolve(unpaywallDir, 'reports');
-const unpaywallStatesDir = path.resolve(unpaywallDir, 'states');
 
 fs.ensureDir(path.resolve(unpaywallReportsDir));
-fs.ensureDir(path.resolve(unpaywallStatesDir));
 
 // create all directories for history unpaywall
 const unpaywallHistoryDir = path.resolve(dataDir, 'unpaywallHistory');
 fs.ensureDir(path.resolve(unpaywallHistoryDir));
 
 const unpaywallHistoryReportsDir = path.resolve(unpaywallHistoryDir, 'reports');
-const unpaywallHistoryStatesDir = path.resolve(unpaywallHistoryDir, 'states');
 
 fs.ensureDir(path.resolve(unpaywallHistoryReportsDir));
-fs.ensureDir(path.resolve(unpaywallHistoryStatesDir));
 
 // create all directories for logs unpaywall
 const logDir = path.resolve(__dirname, 'log');

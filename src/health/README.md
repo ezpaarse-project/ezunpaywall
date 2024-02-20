@@ -1,11 +1,48 @@
 # ezunpaywall-health
 
-Health service indicating the status of the connection between each service.
+Service that verify that all its services are working and communicating well together.
 
-## Service environment variables
+## Config
+
+To set up this service, you can use environment variables. The config is displayed at startup. Sensitive data are not displayed.
+
+```
+# if sensitive data are not updated
+warn: [config]: Redis password has the default value
+warn: [config]: Elastic password has the default value
+warn: [config]: Unpaywall apikey has the default value
+
+info: {
+  "nodeEnv": "development",
+  "graphqlHost": "http://graphql:3000",
+  "updateHost": "http://update:3000",
+  "enrichHost": "http://enrich:3000",
+  "apikeyHost": "http://apikey:3000",
+  "mailHost": "http://mail:3000",
+  "elasticsearch": {
+    "host": "http://elastic",
+    "port": 9200,
+    "user": "elastic",
+    "password": "********"
+  },
+  "unpaywall": {
+    "host": "http://fakeUnpaywall:3000",
+    "apikey": "********"
+  },
+  "redis": {
+    "host": "redis",
+    "port": "6379",
+    "password": "********"
+  },
+  "healthTimeout": 3000
+}
+```
+
+## Environment variables
 
 | name | default | description |
 | --- | --- | --- |
+| NODE_ENV | development | environment of node |
 | GRAPHQL_HOST | http://graphql:3000 | graphql host |
 | ENRICH_HOST | http://enrich:3000 | enrich host |
 | UPDATE_HOST | http://update:3000 | update host |
@@ -15,9 +52,9 @@ Health service indicating the status of the connection between each service.
 | ELASTICSEARCH_PORT | 9200 | elasticsearch port |
 | ELASTICSEARCH_USERNAME | elastic | elasticsearch admin username |
 | ELASTICSEARCH_PASSWORD | changeme | elasticsearch admin password |
+| UNPAYWALL_HOST | http://fakeUnpaywall:3000 | unpaywall host |
+| UNPAYWALL_APIKEY | default | unpaywall apikey |
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
-| UNPAYWALL_HOST | http://fakeUnpaywall:3000 | unpaywall host |
-| UNPAYWALL_APIKEY | default | unpaywall apikey |
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |

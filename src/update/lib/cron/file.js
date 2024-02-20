@@ -16,14 +16,8 @@ async function task() {
   const deletedReportFiles = await deleteFilesInDir(dirPath.unpaywall.reportsDir, 30);
   logger.info(`[cron][files][base]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
 
-  const deletedStateFiles = await deleteFilesInDir(dirPath.unpaywall.statesDir, 30);
-  logger.info(`[cron][files][base]: ${deletedStateFiles?.join(',')} (${deletedStateFiles.length}) states are deleted`);
-
   const deletedHistoryReportFiles = await deleteFilesInDir(dirPath.unpaywall.reportsDir, 30);
   logger.info(`[cron][files][history]: ${deletedReportFiles?.join(',')} (${deletedHistoryReportFiles.length}) reports are deleted`);
-
-  const deletedHistoryStateFiles = await deleteFilesInDir(dirPath.unpaywall.statesDir, 30);
-  logger.info(`[cron][files][history]: ${deletedStateFiles?.join(',')} (${deletedHistoryStateFiles.length}) states are deleted`);
 }
 
 const cron = new Cron('files', '0 0 0 * * *', task, true);

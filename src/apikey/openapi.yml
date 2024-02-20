@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  description: The Apikey service is reserved for the administrator, it allows to manage the API keys
+  description: The Apikey service is reserved for the administrators, it allows to manage the API keys
   version: 1.0.0
   title: Apikey service
   contact:

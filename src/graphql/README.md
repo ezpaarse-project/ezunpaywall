@@ -1,8 +1,37 @@
 # ezunpaywall-graphql
 
-unpaywall data access service
+A graphql API for querying unpaywall data via one or more DOIs.
 
-## Service environment variables
+## Config
+
+To set up this service, you can use environment variables. The config is displayed at startup. Sensitive data are not displayed.
+
+```
+# if sensitive data are not updated
+warn: [config]: Redis password has the default value
+warn: [config]: Elastic password has the default value
+
+info: {
+  "nodeEnv": "development",
+  "accessLogRotate": false,
+  "redis": {
+    "host": "redis",
+    "port": "6379",
+    "password": "********"
+  },
+  "elasticsearch": {
+    "host": "http://elastic",
+    "port": 9200,
+    "user": "elastic",
+    "password": "********",
+    "indexBase": "unpaywall_base",
+    "indexHistory": "unpaywall_history"
+  },
+  "healthTimeout": 3000
+}
+```
+
+## Environment variables
 
 | name | default | description |
 | --- | --- | --- |
@@ -17,3 +46,42 @@ unpaywall data access service
 | ELASTICSEARCH_PASSWORD | changeme | elasticsearch admin password |
 | ELASTICSEARCH_INDEX_ALIAS | upw | graphql entry point |
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |
+
+## Activity diagram
+
+![Activity-diagram](./doc/activity-diagram-graphql.png)
+
+### Object structure
+
+[data-format](https://unpaywall.org/data-format)
+
+## Graphql Request
+
+### API key
+
+You can put your API key in the query or in the header.
+- In the query, use the key: `apikey`
+- in the header, use the key: `x-api-key`
+
+### Curl
+
+```bash
+# GET
+curl --request GET \
+  --url 'http://localhost/api/graphql?query=\{unpaywall(dois:\[\"10.1001/jama.2016.9797\"\])\{doi,is_oa,oa_status,data_standard,updated,best_oa_location\{evidence\}\}\}' \
+  --header 'Content-type: application/json' \
+  --header 'x-api-key: demo'
+
+# POST
+curl --request POST \
+  --url https://unpaywall.inist.fr/api/graphql \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: demo' \
+  --data '{"query":"{unpaywall(dois:[\"10.1001/jama.2016.9797\"]){doi,is_oa,oa_status,data_standard,updated,best_oa_location {endpoint_id}}}"}'
+```
+
+## Log format
+
+```
+:ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"
+```

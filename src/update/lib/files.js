@@ -8,7 +8,7 @@ const dirPath = require('./path');
  * Get path of directory depending on type.
  *
  * @param {string} process - Type of process (unpaywall or unpaywallHistory).
- * @param {string} type - Type of file (states, reports, snapshots).
+ * @param {string} type - Type of file (reports, snapshots).
  *
  * @returns {string} path of directory.
  */

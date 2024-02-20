@@ -1,9 +1,11 @@
 # ezunpaywall
 
-Ezunpaywall is an API and database that queries the Unpaywall database containing free scholarly articles.
+ezunpaywall is a Unpaywall mirror hosted in France by Inist-CNRS of data from Unpaywall since 2020 and updated daily. Unpaywall is a metadata repository of free and open access electronic resources.
+This app is available at https://unpaywall.inist.fr/.
 
 **Table of content**
-- [Structure](#Structure)
+- [Description](#Description)
+- [Network-flow](#Network-flow)
 - [Installation](#Installation)
     - [Development](#Development)
         - [Prerequisites](#Prerequisites)
@@ -12,22 +14,42 @@ Ezunpaywall is an API and database that queries the Unpaywall database containin
     - [Deployment](#Deployment)
         - [Prerequisites](#Prerequisites)
         - [Environment variables](#Environment-variables)
-            - [apikey](/src/apikey/README.md#ezunpaywall-apikey)
-            - [enrich](/src/enrich/README.md#ezunpaywall-enrich)
-            - [frontend](/src/frontend/README.md#ezunpaywall-frontend)
-            - [graphql](/src/graphql/README.md#ezunpaywall-graphql)
-            - [health](/src/health/README.md#ezunpaywall-health)
-            - [mail](/src/mail/README.md#ezunpaywall-mail)
-            - [update](/src/update/README.md#ezunpaywall-update)
 - [Data update](#Data-update)
 - [API Graphql](#API-graphql)
 
-## Structure
+## Description
 
-Unpaywall is made up of several services which are distributed in several docker containers.
-![Structure](/doc/structure.png)
+ezunpaywall operates as a micro-service. It is updated daily with its own update service. Data is stored in an elastic index. To access this data, ezunpaywall offers 2 types of access:
+- A graphql API for querying unpaywall data via one or more DOIs
+- A file enrichment service that allows you to enrich a csv or jsonl file containing a column or a doi key.
 
-for `apikey`, `enrich`, `graphql`, `health`, `mail` and `update` service, a **open api** is available on frontend
+These services are accessible via API keys, which can be managed by the API key service. The keys are stored in a redis database and can be accessed by the graphql service and enrich.
+A web interface is also available as a demonstrator. It allows you to :
+- Show data metrics
+- Examples of how to use the graphql API and enrichment service
+- openAPI documentation
+- A contact form
+- A server administration section
+- A history of data update reports.
+- A healthcare service makes sure that all its services work and communicate well together.
+
+On the front, a nginx acts as a reverse proxy, redirecting all these services to a single entry point.
+
+Each micro service : 
+* [graphql](./src/graphql#ezunpaywall-graphql)
+* [enrich](./src/enrich#ezunpaywall-enrich)
+* [update](./src/update#ezunpaywall-update)
+* [apikey](./src/apikey#ezunpaywall-apikey) 
+* [frontend](./src/frontend#ezunpaywall-frontend)
+* [health](./src/health#ezunpaywall-health)
+* [nginx](./src/nginx#ezunpaywall-nginx)
+* [mail](./src/mail#ezunpaywall-mail)
+* [fakeUnpaywall](./src/fakeUnpaywall#ezunpaywall-fakeUnpaywall) (only for dev)
+
+## Network-flow
+
+ezunpaywall is made up of several services which are distributed in several docker containers.
+![Network-flow](./doc/network-flow.png)
 
 ## Installation
 
@@ -85,24 +107,14 @@ $ ~/ezunpaywall/src/update npm run test
 
 #### Prerequisites
 
-The tools you need to let ezunpaywall run are :
 * docker
-* unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
+* docker compose
+* Unpaywall data measured about 130Gb it is necessary to provide the necessary place on the hard drive
 
 #### Environment variables
 
-Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh`, which contains a set of predefined variables and is overriden by `ezunpaywall.local.env.sh`.
+Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh`, which contains a set of predefined variables and is overridden by `ezunpaywall.local.env.sh`.
 
-Details : 
-* [apikey](/src/apikey#ezunpaywall-apikey)
-* [enrich](/src/enrich#ezunpaywall-enrich)
-* [fakeUnpaywall](/src/fakeUnpaywall#ezunpaywall-fakeUnpaywall)
-* [frontend](/src/frontend#ezunpaywall-frontend)
-* [graphql](/src/graphql#ezunpaywall-graphql)
-* [health](/src/health#ezunpaywall-health)
-* [mail](/src/mail#ezunpaywall-mail)
-* [nginx](/src/nginx#ezunpaywall-nginx)
-* [update](/src/update#ezunpaywall-update)
 
 ### Adjust system configuration for Elasticsearch
 
@@ -136,67 +148,3 @@ docker-compose ps
 
 You can update your data via update snapshots provided by unpaywall on a weekly or daily basis (if you have API key).
 in the update service, there is a cron that allows to automatically update the data from unpaywall, weekly or daily.
-
-## API Graphql
-### unpaywall
-
-get unpaywall data with [parameters](#Object-structure). 
-### Examples
-#### GET
-
-```js
-headers: {
-    "x-api-key": "<YOUR_API_KEY>"
-}
-```
-
-`GET "<HOST>/api/graphql?query={unpaywall(dois:["10.1038/2211089b0","10.1038/nature12373"]){doi, is_oa, best_oa_location{ url }}}"`
-
-#### POST
-
-`POST "<HOST>/api/graphql"`
-
-```js
-headers: {
-    "x-api-key": "<YOUR_API_KEY>"
-},
-body: {
-    "query": "{unpaywall(dois:[\"10.1038/2211089b0\",\"10.1038/nature12373\"]){doi, is_oa, best_oa_location{ url }}}"
-}
-```
-
-`POST "<HOST>/api/graphql"`
-
-```js
-headers: {
-    "x-api-key": "<YOUR_API_KEY>"
-},
-body: {
-    "query": "query ($dois: [ID!]!){ unpaywall(dois: $dois){is_oa} }",
-    "variables": { 
-        "dois": ["10.1038/2211089b0","10.1038/nature12373"],
-    }
-}
-```
-
-Response 
-Status: 200
-
-```json
-{
-    "data": {
-        "unpaywall": [
-            {
-                "doi": "10.1038/2211089b0",
-                "is_oa": true,
-                "best_oa_location": {
-                    "url": "http://www.nature.com/articles/2211089b0.pdf"
-                }
-            }
-        ]
-    }
-}
-```
-### Object structure
-
-[data-format](https://unpaywall.org/data-format)
