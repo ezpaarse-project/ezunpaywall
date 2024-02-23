@@ -25,10 +25,6 @@ info: {
     "user": "elastic",
     "password": "********"
   },
-  "unpaywall": {
-    "host": "http://fakeUnpaywall:3000",
-    "apikey": "********"
-  },
   "redis": {
     "host": "redis",
     "port": "6379",
@@ -52,8 +48,6 @@ info: {
 | ELASTICSEARCH_PORT | 9200 | elasticsearch port |
 | ELASTICSEARCH_USERNAME | elastic | elasticsearch admin username |
 | ELASTICSEARCH_PASSWORD | changeme | elasticsearch admin password |
-| UNPAYWALL_HOST | http://fakeUnpaywall:3000 | unpaywall host |
-| UNPAYWALL_APIKEY | default | unpaywall apikey |
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |

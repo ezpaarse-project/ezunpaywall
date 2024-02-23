@@ -110,27 +110,6 @@ async function promiseWithTimeout(p1, name) {
 }
 
 /**
- * Ping service.
- *
- * @param {string} name - Name of service.
- * @param {string} host - Host of service.
- *
- * @returns {Promise<boolean>} ping
- */
-async function ping(name, host) {
-  try {
-    await axios({
-      method: 'GET',
-      url: host,
-    });
-  } catch (err) {
-    logger.error(`[${name}] Cannot request ${host}`, err);
-    return false;
-  }
-  return true;
-}
-
-/**
  * Health and ping all service on ezunpaywall.
  *
  * @returns {Promise<Object>} Sist of status of healthcheck with
@@ -154,9 +133,6 @@ async function healthAll() {
 
   const pingElastic = promiseWithTimeout(pingElasticWithClient(), 'elastic');
 
-  const unpaywallHost = config.get('unpaywall.host');
-  const pingUnpaywall = promiseWithTimeout(ping('unpaywall', unpaywallHost), 'unpaywall');
-
   const pingRedis = promiseWithTimeout(pingRedisWithClient(), 'redis');
 
   const result = await Promise.allSettled([
@@ -166,7 +142,6 @@ async function healthAll() {
     healthApikey,
     healthMail,
     pingElastic,
-    pingUnpaywall,
     pingRedis,
   ]);
 
