@@ -69,7 +69,7 @@
           </v-card-actions>
           <v-divider />
           <v-card-title> {{ t('administration.apikey.attributes') }} </v-card-title>
-          <SettingsAttributes
+          <SelectorAttributes
             :simple="attributesSimple"
             :best-oa-location="attributesBestOaLocation"
             :first-oa-location="attributesFirstOaLocation"
@@ -107,7 +107,7 @@
 
 import { storeToRefs } from 'pinia';
 
-import SettingsAttributes from '@/components/unpaywallArgs/SettingsAttributes.vue';
+import SelectorAttributes from '@/components/unpaywallArgs/SelectorAttributes.vue';
 
 import { useSnacksStore } from '@/store/snacks';
 import { useAdminStore } from '@/store/admin';

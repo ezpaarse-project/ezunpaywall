@@ -46,8 +46,12 @@
       <HelpButton />
     </v-toolbar>
 
-    <SettingsAttributes
+    <SelectorAttributes
       :hide-oa-locations="type === 'csv'"
+      :default-simple="['doi']"
+      :default-best-oa-location="['evidence', 'is_best']"
+      :default-first-oa-location="['url_for_pdf']"
+      :default-z-authors="['family', 'given']"
       :simple="attributesSimple"
       :best-oa-location="attributesBestOaLocation"
       :first-oa-location="attributesFirstOaLocation"
@@ -63,7 +67,7 @@
 import { storeToRefs } from 'pinia';
 
 import HelpButton from '@/components/unpaywallArgs/HelpButton.vue';
-import SettingsAttributes from '@/components/unpaywallArgs/SettingsAttributes.vue';
+import SelectorAttributes from '@/components/unpaywallArgs/SelectorAttributes.vue';
 import SelectSeparator from '@/components/enrich/SelectSeparator.vue';
 
 import { useEnrichStore } from '@/store/enrich';

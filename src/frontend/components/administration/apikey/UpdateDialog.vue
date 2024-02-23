@@ -76,9 +76,13 @@
           </v-card-actions>
           <v-divider />
           <v-card-title> {{ t('administration.apikey.attributes') }} </v-card-title>
-          <SettingsAttributes
+          <SelectorAttributes
             :all="allSelected"
-            :simple="attributesSimple"
+            :default-simple="attributesSimple"
+            :default-best-oa-location="attributesBestOaLocation"
+            :default-first-oa-location="attributesFirstOaLocation"
+            :default-oa-locations="attributesOaLocations"
+            :default-z-authors="attributesZAuthors"
             :best-oa-location="attributesBestOaLocation"
             :first-oa-location="attributesFirstOaLocation"
             :oa-locations="attributesOaLocations"
@@ -100,7 +104,7 @@
           text
           type="submit"
           :form="`form-${apikey}`"
-          :disabled="!validForm"
+          :disabled="!validForm && attributesRules && accessRules"
           :loading="loading"
           class="green--text"
         >
@@ -114,7 +118,7 @@
 <script setup>
 
 import { storeToRefs } from 'pinia';
-import SettingsAttributes from '@/components/unpaywallArgs/SettingsAttributes.vue';
+import SelectorAttributes from '@/components/unpaywallArgs/SelectorAttributes.vue';
 
 import { useSnacksStore } from '@/store/snacks';
 import { useAdminStore } from '@/store/admin';
@@ -129,25 +133,49 @@ const { password } = storeToRefs(adminStore);
 const props = defineProps({
   disabled: { type: Boolean, default: false },
   apikey: { type: String, default: '' },
-  config: { type: Object, default: () => {} },
+  name: { type: String, default: '' },
+  description: { type: String, default: '' },
+  owner: { type: String, default: '' },
+  attributes: { type: Array, default: () => [] },
+  allowed: { type: Boolean, default: false },
 });
 
 const emit = defineEmits({
   'update:modelValue': () => true,
+  'update:name': (val) => val,
+  'update:description': (val) => val,
+  'update:owner': (val) => val,
+  'update:attributes': (val) => val,
+  'update:allowed': (val) => val,
   updated: () => true,
 });
 
 const value = ref('false');
 const loading = ref(false);
-const name = ref(props.config.name);
-const description = ref(props.config.description);
-const owner = ref(props.config.owner);
-const enrich = ref(false);
-const graphql = ref(false);
-const attributes = ref(props.config.attributes);
-const allowed = ref(props.config.allowed);
 
-const nameRule = computed(() => [(v) => !!v || t('required')]);
+const name = computed({
+  get: () => props.name,
+  set: (val) => emit('update:name', val),
+});
+const description = computed({
+  get: () => props.description,
+  set: (val) => emit('update:description', val),
+});
+const owner = computed({
+  get: () => props.owner,
+  set: (val) => emit('update:owner', val),
+});
+const attributes = computed({
+  get: () => props.attributes,
+  set: (val) => emit('update:attributes', val),
+});
+const allowed = computed({
+  get: () => props.allowed,
+  set: (val) => emit('update:allowed', val),
+});
+
+const enrich = ref(() => false);
+const graphql = ref(() => false);
 
 const access = computed(() => {
   const res = [];
@@ -156,16 +184,18 @@ const access = computed(() => {
   return res;
 });
 
-const validForm = computed(() => attributes.value?.length > 0
-&& name.value?.length > 0
-&& access.value?.length > 0);
+const nameRule = computed(() => [(v) => !!v || t('required')]);
+const attributesRules = computed(() => attributes.value.length > 0);
+const accessRules = computed(() => access.value.length > 0);
 
-const attributesSimple = computed(() => attributes.value?.filter((e) => !e.includes('.')));
-const attributesBestOaLocation = computed(() => attributes.value?.filter((e) => e.includes('best_oa_location')).map((e) => e.split('.')[1]));
-const attributesFirstOaLocation = computed(() => attributes.value?.filter((e) => e.includes('first_oa_location')).map((e) => e.split('.')[1]));
-const attributesOaLocations = computed(() => attributes.value?.filter((e) => e.includes('oa_locations')).map((e) => e.split('.')[1]));
-const attributesZAuthors = computed(() => attributes.value?.filter((e) => e.includes('z_authors')).map((e) => e.split('.')[1]));
-const allSelected = computed(() => attributes.value.includes('*'));
+const validForm = ref(false);
+
+const attributesSimple = computed(() => attributes?.value?.filter((e) => !e.includes('.')));
+const attributesBestOaLocation = computed(() => attributes?.value?.filter((e) => e.includes('best_oa_location')).map((e) => e.split('.')[1]));
+const attributesFirstOaLocation = computed(() => attributes?.value?.filter((e) => e.includes('first_oa_location')).map((e) => e.split('.')[1]));
+const attributesOaLocations = computed(() => attributes?.value?.filter((e) => e.includes('oa_locations')).map((e) => e.split('.')[1]));
+const attributesZAuthors = computed(() => attributes?.value?.filter((e) => e.includes('z_authors')).map((e) => e.split('.')[1]));
+const allSelected = computed(() => attributes?.value?.includes('*'));
 
 onMounted(() => {
   graphql.value = props.config?.access.includes('graphql');
@@ -208,5 +238,4 @@ function updateAttributes(attributesSelected) {
     attributes.value = attributesSelected;
   }
 }
-
 </script>

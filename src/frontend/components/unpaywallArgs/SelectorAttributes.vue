@@ -50,7 +50,11 @@ const { t } = useI18n();
 
 const props = defineProps({
   all: { type: Boolean, default: false },
-  simple: { type: Array, default: () => [] },
+  defaultSimple: { type: Array, default: () => [] },
+  defaultBestOaLocation: { type: Array, default: () => [] },
+  defaultFirstOaLocation: { type: Array, default: () => [] },
+  defaultOaLocations: { type: Array, default: () => [] },
+  defaultZAuthors: { type: Array, default: () => [] },
   hideSimple: { type: Boolean, default: false },
   hideBestOaLocation: { type: Boolean, default: false },
   hideFirstOaLocation: { type: Boolean, default: false },
@@ -60,11 +64,13 @@ const props = defineProps({
 
 const emit = defineEmits(['attributes']);
 
-const simpleSelected = ref(['doi']);
-const bestOaLocationSelected = ref(['evidence', 'is_best']);
-const firstOaLocationSelected = ref(['url_for_pdf']);
-const oaLocationsSelected = ref([]);
-const zAuthorsSelected = ref(['family', 'given']);
+const allSelected = ref(props.all);
+const simpleSelected = ref(props.defaultSimple);
+const bestOaLocationSelected = ref(props.defaultBestOaLocation);
+const firstOaLocationSelected = ref(props.defaultFirstOaLocation);
+const oaLocationsSelected = ref(props.defaultOaLocations);
+const zAuthorsSelected = ref(props.defaultZAuthors);
+
 const unpaywallItems = ref([
   'doi',
   'data_standard',
@@ -102,9 +108,9 @@ const oaLocationsItems = ref([
   'version',
 ]);
 
-function flatten(e, attr) {
-  if (!e || !Array.isArray(e) || e.length === 0) return;
-  return e.map((e) => `${attr}.${e}`);
+function flatten(el, attr) {
+  if (!el || !Array.isArray(el) || el.length === 0) return '';
+  return el.map((e) => `${attr}.${e}`);
 }
 
 const attributes = computed(() => {
@@ -131,10 +137,6 @@ const attributes = computed(() => {
   return data;
 });
 
-onMounted(() => {
-  emit('attributes', attributes.value);
-});
-
 function selectAll() {
   simpleSelected.value = props.hideSimple ? [] : unpaywallItems.value;
   bestOaLocationSelected.value = props.hideOBestOaLocation ? [] : oaLocationsItems.value;
@@ -150,6 +152,13 @@ function unselectAll() {
   oaLocationsSelected.value = [];
   zAuthorsSelected.value = [];
 }
+
+onMounted(() => {
+  emit('attributes', attributes.value);
+  if (allSelected.value) {
+    selectAll();
+  }
+});
 
 watch(
   attributes,
