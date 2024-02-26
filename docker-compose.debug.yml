@@ -5,7 +5,7 @@ services:
     image: node:18.17.1
     container_name: ezunpaywall-graphql-dev
     environment:
-      - NODE_ENV=development
+      - NODE_ENV
       # elastic
       - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
@@ -40,7 +40,7 @@ services:
     image: node:18.17.1
     container_name: ezunpaywall-update-dev
     environment:
-      - NODE_ENV=development
+      - NODE_ENV
       - LOG_LEVEL=debug
       # unpaywall
       - UNPAYWALL_APIKEY
@@ -84,7 +84,7 @@ services:
     image: node:18.17.1
     container_name: ezunpaywall-enrich-dev
     environment:
-      - NODE_ENV=development
+      - NODE_ENV
       # redis
       - REDIS_HOST
       - REDIS_PORT
@@ -117,7 +117,7 @@ services:
     image: node:18.17.1
     container_name: ezunpaywall-apikey-dev
     environment:
-      - NODE_ENV=development
+      - NODE_ENV
       # redis
       - REDIS_HOST
       - REDIS_PORT
@@ -182,7 +182,7 @@ services:
       - ${FRONTEND_PORT:-59706}:3000
       - 24678:24678
     environment:
-      - NODE_ENV=development
+      - NODE_ENV
       - NUXT_PUBLIC_ENVIRONMENT=development
       - NUXT_PUBLIC_ELASTIC_ENV=development
       - NUXT_PUBLIC_VERSION=development
