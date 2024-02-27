@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   graphql:
-    image: node:18.17.1
+    image: node:18.19.1
     container_name: ezunpaywall-graphql-dev
     environment:
       - NODE_ENV
@@ -37,7 +37,7 @@ services:
       retries: 5
 
   update:
-    image: node:18.17.1
+    image: node:18.19.1
     container_name: ezunpaywall-update-dev
     environment:
       - NODE_ENV
@@ -81,7 +81,7 @@ services:
       retries: 5
 
   enrich:
-    image: node:18.17.1
+    image: node:18.19.1
     container_name: ezunpaywall-enrich-dev
     environment:
       - NODE_ENV
@@ -114,7 +114,7 @@ services:
       retries: 5
 
   apikey:
-    image: node:18.17.1
+    image: node:18.19.1
     container_name: ezunpaywall-apikey-dev
     environment:
       - NODE_ENV
@@ -143,7 +143,7 @@ services:
       retries: 5
 
   mail:
-    image: node:18.17.1
+    image: node:18.19.1
     container_name: ezunpaywall-mail-dev
     environment:
       - NODE_CONFIG
@@ -172,7 +172,7 @@ services:
       retries: 5
 
   frontend:
-    image: node:18.17.1
+    image: node:18.19.1
     container_name: ezunpaywall-frontend-dev
     working_dir: /usr/src/app
     volumes:
@@ -206,7 +206,7 @@ services:
       retries: 5
 
   redis:
-    image: redis:7.2.1
+    image: redis:7.2.4
     container_name: ezunpaywall-redis-dev
     command: redis-server --requirepass "${REDIS_PASSWORD:-changeme}"
     volumes:
@@ -225,7 +225,7 @@ services:
       retries: 5
 
   health:
-    image: node:18.17-alpine3.18
+    image: node:18.19.1-alpine3.19
     container_name: ezunpaywall-health-dev
     working_dir: /usr/src/app
     volumes:
@@ -305,7 +305,7 @@ services:
 
   fakeunpaywall:
     container_name: ezunpaywall-fakeunpaywall-dev
-    image: node:18.17.1
+    image: node:18.19.1
     working_dir: /usr/src/app
     volumes:
       - ./src/fakeUnpaywall:/usr/src/app
