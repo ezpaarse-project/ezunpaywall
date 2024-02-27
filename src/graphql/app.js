@@ -11,7 +11,7 @@ const { expressMiddleware } = require('@apollo/server/express4');
 
 const { pingRedis, startConnectionRedis } = require('./lib/services/redis');
 
-const getNumberOfDOI = require('./lib/middlewares/args');
+const getNumberOfDOI = require('./lib/middlewares/countDOI');
 const auth = require('./lib/middlewares/auth');
 
 const logger = require('./lib/logger');
