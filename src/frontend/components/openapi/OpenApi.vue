@@ -4,7 +4,7 @@
 
 <script setup>
 
-import SwaggerUI from 'swagger-ui';
+import { SwaggerUIBundle } from 'swagger-ui-dist';
 
 const props = defineProps({
   host: { type: String, default: '' },
@@ -13,7 +13,7 @@ const props = defineProps({
 watch(
   props,
   () => {
-    SwaggerUI({
+    SwaggerUIBundle({
       url: `${props.host}/openapi.yml`,
       dom_id: '#swagger',
       deepLinking: false,
@@ -22,7 +22,7 @@ watch(
 );
 
 onMounted(() => {
-  SwaggerUI({
+  SwaggerUIBundle({
     url: `${props.host}/openapi.yml`,
     dom_id: '#swagger',
     deepLinking: false,

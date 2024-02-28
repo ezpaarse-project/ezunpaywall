@@ -42,7 +42,7 @@ export default defineNuxtConfig({
     vueI18n: './config/i18n.js',
   },
   css: [
-    'swagger-ui/dist/swagger-ui.css',
+    'swagger-ui-dist/swagger-ui.css',
     'vuetify/lib/styles/main.sass',
     '@mdi/font/css/materialdesignicons.min.css',
   ],
