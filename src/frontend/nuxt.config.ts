@@ -26,7 +26,7 @@ export default defineNuxtConfig({
       elasticEnv: process.env.NUXT_PUBLIC_ELASTIC_ENV || 'development',
       version: process.env.NUXT_PUBLIC_VERSION || 'development',
     },
-    mailHost: process.env.NUXT_MAIL_HOST || 'http://localhost:59705',
+    mailHost: process.env.NUXT_MAIL_HOST || 'http://mail:3000',
     mailApikey: process.env.NUXT_MAIL_APIKEY || 'changeme',
   },
   devServer: {

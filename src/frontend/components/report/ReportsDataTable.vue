@@ -10,43 +10,42 @@
     >
       <template
         v-if="props.type ==='unpaywall'"
-        #item.data.totalInsertedDocs="{ item }"
+        #[`item.data.totalInsertedDocs`]="{ item }"
       >
         {{ item.data.totalInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
       </template>
       <template
         v-if="props.type ==='unpaywall'"
-        #item.data.totalUpdatedDocs="{ item }"
+        #[`item.data.totalUpdatedDocs`]="{ item }"
       >
         {{ item.data.totalUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
       </template>
       <template
         v-if="props.type ==='unpaywallHistory'"
-        #item.data.totalBaseInsertedDocs="{ item }"
+        #[`item.data.totalBaseInsertedDocs`]="{ item }"
       >
         {{ item.data?.totalBaseInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
       </template>
       <template
         v-if="props.type ==='unpaywallHistory'"
-        #item.data.totalBaseUpdatedDocs="{ item }"
+        #[`item.data.totalBaseUpdatedDocs`]="{ item }"
       >
         {{ item.data?.totalBaseUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
       </template>
       <template
         v-if="props.type ==='unpaywallHistory'"
-        #item.data.totalHistoryInsertedDocs="{ item }"
+        #[`item.data.totalHistoryInsertedDocs`]="{ item }"
       >
         {{ item.data.totalHistoryInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
       </template>
       <template
         v-if="props.type ==='unpaywallHistory'"
-        #item.data.totalHistoryUpdatedDocs="{ item }"
+        #[`item.data.totalHistoryUpdatedDocs`]="{ item }"
       >
         {{ item.data.totalHistoryUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
       </template>
       <template
-        v-if="props.type ==='unpaywallHistory'"
-        #item.data.status="{ item }"
+        #[`item.data.status`]="{ item }"
       >
         <v-icon
           v-if="!item.data.error"
@@ -64,7 +63,7 @@
         </v-icon>
       </template>
 
-      <template #item.details="{ item }">
+      <template #[`item.details`]="{ item }">
         <v-btn
           icon="mdi-code-json"
           x-small
@@ -106,7 +105,7 @@ const tableHeaders = computed(() => {
       },
       {
         title: t('reports.status'),
-        key: 'status',
+        key: 'data.status',
         sortable: false,
       },
       {
@@ -142,7 +141,7 @@ const tableHeaders = computed(() => {
       },
       {
         title: t('reports.status'),
-        key: 'status',
+        key: 'data.status',
         sortable: false,
       },
       {

@@ -25,7 +25,6 @@
   ],
   "rules": {
     "import/extensions": "off",
-    "import/no-unresolved": "off",
-    "eslint-plugin-vue/valid-v-slot": "off"
+    "import/no-unresolved": "off"
   }
 }

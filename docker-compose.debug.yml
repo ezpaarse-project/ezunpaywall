@@ -193,8 +193,9 @@ services:
       - NUXT_PUBLIC_UPDATE_HOST
       - NUXT_PUBLIC_ENRICH_HOST
       - NUXT_PUBLIC_APIKEY_HOST
+      - NUXT_PUBLIC_MAIL_HOST
+      - NUXT_MAIL_HOST
       - NUXT_MAIL_APIKEY
-      - NUXT_MAIL_HOST="http://mail:3000"
     healthcheck:
       test:
         [
@@ -277,7 +278,7 @@ services:
     ports:
       - ${NGINX_PORT:-80}:80
     volumes:
-      - ./src/nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./src/nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro
     restart: unless-stopped
     depends_on:
       enrich:
