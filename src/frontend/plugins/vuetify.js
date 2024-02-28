@@ -2,9 +2,6 @@ import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import colors from 'vuetify/lib/util/colors';
-import { VDataTable } from 'vuetify/labs/VDataTable';
-import { VStepper, VStepperHeader } from 'vuetify/labs/VStepper';
-
 import { defineNuxtPlugin } from '#imports';
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -12,9 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     ssr: true,
     components: {
       ...components,
-      VDataTable,
-      VStepper,
-      VStepperHeader,
     },
     directives,
     theme: {
