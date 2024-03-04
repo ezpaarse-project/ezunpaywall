@@ -57,7 +57,7 @@
           item-key="id"
           class="elevation-1"
         >
-          <template #[`item.docs.count`]="{ item: { raw: item } }">
+          <template #[`item.docs.count`]="{ item }">
             {{ Number.parseInt(item['docs.count'], 10)
               .toLocaleString($i18n.locale, { useGrouping: true }) }}
           </template>
@@ -87,8 +87,6 @@ const { password } = storeToRefs(adminStore);
 const loading = ref(false);
 const indices = ref([]);
 const aliases = ref([]);
-
-const tt = 1000000000000000000000;
 
 const indicesHeaders = computed(() => [
   {
@@ -158,6 +156,7 @@ async function getElasticInfo() {
   }
   loading.value = false;
   aliases.value = aliasesRes?.data;
+  console.log(aliases);
 }
 
 onMounted(() => {

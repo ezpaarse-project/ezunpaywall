@@ -45,9 +45,9 @@ const latestStep = computed(() => {
   return null;
 });
 
-const latestTaskName = computed(() => latestStep.value.task);
-const percent = computed(() => latestStep.value.percent);
-const latestFilename = computed(() => latestStep.value.file);
+const latestTaskName = computed(() => latestStep.value?.task);
+const percent = computed(() => latestStep.value?.percent);
+const latestFilename = computed(() => latestStep.value?.file);
 
 async function getState() {
   let res;
