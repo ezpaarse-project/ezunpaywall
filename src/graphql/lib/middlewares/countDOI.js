@@ -1,8 +1,8 @@
 const logger = require('../logger');
 
 function getNumberOfDOI(req) {
-  const patternBetweenBracket = /.*?(\[.*?\]).*?$/i;
-  const patternBetweenBracketQuery = /.*?(\[".*?"\]).*?$/i;
+  const patternBetweenBracket = /.*?(\[.*?\]).*?/i;
+  const patternBetweenBracketQuery = /.*?(\[".*?"\]).*?/i;
   // BODY
   // {
   //  query: 'query ($dois: [ID!]!) { unpaywall(dois:  $dois) { doi, is_oa } }',
