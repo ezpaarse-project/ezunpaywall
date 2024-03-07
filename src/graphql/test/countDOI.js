@@ -74,9 +74,9 @@ describe('Test logger of graphql API', () => {
     `;
 
     const req2 = { query: {}, body: {} };
-    const query2 = `
-      { unpaywall(dois: ["1", "2"]) { doi, is_oa } }
-    `;
+    const query2 = `{ 
+      unpaywall(dois: ["1", "2"]) { doi, is_oa } 
+    }`;
 
     const req3 = { query: {}, body: {} };
     const query3 = `

@@ -293,9 +293,6 @@
       "copyResult": "Copy result",
       "copyRequest": "Copy GraphQL request"
     },
-    "administration": {
-      "login": "Successful connection"
-    },
     "contact": {
       "mailSent": "Your request has been sent to the team."
     },

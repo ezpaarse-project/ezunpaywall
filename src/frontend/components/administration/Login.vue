@@ -71,7 +71,6 @@ async function tryLogin() {
   adminStore.setIsAdmin(true);
   adminStore.setPassword(password.value);
   loading.value = false;
-  snackStore.success(t('info.administration.login'));
 }
 
 </script>
