@@ -184,7 +184,8 @@
   },
   "status": {
     "inUpdate": "Mise à jour en cours : {task} - {percent}% pour le fichier {file}",
-    "noInUpdate": "Les données sont à jour"
+    "noInUpdate": "Les données sont à jour",
+    "error": "Impossible de récupérer le status"
   },
   "state": {
     "createdAt": "Crée le",

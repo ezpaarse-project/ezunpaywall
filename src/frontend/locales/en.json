@@ -184,7 +184,8 @@
   },
   "status": {
     "inUpdate": "Update in progress: {task} - {percent}% for file ${file}",
-    "noInUpdate": "The data is up to date"
+    "noInUpdate": "The data is up to date",
+    "error": "Cannot get status"
   },
   "state": {
     "createdAt": "Created at",

@@ -12,16 +12,22 @@
           indeterminate
           color="white"
         />
-        <v-icon v-else>
+        <v-icon v-else-if="!error">
           mdi-check-circle
+        </v-icon>
+        <v-icon v-else>
+          mdi-alert
         </v-icon>
       </v-btn>
     </template>
     <label v-if="inUpdate">
       {{ t("status.inUpdate", { task: latestTaskName, percent, file: latestFilename }) }}
     </label>
-    <label v-else>
+    <label v-else-if="!error">
       {{ t("status.noInUpdate") }}
+    </label>
+    <label v-else>
+      {{ t("status.error") }}
     </label>
   </v-tooltip>
 </template>
@@ -36,6 +42,7 @@ const { $update } = useNuxtApp();
 
 const timeout = ref(null);
 const inUpdate = ref(false);
+const error = ref(false);
 const state = ref({});
 
 const latestStep = computed(() => {
@@ -73,14 +80,18 @@ async function checkIfUpdate() {
       url: '/status',
     });
   } catch (err) {
-    snackStore.error(t('error.status'));
+    error.value = true;
   }
-  if (res?.data) {
-    inUpdate.value = true;
-    await getState();
-  } else {
-    inUpdate.value = false;
+  if (!error.value) {
+    if (res?.data) {
+      inUpdate.value = true;
+      await getState();
+    } else {
+      inUpdate.value = false;
+    }
+    error.value = false;
   }
+
   timeout.value = await new Promise((resolve) => { setTimeout(resolve, 10000); });
   await checkIfUpdate();
 }
