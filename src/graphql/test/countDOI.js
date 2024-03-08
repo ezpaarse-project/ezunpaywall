@@ -13,10 +13,14 @@ describe('Test logger of graphql API', () => {
     const req3 = { query: {}, body: {} };
     const query3 = '{ unpaywall(dois:[]) { doi, is_oa } }';
 
+    const req4 = { query: {}, body: {} };
+    const query4 = '{ unpaywall(dois:["1[]"]) { doi, is_oa } }';
+
     before(() => {
       req1.query.query = query1;
       req2.query.query = query2;
       req3.query.query = query3;
+      req4.query.query = query4;
     });
 
     it('Should get 1', async () => {
@@ -32,6 +36,11 @@ describe('Test logger of graphql API', () => {
     it('Should get 0', async () => {
       const count = getNumberOfDOI(req3);
       expect(count).eql(0);
+    });
+
+    it('Should get 1', async () => {
+      const count = getNumberOfDOI(req4);
+      expect(count).eql(1);
     });
   });
 

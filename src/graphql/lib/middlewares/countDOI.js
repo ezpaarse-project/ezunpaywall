@@ -1,8 +1,7 @@
 const logger = require('../logger');
 
 function getNumberOfDOI(req) {
-  const patternBetweenBracket = /.*?(\[.*?\]).*?/i;
-  const patternBetweenBracketQuery = /.*?(\[".*?"\]).*?/i;
+  const patternBetweenBracket = /.*?(\[".*?"\]).*?/i;
   // BODY
   // {
   //  query: 'query ($dois: [ID!]!) { unpaywall(dois:  $dois) { doi, is_oa } }',
@@ -12,7 +11,7 @@ function getNumberOfDOI(req) {
   // BODY
   // query: '{ unpaywall(dois: ["10.1186/s40510-015-0109-6","Coin Coin"]) { doi, is_oa } }'
   if (req?.body?.query) {
-    const match = patternBetweenBracketQuery.exec(req?.body?.query);
+    const match = patternBetweenBracket.exec(req?.body?.query);
     let parsedMatch;
     if (match?.length >= 1) {
       try {
