@@ -156,7 +156,6 @@ async function getElasticInfo() {
   }
   loading.value = false;
   aliases.value = aliasesRes?.data;
-  console.log(aliases);
 }
 
 onMounted(() => {
