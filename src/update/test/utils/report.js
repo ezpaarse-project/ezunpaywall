@@ -15,10 +15,9 @@ async function getReport(type) {
   let res;
   try {
     res = await chai.request(updateURL)
-      .get(`/reports/${type}`)
+      .get(`/reports?type=${type}`)
       .query({ latest: true });
   } catch (err) {
-    console.error(`Cannot GET ${updateURL}/report`);
     process.exit(1);
   }
   return res?.body;

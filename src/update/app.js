@@ -19,31 +19,14 @@ const routerReport = require('./lib/routers/report');
 const routerCron = require('./lib/routers/cron');
 const routerSnapshot = require('./lib/routers/snapshot');
 
+const dirPath = require('./lib/path');
+
 require('./lib/cron/file');
 
 // create data directory
-const dataDir = path.resolve(__dirname, 'data');
-fs.ensureDir(path.resolve(dataDir));
-
-const snapshotsDir = path.resolve(dataDir, 'snapshots');
-fs.ensureDir(path.resolve(snapshotsDir));
-
-// create all directories for unpaywall
-const unpaywallDir = path.resolve(dataDir, 'unpaywall');
-
-fs.ensureDir(path.resolve(unpaywallDir));
-
-const unpaywallReportsDir = path.resolve(unpaywallDir, 'reports');
-
-fs.ensureDir(path.resolve(unpaywallReportsDir));
-
-// create all directories for history unpaywall
-const unpaywallHistoryDir = path.resolve(dataDir, 'unpaywallHistory');
-fs.ensureDir(path.resolve(unpaywallHistoryDir));
-
-const unpaywallHistoryReportsDir = path.resolve(unpaywallHistoryDir, 'reports');
-
-fs.ensureDir(path.resolve(unpaywallHistoryReportsDir));
+fs.ensureDir(path.resolve(dirPath.dataDir));
+fs.ensureDir(path.resolve(dirPath.snapshotsDir));
+fs.ensureDir(path.resolve(dirPath.reportsDir));
 
 // create all directories for logs unpaywall
 const logDir = path.resolve(__dirname, 'log');

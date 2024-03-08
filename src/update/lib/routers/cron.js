@@ -2,7 +2,7 @@ const router = require('express').Router();
 
 const checkAuth = require('../middlewares/auth');
 const validateCronConfig = require('../middlewares/format/cron');
-const validateType = require('../middlewares/format/type');
+const { validateParamsType } = require('../middlewares/format/type');
 
 const {
   startCron,
@@ -15,13 +15,13 @@ const {
  * Route that start the update cron.
  * Auth required.
  */
-router.post('/cron/:type/start', checkAuth, validateType, startCron);
+router.post('/cron/:type/start', checkAuth, validateParamsType, startCron);
 
 /**
  * Route that stop the update cron.
  * Auth required.
  */
-router.post('/cron/:type/stop', checkAuth, validateType, stopCron);
+router.post('/cron/:type/stop', checkAuth, validateParamsType, stopCron);
 
 /**
  * Route that update the update cron.
@@ -29,11 +29,11 @@ router.post('/cron/:type/stop', checkAuth, validateType, stopCron);
  *
  * This route need a body that contains a config of cron.
  */
-router.patch('/cron/:type', checkAuth, validateType, validateCronConfig, patchCron);
+router.patch('/cron/:type', checkAuth, validateParamsType, validateCronConfig, patchCron);
 
 /**
  * Route that get the config of update cron.
  */
-router.get('/cron/:type', validateType, getConfigCron);
+router.get('/cron/:type', validateParamsType, getConfigCron);
 
 module.exports = router;

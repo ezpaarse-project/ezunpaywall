@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const { format } = require('date-fns');
 const logger = require('./logger');
-const { getPathOfDirectory } = require('./files');
+const { reportsDir } = require('./path');
 
 /**
  * Create report on the folder as name the date of process.
@@ -12,10 +12,9 @@ const { getPathOfDirectory } = require('./files');
  * @returns {Promise<void>}
  */
 async function createReport(state) {
-  logger.info(`[report]: create new report for [${state.type}]`);
   const { type } = state;
-  const pathOfDirectory = getPathOfDirectory(type, 'reports');
-  const filepath = path.resolve(pathOfDirectory, `${format(new Date(), 'yyyy-MM-dd_HH:mm:ss')}.json`);
+  logger.info(`[report]: create new report for [${type}]`);
+  const filepath = path.resolve(reportsDir, `${type}_${format(new Date(), 'yyyy-MM-dd_HH:mm:ss')}.json`);
   try {
     await fs.writeFile(filepath, JSON.stringify(state, null, 2));
   } catch (err) {
@@ -33,13 +32,13 @@ async function createReport(state) {
  *
  * @returns {Promise<Object>} Report in json format.
  */
-async function getReport(type, filename) {
+async function getReport(filename) {
   let report;
-  const pathOfDirectory = getPathOfDirectory(type, 'reports');
+  const pathfile = path.resolve(reportsDir, filename);
   try {
-    report = await fs.readFile(path.resolve(pathOfDirectory, filename));
+    report = await fs.readFile(pathfile);
   } catch (err) {
-    logger.error(`[report] Cannot read [${path.resolve(pathOfDirectory, filename)}]`, err);
+    logger.error(`[report] Cannot read [${pathfile}]`, err);
     throw err;
   }
   try {

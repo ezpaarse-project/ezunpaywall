@@ -1,15 +1,16 @@
 const joi = require('joi');
 
 /**
- * Joi middleware to check if type in param is correct.
+ * Check if type is correct.
  *
+ * @param {*} type - type of job
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
+ *
+ * @returns
  */
-async function validateType(req, res, next) {
-  const { type } = req.params;
-
+function validateType(type, req, res, next) {
   const { error, value } = joi.string().trim().valid('unpaywall', 'unpaywallHistory').validate(type);
   if (error) return res.status(400).json({ message: error.details[0].message });
 
@@ -22,4 +23,31 @@ async function validateType(req, res, next) {
   return next();
 }
 
-module.exports = validateType;
+/**
+ * Joi middleware to check if type in param is correct.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+function validateParamsType(req, res, next) {
+  const { type } = req.params;
+  return validateType(type, req, res, next);
+}
+
+/**
+ * Joi middleware to check if type in query is correct.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+function validateQueryType(req, res, next) {
+  const { type } = req.query;
+  return validateType(type, req, res, next);
+}
+
+module.exports = {
+  validateParamsType,
+  validateQueryType,
+};

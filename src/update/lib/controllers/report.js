@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 
 const { getMostRecentFile } = require('../files');
 const { getReport } = require('../report');
-const { getPathOfDirectory } = require('../files');
+const { reportsDir } = require('../path');
 
 /**
  * Controller to get list of reports or latest report.
@@ -15,12 +15,10 @@ const { getPathOfDirectory } = require('../files');
 async function getReports(req, res, next) {
   const { latest, type } = req.data;
 
-  const pathOfDirectory = getPathOfDirectory(type, 'reports');
-
   if (latest) {
     let latestFile;
     try {
-      latestFile = await getMostRecentFile(pathOfDirectory);
+      latestFile = await getMostRecentFile(reportsDir);
     } catch (err) {
       return next({ message: err.message });
     }
@@ -31,20 +29,24 @@ async function getReports(req, res, next) {
 
     let report;
     try {
-      report = await getReport(type, latestFile?.filename);
+      report = await getReport(latestFile?.filename);
     } catch (err) {
       return next({ message: `Cannot get [${latestFile?.filename}] latest report` });
     }
     return res.status(200).json(report);
   }
 
-  let reports = await fs.readdir(pathOfDirectory);
+  let reports = await fs.readdir(reportsDir);
 
   reports = reports.sort((a, b) => {
     const [date1] = a.split('.');
     const [date2] = b.split('.');
     return new Date(date2).getTime() - new Date(date1).getTime();
   });
+
+  if (type) {
+    reports = reports.filter((report) => report.includes(`${type}_`));
+  }
 
   return res.status(200).json(reports);
 }
@@ -59,10 +61,8 @@ async function getReports(req, res, next) {
 async function getReportByFilename(req, res, next) {
   const { filename, type } = req.data;
 
-  const pathOfDirectory = getPathOfDirectory(type, 'reports');
-
   try {
-    await fs.stat(path.resolve(pathOfDirectory, filename));
+    await fs.stat(path.resolve(reportsDir, filename));
   } catch (err) {
     return next({ message: `File [${filename}] not found` });
   }
