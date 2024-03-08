@@ -5,50 +5,17 @@
       :items="props.reports"
       :items-per-page="7"
       :loading="props.loading"
-      item-key="id"
+      item-key="createdAt"
       class="elevation-1"
     >
       <template
-        v-if="props.type ==='unpaywall'"
-        #[`item.data.totalInsertedDocs`]="{ item }"
+        #[`item.createdAt`]="{ item }"
       >
-        {{ item.data.totalInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
+        {{ item?.createdAt.split('T')[0] }}
       </template>
-      <template
-        v-if="props.type ==='unpaywall'"
-        #[`item.data.totalUpdatedDocs`]="{ item }"
-      >
-        {{ item.data.totalUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
-      </template>
-      <template
-        v-if="props.type ==='unpaywallHistory'"
-        #[`item.data.totalBaseInsertedDocs`]="{ item }"
-      >
-        {{ item.data?.totalBaseInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
-      </template>
-      <template
-        v-if="props.type ==='unpaywallHistory'"
-        #[`item.data.totalBaseUpdatedDocs`]="{ item }"
-      >
-        {{ item.data?.totalBaseUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
-      </template>
-      <template
-        v-if="props.type ==='unpaywallHistory'"
-        #[`item.data.totalHistoryInsertedDocs`]="{ item }"
-      >
-        {{ item.data.totalHistoryInsertedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
-      </template>
-      <template
-        v-if="props.type ==='unpaywallHistory'"
-        #[`item.data.totalHistoryUpdatedDocs`]="{ item }"
-      >
-        {{ item.data.totalHistoryUpdatedDocs.toLocaleString($i18n.locale, { useGrouping: true }) }}
-      </template>
-      <template
-        #[`item.data.status`]="{ item }"
-      >
+      <template #[`item.error`]="{ item }">
         <v-icon
-          v-if="!item.data.error"
+          v-if="!item.error"
           right
           color="green"
         >
@@ -61,6 +28,27 @@
         >
           mdi-close
         </v-icon>
+      </template>
+      <template
+        #[`item.indices`]="{ item }"
+      >
+        <v-chip
+          v-for="index in item.indices"
+          :key="index"
+          class="mx-1"
+        >
+          {{ index.index }} :
+          <v-icon
+            size="x-small"
+            icon="mdi-plus-circle-outline"
+            class="mx-1"
+          /> {{ index.added }} -
+          <v-icon
+            size="x-small"
+            icon="mdi-circle-edit-outline"
+            class="mx-1"
+          /> {{ index.updated }}
+        </v-chip>
       </template>
 
       <template #[`item.details`]="{ item }">
@@ -86,7 +74,6 @@ import DetailDialog from '@/components/report/DetailDialog.vue';
 const { t } = useI18n();
 
 const props = defineProps({
-  type: { type: String, default: '' },
   reports: { type: Array, default: () => [] },
   loading: { type: Boolean, default: false },
 });
@@ -94,95 +81,37 @@ const props = defineProps({
 const dialogVisible = ref(false);
 const reportSelected = ref({});
 
-const tableHeaders = computed(() => {
-  if (props.type === 'unpaywall') {
-    return [
-      {
-        title: 'Date',
-        align: 'start',
-        sortable: false,
-        key: 'createdAt',
-      },
-      {
-        title: t('reports.status'),
-        key: 'data.status',
-        sortable: false,
-      },
-      {
-        title: 'Index',
-        key: 'data.index',
-        sortable: false,
-      },
-      {
-        title: t('reports.updatedDocs'),
-        key: 'data.totalUpdatedDocs',
-        sortable: false,
-      },
-      {
-        title: t('reports.insertedDocs'),
-        key: 'data.totalInsertedDocs',
-        sortable: false,
-      },
-      {
-        title: t('detail'),
-        key: 'details',
-        sortable: false,
-        align: 'right',
-      },
-    ];
-  }
-  if (props.type === 'unpaywallHistory') {
-    return [
-      {
-        title: 'Date',
-        align: 'start',
-        sortable: false,
-        key: 'createdAt',
-      },
-      {
-        title: t('reports.status'),
-        key: 'data.status',
-        sortable: false,
-      },
-      {
-        title: 'IndexBase',
-        key: 'data.indexBase',
-        sortable: false,
-      },
-      {
-        title: t('reports.updatedDocs'),
-        key: 'data.totalBaseInsertedDocs',
-        sortable: false,
-      },
-      {
-        title: t('reports.insertedDocs'),
-        key: 'data.totalBaseUpdatedDocs',
-        sortable: false,
-      },
-      {
-        title: 'IndexHistory',
-        key: 'data.indexHistory',
-        sortable: false,
-      },
-      {
-        title: t('reports.updatedDocs'),
-        key: 'data.totalHistoryInsertedDocs',
-        sortable: false,
-      },
-      {
-        title: t('reports.insertedDocs'),
-        key: 'data.totalHistoryUpdatedDocs',
-        sortable: false,
-      },
-      {
-        title: t('detail'),
-        key: 'details',
-        sortable: false,
-      },
-    ];
-  }
-  return [];
-});
+const tableHeaders = computed(() => [
+  {
+    title: 'Date',
+    align: 'start',
+    sortable: false,
+    key: 'createdAt',
+  },
+  {
+    title: t('reports.status'),
+    align: 'start',
+    sortable: false,
+    key: 'error',
+  },
+  {
+    title: 'Type',
+    align: 'start',
+    sortable: false,
+    key: 'type',
+  },
+  {
+    title: 'Index',
+    key: 'indices',
+    align: 'start',
+    sortable: false,
+  },
+  {
+    title: t('detail'),
+    key: 'details',
+    sortable: false,
+  },
+]);
 
 function showDetails(item) {
   reportSelected.value = item;

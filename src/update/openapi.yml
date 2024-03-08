@@ -370,7 +370,7 @@ paths:
                         index: unpaywall-test
                         file: fake2.jsonl.gz
                         linesRead: 100
-                        insertedDocs: 100
+                        addedDocs: 100
                         updatedDocs: 0
                         failedDocs: 0
                         percent: 100
@@ -424,7 +424,7 @@ paths:
                         index: unpaywall-test
                         file: fake2.jsonl.gz
                         linesRead: 100
-                        insertedDocs: 100
+                        addedDocs: 100
                         updatedDocs: 0
                         failedDocs: 0
                         percent: 100
@@ -452,7 +452,7 @@ paths:
                         index: unpaywall-test
                         file: fake2.jsonl.gz
                         linesRead: 100
-                        insertedDocs: 100
+                        addedDocs: 100
                         updatedDocs: 0
                         failedDocs: 0
                         percent: 100
@@ -541,7 +541,7 @@ paths:
                         index: unpaywall-test
                         file: fake1.jsonl.gz
                         linesRead: 50
-                        insertedDocs: 50
+                        addedDocs: 50
                         updatedDocs: 0
                         failedDocs: 0
                         percent: 100

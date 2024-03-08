@@ -11,11 +11,6 @@
         class="my-4"
       />
       <ReportsCard
-        :type="'unpaywall'"
-        class="my-4"
-      />
-      <ReportsCard
-        :type="'unpaywallHistory'"
         class="my-4"
       />
       <HealthTab class="my-4" />

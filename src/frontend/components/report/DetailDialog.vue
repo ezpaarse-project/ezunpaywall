@@ -41,7 +41,7 @@ const props = defineProps({
   report: { type: Object, default: () => {} },
 });
 
-const stringifiedReport = computed(() => JSON.stringify(props.report.data, null, 2));
+const stringifiedReport = computed(() => JSON.stringify(props.report, null, 2));
 
 const emit = defineEmits({
   'update:modelValue': () => true,

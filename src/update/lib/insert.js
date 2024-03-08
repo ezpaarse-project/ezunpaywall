@@ -54,7 +54,7 @@ async function insertUnpaywallDataInElastic(data) {
 
   items.forEach((i) => {
     if (i?.index?.result === 'created') {
-      step.insertedDocs += 1;
+      step.addedDocs += 1;
       return;
     }
     if (i?.index?.result === 'updated') {

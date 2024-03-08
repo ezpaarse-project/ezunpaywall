@@ -56,7 +56,7 @@ async function insertUnpaywallDataInElastic(data, index) {
 
   items.forEach((i) => {
     if (i?.index?.result === 'created') {
-      step.index[index].insertedDocs += 1;
+      step.index[index].addedDocs += 1;
       return;
     }
     if (i?.index?.result === 'updated') {
@@ -206,12 +206,12 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   step.file = filename;
   step.index = {
     [indexBase]: {
-      insertedDocs: 0,
+      addedDocs: 0,
       updatedDocs: 0,
       failedDocs: 0,
     },
     [indexHistory]: {
-      insertedDocs: 0,
+      addedDocs: 0,
       updatedDocs: 0,
       failedDocs: 0,
     },

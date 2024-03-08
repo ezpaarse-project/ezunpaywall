@@ -211,8 +211,6 @@
     "administration": "Administration"
   },
   "reports": {
-    "basic": "Rapports pour Unpaywall basique",
-    "history": "Rapports pour l'historique Unpaywall",
     "title": "Dernières mises à jour",
     "reloadReports": "Recharger les rapports",
     "reload": "Recharger l'historique des mises à jour",

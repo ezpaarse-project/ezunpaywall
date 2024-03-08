@@ -6,7 +6,7 @@
       flat
       dense
     >
-      <v-toolbar-title> {{ title }} </v-toolbar-title>
+      <v-toolbar-title> {{ t('reports.title') }} </v-toolbar-title>
       <v-spacer />
       <UpdateProcessButton
         v-if="isAdmin"
@@ -72,18 +72,12 @@ const props = defineProps({
 
 const isAdmin = computed(() => adminStore.isAdmin);
 
-const title = computed(() => {
-  if (props.type === 'unpaywall') { return t('reports.basic'); }
-  if (props.type === 'unpaywallHistory') { return t('reports.history'); }
-  return null;
-});
-
 async function getReport(filename) {
   let report;
   try {
     report = await $update({
       method: 'GET',
-      url: `/reports/${props.type}/${filename}`,
+      url: `/reports/${filename}`,
     });
   } catch (err) {
     snackStore.error(t('error.report.get'));
@@ -92,25 +86,13 @@ async function getReport(filename) {
   return report.data;
 }
 
-function formatDate(date) {
-  const d = new Date(date);
-  let month = `${d.getMonth() + 1}`;
-  let day = `${d.getDate()}`;
-  const year = d.getFullYear();
-
-  if (month.length < 2) { month = `0${month}`; }
-  if (day.length < 2) { day = `0${day}`; }
-
-  return [year, month, day].join('-');
-}
-
 async function getReports() {
   loading.value = true;
   let res;
   try {
     res = await $update({
       method: 'GET',
-      url: `/reports/${props.type}`,
+      url: '/reports',
     });
   } catch (err) {
     snackStore.error(t('error.report.getAll'));
@@ -126,12 +108,7 @@ async function getReports() {
   const newReports = [];
   for (let i = 0; i < filenames.length; i += 1) {
     report = await getReport(filenames[i]);
-
-    newReports.push({
-      id: i,
-      data: report,
-      createdAt: formatDate(report.createdAt),
-    });
+    newReports.push(report);
   }
   reports.value = newReports;
   loading.value = false;

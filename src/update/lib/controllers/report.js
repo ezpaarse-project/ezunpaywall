@@ -39,13 +39,13 @@ async function getReports(req, res, next) {
   let reports = await fs.readdir(reportsDir);
 
   reports = reports.sort((a, b) => {
-    const [date1] = a.split('.');
-    const [date2] = b.split('.');
+    const [date1] = a.split('_');
+    const [date2] = b.split('_');
     return new Date(date2).getTime() - new Date(date1).getTime();
   });
 
   if (type) {
-    reports = reports.filter((report) => report.includes(`${type}_`));
+    reports = reports.filter((report) => report.includes(`${type}.`));
   }
 
   return res.status(200).json(reports);

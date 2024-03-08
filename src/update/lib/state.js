@@ -92,7 +92,7 @@ function addStepInsert(downloadFile) {
     task: 'insert',
     file: downloadFile,
     linesRead: 0,
-    insertedDocs: 0,
+    addedDocs: 0,
     updatedDocs: 0,
     failedDocs: 0,
     percent: 0,
@@ -129,44 +129,59 @@ function end() {
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
 
   if (state.type === 'unpaywall') {
+    const indices = [];
+
     const insertSteps = state.steps.filter((e) => e.task === 'insert');
-    let totalInsertedDocs = 0;
+
+    let totalAddedDocs = 0;
     let totalUpdatedDocs = 0;
+
     insertSteps.forEach((step) => {
-      totalInsertedDocs += step?.insertedDocs || 0;
+      totalAddedDocs += step?.addedDocs || 0;
       totalUpdatedDocs += step?.updatedDocs || 0;
-      if (typeof step.index === 'object') {
-        const indices = Object.keys(step.index);
-        indices.forEach((i) => {
-          const data = step.index[i];
-          totalInsertedDocs += data.insertedDocs || 0;
-          totalUpdatedDocs += data.updatedDocs || 0;
-        });
-      }
     });
-    state.totalInsertedDocs = totalInsertedDocs;
-    state.totalUpdatedDocs = totalUpdatedDocs;
+
+    indices.push({
+      index: state.index,
+      added: totalAddedDocs,
+      updated: totalUpdatedDocs,
+    });
+    state.indices = indices;
   }
 
   if (state.type === 'unpaywallHistory') {
-    let totalInsertBase = 0;
-    let totalUpdateBase = 0;
-    let totalInsertHistory = 0;
-    let totalUpdateHistory = 0;
+    const indices = [];
+
     const insertSteps = state.steps.filter((e) => e.task === 'insert');
+
+    let totalAddedBase = 0;
+    let totalUpdatedBase = 0;
+    let totalAddedHistory = 0;
+    let totalUpdatedHistory = 0;
+
     insertSteps.forEach((step) => {
       const keys = Object.keys(step.index);
-      totalInsertBase += step.index[keys[0]].insertedDocs;
-      totalUpdateBase += step.index[keys[0]].updatedDocs;
-      totalInsertHistory += step.index[keys[1]].insertedDocs;
-      totalUpdateHistory += step.index[keys[1]].updatedDocs;
+      totalAddedBase += step.index[keys[0]].addedDocs;
+      totalUpdatedBase += step.index[keys[0]].updatedDocs;
+      totalAddedHistory += step.index[keys[1]].addedDocs;
+      totalUpdatedHistory += step.index[keys[1]].updatedDocs;
     });
-    state.totalBaseInsertedDocs = totalInsertBase;
-    state.totalBaseUpdatedDocs = totalUpdateBase;
-    state.totalHistoryInsertedDocs = totalInsertHistory;
-    state.totalHistoryUpdatedDocs = totalUpdateHistory;
+
+    indices.push({
+      index: state.indexBase,
+      added: totalAddedBase,
+      updated: totalUpdatedBase,
+    });
+    indices.push({
+      index: state.indexHistory,
+      added: totalAddedHistory,
+      updated: totalUpdatedHistory,
+    });
+    state.indices = indices;
   }
-  logger.info('[state]: the state is ended');
+  delete state.index;
+  delete state.indexBase;
+  delete state.indexHistory;
 }
 
 /**

@@ -14,7 +14,7 @@ const { reportsDir } = require('./path');
 async function createReport(state) {
   const { type } = state;
   logger.info(`[report]: create new report for [${type}]`);
-  const filepath = path.resolve(reportsDir, `${format(new Date(), 'yyyy-MM-dd_HH:mm:ss')}_${type}.json`);
+  const filepath = path.resolve(reportsDir, `${format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")}_${type}.json`);
   try {
     await fs.writeFile(filepath, JSON.stringify(state, null, 2));
   } catch (err) {
