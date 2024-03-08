@@ -59,7 +59,7 @@ async function getReports(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function getReportByFilename(req, res, next) {
-  const { filename, type } = req.data;
+  const { filename } = req.data;
 
   try {
     await fs.stat(path.resolve(reportsDir, filename));
@@ -69,7 +69,7 @@ async function getReportByFilename(req, res, next) {
 
   let report;
   try {
-    report = await getReport(type, filename);
+    report = await getReport(filename);
   } catch (err) {
     return next({ message: `Cannot get ${filename} report` });
   }
