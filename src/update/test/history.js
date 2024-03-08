@@ -21,7 +21,6 @@ const date3 = '2020-01-03';
 const date4 = '2020-01-04';
 const date5 = '2019-01-02';
 
-// TODO Test historique classique
 describe('Test: daily update route test with history', () => {
   before(async function () {
     this.timeout(1000);
@@ -59,28 +58,32 @@ describe('Test: daily update route test with history', () => {
       // TODO test elastic request
     });
 
-    it('Should get state with all information from the download and insertion', async () => {
-      const state = await getState();
+    function testResult(result) {
+      expect(result).have.property('done').equal(true);
+      expect(result).have.property('createdAt').to.not.equal(undefined);
+      expect(result).have.property('endAt').to.not.equal(undefined);
+      expect(result).have.property('error').equal(false);
+      expect(result).have.property('type').equal('unpaywallHistory');
+      expect(result).have.property('took').to.not.equal(undefined);
+      expect(result).have.property('steps').to.be.an('array');
+      expect(result).have.property('indices').to.be.an('array');
 
-      expect(state).have.property('done').equal(true);
-      expect(state).have.property('createdAt').to.not.equal(undefined);
-      expect(state).have.property('endAt').to.not.equal(undefined);
-      expect(state).have.property('error').equal(false);
-      expect(state).have.property('type').equal('unpaywallHistory');
-      expect(state).have.property('took').to.not.equal(undefined);
-      expect(state).have.property('totalBaseInsertedDocs').equal(0);
-      expect(state).have.property('totalBaseUpdatedDocs').equal(3);
-      expect(state).have.property('totalHistoryInsertedDocs').equal(3);
-      expect(state).have.property('totalHistoryUpdatedDocs').equal(0);
-      expect(state).have.property('steps').to.be.an('array');
+      const { indices } = result;
+      expect(indices[0]).have.property('index').equal('unpaywall_base');
+      expect(indices[0]).have.property('added').equal(0);
+      expect(indices[0]).have.property('updated').equal(3);
 
-      const stepChangefile = state.steps[0];
+      expect(indices[1]).have.property('index').equal('unpaywall_history');
+      expect(indices[1]).have.property('added').equal(3);
+      expect(indices[1]).have.property('updated').equal(0);
+
+      const stepChangefile = result.steps[0];
 
       expect(stepChangefile).have.property('task').equal('getChangefiles');
       expect(stepChangefile).have.property('took').to.not.equal(undefined);
       expect(stepChangefile).have.property('status').equal('success');
 
-      const stepDownload = state.steps[1];
+      const stepDownload = result.steps[1];
 
       expect(stepDownload).have.property('task').equal('download');
       expect(stepDownload).have.property('file').equal('2020-01-02-history.jsonl.gz');
@@ -88,79 +91,37 @@ describe('Test: daily update route test with history', () => {
       expect(stepDownload).have.property('took').to.not.equal(undefined);
       expect(stepDownload).have.property('status').equal('success');
 
-      const stepInsert = state.steps[2];
+      const stepInsert = result.steps[2];
 
       expect(stepInsert).have.property('task').equal('insert');
       expect(stepInsert).have.property('file').equal('2020-01-02-history.jsonl.gz');
       expect(stepInsert).have.property('percent').equal(100);
       expect(stepInsert).have.property('linesRead').equal(3);
-      expect(stepInsert).have.property('insertedDocs').equal(0);
+      expect(stepInsert).have.property('addedDocs').equal(0);
       expect(stepInsert).have.property('updatedDocs').equal(0);
       expect(stepInsert).have.property('failedDocs').equal(0);
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
       const indexBase = stepInsert.index.unpaywall_base;
-      expect(indexBase).have.property('insertedDocs').equal(0);
+      expect(indexBase).have.property('addedDocs').equal(0);
       expect(indexBase).have.property('updatedDocs').equal(3);
       expect(indexBase).have.property('failedDocs').equal(0);
 
       const indexHistory = stepInsert.index.unpaywall_history;
-      expect(indexHistory).have.property('insertedDocs').equal(3);
+      expect(indexHistory).have.property('addedDocs').equal(3);
       expect(indexHistory).have.property('updatedDocs').equal(0);
       expect(indexHistory).have.property('failedDocs').equal(0);
+    }
+
+    it('Should get state with all information from the download and insertion', async () => {
+      const state = await getState();
+      testResult(state);
     });
 
     it('Should get report with all information from the download and insertion', async () => {
       const report = await getReport('unpaywallHistory');
-
-      expect(report).have.property('done').equal(true);
-      expect(report).have.property('createdAt').to.not.equal(undefined);
-      expect(report).have.property('endAt').to.not.equal(undefined);
-      expect(report).have.property('error').equal(false);
-      expect(report).have.property('type').equal('unpaywallHistory');
-      expect(report).have.property('took').to.not.equal(undefined);
-      expect(report).have.property('totalBaseInsertedDocs').equal(0);
-      expect(report).have.property('totalBaseUpdatedDocs').equal(3);
-      expect(report).have.property('totalHistoryInsertedDocs').equal(3);
-      expect(report).have.property('totalHistoryUpdatedDocs').equal(0);
-      expect(report).have.property('steps').to.be.an('array');
-
-      const stepChangefile = report.steps[0];
-
-      expect(stepChangefile).have.property('task').equal('getChangefiles');
-      expect(stepChangefile).have.property('took').to.not.equal(undefined);
-      expect(stepChangefile).have.property('status').equal('success');
-
-      const stepDownload = report.steps[1];
-
-      expect(stepDownload).have.property('task').equal('download');
-      expect(stepDownload).have.property('file').equal('2020-01-02-history.jsonl.gz');
-      expect(stepDownload).have.property('percent').equal(100);
-      expect(stepDownload).have.property('took').to.not.equal(undefined);
-      expect(stepDownload).have.property('status').equal('success');
-
-      const stepInsert = report.steps[2];
-
-      expect(stepInsert).have.property('task').equal('insert');
-      expect(stepInsert).have.property('file').equal('2020-01-02-history.jsonl.gz');
-      expect(stepInsert).have.property('percent').equal(100);
-      expect(stepInsert).have.property('linesRead').equal(3);
-      expect(stepInsert).have.property('insertedDocs').equal(0);
-      expect(stepInsert).have.property('updatedDocs').equal(0);
-      expect(stepInsert).have.property('failedDocs').equal(0);
-      expect(stepInsert).have.property('took').to.not.equal(undefined);
-      expect(stepInsert).have.property('status').equal('success');
-
-      const indexBase = stepInsert.index.unpaywall_base;
-      expect(indexBase).have.property('insertedDocs').equal(0);
-      expect(indexBase).have.property('updatedDocs').equal(3);
-      expect(indexBase).have.property('failedDocs').equal(0);
-
-      const indexHistory = stepInsert.index.unpaywall_history;
-      expect(indexHistory).have.property('insertedDocs').equal(3);
-      expect(indexHistory).have.property('updatedDocs').equal(0);
-      expect(indexHistory).have.property('failedDocs').equal(0);
+      testResult(report);
     });
   });
 
@@ -192,28 +153,31 @@ describe('Test: daily update route test with history', () => {
       // TODO test elastic request
     });
 
-    it('Should get state with all information from the download and insertion', async () => {
-      const state = await getState();
+    function testResult(result) {
+      expect(result).have.property('done').equal(true);
+      expect(result).have.property('createdAt').to.not.equal(undefined);
+      expect(result).have.property('endAt').to.not.equal(undefined);
+      expect(result).have.property('error').equal(false);
+      expect(result).have.property('type').equal('unpaywallHistory');
+      expect(result).have.property('took').to.not.equal(undefined);
+      expect(result).have.property('steps').to.be.an('array');
 
-      expect(state).have.property('done').equal(true);
-      expect(state).have.property('createdAt').to.not.equal(undefined);
-      expect(state).have.property('endAt').to.not.equal(undefined);
-      expect(state).have.property('error').equal(false);
-      expect(state).have.property('type').equal('unpaywallHistory');
-      expect(state).have.property('took').to.not.equal(undefined);
-      expect(state).have.property('totalBaseInsertedDocs').equal(0);
-      expect(state).have.property('totalBaseUpdatedDocs').equal(2);
-      expect(state).have.property('totalHistoryInsertedDocs').equal(2);
-      expect(state).have.property('totalHistoryUpdatedDocs').equal(0);
-      expect(state).have.property('steps').to.be.an('array');
+      const { indices } = result;
+      expect(indices[0]).have.property('index').equal('unpaywall_base');
+      expect(indices[0]).have.property('added').equal(0);
+      expect(indices[0]).have.property('updated').equal(2);
 
-      const stepChangefile = state.steps[0];
+      expect(indices[1]).have.property('index').equal('unpaywall_history');
+      expect(indices[1]).have.property('added').equal(2);
+      expect(indices[1]).have.property('updated').equal(0);
+
+      const stepChangefile = result.steps[0];
 
       expect(stepChangefile).have.property('task').equal('getChangefiles');
       expect(stepChangefile).have.property('took').to.not.equal(undefined);
       expect(stepChangefile).have.property('status').equal('success');
 
-      const stepDownload = state.steps[1];
+      const stepDownload = result.steps[1];
 
       expect(stepDownload).have.property('task').equal('download');
       expect(stepDownload).have.property('file').equal('2020-01-03-history.jsonl.gz');
@@ -221,79 +185,37 @@ describe('Test: daily update route test with history', () => {
       expect(stepDownload).have.property('took').to.not.equal(undefined);
       expect(stepDownload).have.property('status').equal('success');
 
-      const stepInsert = state.steps[2];
+      const stepInsert = result.steps[2];
 
       expect(stepInsert).have.property('task').equal('insert');
       expect(stepInsert).have.property('file').equal('2020-01-03-history.jsonl.gz');
       expect(stepInsert).have.property('percent').equal(100);
       expect(stepInsert).have.property('linesRead').equal(2);
-      expect(stepInsert).have.property('insertedDocs').equal(0);
+      expect(stepInsert).have.property('addedDocs').equal(0);
       expect(stepInsert).have.property('updatedDocs').equal(0);
       expect(stepInsert).have.property('failedDocs').equal(0);
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
       const indexBase = stepInsert.index.unpaywall_base;
-      expect(indexBase).have.property('insertedDocs').equal(0);
+      expect(indexBase).have.property('addedDocs').equal(0);
       expect(indexBase).have.property('updatedDocs').equal(2);
       expect(indexBase).have.property('failedDocs').equal(0);
 
       const indexHistory = stepInsert.index.unpaywall_history;
-      expect(indexHistory).have.property('insertedDocs').equal(2);
+      expect(indexHistory).have.property('addedDocs').equal(2);
       expect(indexHistory).have.property('updatedDocs').equal(0);
       expect(indexHistory).have.property('failedDocs').equal(0);
+    }
+
+    it('Should get state with all information from the download and insertion', async () => {
+      const state = await getState();
+      testResult(state);
     });
 
     it('Should get report with all information from the download and insertion', async () => {
       const report = await getReport('unpaywallHistory');
-
-      expect(report).have.property('done').equal(true);
-      expect(report).have.property('createdAt').to.not.equal(undefined);
-      expect(report).have.property('endAt').to.not.equal(undefined);
-      expect(report).have.property('error').equal(false);
-      expect(report).have.property('type').equal('unpaywallHistory');
-      expect(report).have.property('took').to.not.equal(undefined);
-      expect(report).have.property('totalBaseInsertedDocs').equal(0);
-      expect(report).have.property('totalBaseUpdatedDocs').equal(2);
-      expect(report).have.property('totalHistoryInsertedDocs').equal(2);
-      expect(report).have.property('totalHistoryUpdatedDocs').equal(0);
-      expect(report).have.property('steps').to.be.an('array');
-
-      const stepChangefile = report.steps[0];
-
-      expect(stepChangefile).have.property('task').equal('getChangefiles');
-      expect(stepChangefile).have.property('took').to.not.equal(undefined);
-      expect(stepChangefile).have.property('status').equal('success');
-
-      const stepDownload = report.steps[1];
-
-      expect(stepDownload).have.property('task').equal('download');
-      expect(stepDownload).have.property('file').equal('2020-01-03-history.jsonl.gz');
-      expect(stepDownload).have.property('percent').equal(100);
-      expect(stepDownload).have.property('took').to.not.equal(undefined);
-      expect(stepDownload).have.property('status').equal('success');
-
-      const stepInsert = report.steps[2];
-
-      expect(stepInsert).have.property('task').equal('insert');
-      expect(stepInsert).have.property('file').equal('2020-01-03-history.jsonl.gz');
-      expect(stepInsert).have.property('percent').equal(100);
-      expect(stepInsert).have.property('linesRead').equal(2);
-      expect(stepInsert).have.property('insertedDocs').equal(0);
-      expect(stepInsert).have.property('updatedDocs').equal(0);
-      expect(stepInsert).have.property('failedDocs').equal(0);
-      expect(stepInsert).have.property('took').to.not.equal(undefined);
-      expect(stepInsert).have.property('status').equal('success');
-
-      const indexBase = stepInsert.index.unpaywall_base;
-      expect(indexBase).have.property('insertedDocs').equal(0);
-      expect(indexBase).have.property('updatedDocs').equal(2);
-      expect(indexBase).have.property('failedDocs').equal(0);
-
-      const indexHistory = stepInsert.index.unpaywall_history;
-      expect(indexHistory).have.property('insertedDocs').equal(2);
-      expect(indexHistory).have.property('updatedDocs').equal(0);
-      expect(indexHistory).have.property('failedDocs').equal(0);
+      testResult(report);
     });
   });
 
@@ -325,28 +247,31 @@ describe('Test: daily update route test with history', () => {
       // TODO test elastic request
     });
 
-    it('Should get state with all information from the download and insertion', async () => {
-      const state = await getState();
+    function testResult(result) {
+      expect(result).have.property('done').equal(true);
+      expect(result).have.property('createdAt').to.not.equal(undefined);
+      expect(result).have.property('endAt').to.not.equal(undefined);
+      expect(result).have.property('error').equal(false);
+      expect(result).have.property('type').equal('unpaywallHistory');
+      expect(result).have.property('took').to.not.equal(undefined);
+      expect(result).have.property('steps').to.be.an('array');
 
-      expect(state).have.property('done').equal(true);
-      expect(state).have.property('createdAt').to.not.equal(undefined);
-      expect(state).have.property('endAt').to.not.equal(undefined);
-      expect(state).have.property('error').equal(false);
-      expect(state).have.property('type').equal('unpaywallHistory');
-      expect(state).have.property('took').to.not.equal(undefined);
-      expect(state).have.property('totalBaseInsertedDocs').equal(0);
-      expect(state).have.property('totalBaseUpdatedDocs').equal(2);
-      expect(state).have.property('totalHistoryInsertedDocs').equal(0);
-      expect(state).have.property('totalHistoryUpdatedDocs').equal(0);
-      expect(state).have.property('steps').to.be.an('array');
+      const { indices } = result;
+      expect(indices[0]).have.property('index').equal('unpaywall_base');
+      expect(indices[0]).have.property('added').equal(0);
+      expect(indices[0]).have.property('updated').equal(2);
 
-      const stepChangefile = state.steps[0];
+      expect(indices[1]).have.property('index').equal('unpaywall_history');
+      expect(indices[1]).have.property('added').equal(0);
+      expect(indices[1]).have.property('updated').equal(0);
+
+      const stepChangefile = result.steps[0];
 
       expect(stepChangefile).have.property('task').equal('getChangefiles');
       expect(stepChangefile).have.property('took').to.not.equal(undefined);
       expect(stepChangefile).have.property('status').equal('success');
 
-      const stepDownload = state.steps[1];
+      const stepDownload = result.steps[1];
 
       expect(stepDownload).have.property('task').equal('download');
       expect(stepDownload).have.property('file').equal('2020-01-03-history.jsonl.gz');
@@ -354,79 +279,37 @@ describe('Test: daily update route test with history', () => {
       expect(stepDownload).have.property('took').to.not.equal(undefined);
       expect(stepDownload).have.property('status').equal('success');
 
-      const stepInsert = state.steps[2];
+      const stepInsert = result.steps[2];
 
       expect(stepInsert).have.property('task').equal('insert');
       expect(stepInsert).have.property('file').equal('2020-01-03-history.jsonl.gz');
       expect(stepInsert).have.property('percent').equal(100);
       expect(stepInsert).have.property('linesRead').equal(2);
-      expect(stepInsert).have.property('insertedDocs').equal(0);
+      expect(stepInsert).have.property('addedDocs').equal(0);
       expect(stepInsert).have.property('updatedDocs').equal(0);
       expect(stepInsert).have.property('failedDocs').equal(0);
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
       const indexBase = stepInsert.index.unpaywall_base;
-      expect(indexBase).have.property('insertedDocs').equal(0);
+      expect(indexBase).have.property('addedDocs').equal(0);
       expect(indexBase).have.property('updatedDocs').equal(2);
       expect(indexBase).have.property('failedDocs').equal(0);
 
       const indexHistory = stepInsert.index.unpaywall_history;
-      expect(indexHistory).have.property('insertedDocs').equal(0);
+      expect(indexHistory).have.property('addedDocs').equal(0);
       expect(indexHistory).have.property('updatedDocs').equal(0);
       expect(indexHistory).have.property('failedDocs').equal(0);
+    }
+
+    it('Should get state with all information from the download and insertion', async () => {
+      const state = await getState();
+      testResult(state);
     });
 
     it('Should get report with all information from the download and insertion', async () => {
       const report = await getReport('unpaywallHistory');
-
-      expect(report).have.property('done').equal(true);
-      expect(report).have.property('createdAt').to.not.equal(undefined);
-      expect(report).have.property('endAt').to.not.equal(undefined);
-      expect(report).have.property('error').equal(false);
-      expect(report).have.property('type').equal('unpaywallHistory');
-      expect(report).have.property('took').to.not.equal(undefined);
-      expect(report).have.property('totalBaseInsertedDocs').equal(0);
-      expect(report).have.property('totalBaseUpdatedDocs').equal(2);
-      expect(report).have.property('totalHistoryInsertedDocs').equal(0);
-      expect(report).have.property('totalHistoryUpdatedDocs').equal(0);
-      expect(report).have.property('steps').to.be.an('array');
-
-      const stepChangefile = report.steps[0];
-
-      expect(stepChangefile).have.property('task').equal('getChangefiles');
-      expect(stepChangefile).have.property('took').to.not.equal(undefined);
-      expect(stepChangefile).have.property('status').equal('success');
-
-      const stepDownload = report.steps[1];
-
-      expect(stepDownload).have.property('task').equal('download');
-      expect(stepDownload).have.property('file').equal('2020-01-03-history.jsonl.gz');
-      expect(stepDownload).have.property('percent').equal(100);
-      expect(stepDownload).have.property('took').to.not.equal(undefined);
-      expect(stepDownload).have.property('status').equal('success');
-
-      const stepInsert = report.steps[2];
-
-      expect(stepInsert).have.property('task').equal('insert');
-      expect(stepInsert).have.property('file').equal('2020-01-03-history.jsonl.gz');
-      expect(stepInsert).have.property('percent').equal(100);
-      expect(stepInsert).have.property('linesRead').equal(2);
-      expect(stepInsert).have.property('insertedDocs').equal(0);
-      expect(stepInsert).have.property('updatedDocs').equal(0);
-      expect(stepInsert).have.property('failedDocs').equal(0);
-      expect(stepInsert).have.property('took').to.not.equal(undefined);
-      expect(stepInsert).have.property('status').equal('success');
-
-      const indexBase = stepInsert.index.unpaywall_base;
-      expect(indexBase).have.property('insertedDocs').equal(0);
-      expect(indexBase).have.property('updatedDocs').equal(2);
-      expect(indexBase).have.property('failedDocs').equal(0);
-
-      const indexHistory = stepInsert.index.unpaywall_history;
-      expect(indexHistory).have.property('insertedDocs').equal(0);
-      expect(indexHistory).have.property('updatedDocs').equal(0);
-      expect(indexHistory).have.property('failedDocs').equal(0);
+      testResult(report);
     });
   });
 
@@ -460,7 +343,6 @@ describe('Test: daily update route test with history', () => {
   });
 });
 
-// TODO Test insertion 2 fois du même fichier
 describe('Test: Insert 2 time the same file in history', () => {
   before(async function () {
     this.timeout(1000);
@@ -525,7 +407,6 @@ describe('Test: Insert 2 time the same file in history', () => {
   });
 });
 
-// TODO Test insertion d'un fichier plus vieux que l'existant
 describe('Test: Insert a old file (history-04)', () => {
   before(async function () {
     this.timeout(1000);
@@ -562,7 +443,6 @@ describe('Test: Insert a old file (history-04)', () => {
   });
 });
 
-// TODO Test insertion d'un fichier plus vieux que l'existant avec un index temporaire
 describe('Test: Insert a old file (history-04)', () => {
   before(async function () {
     this.timeout(1000);
