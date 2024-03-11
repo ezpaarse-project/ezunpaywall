@@ -189,6 +189,10 @@ paths:
                   type: string
                 endDate:
                   type: string
+                ignoreError:
+                  type: boolean
+                cleanFile:
+                  type: boolean
       responses:
         '202':
           $ref: '#/components/responses/Accepted'
@@ -227,6 +231,10 @@ paths:
                   type: integer
                 limit:
                   type: integer
+                ignoreError:
+                  type: boolean
+                cleanFile:
+                  type: boolean
         description: config for process
       responses:
         '202':
