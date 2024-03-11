@@ -13,11 +13,8 @@ async function task() {
   const deletedSnapshotFiles = await deleteFilesInDir(dirPath.snapshotsDir, 30);
   logger.info(`[cron][files]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
 
-  const deletedReportFiles = await deleteFilesInDir(dirPath.unpaywall.reportsDir, 30);
-  logger.info(`[cron][files][base]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
-
-  const deletedHistoryReportFiles = await deleteFilesInDir(dirPath.unpaywall.reportsDir, 30);
-  logger.info(`[cron][files][history]: ${deletedReportFiles?.join(',')} (${deletedHistoryReportFiles.length}) reports are deleted`);
+  const deletedReportFiles = await deleteFilesInDir(dirPath.reportsDir, 30);
+  logger.info(`[cron][files]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
 }
 
 const cron = new Cron('files', '0 0 0 * * *', task, true);
