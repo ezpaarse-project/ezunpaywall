@@ -98,7 +98,7 @@ async function insertUnpaywallDataInElastic(data) {
  */
 async function insertDataUnpaywall(insertConfig) {
   const {
-    filename, index, offset, limit,
+    filename, index, offset, limit, ignoreError,
   } = insertConfig;
 
   // step insertion in the state
@@ -188,7 +188,7 @@ async function insertDataUnpaywall(insertConfig) {
         bulkOps.push(doc);
       } catch (err) {
         logger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
-        await fail(err);
+        if (!ignoreError) { await fail(err); }
         return false;
       }
     }

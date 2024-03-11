@@ -68,18 +68,18 @@ async function validateInsertFile(req, res, next) {
     index: joi.string().trim().default('unpaywall'),
     offset: joi.number().greater(-1).default(0),
     limit: joi.number().greater(joi.ref('offset')).default(-1),
+    ignoreError: joi.boolean().default(false),
+    cleanFile: joi.boolean().default(false),
   }).validate(req.body);
 
   if (checkBody.error) return res.status(400).json({ message: checkBody.error.details[0].message });
-
-  const { index, offset, limit } = checkBody.value;
 
   if (!req.data) {
     req.data = {};
   }
 
   req.data.jobConfig = {
-    filename, index, offset, limit,
+    filename, ...checkBody.value,
   };
 
   return next();
@@ -99,6 +99,7 @@ async function validateHistoryJob(req, res, next) {
     interval: joi.string().trim().valid('day', 'week').default('day'),
     startDate: joi.date().format('YYYY-MM-DD'),
     endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')),
+    ignoreError: joi.boolean().default(false),
     cleanFile: joi.boolean().default(false),
   }).with('endDate', 'startDate').validate(req.body);
 
