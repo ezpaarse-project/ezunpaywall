@@ -188,8 +188,7 @@ async function insertDataUnpaywall(insertConfig) {
         bulkOps.push(doc);
       } catch (err) {
         logger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
-        if (!ignoreError) { await fail(err); }
-        return false;
+        if (!ignoreError) { await fail(err); return false; }
       }
     }
     // bulk insertion
