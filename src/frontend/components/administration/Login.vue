@@ -16,7 +16,7 @@
           :append-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
           :placeholder="t('administration.password')"
           :rules="[passwordRules]"
-          :type="'password'"
+          :type="passwordVisible ? 'text' : 'password'"
           :label="t('administration.password')"
           @click:append="passwordVisible = !passwordVisible"
         />
