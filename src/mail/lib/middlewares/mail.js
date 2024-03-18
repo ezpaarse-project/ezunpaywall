@@ -1,7 +1,6 @@
 const joi = require('joi').extend(require('@hapi/joi-date'));
 
 async function validateNoChangefile(req, res, next) {
-  console.log(req.body)
   const { error, value } = joi.object({
     startDate: joi.date().format('YYYY-MM-DD').required(),
     endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')).required(),
