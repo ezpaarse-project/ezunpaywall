@@ -6,7 +6,10 @@ const logger = require('../logger');
 const indexBase = config.get('elasticsearch.indexBase');
 const indexHistory = config.get('elasticsearch.indexHistory');
 
-async function unpaywall(parent, args, req, info) {
+async function unpaywallHistory(parent, args, req, info) {
+  // TODO perf: use one requet than two
+  // TODO add limit for max DOI requested
+
   await checkApikey(req, args, info);
 
   const { attributes } = req;
@@ -15,8 +18,6 @@ async function unpaywall(parent, args, req, info) {
   if (!index) { index = indexHistory; }
 
   const dois = [];
-
-  req.countDOI = args?.dois?.length;
 
   // Normalize request
   args.dois.forEach((doi) => {
@@ -33,6 +34,7 @@ async function unpaywall(parent, args, req, info) {
         ],
       },
     },
+    sort: 'updated',
     _source: attributes,
   };
 
@@ -56,7 +58,6 @@ async function unpaywall(parent, args, req, info) {
         },
       },
     );
-    body.sort = 'updated';
     body.collapse = {
       field: 'doi',
     };
@@ -120,4 +121,4 @@ async function unpaywall(parent, args, req, info) {
   return historyRes;
 }
 
-module.exports = unpaywall;
+module.exports = unpaywallHistory;
