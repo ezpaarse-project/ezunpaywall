@@ -128,6 +128,7 @@ const config = computed(() => {
   if (props.type === 'unpaywall') {
     return {
       interval: 'day',
+      index: 'unpaywall_base',
       startDate: formatDate(new Date()),
       endDate: formatDate(new Date()),
     };
@@ -169,10 +170,13 @@ async function startUpdate() {
   loading.value = true;
   let data;
   if (props.type === 'unpaywall') {
+    const conf = config.value;
     data = {
-      index: config.index.value,
-      interval: config.interval.value,
-      time: config.schedule.value,
+      index: conf.indexBase,
+      interval: conf.interval,
+      time: conf.schedule,
+      startDate: conf.startDate,
+      endDate: conf.endDate,
     };
     try {
       await startUpdatePeriod(data);

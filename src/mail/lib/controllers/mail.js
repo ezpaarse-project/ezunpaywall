@@ -15,25 +15,7 @@ const {
 function sendMailContact(req, res, next) {
   const {
     email, subject, message,
-  } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: 'Email is expected' });
-  }
-
-  const pattern = /.+@.+\..+/;
-
-  if (!pattern.test(email)) {
-    return res.status(400).json({ message: `Email [${email}] is invalid` });
-  }
-
-  if (!subject) {
-    return res.status(400).json({ message: 'Subject is expected' });
-  }
-
-  if (!message) {
-    return res.status(400).json({ message: 'Message is expected' });
-  }
+  } = req.data;
 
   contactMail(email, subject, message);
 
@@ -65,6 +47,7 @@ function sendMailUpdateStarted(req, res, next) {
 function sendMailUpdateReport(req, res, next) {
   const state = req.body;
 
+  // TODO test state
   updateReportMail(state);
 
   return res.status(202).json();
@@ -78,8 +61,7 @@ function sendMailUpdateReport(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 function sendMailNoChangefile(req, res, next) {
-  const { startDate, endDate } = req.body;
-  // TODO test startDate, endDate
+  const { startDate, endDate } = req.data;
 
   noChangefileMail(startDate, endDate);
 
