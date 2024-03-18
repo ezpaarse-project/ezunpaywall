@@ -144,12 +144,12 @@ describe('Test: daily update route test with history', () => {
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
-      const indexBase = stepInsert.index.unpaywall_base;
+      const indexBase = stepInsert.indices.unpaywall_base;
       expect(indexBase).have.property('addedDocs').equal(0);
       expect(indexBase).have.property('updatedDocs').equal(3);
       expect(indexBase).have.property('failedDocs').equal(0);
 
-      const indexHistory = stepInsert.index.unpaywall_history;
+      const indexHistory = stepInsert.indices.unpaywall_history;
       expect(indexHistory).have.property('addedDocs').equal(3);
       expect(indexHistory).have.property('updatedDocs').equal(0);
       expect(indexHistory).have.property('failedDocs').equal(0);
@@ -283,12 +283,12 @@ describe('Test: daily update route test with history', () => {
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
-      const indexBase = stepInsert.index.unpaywall_base;
+      const indexBase = stepInsert.indices.unpaywall_base;
       expect(indexBase).have.property('addedDocs').equal(0);
       expect(indexBase).have.property('updatedDocs').equal(2);
       expect(indexBase).have.property('failedDocs').equal(0);
 
-      const indexHistory = stepInsert.index.unpaywall_history;
+      const indexHistory = stepInsert.indices.unpaywall_history;
       expect(indexHistory).have.property('addedDocs').equal(2);
       expect(indexHistory).have.property('updatedDocs').equal(0);
       expect(indexHistory).have.property('failedDocs').equal(0);
@@ -423,12 +423,12 @@ describe('Test: daily update route test with history', () => {
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
-      const indexBase = stepInsert.index.unpaywall_base;
+      const indexBase = stepInsert.indices.unpaywall_base;
       expect(indexBase).have.property('addedDocs').equal(0);
       expect(indexBase).have.property('updatedDocs').equal(2);
       expect(indexBase).have.property('failedDocs').equal(0);
 
-      const indexHistory = stepInsert.index.unpaywall_history;
+      const indexHistory = stepInsert.indices.unpaywall_history;
       expect(indexHistory).have.property('addedDocs').equal(0);
       expect(indexHistory).have.property('updatedDocs').equal(0);
       expect(indexHistory).have.property('failedDocs').equal(0);

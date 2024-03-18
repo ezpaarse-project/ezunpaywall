@@ -160,11 +160,11 @@ function end() {
     let totalUpdatedHistory = 0;
 
     insertSteps.forEach((step) => {
-      const keys = Object.keys(step.index);
-      totalAddedBase += step.index[keys[0]].addedDocs;
-      totalUpdatedBase += step.index[keys[0]].updatedDocs;
-      totalAddedHistory += step.index[keys[1]].addedDocs;
-      totalUpdatedHistory += step.index[keys[1]].updatedDocs;
+      const keys = Object.keys(step.indices);
+      totalAddedBase += step.indices[keys[0]].addedDocs;
+      totalUpdatedBase += step.indices[keys[0]].updatedDocs;
+      totalAddedHistory += step.indices[keys[1]].addedDocs;
+      totalUpdatedHistory += step.indices[keys[1]].updatedDocs;
     });
 
     indices.push({

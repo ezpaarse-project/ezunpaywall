@@ -56,16 +56,16 @@ async function insertUnpaywallDataInElastic(data, index) {
 
   items.forEach((i) => {
     if (i?.index?.result === 'created') {
-      step.index[index].addedDocs += 1;
+      step.indices[index].addedDocs += 1;
       return;
     }
     if (i?.index?.result === 'updated') {
-      step.index[index].updatedDocs += 1;
+      step.indices[index].updatedDocs += 1;
       return;
     }
 
     if (i?.index?.error !== undefined) {
-      step.index[index].failedDocs += 1;
+      step.indices[index].failedDocs += 1;
       errors.push(i?.index?.error);
     }
   });
@@ -190,7 +190,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   addStepInsert(filename);
   const step = getLatestStep();
   step.file = filename;
-  step.index = {
+  step.indices = {
     [indexBase]: {
       addedDocs: 0,
       updatedDocs: 0,
