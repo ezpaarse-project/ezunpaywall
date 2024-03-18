@@ -118,7 +118,7 @@ async function initAlias(indexName, mapping, aliasName) {
   }
 }
 
-async function searchByDoiAsID(dois, index) {
+async function searchByDOI(dois, index) {
   if (!dois) { return []; }
   // Normalize request
   const normalizeDOI = dois.map((doi) => doi.toLowerCase());
@@ -143,7 +143,7 @@ async function searchByDoiAsID(dois, index) {
     });
   } catch (err) {
     logger.error('[elastic]: Cannot search documents with DOI as ID', err);
-    return null;
+    return [];
   }
   // eslint-disable-next-line no-underscore-dangle
   return res.body.hits.hits.map((hit) => hit._source);
@@ -218,7 +218,7 @@ module.exports = {
   pingElastic,
   createIndex,
   initAlias,
-  searchByDoiAsID,
+  searchByDOI,
   refreshIndex,
   bulk,
   searchWithRange,

@@ -208,6 +208,37 @@ async function getAllData(index) {
   return res.body.hits.hits.map((hit) => hit._source);
 }
 
+async function searchByDOI(dois, index) {
+  if (!dois) { return []; }
+  // Normalize request
+  const normalizeDOI = dois.map((doi) => doi.toLowerCase());
+
+  const filter = [{ terms: { doi: normalizeDOI } }];
+
+  const query = {
+    bool: {
+      filter,
+    },
+  };
+
+  let res;
+  try {
+    res = await elasticClient.search({
+      index,
+      size: 1000,
+      body: {
+        query,
+      },
+
+    });
+  } catch (err) {
+    console.error('[elastic]: Cannot search documents with DOI as ID', err);
+    return [];
+  }
+  // eslint-disable-next-line no-underscore-dangle
+  return res.body.hits.hits.map((hit) => hit._source);
+}
+
 module.exports = {
   elasticClient,
   createIndex,
@@ -217,4 +248,5 @@ module.exports = {
   insertHistoryDataUnpaywall,
   countDocuments,
   getAllData,
+  searchByDOI,
 };
