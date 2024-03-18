@@ -1,3 +1,4 @@
+<!-- eslint-disable max-len -->
 <template>
   <v-card height="100%">
     <v-toolbar
@@ -38,30 +39,37 @@
     >
       Alias
       <v-col cols="12">
-        <v-data-table
-          :headers="aliasesHeaders"
-          :items="aliases"
-          :items-per-page="5"
-          :loading="loading"
-          item-key="id"
-          class="elevation-1"
-        />
+        <v-chip
+          v-for="alias in aliases"
+          :key="alias"
+          class="mx-1"
+        >
+          alias: {{ alias.alias }}
+          <v-icon
+            size="x-small"
+            icon="mdi-arrow-right"
+            class="mx-1"
+          />
+          index: {{ alias.index }}
+        </v-chip>
       </v-col>
       Index
       <v-col cols="12">
-        <v-data-table
-          :headers="indicesHeaders"
-          :items="indices"
-          :items-per-page="5"
-          :loading="loading"
-          item-key="id"
-          class="elevation-1"
+        <v-chip
+          v-for="index in indices"
+          :key="index"
+          class="mx-1"
         >
-          <template #[`item.docs.count`]="{ item }">
-            {{ Number.parseInt(item['docs.count'], 10)
-              .toLocaleString($i18n.locale, { useGrouping: true }) }}
-          </template>
-        </v-data-table>
+          <v-icon
+            icon="mdi-circle"
+            class="mx-1"
+            :color="index.health"
+          />
+          {{ index.index }}:
+          {{ Number.parseInt(index['docs.count']).toLocaleString($i18n.locale, { useGrouping: true }) }}
+          {{ t('administration.elastic.documents') }} -
+          {{ index['store.size'] }}
+        </v-chip>
       </v-col>
     </v-row>
   </v-card>
@@ -87,39 +95,6 @@ const { password } = storeToRefs(adminStore);
 const loading = ref(false);
 const indices = ref([]);
 const aliases = ref([]);
-
-const indicesHeaders = computed(() => [
-  {
-    title: t('administration.elastic.indexName'),
-    align: 'start',
-    sortable: false,
-    key: 'index',
-  },
-  {
-    title: t('administration.elastic.indexCount'),
-    sortable: false,
-    key: 'docs.count',
-  },
-  {
-    title: t('administration.elastic.indexSize'),
-    sortable: false,
-    key: 'store.size',
-  },
-]);
-
-const aliasesHeaders = computed(() => [
-  {
-    title: t('administration.elastic.aliasName'),
-    align: 'start',
-    sortable: false,
-    key: 'alias',
-  },
-  {
-    title: t('administration.elastic.indexName'),
-    sortable: false,
-    key: 'index',
-  },
-]);
 
 async function getElasticInfo() {
   loading.value = true;

@@ -77,10 +77,7 @@
       "title": "Information about elastic",
       "noInfo": "No info about elastic",
       "reload": "Reload elastic info",
-      "aliasName": "Name of alias",
-      "indexName": "Name of index",
-      "indexCount": "Count of document",
-      "indexSize": "Size of index"
+      "documents": "documents"
     },
     "health": {
       "title": "Services status",
