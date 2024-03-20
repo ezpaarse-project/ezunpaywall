@@ -85,6 +85,8 @@ info: {
 
 ## Activity diagram
 
+Update process
+
 ![Activity-diagram](./doc/activity-diagram-update.png)
 
 ### Object structure
@@ -163,6 +165,10 @@ This cron automatically updates unpaywall data and populates the history. This c
 ```
 :ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"
 ```
+
+## Open API
+
+[open-api documentation](https://unpaywall.inist.fr/open-api?doc=update)
 
 ## Test
 

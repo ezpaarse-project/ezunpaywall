@@ -92,6 +92,10 @@ One cron automatically update metrics of unpaywall data. the elastic request tak
 :ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"
 ```
 
+## Open API
+
+[open-api documentation](https://unpaywall.inist.fr/open-api?doc=graphql)
+
 ## Test
 
 ```

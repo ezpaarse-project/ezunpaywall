@@ -49,6 +49,10 @@ One cron automatically reset the counter at 100 000 of demo API key.
 :ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"
 ```
 
+## Open API
+
+[open-api documentation](https://unpaywall.inist.fr/open-api?doc=apikey)
+
 ## Test
 
 ```
