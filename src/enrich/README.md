@@ -41,7 +41,7 @@ info: {
 
 ## Activity diagram
 
-// coming soon
+![Activity-diagram](./doc/activity-diagram-enrich.png)
 
 ### Data
 
