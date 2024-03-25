@@ -1,11 +1,12 @@
 { 
   "nodeEnv": "NODE_ENV",
   "accessLogRotate": "ACCESS_LOG_ROTATE",
+  "timezone": "TIMEZONE",
   "redis":  {
     "host": "REDIS_HOST",
     "port": "REDIS_PORT",
     "password": "REDIS_PASSWORD"
   },
-  "apikey": "APIKEY_APIKEY",
+  "apikey": "ADMIN_APIKEY",
   "healthTimeout": "HEALTH_TIMEOUT"
 }

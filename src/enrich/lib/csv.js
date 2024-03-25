@@ -144,7 +144,7 @@ async function writeInFileCSV(data, headers, separator, enrichedFile, state) {
     });
     await fs.writeFile(enrichedFile, `${unparse}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error(`[job csv] Cannot write [${unparse}] in [${enrichedFile}]`, err);
+    logger.error(`[job][csv]: Cannot write [${unparse}] in [${enrichedFile}]`, err);
     await fail(state);
   }
 }
@@ -210,7 +210,7 @@ async function writeHeaderCSV(headers, separator, filePath) {
   try {
     await fs.writeFile(filePath, `${headers.join(separator)}\r\n`, { flag: 'a' });
   } catch (err) {
-    logger.error(`[job csv] Cannot write [${headers.join(separator)}] in [${filePath}]`, err);
+    logger.error(`[job][csv]: Cannot write [${headers.join(separator)}] in [${filePath}]`, err);
   }
 }
 
@@ -288,7 +288,7 @@ async function processEnrichCSV(id, index, args, state, prefix, separator) {
   try {
     await fs.ensureFile(enrichedFile);
   } catch (err) {
-    logger.error(`[job csv] Cannot ensure ${enrichedFile}`, err);
+    logger.error(`[job][csv]: Cannot ensure ${enrichedFile}`, err);
     throw err;
   }
 
@@ -338,7 +338,7 @@ async function processEnrichCSV(id, index, args, state, prefix, separator) {
           try {
             await enrichInFile(copyData, enrichConfig, state);
           } catch (err) {
-            logger.error(`[job csv] Cannot enrich in file [${enrichedFile}]`, err);
+            logger.error(`[job][csv]: Cannot enrich in file [${enrichedFile}]`, err);
             await fail(state);
             return;
           }
@@ -358,12 +358,12 @@ async function processEnrichCSV(id, index, args, state, prefix, separator) {
     try {
       await enrichInFile(data, enrichConfig, state);
     } catch (err) {
-      logger.error(`[job csv] Cannot enrich in file [${enrichedFile}]`, err);
+      logger.error(`[job][csv]: Cannot enrich in file [${enrichedFile}]`, err);
       await fail(state);
       return;
     }
   }
-  logger.info(`[job csv] ${state.enrichedLines}/${state.linesRead} enriched lines`);
+  logger.info(`[job][csv]: ${state.enrichedLines}/${state.linesRead} enriched lines`);
 }
 
 module.exports = processEnrichCSV;

@@ -1,8 +1,14 @@
 # ezunpaywall-frontend
 
-frontend service of ezunpaywall
+Web interface for :
+- Show metrics on unpaywall data
+- Examples of how to use the graphql API and enrichment service
+-openAPI documentation
+- A contact form
+- A server administration section
+- A history of data update reports.
 
-## Service environment variables
+## Environment variables
 
 | name | default | description |
 | --- | --- | --- |

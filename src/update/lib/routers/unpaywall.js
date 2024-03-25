@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const validateIntervale = require('../middlewares/interval');
+const validateInterval = require('../middlewares/format/interval');
 const getChangefilesOfUnpaywall = require('../controllers/unpaywall');
 
 /**
@@ -8,6 +8,6 @@ const getChangefilesOfUnpaywall = require('../controllers/unpaywall');
  *
  * This route can take a body which corresponds to the intervale of changefile.
  */
-router.get('/unpaywall/changefiles', validateIntervale, getChangefilesOfUnpaywall);
+router.get('/unpaywall/changefiles', validateInterval, getChangefilesOfUnpaywall);
 
 module.exports = router;

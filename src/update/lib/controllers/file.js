@@ -1,12 +1,9 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-const snapshotsDir = path.resolve(__dirname, '..', '..', 'data', 'snapshots');
+const { getMostRecentFile, deleteFile } = require('../files');
 
-const {
-  getMostRecentFile,
-  deleteFile,
-} = require('../file');
+const dirPath = require('../path');
 
 /**
  * Controller to start list of files or latest file downloaded on update service.
@@ -16,18 +13,18 @@ const {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function getFiles(req, res, next) {
-  const latest = req.data;
+  const { latest } = req.data;
 
   if (latest) {
     let latestSnapshot;
     try {
-      latestSnapshot = await getMostRecentFile(snapshotsDir);
+      latestSnapshot = await getMostRecentFile(dirPath.snapshotsDir);
     } catch (err) {
-      return next({ message: 'Cannot get the lastest snapshot' });
+      return next({ message: 'Cannot get the latest snapshot' });
     }
     return res.status(200).json(latestSnapshot?.filename);
   }
-  const files = await fs.readdir(snapshotsDir);
+  const files = await fs.readdir(dirPath.snapshotsDir);
   return res.status(200).json(files);
 }
 
@@ -39,7 +36,7 @@ async function getFiles(req, res, next) {
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function uploadFile(req, res, next) {
-  if (!req?.file) return next({ messsage: 'File not sent' });
+  if (!req?.file) return next({ message: 'File not sent' });
   return res.status(202).json();
 }
 
@@ -50,15 +47,15 @@ async function uploadFile(req, res, next) {
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-async function deleteFileInstalled(req, res, next) {
-  const filename = req.data;
+async function deleteInstalledFile(req, res, next) {
+  const { filename } = req.data;
 
-  if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
+  if (!await fs.pathExists(path.resolve(dirPath.snapshotsDir, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
   try {
-    await deleteFile(path.resolve(snapshotsDir, filename));
+    await deleteFile(path.resolve(dirPath.snapshotsDir, filename));
   } catch (err) {
     return next({ message: err.message });
   }
@@ -69,5 +66,5 @@ async function deleteFileInstalled(req, res, next) {
 module.exports = {
   getFiles,
   uploadFile,
-  deleteFileInstalled,
+  deleteInstalledFile,
 };

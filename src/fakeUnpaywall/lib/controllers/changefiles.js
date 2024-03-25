@@ -78,6 +78,31 @@ async function updateChangefilesExample(interval) {
     changefilesDay.list[4].last_modified = new Date(now - oneYear - (1 * oneDay))
       .toISOString().slice(0, 19);
 
+    changefilesDay.list[5].date = new Date('2020-01-05')
+      .toISOString().slice(0, 10);
+    changefilesDay.list[5].last_modified = new Date('2020-01-05')
+      .toISOString().slice(0, 19);
+
+    changefilesDay.list[6].date = new Date('2020-01-04')
+      .toISOString().slice(0, 10);
+    changefilesDay.list[6].last_modified = new Date('2020-01-04')
+      .toISOString().slice(0, 19);
+
+    changefilesDay.list[7].date = new Date('2020-01-03')
+      .toISOString().slice(0, 10);
+    changefilesDay.list[7].last_modified = new Date('2020-01-03')
+      .toISOString().slice(0, 19);
+
+    changefilesDay.list[8].date = new Date('2020-01-02')
+      .toISOString().slice(0, 10);
+    changefilesDay.list[8].last_modified = new Date('2020-01-02')
+      .toISOString().slice(0, 19);
+
+    changefilesDay.list[9].date = new Date('2019-01-02')
+      .toISOString().slice(0, 10);
+    changefilesDay.list[9].last_modified = new Date('2019-01-02')
+      .toISOString().slice(0, 19);
+
     try {
       await fs.writeFile(changefilesDayPath, JSON.stringify(changefilesDay, null, 2), 'utf8');
     } catch (err) {

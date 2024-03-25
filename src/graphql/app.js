@@ -5,11 +5,13 @@ const responseTime = require('response-time');
 const cors = require('cors');
 const { json } = require('body-parser');
 const { ApolloServer } = require('@apollo/server');
+const { ApolloServerPluginLandingPageProductionDefault } = require('@apollo/server/plugin/landingPage/default');
+
 const { expressMiddleware } = require('@apollo/server/express4');
 
 const { pingRedis, startConnectionRedis } = require('./lib/services/redis');
 
-const getNumberOfDOI = require('./lib/middlewares/args');
+const getNumberOfDOI = require('./lib/middlewares/countDOI');
 const auth = require('./lib/middlewares/auth');
 
 const logger = require('./lib/logger');
@@ -32,11 +34,14 @@ fs.ensureDir(path.resolve(logDir));
 fs.ensureDir(path.resolve(logDir, 'application'));
 fs.ensureDir(path.resolve(logDir, 'access'));
 
+process.env.NODE_ENV = 'production';
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: true,
   csrfPrevention: false,
+  plugins: [ApolloServerPluginLandingPageProductionDefault({ footer: false })],
 });
 
 (async () => {

@@ -5,6 +5,7 @@ const logger = require('../logger');
 
 const graphql = axios.create({
   baseURL: config.get('graphql.host'),
+  timeout: 30000,
 });
 graphql.host = config.get('graphql.host');
 
@@ -29,19 +30,25 @@ async function requestGraphql(data, args, index, apikey) {
   dois = await map1.filter((elem) => elem !== undefined);
   dois = dois.join('","');
 
-  res = await graphql({
-    method: 'POST',
-    url: '/graphql',
-    data:
-    {
-      query: `{ GetByDOI(dois: ["${dois}"]) ${args.toString()} }`,
-    },
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      'x-api-key': apikey,
-      index,
-    },
-  });
+  try {
+    res = await graphql({
+      method: 'POST',
+      url: '/graphql',
+      data:
+      {
+        query: `{ GetByDOI(dois: ["${dois}"]) ${args.toString()} }`,
+      },
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'x-api-key': apikey,
+        index,
+      },
+    });
+  } catch (err) {
+    logger.error('[graphql] Cannot get unpaywall data');
+    throw err;
+  }
+
   return res?.data?.data?.GetByDOI;
 }
 

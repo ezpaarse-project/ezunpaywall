@@ -1,4 +1,4 @@
-FROM node:18.17-alpine3.18 as build
+FROM node:18.19.1-alpine3.19 as build
 
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
@@ -12,22 +12,22 @@ ARG NUXT_PUBLIC_ENRICH_HOST
 ARG NUXT_PUBLIC_APIKEY_HOST
 ARG NUXT_PUBLIC_MAIL_HOST
 ARG NUXT_PUBLIC_HEALTH_HOST
-ARG NUXT_MAIL_HOST
-ARG NUXT_MAIL_APIKEY
 ARG NUXT_PUBLIC_ELASTIC_ENV
 ARG NUXT_PUBLIC_VERSION
+ARG NUXT_MAIL_HOST
+ARG NUXT_MAIL_APIKEY
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm i
+RUN npm ci
 
 COPY . .
 
 RUN npm run build
 
-FROM node:18.17-alpine3.18
+FROM node:18.19.1-alpine3.19
 EXPOSE 3000
 ENV NODE_ENV production
 COPY --from=build /usr/src/app/.output /usr/src/app

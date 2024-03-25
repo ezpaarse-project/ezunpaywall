@@ -8,28 +8,32 @@ const logger = require('./lib/logger');
 const getConfig = require('./lib/config');
 
 const routerPing = require('./lib/routers/ping');
-const routerJob = require('./lib/routers/job');
-const routerReport = require('./lib/routers/report');
-const routerSnapshot = require('./lib/routers/snapshot');
-const routerState = require('./lib/routers/state');
-const routerStatus = require('./lib/routers/status');
-const routerUnpaywall = require('./lib/routers/unpaywall');
-const routerCron = require('./lib/routers/cron');
 const routerElastic = require('./lib/routers/elastic');
 const routerOpenapi = require('./lib/routers/openapi');
+const routerUnpaywall = require('./lib/routers/unpaywall');
+const routerStatus = require('./lib/routers/status');
+const routerState = require('./lib/routers/state');
+
+const routerJob = require('./lib/routers/job');
+const routerReport = require('./lib/routers/report');
+const routerCron = require('./lib/routers/cron');
+const routerSnapshot = require('./lib/routers/snapshot');
+
+const dirPath = require('./lib/path');
 
 require('./lib/cron/file');
 
-const dataDir = path.resolve(__dirname, 'data');
-fs.ensureDir(path.resolve(dataDir));
-fs.ensureDir(path.resolve(dataDir, 'reports'));
-fs.ensureDir(path.resolve(dataDir, 'states'));
-fs.ensureDir(path.resolve(dataDir, 'snapshots'));
+// create data directory
+fs.ensureDir(path.resolve(dirPath.dataDir));
+fs.ensureDir(path.resolve(dirPath.snapshotsDir));
+fs.ensureDir(path.resolve(dirPath.reportsDir));
 
+// create all directories for logs unpaywall
 const logDir = path.resolve(__dirname, 'log');
 fs.ensureDir(path.resolve(logDir));
 fs.ensureDir(path.resolve(logDir, 'application'));
 fs.ensureDir(path.resolve(logDir, 'access'));
+fs.ensureDir(path.resolve(logDir, 'healthcheck'));
 
 const app = express();
 
@@ -37,16 +41,17 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan);
 
-app.use(routerJob);
-app.use(routerReport);
-app.use(routerSnapshot);
-app.use(routerState);
-app.use(routerStatus);
-app.use(routerUnpaywall);
-app.use(routerCron);
+app.use(routerPing);
 app.use(routerElastic);
 app.use(routerOpenapi);
-app.use(routerPing);
+app.use(routerUnpaywall);
+app.use(routerStatus);
+app.use(routerState);
+
+app.use(routerJob);
+app.use(routerReport);
+app.use(routerCron);
+app.use(routerSnapshot);
 
 /* Errors and unknown routes */
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}` }));

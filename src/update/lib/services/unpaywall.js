@@ -10,6 +10,26 @@ unpaywall.baseURL = config.get('unpaywall.host');
 const apikey = config.get('unpaywall.apikey');
 
 /**
+ * Ping unpaywall.
+ *
+ * @returns {Promise<boolean>} healthy or not.
+ */
+async function pingUnpaywall() {
+  let res;
+  try {
+    res = await unpaywall({
+      method: 'GET',
+      url: '/ping',
+    });
+  } catch (err) {
+    logger.error('[unpaywall] Cannot ping unpaywall', err);
+    return err?.message;
+  }
+  if (res?.status === 204) return true;
+  return false;
+}
+
+/**
  * Get the current snapshot.
  *
  * @returns {Readable} Stream of snapshot.
@@ -115,6 +135,7 @@ async function getChangefile(filename, interval) {
 }
 
 module.exports = {
+  pingUnpaywall,
   getSnapshot,
   getChangefiles,
   getChangefile,

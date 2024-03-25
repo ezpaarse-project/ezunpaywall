@@ -2,6 +2,7 @@
   <v-row
     align="center"
     justify="center"
+    class="my-4"
   >
     <v-col
       class="text-center"

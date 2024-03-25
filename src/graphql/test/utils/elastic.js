@@ -35,12 +35,12 @@ async function checkIfIndexExist(name) {
 }
 
 /**
- * Insert the content of fake1.jsonl in elastic.
+ * Insert data in elastic.
  *
  * @returns {Promise<void>}
  */
-async function insertDataUnpaywall() {
-  const filepath = path.resolve(__dirname, '..', 'sources', 'fake1.jsonl');
+async function insertDataUnpaywall(filename, indexName) {
+  const filepath = path.resolve(__dirname, '..', 'sources', filename);
   let readStream;
   try {
     readStream = await fs.createReadStream(filepath);
@@ -59,7 +59,12 @@ async function insertDataUnpaywall() {
     data.push(JSON.parse(line));
   }
 
-  const body = data.flatMap((doc) => [{ index: { _index: 'unpaywall-test', _id: doc.doi } }, doc]);
+  let body;
+  if (indexName === 'unpaywall_history') {
+    body = data.flatMap((doc) => [{ index: { _index: indexName, _id: `${doc.updated}-${doc.doi}` } }, doc]);
+  } else {
+    body = data.flatMap((doc) => [{ index: { _index: indexName, _id: doc.doi } }, doc]);
+  }
 
   try {
     await elasticClient.bulk({ refresh: true, body });

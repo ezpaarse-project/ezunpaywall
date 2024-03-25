@@ -3,19 +3,23 @@
     <div v-if="props.visible">
       <v-card-title> {{ t('graphql.result') }} </v-card-title>
       <v-card-text>
-        <JSONView
-          :code="stringifiedGraphqlResult"
-        />
+        <v-row justify="center">
+          <v-col class="flex-grow-1 flex-shrink-0">
+            <JSONView
+              :code="stringifiedGraphqlResult"
+            />
+          </v-col>
+          <v-col class="flex-grow-0 flex-shrink-1 text-center pa-0">
+            <v-btn
+              icon="mdi-content-copy"
+              variant="plain"
+              @click="copyResult()"
+            />
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn
-          :href="graphqlLink"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {{ t('graphql.linkAPI') }}
-        </v-btn>
       </v-card-actions>
     </div>
   </div>
@@ -25,8 +29,10 @@
 
 import JSONView from '@/components/skeleton/JSONView.vue';
 
+import { useSnacksStore } from '@/store/snacks';
+
 const { t } = useI18n();
-const runtimeConfig = useRuntimeConfig();
+const snackStore = useSnacksStore();
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
@@ -37,6 +43,26 @@ const props = defineProps({
 
 const stringifiedGraphqlResult = computed(() => JSON.stringify(props.graphqlData, null, 2));
 
-const graphqlLink = computed(() => `${runtimeConfig.public.graphqlHost}/graphql?query=${props.query}&apikey=demo`);
+function unsecuredCopyToClipboard(text) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.setAttribute('display', 'none');
+  textArea.focus();
+  textArea.select();
+  document.execCommand('copy');
+}
+function copyResult() {
+  try {
+    if (window.isSecureContext && navigator.clipboard) {
+      navigator.clipboard.writeText(JSON.stringify(props.graphqlData, null, 2));
+    } else {
+      unsecuredCopyToClipboard(JSON.stringify(props.graphqlData, null, 2));
+    }
+  } catch (err) {
+    snackStore.error(t('error.graphql.copyResult'));
+    return;
+  }
+  snackStore.info(t('info.graphql.copyResult'));
+}
 
 </script>

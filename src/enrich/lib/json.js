@@ -112,7 +112,7 @@ async function writeInFileJSON(data, enrichedFile, state) {
   try {
     await fs.writeFile(enrichedFile, stringTab, { flag: 'a' });
   } catch (err) {
-    logger.error(`[job jsonl] Cannot write [${stringTab}] in [${enrichedFile}]`, err);
+    logger.error(`[job][jsonl]: Cannot write [${stringTab}] in [${enrichedFile}]`, err);
     await fail(state);
     throw err;
   }
@@ -185,7 +185,7 @@ async function processEnrichJSON(id, index, args, prefix, state) {
   try {
     await fs.ensureFile(enrichedFile);
   } catch (err) {
-    logger.error(`[job jsonl] Cannot ensure [${enrichedFile}]`, err);
+    logger.error(`[job][jsonl]: Cannot ensure [${enrichedFile}]`, err);
   }
 
   let loaded = 0;
@@ -214,7 +214,7 @@ async function processEnrichJSON(id, index, args, prefix, state) {
       parsedLine = JSON.parse(line);
       data.push(parsedLine);
     } catch (err) {
-      logger.error(`[job jsonl] Cannot parse [${line}] in json format`, err);
+      logger.error(`[job][jsonl]: Cannot parse [${line}] in json format`, err);
       await fail(state);
       return;
     }
@@ -223,7 +223,7 @@ async function processEnrichJSON(id, index, args, prefix, state) {
       try {
         await enrichInFile(data, enrichConfig, state);
       } catch (err) {
-        logger.error(`[job jsonl] Cannot enrich in file [${enrichedFile}]`, err);
+        logger.error(`[job][jsonl]: Cannot enrich in file [${enrichedFile}]`, err);
         await fail(state);
         return;
       }
@@ -236,12 +236,12 @@ async function processEnrichJSON(id, index, args, prefix, state) {
     try {
       await enrichInFile(data, enrichConfig, state);
     } catch (err) {
-      logger.error(`[job jsonl] Cannot enrich in file [${enrichedFile}]`, err);
+      logger.error(`[job][jsonl]: Cannot enrich in file [${enrichedFile}]`, err);
       await fail(state);
       return;
     }
   }
-  logger.info(`[job jsonl] ${state.enrichedLines}/${state.linesRead} enriched lines`);
+  logger.info(`[job][jsonl]: ${state.enrichedLines}/${state.linesRead} enriched lines`);
 }
 
 module.exports = processEnrichJSON;

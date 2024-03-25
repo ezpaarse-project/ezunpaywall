@@ -21,15 +21,15 @@ chai.use(chaiHttp);
 
 const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
 
-describe('test graphql metrics request', () => {
+describe('Test GET metrics resolver', () => {
   before(async function () {
     this.timeout(30000);
     await deleteAllAPIKey();
     await ping();
     await loadDevAPIKey();
-    await deleteIndex('unpaywall-test');
-    await createIndex('unpaywall-test', mappingUnpaywall);
-    await insertDataUnpaywall();
+    await deleteIndex('unpaywall_base');
+    await createIndex('unpaywall_base', mappingUnpaywall);
+    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall_base');
   });
 
   describe('GET: get metrics', () => {
@@ -37,33 +37,31 @@ describe('test graphql metrics request', () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: '{ metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }' })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .set('x-api-key', 'user');
 
       expect(res).have.status(200);
       const metrics = res?.body?.data?.metrics;
-      expect(metrics).have.property('doi').eq(50);
-      expect(metrics).have.property('isOA').eq(43);
-      expect(metrics).have.property('goldOA').eq(17);
+      expect(metrics).have.property('doi').eq(10);
+      expect(metrics).have.property('isOA').eq(5);
+      expect(metrics).have.property('goldOA').eq(1);
       expect(metrics).have.property('hybridOA').eq(1);
-      expect(metrics).have.property('bronzeOA').eq(13);
-      expect(metrics).have.property('greenOA').eq(12);
-      expect(metrics).have.property('closedOA').eq(7);
+      expect(metrics).have.property('bronzeOA').eq(1);
+      expect(metrics).have.property('greenOA').eq(2);
+      expect(metrics).have.property('closedOA').eq(5);
     });
   });
 
   describe('GET: get metrics', () => {
     before(async () => {
-      await deleteIndex('unpaywall-test');
-      await createIndex('unpaywall-test', mappingUnpaywall);
+      await deleteIndex('unpaywall_base');
+      await createIndex('unpaywall_base', mappingUnpaywall);
     });
 
     it('Should get metrics - { metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
         .query({ query: '{ metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }' })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .set('x-api-key', 'user');
 
       expect(res).have.status(200);
       const metrics = res?.body?.data?.metrics;

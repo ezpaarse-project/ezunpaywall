@@ -91,8 +91,4 @@ async function selectAll() {
   emit('update:modelValue', items.value);
 }
 
-async function unSelectAll() {
-  emit('update:modelValue', []);
-}
-
 </script>

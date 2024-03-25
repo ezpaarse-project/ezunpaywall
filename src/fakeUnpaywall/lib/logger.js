@@ -16,7 +16,6 @@ const {
   colorize,
 } = format;
 
-// TODO log for prod
 // function prodFormat() {
 //   const replaceError = ({
 //     name, level, message, stack,

@@ -1,6 +1,8 @@
 <template>
   <section class="ma-3">
-    <ReportsCard />
+    <ReportsCard
+      class="my-4"
+    />
   </section>
 </template>
 

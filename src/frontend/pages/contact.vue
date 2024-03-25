@@ -79,7 +79,7 @@ const snackStore = useSnacksStore();
 const form = ref(null);
 const email = ref('');
 const message = ref('');
-const subject = ref(t('contact.requestInformation'));
+const subject = ref({ key: 'informations', name: t('contact.requestInformation') });
 const sendBrowser = ref(true);
 const valid = ref(false);
 const loading = ref(false);
@@ -109,7 +109,7 @@ const messageRules = computed(() => [(v) => !!v || t('contact.contentIsRequired'
 const subjectRules = computed(() => [(v) => !!v || t('contact.subjectIsRequired')]);
 
 function resetForm() {
-  message.value = ' ';
+  message.value = '';
 }
 
 async function validate() {

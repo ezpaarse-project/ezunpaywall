@@ -8,7 +8,7 @@ const { getChangefiles } = require('../services/unpaywall');
  * @param {import('express').NextFunction} next - Do the following.
  */
 async function getChangefilesOfUnpaywall(req, res, next) {
-  const interval = req.data;
+  const { interval } = req.data;
 
   let snapshotsInfo;
 

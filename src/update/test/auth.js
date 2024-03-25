@@ -43,7 +43,7 @@ describe('Test: auth service in update service', () => {
 
       let isUpdate = true;
       while (isUpdate) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
         isUpdate = await checkIfInUpdate();
       }
       expect(res).have.status(202);

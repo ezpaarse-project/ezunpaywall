@@ -1,6 +1,7 @@
 {
   "nodeEnv": "development",
   "accessLogRotate": false,
+  "timezone": "Europe/Paris",
   "unpaywall": {
     "host": "http://fakeunpaywall:3000",
     "apikey": "default"
@@ -18,10 +19,17 @@
     "indexAlias": "upw",
     "timeout": 20000
   },
-  "cron": {
+  "unpaywallCron": {
     "schedule": "0 0 0 * * *",
     "active": false,
     "index": "unpaywall",
+    "interval": "day"
+  },
+  "unpaywallHistoryCron": {
+    "schedule": "0 0 0 * * *",
+    "active": false,
+    "indexBase": "unpaywall_base",
+    "indexHistory": "unpaywall_history",
     "interval": "day"
   },
   "apikey": "changeme",

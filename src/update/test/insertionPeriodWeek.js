@@ -3,26 +3,13 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const {
-  updateChangeFile,
-} = require('./utils/snapshot');
-
-const {
-  getState,
-} = require('./utils/state');
-
-const {
-  getReport,
-} = require('./utils/report');
-
-const {
-  countDocuments,
-} = require('./utils/elastic');
-
+const { updateChangeFile } = require('./utils/snapshot');
+const { getState } = require('./utils/state');
+const getReport = require('./utils/report');
+const { countDocuments } = require('./utils/elastic');
 const checkIfInUpdate = require('./utils/status');
 
 const ping = require('./utils/ping');
-
 const reset = require('./utils/reset');
 
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
@@ -34,11 +21,11 @@ describe('Week: Test: download and insert file from unpaywall between a period',
   const oneDay = (1 * 24 * 60 * 60 * 1000);
 
   // create date in a format (YYYY-mm-dd) to be use by ezunpaywall
-  // yersterday
+  // yesterday
   const date1 = new Date(now - (1 * oneDay)).toISOString().slice(0, 10);
-  // yersterday - one week
+  // yesterday - one week
   const date2 = new Date(now - (8 * oneDay)).toISOString().slice(0, 10);
-  // yersterday - two weeks
+  // yesterday - two weeks
   const date3 = new Date(now - (15 * oneDay)).toISOString().slice(0, 10);
   // these dates are for test between a short period
   const date4 = new Date(now - (4 * oneDay)).toISOString().slice(0, 10);
@@ -80,103 +67,66 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(count).to.equal(150);
     });
 
+    function testResult(result) {
+      expect(result).have.property('done').equal(true);
+      expect(result).have.property('createdAt').to.not.equal(undefined);
+      expect(result).have.property('endAt').to.not.equal(undefined);
+      expect(result).have.property('steps').to.be.an('array');
+      expect(result).have.property('error').equal(false);
+      expect(result).have.property('took').to.not.equal(undefined);
+
+      const { indices } = result;
+      expect(indices[0]).have.property('index').equal('unpaywall-test');
+      expect(indices[0]).have.property('added').equal(150);
+      expect(indices[0]).have.property('updated').equal(0);
+
+      expect(result.steps[0]).have.property('task').equal('getChangefiles');
+      expect(result.steps[0]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[0]).have.property('status').equal('success');
+
+      expect(result.steps[1]).have.property('task').equal('download');
+      expect(result.steps[1]).have.property('file').equal('fake2.jsonl.gz');
+      expect(result.steps[1]).have.property('percent').equal(100);
+      expect(result.steps[1]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[1]).have.property('status').equal('success');
+
+      expect(result.steps[2]).have.property('task').equal('insert');
+      expect(result.steps[2]).have.property('index').equal('unpaywall-test');
+      expect(result.steps[2]).have.property('file').equal('fake2.jsonl.gz');
+      expect(result.steps[2]).have.property('percent').equal(100);
+      expect(result.steps[2]).have.property('linesRead').equal(100);
+      expect(result.steps[2]).have.property('addedDocs').equal(100);
+      expect(result.steps[2]).have.property('updatedDocs').equal(0);
+      expect(result.steps[2]).have.property('failedDocs').equal(0);
+      expect(result.steps[2]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[2]).have.property('status').equal('success');
+
+      expect(result.steps[3]).have.property('task').equal('download');
+      expect(result.steps[3]).have.property('file').equal('fake1.jsonl.gz');
+      expect(result.steps[3]).have.property('percent').equal(100);
+      expect(result.steps[3]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[3]).have.property('status').equal('success');
+
+      expect(result.steps[4]).have.property('task').equal('insert');
+      expect(result.steps[4]).have.property('index').equal('unpaywall-test');
+      expect(result.steps[4]).have.property('file').equal('fake1.jsonl.gz');
+      expect(result.steps[4]).have.property('percent').equal(100);
+      expect(result.steps[4]).have.property('linesRead').equal(50);
+      expect(result.steps[4]).have.property('addedDocs').equal(50);
+      expect(result.steps[4]).have.property('updatedDocs').equal(0);
+      expect(result.steps[4]).have.property('failedDocs').equal(0);
+      expect(result.steps[4]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[4]).have.property('status').equal('success');
+    }
+
     it('Should get state with all information from the download and insertion', async () => {
       const state = await getState();
-
-      expect(state).have.property('done').equal(true);
-      expect(state).have.property('createdAt').to.not.equal(undefined);
-      expect(state).have.property('endAt').to.not.equal(undefined);
-      expect(state).have.property('steps').to.be.an('array');
-      expect(state).have.property('error').equal(false);
-      expect(state).have.property('took').to.not.equal(undefined);
-      expect(state).have.property('totalInsertedDocs').equal(150);
-      expect(state).have.property('totalUpdatedDocs').equal(0);
-
-      expect(state.steps[0]).have.property('task').equal('getChangefiles');
-      expect(state.steps[0]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[0]).have.property('status').equal('success');
-
-      expect(state.steps[1]).have.property('task').equal('download');
-      expect(state.steps[1]).have.property('file').equal('fake2.jsonl.gz');
-      expect(state.steps[1]).have.property('percent').equal(100);
-      expect(state.steps[1]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[1]).have.property('status').equal('success');
-
-      expect(state.steps[2]).have.property('task').equal('insert');
-      expect(state.steps[2]).have.property('index').equal('unpaywall-test');
-      expect(state.steps[2]).have.property('file').equal('fake2.jsonl.gz');
-      expect(state.steps[2]).have.property('percent').equal(100);
-      expect(state.steps[2]).have.property('linesRead').equal(100);
-      expect(state.steps[2]).have.property('insertedDocs').equal(100);
-      expect(state.steps[2]).have.property('updatedDocs').equal(0);
-      expect(state.steps[2]).have.property('failedDocs').equal(0);
-      expect(state.steps[2]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[2]).have.property('status').equal('success');
-
-      expect(state.steps[3]).have.property('task').equal('download');
-      expect(state.steps[3]).have.property('file').equal('fake1.jsonl.gz');
-      expect(state.steps[3]).have.property('percent').equal(100);
-      expect(state.steps[3]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[3]).have.property('status').equal('success');
-
-      expect(state.steps[4]).have.property('task').equal('insert');
-      expect(state.steps[4]).have.property('index').equal('unpaywall-test');
-      expect(state.steps[4]).have.property('file').equal('fake1.jsonl.gz');
-      expect(state.steps[4]).have.property('percent').equal(100);
-      expect(state.steps[4]).have.property('linesRead').equal(50);
-      expect(state.steps[4]).have.property('insertedDocs').equal(50);
-      expect(state.steps[4]).have.property('updatedDocs').equal(0);
-      expect(state.steps[4]).have.property('failedDocs').equal(0);
-      expect(state.steps[4]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[4]).have.property('status').equal('success');
+      testResult(state);
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport();
-
-      expect(report).have.property('done').equal(true);
-      expect(report).have.property('createdAt').to.not.equal(undefined);
-      expect(report).have.property('endAt').to.not.equal(undefined);
-      expect(report).have.property('steps').to.be.an('array');
-      expect(report).have.property('error').equal(false);
-      expect(report).have.property('took').to.not.equal(undefined);
-      expect(report).have.property('totalInsertedDocs').equal(150);
-      expect(report).have.property('totalUpdatedDocs').equal(0);
-
-      expect(report.steps[0]).have.property('task').equal('getChangefiles');
-      expect(report.steps[0]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[0]).have.property('status').equal('success');
-
-      expect(report.steps[1]).have.property('task').equal('download');
-      expect(report.steps[1]).have.property('file').equal('fake2.jsonl.gz');
-      expect(report.steps[1]).have.property('percent').equal(100);
-      expect(report.steps[1]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[1]).have.property('status').equal('success');
-
-      expect(report.steps[2]).have.property('task').equal('insert');
-      expect(report.steps[2]).have.property('index').equal('unpaywall-test');
-      expect(report.steps[2]).have.property('file').equal('fake2.jsonl.gz');
-      expect(report.steps[2]).have.property('percent').equal(100);
-      expect(report.steps[2]).have.property('linesRead').equal(100);
-      expect(report.steps[2]).have.property('insertedDocs').equal(100);
-      expect(report.steps[2]).have.property('updatedDocs').equal(0);
-      expect(report.steps[2]).have.property('failedDocs').equal(0);
-      expect(report.steps[2]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[2]).have.property('status').equal('success');
-
-      expect(report.steps[3]).have.property('task').equal('download');
-      expect(report.steps[3]).have.property('file').equal('fake1.jsonl.gz');
-      expect(report.steps[3]).have.property('percent').equal(100);
-      expect(report.steps[3]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[3]).have.property('status').equal('success');
-
-      expect(report.steps[4]).have.property('task').equal('insert');
-      expect(report.steps[4]).have.property('index').equal('unpaywall-test');
-      expect(report.steps[4]).have.property('file').equal('fake1.jsonl.gz');
-      expect(report.steps[4]).have.property('percent').equal(100);
-      expect(report.steps[4]).have.property('linesRead').equal(50);
-      expect(report.steps[4]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[4]).have.property('status').equal('success');
+      const report = await getReport('unpaywall');
+      testResult(report);
     });
 
     after(async () => {
@@ -214,107 +164,68 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(count).to.equal(2100);
     });
 
+    function testResult(result) {
+      expect(result).have.property('done').equal(true);
+      expect(result).have.property('createdAt').to.not.equal(undefined);
+      expect(result).have.property('endAt').to.not.equal(undefined);
+      expect(result).have.property('steps').to.be.an('array');
+      expect(result).have.property('error').equal(false);
+      expect(result).have.property('took').to.not.equal(undefined);
+
+      const { indices } = result;
+      expect(indices[0]).have.property('index').equal('unpaywall-test');
+      expect(indices[0]).have.property('added').equal(2100);
+      expect(indices[0]).have.property('updated').equal(0);
+
+      expect(result.steps[0]).have.property('task').equal('getChangefiles');
+      expect(result.steps[0]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[0]).have.property('status').equal('success');
+
+      expect(result.steps[1]).have.property('task').equal('download');
+      expect(result.steps[1]).have.property('file').equal('fake3.jsonl.gz');
+      expect(result.steps[1]).have.property('percent').equal(100);
+      expect(result.steps[1]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[1]).have.property('status').equal('success');
+
+      expect(result.steps[2]).have.property('task').equal('insert');
+      expect(result.steps[2]).have.property('index').equal('unpaywall-test');
+      expect(result.steps[2]).have.property('file').equal('fake3.jsonl.gz');
+      expect(result.steps[2]).have.property('percent').equal(100);
+      expect(result.steps[2]).have.property('linesRead').equal(2000);
+      expect(result.steps[2]).have.property('addedDocs').equal(2000);
+      expect(result.steps[2]).have.property('updatedDocs').equal(0);
+      expect(result.steps[2]).have.property('failedDocs').equal(0);
+      expect(result.steps[2]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[2]).have.property('status').equal('success');
+
+      expect(result.steps[3]).have.property('task').equal('download');
+      expect(result.steps[3]).have.property('file').equal('fake2.jsonl.gz');
+      expect(result.steps[3]).have.property('percent').equal(100);
+      expect(result.steps[3]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[3]).have.property('status').equal('success');
+
+      expect(result.steps[4]).have.property('task').equal('insert');
+      expect(result.steps[4]).have.property('index').equal('unpaywall-test');
+      expect(result.steps[4]).have.property('file').equal('fake2.jsonl.gz');
+      expect(result.steps[4]).have.property('percent').equal(100);
+      expect(result.steps[4]).have.property('linesRead').equal(100);
+      expect(result.steps[4]).have.property('addedDocs').equal(100);
+      expect(result.steps[4]).have.property('updatedDocs').equal(0);
+      expect(result.steps[4]).have.property('failedDocs').equal(0);
+      expect(result.steps[4]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[4]).have.property('status').equal('success');
+    }
+
     it('Should get state with all information from the download and insertion', async () => {
       const state = await getState();
-
-      expect(state).have.property('done').equal(true);
-      expect(state).have.property('createdAt').to.not.equal(undefined);
-      expect(state).have.property('endAt').to.not.equal(undefined);
-      expect(state).have.property('steps').to.be.an('array');
-      expect(state).have.property('error').equal(false);
-      expect(state).have.property('took').to.not.equal(undefined);
-      expect(state).have.property('totalInsertedDocs').equal(2100);
-      expect(state).have.property('totalUpdatedDocs').equal(0);
-
-      expect(state.steps[0]).have.property('task').equal('getChangefiles');
-      expect(state.steps[0]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[0]).have.property('status').equal('success');
-
-      expect(state.steps[1]).have.property('task').equal('download');
-      expect(state.steps[1]).have.property('file').equal('fake3.jsonl.gz');
-      expect(state.steps[1]).have.property('percent').equal(100);
-      expect(state.steps[1]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[1]).have.property('status').equal('success');
-
-      expect(state.steps[2]).have.property('task').equal('insert');
-      expect(state.steps[2]).have.property('index').equal('unpaywall-test');
-      expect(state.steps[2]).have.property('file').equal('fake3.jsonl.gz');
-      expect(state.steps[2]).have.property('percent').equal(100);
-      expect(state.steps[2]).have.property('linesRead').equal(2000);
-      expect(state.steps[2]).have.property('insertedDocs').equal(2000);
-      expect(state.steps[2]).have.property('updatedDocs').equal(0);
-      expect(state.steps[2]).have.property('failedDocs').equal(0);
-      expect(state.steps[2]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[2]).have.property('status').equal('success');
-
-      expect(state.steps[3]).have.property('task').equal('download');
-      expect(state.steps[3]).have.property('file').equal('fake2.jsonl.gz');
-      expect(state.steps[3]).have.property('percent').equal(100);
-      expect(state.steps[3]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[3]).have.property('status').equal('success');
-
-      expect(state.steps[4]).have.property('task').equal('insert');
-      expect(state.steps[4]).have.property('index').equal('unpaywall-test');
-      expect(state.steps[4]).have.property('file').equal('fake2.jsonl.gz');
-      expect(state.steps[4]).have.property('percent').equal(100);
-      expect(state.steps[4]).have.property('linesRead').equal(100);
-      expect(state.steps[4]).have.property('insertedDocs').equal(100);
-      expect(state.steps[4]).have.property('updatedDocs').equal(0);
-      expect(state.steps[4]).have.property('failedDocs').equal(0);
-      expect(state.steps[4]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[4]).have.property('status').equal('success');
+      testResult(state);
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport();
-
-      expect(report).have.property('done').equal(true);
-      expect(report).have.property('createdAt').to.not.equal(undefined);
-      expect(report).have.property('endAt').to.not.equal(undefined);
-      expect(report).have.property('steps').to.be.an('array');
-      expect(report).have.property('error').equal(false);
-      expect(report).have.property('took').to.not.equal(undefined);
-      expect(report).have.property('totalInsertedDocs').equal(2100);
-      expect(report).have.property('totalUpdatedDocs').equal(0);
-
-      expect(report.steps[0]).have.property('task').equal('getChangefiles');
-      expect(report.steps[0]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[0]).have.property('status').equal('success');
-
-      expect(report.steps[1]).have.property('task').equal('download');
-      expect(report.steps[1]).have.property('file').equal('fake3.jsonl.gz');
-      expect(report.steps[1]).have.property('percent').equal(100);
-      expect(report.steps[1]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[1]).have.property('status').equal('success');
-
-      expect(report.steps[2]).have.property('task').equal('insert');
-      expect(report.steps[2]).have.property('index').equal('unpaywall-test');
-      expect(report.steps[2]).have.property('file').equal('fake3.jsonl.gz');
-      expect(report.steps[2]).have.property('percent').equal(100);
-      expect(report.steps[2]).have.property('linesRead').equal(2000);
-      expect(report.steps[2]).have.property('insertedDocs').equal(2000);
-      expect(report.steps[2]).have.property('updatedDocs').equal(0);
-      expect(report.steps[2]).have.property('failedDocs').equal(0);
-      expect(report.steps[2]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[2]).have.property('status').equal('success');
-
-      expect(report.steps[3]).have.property('task').equal('download');
-      expect(report.steps[3]).have.property('file').equal('fake2.jsonl.gz');
-      expect(report.steps[3]).have.property('percent').equal(100);
-      expect(report.steps[3]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[3]).have.property('status').equal('success');
-
-      expect(report.steps[4]).have.property('task').equal('insert');
-      expect(report.steps[4]).have.property('index').equal('unpaywall-test');
-      expect(report.steps[4]).have.property('file').equal('fake2.jsonl.gz');
-      expect(report.steps[4]).have.property('percent').equal(100);
-      expect(report.steps[4]).have.property('linesRead').equal(100);
-      expect(report.steps[4]).have.property('insertedDocs').equal(100);
-      expect(report.steps[4]).have.property('updatedDocs').equal(0);
-      expect(report.steps[4]).have.property('failedDocs').equal(0);
-      expect(report.steps[4]).have.property('took').to.not.equal(undefined);
-      expect(report.steps[4]).have.property('status').equal('success');
+      const report = await getReport('unpaywall');
+      testResult(report);
     });
+
     after(async () => {
       await reset();
     });
@@ -350,21 +261,32 @@ describe('Week: Test: download and insert file from unpaywall between a period',
       expect(count).to.equal(0);
     });
 
+    function testResult(result) {
+      expect(result).have.property('done').equal(true);
+      expect(result).have.property('createdAt').to.not.equal(undefined);
+      expect(result).have.property('endAt').to.not.equal(undefined);
+      expect(result).have.property('steps').to.be.an('array');
+      expect(result).have.property('error').equal(false);
+      expect(result).have.property('took').to.not.equal(undefined);
+
+      const { indices } = result;
+      expect(indices[0]).have.property('index').equal('unpaywall-test');
+      expect(indices[0]).have.property('added').equal(0);
+      expect(indices[0]).have.property('updated').equal(0);
+
+      expect(result.steps[0]).have.property('task').equal('getChangefiles');
+      expect(result.steps[0]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[0]).have.property('status').equal('success');
+    }
+
     it('Should get state with all information from the download and insertion', async () => {
       const state = await getState();
+      testResult(state);
+    });
 
-      expect(state).have.property('done').equal(true);
-      expect(state).have.property('createdAt').to.not.equal(undefined);
-      expect(state).have.property('endAt').to.not.equal(undefined);
-      expect(state).have.property('steps').to.be.an('array');
-      expect(state).have.property('error').equal(false);
-      expect(state).have.property('took').to.not.equal(undefined);
-      expect(state).have.property('totalInsertedDocs').equal(0);
-      expect(state).have.property('totalUpdatedDocs').equal(0);
-
-      expect(state.steps[0]).have.property('task').equal('getChangefiles');
-      expect(state.steps[0]).have.property('took').to.not.equal(undefined);
-      expect(state.steps[0]).have.property('status').equal('success');
+    it('Should get report with all information from the download and insertion', async () => {
+      const report = await getReport('unpaywall');
+      testResult(report);
     });
 
     after(async () => {

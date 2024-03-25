@@ -31,7 +31,6 @@ const loading = ref(false);
 async function graphqlRequest() {
   loading.value = true;
   let res;
-  // 10.1001/jama.2016.9797
   try {
     res = await $graphql({
       method: 'GET',

@@ -9,7 +9,7 @@
         rel="noopener noreferrer"
       />
     </template>
-    {{ t("reportHistory.source") }}
+    {{ t("reports.source") }}
   </v-tooltip>
 </template>
 

@@ -1,5 +1,7 @@
 const promiseWithTimeout = require('../ping');
 const { pingElastic } = require('../services/elastic');
+const { pingMail } = require('../services/mail');
+const { pingUnpaywall } = require('../services/unpaywall');
 
 /**
  * Controller to get health of all services connected to update service.
@@ -12,8 +14,10 @@ async function health(req, res, next) {
   const start = Date.now();
 
   const p1 = promiseWithTimeout(pingElastic(), 'elastic');
+  const p2 = promiseWithTimeout(pingMail(), 'mail');
+  const p3 = promiseWithTimeout(pingUnpaywall(), 'unpaywall');
 
-  let resultPing = await Promise.allSettled([p1]);
+  let resultPing = await Promise.allSettled([p1, p2, p3]);
   resultPing = resultPing.map((e) => e.value);
   const result = {};
 

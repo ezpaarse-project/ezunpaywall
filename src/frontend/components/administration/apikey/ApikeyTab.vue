@@ -49,11 +49,6 @@
         </template>
         {{ t("administration.apikey.create") }}
       </v-tooltip>
-      <CreateDialog
-        v-model="createDialogVisible"
-        @created="getApikeys()"
-        @closed="createDialogVisible = false"
-      />
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
@@ -95,11 +90,34 @@
         <ApikeyCard
           :apikey="key.apikey"
           :config="key.config"
-          @deleted="getApikeys()"
-          @updated="getApikeys()"
+          @click:delete="openDeleteDialog(key.apikey)"
+          @click:update="openUpdateDialog(key.apikey)"
         />
       </v-col>
     </v-row>
+    <CreateDialog
+      v-model="createDialogVisible"
+      @created="getApikeys()"
+      @closed="createDialogVisible = false"
+    />
+    <UpdateDialog
+      v-model="updateDialogVisible"
+      v-model:apikey="selectedApikey"
+      v-model:name="selectedName"
+      v-model:description="selectedDescription"
+      v-model:owner="selectedOwner"
+      v-model:access="selectedAccess"
+      v-model:attributes="selectedAttributes"
+      v-model:allowed="selectedAllowed"
+      @closed="setUpdateDialogVisible(false)"
+      @updated="getApikeys()"
+    />
+    <DeleteDialog
+      v-model="deleteDialogVisible"
+      :apikey="selectedApikey"
+      @closed="setDeleteDialogVisible(false)"
+      @deleted="getApikeys()"
+    />
   </v-card>
 </template>
 
@@ -111,6 +129,8 @@ import { useSnacksStore } from '@/store/snacks';
 import { useAdminStore } from '@/store/admin';
 
 import CreateDialog from '@/components/administration/apikey/CreateDialog.vue';
+import DeleteDialog from '@/components/administration/apikey/DeleteDialog.vue';
+import UpdateDialog from '@/components/administration/apikey/UpdateDialog.vue';
 import ImportDialog from '@/components/administration/apikey/ImportDialog.vue';
 import ExportDialog from '@/components/administration/apikey/ExportDialog.vue';
 import Loader from '@/components/skeleton/Loader.vue';
@@ -126,9 +146,19 @@ const { password } = storeToRefs(adminStore);
 
 const loading = ref(false);
 const createDialogVisible = ref(false);
+const updateDialogVisible = ref(false);
+const deleteDialogVisible = ref(false);
 const importDialogVisible = ref(false);
 const exportDialogVisible = ref(false);
 const apikeys = ref([]);
+
+const selectedApikey = ref('');
+const selectedName = ref('');
+const selectedDescription = ref('');
+const selectedOwner = ref('');
+const selectedAccess = ref([]);
+const selectedAttributes = ref([]);
+const selectedAllowed = ref(false);
 
 async function getApikeys() {
   let res;
@@ -148,6 +178,24 @@ async function getApikeys() {
   }
   loading.value = false;
   apikeys.value = res?.data;
+}
+
+async function openUpdateDialog(id) {
+  const apikey = apikeys.value.find((e) => e.apikey === id);
+  selectedApikey.value = id;
+  selectedName.value = apikey.config.name;
+  selectedDescription.value = apikey.config.description;
+  selectedOwner.value = apikey.config.owner;
+  selectedAccess.value = apikey.config.access;
+  selectedAttributes.value = apikey.config.attributes;
+  selectedAllowed.value = apikey.config.allowed;
+  await nextTick();
+  updateDialogVisible.value = true;
+}
+
+async function openDeleteDialog(id) {
+  selectedApikey.value = id;
+  deleteDialogVisible.value = true;
 }
 
 onMounted(() => {

@@ -11,19 +11,16 @@ const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
  *
  * @returns {Promise{Object}} report
  */
-async function getReport() {
+async function getReport(type) {
   let res;
   try {
     res = await chai.request(updateURL)
-      .get('/reports')
+      .get(`/reports?type=${type}`)
       .query({ latest: true });
   } catch (err) {
-    console.error(`Cannot GET ${updateURL}/report`);
     process.exit(1);
   }
   return res?.body;
 }
 
-module.exports = {
-  getReport,
-};
+module.exports = getReport;

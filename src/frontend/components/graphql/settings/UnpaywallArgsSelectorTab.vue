@@ -2,14 +2,20 @@
   <div>
     {{ t('graphql.settings') }}
     <HelpButton />
-    <SettingsAttributes @attributes="setAttributes" />
+    <SelectorAttributes
+      :default-simple="['doi']"
+      :default-best-oa-location="['evidence', 'is_best']"
+      :default-first-oa-location="['url_for_pdf']"
+      :default-z-authors="['family', 'given']"
+      @attributes="setAttributes"
+    />
   </div>
 </template>
 
 <script setup>
 
 import HelpButton from '@/components/unpaywallArgs/HelpButton.vue';
-import SettingsAttributes from '@/components/unpaywallArgs/SettingsAttributes.vue';
+import SelectorAttributes from '@/components/unpaywallArgs/SelectorAttributes.vue';
 
 const { t } = useI18n();
 

@@ -3,9 +3,11 @@ const fs = require('fs-extra');
 const rfs = require('rotating-file-stream');
 const path = require('path');
 const { format } = require('date-fns');
-const { accessLogRotate } = require('config');
+const { nodeEnv, accessLogRotate } = require('config');
 
 const accessLogDir = path.resolve(__dirname, '..', 'log', 'access');
+
+const isProd = (nodeEnv === 'production');
 
 /**
  * Get the name of access file.
@@ -42,4 +44,4 @@ morgan.token('countDOI', (req) => {
   return '-';
 });
 
-module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"', { stream: accessLogStream });
+module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"', { stream: isProd ? accessLogStream : process.stdout });
