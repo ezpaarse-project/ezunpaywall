@@ -15,7 +15,7 @@ const { getFiles, uploadFile, deleteInstalledFile } = require('../controllers/fi
  *
  * This route can take in query latest.
  */
-router.get('/snapshots', checkAuth, validateLatest, getFiles);
+router.get('/snapshots', validateLatest, getFiles);
 
 /**
  * Route that upload a file on ezunpaywall.
