@@ -113,7 +113,7 @@ async function insertData(listOfDoi, newDocuments, indexBase, indexHistory) {
 
   newDocuments.forEach(async (el) => {
     const document = el;
-    document.referencedAt = newDocuments.updated;
+    document.referencedAt = document.updated;
     const existingDocumentUnpaywall = existingUnpaywallDataMap.get(document.doi);
 
     if (existingDocumentUnpaywall) {
@@ -130,6 +130,12 @@ async function insertData(listOfDoi, newDocuments, indexBase, indexHistory) {
         // get the existing referencedAt to apply it for the new entry in history
         document.referencedAt = existingDocumentUnpaywall.referencedAt;
       }
+      if (copyDocumentTime === existingDocumentTime) {
+        document.referencedAt = existingDocumentUnpaywall.referencedAt;
+      }
+    } else {
+      // If new data, add referencedAt to new data
+      document.referencedAt = document.updated;
     }
 
     bulkDocuments.push({ index: { _index: indexBase, _id: document.doi } });

@@ -184,6 +184,7 @@ async function insertDataUnpaywall(insertConfig) {
       try {
         const doc = JSON.parse(line);
         doc.referencedAt = doc.updated;
+        if (!doc.updated) { logger.error('[job][insert]: no update is send'); }
         bulkOps.push({ index: { _index: index, _id: doc.doi } });
         bulkOps.push(doc);
       } catch (err) {

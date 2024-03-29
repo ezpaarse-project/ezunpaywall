@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
 
 const { countDocuments } = require('./utils/elastic');
-const { addSnapshot, insertSnapshot, insertInHistory } = require('./utils/snapshot');
+const { addSnapshot, insertSnapshot } = require('./utils/snapshot');
 const { getState } = require('./utils/state');
 const getReport = require('./utils/report');
 const checkIfInUpdate = require('./utils/status');
@@ -19,9 +19,8 @@ const { searchByDOI } = require('./utils/elastic');
 
 const date2 = '2020-01-02';
 const date3 = '2020-01-03';
-const date4 = '2020-01-04';
+const date4 = '2019-01-04';
 const date5 = '2020-01-05';
-const date6 = '2019-01-02';
 
 describe('Test: daily update route test with history', () => {
   before(async function () {
@@ -72,18 +71,28 @@ describe('Test: daily update route test with history', () => {
 
       expect(baseRes[0]).have.property('doi').equal('1');
       expect(baseRes[0]).have.property('version').equal(2);
+      expect(baseRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[0]).have.property('updated').equal('2020-01-02T01:00:00.000000');
 
       expect(baseRes[1]).have.property('doi').equal('2');
       expect(baseRes[1]).have.property('version').equal(2);
+      expect(baseRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[1]).have.property('updated').equal('2020-01-02T01:00:00.000000');
 
       expect(baseRes[2]).have.property('doi').equal('3');
       expect(baseRes[2]).have.property('version').equal(2);
+      expect(baseRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[2]).have.property('updated').equal('2020-01-02T01:00:00.000000');
 
       expect(baseRes[3]).have.property('doi').equal('4');
       expect(baseRes[3]).have.property('version').equal(1);
+      expect(baseRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[3]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[4]).have.property('doi').equal('5');
       expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       const historyRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_history');
 
@@ -91,12 +100,19 @@ describe('Test: daily update route test with history', () => {
 
       expect(historyRes[0]).have.property('doi').equal('1');
       expect(historyRes[0]).have.property('version').equal(1);
+      expect(historyRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
 
       expect(historyRes[1]).have.property('doi').equal('2');
       expect(historyRes[1]).have.property('version').equal(1);
+      expect(historyRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
 
       expect(historyRes[2]).have.property('doi').equal('3');
       expect(historyRes[2]).have.property('version').equal(1);
+      expect(historyRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
     });
 
     function testResult(result) {
@@ -206,18 +222,28 @@ describe('Test: daily update route test with history', () => {
 
       expect(baseRes[0]).have.property('doi').equal('1');
       expect(baseRes[0]).have.property('version').equal(3);
+      expect(baseRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[0]).have.property('updated').equal('2020-01-03T01:00:00.000000');
 
       expect(baseRes[1]).have.property('doi').equal('2');
       expect(baseRes[1]).have.property('version').equal(3);
+      expect(baseRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[1]).have.property('updated').equal('2020-01-03T01:00:00.000000');
 
       expect(baseRes[2]).have.property('doi').equal('3');
       expect(baseRes[2]).have.property('version').equal(2);
+      expect(baseRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[2]).have.property('updated').equal('2020-01-02T01:00:00.000000');
 
       expect(baseRes[3]).have.property('doi').equal('4');
       expect(baseRes[3]).have.property('version').equal(1);
+      expect(baseRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[3]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[4]).have.property('doi').equal('5');
       expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       const historyRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_history');
 
@@ -225,18 +251,33 @@ describe('Test: daily update route test with history', () => {
 
       expect(historyRes[0]).have.property('doi').equal('1');
       expect(historyRes[0]).have.property('version').equal(1);
+      expect(historyRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
 
       expect(historyRes[1]).have.property('doi').equal('1');
       expect(historyRes[1]).have.property('version').equal(2);
+      expect(historyRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[1]).have.property('updated').equal('2020-01-02T01:00:00.000000');
+      expect(historyRes[1]).have.property('endValidity').equal('2020-01-03T01:00:00.000000');
 
       expect(historyRes[2]).have.property('doi').equal('2');
       expect(historyRes[2]).have.property('version').equal(1);
+      expect(historyRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[2]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[2]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
 
       expect(historyRes[3]).have.property('doi').equal('2');
       expect(historyRes[3]).have.property('version').equal(2);
+      expect(historyRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[3]).have.property('updated').equal('2020-01-02T01:00:00.000000');
+      expect(historyRes[3]).have.property('endValidity').equal('2020-01-03T01:00:00.000000');
 
       expect(historyRes[4]).have.property('doi').equal('3');
       expect(historyRes[4]).have.property('version').equal(1);
+      expect(historyRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[4]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
     });
 
     function testResult(result) {
@@ -319,7 +360,7 @@ describe('Test: daily update route test with history', () => {
       expect(res).have.status(202);
     });
 
-    it('Should insert 0 data in history', async () => {
+    it('Should not insert new data in history', async () => {
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
@@ -330,7 +371,6 @@ describe('Test: daily update route test with history', () => {
       expect(countUnpaywallBase).to.equal(5);
       const countUnpaywallHistory = await countDocuments('unpaywall_history');
       expect(countUnpaywallHistory).to.equal(5);
-      // TODO test the content of indices
     });
 
     it('Should get unpaywall document in base and history', async () => {
@@ -346,18 +386,28 @@ describe('Test: daily update route test with history', () => {
 
       expect(baseRes[0]).have.property('doi').equal('1');
       expect(baseRes[0]).have.property('version').equal(3);
+      expect(baseRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[0]).have.property('updated').equal('2020-01-03T01:00:00.000000');
 
       expect(baseRes[1]).have.property('doi').equal('2');
       expect(baseRes[1]).have.property('version').equal(3);
+      expect(baseRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[1]).have.property('updated').equal('2020-01-03T01:00:00.000000');
 
       expect(baseRes[2]).have.property('doi').equal('3');
       expect(baseRes[2]).have.property('version').equal(2);
+      expect(baseRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[2]).have.property('updated').equal('2020-01-02T01:00:00.000000');
 
       expect(baseRes[3]).have.property('doi').equal('4');
       expect(baseRes[3]).have.property('version').equal(1);
+      expect(baseRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[3]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[4]).have.property('doi').equal('5');
       expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       const historyRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_history');
 
@@ -365,18 +415,33 @@ describe('Test: daily update route test with history', () => {
 
       expect(historyRes[0]).have.property('doi').equal('1');
       expect(historyRes[0]).have.property('version').equal(1);
+      expect(historyRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
 
       expect(historyRes[1]).have.property('doi').equal('1');
       expect(historyRes[1]).have.property('version').equal(2);
+      expect(historyRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[1]).have.property('updated').equal('2020-01-02T01:00:00.000000');
+      expect(historyRes[1]).have.property('endValidity').equal('2020-01-03T01:00:00.000000');
 
       expect(historyRes[2]).have.property('doi').equal('2');
       expect(historyRes[2]).have.property('version').equal(1);
+      expect(historyRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[2]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[2]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
 
       expect(historyRes[3]).have.property('doi').equal('2');
       expect(historyRes[3]).have.property('version').equal(2);
+      expect(historyRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[3]).have.property('updated').equal('2020-01-02T01:00:00.000000');
+      expect(historyRes[3]).have.property('endValidity').equal('2020-01-03T01:00:00.000000');
 
       expect(historyRes[4]).have.property('doi').equal('3');
       expect(historyRes[4]).have.property('version').equal(1);
+      expect(historyRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[4]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
     });
 
     function testResult(result) {
@@ -470,7 +535,6 @@ describe('Test: daily update route test with history', () => {
       expect(countUnpaywallBase).to.equal(5);
       const countUnpaywallHistory = await countDocuments('unpaywall_history');
       expect(countUnpaywallHistory).to.equal(5);
-      // TODO test the content of indices
     });
   });
 });
@@ -484,140 +548,182 @@ describe('Test: Insert 2 time the same file in history', () => {
     await insertSnapshot('2020-01-01-snapshot.jsonl.gz', 'unpaywall_base');
   });
 
-  it('Should return a status code 202', async () => {
-    const res = await chai.request(updateURL)
-      .post('/job/history')
-      .send({
-        startDate: date2,
-        endDate: date2,
-        interval: 'day',
-      })
-      .set('x-api-key', 'changeme');
+  describe('insert changefile 2020-01-02', () => {
+    it('Should return a status code 202', async () => {
+      const res = await chai.request(updateURL)
+        .post('/job/history')
+        .send({
+          startDate: date2,
+          endDate: date2,
+          interval: 'day',
+        })
+        .set('x-api-key', 'changeme');
 
-    expect(res).have.status(202);
+      expect(res).have.status(202);
+    });
+
+    it('Should insert 3 data in history', async () => {
+      // wait for the update to finish
+      let isUpdate = true;
+      while (isUpdate) {
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
+        isUpdate = await checkIfInUpdate();
+      }
+      const countUnpaywallBase = await countDocuments('unpaywall_base');
+      expect(countUnpaywallBase).to.equal(5);
+      const countUnpaywallHistory = await countDocuments('unpaywall_history');
+      expect(countUnpaywallHistory).to.equal(3);
+    });
+
+    it('Should get unpaywall document in base and history', async () => {
+      function compare(a, b) {
+        if (a.doi < b.doi) return -1;
+        if (a.doi > b.doi) return 1;
+        return 0;
+      }
+
+      const baseRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_base');
+
+      baseRes.sort(compare);
+
+      expect(baseRes[0]).have.property('doi').equal('1');
+      expect(baseRes[0]).have.property('version').equal(2);
+      expect(baseRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[0]).have.property('updated').equal('2020-01-02T01:00:00.000000');
+
+      expect(baseRes[1]).have.property('doi').equal('2');
+      expect(baseRes[1]).have.property('version').equal(2);
+      expect(baseRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[1]).have.property('updated').equal('2020-01-02T01:00:00.000000');
+
+      expect(baseRes[2]).have.property('doi').equal('3');
+      expect(baseRes[2]).have.property('version').equal(2);
+      expect(baseRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[2]).have.property('updated').equal('2020-01-02T01:00:00.000000');
+
+      expect(baseRes[3]).have.property('doi').equal('4');
+      expect(baseRes[3]).have.property('version').equal(1);
+      expect(baseRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[3]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+
+      expect(baseRes[4]).have.property('doi').equal('5');
+      expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+
+      const historyRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_history');
+
+      historyRes.sort(compare);
+
+      expect(historyRes[0]).have.property('doi').equal('1');
+      expect(historyRes[0]).have.property('version').equal(1);
+      expect(historyRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
+
+      expect(historyRes[1]).have.property('doi').equal('2');
+      expect(historyRes[1]).have.property('version').equal(1);
+      expect(historyRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[1]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[1]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
+
+      expect(historyRes[2]).have.property('doi').equal('3');
+      expect(historyRes[2]).have.property('version').equal(1);
+      expect(historyRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[2]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[2]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
+    });
   });
 
-  it('Should insert 3 data in history', async () => {
-    // wait for the update to finish
-    let isUpdate = true;
-    while (isUpdate) {
-      await new Promise((resolve) => { setTimeout(resolve, 100); });
-      isUpdate = await checkIfInUpdate();
-    }
-    const countUnpaywallBase = await countDocuments('unpaywall_base');
-    expect(countUnpaywallBase).to.equal(5);
-    const countUnpaywallHistory = await countDocuments('unpaywall_history');
-    expect(countUnpaywallHistory).to.equal(3);
-  });
+  describe('insert changefile 2020-01-02', () => {
+    it('Should return a status code 202', async () => {
+      const res = await chai.request(updateURL)
+        .post('/job/history')
+        .send({
+          startDate: date2,
+          endDate: date2,
+          interval: 'day',
+        })
+        .set('x-api-key', 'changeme');
 
-  it('Should get unpaywall document in base and history', async () => {
-    function compare(a, b) {
-      if (a.doi < b.doi) return -1;
-      if (a.doi > b.doi) return 1;
-      return 0;
-    }
+      expect(res).have.status(202);
+    });
 
-    const baseRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_base');
+    it('Should insert 3 data in history', async () => {
+      // wait for the update to finish
+      let isUpdate = true;
+      while (isUpdate) {
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
+        isUpdate = await checkIfInUpdate();
+      }
+      const countUnpaywallBase = await countDocuments('unpaywall_base');
+      expect(countUnpaywallBase).to.equal(5);
+      const countUnpaywallHistory = await countDocuments('unpaywall_history');
+      expect(countUnpaywallHistory).to.equal(3);
+    });
 
-    baseRes.sort(compare);
+    it('Should get unpaywall document in base and history', async () => {
+      function compare(a, b) {
+        if (a.doi < b.doi) return -1;
+        if (a.doi > b.doi) return 1;
+        return 0;
+      }
 
-    expect(baseRes[0]).have.property('doi').equal('1');
-    expect(baseRes[0]).have.property('version').equal(2);
+      const baseRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_base');
 
-    expect(baseRes[1]).have.property('doi').equal('2');
-    expect(baseRes[1]).have.property('version').equal(2);
+      baseRes.sort(compare);
 
-    expect(baseRes[2]).have.property('doi').equal('3');
-    expect(baseRes[2]).have.property('version').equal(2);
+      expect(baseRes[0]).have.property('doi').equal('1');
+      expect(baseRes[0]).have.property('version').equal(2);
+      expect(baseRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[0]).have.property('updated').equal('2020-01-02T01:00:00.000000');
 
-    expect(baseRes[3]).have.property('doi').equal('4');
-    expect(baseRes[3]).have.property('version').equal(1);
+      expect(baseRes[1]).have.property('doi').equal('2');
+      expect(baseRes[1]).have.property('version').equal(2);
+      expect(baseRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[1]).have.property('updated').equal('2020-01-02T01:00:00.000000');
 
-    expect(baseRes[4]).have.property('doi').equal('5');
-    expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[2]).have.property('doi').equal('3');
+      expect(baseRes[2]).have.property('version').equal(2);
+      expect(baseRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[2]).have.property('updated').equal('2020-01-02T01:00:00.000000');
 
-    const historyRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_history');
+      expect(baseRes[3]).have.property('doi').equal('4');
+      expect(baseRes[3]).have.property('version').equal(1);
+      expect(baseRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[3]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
-    historyRes.sort(compare);
+      expect(baseRes[4]).have.property('doi').equal('5');
+      expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
-    expect(historyRes[0]).have.property('doi').equal('1');
-    expect(historyRes[0]).have.property('version').equal(1);
+      const historyRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_history');
 
-    expect(historyRes[1]).have.property('doi').equal('2');
-    expect(historyRes[1]).have.property('version').equal(1);
+      historyRes.sort(compare);
 
-    expect(historyRes[2]).have.property('doi').equal('3');
-    expect(historyRes[2]).have.property('version').equal(1);
-  });
+      expect(historyRes[0]).have.property('doi').equal('1');
+      expect(historyRes[0]).have.property('version').equal(1);
+      expect(historyRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[0]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
 
-  it('Should return a status code 202', async () => {
-    const res = await chai.request(updateURL)
-      .post('/job/history')
-      .send({
-        startDate: date2,
-        endDate: date2,
-        interval: 'day',
-      })
-      .set('x-api-key', 'changeme');
+      expect(historyRes[1]).have.property('doi').equal('2');
+      expect(historyRes[1]).have.property('version').equal(1);
+      expect(historyRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[1]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[1]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
 
-    expect(res).have.status(202);
-  });
-
-  it('Should insert 3 data in history', async () => {
-    // wait for the update to finish
-    let isUpdate = true;
-    while (isUpdate) {
-      await new Promise((resolve) => { setTimeout(resolve, 100); });
-      isUpdate = await checkIfInUpdate();
-    }
-    const countUnpaywallBase = await countDocuments('unpaywall_base');
-    expect(countUnpaywallBase).to.equal(5);
-    const countUnpaywallHistory = await countDocuments('unpaywall_history');
-    expect(countUnpaywallHistory).to.equal(3);
-  });
-
-  it('Should get unpaywall document in base and history', async () => {
-    function compare(a, b) {
-      if (a.doi < b.doi) return -1;
-      if (a.doi > b.doi) return 1;
-      return 0;
-    }
-
-    const baseRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_base');
-
-    baseRes.sort(compare);
-
-    expect(baseRes[0]).have.property('doi').equal('1');
-    expect(baseRes[0]).have.property('version').equal(2);
-
-    expect(baseRes[1]).have.property('doi').equal('2');
-    expect(baseRes[1]).have.property('version').equal(2);
-
-    expect(baseRes[2]).have.property('doi').equal('3');
-    expect(baseRes[2]).have.property('version').equal(2);
-
-    expect(baseRes[3]).have.property('doi').equal('4');
-    expect(baseRes[3]).have.property('version').equal(1);
-
-    expect(baseRes[4]).have.property('doi').equal('5');
-    expect(baseRes[4]).have.property('version').equal(1);
-
-    const historyRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_history');
-
-    historyRes.sort(compare);
-
-    expect(historyRes[0]).have.property('doi').equal('1');
-    expect(historyRes[0]).have.property('version').equal(1);
-
-    expect(historyRes[1]).have.property('doi').equal('2');
-    expect(historyRes[1]).have.property('version').equal(1);
-
-    expect(historyRes[2]).have.property('doi').equal('3');
-    expect(historyRes[2]).have.property('version').equal(1);
+      expect(historyRes[2]).have.property('doi').equal('3');
+      expect(historyRes[2]).have.property('version').equal(1);
+      expect(historyRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[2]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+      expect(historyRes[2]).have.property('endValidity').equal('2020-01-02T01:00:00.000000');
+    });
   });
 });
 
-describe('Test: Insert a old file (history-04)', () => {
+describe('Test: Insert a old file 2019-01-01', () => {
   before(async function () {
     this.timeout(1000);
     await ping();
@@ -625,7 +731,7 @@ describe('Test: Insert a old file (history-04)', () => {
     await addSnapshot('2020-01-01-snapshot.jsonl.gz');
     await insertSnapshot('2020-01-01-snapshot.jsonl.gz', 'unpaywall_base');
   });
-  describe('insert changefile 01', () => {
+  describe('insert changefile 2019-01-01', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
         .post('/job/history')
@@ -638,7 +744,7 @@ describe('Test: Insert a old file (history-04)', () => {
       expect(res).have.status(202);
     });
 
-    it('Should insert 0 data in history', async () => {
+    it('Should no insert new data in history', async () => {
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
@@ -664,49 +770,57 @@ describe('Test: Insert a old file (history-04)', () => {
 
       expect(baseRes[0]).have.property('doi').equal('1');
       expect(baseRes[0]).have.property('version').equal(1);
+      expect(baseRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[1]).have.property('doi').equal('2');
       expect(baseRes[1]).have.property('version').equal(1);
+      expect(baseRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[1]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[2]).have.property('doi').equal('3');
-      expect(baseRes[2]).have.property('version').equal(2);
+      expect(baseRes[2]).have.property('version').equal(1);
+      // This is normal that referencedAt is erase
+      expect(baseRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[2]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[3]).have.property('doi').equal('4');
-      expect(baseRes[3]).have.property('version').equal(3);
+      expect(baseRes[3]).have.property('version').equal(1);
+      // This is normal that referencedAt is erase
+      expect(baseRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[3]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[4]).have.property('doi').equal('5');
       expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
     });
   });
 });
 
-describe('Test: Insert a old file (history-04)', () => {
+describe('Test: insert changefile with only new documents', () => {
   before(async function () {
-    this.timeout(1000);
+    this.timeout(5000);
     await ping();
     await reset();
     await addSnapshot('2020-01-01-snapshot.jsonl.gz');
     await insertSnapshot('2020-01-01-snapshot.jsonl.gz', 'unpaywall_base');
-    await insertInHistory(date2, date2);
-    await insertInHistory(date3, date3);
-    await addSnapshot('2019-01-01-snapshot.jsonl.gz');
-    await insertSnapshot('2019-01-01-snapshot.jsonl.gz', 'unpaywall_tmp');
   });
-  describe('insert changefile 01', () => {
+  describe('insert changefile 2020-01-05 with only new lines', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
         .post('/job/history')
         .send({
-          indexBase: 'unpaywall_tmp',
-          startDate: date6,
-          endDate: date6,
+          startDate: date5,
+          endDate: date5,
           interval: 'day',
         })
         .set('x-api-key', 'changeme');
+
       expect(res).have.status(202);
     });
 
-    it('Should insert 0 data in history', async () => {
+    it('Should not insert new data in history', async () => {
       // wait for the update to finish
       let isUpdate = true;
       while (isUpdate) {
@@ -714,9 +828,9 @@ describe('Test: Insert a old file (history-04)', () => {
         isUpdate = await checkIfInUpdate();
       }
       const countUnpaywallBase = await countDocuments('unpaywall_base');
-      expect(countUnpaywallBase).to.equal(5);
+      expect(countUnpaywallBase).to.equal(7);
       const countUnpaywallHistory = await countDocuments('unpaywall_history');
-      expect(countUnpaywallHistory).to.equal(10);
+      expect(countUnpaywallHistory).to.equal(0);
     });
 
     it('Should get unpaywall document in base and history', async () => {
@@ -726,127 +840,44 @@ describe('Test: Insert a old file (history-04)', () => {
         return 0;
       }
 
-      const baseRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_base');
+      const baseRes = await searchByDOI(['1', '2', '3', '4', '5', '6', '7'], 'unpaywall_base');
 
       baseRes.sort(compare);
 
       expect(baseRes[0]).have.property('doi').equal('1');
-      expect(baseRes[0]).have.property('version').equal(3);
+      expect(baseRes[0]).have.property('version').equal(1);
+      expect(baseRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[1]).have.property('doi').equal('2');
-      expect(baseRes[1]).have.property('version').equal(3);
+      expect(baseRes[1]).have.property('version').equal(1);
+      expect(baseRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[1]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[2]).have.property('doi').equal('3');
-      expect(baseRes[2]).have.property('version').equal(2);
+      expect(baseRes[2]).have.property('version').equal(1);
+      expect(baseRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[2]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[3]).have.property('doi').equal('4');
       expect(baseRes[3]).have.property('version').equal(1);
+      expect(baseRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[3]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
       expect(baseRes[4]).have.property('doi').equal('5');
       expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
 
-      const historyRes = await searchByDOI(['1', '2', '3', '4', '5'], 'unpaywall_history');
+      expect(baseRes[5]).have.property('doi').equal('6');
+      expect(baseRes[5]).have.property('version').equal(1);
+      expect(baseRes[5]).have.property('referencedAt').equal('2020-01-05T01:00:00.000000');
+      expect(baseRes[5]).have.property('updated').equal('2020-01-05T01:00:00.000000');
 
-      historyRes.sort(compare);
-
-      expect(historyRes[0]).have.property('doi').equal('1');
-      expect(historyRes[0]).have.property('version').equal(1);
-
-      expect(historyRes[1]).have.property('doi').equal('1');
-      expect(historyRes[1]).have.property('version').equal(1);
-
-      expect(historyRes[2]).have.property('doi').equal('1');
-      expect(historyRes[2]).have.property('version').equal(2);
-
-      expect(historyRes[3]).have.property('doi').equal('2');
-      expect(historyRes[3]).have.property('version').equal(1);
-
-      expect(historyRes[4]).have.property('doi').equal('2');
-      expect(historyRes[4]).have.property('version').equal(1);
-
-      expect(historyRes[5]).have.property('doi').equal('2');
-      expect(historyRes[5]).have.property('version').equal(2);
-
-      expect(historyRes[6]).have.property('doi').equal('3');
-      expect(historyRes[6]).have.property('version').equal(1);
-
-      expect(historyRes[7]).have.property('doi').equal('3');
-      expect(historyRes[7]).have.property('version').equal(1);
-
-      expect(historyRes[8]).have.property('doi').equal('4');
-      expect(historyRes[8]).have.property('version').equal(1);
-
-      expect(historyRes[9]).have.property('doi').equal('5');
-      expect(historyRes[9]).have.property('version').equal(1);
+      expect(baseRes[6]).have.property('doi').equal('7');
+      expect(baseRes[6]).have.property('version').equal(1);
+      expect(baseRes[6]).have.property('referencedAt').equal('2020-01-05T01:00:00.000000');
+      expect(baseRes[6]).have.property('updated').equal('2020-01-05T01:00:00.000000');
     });
-  });
-});
-
-// TODO test with file with only new DOI
-describe('Test: insert changefile with only new documents', () => {
-  before(async function () {
-    this.timeout(1000);
-    await ping();
-    await reset();
-    await addSnapshot('2020-01-01-snapshot.jsonl.gz');
-    await insertSnapshot('2020-01-01-snapshot.jsonl.gz', 'unpaywall_base');
-  });
-  it('Should return a status code 202', async () => {
-    const res = await chai.request(updateURL)
-      .post('/job/history')
-      .send({
-        startDate: date5,
-        endDate: date5,
-        interval: 'day',
-      })
-      .set('x-api-key', 'changeme');
-
-    expect(res).have.status(202);
-  });
-
-  it('Should insert 0 data in history', async () => {
-    // wait for the update to finish
-    let isUpdate = true;
-    while (isUpdate) {
-      await new Promise((resolve) => { setTimeout(resolve, 100); });
-      isUpdate = await checkIfInUpdate();
-    }
-    const countUnpaywallBase = await countDocuments('unpaywall_base');
-    expect(countUnpaywallBase).to.equal(7);
-    const countUnpaywallHistory = await countDocuments('unpaywall_history');
-    expect(countUnpaywallHistory).to.equal(0);
-  });
-
-  it('Should get unpaywall document in base and history', async () => {
-    function compare(a, b) {
-      if (a.doi < b.doi) return -1;
-      if (a.doi > b.doi) return 1;
-      return 0;
-    }
-
-    const baseRes = await searchByDOI(['1', '2', '3', '4', '5', '6', '7'], 'unpaywall_base');
-
-    baseRes.sort(compare);
-
-    expect(baseRes[0]).have.property('doi').equal('1');
-    expect(baseRes[0]).have.property('version').equal(1);
-
-    expect(baseRes[1]).have.property('doi').equal('2');
-    expect(baseRes[1]).have.property('version').equal(1);
-
-    expect(baseRes[2]).have.property('doi').equal('3');
-    expect(baseRes[2]).have.property('version').equal(1);
-
-    expect(baseRes[3]).have.property('doi').equal('4');
-    expect(baseRes[3]).have.property('version').equal(1);
-
-    expect(baseRes[4]).have.property('doi').equal('5');
-    expect(baseRes[4]).have.property('version').equal(1);
-
-    expect(baseRes[5]).have.property('doi').equal('6');
-    expect(baseRes[5]).have.property('version').equal(1);
-
-    expect(baseRes[6]).have.property('doi').equal('7');
-    expect(baseRes[6]).have.property('version').equal(1);
   });
 });
