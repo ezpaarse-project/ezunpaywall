@@ -101,7 +101,5 @@ One cron automatically update metrics of unpaywall data. the elastic request tak
 ```
 # Functional tests
 npm run test
-# Unit test
-docker compose exec graphql npm run test ./test/countDOI.js
 # For the rest, it's your turn to play
 ```
