@@ -11,8 +11,8 @@ const { expressMiddleware } = require('@apollo/server/express4');
 
 const { pingRedis, startConnectionRedis } = require('./lib/services/redis');
 
-const getNumberOfDOI = require('./lib/middlewares/countDOI');
 const auth = require('./lib/middlewares/auth');
+const countDOIPlugin = require('./lib/middlewares/countDOI');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
@@ -41,7 +41,8 @@ const server = new ApolloServer({
   resolvers,
   introspection: true,
   csrfPrevention: false,
-  plugins: [ApolloServerPluginLandingPageProductionDefault({ footer: false })],
+  plugins: [ApolloServerPluginLandingPageProductionDefault({ footer: false }), countDOIPlugin],
+  context: ({ req }) => ({ req }),
 });
 
 (async () => {
@@ -61,13 +62,7 @@ const server = new ApolloServer({
 
   await server.start();
 
-  app.use('/graphql', cors(), json(), auth, expressMiddleware(server, {
-    context: async ({ req }) => {
-      req.countDOI = getNumberOfDOI(req);
-
-      return req;
-    },
-  }));
+  app.use('/graphql', cors(), json(), auth, expressMiddleware(server, { context: async ({ req }) => req }));
 
   app.listen(3000, async () => {
     logger.info('[express] ezunpaywall graphQL API listening on 3000');
