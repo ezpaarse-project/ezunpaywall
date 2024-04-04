@@ -34,7 +34,7 @@ async function unpaywallHistory(parent, args, req, info) {
         ],
       },
     },
-    sort: 'updated',
+    sort: { updated: 'desc' },
     _source: attributes,
   };
 
@@ -115,7 +115,7 @@ async function unpaywallHistory(parent, args, req, info) {
       throw err;
     }
 
-    return [...historyRes, ...baseRes];
+    return [...baseRes, ...historyRes];
   }
 
   return historyRes;
