@@ -10,5 +10,16 @@
   "graphql": {
     "host": "http://graphql:3000"
   },
+  "paths": {
+    "log": {
+      "applicationDir": "./log/application", 
+      "accessDir": "./log/access"
+    },
+    "data": {
+      "enrichedDir": "./data/enriched",
+      "statesDir": "./data/states",
+      "uploadDir": "./data/upload"
+    }
+  },
   "healthTimeout": 3000
 }

@@ -1,11 +1,10 @@
+const { paths } = require('config');
 const path = require('path');
 const fs = require('fs-extra');
 
 const { getMostRecentFile } = require('../file');
 
 const { getState } = require('../models/state');
-
-const statesDir = path.resolve(__dirname, '..', '..', 'data', 'states');
 
 /**
  * Controller to get list of states of enrich job of user.
@@ -22,7 +21,7 @@ async function getStates(req, res, next) {
   if (latest) {
     let latestFile;
     try {
-      latestFile = await getMostRecentFile(path.resolve(statesDir, apikey));
+      latestFile = await getMostRecentFile(path.resolve(paths.data.statesDir, apikey));
     } catch (err) {
       return next({ message: err.message });
     }
@@ -37,7 +36,7 @@ async function getStates(req, res, next) {
   let states;
 
   try {
-    states = await fs.readdir(path.resolve(statesDir, apikey));
+    states = await fs.readdir(path.resolve(paths.data.statesDir, apikey));
   } catch (err) {
     return next({ message: err.message });
   }
@@ -59,7 +58,7 @@ async function getStateByFilename(req, res, next) {
 
   let fileExist = false;
   try {
-    fileExist = await fs.exists(path.resolve(statesDir, apikey, filename));
+    fileExist = await fs.exists(path.resolve(paths.data.statesDir, apikey, filename));
   } catch (err) {
     return next({ message: err.message });
   }

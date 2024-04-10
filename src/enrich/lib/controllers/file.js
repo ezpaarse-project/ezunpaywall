@@ -1,9 +1,9 @@
+const config = require('config');
 const fs = require('fs-extra');
 const path = require('path');
 const joi = require('joi');
 
-const uploadDir = path.resolve(__dirname, '..', '..', 'data', 'upload');
-const enrichedDir = path.resolve(__dirname, '..', '..', 'data', 'enriched');
+const { uploadDir, enrichedDir } = config.paths.data;
 
 /**
  * Controller to get list of enriched files of user.
@@ -80,7 +80,7 @@ async function getEnrichedFileByFilename(req, res, next) {
  */
 async function uploadFile(req, res, next) {
   if (!req?.file) return next({ message: 'File not sent' });
-  const { filename } = req?.file;
+  const { filename } = req.file;
   return res.status(200).json(path.parse(filename).name);
 }
 

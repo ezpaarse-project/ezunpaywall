@@ -8,8 +8,8 @@ const readline = require('readline');
 const config = require('config');
 const zlib = require('zlib');
 const { format } = require('date-fns');
+const { paths } = require('config');
 
-const dirPath = require('./path');
 const logger = require('./logger');
 const unpaywallEnrichedMapping = require('../mapping/unpaywall.json');
 const unpaywallHistoryMapping = require('../mapping/unpaywall_history.json');
@@ -30,8 +30,6 @@ const {
 } = require('./services/elastic');
 
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
-
-const { snapshotsDir } = dirPath;
 
 /**
  * Insert data on elastic with elastic bulk request.
@@ -210,7 +208,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   };
   updateLatestStep(step);
 
-  const filePath = path.resolve(snapshotsDir, filename);
+  const filePath = path.resolve(paths.data.snapshotsDir, filename);
 
   // get information bytes for state
   let bytes;

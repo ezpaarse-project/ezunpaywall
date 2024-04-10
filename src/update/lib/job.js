@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const path = require('path');
 const { format } = require('date-fns');
+const { paths } = require('config');
 
 const logger = require('./logger');
 
@@ -26,8 +27,6 @@ const { insertHistoryDataUnpaywall } = require('./history');
 const { getChangefiles } = require('./services/unpaywall');
 
 const { sendMailNoChangefile } = require('./services/mail');
-
-const dirPath = require('./path');
 
 /**
  * Download the current snapshot of unpaywall and insert his content.
@@ -207,7 +206,7 @@ async function insertWithOaHistoryJob(jobConfig) {
     jobConfig.filename = changefilesInfo[i].filename;
     success = await insertHistoryDataUnpaywall(jobConfig);
     if (cleanFile) {
-      await deleteFile(path.resolve(dirPath.snapshotsDir, changefilesInfo[i].filename));
+      await deleteFile(path.resolve(paths.data.snapshotsDir, changefilesInfo[i].filename));
     }
     if (!success) return;
   }

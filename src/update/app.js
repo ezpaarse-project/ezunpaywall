@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs-extra');
 const path = require('path');
 const cors = require('cors');
+const { paths } = require('config');
 
 const morgan = require('./lib/morgan');
 const logger = require('./lib/logger');
@@ -19,21 +20,16 @@ const routerReport = require('./lib/routers/report');
 const routerCron = require('./lib/routers/cron');
 const routerSnapshot = require('./lib/routers/snapshot');
 
-const dirPath = require('./lib/path');
-
 require('./lib/cron/file');
 
 // create data directory
-fs.ensureDir(path.resolve(dirPath.dataDir));
-fs.ensureDir(path.resolve(dirPath.snapshotsDir));
-fs.ensureDir(path.resolve(dirPath.reportsDir));
+fs.ensureDir(path.resolve(paths.data.snapshotsDir));
+fs.ensureDir(path.resolve(paths.data.reportsDir));
 
 // create all directories for logs unpaywall
-const logDir = path.resolve(__dirname, 'log');
-fs.ensureDir(path.resolve(logDir));
-fs.ensureDir(path.resolve(logDir, 'application'));
-fs.ensureDir(path.resolve(logDir, 'access'));
-fs.ensureDir(path.resolve(logDir, 'healthcheck'));
+fs.ensureDir(path.resolve(paths.log.applicationDir));
+fs.ensureDir(path.resolve(paths.log.accessDir));
+fs.ensureDir(path.resolve(paths.log.healthCheckDir));
 
 const app = express();
 

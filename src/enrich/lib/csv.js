@@ -8,15 +8,11 @@ const config = require('config');
 
 const logger = require('./logger');
 
-const {
-  updateStateInFile,
-  fail,
-} = require('./models/state');
+const { updateStateInFile, fail } = require('./models/state');
 
 const { requestGraphql } = require('./services/graphql');
 
-const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
-const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
+const { uploadDir, enrichedDir } = config.paths.data;
 
 /**
  * get graphql params to get all unpaywall attributes.
@@ -238,7 +234,7 @@ async function enrichInFile(data, enrichConfig, state) {
   try {
     response = await requestGraphql(data, args, index, state.apikey);
   } catch (err) {
-    logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
+    logger.error(`[graphql] Cannot request graphql service at ${config.graphql.host}/graphql`, JSON.stringify(err?.response?.data?.errors));
     throw err;
   }
 

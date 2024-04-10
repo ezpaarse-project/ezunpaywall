@@ -1,6 +1,8 @@
+const { paths } = require('config');
+
 const logger = require('../logger');
 const Cron = require('../cron');
-const dirPath = require('../path');
+
 const { deleteFilesInDir } = require('../files');
 
 /**
@@ -10,10 +12,10 @@ const { deleteFilesInDir } = require('../files');
  */
 async function task() {
   // TODO env variable for the "30"
-  const deletedSnapshotFiles = await deleteFilesInDir(dirPath.snapshotsDir, 30);
+  const deletedSnapshotFiles = await deleteFilesInDir(paths.data.snapshotsDir, 30);
   logger.info(`[cron][files]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
 
-  const deletedReportFiles = await deleteFilesInDir(dirPath.reportsDir, 30);
+  const deletedReportFiles = await deleteFilesInDir(paths.data.reportsDir, 30);
   logger.info(`[cron][files]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
 }
 

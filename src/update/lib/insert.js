@@ -7,8 +7,8 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const config = require('config');
 const zlib = require('zlib');
+const { paths } = require('config');
 
-const dirPath = require('./path');
 const logger = require('./logger');
 const unpaywallMapping = require('../mapping/unpaywall.json');
 
@@ -28,8 +28,6 @@ const {
 
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
-
-const { snapshotsDir } = dirPath;
 
 /**
  * Insert data on elastic with elastic bulk request.
@@ -119,7 +117,7 @@ async function insertDataUnpaywall(insertConfig) {
 
   await initAlias(index, unpaywallMapping, indexAlias);
 
-  const filePath = path.resolve(snapshotsDir, filename);
+  const filePath = path.resolve(paths.data.snapshotsDir, filename);
 
   // get information "bytes" for state
   let bytes;

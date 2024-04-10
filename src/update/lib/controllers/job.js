@@ -1,9 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 const { format } = require('date-fns');
-const dirPath = require('../path');
-
-const { snapshotsDir } = dirPath;
+const { paths } = require('config');
 
 const {
   downloadAndInsertSnapshot,
@@ -92,7 +90,7 @@ async function insertChangefileJob(req, res, next) {
 
   const { filename } = jobConfig;
 
-  if (!await fs.pathExists(path.resolve(snapshotsDir, filename))) {
+  if (!await fs.pathExists(path.resolve(paths.data.snapshotsDir, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
 

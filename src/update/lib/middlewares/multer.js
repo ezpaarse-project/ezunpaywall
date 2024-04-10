@@ -1,10 +1,10 @@
 const multer = require('multer');
 
-const dirPath = require('../path');
+const { paths } = require('config');
 
 const storage = multer.diskStorage(
   {
-    destination: dirPath.snapshotsDir,
+    destination: paths.data.snapshotsDir,
     filename: (req, file, cb) => {
       cb(null, file.originalname);
     },

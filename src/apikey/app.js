@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs-extra');
 const path = require('path');
+const { paths } = require('config');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
@@ -16,10 +17,10 @@ const routerAdmin = require('./lib/routers/admin');
 const routerManage = require('./lib/routers/manage');
 const routerOpenapi = require('./lib/routers/openapi');
 
-const logDir = path.resolve(__dirname, 'log');
-fs.ensureDir(path.resolve(logDir));
-fs.ensureDir(path.resolve(logDir, 'application'));
-fs.ensureDir(path.resolve(logDir, 'access'));
+// create all directories for logs unpaywall
+fs.ensureDir(path.resolve(paths.log.applicationDir));
+fs.ensureDir(path.resolve(paths.log.accessDir));
+fs.ensureDir(path.resolve(paths.log.healthCheckDir));
 
 const app = express();
 

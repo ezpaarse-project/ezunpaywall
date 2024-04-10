@@ -32,6 +32,17 @@
     "indexHistory": "unpaywall_history",
     "interval": "day"
   },
+  "paths": {
+    "log": {
+      "applicationDir": "./log/application", 
+      "accessDir": "./log/access",
+      "healthCheckDir": "./log/healthcheck"
+    },
+    "data": {
+      "snapshotsDir": "./data/snapshots",
+      "reportsDir": "./data/reports"
+    }
+  },
   "apikey": "changeme",
   "healthTimeout": 3000
 }

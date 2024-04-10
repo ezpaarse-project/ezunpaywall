@@ -3,6 +3,8 @@ const fs = require('fs-extra');
 const { Readable } = require('stream');
 const { format } = require('date-fns');
 const { setTimeout } = require('node:timers/promises');
+const { paths } = require('config');
+
 const logger = require('./logger');
 
 const {
@@ -17,8 +19,6 @@ const {
   getSnapshot,
   getChangefile,
 } = require('./services/unpaywall');
-
-const pathDir = require('./path');
 
 /**
  * Update the step the percentage in download regularly until the download is complete.
@@ -108,7 +108,7 @@ async function download(file, filepath, size) {
 async function downloadChangefile(info, interval) {
   let stats;
 
-  const filePath = path.resolve(pathDir.snapshotsDir, info.filename);
+  const filePath = path.resolve(paths.data.snapshotsDir, info.filename);
 
   const alreadyInstalled = await fs.pathExists(filePath);
   if (alreadyInstalled) stats = await fs.stat(filePath);
@@ -145,7 +145,7 @@ async function downloadChangefile(info, interval) {
  */
 async function downloadBigSnapshot() {
   const filename = `snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`;
-  const filepath = path.resolve(pathDir.snapshotsDir, filename);
+  const filepath = path.resolve(paths.data.snapshotsDir, filename);
 
   addStepDownload();
   const step = getLatestStep();

@@ -1,10 +1,9 @@
 /* eslint-disable no-param-reassign */
 const path = require('path');
 const fs = require('fs-extra');
+const { paths } = require('config');
 
 const logger = require('../logger');
-
-const stateDir = path.resolve(__dirname, '..', '..', 'data', 'states');
 
 /**
  * Create a new State in file on folder data/state/<apikey>/<id>.json
@@ -17,7 +16,7 @@ const stateDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  */
 async function createState(id, apikey) {
   const filename = `${id}.json`;
-  const filenamePath = path.resolve(stateDir, apikey, filename);
+  const filenamePath = path.resolve(paths.data.statesDir, apikey, filename);
 
   const state = {
     id,
@@ -33,7 +32,7 @@ async function createState(id, apikey) {
     error: false,
   };
 
-  const dir = path.resolve(stateDir, apikey);
+  const dir = path.resolve(paths.data.statesDir, apikey);
 
   const exist = await fs.exists(dir);
 
@@ -59,7 +58,7 @@ async function createState(id, apikey) {
  * @returns {Promise<Object>} State of enrich process in JSON format.
  */
 async function getState(filename, apikey) {
-  const filenamePath = path.resolve(stateDir, apikey, filename);
+  const filenamePath = path.resolve(paths.data.statesDir, apikey, filename);
 
   let state;
 

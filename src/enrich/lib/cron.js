@@ -1,10 +1,7 @@
-const path = require('path');
+const { paths } = require('config');
+
 const Cron = require('./models/cron');
 const logger = require('./logger');
-
-const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
-const statesDir = path.resolve(__dirname, '..', 'data', 'states');
-const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
 
 const { deleteFilesInDir } = require('./file');
 
@@ -14,13 +11,13 @@ const { deleteFilesInDir } = require('./file');
  * @returns {Promise<void>}
  */
 async function task() {
-  const deletedEnrichedFiles = await deleteFilesInDir(enrichedDir, 1);
+  const deletedEnrichedFiles = await deleteFilesInDir(paths.data.enrichedDir, 1);
   logger.info(`[cron][files]: ${deletedEnrichedFiles?.join(',')} (${deletedEnrichedFiles.length}) enriched files are deleted`);
 
-  const deletedStatesFiles = await deleteFilesInDir(statesDir, 1);
+  const deletedStatesFiles = await deleteFilesInDir(paths.data.statesDir, 1);
   logger.info(`[cron][files]: ${deletedStatesFiles?.join(',')} (${deletedStatesFiles.length}) enriched files are deleted`);
 
-  const deletedUploadedFiles = await deleteFilesInDir(uploadDir, 1);
+  const deletedUploadedFiles = await deleteFilesInDir(paths.data.uploadDir, 1);
   logger.info(`[cron][files]: ${deletedUploadedFiles?.join(',')} (${deletedUploadedFiles.length}) enriched files are deleted`);
 }
 

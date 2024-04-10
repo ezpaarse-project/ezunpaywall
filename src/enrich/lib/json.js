@@ -16,8 +16,7 @@ const {
 
 const { requestGraphql } = require('./services/graphql');
 
-const uploadDir = path.resolve(__dirname, '..', 'data', 'upload');
-const enrichedDir = path.resolve(__dirname, '..', 'data', 'enriched');
+const { uploadDir, enrichedDir } = config.paths.data;
 
 /**
  * Get graphql params to get all unpaywall attributes.

@@ -200,7 +200,7 @@ describe('Test: auth service in enrich service', () => {
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;
@@ -415,7 +415,7 @@ describe('Test: auth service in enrich service', () => {
             .request(enrichService)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => { setTimeout(resolve, 100); });
         } while (!res3?.body?.done);
 
         const state = res3?.body;

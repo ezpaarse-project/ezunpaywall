@@ -1,10 +1,6 @@
-const {
-  createState,
-  endState,
-} = require('./models/state');
+const { createState, endState } = require('./models/state');
 
 const processEnrichJSON = require('./json');
-
 const processEnrichCSV = require('./csv');
 
 /**

@@ -15,5 +15,12 @@
     "indexBase": "unpaywall_base",
     "indexHistory": "unpaywall_history"
   },
+  "paths": {
+    "log": {
+      "applicationDir": "./log/application", 
+      "accessDir": "./log/access",
+      "healthCheckDir": "./log/healthcheck"
+    }
+  },
   "healthTimeout": 3000
 }

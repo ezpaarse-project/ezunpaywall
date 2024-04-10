@@ -1,9 +1,8 @@
 const fs = require('fs-extra');
 const path = require('path');
+const { paths } = require('config');
 
 const { getMostRecentFile, deleteFile } = require('../files');
-
-const dirPath = require('../path');
 
 /**
  * Controller to start list of files or latest file downloaded on update service.
@@ -18,13 +17,13 @@ async function getFiles(req, res, next) {
   if (latest) {
     let latestSnapshot;
     try {
-      latestSnapshot = await getMostRecentFile(dirPath.snapshotsDir);
+      latestSnapshot = await getMostRecentFile(paths.data.snapshotsDir);
     } catch (err) {
       return next({ message: 'Cannot get the latest snapshot' });
     }
     return res.status(200).json(latestSnapshot?.filename);
   }
-  const files = await fs.readdir(dirPath.snapshotsDir);
+  const files = await fs.readdir(paths.data.snapshotsDir);
   return res.status(200).json(files);
 }
 
@@ -50,12 +49,12 @@ async function uploadFile(req, res, next) {
 async function deleteInstalledFile(req, res, next) {
   const { filename } = req.data;
 
-  if (!await fs.pathExists(path.resolve(dirPath.snapshotsDir, filename))) {
+  if (!await fs.pathExists(path.resolve(paths.data.snapshotsDir, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
   try {
-    await deleteFile(path.resolve(dirPath.snapshotsDir, filename));
+    await deleteFile(path.resolve(paths.data.snapshotsDir, filename));
   } catch (err) {
     return next({ message: err.message });
   }
