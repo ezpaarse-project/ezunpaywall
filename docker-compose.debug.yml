@@ -30,7 +30,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 200"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -74,7 +74,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -107,7 +107,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -136,7 +136,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -165,7 +165,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -200,7 +200,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -256,7 +256,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -298,7 +298,7 @@ services:
     healthcheck:
       test: [
         "CMD-SHELL",
-        "curl -s --fail http://localhost:80"
+        "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1" 
       ]
       interval: 10s
       timeout: 10s
@@ -318,7 +318,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:3000 2>&1 | grep 'HTTP/1.1 200 OK'"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -382,7 +382,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -q -S -O - http://localhost:80 2>&1 | grep 'HTTP/1.1 200 OK'"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:80 || exit 1"
         ]
       interval: 10s
       timeout: 10s
