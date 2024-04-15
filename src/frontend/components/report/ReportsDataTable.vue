@@ -42,12 +42,12 @@
             size="x-small"
             icon="mdi-plus-circle-outline"
             class="mx-1"
-          /> {{ index.added }} -
+          /> {{ index.added.toLocaleString($i18n.locale, { useGrouping: true }) }} -
           <v-icon
             size="x-small"
             icon="mdi-circle-edit-outline"
             class="mx-1"
-          /> {{ index.updated }}
+          /> {{ index.updated.toLocaleString($i18n.locale, { useGrouping: true }) }}
         </v-chip>
       </template>
 
