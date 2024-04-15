@@ -298,7 +298,7 @@ services:
     healthcheck:
       test: [
         "CMD-SHELL",
-        "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1" 
+        "service nginx status || exit 1" 
       ]
       interval: 10s
       timeout: 10s
