@@ -298,6 +298,7 @@
       "stopped": "The update cron has been stopped"
     }
   },
+  "search": "Search",
   "edit": "Edit",
   "delete": "Delete",
   "download": "Download",

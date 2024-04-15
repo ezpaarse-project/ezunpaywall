@@ -61,7 +61,10 @@
         {{ t("administration.apikey.reload") }}
       </v-tooltip>
     </v-toolbar>
-
+    <SearchBar
+      v-model="searchValue"
+      @update:model-value="updateSearchValue"
+    />
     <v-row
       v-if="loading"
       align="center"
@@ -71,7 +74,7 @@
       <Loader />
     </v-row>
     <NoData
-      v-else-if="!apikeys || apikeys.length === 0"
+      v-else-if="!apikeysFiltered || apikeysFiltered.length === 0"
       :text="t('administration.apikey.noApikeys')"
     />
     <v-row
@@ -79,7 +82,7 @@
       class="ma-2"
     >
       <v-col
-        v-for="(key) in apikeys"
+        v-for="(key) in apikeysFiltered"
         :key="key.apikey"
         cols="12"
         sm="12"
@@ -95,11 +98,6 @@
         />
       </v-col>
     </v-row>
-    <CreateDialog
-      v-model="createDialogVisible"
-      @created="getApikeys()"
-      @closed="createDialogVisible = false"
-    />
     <UpdateDialog
       v-model="updateDialogVisible"
       v-model:apikey="selectedApikey"
@@ -118,6 +116,11 @@
       @closed="setDeleteDialogVisible(false)"
       @deleted="getApikeys()"
     />
+    <CreateDialog
+      v-model="createDialogVisible"
+      @created="getApikeys()"
+      @closed="createDialogVisible = false"
+    />
   </v-card>
 </template>
 
@@ -128,6 +131,7 @@ import { storeToRefs } from 'pinia';
 import { useSnacksStore } from '@/store/snacks';
 import { useAdminStore } from '@/store/admin';
 
+import SearchBar from '@/components/administration/apikey/SearchBar.vue';
 import CreateDialog from '@/components/administration/apikey/CreateDialog.vue';
 import DeleteDialog from '@/components/administration/apikey/DeleteDialog.vue';
 import UpdateDialog from '@/components/administration/apikey/UpdateDialog.vue';
@@ -145,13 +149,16 @@ const { $apikey } = useNuxtApp();
 const { password } = storeToRefs(adminStore);
 
 const loading = ref(false);
+
+const searchValue = ref('');
+
 const createDialogVisible = ref(false);
 const updateDialogVisible = ref(false);
 const deleteDialogVisible = ref(false);
 const importDialogVisible = ref(false);
 const exportDialogVisible = ref(false);
-const apikeys = ref([]);
 
+// TODO, use one ref
 const selectedApikey = ref('');
 const selectedName = ref('');
 const selectedDescription = ref('');
@@ -159,6 +166,18 @@ const selectedOwner = ref('');
 const selectedAccess = ref([]);
 const selectedAttributes = ref([]);
 const selectedAllowed = ref(false);
+const apikeys = ref([]);
+
+const apikeysFiltered = computed(() => {
+  let filteredAPIkeys = apikeys.value;
+  if (searchValue.value) {
+    filteredAPIkeys = apikeys.value.filter(
+      (key) => key.apikey.includes(searchValue.value),
+    );
+    return filteredAPIkeys;
+  }
+  return apikeys.value;
+});
 
 async function getApikeys() {
   let res;
@@ -196,6 +215,10 @@ async function openUpdateDialog(id) {
 async function openDeleteDialog(id) {
   selectedApikey.value = id;
   deleteDialogVisible.value = true;
+}
+
+function updateSearchValue(newValue) {
+  searchValue.value = newValue;
 }
 
 onMounted(() => {
