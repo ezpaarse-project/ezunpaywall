@@ -50,10 +50,8 @@ const cron = new Cron('update', unpaywallCron.schedule, task, active);
  */
 function update(newConfig) {
   if (newConfig.time) cron.setSchedule(newConfig.time);
-
   if (newConfig.index) cronConfig.index = newConfig.index;
   if (newConfig.interval) cronConfig.interval = newConfig.interval;
-
   if (newConfig.index || newConfig.interval) cron.setTask(task);
 }
 

@@ -29,10 +29,11 @@ async function task() {
     logger.info(`[cron][${this.name}]: conflict: an update is already in progress`);
     return;
   }
-  const week = (cronConfig.interval === 'week');
-  const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
+  const isWeek = (cronConfig.interval === 'week');
+  const startDate = format(subDays(new Date(), isWeek ? 7 : 0), 'yyyy-MM-dd');
   await insertWithOaHistoryJob({
-    index: cronConfig.index,
+    indexBase: cronConfig.indexBase,
+    indexHistory: cronConfig.indexHistory,
     interval: cronConfig.interval,
     startDate,
   });

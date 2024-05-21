@@ -109,7 +109,7 @@
     "job" : {
       "title": "Lancement d'une mise à jour",
       "future": "La date est après aujourd'hui",
-      "invalidDate": "La date est au mauvais format",
+      "invalidDate": "La date est au mauvais format (YYYY-mm-dd)",
       "interval": "Intervalle",
       "startDate": "Date de début",
       "endDate": "Date de fin",

@@ -21,36 +21,36 @@
             @submit.prevent="startUpdate()"
           >
             <v-select
-              v-model="config.interval"
+              v-model="interval"
               class="mt-4"
               :items="intervals"
               :label="t('administration.job.interval')"
             />
             <v-text-field
               v-if="props.type === 'unpaywall'"
-              v-model="config.index"
+              v-model="indexBase"
               :label="t('administration.job.index')"
             />
             <v-text-field
-              v-model="config.startDate"
+              v-model="startDate"
               :label="t('administration.job.startDate')"
               :rules="[dateFormatRule, dateIsFutureRule]"
               autofocus
             />
             <v-text-field
               v-if="props.type === 'unpaywall'"
-              v-model="config.endDate"
+              v-model="endDate"
               :label="t('administration.job.endDate')"
               :rules="[dateFormatRule, dateIsFutureRule]"
             />
             <v-text-field
               v-if="props.type === 'unpaywallHistory'"
-              v-model="config.indexBase"
+              v-model="indexBase"
               :label="t('administration.job.indexBase')"
             />
             <v-text-field
               v-if="props.type === 'unpaywallHistory'"
-              v-model="config.indexHistory"
+              v-model="indexHistory"
               :label="t('administration.job.indexHistory')"
             />
           </v-form>
@@ -124,25 +124,11 @@ const props = defineProps({
   type: { type: String, default: 'unpaywall' },
 });
 
-const config = computed(() => {
-  if (props.type === 'unpaywall') {
-    return {
-      interval: 'day',
-      index: 'unpaywall_base',
-      startDate: formatDate(new Date()),
-      endDate: formatDate(new Date()),
-    };
-  }
-  if (props.type === 'unpaywallHistory') {
-    return {
-      interval: 'day',
-      startDate: formatDate(new Date()),
-      indexBase: 'unpaywall_base',
-      indexHistory: 'unpaywall_history',
-    };
-  }
-  return {};
-});
+const interval = ref('day');
+const indexBase = ref('unpaywall_base');
+const indexHistory = ref('unpaywall_history');
+const startDate = ref(formatDate(new Date()));
+const endDate = ref(formatDate(new Date()));
 
 function startUpdatePeriod(data) {
   return $update({
@@ -170,13 +156,11 @@ async function startUpdate() {
   loading.value = true;
   let data;
   if (props.type === 'unpaywall') {
-    const conf = config.value;
     data = {
-      index: conf.indexBase,
-      interval: conf.interval,
-      time: conf.schedule,
-      startDate: conf.startDate,
-      endDate: conf.endDate,
+      index: indexBase.value,
+      interval: interval.value,
+      startDate: startDate.value,
+      endDate: endDate.value,
     };
     try {
       await startUpdatePeriod(data);
@@ -187,10 +171,9 @@ async function startUpdate() {
   }
   if (props.type === 'unpaywallHistory') {
     data = {
-      indexBase: config.indexBase.value,
-      indexHistory: config.indexHistory.value,
-      interval: config.interval.value,
-      time: config.schedule.value,
+      indexBase: indexBase.value,
+      indexHistory: indexHistory.value,
+      interval: interval.value,
     };
     try {
       await startUpdateHistory(data);

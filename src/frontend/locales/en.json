@@ -109,7 +109,7 @@
     "job" : {
       "title": "Launch an update",
       "future": "The date is after today",
-      "invalidDate": "The date is in wrong format",
+      "invalidDate": "The date is in wrong format (YYYY-mm-dd)",
       "interval": "Interval",
       "startDate": "Start date",
       "endDate": "End date",

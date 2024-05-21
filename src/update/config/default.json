@@ -27,7 +27,7 @@
   },
   "unpaywallHistoryCron": {
     "schedule": "0 0 0 * * *",
-    "active": false,
+    "active": true,
     "indexBase": "unpaywall_base",
     "indexHistory": "unpaywall_history",
     "interval": "day"
