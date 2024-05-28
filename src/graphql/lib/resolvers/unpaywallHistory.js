@@ -75,6 +75,7 @@ async function unpaywallHistory(parent, args, req, info) {
   const DOIInResponse = new Set(historyRes.map((res) => res.doi));
   const DOINotInResponse = dois.filter((doi) => !DOIInResponse.has(doi));
 
+  // Return the complete history with the current data
   if (!date) {
     let baseRes;
     // get current data
@@ -84,10 +85,12 @@ async function unpaywallHistory(parent, args, req, info) {
       logger.error(`[apollo]: Cannot search document in index [${indexBase}]`, err);
       throw err;
     }
-
-    historyRes.unshift(baseRes[0]);
+    if (baseRes.length > 0) {
+      historyRes.unshift(baseRes[0]);
+    }
   }
 
+  // if we have no data in history, try to search in index_base
   if (date && DOINotInResponse.length !== 0) {
     cloneBody.query.bool.filter.push(
       {
