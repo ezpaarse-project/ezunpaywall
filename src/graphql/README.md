@@ -70,9 +70,9 @@ You can put your API key in the query or in the header.
 ```bash
 # GET
 curl --request GET \
-  --url 'https://unpaywall.inist.fr/api/graphql?query=\{unpaywall(dois:\[\"10.1001/jama.2016.9797\"\])\{doi,is_oa,oa_status,data_standard,updated,best_oa_location\{evidence\}\}\}' \
-  --header 'Content-type: application/json' \
-  --header 'x-api-key: demo'
+  --url 'https://unpaywall.inist.fr/api/graphql?query=%7Bunpaywall(dois%3A%5B%2210.1001%2Fjama.2016.9797%22%5D)%7Bdoi%2C%20is_oa%2C%20oa_status%2C%20data_standard%2C%20updated%2C%20best_oa_location%7B%20evidence%20%7D%7D%7D' \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: demo' 
 
 # POST
 curl --request POST \
