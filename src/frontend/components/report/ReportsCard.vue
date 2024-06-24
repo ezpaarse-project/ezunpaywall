@@ -6,10 +6,16 @@
       flat
       dense
     >
-      <v-toolbar-title> {{ t("reportHistory.title") }} </v-toolbar-title>
+      <v-toolbar-title> {{ t('reports.title') }} </v-toolbar-title>
       <v-spacer />
-      <UpdateProcessButton v-if="isAdmin" />
-      <CronButton v-if="isAdmin" />
+      <UpdateProcessButton
+        v-if="isAdmin"
+        :type="props.type"
+      />
+      <CronButton
+        v-if="isAdmin"
+        :type="props.type"
+      />
       <UnpaywallButton />
       <RefreshButton
         :loading="loading"
@@ -26,10 +32,11 @@
     </v-row>
     <NoData
       v-else-if="reports.length === 0"
-      :text="t('reportHistory.noReport')"
+      :text="t('reports.noReport')"
     />
     <ReportsDataTable
       v-else
+      :type="props.type"
       :reports="reports"
     />
   </v-card>
@@ -59,6 +66,10 @@ const { $update } = useNuxtApp();
 const loading = ref(false);
 const reports = ref([]);
 
+const props = defineProps({
+  type: { type: String, default: 'unpaywall' },
+});
+
 const isAdmin = computed(() => adminStore.isAdmin);
 
 async function getReport(filename) {
@@ -73,18 +84,6 @@ async function getReport(filename) {
     return;
   }
   return report.data;
-}
-
-function formatDate(date) {
-  const d = new Date(date);
-  let month = `${d.getMonth() + 1}`;
-  let day = `${d.getDate()}`;
-  const year = d.getFullYear();
-
-  if (month.length < 2) { month = `0${month}`; }
-  if (day.length < 2) { day = `0${day}`; }
-
-  return [year, month, day].join('-');
 }
 
 async function getReports() {
@@ -106,17 +105,12 @@ async function getReports() {
   let report;
 
   reports.value = [];
-  const r = [];
+  const newReports = [];
   for (let i = 0; i < filenames.length; i += 1) {
     report = await getReport(filenames[i]);
-
-    r.push({
-      id: i,
-      data: report,
-      createdAt: formatDate(report.createdAt),
-    });
+    newReports.push(report);
   }
-  reports.value = r;
+  reports.value = newReports;
   loading.value = false;
 }
 

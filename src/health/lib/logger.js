@@ -1,5 +1,5 @@
 const path = require('path');
-const { nodeEnv } = require('config');
+const { nodeEnv, paths } = require('config');
 
 const isProd = (nodeEnv === 'production');
 
@@ -22,7 +22,7 @@ const {
 const processConfiguration = [
   new transports.DailyRotateFile({
     name: 'file',
-    filename: path.resolve(__dirname, '..', 'log', 'application', '%DATE%.log'),
+    filename: path.resolve(paths.log.applicationDir, '%DATE%.log'),
     datePattern: 'yyyy-MM-DD',
     level: 'info',
   }),

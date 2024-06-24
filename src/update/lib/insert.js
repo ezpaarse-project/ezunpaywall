@@ -7,6 +7,7 @@ const fs = require('fs-extra');
 const readline = require('readline');
 const config = require('config');
 const zlib = require('zlib');
+const { paths } = require('config');
 
 const logger = require('./logger');
 const unpaywallMapping = require('../mapping/unpaywall.json');
@@ -16,17 +17,17 @@ const {
   getLatestStep,
   updateLatestStep,
   fail,
-} = require('./models/state');
+} = require('./state');
 
 const {
-  elasticClient,
+  refreshIndex,
+  bulk,
+  initAlias,
   createIndex,
 } = require('./services/elastic');
 
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');
-
-const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 /**
  * Insert data on elastic with elastic bulk request.
@@ -35,13 +36,13 @@ const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
  *
  * @returns {Promise<boolean>} Success or not.
  */
-async function insertDataInElastic(data) {
+async function insertUnpaywallDataInElastic(data) {
   const step = getLatestStep();
   let res;
   try {
-    res = await elasticClient.bulk({ body: data });
+    res = await bulk(data);
   } catch (err) {
-    logger.error('[elastic] Cannot bulk', err);
+    logger.error('[elastic]: Cannot bulk', err);
     await fail(err?.[0]?.reason);
     return false;
   }
@@ -51,7 +52,7 @@ async function insertDataInElastic(data) {
 
   items.forEach((i) => {
     if (i?.index?.result === 'created') {
-      step.insertedDocs += 1;
+      step.addedDocs += 1;
       return;
     }
     if (i?.index?.result === 'updated') {
@@ -66,9 +67,9 @@ async function insertDataInElastic(data) {
   });
 
   if (errors.length > 0) {
-    logger.error('[elastic] Error in bulk insertion');
+    logger.error('[elastic]: Error in bulk insertion');
     errors.forEach((error) => {
-      logger.error(`[elastic] ${JSON.stringify(error, null, 2)}`);
+      logger.error(`[elastic]: ${JSON.stringify(error, null, 2)}`);
     });
     step.status = 'error';
     updateLatestStep(step);
@@ -95,7 +96,7 @@ async function insertDataInElastic(data) {
  */
 async function insertDataUnpaywall(insertConfig) {
   const {
-    filename, index, offset, limit,
+    filename, index, offset, limit, ignoreError,
   } = insertConfig;
 
   // step insertion in the state
@@ -109,34 +110,21 @@ async function insertDataUnpaywall(insertConfig) {
   try {
     await createIndex(index, unpaywallMapping);
   } catch (err) {
-    logger.error(`[elastic] Cannot create index [${index}]`, err);
+    logger.error(`[elastic]: Cannot create index [${index}]`, err);
     await fail(err);
     return false;
   }
 
-  try {
-    const { body: aliasExists } = await elasticClient.indices.existsAlias({ name: indexAlias });
+  await initAlias(index, unpaywallMapping, indexAlias);
 
-    if (aliasExists) {
-      logger.info(`[elastic] Alias [${indexAlias}] pointing to index [${index}] already exists`);
-    } else {
-      logger.info(`[elastic] Creating alias [${indexAlias}] pointing to index [${index}]`);
-      await elasticClient.indices.putAlias({ index, name: indexAlias });
-    }
-  } catch (err) {
-    logger.error(`[elastic] Cannot create alias [${indexAlias}] pointing to index [${index}]`, err);
-    await fail(err);
-    return false;
-  }
-
-  const filePath = path.resolve(snapshotsDir, filename);
+  const filePath = path.resolve(paths.data.snapshotsDir, filename);
 
   // get information "bytes" for state
   let bytes;
   try {
     bytes = await fs.stat(filePath);
   } catch (err) {
-    logger.error(`[job: insert] Cannot stat [${filePath}]`, err);
+    logger.error(`[job][insert]: Cannot get bytes [${filePath}]`, err);
     await fail(err);
     return false;
   }
@@ -146,7 +134,7 @@ async function insertDataUnpaywall(insertConfig) {
   try {
     readStream = fs.createReadStream(filePath);
   } catch (err) {
-    logger.error(`[job: insert] Cannot read [${filePath}]`, err);
+    logger.error(`[job][insert]: Cannot read [${filePath}]`, err);
     await fail(err);
     return false;
   }
@@ -161,7 +149,7 @@ async function insertDataUnpaywall(insertConfig) {
   try {
     decompressedStream = readStream.pipe(zlib.createGunzip());
   } catch (err) {
-    logger.error(`[job: insert] Cannot pipe [${readStream?.filename}]`, err);
+    logger.error(`[job][insert]: Cannot pipe [${readStream?.filename}]`, err);
     await fail(err);
     return false;
   }
@@ -176,7 +164,7 @@ async function insertDataUnpaywall(insertConfig) {
 
   let success;
 
-  logger.info(`[job: insert] Start insert with [${filename}]`);
+  logger.info(`[job][insert]: Start insert with [${filename}]`);
 
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
@@ -193,42 +181,45 @@ async function insertDataUnpaywall(insertConfig) {
       // fill the array
       try {
         const doc = JSON.parse(line);
+        doc.referencedAt = doc.updated;
+        if (!doc.updated) { logger.error('[job][insert]: no update is send'); }
         bulkOps.push({ index: { _index: index, _id: doc.doi } });
         bulkOps.push(doc);
       } catch (err) {
-        logger.error(`[job: insert] Cannot parse [${line}] in json format`, err);
-        await fail(err);
-        return false;
+        logger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
+        if (!ignoreError) {
+          await fail(err);
+          return false;
+        }
       }
     }
     // bulk insertion
     if (bulkOps.length >= maxBulkSize) {
-      const dataToInsert = bulkOps.slice();
+      success = await insertUnpaywallDataInElastic(bulkOps, step);
       bulkOps = [];
-      success = await insertDataInElastic(dataToInsert, step);
       if (!success) return false;
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       updateLatestStep(step);
     }
     if (step.linesRead % 100000 === 0) {
-      logger.info(`[job: insert] ${step.linesRead} Lines reads`);
+      logger.info(`[job][insert]: ${step.linesRead} Lines reads`);
       updateLatestStep(step);
     }
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    success = await insertDataInElastic(bulkOps, step);
-    if (!success) return false;
+    success = await insertUnpaywallDataInElastic(bulkOps, step);
     bulkOps = [];
+    if (!success) return false;
   }
 
-  logger.info('[job: insert] insertion completed');
+  logger.info('[job][insert]: insertion completed');
 
   try {
-    await elasticClient.indices.refresh({ index });
+    await refreshIndex();
   } catch (err) {
-    logger.warn('[elastic] Cannot refresh the index', err);
+    logger.warn('[elastic]: Cannot refresh the index', err);
   }
 
   // last update of step

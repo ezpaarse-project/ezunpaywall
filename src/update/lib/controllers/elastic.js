@@ -1,4 +1,4 @@
-const { initAlias } = require('../services/elastic');
+const elastic = require('../services/elastic');
 const unpaywallMapping = require('../../mapping/unpaywall.json');
 
 /**
@@ -10,7 +10,7 @@ const unpaywallMapping = require('../../mapping/unpaywall.json');
  */
 async function createAlias(req, res, next) {
   try {
-    await initAlias('unpaywall', unpaywallMapping, 'upw');
+    await elastic.initAlias('unpaywall', unpaywallMapping, 'upw');
   } catch (err) {
     return next(err);
   }
@@ -18,4 +18,44 @@ async function createAlias(req, res, next) {
   return res.status(202).end();
 }
 
-module.exports = createAlias;
+/**
+ * Controller to get indices on elastic.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function getIndices(req, res, next) {
+  let indices;
+  try {
+    indices = await elastic.getIndices();
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(200).json(indices);
+}
+
+/**
+ * Controller to get alias on elastic.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function getAlias(req, res, next) {
+  let alias;
+  try {
+    alias = await elastic.getAlias();
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(200).json(alias);
+}
+
+module.exports = {
+  createAlias,
+  getIndices,
+  getAlias,
+};

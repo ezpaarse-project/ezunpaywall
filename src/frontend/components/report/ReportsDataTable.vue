@@ -5,12 +5,17 @@
       :items="props.reports"
       :items-per-page="7"
       :loading="props.loading"
-      item-key="id"
+      item-key="createdAt"
       class="elevation-1"
     >
-      <template #[`item.status`]="{ item: { raw: item } }">
+      <template
+        #[`item.createdAt`]="{ item }"
+      >
+        {{ item?.createdAt.split('T')[0] }}
+      </template>
+      <template #[`item.error`]="{ item }">
         <v-icon
-          v-if="!item.data.error"
+          v-if="!item.error"
           right
           color="green"
         >
@@ -24,8 +29,29 @@
           mdi-close
         </v-icon>
       </template>
+      <template
+        #[`item.indices`]="{ item }"
+      >
+        <v-chip
+          v-for="index in item.indices"
+          :key="index"
+          class="mx-1"
+        >
+          {{ index.index }} :
+          <v-icon
+            size="x-small"
+            icon="mdi-plus-circle-outline"
+            class="mx-1"
+          /> {{ index.added.toLocaleString($i18n.locale, { useGrouping: true }) }} -
+          <v-icon
+            size="x-small"
+            icon="mdi-circle-edit-outline"
+            class="mx-1"
+          /> {{ index.updated.toLocaleString($i18n.locale, { useGrouping: true }) }}
+        </v-chip>
+      </template>
 
-      <template #[`item.details`]="{ item: { raw: item } }">
+      <template #[`item.details`]="{ item }">
         <v-btn
           icon="mdi-code-json"
           x-small
@@ -62,19 +88,28 @@ const tableHeaders = computed(() => [
     sortable: false,
     key: 'createdAt',
   },
-  { title: t('reportHistory.status'), key: 'status', sortable: false },
   {
-    title: t('reportHistory.updatedDocs'),
-    key: 'data.totalUpdatedDocs',
+    title: t('reports.status'),
+    align: 'start',
+    sortable: false,
+    key: 'error',
+  },
+  {
+    title: 'Type',
+    align: 'start',
+    sortable: false,
+    key: 'type',
+  },
+  {
+    title: 'Index',
+    key: 'indices',
+    align: 'start',
     sortable: false,
   },
   {
-    title: t('reportHistory.insertedDocs'),
-    key: 'data.totalInsertedDocs',
+    title: t('detail'),
+    key: 'details',
     sortable: false,
-  },
-  {
-    title: t('detail'), key: 'details', sortable: false, align: 'right',
   },
 ]);
 

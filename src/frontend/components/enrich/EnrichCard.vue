@@ -308,6 +308,7 @@ async function getStateOfEnrichJob(id) {
     }
     await new Promise((resolve) => { setTimeout(resolve, 1000); });
   } while (!stateEnrich?.data?.done);
+  isError.value = stateEnrich.data.error;
   return true;
 }
 

@@ -1,3 +1,5 @@
+const logger = require('./logger');
+
 let inUpdate = false;
 
 /**
@@ -6,6 +8,7 @@ let inUpdate = false;
  * @param {boolean} status - indicates if a job is in progress.
  */
 const setInUpdate = (status) => {
+  logger.info(`[status]: status is updated to [${status}]`);
   inUpdate = status;
 };
 

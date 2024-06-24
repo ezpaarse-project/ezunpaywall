@@ -65,8 +65,7 @@
     "settings": "Unpaywall attributes to retrieve",
     "request": "GraphQL request",
     "start": "Launch request",
-    "result": "Result",
-    "linkAPI": "See on the API"
+    "result": "Result"
   },
   "administration": {
     "title": "Administration",
@@ -74,6 +73,12 @@
     "login": "Login",
     "logout": "Logout",
     "password": "Password",
+    "elastic": {
+      "title": "Information about elastic",
+      "noInfo": "No info about elastic",
+      "reload": "Reload elastic info",
+      "documents": "documents"
+    },
     "health": {
       "title": "Services status",
       "reload": "Reload healths",
@@ -101,19 +106,24 @@
       "delete": "Deleting the API key",
       "deleteMessage": "Are you sure you want to delete this API key (irreversible action)"
     },
-    "update" : {
+    "job" : {
       "title": "Launch an update",
       "future": "The date is after today",
-      "invalidDate": "The date is in wrong format",
+      "invalidDate": "The date is in wrong format (YYYY-mm-dd)",
       "interval": "Interval",
       "startDate": "Start date",
-      "endDate": "End date"
+      "endDate": "End date",
+      "index": "Elastic index for unpaywall data",
+      "indexBase": "Elastic index for basic unpaywall data",
+      "indexHistory": "Elastic index for history unpaywall data"
     },
     "cron": {
-      "title": "Config of the cron update process for unpaywall data",
+      "title": "Config of the cron for update process",
       "interval": "Interval",
       "schedule": "Schedule (cron format)",
-      "index": "Elastic index",
+      "index": "Elastic index for unpaywall data",
+      "indexBase": "Elastic index for basic unpaywall data",
+      "indexHistory": "Elastic index for history unpaywall data",
       "active": "Active"
     }
   },
@@ -170,8 +180,9 @@
     "total": "Total"
   },
   "status": {
-    "inUpdate": "Update in progress: {latestTaskName} - {percent}%",
-    "noInUpdate": "The data is up to date"
+    "inUpdate": "Update in progress: {task} - {percent}% for file ${file}",
+    "noInUpdate": "The data is up to date",
+    "error": "Cannot get status"
   },
   "state": {
     "createdAt": "Created at",
@@ -196,7 +207,7 @@
     "contact": "Contact us",
     "administration": "Administration"
   },
-  "reportHistory": {
+  "reports": {
     "title": "Last updates",
     "reloadReports": "Reload reports",
     "reload": "Reload update history",
@@ -213,6 +224,10 @@
   },
   "error": {
     "default": "An error occurred",
+    "elastic": {
+      "aliases": "Cannot get aliases",
+      "indices": "Cannot get indices"
+    },
     "enrich": {
       "manyFile": "The number of files allowed is 1",
       "typeOfFile": "only .csv and. jsonl files are allowed",
@@ -274,9 +289,6 @@
       "copyResult": "Copy result",
       "copyRequest": "Copy GraphQL request"
     },
-    "administration": {
-      "login": "Successful connection"
-    },
     "contact": {
       "mailSent": "Your request has been sent to the team."
     },
@@ -286,6 +298,7 @@
       "stopped": "The update cron has been stopped"
     }
   },
+  "search": "Search",
   "edit": "Edit",
   "delete": "Delete",
   "download": "Download",

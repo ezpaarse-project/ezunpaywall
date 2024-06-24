@@ -49,6 +49,62 @@ async function insertDataUnpaywall() {
   }
 }
 
+async function insertHistoryDataUnpaywall() {
+  const filepath1 = path.resolve(__dirname, '..', 'sources', 'unpaywall_history.jsonl');
+  let readStream1;
+  try {
+    readStream1 = await fs.createReadStream(filepath1);
+  } catch (err) {
+    console.error(`fs.createReadStream in insertDataUnpaywall: ${err}`);
+  }
+
+  const rl1 = readline.createInterface({
+    input: readStream1,
+    crlfDelay: Infinity,
+  });
+
+  const data1 = [];
+
+  for await (const line of rl1) {
+    data1.push(JSON.parse(line));
+  }
+
+  const body1 = data1.flatMap((doc) => [{ index: { _index: 'unpaywall_history' } }, doc]);
+
+  try {
+    await elasticClient.bulk({ refresh: true, body: body1 });
+  } catch (err) {
+    console.error(err);
+  }
+
+  const filepath2 = path.resolve(__dirname, '..', 'sources', 'unpaywall.jsonl');
+  let readStream2;
+  try {
+    readStream2 = await fs.createReadStream(filepath2);
+  } catch (err) {
+    console.error(`fs.createReadStream in insertDataUnpaywall: ${err}`);
+  }
+
+  const rl2 = readline.createInterface({
+    input: readStream2,
+    crlfDelay: Infinity,
+  });
+
+  const data2 = [];
+
+  for await (const line of rl2) {
+    data2.push(JSON.parse(line));
+  }
+
+  const body2 = data2.flatMap((doc) => [{ index: { _index: 'unpaywall_base', _id: doc.doi } }, doc]);
+
+  try {
+    await elasticClient.bulk({ refresh: true, body: body2 });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 /**
  * Check if index exit.
  *
@@ -132,11 +188,65 @@ async function countDocuments(name) {
   return data?.body?.count ? data?.body?.count : 0;
 }
 
+async function getAllData(index) {
+  let res;
+  try {
+    res = await elasticClient.search({
+      index,
+      body: {
+        query: {
+          match_all: { },
+        },
+      },
+
+    });
+  } catch (err) {
+    console.error('[elastic]: Cannot request elastic', err);
+    return null;
+  }
+  // eslint-disable-next-line no-underscore-dangle
+  return res.body.hits.hits.map((hit) => hit._source);
+}
+
+async function searchByDOI(dois, index) {
+  if (!dois) { return []; }
+  // Normalize request
+  const normalizeDOI = dois.map((doi) => doi.toLowerCase());
+
+  const filter = [{ terms: { doi: normalizeDOI } }];
+
+  const query = {
+    bool: {
+      filter,
+    },
+  };
+
+  let res;
+  try {
+    res = await elasticClient.search({
+      index,
+      size: 1000,
+      body: {
+        query,
+      },
+
+    });
+  } catch (err) {
+    console.error('[elastic]: Cannot search documents with DOI as ID', err);
+    return [];
+  }
+  // eslint-disable-next-line no-underscore-dangle
+  return res.body.hits.hits.map((hit) => hit._source);
+}
+
 module.exports = {
   elasticClient,
   createIndex,
   deleteIndex,
   checkIfIndexExist,
   insertDataUnpaywall,
+  insertHistoryDataUnpaywall,
   countDocuments,
+  getAllData,
+  searchByDOI,
 };

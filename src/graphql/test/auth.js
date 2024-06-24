@@ -21,7 +21,7 @@ chai.use(chaiHttp);
 
 const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
 
-const doi1 = '10.1186/s40510-015-0109-6'; // line 1 of fake1.jsonl
+const doi1 = '1';
 
 describe('Test: auth service in graphql service', () => {
   before(async function () {
@@ -29,18 +29,17 @@ describe('Test: auth service in graphql service', () => {
     await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
-    await deleteIndex('unpaywall-test');
-    await createIndex('unpaywall-test', mappingUnpaywall);
-    await insertDataUnpaywall();
+    await deleteIndex('unpaywall_base');
+    await createIndex('unpaywall_base', mappingUnpaywall);
+    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall_base');
   });
 
   describe('Test with user API key', () => {
     it('Should do graphql request', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa } }` })
-        .set('x-api-key', 'user')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'user');
 
       expect(res).have.status(200);
     });
@@ -50,9 +49,8 @@ describe('Test: auth service in graphql service', () => {
     it('Should do graphql request', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa } }` })
-        .set('x-api-key', 'graphql')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'graphql');
 
       expect(res).have.status(200);
     });
@@ -62,9 +60,8 @@ describe('Test: auth service in graphql service', () => {
     it('Should do graphql request', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa, best_oa_location { license } } }` })
-        .set('x-api-key', 'restrictedUser')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa, best_oa_location { license } } }` })
+        .set('x-api-key', 'restrictedUser');
 
       expect(res).have.status(200);
     });
@@ -74,8 +71,7 @@ describe('Test: auth service in graphql service', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa } }` })
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa } }` });
 
       expect(res).have.status(200);
       expect(res?.body.errors[0].message).eq('Not authorized');
@@ -86,9 +82,8 @@ describe('Test: auth service in graphql service', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa } }` })
-        .set('x-api-key', 'wrong apikey')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'wrong apikey');
 
       expect(res).have.status(200);
       expect(res?.body.errors[0].message).eq('Not authorized');
@@ -99,9 +94,8 @@ describe('Test: auth service in graphql service', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa } }` })
-        .set('x-api-key', 'enrich')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'enrich');
 
       expect(res).have.status(200);
       expect(res?.body.errors[0].message).eq('Not authorized');
@@ -112,9 +106,8 @@ describe('Test: auth service in graphql service', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa } }` })
-        .set('x-api-key', 'update')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'update');
 
       expect(res).have.status(200);
       expect(res?.body.errors[0].message).eq('Not authorized');
@@ -125,9 +118,8 @@ describe('Test: auth service in graphql service', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa } }` })
-        .set('x-api-key', 'notAllowed')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa } }` })
+        .set('x-api-key', 'notAllowed');
 
       expect(res).have.status(200);
       expect(res?.body.errors[0].message).eq('Not authorized');
@@ -138,9 +130,8 @@ describe('Test: auth service in graphql service', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa, oa_status } }` })
-        .set('x-api-key', 'restrictedUser')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa, oa_status } }` })
+        .set('x-api-key', 'restrictedUser');
 
       expect(res).have.status(200);
       expect(res?.body.errors[0].message).eq('You don\'t have access to oa_status');
@@ -151,9 +142,8 @@ describe('Test: auth service in graphql service', () => {
     it('Should return a error message', async () => {
       const res = await chai.request(graphqlURL)
         .get('/graphql')
-        .query({ query: `{ GetByDOI(dois:["${doi1}"]) { doi, is_oa, best_oa_location { license }, first_oa_location { license } } }` })
-        .set('x-api-key', 'restrictedUser')
-        .set('index', 'unpaywall-test');
+        .query({ query: `{ unpaywall(dois:["${doi1}"]) { doi, is_oa, best_oa_location { license }, first_oa_location { license } } }` })
+        .set('x-api-key', 'restrictedUser');
 
       expect(res).have.status(200);
       expect(res?.body.errors[0].message).eq('You don\'t have access to first_oa_location.license');

@@ -1,10 +1,9 @@
 /* eslint-disable no-param-reassign */
 const path = require('path');
 const fs = require('fs-extra');
+const { paths } = require('config');
 
 const logger = require('../logger');
-
-const stateDir = path.resolve(__dirname, '..', '..', 'data', 'states');
 
 /**
  * Create a new State in file on folder data/state/<apikey>/<id>.json
@@ -17,9 +16,10 @@ const stateDir = path.resolve(__dirname, '..', '..', 'data', 'states');
  */
 async function createState(id, apikey) {
   const filename = `${id}.json`;
-  const filenamePath = path.resolve(stateDir, apikey, filename);
+  const filenamePath = path.resolve(paths.data.statesDir, apikey, filename);
 
   const state = {
+    id,
     path: filenamePath,
     filename,
     apikey,
@@ -32,7 +32,7 @@ async function createState(id, apikey) {
     error: false,
   };
 
-  const dir = path.resolve(stateDir, apikey);
+  const dir = path.resolve(paths.data.statesDir, apikey);
 
   const exist = await fs.exists(dir);
 
@@ -58,7 +58,7 @@ async function createState(id, apikey) {
  * @returns {Promise<Object>} State of enrich process in JSON format.
  */
 async function getState(filename, apikey) {
-  const filenamePath = path.resolve(stateDir, apikey, filename);
+  const filenamePath = path.resolve(paths.data.statesDir, apikey, filename);
 
   let state;
 
@@ -82,8 +82,7 @@ async function getState(filename, apikey) {
 /**
  * Write the latest version of the state of enrich process to the file.
  *
- * @param {Object} state - State in JSON format.
- * @param {string} filename - State filename.
+ * @param {Object} state - State of job.
  *
  * @returns {Promise<void>}
  */
@@ -99,12 +98,12 @@ async function updateStateInFile(state) {
 /**
  * Update the state of enrich process when there is an error.
  *
- * @param {string} filename - State filename.
- * @param {string} apikey - Apikey of user.
+ * @param {Object} state - State of job.
  *
  * @returns {Promise<void>}
  */
 async function fail(state) {
+  logger.info(`[state]: job fail with id [${state.id}]`);
   state.done = true;
   state.endAt = new Date();
   state.error = true;

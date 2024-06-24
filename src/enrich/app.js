@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs-extra');
-const path = require('path');
 const cors = require('cors');
+const { paths } = require('config');
 
 const logger = require('./lib/logger');
 const morgan = require('./lib/morgan');
@@ -17,17 +17,14 @@ const routerFile = require('./lib/routers/file');
 const routerState = require('./lib/routers/state');
 const routerOpenapi = require('./lib/routers/openapi');
 
-const dataDir = path.resolve(__dirname, 'data');
+// create data directory
+fs.ensureDir(paths.data.enrichedDir);
+fs.ensureDir(paths.data.statesDir);
+fs.ensureDir(paths.data.uploadDir);
 
-fs.ensureDir(path.resolve(dataDir));
-fs.ensureDir(path.resolve(dataDir, 'states'));
-fs.ensureDir(path.resolve(dataDir, 'upload'));
-fs.ensureDir(path.resolve(dataDir, 'enriched'));
-
-const logDir = path.resolve(__dirname, 'log');
-fs.ensureDir(path.resolve(logDir));
-fs.ensureDir(path.resolve(logDir, 'application'));
-fs.ensureDir(path.resolve(logDir, 'access'));
+// create log directory
+fs.ensureDir(paths.log.applicationDir);
+fs.ensureDir(paths.log.accessDir);
 
 const app = express();
 app.use(morgan);

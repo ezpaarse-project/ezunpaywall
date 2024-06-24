@@ -30,13 +30,13 @@ const globalMetrics = computed(() => [
     name: 'doi',
     title: 'home.referencedResources',
     text: 'home.referencedResourceHelp',
-    count: props.doi.toLocaleString($i18n.locale, { useGrouping: true }),
+    count: props.doi.toLocaleString($i18n.locale.value, { useGrouping: true }),
   },
   {
     name: 'isOA',
     title: 'home.openAccess',
     text: 'home.openAccessHelp',
-    count: props.isOA.toLocaleString($i18n.locale, { useGrouping: true }),
+    count: props.isOA.toLocaleString($i18n.locale.value, { useGrouping: true }),
   },
 ]);
 

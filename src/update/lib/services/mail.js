@@ -1,12 +1,34 @@
 const axios = require('axios');
 const config = require('config');
 
+const logger = require('../logger');
+
 const apikey = config.get('mail.apikey');
 
 const mail = axios.create({
   baseURL: config.get('mail.host'),
 });
 mail.host = config.get('mail.host');
+
+/**
+ * Ping mail service.
+ *
+ * @returns {Promise<boolean>} healthy or not.
+ */
+async function pingMail() {
+  let res;
+  try {
+    res = await mail({
+      method: 'GET',
+      url: '/ping',
+    });
+  } catch (err) {
+    logger.error('[mail] Cannot ping mail', err);
+    return err?.message;
+  }
+  if (res?.status === 204) return true;
+  return false;
+}
 
 /**
  * Send update mail report.
@@ -67,6 +89,7 @@ function sendMailNoChangefile(startDate, endDate) {
 }
 
 module.exports = {
+  pingMail,
   sendMailUpdateReport,
   sendMailUpdateStarted,
   sendMailNoChangefile,

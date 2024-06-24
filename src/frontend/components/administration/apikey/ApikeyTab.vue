@@ -49,11 +49,6 @@
         </template>
         {{ t("administration.apikey.create") }}
       </v-tooltip>
-      <CreateDialog
-        v-model="createDialogVisible"
-        @created="getApikeys()"
-        @closed="createDialogVisible = false"
-      />
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
@@ -66,7 +61,10 @@
         {{ t("administration.apikey.reload") }}
       </v-tooltip>
     </v-toolbar>
-
+    <SearchBar
+      v-model="searchValue"
+      @update:model-value="updateSearchValue"
+    />
     <v-row
       v-if="loading"
       align="center"
@@ -76,7 +74,7 @@
       <Loader />
     </v-row>
     <NoData
-      v-else-if="!apikeys || apikeys.length === 0"
+      v-else-if="!apikeysFiltered || apikeysFiltered.length === 0"
       :text="t('administration.apikey.noApikeys')"
     />
     <v-row
@@ -84,7 +82,7 @@
       class="ma-2"
     >
       <v-col
-        v-for="(key) in apikeys"
+        v-for="(key) in apikeysFiltered"
         :key="key.apikey"
         cols="12"
         sm="12"
@@ -95,11 +93,34 @@
         <ApikeyCard
           :apikey="key.apikey"
           :config="key.config"
-          @deleted="getApikeys()"
-          @updated="getApikeys()"
+          @click:delete="openDeleteDialog(key.apikey)"
+          @click:update="openUpdateDialog(key.apikey)"
         />
       </v-col>
     </v-row>
+    <UpdateDialog
+      v-model="updateDialogVisible"
+      v-model:apikey="selectedApikey"
+      v-model:name="selectedName"
+      v-model:description="selectedDescription"
+      v-model:owner="selectedOwner"
+      v-model:access="selectedAccess"
+      v-model:attributes="selectedAttributes"
+      v-model:allowed="selectedAllowed"
+      @closed="setUpdateDialogVisible(false)"
+      @updated="getApikeys()"
+    />
+    <DeleteDialog
+      v-model="deleteDialogVisible"
+      :apikey="selectedApikey"
+      @closed="setDeleteDialogVisible(false)"
+      @deleted="getApikeys()"
+    />
+    <CreateDialog
+      v-model="createDialogVisible"
+      @created="getApikeys()"
+      @closed="createDialogVisible = false"
+    />
   </v-card>
 </template>
 
@@ -110,7 +131,10 @@ import { storeToRefs } from 'pinia';
 import { useSnacksStore } from '@/store/snacks';
 import { useAdminStore } from '@/store/admin';
 
+import SearchBar from '@/components/administration/apikey/SearchBar.vue';
 import CreateDialog from '@/components/administration/apikey/CreateDialog.vue';
+import DeleteDialog from '@/components/administration/apikey/DeleteDialog.vue';
+import UpdateDialog from '@/components/administration/apikey/UpdateDialog.vue';
 import ImportDialog from '@/components/administration/apikey/ImportDialog.vue';
 import ExportDialog from '@/components/administration/apikey/ExportDialog.vue';
 import Loader from '@/components/skeleton/Loader.vue';
@@ -125,10 +149,35 @@ const { $apikey } = useNuxtApp();
 const { password } = storeToRefs(adminStore);
 
 const loading = ref(false);
+
+const searchValue = ref('');
+
 const createDialogVisible = ref(false);
+const updateDialogVisible = ref(false);
+const deleteDialogVisible = ref(false);
 const importDialogVisible = ref(false);
 const exportDialogVisible = ref(false);
+
+// TODO, use one ref
+const selectedApikey = ref('');
+const selectedName = ref('');
+const selectedDescription = ref('');
+const selectedOwner = ref('');
+const selectedAccess = ref([]);
+const selectedAttributes = ref([]);
+const selectedAllowed = ref(false);
 const apikeys = ref([]);
+
+const apikeysFiltered = computed(() => {
+  let filteredAPIkeys = apikeys.value;
+  if (searchValue.value) {
+    filteredAPIkeys = apikeys.value.filter(
+      (key) => key.apikey.includes(searchValue.value),
+    );
+    return filteredAPIkeys;
+  }
+  return apikeys.value;
+});
 
 async function getApikeys() {
   let res;
@@ -148,6 +197,28 @@ async function getApikeys() {
   }
   loading.value = false;
   apikeys.value = res?.data;
+}
+
+async function openUpdateDialog(id) {
+  const apikey = apikeys.value.find((e) => e.apikey === id);
+  selectedApikey.value = id;
+  selectedName.value = apikey.config.name;
+  selectedDescription.value = apikey.config.description;
+  selectedOwner.value = apikey.config.owner;
+  selectedAccess.value = apikey.config.access;
+  selectedAttributes.value = apikey.config.attributes;
+  selectedAllowed.value = apikey.config.allowed;
+  await nextTick();
+  updateDialogVisible.value = true;
+}
+
+async function openDeleteDialog(id) {
+  selectedApikey.value = id;
+  deleteDialogVisible.value = true;
+}
+
+function updateSearchValue(newValue) {
+  searchValue.value = newValue;
 }
 
 onMounted(() => {

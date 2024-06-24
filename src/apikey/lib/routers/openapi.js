@@ -1,10 +1,9 @@
 const router = require('express').Router();
-
-const openapi = require('../../openapi.json');
+const path = require('path');
 
 /**
- * Route that give the openapi.json file.
+ * Route that give the openapi.yml file.
  */
-router.get('/openapi.json', (req, res) => res.status(200).json(openapi));
+router.get('/openapi.yml', (req, res) => res.sendFile(path.resolve(__dirname, '..', '..', 'openapi.yml')));
 
 module.exports = router;

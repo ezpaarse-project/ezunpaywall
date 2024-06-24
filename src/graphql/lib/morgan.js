@@ -3,9 +3,9 @@ const fs = require('fs-extra');
 const rfs = require('rotating-file-stream');
 const path = require('path');
 const { format } = require('date-fns');
-const { accessLogRotate } = require('config');
+const { nodeEnv, paths, accessLogRotate } = require('config');
 
-const accessLogDir = path.resolve(__dirname, '..', 'log', 'access');
+const isProd = (nodeEnv === 'production');
 
 /**
  * Get the name of access file.
@@ -24,10 +24,10 @@ let accessLogStream;
 if (accessLogRotate) {
   accessLogStream = rfs.createStream(logFilename, {
     interval: '1d', // rotate daily
-    path: accessLogDir,
+    path: paths.log.accessDir,
   });
 } else {
-  accessLogStream = fs.createWriteStream(path.resolve(accessLogDir, 'access.log'), { flags: 'a+' });
+  accessLogStream = fs.createWriteStream(path.resolve(paths.log.accessDir, 'access.log'), { flags: 'a+' });
 }
 
 morgan.token('ip', (req) => req.headers['x-forwarded-for'] || req.connection.remoteAddress);
@@ -42,4 +42,4 @@ morgan.token('countDOI', (req) => {
   return '-';
 });
 
-module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"', { stream: accessLogStream });
+module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"', { stream: isProd ? accessLogStream : process.stdout });

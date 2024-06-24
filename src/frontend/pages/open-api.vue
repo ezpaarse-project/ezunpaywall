@@ -20,8 +20,10 @@
 <script setup>
 
 import OpenApi from '@/components/openapi/OpenApi.vue';
+import { useRoute } from 'vue-router';
 
 const runtimeConfig = useRuntimeConfig();
+const route = useRoute();
 
 const tab = ref(0);
 const items = ref([
@@ -41,6 +43,16 @@ const host = computed(() => {
   if (tab.value === 4) { return runtimeConfig.public.mailHost; }
   if (tab.value === 5) { return runtimeConfig.public.healthHost; }
   return runtimeConfig.public.graphqlHost;
+});
+
+onMounted(() => {
+  const presSelectionedDoc = route?.query?.doc;
+  if (presSelectionedDoc === 'graphql') { tab.value = 0; }
+  if (presSelectionedDoc === 'enrich') { tab.value = 1; }
+  if (presSelectionedDoc === 'update') { tab.value = 2; }
+  if (presSelectionedDoc === 'apikey') { tab.value = 3; }
+  if (presSelectionedDoc === 'mail') { tab.value = 4; }
+  if (presSelectionedDoc === 'health') { tab.value = 5; }
 });
 
 </script>

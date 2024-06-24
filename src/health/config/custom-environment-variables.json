@@ -11,10 +11,6 @@
     "user": "ELASTICSEARCH_USERNAME",
     "password": "ELASTICSEARCH_PASSWORD"
   },
-  "unpaywall": {
-    "host": "UNPAYWALL_HOST",
-    "apikey": "UNPAYWALL_APIKEY"
-  },
   "redis":  {
     "host": "REDIS_HOST",
     "port": "REDIS_PORT",

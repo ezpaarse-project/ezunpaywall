@@ -10,7 +10,7 @@
         dark
       >
         <v-toolbar-title>
-          {{ t('administration.update.title') }}
+          {{ t('administration.job.title') }}
         </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
@@ -24,18 +24,34 @@
               v-model="interval"
               class="mt-4"
               :items="intervals"
-              :label="t('administration.update.interval')"
+              :label="t('administration.job.interval')"
+            />
+            <v-text-field
+              v-if="props.type === 'unpaywall'"
+              v-model="indexBase"
+              :label="t('administration.job.index')"
             />
             <v-text-field
               v-model="startDate"
-              :label="t('administration.update.startDate')"
+              :label="t('administration.job.startDate')"
               :rules="[dateFormatRule, dateIsFutureRule]"
               autofocus
             />
             <v-text-field
+              v-if="props.type === 'unpaywall'"
               v-model="endDate"
-              :label="t('administration.update.endDate')"
+              :label="t('administration.job.endDate')"
               :rules="[dateFormatRule, dateIsFutureRule]"
+            />
+            <v-text-field
+              v-if="props.type === 'unpaywallHistory'"
+              v-model="indexBase"
+              :label="t('administration.job.indexBase')"
+            />
+            <v-text-field
+              v-if="props.type === 'unpaywallHistory'"
+              v-model="indexHistory"
+              :label="t('administration.job.indexHistory')"
             />
           </v-form>
         </v-container>
@@ -97,35 +113,74 @@ function formatDate(date) {
 const value = ref('false');
 const valid = ref(true);
 const loading = ref(false);
-const interval = ref('day');
 const intervals = ref(['day', 'week']);
-const startDate = ref(formatDate(new Date()));
-const endDate = ref(formatDate(new Date()));
 
 const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 
-const dateFormatRule = ref((date) => dateRegex.test(date) || 'porrr');
-const dateIsFutureRule = ref((date) => Date.now() > new Date(date) || t('administration.update.future'));
+const dateFormatRule = ref((date) => dateRegex.test(date) || t('administration.job.invalidDate'));
+const dateIsFutureRule = ref((date) => Date.now() > new Date(date) || t('administration.job.future'));
+
+const props = defineProps({
+  type: { type: String, default: 'unpaywall' },
+});
+
+const interval = ref('day');
+const indexBase = ref('unpaywall_base');
+const indexHistory = ref('unpaywall_history');
+const startDate = ref(formatDate(new Date()));
+const endDate = ref(formatDate(new Date()));
+
+function startUpdatePeriod(data) {
+  return $update({
+    method: 'POST',
+    url: '/job/period',
+    data,
+    headers: {
+      'X-API-KEY': password.value,
+    },
+  });
+}
+
+function startUpdateHistory(data) {
+  return $update({
+    method: 'POST',
+    url: '/job/history',
+    data,
+    headers: {
+      'X-API-KEY': password.value,
+    },
+  });
+}
 
 async function startUpdate() {
   loading.value = true;
-  try {
-    await $update({
-      method: 'POST',
-      url: '/job/period',
-      data: {
-        interval: interval.value,
-        startDate: startDate.value,
-        endDate: endDate.value,
-      },
-      headers: {
-        'X-API-KEY': password.value,
-      },
-    });
-  } catch (err) {
-    snackStore.error(t('error.update.start'));
-    loading.value = false;
-    return;
+  let data;
+  if (props.type === 'unpaywall') {
+    data = {
+      index: indexBase.value,
+      interval: interval.value,
+      startDate: startDate.value,
+      endDate: endDate.value,
+    };
+    try {
+      await startUpdatePeriod(data);
+    } catch (err) {
+      snackStore.error(t('error.update.start'));
+      loading.value = false;
+    }
+  }
+  if (props.type === 'unpaywallHistory') {
+    data = {
+      indexBase: indexBase.value,
+      indexHistory: indexHistory.value,
+      interval: interval.value,
+    };
+    try {
+      await startUpdateHistory(data);
+    } catch (err) {
+      snackStore.error(t('error.update.start'));
+      loading.value = false;
+    }
   }
   loading.value = false;
   snackStore.info(t('info.update.started'));

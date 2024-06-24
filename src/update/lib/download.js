@@ -2,6 +2,9 @@ const path = require('path');
 const fs = require('fs-extra');
 const { Readable } = require('stream');
 const { format } = require('date-fns');
+const { setTimeout } = require('node:timers/promises');
+const { paths } = require('config');
+
 const logger = require('./logger');
 
 const {
@@ -10,14 +13,12 @@ const {
   addStepDownload,
   fail,
   updateLatestStep,
-} = require('./models/state');
+} = require('./state');
 
 const {
   getSnapshot,
   getChangefile,
 } = require('./services/unpaywall');
-
-const snapshotsDir = path.resolve(__dirname, '..', 'data', 'snapshots');
 
 /**
  * Update the step the percentage in download regularly until the download is complete.
@@ -34,11 +35,12 @@ async function updatePercentStepDownload(filepath, size, start) {
     return;
   }
   const step = getLatestStep();
+  logger.debug(`[job][download]: Percent of step: ${step.percent}`);
   let bytes;
   try {
     bytes = await fs.stat(filepath);
   } catch (err) {
-    logger.error(`[job: download] Cannot stat [${filepath}]`, err);
+    logger.error(`[job][download]: Cannot stat [${filepath}]`, err);
     return;
   }
   if (bytes?.size >= size) {
@@ -47,7 +49,7 @@ async function updatePercentStepDownload(filepath, size, start) {
   step.took = (new Date() - start) / 1000;
   step.percent = ((bytes.size / size) * 100).toFixed(2);
   updateLatestStep(step);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await setTimeout(1000);
   updatePercentStepDownload(filepath, size, start);
 }
 
@@ -68,20 +70,22 @@ async function download(file, filepath, size) {
       const writeStream = file.pipe(fs.createWriteStream(filepath));
 
       const start = new Date();
-      // update the percentage of the download step in parallel
-      updatePercentStepDownload(filepath, size, start);
+      writeStream.on('ready', async () => {
+        // update the percentage of the download step in parallel
+        updatePercentStepDownload(filepath, size, start);
+      });
 
       writeStream.on('finish', async () => {
         step.status = 'success';
         step.took = (new Date() - start) / 1000;
         step.percent = 100;
         updateLatestStep(step);
-        logger.info('[job: download] File download completed');
+        logger.info('[job][download]: File download completed');
         return resolve();
       });
 
       writeStream.on('error', async (err) => {
-        logger.error('[job: download] Error on stream', err);
+        logger.error('[job][download]: Error on stream', err);
         await fail(err);
         return reject(err);
       });
@@ -104,12 +108,12 @@ async function download(file, filepath, size) {
 async function downloadChangefile(info, interval) {
   let stats;
 
-  const filepath = path.resolve(snapshotsDir, info.filename);
+  const filePath = path.resolve(paths.data.snapshotsDir, info.filename);
 
-  const alreadyInstalled = await fs.pathExists(filepath);
-  if (alreadyInstalled) stats = await fs.stat(filepath);
+  const alreadyInstalled = await fs.pathExists(filePath);
+  if (alreadyInstalled) stats = await fs.stat(filePath);
   if (alreadyInstalled && stats.size === info.size) {
-    logger.info(`[job: download] File [${info.filename}] is already installed`);
+    logger.info(`[job][download]: File [${info.filename}] is already installed`);
     return true;
   }
 
@@ -130,7 +134,7 @@ async function downloadChangefile(info, interval) {
   const changefile = res.data;
   const { size } = info;
 
-  await download(changefile, filepath, size);
+  await download(changefile, filePath, size);
   return true;
 }
 
@@ -141,7 +145,7 @@ async function downloadChangefile(info, interval) {
  */
 async function downloadBigSnapshot() {
   const filename = `snapshot-${format(new Date(), 'yyyy-MM-dd')}.jsonl.gz`;
-  const filepath = path.resolve(snapshotsDir, filename);
+  const filepath = path.resolve(paths.data.snapshotsDir, filename);
 
   addStepDownload();
   const step = getLatestStep();

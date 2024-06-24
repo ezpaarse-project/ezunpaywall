@@ -65,8 +65,7 @@
     "settings": "Attributs unpaywall à récuperer",
     "request": "Requête GraphQL",
     "start": "Lancer la requête",
-    "result": "Résultat",
-    "linkAPI": "Voir sur l'API"
+    "result": "Résultat"
   },
   "administration": {
     "title": "Administration",
@@ -74,6 +73,12 @@
     "login": "Connexion",
     "logout": "Deconnexion",
     "password": "Mot de passe",
+    "elastic": {
+      "title": "Informations sur elastic",
+      "noInfo": "Aucune informations sur elastic",
+      "reload": "Recharger les informations sur elastic",
+      "documents": "documents"
+    },
     "health": {
       "title": "État des services",
       "reload": "Recharger les états de santé",
@@ -101,19 +106,24 @@
       "delete": "Suppression de la clé d'API",
       "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)"
     },
-    "update" : {
+    "job" : {
       "title": "Lancement d'une mise à jour",
       "future": "La date est après aujourd'hui",
-      "invalidDate": "La date est au mauvais format",
+      "invalidDate": "La date est au mauvais format (YYYY-mm-dd)",
       "interval": "Intervalle",
       "startDate": "Date de début",
-      "endDate": "Date de fin"
+      "endDate": "Date de fin",
+      "index": "Index elastic pour les données unpaywall",
+      "indexBase": "Index elastic pour les données unpaywall basique",
+      "indexHistory": "Index elastic pour les données unpaywall historique"
     },
     "cron": {
-      "title": "Config de la cron de mise à jour des données Unpaywall",
+      "title": "Config de la cron de mise à jour des données",
       "interval": "Intervalle",
       "schedule": "Periode (format de cron)",
-      "index": "Index elastic",
+      "index": "Index elastic pour les données unpaywall",
+      "indexBase": "Index elastic pour les données unpaywall basique",
+      "indexHistory": "Index elastic pour les données unpaywall historique",
       "active": "Active"
     }
   },
@@ -170,8 +180,9 @@
     "total": "au total"
   },
   "status": {
-    "inUpdate": "Mise à jour en cours : {latestTaskName} - {percent}%",
-    "noInUpdate": "Les données sont à jour"
+    "inUpdate": "Mise à jour en cours : {task} - {percent}% pour le fichier {file}",
+    "noInUpdate": "Les données sont à jour",
+    "error": "Impossible de récupérer le status"
   },
   "state": {
     "createdAt": "Crée le",
@@ -196,7 +207,7 @@
     "contact": "Nous contacter",
     "administration": "Administration"
   },
-  "reportHistory": {
+  "reports": {
     "title": "Dernières mises à jour",
     "reloadReports": "Recharger les rapports",
     "reload": "Recharger l'historique des mises à jour",
@@ -213,6 +224,10 @@
   },
   "error": {
     "default": "Une erreur est survenue",
+    "elastic": {
+      "aliases": "Impossible de récuperer les alias",
+      "indices": "Impossible de récuperer les index"
+    },
     "enrich": {
       "manyFile": "Le nombre de fichier autorisé est de 1",
       "typeOfFile": "Seuls les fichiers .csv et .jsonl sont autorisés",
@@ -274,9 +289,6 @@
       "copyResult": "Résultat copié",
       "copyRequest": "Requête GraphQL copié"
     },
-    "administration": {
-      "login": "Connexion réussie"
-    },
     "contact": {
       "mailSent": "Votre demande vient d'être envoyée à l'équipe."
     },
@@ -286,6 +298,7 @@
       "stopped": "La cron de mise à jour a été arrêter"
     }
   },
+  "search": "Rechercher",
   "edit": "Modifier",
   "delete": "Supprimer",
   "download": "Télécharger",

@@ -16,7 +16,7 @@
             color="secondary"
             text-color="white"
           >
-            {{ apikey }}
+            {{ props.apikey }}
           </v-chip>
         </v-toolbar-title>
       </v-toolbar>

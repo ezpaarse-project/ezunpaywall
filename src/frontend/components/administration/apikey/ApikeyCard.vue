@@ -33,7 +33,7 @@
     </v-card-title>
 
     <v-card-subtitle class="pb-0">
-      {{ apikey }}
+      {{ props.apikey }}
     </v-card-subtitle>
 
     <v-divider class="ma-2" />
@@ -43,19 +43,21 @@
         <v-icon class="mr-3">
           mdi-account-circle
         </v-icon>
-        {{ t("administration.apikey.ownerValue", { owner: config.owner }) }}
+        {{ t("administration.apikey.ownerValue", { owner: props.config.owner }) }}
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-text-account
         </v-icon>
-        {{ t("administration.apikey.descriptionValue", { description: config.description }) }}
+        {{ t("administration.apikey.descriptionValue", { description: props.config.description }) }}
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
           mdi-calendar-account-outline
         </v-icon>
-        <span> {{ t("administration.apikey.createdAtValue", { date: config.createdAt }) }} </span>
+        <span>
+          {{ t("administration.apikey.createdAtValue", { date: props.config.createdAt }) }}
+        </span>
       </v-list-item>
       <v-list-item style="min-height: 32px">
         <v-icon class="mr-3">
@@ -96,39 +98,23 @@
     <v-card-actions>
       <v-btn
         text
-        @click.stop="setUpdateDialogVisible(true)"
+        @click.stop="emit('click:update', props.apikey);"
       >
         <span> {{ t("edit") }} </span>
       </v-btn>
-      <UpdateDialog
-        v-model="updateDialogVisible"
-        :apikey="props.apikey"
-        :config="config"
-        @closed="setUpdateDialogVisible(false)"
-        @updated="emitUpdated()"
-      />
       <v-spacer />
       <v-btn
         class="red--text"
         text
-        @click.stop="setDeleteDialogVisible(true)"
+        @click.stop="emit('click:delete', props.apikey)"
       >
         <span> {{ t("delete") }} </span>
       </v-btn>
-      <DeleteDialog
-        v-model="deleteDialogVisible"
-        :apikey="props.apikey"
-        @closed="setDeleteDialogVisible(false)"
-        @deleted="emitDeleted()"
-      />
     </v-card-actions>
   </v-card>
 </template>
 
 <script setup>
-
-import DeleteDialog from '@/components/administration/apikey/DeleteDialog.vue';
-import UpdateDialog from '@/components/administration/apikey/UpdateDialog.vue';
 
 const { t } = useI18n();
 
@@ -138,24 +124,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits({
-  updated: () => true,
-  deleted: () => true,
+  'click:update': (apikey) => !!apikey,
+  'click:delete': (apikey) => !!apikey,
 });
-
-const updateDialogVisible = ref(false);
-const deleteDialogVisible = ref(false);
-
-function setUpdateDialogVisible(value) {
-  updateDialogVisible.value = value;
-}
-function emitUpdated() {
-  emit('updated');
-}
-function setDeleteDialogVisible(value) {
-  deleteDialogVisible.value = value;
-}
-function emitDeleted() {
-  emit('deleted');
-}
 
 </script>

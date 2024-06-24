@@ -1,4 +1,4 @@
-const { getState } = require('../models/state');
+const { getState } = require('../state');
 
 /**
  * Controller to get the state of update.

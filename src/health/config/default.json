@@ -11,14 +11,17 @@
     "user": "elastic",
     "password": "changeme"
   },
-  "unpaywall": {
-    "host": "http://fakeUnpaywall:3000",
-    "apikey": "default"
-  },
   "redis":  {
     "host": "redis",
     "port": "6379",
     "password": "changeme"
+  },
+  "paths": {
+    "log": {
+      "applicationDir": "./log/application", 
+      "accessDir": "./log/access",
+      "healthCheckDir": "./log/healthcheck"
+    }
   },
   "healthTimeout": 3000
 }

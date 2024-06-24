@@ -1,59 +1,92 @@
-const { format, subDays } = require('date-fns');
+const { CronJob } = require('cron');
+const { timezone } = require('config');
 
-const Cron = require('./models/cron');
+const logger = require('./logger');
 
-const { insertChangefilesOnPeriod } = require('./job');
+class Cron {
+  /**
+   * @constructor
+   *
+   * @param {string} name - Name of cron.
+   * @param {string} schedule - Schedule of cron.
+   * @param {function} task - Function that will be executed by the cron.
+   * @param {boolean} active - Indicates whether it is active or not.
+   */
+  constructor(name, schedule, task, active) {
+    this.name = name;
+    this.schedule = schedule;
+    this.task = task;
+    this.active = active;
+    this.process = new CronJob(schedule, this.task, null, false, timezone);
+    if (active) {
+      this.start();
+    }
+  }
 
-const updateConfig = {
-  index: 'unpaywall',
-  interval: 'day',
-};
+  get config() {
+    return {
+      name: this.name,
+      schedule: this.schedule,
+      active: this.active,
+    };
+  }
 
-/**
- * Starts an update daily process if no update process is started.
- *
- * @returns {Promise<void>}
- */
-async function task() {
-  const week = (updateConfig.interval === 'week');
-  const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
-  const endDate = format(new Date(), 'yyyy-MM-dd');
-  await insertChangefilesOnPeriod({
-    index: updateConfig.index,
-    interval: updateConfig.interval,
-    startDate,
-    endDate,
-    offset: 0,
-    limit: -1,
-  });
+  /**
+   * Set new task for cron.
+   *
+   * @param {function} task - Function that will be executed by the cron.
+   */
+  setTask(task) {
+    this.process.stop();
+    this.task = task;
+    logger.info(`[cron][${this.name}]: task updated`);
+    this.process = new CronJob(this.schedule, this.task, null, false, timezone);
+    if (this.active) this.process.start();
+  }
+
+  /**
+   * Set new schedule for cron.
+   *
+   * @param {string} schedule - Schedule of cron.
+   */
+  setSchedule(schedule) {
+    this.process.stop();
+    this.schedule = schedule;
+    logger.info(`[cron][${this.name}]: schedule is updated [${this.schedule}]`);
+    this.process = new CronJob(this.schedule, async () => {
+      await this.task();
+    }, null, false, timezone);
+    if (this.active) this.process.start();
+  }
+
+  /**
+   * Make active to true.
+   */
+  start() {
+    try {
+      this.process.start();
+      logger.info(`[cron][${this.name}]: started`);
+      logger.info(`[cron][${this.name}] schedule [${this.schedule}]`);
+    } catch (err) {
+      logger.error(`[cron][${this.name}]: Cannot start`, err);
+      return;
+    }
+    this.active = true;
+  }
+
+  /**
+   * Make active to false.
+   */
+  stop() {
+    try {
+      this.process.stop();
+      logger.info(`[cron][${this.name}]: stopped`);
+    } catch (err) {
+      logger.error(`[cron][${this.name}]: Cannot stop`, err);
+      return;
+    }
+    this.active = false;
+  }
 }
 
-const cron = new Cron('update', '0 0 0 * * *', task);
-
-/**
- * Update config of update process and config of cron.
- *
- * @param {Object} config - Global config.
- */
-function update(config) {
-  if (config.time) updateConfig.time = config.time;
-  if (config.index) updateConfig.index = config.index;
-  if (config.interval) updateConfig.interval = config.interval;
-
-  cron.setTask(task);
-}
-
-/**
- * Get config of update process and config of cron.
- * @returns {Object} Config of update process and config of cron.
- */
-function getGlobalConfig() {
-  const config = cron.getConfig();
-  return { ...config, ...updateConfig };
-}
-
-module.exports = {
-  getGlobalConfig,
-  update,
-  cron,
-};
+module.exports = Cron;

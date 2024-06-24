@@ -1,12 +1,13 @@
 const unpaywall = require('./unpaywall');
-const GetByDOI = require('./getByDOI');
+const unpaywallHistory = require('./unpaywallHistory');
 const metrics = require('./metrics');
 const dailyMetrics = require('./dailyMetrics');
 
 const resolvers = {
   Query: {
     unpaywall,
-    GetByDOI,
+    unpaywallHistory,
+    GetByDOI: unpaywall,
     metrics,
     dailyMetrics,
   },

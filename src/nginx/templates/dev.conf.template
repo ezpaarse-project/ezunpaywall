@@ -1,0 +1,52 @@
+server {
+  server_name ${NGINX_HOST};
+
+  client_max_body_size 500M;
+
+  listen 80;
+  listen [::]:80;
+
+  ## Configuration
+  proxy_set_header X-Forwarded-Host $host;
+  proxy_set_header X-Forwarded-Server $host;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_hide_header X-Powered-By;
+
+  location /api {
+    rewrite ^/api(/.*)$ $1 break;
+    proxy_pass ${GRAPHQL_HOST};
+  }
+
+  location /api/update {
+    rewrite ^/api/update(/.*)$ $1 break;
+    proxy_pass ${UPDATE_HOST};
+  }
+
+  location /api/enrich {
+    rewrite ^/api/enrich(/.*)$ $1 break;
+    proxy_pass ${ENRICH_HOST};
+  }
+
+  location /api/apikey {
+    rewrite ^/api/apikey(/.*)$ $1 break;
+    proxy_pass ${APIKEY_HOST};
+  }
+
+  location /api/mail {
+    rewrite ^/api/mail(/.*)$ $1 break;
+    proxy_pass ${MAIL_HOST};
+  }
+
+  location /api/health {
+    rewrite ^/api/health(/.*)$ $1 break;
+    proxy_pass ${HEALTH_HOST};
+  }
+
+  ## client
+  location / {
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    proxy_pass ${FRONTEND_HOST};
+  }
+}

@@ -1,15 +1,27 @@
 <template>
   <div>
-    {{ t('graphql.request') }}
-    <v-textarea
-      outlined
-      readonly
-      label="query"
-      :model-value="query"
-      rows="4"
-      append-icon="mdi-content-copy"
-      @click:append="copyText()"
-    />
+    <v-card-text>
+      {{ t('graphql.request') }}
+      <v-row justify="center">
+        <v-col class="flex-grow-1 flex-shrink-0">
+          <v-textarea
+            outlined
+            readonly
+            label="query"
+            :model-value="query"
+            rows="4"
+          />
+        </v-col>
+        <v-col class="flex-grow-0 flex-shrink-1 text-center pa-0">
+          <v-btn
+            icon="mdi-content-copy"
+            variant="plain"
+            class="ma-0"
+            @click="copyText()"
+          />
+        </v-col>
+      </v-row>
+    </v-card-text>
     <v-card-actions>
       <v-spacer />
       <RequestButton
