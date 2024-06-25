@@ -5,7 +5,7 @@ const { Client } = require('@elastic/elasticsearch');
 const { URL } = require('url');
 const { elasticsearch } = require('config');
 const { nodeEnv } = require('config');
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 const isProd = (nodeEnv === 'production');
 

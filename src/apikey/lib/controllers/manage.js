@@ -1,7 +1,7 @@
 const apikeyService = require('../services/apikeys');
 
 const { redisClient, load } = require('../services/redis');
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 /**
  * Controller to get config of apikey.

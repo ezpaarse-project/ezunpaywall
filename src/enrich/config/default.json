@@ -1,6 +1,7 @@
 { 
   "nodeEnv": "development",
   "accessLogRotate": false,
+  "healthcheckLogRotate": false,
   "timezone": "Europe/Paris",
   "redis": {
     "host": "redis",
@@ -13,7 +14,8 @@
   "paths": {
     "log": {
       "applicationDir": "./log/application", 
-      "accessDir": "./log/access"
+      "accessDir": "./log/access",
+      "healthCheckDir": "./log/healthcheck"
     },
     "data": {
       "enrichedDir": "./data/enriched",

@@ -3,9 +3,9 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const {
-  deleteFile,
-  updateChangeFile,
-} = require('./utils/snapshot');
+  deleteChangefile,
+  updateChangefile,
+} = require('./utils/changefile');
 
 const {
   deleteIndex,
@@ -23,17 +23,17 @@ describe('Test: auth service in update service', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile('week');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await updateChangefile('week');
+    await deleteChangefile('fake1.jsonl.gz');
+    await deleteChangefile('fake2.jsonl.gz');
+    await deleteChangefile('fake3.jsonl.gz');
     await deleteIndex('unpaywall-test');
   });
 
   describe('Test with admin API key', () => {
     it('Should return status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
         })
@@ -53,7 +53,7 @@ describe('Test: auth service in update service', () => {
   describe('Test without API key', () => {
     it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
         })
@@ -67,7 +67,7 @@ describe('Test: auth service in update service', () => {
   describe('Test with wrong API key', () => {
     it('Should return a status code 401', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
         })
@@ -82,8 +82,8 @@ describe('Test: auth service in update service', () => {
 
   after(async () => {
     await deleteIndex('unpaywall-test');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteChangefile('fake1.jsonl.gz');
+    await deleteChangefile('fake2.jsonl.gz');
+    await deleteChangefile('fake3.jsonl.gz');
   });
 });

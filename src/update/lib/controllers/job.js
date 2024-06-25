@@ -25,6 +25,7 @@ async function downloadAndInsertSnapshotJob(req, res, next) {
   const { index } = req.data;
 
   const jobConfig = {
+    type: 'snapshot',
     index,
     offset: 0,
     limit: -1,
@@ -51,7 +52,7 @@ async function insertChangefilesOnPeriodJob(req, res, next) {
   } = jobConfig;
 
   if (new Date(startDate).getTime() > Date.now()) {
-    return res.status(400).json({ message: 'startDate cannot be in the futur' });
+    return res.status(400).json({ message: 'startDate cannot be in the future' });
   }
 
   if (startDate && endDate) {
@@ -60,6 +61,7 @@ async function insertChangefilesOnPeriodJob(req, res, next) {
     }
   }
 
+  jobConfig.type = 'changefile';
   jobConfig.offset = 0;
   jobConfig.limit = -1;
 
@@ -79,7 +81,7 @@ async function insertChangefilesOnPeriodJob(req, res, next) {
 }
 
 /**
- * Controller to start job that insert file already installed.
+ * Controller to start job that insert changefile already installed.
  *
  * @param {import('express').Request} req - HTTP request.
  * @param {import('express').Response} res - HTTP response.
@@ -89,10 +91,34 @@ async function insertChangefileJob(req, res, next) {
   const { jobConfig } = req.data;
 
   const { filename } = jobConfig;
+  if (!await fs.pathExists(path.resolve(paths.data.changefilesDir, filename))) {
+    return res.status(404).json({ message: `File [${filename}] not found` });
+  }
+
+  jobConfig.type = 'changefile';
+
+  insertChangefile(jobConfig);
+
+  return res.status(202).json();
+}
+
+/**
+ * Controller to start job that insert snapshot already installed.
+ *
+ * @param {import('express').Request} req - HTTP request.
+ * @param {import('express').Response} res - HTTP response.
+ * @param {import('express').NextFunction} next - Do the following.
+ */
+async function insertSnapshotJob(req, res, next) {
+  const { jobConfig } = req.data;
+
+  const { filename } = jobConfig;
 
   if (!await fs.pathExists(path.resolve(paths.data.snapshotsDir, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
+
+  jobConfig.type = 'snapshot';
 
   insertChangefile(jobConfig);
 
@@ -125,6 +151,7 @@ async function insertWithOaHistory(req, res, next) {
     }
   }
 
+  jobConfig.type = 'changefile';
   jobConfig.offset = 0;
   jobConfig.limit = -1;
 
@@ -161,6 +188,7 @@ module.exports = {
   downloadAndInsertSnapshotJob,
   insertChangefilesOnPeriodJob,
   insertChangefileJob,
+  insertSnapshotJob,
   insertWithOaHistory,
   historyRollBack,
 };

@@ -10,7 +10,7 @@ const zlib = require('zlib');
 const { format } = require('date-fns');
 const { paths } = require('config');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 const unpaywallEnrichedMapping = require('../mapping/unpaywall.json');
 const unpaywallHistoryMapping = require('../mapping/unpaywall_history.json');
 
@@ -208,7 +208,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   };
   updateLatestStep(step);
 
-  const filePath = path.resolve(paths.data.snapshotsDir, filename);
+  const filePath = path.resolve(paths.data.changefilesDir, filename);
 
   // get information bytes for state
   let bytes;

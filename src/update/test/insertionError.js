@@ -4,7 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const { countDocuments } = require('./utils/elastic');
-const { addSnapshot, updateChangeFile } = require('./utils/snapshot');
+const { addChangefile, updateChangefile } = require('./utils/changefile');
 const { getState } = require('./utils/state');
 const getReport = require('./utils/report');
 const checkIfInUpdate = require('./utils/status');
@@ -20,18 +20,18 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile('week');
+    await updateChangefile('week');
   });
 
   describe('Do insertion of a corrupted file already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1-error.jsonl.gz');
+      await addChangefile('fake1-error.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/changefile/fake1-error.jsonl.gz')
+        .post('/job/insert/changefile/fake1-error.jsonl.gz')
         .send({
           index: 'unpaywall-test',
         })

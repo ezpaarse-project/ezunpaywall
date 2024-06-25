@@ -1,6 +1,7 @@
 {
   "nodeEnv": "development",
   "accessLogRotate": false,
+  "healthcheckLogRotate": false,
   "timezone": "Europe/Paris",
   "unpaywall": {
     "host": "http://fakeunpaywall:3000",
@@ -39,6 +40,7 @@
       "healthCheckDir": "./log/healthcheck"
     },
     "data": {
+      "changefilesDir": "./data/changefiles",
       "snapshotsDir": "./data/snapshots",
       "reportsDir": "./data/reports"
     }

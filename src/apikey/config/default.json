@@ -1,6 +1,7 @@
 { 
   "nodeEnv": "development",
   "accessLogRotate": false,
+  "healthcheckLogRotate": false,
   "timezone": "Europe/Paris",
   "redis":  {
     "host": "redis",

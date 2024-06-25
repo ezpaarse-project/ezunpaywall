@@ -11,7 +11,7 @@ const {
   setInUpdate,
 } = require('./status');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 
 let state = {};
 

@@ -1,7 +1,7 @@
 const { CronJob } = require('cron');
 const { timezone } = require('config');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 
 class Cron {
   /**

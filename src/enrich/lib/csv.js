@@ -6,7 +6,7 @@ const Papa = require('papaparse');
 const path = require('path');
 const config = require('config');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 
 const { updateStateInFile, fail } = require('./models/state');
 

@@ -10,7 +10,7 @@ const isProd = (nodeEnv === 'production');
 /**
  * Get the name of access file.
  *
- * @param {number} date - Date in minisecond
+ * @param {number} date - Date in milliseconds
  *
  * @returns {string} Name of access file.
  */

@@ -6,18 +6,17 @@ chai.use(chaiHttp);
 
 const checkIfInUpdate = require('./status');
 
-const snapshotsDir = path.resolve(__dirname, '..', 'sources');
+const snapshotsDir = path.resolve(__dirname, '..', 'sources', 'snapshots');
 
 // TODO put it in config
 const updateURL = process.env.UPDATE_HOST || 'http://localhost:59702';
-const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:59799';
 
 /**
  * Delete a snapshot in ezunpaywall.
  *
  * @param {Promise<string>} filename - Name of file needed to be delete on ezunpaywall.
  */
-async function deleteFile(filename) {
+async function deleteSnapshot(filename) {
   try {
     await chai.request(updateURL)
       .delete(`/snapshots/${filename}`)
@@ -48,24 +47,6 @@ async function addSnapshot(filename) {
 }
 
 /**
- * Update the registry of changefiles of fakeUnpaywall.
- *
- * @param {string} interval - Interval of registry.
- *
- * @returns {Promise<void>}
- */
-async function updateChangeFile(interval) {
-  try {
-    await chai.request(fakeUnpaywall)
-      .patch('/changefiles')
-      .query({ interval });
-  } catch (err) {
-    console.error(`Cannot PATCH ${updateURL}/changefiles ${err}`);
-    process.exit(1);
-  }
-}
-
-/**
  * insert file in ezunpaywall.
  *
  * @param {string} filename - Filename needed to be insert on ezunpaywall.
@@ -75,7 +56,7 @@ async function updateChangeFile(interval) {
 async function insertSnapshot(filename, index) {
   try {
     await chai.request(updateURL)
-      .post(`/job/changefile/${filename}`)
+      .post(`/job/insert/snapshot/${filename}`)
       .send({
         index,
       })
@@ -91,38 +72,8 @@ async function insertSnapshot(filename, index) {
   }
 }
 
-/**
- * insert file in ezunpaywall.
- *
- * @param {string} filename - Filename needed to be insert on ezunpaywall.
- *
- * @returns {Promise<void>}
- */
-async function insertInHistory(startDate, endDate) {
-  try {
-    await chai.request(updateURL)
-      .post('/job/history')
-      .send({
-        indexBase: 'unpaywall_base',
-        startDate,
-        endDate,
-      })
-      .set('x-api-key', 'changeme');
-  } catch (err) {
-    console.error(`Cannot POST ${updateURL}/snapshot ${err}`);
-    process.exit(1);
-  }
-  let isUpdate = true;
-  while (isUpdate) {
-    await new Promise((resolve) => { setTimeout(resolve, 100); });
-    isUpdate = await checkIfInUpdate();
-  }
-}
-
 module.exports = {
   addSnapshot,
-  deleteFile,
-  updateChangeFile,
+  deleteSnapshot,
   insertSnapshot,
-  insertInHistory,
 };

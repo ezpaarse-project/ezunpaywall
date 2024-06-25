@@ -7,7 +7,7 @@ const { smtp } = require('config');
 const { format } = require('date-fns');
 const { notifications } = require('config');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 
 const transporter = nodemailer.createTransport(smtp);
 

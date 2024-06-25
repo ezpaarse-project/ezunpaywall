@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const { paths } = require('config');
 
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 /**
  * Create a new State in file on folder data/state/<apikey>/<id>.json

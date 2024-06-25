@@ -34,7 +34,7 @@ describe('Test: rollback history test', () => {
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/history/reset')
+        .post('/job/download/insert/history/period/reset')
         .send({
           startDate: date1,
         })
@@ -45,7 +45,7 @@ describe('Test: rollback history test', () => {
 
     it('Should get state with all information', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/history/reset')
+        .post('/job/download/insert/history/period/reset')
         .send({
           startDate: date1,
         })
@@ -56,7 +56,7 @@ describe('Test: rollback history test', () => {
 
     it('Should get report with all information', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/history/reset')
+        .post('/job/download/insert/history/period/reset')
         .send({
           startDate: date1,
         })
@@ -96,7 +96,7 @@ describe('Test: rollback history test', () => {
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/history/reset')
+        .post('/job/download/insert/history/period/reset')
         .send({
           startDate: date2,
         })
@@ -136,7 +136,7 @@ describe('Test: rollback history test', () => {
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/history/reset')
+        .post('/job/download/insert/history/period/reset')
         .send({
           startDate: date3,
         })
@@ -176,7 +176,7 @@ describe('Test: rollback history test', () => {
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/history/reset')
+        .post('/job/download/insert/history/period/reset')
         .send({
           startDate: date4,
         })

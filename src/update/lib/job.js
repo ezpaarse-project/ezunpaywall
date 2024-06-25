@@ -3,7 +3,7 @@ const path = require('path');
 const { format } = require('date-fns');
 const { paths } = require('config');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 
 const { setInUpdate } = require('./status');
 
@@ -133,13 +133,13 @@ async function insertChangefilesOnPeriod(jobConfig) {
  */
 async function insertChangefile(jobConfig) {
   setInUpdate(true);
-  logger.info('[job][file]: Start file job');
-  logger.info(`[job][file]: index: [${jobConfig.index}]`);
-  logger.info(`[job][file]: filename: [${jobConfig.filename}]`);
-  logger.info(`[job][file]: offset: [${jobConfig.offset}]`);
-  logger.info(`[job][file]: limit: [${jobConfig.limit}]`);
-  logger.info(`[job][file]: cleanFile: [${jobConfig.cleanFile}]`);
-  logger.info(`[job][file]: ignoreError: [${jobConfig.ignoreError}]`);
+  logger.info(`[job][${jobConfig.type}]: Start file job`);
+  logger.info(`[job][${jobConfig.type}]: index: [${jobConfig.index}]`);
+  logger.info(`[job][${jobConfig.type}]: filename: [${jobConfig.filename}]`);
+  logger.info(`[job][${jobConfig.type}]: offset: [${jobConfig.offset}]`);
+  logger.info(`[job][${jobConfig.type}]: limit: [${jobConfig.limit}]`);
+  logger.info(`[job][${jobConfig.type}]: cleanFile: [${jobConfig.cleanFile}]`);
+  logger.info(`[job][${jobConfig.type}]: ignoreError: [${jobConfig.ignoreError}]`);
   await createState({ type: 'unpaywall', index: jobConfig.index });
   const success = await insertDataUnpaywall(jobConfig);
   if (success) {
@@ -206,7 +206,7 @@ async function insertWithOaHistoryJob(jobConfig) {
     jobConfig.filename = changefilesInfo[i].filename;
     success = await insertHistoryDataUnpaywall(jobConfig);
     if (cleanFile) {
-      await deleteFile(path.resolve(paths.data.snapshotsDir, changefilesInfo[i].filename));
+      await deleteFile(path.resolve(paths.data.changefilesDir, changefilesInfo[i].filename));
     }
     if (!success) return;
   }

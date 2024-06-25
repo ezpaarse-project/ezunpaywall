@@ -1,5 +1,5 @@
 const graphqlFields = require('graphql-fields');
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 const { redisClient } = require('../services/redis');
 
 /**

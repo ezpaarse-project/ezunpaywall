@@ -1,6 +1,10 @@
 const {
-  deleteFile,
+  deleteSnapshot,
 } = require('./snapshot');
+
+const {
+  deleteChangefile,
+} = require('./changefile');
 
 const {
   deleteIndex,
@@ -14,14 +18,15 @@ const resetCronConfig = require('./cron');
  * @returns {Promise<void>}
  */
 async function reset() {
-  await deleteFile('history1.jsonl.gz');
-  await deleteFile('history2.jsonl.gz');
-  await deleteFile('history3.jsonl.gz');
-  await deleteFile('fake1.jsonl.gz');
-  await deleteFile('fake2.jsonl.gz');
-  await deleteFile('fake3.jsonl.gz');
-  await deleteFile('fake1-error.jsonl.gz');
-  await deleteFile('snapshot.jsonl.gz');
+  await deleteChangefile('2020-01-02-history.jsonl.gz');
+  await deleteChangefile('2020-01-03-history.jsonl.gz');
+  await deleteChangefile('2020-01-05-history.jsonl.gz');
+  await deleteChangefile('fake1.jsonl.gz');
+  await deleteChangefile('fake2.jsonl.gz');
+  await deleteChangefile('fake3.jsonl.gz');
+  await deleteChangefile('fake1-error.jsonl.gz');
+  await deleteSnapshot('2019-01-01-snapshot.jsonl.gz');
+  await deleteSnapshot('2020-01-01-snapshot.jsonl.gz');
   await deleteIndex('unpaywall');
   await deleteIndex('unpaywall-test');
   await deleteIndex('unpaywall_base');

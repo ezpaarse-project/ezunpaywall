@@ -9,7 +9,7 @@ const config = require('config');
 const zlib = require('zlib');
 const { paths } = require('config');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 const unpaywallMapping = require('../mapping/unpaywall.json');
 
 const {
@@ -96,7 +96,7 @@ async function insertUnpaywallDataInElastic(data) {
  */
 async function insertDataUnpaywall(insertConfig) {
   const {
-    filename, index, offset, limit, ignoreError,
+    filename, index, offset, limit, ignoreError, type,
   } = insertConfig;
 
   // step insertion in the state
@@ -117,7 +117,15 @@ async function insertDataUnpaywall(insertConfig) {
 
   await initAlias(index, unpaywallMapping, indexAlias);
 
-  const filePath = path.resolve(paths.data.snapshotsDir, filename);
+  let filePath;
+
+  if (type === 'changefile') {
+    filePath = path.resolve(paths.data.changefilesDir, filename);
+  }
+
+  if (type === 'snapshot') {
+    filePath = path.resolve(paths.data.snapshotsDir, filename);
+  }
 
   // get information "bytes" for state
   let bytes;

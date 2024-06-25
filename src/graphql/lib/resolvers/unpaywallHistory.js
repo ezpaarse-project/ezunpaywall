@@ -1,7 +1,7 @@
 const config = require('config');
 const checkApikey = require('../middlewares/apikey');
 const { search } = require('../services/elastic');
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 const indexBase = config.get('elasticsearch.indexBase');
 const indexHistory = config.get('elasticsearch.indexHistory');

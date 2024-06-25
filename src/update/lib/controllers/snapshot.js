@@ -11,7 +11,7 @@ const { getMostRecentFile, deleteFile } = require('../files');
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-async function getFiles(req, res, next) {
+async function getSnapshots(req, res, next) {
   const { latest } = req.data;
 
   if (latest) {
@@ -34,7 +34,7 @@ async function getFiles(req, res, next) {
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-async function uploadFile(req, res, next) {
+async function uploadSnapshot(req, res, next) {
   if (!req?.file) return next({ message: 'File not sent' });
   return res.status(202).json();
 }
@@ -46,7 +46,7 @@ async function uploadFile(req, res, next) {
  * @param {import('express').Response} res - HTTP response.
  * @param {import('express').NextFunction} next - Do the following.
  */
-async function deleteInstalledFile(req, res, next) {
+async function deleteSnapshot(req, res, next) {
   const { filename } = req.data;
 
   if (!await fs.pathExists(path.resolve(paths.data.snapshotsDir, filename))) {
@@ -63,7 +63,7 @@ async function deleteInstalledFile(req, res, next) {
 }
 
 module.exports = {
-  getFiles,
-  uploadFile,
-  deleteInstalledFile,
+  getSnapshots,
+  uploadSnapshot,
+  deleteSnapshot,
 };

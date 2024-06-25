@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const { format } = require('date-fns');
 
 const { redisClient } = require('./redis');
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 /**
  * Get config of apikey

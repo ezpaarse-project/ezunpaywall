@@ -3,14 +3,14 @@ const fs = require('fs-extra');
 const rfs = require('rotating-file-stream');
 const path = require('path');
 const { format } = require('date-fns');
-const { nodeEnv, accessLogRotate, paths } = require('config');
+const { nodeEnv, paths, accessLogRotate } = require('config');
 
 const isProd = (nodeEnv === 'production');
 
 /**
  * Get the name of access file.
  *
- * @param {number} date - Date in minisecond
+ * @param {number} date - Date in milliseconds
  *
  * @returns {string} Name of access file.
  */

@@ -1,6 +1,6 @@
 const { redisClient } = require('../services/redis');
 
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 /**
  * Authentication middleware that checks if if the arguments passed
@@ -28,14 +28,14 @@ async function checkArgs(req, res, next) {
   try {
     apikeyConfig = await redisClient.get(apikey);
   } catch (err) {
-    logger.error(`[redis] Cannot get [${apikey}] on redis`, err);
+    logger.error(`[redis]: Cannot get [${apikey}] on redis`, err);
     return next({ message: err.message });
   }
 
   try {
     apikeyConfig = JSON.parse(apikeyConfig);
   } catch (err) {
-    logger.error(`[redis] Cannot parse [${apikeyConfig}]`, err);
+    logger.error(`[redis]: Cannot parse [${apikeyConfig}]`, err);
     return next({ message: err.message });
   }
 

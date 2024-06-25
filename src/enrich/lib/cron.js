@@ -1,7 +1,7 @@
 const { paths } = require('config');
 
 const Cron = require('./models/cron');
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 
 const { deleteFilesInDir } = require('./file');
 

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const config = require('config');
 
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 const apikey = config.get('mail.apikey');
 

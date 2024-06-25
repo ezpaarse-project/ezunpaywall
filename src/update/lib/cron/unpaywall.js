@@ -1,6 +1,6 @@
 const { format, subDays } = require('date-fns');
 const { unpaywallCron } = require('config');
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 const Cron = require('../cron');
 const { getStatus } = require('../status');

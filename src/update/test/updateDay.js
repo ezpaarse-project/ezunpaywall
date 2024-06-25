@@ -4,7 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const { countDocuments } = require('./utils/elastic');
-const { addSnapshot, updateChangeFile } = require('./utils/snapshot');
+const { addChangefile, updateChangefile } = require('./utils/changefile');
 const { getState } = require('./utils/state');
 const getReport = require('./utils/report');
 const checkIfInUpdate = require('./utils/status');
@@ -20,7 +20,7 @@ describe('Test: daily update route test', () => {
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile('day');
+    await updateChangefile('day');
   });
 
   describe('Day: Do daily update', () => {
@@ -31,7 +31,7 @@ describe('Test: daily update route test', () => {
     // test response
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           interval: 'day',
@@ -109,7 +109,7 @@ describe('Test: daily update route test', () => {
     // test response
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
         })
@@ -176,7 +176,7 @@ describe('Test: daily update route test', () => {
     // test response
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
         })
@@ -242,12 +242,12 @@ describe('Test: daily update route test', () => {
   describe('Day: Do a daily update but the file is already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addChangefile('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           interval: 'day',

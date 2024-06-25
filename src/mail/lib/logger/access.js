@@ -10,7 +10,7 @@ const isProd = (nodeEnv === 'production');
 /**
  * Get the name of access file.
  *
- * @param {number} date - Date in minisecond
+ * @param {number} date - Date in milliseconds
  *
  * @returns {string} Name of access file.
  */
@@ -37,9 +37,4 @@ morgan.token('user', (req) => {
   return '-';
 });
 
-morgan.token('countDOI', (req) => {
-  if (req.countDOI) return req.countDOI;
-  return '-';
-});
-
-module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"', { stream: isProd ? accessLogStream : process.stdout });
+module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ', { stream: isProd ? accessLogStream : process.stdout });

@@ -4,7 +4,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const { countDocuments } = require('./utils/elastic');
-const { addSnapshot } = require('./utils/snapshot');
+const { addChangefile } = require('./utils/changefile');
 const { getState } = require('./utils/state');
 const getReport = require('./utils/report');
 const checkIfInUpdate = require('./utils/status');
@@ -25,12 +25,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addChangefile('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/changefile/fake1.jsonl.gz')
+        .post('/job/insert/changefile/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
         })
@@ -95,12 +95,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter limit=10', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addChangefile('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/changefile/fake1.jsonl.gz')
+        .post('/job/insert/changefile/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
           limit: 10,
@@ -165,12 +165,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter offset=40', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addChangefile('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/changefile/fake1.jsonl.gz')
+        .post('/job/insert/changefile/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
           offset: 40,
@@ -235,12 +235,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Do insertion of a file already installed with parameter offset=10 and limit=20', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addChangefile('fake1.jsonl.gz');
     });
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/changefile/fake1.jsonl.gz')
+        .post('/job/insert/changefile/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
           offset: 10,
@@ -306,7 +306,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the file is in the wrong format', () => {
     it('Should return a status code 400', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/changefile/fake1.jsonl')
+        .post('/job/insert/changefile/fake1.jsonl')
         .send({
           index: 'unpaywall-test',
         })
@@ -319,7 +319,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the File not found on ezunpaywall', () => {
     it('Should return a status code 404', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/changefile/fake1.jsonl.gz')
+        .post('/job/insert/changefile/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
         })
@@ -332,12 +332,12 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the parameter limit can\t be lower than offset', () => {
     before(async () => {
       await reset();
-      await addSnapshot('fake1.jsonl.gz');
+      await addChangefile('fake1.jsonl.gz');
     });
 
     it('Should return a status code 400', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/changefile/fake1.jsonl.gz')
+        .post('/job/insert/changefile/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
           offset: 100,

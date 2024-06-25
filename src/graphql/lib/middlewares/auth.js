@@ -1,6 +1,6 @@
 const { redisClient } = require('../services/redis');
 
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 /**
  * Authentication middleware that checks if the content of the x-api-key header

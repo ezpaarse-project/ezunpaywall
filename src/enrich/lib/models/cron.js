@@ -1,7 +1,7 @@
 const { CronJob } = require('cron');
 const { timezone } = require('config');
 
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 /**
  * Class cron which overloads the node-cron library by adding features.

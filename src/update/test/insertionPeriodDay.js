@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const { deleteFile, updateChangeFile } = require('./utils/snapshot');
+const { deleteChangefile, updateChangefile } = require('./utils/changefile');
 const { getState } = require('./utils/state');
 const getReport = require('./utils/report');
 const { countDocuments, deleteIndex } = require('./utils/elastic');
@@ -34,7 +34,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   before(async function () {
     this.timeout(30000);
     await ping();
-    await updateChangeFile('day');
+    await updateChangefile('day');
   });
 
   describe(`Day: Do a download and insert between ${date1} and now`, async () => {
@@ -44,7 +44,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           startDate: date1,
@@ -140,7 +140,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           startDate: date2,
@@ -236,7 +236,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           startDate: date4,
@@ -295,7 +295,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   describe(`Day: Don't do a download and insert with endDate=${date1} only`, () => {
     it('Should return a status code 400', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           endDate: date1,
@@ -310,7 +310,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   describe('Day: Don\'t do a download and insert with startDate in the wrong format', () => {
     it('Should return a status code 400', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .query({ index: 'unpaywall-test', startDate: 'doen\'t exist' })
         .send({
           index: 'unpaywall-test',
@@ -324,7 +324,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
     it('Should return a status code 400', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           startDate: '01-01-2000',
@@ -337,7 +337,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
     it('Should return a status code 400', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           startDate: '2000-50-50',
@@ -352,7 +352,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   describe(`Day: Don't download and insert between ${date2} and ${date3} because startDate=${date2} is superior than endDate=${date3}`, () => {
     it('Should return a status code 400', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           startDate: date2,
@@ -368,7 +368,7 @@ describe('Test: download and insert file from unpaywall between a period', () =>
   describe(`Day: Don't download and insert with startDate=${tomorrow} because there can be no futuristic file`, () => {
     it('Should return a status code 400', async () => {
       const res = await chai.request(updateURL)
-        .post('/job/period')
+        .post('/job/download/insert/changefile/period')
         .send({
           index: 'unpaywall-test',
           startDate: tomorrow,
@@ -382,8 +382,8 @@ describe('Test: download and insert file from unpaywall between a period', () =>
 
   after(async () => {
     await deleteIndex('unpaywall-test');
-    await deleteFile('fake1.jsonl.gz');
-    await deleteFile('fake2.jsonl.gz');
-    await deleteFile('fake3.jsonl.gz');
+    await deleteChangefile('fake1.jsonl.gz');
+    await deleteChangefile('fake2.jsonl.gz');
+    await deleteChangefile('fake3.jsonl.gz');
   });
 });

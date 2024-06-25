@@ -1,6 +1,6 @@
 const config = require('config');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 const defaultConfig = require('../config/default.json');
 
 const copyConfig = JSON.parse(JSON.stringify(config));

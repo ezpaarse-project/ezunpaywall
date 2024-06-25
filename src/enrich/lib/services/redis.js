@@ -1,7 +1,7 @@
 const redis = require('redis');
 const util = require('util');
 const config = require('config');
-const logger = require('../logger');
+const logger = require('../logger/appLogger');
 
 const redisClient = redis.createClient({
   legacyMode: true,
@@ -25,10 +25,10 @@ async function pingRedis() {
   try {
     await redisClient.ping();
   } catch (err) {
-    logger.error(`[redis] Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
+    logger.error(`[redis]: Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
     return false;
   }
-  logger.info(`[redis] ping success ${config.get('redis.host')}:${config.get('redis.port')}`);
+  logger.info(`[redis]: ping success ${config.get('redis.host')}:${config.get('redis.port')}`);
   return true;
 }
 
@@ -36,10 +36,10 @@ async function startConnectionRedis() {
   try {
     await redisClient.connect();
   } catch (err) {
-    logger.error(`[redis] Cannot start connection ${config.get('redis.host')}:${config.get('redis.port')}`, err);
+    logger.error(`[redis]: Cannot start connection ${config.get('redis.host')}:${config.get('redis.port')}`, err);
     return false;
   }
-  logger.info(`[redis] connect success ${config.get('redis.host')}:${config.get('redis.port')}`);
+  logger.info(`[redis]: connect success ${config.get('redis.host')}:${config.get('redis.port')}`);
   return true;
 }
 

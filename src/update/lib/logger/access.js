@@ -8,11 +8,11 @@ const { nodeEnv, paths, accessLogRotate } = require('config');
 const isProd = (nodeEnv === 'production');
 
 /**
- * Get the name of access file.
+ * Get the name of access log file.
  *
- * @param {number} date - Date in minisecond
+ * @param {number} date - Date in milliseconds
  *
- * @returns {string} Name of access file.
+ * @returns {string} Name of access log file.
  */
 function logFilename(date) {
   if (!date) return 'access.log';
@@ -37,4 +37,7 @@ morgan.token('user', (req) => {
   return '-';
 });
 
-module.exports = morgan(':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ', { stream: isProd ? accessLogStream : process.stdout });
+module.exports = morgan(
+  ':ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
+  { stream: isProd ? accessLogStream : process.stdout },
+);

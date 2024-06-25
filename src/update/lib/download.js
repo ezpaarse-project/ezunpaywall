@@ -5,7 +5,7 @@ const { format } = require('date-fns');
 const { setTimeout } = require('node:timers/promises');
 const { paths } = require('config');
 
-const logger = require('./logger');
+const logger = require('./logger/appLogger');
 
 const {
   getState,
@@ -108,7 +108,7 @@ async function download(file, filepath, size) {
 async function downloadChangefile(info, interval) {
   let stats;
 
-  const filePath = path.resolve(paths.data.snapshotsDir, info.filename);
+  const filePath = path.resolve(paths.data.changefilesDir, info.filename);
 
   const alreadyInstalled = await fs.pathExists(filePath);
   if (alreadyInstalled) stats = await fs.stat(filePath);
