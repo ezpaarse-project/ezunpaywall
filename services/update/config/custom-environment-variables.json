@@ -1,0 +1,51 @@
+{
+  "nodeEnv": "NODE_ENV",
+  "accessLogRotate": "ACCESS_LOG_ROTATE",
+  "timezone": "TIMEZONE",
+  "unpaywall": {
+    "host": "UNPAYWALL_HOST",
+    "apikey": "UNPAYWALL_APIKEY"
+  },
+  "mail": {
+    "host": "MAIL_HOST",
+    "apikey": "MAIL_APIKEY"
+  },
+  "elasticsearch": {
+    "host": "ELASTICSEARCH_HOSTS",
+    "port": "ELASTICSEARCH_PORT",
+    "user": "ELASTICSEARCH_USERNAME",
+    "password": "ELASTICSEARCH_PASSWORD",
+    "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
+    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS",
+    "timeout": "ELASTICSEARCH_TIMEOUT"
+  },
+  "cron": {
+    "downloadSnapshot": {
+      "schedule": "CRON_DOWNLOAD_SNAPSHOT_SCHEDULE",
+      "active": "CRON_DOWNLOAD_SNAPSHOT_ACTIVE",
+      "index": "CRON_DOWNLOAD_SNAPSHOT_INDEX"
+    },
+    "dataUpdate": {
+      "schedule": "CRON_DATA_UPDATE_SCHEDULE",
+      "active": "CRON_DATA_UPDATE_ACTIVE",
+      "index": "CRON_DATA_UPDATE_INDEX",
+      "interval": "CRON_DATA_UPDATE_INTERVAL"
+    },
+    "dataUpdateHistory": {
+      "schedule": "CRON_DATA_UPDATE_SCHEDULE",
+      "active": "CRON_DATA_UPDATE_ACTIVE",
+      "indexBase": "CRON_DATA_UPDATE_INDEX_BASE",
+      "indexHistory": "CRON_DATA_UPDATE_INDEX_HISTORY",
+      "interval": "CRON_DATA_UPDATE_INTERVAL"
+    },
+    "cleanFile": {
+      "schedule": "CRON_CLEAN_FILE_SCHEDULE",
+      "active": "CRON_CLEAN_FILE_ACTIVE",
+      "changefileThreshold": "CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD",
+      "reportThreshold": "CRON_CLEAN_FILE_REPORT_THRESHOLD",
+      "snapshotThreshold": "CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD"
+    }
+  },
+  "apikey": "ADMIN_APIKEY",
+  "healthTimeout": "HEALTH_TIMEOUT"
+}

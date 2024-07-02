@@ -3,7 +3,7 @@ version: "3.3"
 services:
   graphql:
     build:
-      context: ./src/graphql
+      context: ./services/graphql
     container_name: ezunpaywall-graphql-prod
     environment:
       - NODE_ENV=production
@@ -30,7 +30,7 @@ services:
 
   update:
     build:
-      context: ./src/update
+      context: ./services/update
       args:
         - http_proxy
         - https_proxy
@@ -67,7 +67,7 @@ services:
 
   enrich:
     build:
-      context: ./src/enrich
+      context: ./services/enrich
     container_name: ezunpaywall-enrich-prod
     environment:
       - NODE_ENV=production
@@ -93,7 +93,7 @@ services:
 
   apikey:
     build:
-      context: ./src/apikey
+      context: ./services/apikey
     container_name: ezunpaywall-apikey-prod
     environment:
       - NODE_ENV=production
@@ -113,7 +113,7 @@ services:
     
   mail:
     build:
-      context: ./src/mail
+      context: ./services/mail
     container_name: ezunpaywall-mail-prod
     environment:
       - NODE_ENV=production
@@ -135,7 +135,7 @@ services:
 
   frontend:
     build:
-      context: ./src/frontend
+      context: ./services/frontend
     container_name: ezunpaywall-frontend-prod
     environment:
       - NODE_ENV=development
@@ -160,35 +160,9 @@ services:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
     restart: unless-stopped
 
-  health:
-    build:
-      context: ./src/health
-    container_name: ezunpaywall-health-prod
-    volumes:
-      - ${HEALTH_APPLICATION_LOG_PATH:-./src/health/log/application}:/usr/src/app/log/application
-    command: "npm run start"
-    ports:
-     - ${HEALTH_PORT:-59707}:3000
-    restart: unless-stopped
-    depends_on:
-      enrich:
-        condition: service_healthy
-      update:
-        condition: service_healthy
-      graphql:
-        condition: service_healthy
-      apikey:
-        condition: service_healthy
-      frontend:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      elastic:
-        condition: service_healthy
-
   nginx:
     build:
-      context: ./src/nginx
+      context: ./services/nginx
     container_name: ezunpaywall-nginx-prod
     environment:
       # host of service
@@ -213,8 +187,6 @@ services:
       apikey:
         condition: service_healthy
       mail:
-        condition: service_healthy
-      health:
         condition: service_healthy
       frontend:
         condition: service_healthy

@@ -18,7 +18,7 @@ services:
       - REDIS_PASSWORD
     working_dir: /usr/src/app
     volumes:
-      - ./src/graphql:/usr/src/app
+      - ./services/graphql:/usr/src/app
     command: "npm run dev"
     ports:
       - ${GRAPHQL_PORT:-59701}:3000
@@ -65,7 +65,7 @@ services:
       - UPDATE_APIKEY
     working_dir: /usr/src/app
     volumes:
-      - ./src/update:/usr/src/app
+      - ./services/update:/usr/src/app
     command: "npm run dev"
     ports:
       - ${UPDATE_PORT:-59702}:3000
@@ -93,7 +93,7 @@ services:
       - GRAPHQL_HOST=http://graphql:3000
     working_dir: /usr/src/app
     volumes:
-      - ./src/enrich:/usr/src/app
+      - ./services/enrich:/usr/src/app
     command: "npm run dev"
     ports:
       - ${ENRICH_PORT:-59703}:3000
@@ -124,7 +124,7 @@ services:
       - REDIS_PASSWORD
     working_dir: /usr/src/app
     volumes:
-      - ./src/apikey:/usr/src/app
+      - ./services/apikey:/usr/src/app
     command: "npm run dev"
     ports:
       - ${APIKEY_PORT:-59704}:3000
@@ -156,7 +156,7 @@ services:
       - MAIL_APIKEY
     working_dir: /usr/src/app
     volumes:
-      - ./src/mail:/usr/src/app
+      - ./services/mail:/usr/src/app
     command: "npm run dev"
     ports:
       - ${MAIL_PORT:-59705}:3000
@@ -176,7 +176,7 @@ services:
     container_name: ezunpaywall-frontend-dev
     working_dir: /usr/src/app
     volumes:
-      - ./src/frontend:/usr/src/app
+      - ./services/frontend:/usr/src/app
     command: "npm run dev"
     ports:
       - ${FRONTEND_PORT:-59706}:3000
@@ -225,43 +225,6 @@ services:
       timeout: 3s
       retries: 5
 
-  health:
-    image: node:18.19.1-alpine3.19
-    container_name: ezunpaywall-health-dev
-    working_dir: /usr/src/app
-    volumes:
-      - ./src/health:/usr/src/app
-    environment:
-      - NODE_CONFIG
-    command: "npm run dev"
-    ports:
-      - ${HEALTH_PORT:-59707}:3000
-    restart: unless-stopped
-    depends_on:
-      enrich:
-        condition: service_healthy
-      update:
-        condition: service_healthy
-      graphql:
-        condition: service_healthy
-      apikey:
-        condition: service_healthy
-      frontend:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      elastic:
-        condition: service_healthy
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-
   nginx:
     image: nginx:1.25.2
     container_name: ezunpaywall-nginx-dev
@@ -278,7 +241,7 @@ services:
     ports:
       - ${NGINX_PORT:-80}:80
     volumes:
-      - ./src/nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./services/nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro
     restart: unless-stopped
     depends_on:
       enrich:
@@ -290,8 +253,6 @@ services:
       apikey:
         condition: service_healthy
       mail:
-        condition: service_healthy
-      health:
         condition: service_healthy
       frontend:
         condition: service_healthy
@@ -309,7 +270,7 @@ services:
     image: node:18.19.1
     working_dir: /usr/src/app
     volumes:
-      - ./src/fakeUnpaywall:/usr/src/app
+      - ./services/fakeUnpaywall:/usr/src/app
     command: "npm run dev"
     ports:
       - 59799:3000
