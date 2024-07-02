@@ -16,7 +16,7 @@ const {
 
 const { insertWithOaHistory, historyRollBack } = require('../controllers/job');
 
-const { step1, step2, step3 } = require('../history');
+const { step1, step2, step3 } = require('../process/history');
 
 const { validateHistoryJob, validateHistoryReset } = require('../middlewares/format/job');
 const checkStatus = require('../middlewares/status');

@@ -3,7 +3,7 @@ const { paths, cron } = require('config');
 const logger = require('../logger/appLogger');
 const Cron = require('./cron');
 
-const { deleteFilesInDir } = require('../files');
+const { deleteFilesInDir } = require('../lib/files');
 
 const cronConfig = cron.cleanFile;
 

@@ -1,4 +1,4 @@
-const { getState } = require('../state');
+const { getState } = require('../lib/state');
 
 /**
  * Controller to get the state of update.

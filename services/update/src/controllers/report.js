@@ -2,8 +2,8 @@ const path = require('path');
 const fs = require('fs-extra');
 const { paths } = require('config');
 
-const { getMostRecentFile } = require('../files');
-const { getReport } = require('../report');
+const { getMostRecentFile } = require('../lib/files');
+const { getReport } = require('../lib/report');
 
 /**
  * Controller to get list of reports or latest report.

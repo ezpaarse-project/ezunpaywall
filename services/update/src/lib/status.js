@@ -1,4 +1,4 @@
-const logger = require('./logger/appLogger');
+const logger = require('../logger/appLogger');
 
 let inUpdate = false;
 

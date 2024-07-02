@@ -2,9 +2,9 @@ const { cron } = require('config');
 const logger = require('../logger/appLogger');
 
 const Cron = require('./cron');
-const { getStatus } = require('../status');
+const { getStatus } = require('../lib/status');
 
-const { downloadSnapshot } = require('../download');
+const { downloadSnapshot } = require('../process/download');
 
 let { active } = cron.downloadSnapshot;
 

@@ -9,22 +9,22 @@ const config = require('config');
 const zlib = require('zlib');
 const { paths } = require('config');
 
-const logger = require('./logger/appLogger');
-const unpaywallMapping = require('../mapping/unpaywall.json');
+const logger = require('../logger/appLogger');
+const unpaywallMapping = require('../../mapping/unpaywall.json');
 
 const {
   addStepInsert,
   getLatestStep,
   updateLatestStep,
   fail,
-} = require('./state');
+} = require('../lib/state');
 
 const {
   refreshIndex,
   bulk,
   initAlias,
   createIndex,
-} = require('./services/elastic');
+} = require('../services/elastic');
 
 const indexAlias = config.get('elasticsearch.indexAlias');
 const maxBulkSize = config.get('elasticsearch.maxBulkSize');

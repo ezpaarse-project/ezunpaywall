@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const { paths } = require('config');
 
-const { getMostRecentFile, deleteFile } = require('../files');
+const { getMostRecentFile, deleteFile } = require('../lib/files');
 
 /**
  * Controller to start list of files or latest file downloaded on update service.

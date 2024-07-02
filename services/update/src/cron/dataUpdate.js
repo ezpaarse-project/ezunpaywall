@@ -3,9 +3,9 @@ const { cron } = require('config');
 const logger = require('../logger/appLogger');
 
 const Cron = require('./cron');
-const { getStatus } = require('../status');
+const { getStatus } = require('../lib/status');
 
-const { insertChangefilesOnPeriod } = require('../job');
+const { insertChangefilesOnPeriodJob } = require('../process');
 
 const { ...cronConfig } = cron.dataUpdate;
 let { active } = cronConfig;
@@ -27,7 +27,7 @@ async function task() {
   const week = (cronConfig.interval === 'week');
   const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
   const endDate = format(new Date(), 'yyyy-MM-dd');
-  await insertChangefilesOnPeriod({
+  await insertChangefilesOnPeriodJob({
     index: cronConfig.index,
     interval: cronConfig.interval,
     startDate,

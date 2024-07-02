@@ -5,7 +5,7 @@ const { format } = require('date-fns');
 const { setTimeout } = require('node:timers/promises');
 const { paths } = require('config');
 
-const logger = require('./logger/appLogger');
+const logger = require('../logger/appLogger');
 
 const {
   getState,
@@ -13,12 +13,12 @@ const {
   addStepDownload,
   fail,
   updateLatestStep,
-} = require('./state');
+} = require('../lib/state');
 
 const {
   getSnapshot,
   getChangefile,
-} = require('./services/unpaywall');
+} = require('../services/unpaywall');
 
 /**
  * Update the step the percentage in download regularly until the download is complete.

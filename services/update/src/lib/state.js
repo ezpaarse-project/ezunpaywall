@@ -5,13 +5,13 @@ const {
 
 const {
   sendMailUpdateReport,
-} = require('./services/mail');
+} = require('../services/mail');
 
 const {
   setInUpdate,
 } = require('./status');
 
-const logger = require('./logger/appLogger');
+const logger = require('../logger/appLogger');
 
 let state = {};
 

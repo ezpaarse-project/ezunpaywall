@@ -3,9 +3,9 @@ const path = require('path');
 const { format } = require('date-fns');
 const { paths } = require('config');
 
-const logger = require('./logger/appLogger');
+const logger = require('../logger/appLogger');
 
-const { setInUpdate } = require('./status');
+const { setInUpdate } = require('../lib/status');
 
 const { downloadSnapshot, downloadChangefile } = require('./download');
 
@@ -16,17 +16,17 @@ const {
   addStepGetChangefiles,
   updateLatestStep,
   getLatestStep,
-} = require('./state');
+} = require('../lib/state');
 
 const insertDataUnpaywall = require('./insert');
 
-const { deleteFile } = require('./files');
+const { deleteFile } = require('../lib/files');
 
 const { insertHistoryDataUnpaywall } = require('./history');
 
-const { getChangefiles } = require('./services/unpaywall');
+const { getChangefiles } = require('../services/unpaywall');
 
-const { sendMailNoChangefile } = require('./services/mail');
+const { sendMailNoChangefile } = require('../services/mail');
 
 /**
  * Download the current snapshot of unpaywall and insert his content.
@@ -60,7 +60,7 @@ async function downloadSnapshotProcess() {
  *
  * @returns {Promise<void>}
  */
-async function downloadAndInsertSnapshot(jobConfig) {
+async function downloadAndInsertSnapshotProcess(jobConfig) {
   setInUpdate(true);
   logger.info('[job][snapshot]: Start snapshot job');
   logger.info(`[job][snapshot]: index: [${jobConfig.index}]`);
@@ -93,7 +93,7 @@ async function downloadAndInsertSnapshot(jobConfig) {
  *
  * @returns {Promise<void>}
  */
-async function insertChangefilesOnPeriod(jobConfig) {
+async function insertChangefilesOnPeriodProcess(jobConfig) {
   setInUpdate(true);
   const { interval, startDate, endDate } = jobConfig;
   logger.info('[job][period]: Start period job');
@@ -154,7 +154,7 @@ async function insertChangefilesOnPeriod(jobConfig) {
  *
  * @returns {Promise<void>}
  */
-async function insertChangefile(jobConfig) {
+async function insertChangefileProcess(jobConfig) {
   setInUpdate(true);
   logger.info(`[job][${jobConfig.type}]: Start file job`);
   logger.info(`[job][${jobConfig.type}]: index: [${jobConfig.index}]`);
@@ -184,7 +184,7 @@ async function insertChangefile(jobConfig) {
  *
  * @returns {Promise<void>}
  */
-async function insertWithOaHistoryJob(jobConfig) {
+async function insertWithOaHistoryProcess(jobConfig) {
   setInUpdate(true);
   const {
     interval, startDate, endDate, cleanFile,
@@ -238,8 +238,8 @@ async function insertWithOaHistoryJob(jobConfig) {
 
 module.exports = {
   downloadSnapshotProcess,
-  downloadAndInsertSnapshot,
-  insertChangefilesOnPeriod,
-  insertChangefile,
-  insertWithOaHistoryJob,
+  downloadAndInsertSnapshotProcess,
+  insertChangefilesOnPeriodProcess,
+  insertChangefileProcess,
+  insertWithOaHistoryProcess,
 };

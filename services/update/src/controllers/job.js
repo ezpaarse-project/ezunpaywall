@@ -5,15 +5,13 @@ const { paths } = require('config');
 
 const {
   downloadSnapshotProcess,
-  downloadAndInsertSnapshot,
-  insertChangefilesOnPeriod,
-  insertChangefile,
-  insertWithOaHistoryJob,
-} = require('../job');
+  downloadAndInsertSnapshotProcess,
+  insertChangefilesOnPeriodProcess,
+  insertChangefileProcess,
+  insertWithOaHistoryProcess,
+} = require('../process');
 
-const {
-  rollBack,
-} = require('../history');
+const { rollBack } = require('../process/history');
 
 /**
  * Controller to start job that download snapshot.
@@ -44,7 +42,7 @@ async function downloadAndInsertSnapshotJob(req, res, next) {
     limit: -1,
   };
 
-  downloadAndInsertSnapshot(jobConfig);
+  downloadAndInsertSnapshotProcess(jobConfig);
   return res.status(202).json();
 }
 
@@ -83,13 +81,13 @@ async function insertChangefilesOnPeriodJob(req, res, next) {
     if (interval === 'week') jobConfig.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
     if (interval === 'day') jobConfig.startDate = format(new Date(), 'yyyy-MM-dd');
 
-    insertChangefilesOnPeriod(jobConfig);
+    insertChangefilesOnPeriodProcess(jobConfig);
     return res.status(202).json();
   }
 
   if (startDate && !endDate) jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
 
-  insertChangefilesOnPeriod(jobConfig);
+  insertChangefilesOnPeriodProcess(jobConfig);
   return res.status(202).json();
 }
 
@@ -110,7 +108,7 @@ async function insertChangefileJob(req, res, next) {
 
   jobConfig.type = 'changefile';
 
-  insertChangefile(jobConfig);
+  insertChangefileProcess(jobConfig);
 
   return res.status(202).json();
 }
@@ -133,7 +131,7 @@ async function insertSnapshotJob(req, res, next) {
 
   jobConfig.type = 'snapshot';
 
-  insertChangefile(jobConfig);
+  insertChangefileProcess(jobConfig);
 
   return res.status(202).json();
 }
@@ -173,13 +171,13 @@ async function insertWithOaHistory(req, res, next) {
     if (interval === 'week') jobConfig.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
     if (interval === 'day') jobConfig.startDate = format(new Date(), 'yyyy-MM-dd');
 
-    insertWithOaHistoryJob(jobConfig);
+    insertWithOaHistoryProcess(jobConfig);
     return res.status(202).json();
   }
 
   if (startDate && !endDate) jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
 
-  insertWithOaHistoryJob(jobConfig);
+  insertWithOaHistoryProcess(jobConfig);
   return res.status(202).json();
 }
 

@@ -1,4 +1,4 @@
-const { getStatus, setInUpdate } = require('../status');
+const { getStatus, setInUpdate } = require('../lib/status');
 
 /**
  * Controller to get status of update.
