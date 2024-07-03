@@ -16,6 +16,7 @@
             v-bind="props"
             icon="mdi-reload"
             :disabled="loading"
+            :loading="loading"
             @click.stop="getHealths()"
           />
         </template>
@@ -32,7 +33,7 @@
       <Loader />
     </v-row>
     <NoData
-      v-else-if="!healths || Object.keys(healths).length === 0"
+      v-else-if="!services || Object.keys(services).length === 0"
       :text="t('administration.health.noHealth')"
     />
     <v-row
@@ -40,8 +41,8 @@
       class="ma-2"
     >
       <v-col
-        v-for="(health, name) in healths"
-        :key="name"
+        v-for="service in services"
+        :key="service.name"
         cols="12"
         sm="6"
         md="4"
@@ -49,8 +50,9 @@
         xl="3"
       >
         <HealthCard
-          :name="name"
-          :health="health"
+          ref="healthCards"
+          :name="service.name"
+          :api="service.api"
         />
       </v-col>
     </v-row>
@@ -63,34 +65,37 @@ import HealthCard from '@/components/administration/health/HealthCard.vue';
 import Loader from '@/components/skeleton/Loader.vue';
 import NoData from '@/components/skeleton/NoData.vue';
 
-import { useSnacksStore } from '@/store/snacks';
-
 const { t } = useI18n();
-const snackStore = useSnacksStore();
-const { $health } = useNuxtApp();
 
 const loading = ref(false);
-const healths = ref(false);
 
-async function getHealths() {
-  let res;
+const {
+  $graphql,
+  $update,
+  $enrich,
+  $apikey,
+  $mail,
+} = useNuxtApp();
+
+const healthCards = ref([]);
+
+const services = [
+  { name: 'graphql', api: $graphql },
+  { name: 'update', api: $update },
+  { name: 'enrich', api: $enrich },
+  { name: 'apikey', api: $apikey },
+  { name: 'mail', api: $mail },
+];
+
+function getHealths() {
   loading.value = true;
-  try {
-    res = await $health({
-      method: 'GET',
-      url: '/status',
+  if (healthCards.value) {
+    healthCards.value.forEach((card) => {
+      if (card?.getHealth) {
+        card.getHealth();
+      }
     });
-  } catch (e) {
-    snackStore.error(t('error.health.get'));
-    loading.value = false;
-    return;
   }
-  healths.value = res?.data;
   loading.value = false;
 }
-
-onMounted(() => {
-  getHealths();
-});
-
 </script>

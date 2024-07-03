@@ -68,11 +68,6 @@ server {
     proxy_pass ${MAIL_HOST};
   }
 
-  location /api/health {
-    rewrite ^/api/health(/.*)$ $1 break;
-    proxy_pass ${HEALTH_HOST};
-  }
-
   ## Diffie-Hellman
   ssl_ecdh_curve secp384r1;
 

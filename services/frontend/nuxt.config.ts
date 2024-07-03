@@ -33,6 +33,15 @@ export default defineNuxtConfig({
     port: 3000,
   },
   devtools: { enabled: true },
+  vite: {
+    server: {
+      hmr: {
+        protocol: 'ws',
+        host: '0.0.0.0',
+        clientPort: 80,
+      },
+    },
+  },
   modules: ['@pinia/nuxt', '@nuxtjs/i18n'],
   build: {
     transpile: ['vuetify', 'date-fns', '@intlify/core-base'],
