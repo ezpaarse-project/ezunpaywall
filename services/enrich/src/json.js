@@ -138,7 +138,7 @@ async function enrichInFile(data, enrichConfig, state) {
   try {
     response = await requestGraphql(data, args, index, state.apikey);
   } catch (err) {
-    logger.error(`[graphql] Cannot request graphql service at ${config.get('graphql.host')}/graphql`, JSON.stringify(err?.response?.data?.errors));
+    logger.error(`[graphql] Cannot request graphql service at ${config.graphql.host}/graphql`, JSON.stringify(err?.response?.data?.errors));
     throw err;
   }
   // enrichment

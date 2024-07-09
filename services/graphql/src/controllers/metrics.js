@@ -1,4 +1,4 @@
-const config = require('config');
+const { elasticsearch } = require('config');
 const logger = require('../logger/appLogger');
 
 const { getMetrics } = require('../services/elastic');
@@ -19,7 +19,7 @@ let metrics = {
  * @returns {Promise<void>}
  */
 async function setMetrics() {
-  metrics = await getMetrics(config.get('elasticsearch.indexBase'));
+  metrics = await getMetrics(elasticsearch.indexBase);
   logger.info('[metrics] metrics is updated');
 }
 

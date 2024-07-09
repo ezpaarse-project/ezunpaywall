@@ -2,12 +2,12 @@ const axios = require('axios');
 const config = require('config');
 const logger = require('../logger/appLogger');
 
-const unpaywall = axios.create({
-  baseURL: config.get('unpaywall.host'),
-});
-unpaywall.baseURL = config.get('unpaywall.host');
+const { apikey } = config.unpaywall;
 
-const apikey = config.get('unpaywall.apikey');
+const unpaywall = axios.create({
+  baseURL: config.unpaywall.host,
+});
+unpaywall.baseURL = config.unpaywall.host;
 
 /**
  * Ping unpaywall.

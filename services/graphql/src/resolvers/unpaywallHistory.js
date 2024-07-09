@@ -1,10 +1,7 @@
-const config = require('config');
+const { elasticsearch } = require('config');
 const checkApikey = require('../middlewares/apikey');
 const { search } = require('../services/elastic');
 const logger = require('../logger/appLogger');
-
-const indexBase = config.get('elasticsearch.indexBase');
-const indexHistory = config.get('elasticsearch.indexHistory');
 
 async function unpaywallHistory(parent, args, req, info) {
   // TODO perf: use one requet than two
@@ -15,7 +12,7 @@ async function unpaywallHistory(parent, args, req, info) {
   const { attributes } = req;
   let index = req?.get('index');
 
-  if (!index) { index = indexHistory; }
+  if (!index) { index = elasticsearch.indexHistory; }
 
   const dois = [];
 
@@ -80,9 +77,9 @@ async function unpaywallHistory(parent, args, req, info) {
     let baseRes;
     // get current data
     try {
-      baseRes = await search(indexBase, dois.length, cloneBody);
+      baseRes = await search(elasticsearch.indexBase, dois.length, cloneBody);
     } catch (err) {
-      logger.error(`[apollo]: Cannot search document in index [${indexBase}]`, err);
+      logger.error(`[apollo]: Cannot search document in index [${elasticsearch.indexBase}]`, err);
       throw err;
     }
     if (baseRes.length > 0) {
@@ -112,9 +109,9 @@ async function unpaywallHistory(parent, args, req, info) {
     let baseRes;
     // get current data
     try {
-      baseRes = await search(indexBase, dois.length, cloneBody);
+      baseRes = await search(elasticsearch.indexBase, dois.length, cloneBody);
     } catch (err) {
-      logger.error(`[apollo]: Cannot search document in index [${indexBase}]`, err);
+      logger.error(`[apollo]: Cannot search document in index [${elasticsearch.indexBase}]`, err);
       throw err;
     }
 

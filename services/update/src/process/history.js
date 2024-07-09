@@ -5,7 +5,7 @@
 const path = require('path');
 const fs = require('fs-extra');
 const readline = require('readline');
-const config = require('config');
+const { elasticsearch } = require('config');
 const zlib = require('zlib');
 const { format } = require('date-fns');
 const { paths } = require('config');
@@ -29,7 +29,7 @@ const {
   searchWithRange,
 } = require('../services/elastic');
 
-const maxBulkSize = config.get('elasticsearch.maxBulkSize');
+const { maxBulkSize } = elasticsearch;
 
 /**
  * Insert data on elastic with elastic bulk request.

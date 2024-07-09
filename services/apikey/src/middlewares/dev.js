@@ -1,4 +1,4 @@
-const config = require('config');
+const { nodeEnv } = require('config');
 
 /**
  * dev middleware that checks if NODE_ENV is equal to development
@@ -10,7 +10,7 @@ const config = require('config');
  * This middleware need a header that contains the apikey.
  */
 async function dev(req, res, next) {
-  const env = config.get('nodeEnv');
+  const env = nodeEnv;
 
   if (env !== 'development') {
     return res.status(404).json({ message: 'Not found' });

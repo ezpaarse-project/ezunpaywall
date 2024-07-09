@@ -1,20 +1,20 @@
 const path = require('path');
-const redis = require('redis');
+const { createClient } = require('redis');
 const util = require('util');
-const config = require('config');
+const { redis } = require('config');
 const fs = require('fs-extra');
 
 const logger = require('../logger/appLogger');
 
 let apiKeys;
 
-const redisClient = redis.createClient({
+const redisClient = createClient({
   legacyMode: true,
   socket: {
-    host: config.get('redis.host'),
-    port: config.get('redis.port'),
+    host: redis.host,
+    port: redis.port,
   },
-  password: config.get('redis.password'),
+  password: redis.password,
 });
 
 redisClient.get = util.promisify(redisClient.get);
@@ -29,7 +29,7 @@ redisClient.on('error', (err) => {
 });
 
 /**
- * Load the dev apikeys on redis from apikey-dev.json.
+ * Load the dev apiKeys on redis from apikey-dev.json.
  * Using for test.
  *
  * @returns {Promise<void>}
@@ -46,13 +46,13 @@ async function load() {
       await redisClient.set(apikey, JSON.stringify(configApikey));
       logger.info(`[redis] ${configApikey.name} is loaded`);
     } catch (err) {
-      logger.error(`[redis] Cannot load [${apikey}] with config [${JSON.stringify(config)}]`, err);
+      logger.error(`[redis] Cannot load [${apikey}] with config [${JSON.stringify(configApikey)}]`, err);
     }
   }
 }
 
 /**
- * Load the dev apikeys on redis from apikey-dev.json.
+ * Load the dev apiKeys on redis from apikey-dev.json.
  * Using for test.
  *
  * @returns {Promise<boolean>} ping
@@ -61,7 +61,7 @@ async function pingRedis() {
   try {
     await redisClient.ping();
   } catch (err) {
-    logger.error(`[redis] Cannot ping ${config.get('redis.host')}:${config.get('redis.port')}`, err);
+    logger.error(`[redis] Cannot ping ${redis.host}:${redis.port}`, err);
     return false;
   }
   return true;
@@ -71,10 +71,10 @@ async function startConnectionRedis() {
   try {
     await redisClient.connect();
   } catch (err) {
-    logger.error(`[redis] Cannot start connection ${config.get('redis.host')}:${config.get('redis.port')}`, err);
+    logger.error(`[redis] Cannot start connection ${redis.host}:${redis.port}`, err);
     return false;
   }
-  logger.info(`[redis] connect success ${config.get('redis.host')}:${config.get('redis.port')}`);
+  logger.info(`[redis] connect success ${redis.host}:${redis.port}`);
   return true;
 }
 

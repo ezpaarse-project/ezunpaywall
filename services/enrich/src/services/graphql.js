@@ -4,10 +4,10 @@ const config = require('config');
 const logger = require('../logger/appLogger');
 
 const graphql = axios.create({
-  baseURL: config.get('graphql.host'),
+  baseURL: config.graphql.host,
   timeout: 30000,
 });
-graphql.host = config.get('graphql.host');
+graphql.host = config.graphql.host;
 
 /**
  * Request graphql service to get unpaywall data.

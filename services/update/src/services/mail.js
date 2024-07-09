@@ -3,12 +3,12 @@ const config = require('config');
 
 const logger = require('../logger/appLogger');
 
-const apikey = config.get('mail.apikey');
+const { apikey } = config.mail;
 
 const mail = axios.create({
-  baseURL: config.get('mail.host'),
+  baseURL: config.mail.host,
 });
-mail.host = config.get('mail.host');
+mail.host = config.mail.host;
 
 /**
  * Ping mail service.

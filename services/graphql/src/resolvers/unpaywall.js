@@ -1,9 +1,7 @@
-const config = require('config');
+const { elasticsearch } = require('config');
 
 const checkApikey = require('../middlewares/apikey');
 const { search } = require('../services/elastic');
-
-const indexBase = config.get('elasticsearch.indexBase');
 
 async function unpaywall(parent, args, req, info) {
   await checkApikey(req, args, info);
@@ -12,7 +10,7 @@ async function unpaywall(parent, args, req, info) {
   let index = req?.get('index');
 
   if (!index) {
-    index = indexBase;
+    index = elasticsearch.indexBase;
   }
 
   // Normalize request

@@ -36,15 +36,15 @@ A web interface is also available as a demonstrator. It allows you to :
 On the front, a nginx acts as a reverse proxy, redirecting all these services to a single entry point.
 
 Each micro service : 
-* [graphql](./src/graphql#ezunpaywall-graphql)
-* [enrich](./src/enrich#ezunpaywall-enrich)
-* [update](./src/update#ezunpaywall-update)
-* [apikey](./src/apikey#ezunpaywall-apikey) 
-* [frontend](./src/frontend#ezunpaywall-frontend)
-* [health](./src/health#ezunpaywall-health)
-* [nginx](./src/nginx#ezunpaywall-nginx)
-* [mail](./src/mail#ezunpaywall-mail)
-* [fakeUnpaywall](./src/fakeUnpaywall#ezunpaywall-fakeUnpaywall) (only for dev)
+* [graphql](./services/graphql#ezunpaywall-graphql)
+* [enrich](./services/enrich#ezunpaywall-enrich)
+* [update](./services/update#ezunpaywall-update)
+* [apikey](./services/apikey#ezunpaywall-apikey) 
+* [frontend](./services/frontend#ezunpaywall-frontend)
+* [health](./services/health#ezunpaywall-health)
+* [nginx](./services/nginx#ezunpaywall-nginx)
+* [mail](./services/mail#ezunpaywall-mail)
+* [fakeUnpaywall](./services/fakeUnpaywall#ezunpaywall-fakeUnpaywall) (only for dev)
 
 ## Network-flow
 
