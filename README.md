@@ -13,13 +13,12 @@ This app is available at https://unpaywall.inist.fr/.
         - [Tests](#Tests)
     - [Deployment](#Deployment)
         - [Prerequisites](#Prerequisites)
-        - [Environment variables](#Environment-variables)
 - [Data update](#Data-update)
 - [API Graphql](#API-graphql)
 
 ## Description
 
-ezunpaywall operates as a micro-service. It is updated daily with its own update service. Data is stored in an elastic index. To access this data, ezunpaywall offers 2 types of access:
+ezunpaywall operates as a service. It is updated daily with its own update service. Data is stored in an elastic index. To access this data, ezunpaywall offers 2 types of access:
 - A graphql API for querying unpaywall data via one or more DOIs
 - A file enrichment service that allows you to enrich a csv or jsonl file containing a column or a doi key.
 
@@ -35,7 +34,7 @@ A web interface is also available as a demonstrator. It allows you to :
 
 On the front, a nginx acts as a reverse proxy, redirecting all these services to a single entry point.
 
-Each micro service : 
+Each service : 
 * [graphql](./services/graphql#ezunpaywall-graphql)
 * [enrich](./services/enrich#ezunpaywall-enrich)
 * [update](./services/update#ezunpaywall-update)

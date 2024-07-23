@@ -160,7 +160,7 @@ This cron automatically updates unpaywall data and populates the history. This c
 - [unpaywall-base](./mapping/unpaywall-base.json)
 - [unpaywall-history](./mapping/unpaywall-history.json)
 
-## Log format
+## Access Log format
 
 ```
 :ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"

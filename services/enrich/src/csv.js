@@ -253,8 +253,8 @@ async function enrichInFile(data, enrichConfig, state) {
 /**
  * Starts the enrichment process for CSV file.
  * step :
- * - read file by paquet of 1000
- * - enrich the paquet
+ * - read file by packet of 1000
+ * - enrich the packet
  * - write the enriched data in enriched file
  *
  * A state is updated during the job.
