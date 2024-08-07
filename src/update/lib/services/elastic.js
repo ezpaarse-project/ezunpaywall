@@ -27,7 +27,7 @@ if (isProd) {
 
 const elasticClient = new Client({
   node: {
-    url: new URL(`${elasticsearch.host}:${elasticsearch.port}`),
+    url: new URL(elasticsearch.url || `${elasticsearch.host}:${elasticsearch.port}`),
     auth: {
       username: elasticsearch.user,
       password: elasticsearch.password,

@@ -6,6 +6,7 @@
   "apikeyHost": "http://apikey:3000",
   "mailHost": "http://mail:3000",
   "elasticsearch": {
+    "url": "",
     "host": "http://elastic",
     "port": 9200,
     "user": "elastic",
