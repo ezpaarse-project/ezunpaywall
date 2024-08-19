@@ -30,8 +30,7 @@
   "cron": {
     "downloadSnapshot": {
       "schedule": "CRON_DOWNLOAD_SNAPSHOT_SCHEDULE",
-      "active": "CRON_DOWNLOAD_SNAPSHOT_ACTIVE",
-      "index": "CRON_DOWNLOAD_SNAPSHOT_INDEX"
+      "active": "CRON_DOWNLOAD_SNAPSHOT_ACTIVE"
     },
     "dataUpdate": {
       "schedule": "CRON_DATA_UPDATE_SCHEDULE",

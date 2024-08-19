@@ -35,14 +35,11 @@ A web interface is also available as a demonstrator. It allows you to :
 On the front, a nginx acts as a reverse proxy, redirecting all these services to a single entry point.
 
 Each service : 
+* [admin](./services/update#ezunpaywall-admin)
 * [graphql](./services/graphql#ezunpaywall-graphql)
 * [enrich](./services/enrich#ezunpaywall-enrich)
-* [update](./services/update#ezunpaywall-update)
-* [apikey](./services/apikey#ezunpaywall-apikey) 
 * [frontend](./services/frontend#ezunpaywall-frontend)
-* [health](./services/health#ezunpaywall-health)
 * [nginx](./services/nginx#ezunpaywall-nginx)
-* [mail](./services/mail#ezunpaywall-mail)
 * [fakeUnpaywall](./services/fakeUnpaywall#ezunpaywall-fakeUnpaywall) (only for dev)
 
 ## Network-flow
@@ -91,16 +88,15 @@ To run tests, you need ezunpaywall to be launched in dev mode with fakeUnpaywall
 ```bash
 # there are alias on root folder
 npm run test
-npm run test:apikey
+npm run test:admin
 npm run test:enrich
 npm run test:graphql
-npm run test:update
+
 
 # you can run test for each service
-ezunpaywall/src/apikey npm run test
+ezunpaywall/src/admin npm run test
 ezunpaywall/src/enrich npm run test
 ezunpaywall/src/graphql npm run test
-ezunpaywall/src/update npm run test
 ```
 ### Deployment
 
@@ -146,4 +142,4 @@ docker-compose ps
 ## Data update 
 
 You can update your data via update snapshots provided by unpaywall on a weekly or daily basis (if you have API key).
-in the update service, there is a cron that allows to automatically update the data from unpaywall, weekly or daily.
+in the admin service, there is a cron that allows to automatically update the data from unpaywall, weekly or daily.

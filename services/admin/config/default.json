@@ -30,8 +30,7 @@
   "cron": {
     "downloadSnapshot": {
       "schedule": "0 0 0 1 * *",
-      "active": true,
-      "index": "unpaywall"
+      "active": true
     },
     "dataUpdate": {
       "schedule": "0 0 0 * * *",

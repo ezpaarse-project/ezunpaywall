@@ -88,7 +88,7 @@ One cron automatically update metrics of unpaywall data. the elastic request tak
 ## Log format
 
 ```
-:ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"
+:date :ip :method :url :statusCode :userAgent :responseTime :countDOI
 ```
 
 ## Open API
