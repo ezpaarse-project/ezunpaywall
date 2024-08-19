@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs-extra');
+const fsp = require('fs/promises');
 
 const changefilesWeek = require('../../snapshots/changefiles-week-example.json');
 const changefilesDay = require('../../snapshots/changefiles-day-example.json');
@@ -49,7 +49,7 @@ async function updateChangefilesExample(interval) {
   }
 
   try {
-    await fs.writeFile(changefilesWeekPath, JSON.stringify(changefilesWeek, null, 2), 'utf8');
+    await fsp.writeFile(changefilesWeekPath, JSON.stringify(changefilesWeek, null, 2), 'utf8');
   } catch (err) {
     console.error(`Cannot write ${JSON.stringify(changefilesWeek, null, 2)} in file "${changefilesWeekPath}"`);
     console.error(err);
@@ -104,7 +104,7 @@ async function updateChangefilesExample(interval) {
       .toISOString().slice(0, 19);
 
     try {
-      await fs.writeFile(changefilesDayPath, JSON.stringify(changefilesDay, null, 2), 'utf8');
+      await fsp.writeFile(changefilesDayPath, JSON.stringify(changefilesDay, null, 2), 'utf8');
     } catch (err) {
       console.error(`Cannot write ${JSON.stringify(changefilesDay, null, 2)} in file "${changefilesDayPath}"`);
       console.error(err);

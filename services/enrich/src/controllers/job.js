@@ -1,8 +1,8 @@
-const fs = require('fs-extra');
+const fs = require('fs');
 const path = require('path');
 const { paths } = require('config');
 
-const { enrichJSON, enrichCSV } = require('../job');
+const { enrichJSON, enrichCSV } = require('../lib/job');
 
 /**
  * Controller to do enrich job.
@@ -20,8 +20,8 @@ async function job(req, res, next) {
     type, args, index, separator, prefix,
   } = config;
 
-  if (!await fs.pathExists(path.resolve(paths.data.uploadDir, apikey, `${id}.${type}`))) {
-    return res.status(404).json({ message: `[file] ${id}.${type} not found` });
+  if (!await fs.existsSync(path.resolve(paths.data.uploadDir, apikey, `${id}.${type}`))) {
+    return res.status(404).json({ message: `[file]: ${id}.${type} not found` });
   }
 
   if (type === 'jsonl') {

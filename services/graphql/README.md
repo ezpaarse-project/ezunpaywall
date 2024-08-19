@@ -13,7 +13,6 @@ warn: [config]: Elastic password has the default value
 
 info: {
   "nodeEnv": "development",
-  "accessLogRotate": false,
   "timezone": "Europe/Paris"
   "redis": {
     "host": "redis",
@@ -51,7 +50,7 @@ info: {
 
 ## Activity diagram
 
-![Activity-diagram](./doc/activity-diagram-graphql.png)
+![Activity-diagram](./docs/activity-diagram-graphql.png)
 
 ### Object structure
 

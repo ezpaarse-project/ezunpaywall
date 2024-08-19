@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
+const adminURL = process.env.ADMIN_URL || 'http://localhost:59703';
 
 /**
  * Load default dev apikey.
@@ -12,7 +12,7 @@ const apikeyURL = process.env.APIKEY_HOST || 'http://localhost:59704';
  */
 async function loadDevAPIKey() {
   try {
-    await chai.request(apikeyURL)
+    await chai.request(adminURL)
       .post('/keys/loadDev')
       .set('x-api-key', 'changeme');
   } catch (err) {
@@ -28,7 +28,7 @@ async function loadDevAPIKey() {
  */
 async function deleteAllAPIKey() {
   try {
-    await chai.request(apikeyURL)
+    await chai.request(adminURL)
       .delete('/keys')
       .set('x-api-key', 'changeme');
   } catch (err) {

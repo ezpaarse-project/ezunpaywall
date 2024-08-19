@@ -32,7 +32,7 @@
       </v-chip>
     </v-row>
 
-    <SelectSeparator v-if="type === 'csv'" />
+    <EnrichSelectSeparator v-if="type === 'csv'" />
 
     <v-toolbar
       color="secondary"
@@ -43,10 +43,10 @@
       <v-toolbar-title>
         {{ t("enrich.unpaywallAttributes") }}
       </v-toolbar-title>
-      <HelpButton />
+      <UnpaywallArgsHelpButton />
     </v-toolbar>
 
-    <SelectorAttributes
+    <UnpaywallArgsSelectorAttributes
       :hide-oa-locations="type === 'csv'"
       :default-simple="['doi']"
       :default-best-oa-location="['evidence', 'is_best']"
@@ -63,14 +63,6 @@
 </template>
 
 <script setup>
-
-import { storeToRefs } from 'pinia';
-
-import HelpButton from '@/components/unpaywallArgs/HelpButton.vue';
-import SelectorAttributes from '@/components/unpaywallArgs/SelectorAttributes.vue';
-import SelectSeparator from '@/components/enrich/SelectSeparator.vue';
-
-import { useEnrichStore } from '@/store/enrich';
 
 const { t } = useI18n();
 const enrichStore = useEnrichStore();

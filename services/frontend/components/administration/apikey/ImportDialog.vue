@@ -38,15 +38,10 @@
 
 <script setup>
 
-import { storeToRefs } from 'pinia';
-
-import { useSnacksStore } from '@/store/snacks';
-import { useAdminStore } from '@/store/admin';
-
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $apikey } = useNuxtApp();
+const { $admin } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
 
@@ -71,10 +66,9 @@ async function loadApikeys() {
   loading.value = true;
 
   try {
-    await $apikey({
+    await $admin('/apikeys/load', {
       method: 'POST',
-      url: '/keys/load',
-      data: parsedApikeys,
+      body: parsedApikeys,
       headers: {
         'X-API-KEY': password.value,
       },

@@ -1,5 +1,6 @@
 const path = require('path');
-const fs = require('fs-extra');
+const fs = require('fs');
+const fsp = require('fs/promises');
 const { paths } = require('config');
 
 async function upsertDirectoryOfUser(req, res, next) {
@@ -7,14 +8,14 @@ async function upsertDirectoryOfUser(req, res, next) {
 
   let dirExist = false;
   try {
-    dirExist = await fs.exists(path.resolve(paths.data.statesDir, apikey));
+    dirExist = await fs.existsSync(path.resolve(paths.data.statesDir, apikey));
   } catch (err) {
     return next({ message: err.message });
   }
 
   if (!dirExist) {
     try {
-      await fs.mkdir(path.resolve(paths.data.statesDir, apikey));
+      await fsp.mkdir(path.resolve(paths.data.statesDir, apikey));
     } catch (err) {
       return next({ message: err.message });
     }

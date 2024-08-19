@@ -14,24 +14,23 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "1.0.0",
-    "@nuxt/eslint-config": "~0.2.0",
-    "eslint": "~8.48.0",
-    "eslint-config-airbnb-base": "~15.0.0",
-    "eslint-plugin-import": "~2.28.1",
-    "eslint-plugin-vue": "~9.17.0",
-    "nuxt": "3.7.4",
-    "vue-i18n": "~9.2.2"
+    "@nuxt/eslint-config": "^0.3.13",
+    "eslint": "8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-vue": "^9.17.0",
+    "nuxt": "3.12.3",
+    "vue-i18n": "^9.13.1"
   },
   "dependencies": {
-    "@highlightjs/vue-plugin": "~2.1.0",
-    "@mdi/font": "~7.2.96",
-    "@nuxtjs/i18n": "~8.0.0-rc.2",
-    "@pinia/nuxt": "~0.4.11",
-    "axios": "~1.4.0",
-    "highlight.js": "^11.9.0",
-    "pinia": "~2.1.6",
-    "sass": "~1.65.1",
+    "@highlightjs/vue-plugin": "^2.1.0",
+    "@mdi/font": "^7.4.47",
+    "@nuxtjs/i18n": "^8.0.0-rc.2",
+    "@pinia/nuxt": "^0.5.1",
+    "highlight.js": "^11.10.0",
+    "pinia": "^2.1.7",
+    "sass": "^1.77.8",
     "swagger-ui-dist": "^5.11.8",
-    "vuetify": "3.5.6"
+    "vuetify": "^3.6.12"
   }
 }

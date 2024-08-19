@@ -4,7 +4,7 @@
       <NuxtLayout>
         <SkeletonAppBar @menu-update="updateVisibleMenu()" />
         <SkeletonAppMenu v-model="visible" />
-        <SkeletonSnackbar />
+        <Snackbar />
         <v-main>
           <NuxtPage />
         </v-main>

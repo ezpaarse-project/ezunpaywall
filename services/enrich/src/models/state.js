@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
 const path = require('path');
-const fs = require('fs-extra');
+const fs = require('fs');
+const fsp = require('fs/promises');
 const { paths } = require('config');
 
-const logger = require('../logger/appLogger');
+const logger = require('../lib/logger/appLogger');
 
 /**
  * Create a new State in file on folder data/state/<apikey>/<id>.json
@@ -34,14 +35,14 @@ async function createState(id, apikey) {
 
   const dir = path.resolve(paths.data.statesDir, apikey);
 
-  const exist = await fs.exists(dir);
+  const exist = await fs.existsSync(dir);
 
   if (!exist) {
-    await fs.mkdir(dir);
+    await fsp.mkdir(dir);
   }
 
   try {
-    await fs.writeFile(filenamePath, JSON.stringify(state, null, 2));
+    await fsp.writeFile(filenamePath, JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`[state]: Cannot write [${JSON.stringify(state, null, 2)}] in [${filenamePath}]`, err);
     throw err;
@@ -63,7 +64,7 @@ async function getState(filename, apikey) {
   let state;
 
   try {
-    state = await fs.readFile(filenamePath, 'utf8');
+    state = await fsp.readFile(filenamePath, 'utf8');
   } catch (err) {
     logger.error(`[state]: Cannot read ["${filenamePath}"] file`, err);
     throw err;
@@ -88,7 +89,7 @@ async function getState(filename, apikey) {
  */
 async function updateStateInFile(state) {
   try {
-    await fs.writeFile(state.path, JSON.stringify(state, null, 2));
+    await fsp.writeFile(state.path, JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${state.path}`, err);
     throw err;

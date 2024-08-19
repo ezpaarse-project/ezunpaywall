@@ -1,6 +1,6 @@
-const promiseWithTimeout = require('../ping');
-const { pingRedis } = require('../services/redis');
-const { pingGraphql } = require('../services/graphql');
+const promiseWithTimeout = require('../lib/ping');
+const { pingRedis } = require('../lib/redis');
+const { pingGraphql } = require('../lib/graphql');
 
 /**
  * Controller to get health of all services connected to apikey service.

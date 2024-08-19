@@ -31,7 +31,7 @@ const {
 } = storeToRefs(enrichStore);
 
 function forceFileDownload(response) {
-  const url = window.URL.createObjectURL(new Blob([response.data]));
+  const url = window.URL.createObjectURL(new Blob([response]));
   const link = document.createElement('a');
   link.href = url;
   link.setAttribute('download', `${resultID.value}.${type.value}`);
@@ -42,9 +42,8 @@ function forceFileDownload(response) {
 async function download() {
   let res;
   try {
-    res = await $enrich({
+    res = await $enrich(`/enriched/${resultID.value}.${type.value}`, {
       method: 'GET',
-      url: `/enriched/${resultID.value}.${type.value}`,
       headers: {
         'x-api-key': apikey.value,
       },

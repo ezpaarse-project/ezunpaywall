@@ -9,15 +9,13 @@
     </template>
     {{ t("administration.cron.title") }}
   </v-tooltip>
-  <CronDialog
+  <AdministrationUpdateCronDialog
     v-model="visible"
     :type="props.type"
   />
 </template>
 
 <script setup>
-
-import CronDialog from '@/components/administration/update/CronDialog.vue';
 
 const { t } = useI18n();
 

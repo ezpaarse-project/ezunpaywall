@@ -1,5 +1,5 @@
-const Cron = require('../../cron');
-const logger = require('../../logger/appLogger');
+const Cron = require('../../lib/cron');
+const logger = require('../../lib/logger/appLogger');
 
 const { setMetrics } = require('../metrics');
 

@@ -38,17 +38,14 @@
 
 <script setup>
 
-import { useSnacksStore } from '@/store/snacks';
-import { useAdminStore } from '@/store/admin';
-
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $apikey } = useNuxtApp();
+const { $admin } = useNuxtApp();
 
 const loading = ref(false);
 const valid = ref(false);
-const password = ref('password');
+const password = ref('changeme');
 const passwordVisible = ref(false);
 
 const passwordRules = computed(() => (value) => !!value || t('required'));
@@ -56,14 +53,13 @@ const passwordRules = computed(() => (value) => !!value || t('required'));
 async function tryLogin() {
   loading.value = true;
   try {
-    await $apikey({
+    await $admin('/login', {
       method: 'POST',
-      url: '/login',
       headers: {
         'X-API-KEY': password.value,
       },
     });
-  } catch (e) {
+  } catch (err) {
     snackStore.error(t('error.administration.invalidPassword'));
     loading.value = false;
     return;

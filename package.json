@@ -6,27 +6,22 @@
    "license": "CeCILL",
    "scripts": {
       "prepare": "husky install",
-      "install:apikey": "npm --prefix services/apikey install",
       "install:enrich": "npm --prefix services/enrich install",
       "install:fakeUnpaywall": "npm --prefix services/fakeUnpaywall install",
       "install:frontend": "npm --prefix services/frontend install",
       "install:graphql": "npm --prefix services/graphql install",
-      "install:mail": "npm --prefix services/mail install",
-      "install:update": "npm --prefix services/update install",
-      "postinstall": "npm run install:apikey; npm run install:enrich; npm run install:fakeUnpaywall; npm run install:frontend; npm run install:graphql; npm run install:mail; npm run install:update",
-      "test:apikey": "npm --prefix services/apikey run test",
+      "install:admin": "npm --prefix services/admin install",
+      "postinstall": "npm run install:enrich; npm run install:fakeUnpaywall; npm run install:frontend; npm run install:graphql; npm run install:admin",
       "test:enrich": "npm --prefix services/enrich run test",
       "test:graphql": "npm --prefix services/graphql run test",
-      "test:update": "npm --prefix services/update run test",
-      "test": "npm run test:apikey; npm run test:enrich; npm run test:graphql; npm run test:update;",
-      "audit:apikey": "npm --prefix services/apikey audit",
+      "test:admin": "npm --prefix services/admin run test",
+      "test": "npm run test:enrich; npm run test:graphql; npm run test:admin",
       "audit:enrich": "npm --prefix services/enrich audit",
       "audit:fakeUnpaywall": "npm --prefix services/fakeUnpaywall audit",
       "audit:frontend": "npm --prefix services/frontend audit",
       "audit:graphql": "npm --prefix services/graphql audit",
-      "audit:mail": "npm --prefix services/mail audit",
-      "audit:update": "npm --prefix services/update audit",
-      "audit": "npm run audit:apikey; npm run audit:enrich; npm run audit:fakeUnpaywall; npm run audit:frontend; npm run audit:graphql; npm run audit:mail; npm run audit:update"
+      "audit:admin": "npm --prefix services/admin audit",
+      "audit": "npm run audit:enrich; npm run audit:fakeUnpaywall; npm run audit:frontend; npm run audit:graphql; npm run audit:admin"
    },
    "devDependencies": {
       "husky": "^8.0.3"

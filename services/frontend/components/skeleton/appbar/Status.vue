@@ -32,13 +32,11 @@
   </v-tooltip>
 </template>
 
-<script setup>
-
-import { useSnacksStore } from '@/store/snacks';
+<script setup>;
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
-const { $update } = useNuxtApp();
+const { $admin } = useNuxtApp();
 
 const timeout = ref(null);
 const inUpdate = ref(false);
@@ -59,9 +57,8 @@ const latestFilename = computed(() => latestStep.value?.file);
 async function getState() {
   let res;
   try {
-    res = await $update({
+    res = await $admin('/states', {
       method: 'get',
-      url: '/states',
       params: {
         latest: true,
       },
@@ -69,21 +66,20 @@ async function getState() {
   } catch (err) {
     snackStore.error(t('error.status'));
   }
-  state.value = res?.data;
+  state.value = res;
 }
 
 async function checkIfUpdate() {
   let res;
   try {
-    res = await $update({
+    res = await $admin('/status', {
       method: 'get',
-      url: '/status',
     });
   } catch (err) {
     error.value = true;
   }
   if (!error.value) {
-    if (res?.data) {
+    if (res) {
       inUpdate.value = true;
       await getState();
     } else {

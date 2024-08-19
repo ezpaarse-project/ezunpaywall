@@ -1,8 +1,9 @@
 const { paths } = require('config');
 const path = require('path');
-const fs = require('fs-extra');
+const fs = require('fs');
+const fsp = require('fs/promises');
 
-const { getMostRecentFile } = require('../file');
+const { getMostRecentFile } = require('../lib/file');
 
 const { getState } = require('../models/state');
 
@@ -36,7 +37,7 @@ async function getStates(req, res, next) {
   let states;
 
   try {
-    states = await fs.readdir(path.resolve(paths.data.statesDir, apikey));
+    states = await fsp.readdir(path.resolve(paths.data.statesDir, apikey));
   } catch (err) {
     return next({ message: err.message });
   }
@@ -58,7 +59,7 @@ async function getStateByFilename(req, res, next) {
 
   let fileExist = false;
   try {
-    fileExist = await fs.exists(path.resolve(paths.data.statesDir, apikey, filename));
+    fileExist = await fs.existsSync(path.resolve(paths.data.statesDir, apikey, filename));
   } catch (err) {
     return next({ message: err.message });
   }

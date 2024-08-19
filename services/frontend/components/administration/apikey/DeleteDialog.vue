@@ -50,15 +50,10 @@
 
 <script setup>
 
-import { storeToRefs } from 'pinia';
-
-import { useSnacksStore } from '@/store/snacks';
-import { useAdminStore } from '@/store/admin';
-
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $apikey } = useNuxtApp();
+const { $admin } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
 
@@ -77,14 +72,13 @@ const loading = ref(false);
 async function deleteApikey() {
   loading.value = true;
   try {
-    await $apikey({
+    await $admin(`/apikeys/${props.apikey}`, {
       method: 'DELETE',
-      url: `/keys/${props.apikey}`,
       headers: {
         'X-API-KEY': password.value,
       },
     });
-  } catch (e) {
+  } catch (err) {
     snackStore.error(t('error.apikey.delete'));
     loading.value = false;
     return;

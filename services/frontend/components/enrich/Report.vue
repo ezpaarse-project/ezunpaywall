@@ -9,7 +9,7 @@
       lg4
       x4
     >
-      <MetricCard
+      <EnrichMetricCard
         :label="metric.label"
         :icon="metric.icon"
         :color="metric.iconColor"
@@ -20,8 +20,6 @@
 </template>
 
 <script setup>
-
-import MetricCard from '@/components/enrich/MetricCard.vue';
 
 const { t } = useI18n();
 

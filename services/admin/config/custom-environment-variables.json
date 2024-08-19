@@ -1,0 +1,59 @@
+{ 
+  "nodeEnv": "NODE_ENV",
+  "timezone": "TIMEZONE",
+  "smtp": {
+    "host": "SMTP_HOST",
+    "port": "SMTP_PORT"
+  },
+  "notifications": {
+    "sender": "NOTIFICATIONS_SENDER",
+    "receivers": "NOTIFICATIONS_RECEIVERS",
+    "machine": "NOTIFICATIONS_MACHINE"
+  },
+  "unpaywall": {
+    "url": "UNPAYWALL_URL",
+    "apikey": "UNPAYWALL_APIKEY"
+  },
+  "elasticsearch": {
+    "nodes": "ELASTICSEARCH_NODES",
+    "username": "ELASTICSEARCH_USERNAME",
+    "password": "ELASTICSEARCH_PASSWORD",
+    "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
+    "indexAlias": "ELASTICSEARCH_INDEX_ALIAS",
+    "timeout": "ELASTICSEARCH_TIMEOUT"
+  },
+  "redis":  {
+    "host": "REDIS_HOST",
+    "port": "REDIS_PORT",
+    "password": "REDIS_PASSWORD"
+  },
+  "cron": {
+    "downloadSnapshot": {
+      "schedule": "CRON_DOWNLOAD_SNAPSHOT_SCHEDULE",
+      "active": "CRON_DOWNLOAD_SNAPSHOT_ACTIVE",
+      "index": "CRON_DOWNLOAD_SNAPSHOT_INDEX"
+    },
+    "dataUpdate": {
+      "schedule": "CRON_DATA_UPDATE_SCHEDULE",
+      "active": "CRON_DATA_UPDATE_ACTIVE",
+      "index": "CRON_DATA_UPDATE_INDEX",
+      "interval": "CRON_DATA_UPDATE_INTERVAL"
+    },
+    "dataUpdateHistory": {
+      "schedule": "CRON_DATA_UPDATE_HISTORY_SCHEDULE",
+      "active": "CRON_DATA_UPDATE_HISTORY_ACTIVE",
+      "indexBase": "CRON_DATA_UPDATE_HISTORY_INDEX_BASE",
+      "indexHistory": "CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY",
+      "interval": "CRON_DATA_UPDATE_HISTORY_INTERVAL"
+    },
+    "cleanFile": {
+      "schedule": "CRON_CLEAN_FILE_SCHEDULE",
+      "active": "CRON_CLEAN_FILE_ACTIVE",
+      "changefileThreshold": "CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD",
+      "reportThreshold": "CRON_CLEAN_FILE_REPORT_THRESHOLD",
+      "snapshotThreshold": "CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD"
+    }
+  },
+  "apikey": "ADMIN_APIKEY",
+  "healthTimeout": "HEALTH_TIMEOUT"
+}

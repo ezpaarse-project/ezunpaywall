@@ -12,7 +12,6 @@ warn: [config]: Redis password has the default value
 
 info: {
   "nodeEnv": "development",
-  "accessLogRotate": false,
   "timezone": "Europe/Paris",
   "redis": {
     "host": "redis",
@@ -36,14 +35,14 @@ info: {
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
-| GRAPHQL_HOST | http://graphql:3000 | graphql host |
+| GRAPHQL_URL | http://graphql:3000 | graphql host |
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |
 
 ## Activity diagram
 
 Enrich process
 
-![Activity-diagram](./doc/activity-diagram-enrich.png)
+![Activity-diagram](./docs/activity-diagram-enrich.png)
 
 ### Data
 

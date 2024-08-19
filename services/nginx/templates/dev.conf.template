@@ -14,27 +14,17 @@ server {
 
   location /api {
     rewrite ^/api(/.*)$ $1 break;
-    proxy_pass ${GRAPHQL_HOST};
+    proxy_pass ${GRAPHQL_URL};
   }
 
-  location /api/update {
-    rewrite ^/api/update(/.*)$ $1 break;
-    proxy_pass ${UPDATE_HOST};
+  location /api/admin {
+    rewrite ^/api/admin(/.*)$ $1 break;
+    proxy_pass ${ADMIN_URL};
   }
 
   location /api/enrich {
     rewrite ^/api/enrich(/.*)$ $1 break;
-    proxy_pass ${ENRICH_HOST};
-  }
-
-  location /api/apikey {
-    rewrite ^/api/apikey(/.*)$ $1 break;
-    proxy_pass ${APIKEY_HOST};
-  }
-
-  location /api/mail {
-    rewrite ^/api/mail(/.*)$ $1 break;
-    proxy_pass ${MAIL_HOST};
+    proxy_pass ${ENRICH_URL};
   }
 
   ## client
@@ -44,6 +34,6 @@ server {
     proxy_set_header Connection "upgrade";
     proxy_set_header Host $host;
     proxy_cache_bypass $http_upgrade;
-    proxy_pass ${FRONTEND_HOST};
+    proxy_pass ${FRONTEND_URL};
   }
 }

@@ -87,14 +87,10 @@
 
 <script setup>
 
-import { storeToRefs } from 'pinia';
-import { useSnacksStore } from '@/store/snacks';
-import { useAdminStore } from '@/store/admin';
-
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $update } = useNuxtApp();
+const { $admin } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
 
@@ -121,9 +117,8 @@ const title = computed(() => {
 async function getCronConfig() {
   let cronConfig;
   try {
-    cronConfig = await $update({
+    cronConfig = await $admin(`/cron/${props.type}`, {
       method: 'GET',
-      url: `/cron/${props.type}`,
     });
   } catch (err) {
     snackStore.error(t('error.cron.get'));
@@ -132,14 +127,13 @@ async function getCronConfig() {
   }
   loading.value = false;
 
-  config.value = cronConfig?.data;
+  config.value = cronConfig;
 }
 
 async function activeCron() {
   try {
-    await $update({
+    await $admin(`/cron/${props.type}/start`, {
       method: 'POST',
-      url: `/cron/${props.type}/start`,
       headers: {
         'X-API-KEY': password.value,
       },
@@ -156,9 +150,8 @@ async function activeCron() {
 
 async function stopCron() {
   try {
-    await $update({
+    await $admin(`/cron/${props.type}/stop`, {
       method: 'POST',
-      url: `/cron/${props.type}/stop`,
       headers: {
         'X-API-KEY': password.value,
       },
@@ -192,10 +185,9 @@ async function updateCron() {
     };
   }
   try {
-    await $update({
+    await $admin(`/cron/${props.type}`, {
       method: 'PATCH',
-      url: `/cron/${props.type}`,
-      data,
+      body: data,
       headers: {
         'X-API-KEY': password.value,
       },

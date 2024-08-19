@@ -1,6 +1,6 @@
 const { redisClient } = require('../services/redis');
 
-const logger = require('../logger/appLogger');
+const logger = require('../lib/logger/appLogger');
 
 /**
  * Authentication middleware that checks if the content of the x-api-key header
@@ -26,7 +26,7 @@ const checkAuth = async (req, res, next) => {
   try {
     apikeyConfig = await redisClient.get(apikey);
   } catch (err) {
-    logger.error(`[redis] Cannot get [${apikey}]`, err);
+    logger.error(`[redis]: Cannot get [${apikey}]`, err);
     return next();
   }
 
@@ -34,7 +34,7 @@ const checkAuth = async (req, res, next) => {
   try {
     config = JSON.parse(apikeyConfig);
   } catch (err) {
-    logger.error(`[redis] Cannot parse [${apikeyConfig}]`, err);
+    logger.error(`[redis]: Cannot parse [${apikeyConfig}]`, err);
     return next();
   }
 

@@ -6,10 +6,10 @@ Entry point and reverse proxy that redirecting all services of ezunpaywall.
 
 | name | default | description |
 | --- | --- | --- |
-| FRONTEND_HOST | '' | frontend host | 
-| GRAPHQL_HOST | '' | graphql host |
+| FRONTEND_URL | '' | frontend host | 
+| GRAPHQL_URL | '' | graphql host |
 | UPDATE_HOST | '' | update host |
-| ENRICH_HOST | '' | enrich host |
+| ENRICH_URL | '' | enrich host |
 | APIKEY_HOST | '' | apikey host |
 | MAIL_HOST | '' | mail host |
 | HEALTH_HOST | '' | health host |

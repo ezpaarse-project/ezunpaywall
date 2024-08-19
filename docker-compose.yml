@@ -28,43 +28,6 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  update:
-    build:
-      context: ./services/update
-      args:
-        - http_proxy
-        - https_proxy
-    container_name: ezunpaywall-update-prod
-    environment:
-      - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
-      # proxy
-      - http_proxy
-      - https_proxy
-      # unpaywall
-      - UNPAYWALL_APIKEY
-      - UNPAYWALL_HOST=http://api.unpaywall.org
-      # elastic
-      - ELASTICSEARCH_HOSTS
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
-      # cron
-      - UPDATE_CRON_SCHEDULE
-      - UPDATE_CRON_ACTIVE
-      - UPDATE_CRON_INDEX
-      - UPDATE_CRON_INTERVAL
-      # password
-      - UPDATE_APIKEY
-    volumes:
-      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/usr/src/app/log/application
-      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/usr/src/app/log/access
-      - ${UPDATE_DATA_PATH:-./src/update/data}:/usr/src/app/data
-      - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/usr/src/app/certs
-    command: "npm start"
-    restart: unless-stopped
-
   enrich:
     build:
       context: ./services/enrich
@@ -77,7 +40,7 @@ services:
       - REDIS_PORT
       - REDIS_PASSWORD
       # graphql
-      - GRAPHQL_HOST
+      - GRAPHQL_URL
       - GRAPHQL_PORT
     volumes:
       - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/usr/src/app/log/application
@@ -91,48 +54,6 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  apikey:
-    build:
-      context: ./services/apikey
-    container_name: ezunpaywall-apikey-prod
-    environment:
-      - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
-    volumes:
-      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/usr/src/app/log/application
-      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/usr/src/app/log/access
-    command: "npm start"
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-    
-  mail:
-    build:
-      context: ./services/mail
-    container_name: ezunpaywall-mail-prod
-    environment:
-      - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
-      # mail
-      - NODE_CONFIG
-      - MAIL_SMTP_HOST
-      - MAIL_SMTP_PORT
-      - MAIL_NOTIFICATIONS_SENDER
-      - MAIL_NOTIFICATIONS_RECEIVERS
-      - MAIL_NOTIFICATIONS_MACHINE
-      # password
-      - MAIL_APIKEY
-    volumes:
-      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/usr/src/app/log/application
-      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/usr/src/app/log/access
-    command: "npm start"
-    restart: unless-stopped
-
   frontend:
     build:
       context: ./services/frontend
@@ -142,15 +63,13 @@ services:
       - NUXT_PUBLIC_ENVIRONMENT=development
       - NUXT_PUBLIC_ELASTIC_ENV=development
       - NUXT_PUBLIC_VERSION=development
-      - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_HOST
-      - NUXT_PUBLIC_UNPAYWALL_API_HOST
-      - NUXT_PUBLIC_UNPAYWALL_HOST
-      - NUXT_PUBLIC_GRAPHQL_HOST=http://localhost/api
-      - NUXT_PUBLIC_UPDATE_HOST=http://localhost/api/update
-      - NUXT_PUBLIC_ENRICH_HOST=http://localhost/api/enrich
-      - NUXT_PUBLIC_APIKEY_HOST=http://localhost/api/apikey
-      - NUXT_MAIL_APIKEY
-      - NUXT_MAIL_HOST="http://mail:3000"
+      - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_URL
+      - NUXT_PUBLIC_UNPAYWALL_API_URL
+      - NUXT_PUBLIC_UNPAYWALL_URL
+      - NUXT_PUBLIC_GRAPHQL_URL=http://localhost/api
+      - NUXT_PUBLIC_ENRICH_URL=http://localhost/enrich
+      - NUXT_PUBLIC_ADMIN_URL=http://localhost/api/admin
+      - NUXT_ADMIN_APIKEY
 
   redis:
     image: redis:7.2.4-alpine3.19
@@ -167,26 +86,19 @@ services:
     environment:
       # host of service
       - NGINX_HOST
-      - FRONTEND_HOST=http://frontend:3000/
-      - GRAPHQL_HOST=http://graphql:3000/
-      - UPDATE_HOST=http://update:3000/
-      - ENRICH_HOST=http://enrich:3000/
-      - APIKEY_HOST=http://apikey:3000/
-      - MAIL_HOST=http://mail:3000/
-      - HEALTH_HOST=http://health:3000/
+      - FRONTEND_URL=http://frontend:3000/
+      - GRAPHQL_URL=http://graphql:3000/
+      - ADMIN_URL=http://admin:3000/
+      - ENRICH_URL=http://enrich:3000//
     ports:
       - ${NGINX_PORT:-80}:80
     restart: unless-stopped
     depends_on:
-      enrich:
-        condition: service_healthy
-      update:
-        condition: service_healthy
       graphql:
         condition: service_healthy
-      apikey:
+      enrich:
         condition: service_healthy
-      mail:
+      admin:
         condition: service_healthy
       frontend:
         condition: service_healthy

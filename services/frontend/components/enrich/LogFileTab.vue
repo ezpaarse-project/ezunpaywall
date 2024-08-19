@@ -29,13 +29,11 @@
         {{ t("enrich.explainationLogs") }}
       </v-tooltip>
     </v-row>
-    <LogFiles class="ma-1" />
+    <EnrichLogFiles class="ma-1" />
   </div>
 </template>
 
 <script setup>
-
-import LogFiles from '@/components/enrich/LogFiles.vue';
 
 const { t } = useI18n();
 

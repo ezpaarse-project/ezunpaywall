@@ -10,14 +10,14 @@
     </v-toolbar>
     <v-card-text>
       <v-card-title> {{ t('home.globalMetrics') }} </v-card-title>
-      <GlobalMetricsChips
+      <HomeGlobalMetricsChips
         :loading="loading"
         :doi="metrics.doi"
         :is-o-a="metrics.isOA"
       />
       <hr class="my-4">
       <v-card-title> {{ t('home.openAccessStatus') }} </v-card-title>
-      <OpenAccessMetricsChips
+      <HomeOpenAccessMetricsChips
         :loading="loading"
         :gold-o-a="metrics.goldOA"
         :hybrid-o-a="metrics.hybridOA"
@@ -30,11 +30,6 @@
 </template>
 
 <script setup>
-
-import GlobalMetricsChips from '@/components/home/GlobalMetricsChips.vue';
-import OpenAccessMetricsChips from '@/components/home/OpenAccessMetricsChips.vue';
-
-import { useSnacksStore } from '@/store/snacks';
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
@@ -57,9 +52,8 @@ async function getMetrics() {
   let res;
   try {
     loading.value = true;
-    res = await $graphql({
+    res = await $graphql('/graphql', {
       method: 'GET',
-      url: '/graphql',
       params: {
         query:
           '{ dailyMetrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }',
@@ -71,14 +65,14 @@ async function getMetrics() {
 
   loading.value = false;
 
-  if (res?.data?.data?.dailyMetrics) {
-    metrics.value.doi = res?.data?.data?.dailyMetrics.doi;
-    metrics.value.isOA = res?.data?.data?.dailyMetrics.isOA;
-    metrics.value.goldOA = res?.data?.data?.dailyMetrics.goldOA;
-    metrics.value.hybridOA = res?.data?.data?.dailyMetrics.hybridOA;
-    metrics.value.bronzeOA = res?.data?.data?.dailyMetrics.bronzeOA;
-    metrics.value.greenOA = res?.data?.data?.dailyMetrics.greenOA;
-    metrics.value.closedOA = res?.data?.data?.dailyMetrics.closedOA;
+  if (res?.data?.dailyMetrics) {
+    metrics.value.doi = res?.data?.dailyMetrics.doi;
+    metrics.value.isOA = res?.data?.dailyMetrics.isOA;
+    metrics.value.goldOA = res?.data?.dailyMetrics.goldOA;
+    metrics.value.hybridOA = res?.data?.dailyMetrics.hybridOA;
+    metrics.value.bronzeOA = res?.data?.dailyMetrics.bronzeOA;
+    metrics.value.greenOA = res?.data?.dailyMetrics.greenOA;
+    metrics.value.closedOA = res?.data?.dailyMetrics.closedOA;
   }
 }
 

@@ -12,15 +12,12 @@
     />
     <v-toolbar-title> {{ title }} </v-toolbar-title>
     <v-spacer />
-    <Help />
-    <Status />
+    <SkeletonAppbarHelp />
+    <SkeletonAppbarStatus />
   </v-app-bar>
 </template>
 
 <script setup>
-
-import Help from '@/components/skeleton/appbar/Help.vue';
-import Status from '@/components/skeleton/appbar/Status.vue';
 
 const runtimeConfig = useRuntimeConfig();
 

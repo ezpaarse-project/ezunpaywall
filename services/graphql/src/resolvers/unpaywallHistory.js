@@ -1,7 +1,7 @@
 const { elasticsearch } = require('config');
 const checkApikey = require('../middlewares/apikey');
 const { search } = require('../services/elastic');
-const logger = require('../logger/appLogger');
+const logger = require('../lib/logger/appLogger');
 
 async function unpaywallHistory(parent, args, req, info) {
   // TODO perf: use one requet than two

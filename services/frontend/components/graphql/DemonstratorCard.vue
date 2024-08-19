@@ -24,11 +24,11 @@
     </v-card-text>
     <hr class="mx-4">
     <v-card-text>
-      <UnpaywallArgsSelectorTab @attributes="setAttributes" />
+      <GraphqlSettingsSelectorTab @attributes="setAttributes" />
     </v-card-text>
     <hr class="mx-4">
     <v-card-text>
-      <RequestTab
+      <GraphqlRequestTab
         :attributes="attributesSelected"
         :dois="dois"
         :apikey="apikey"
@@ -38,7 +38,7 @@
     </v-card-text>
     <hr class="mx-4">
     <v-card-text>
-      <ResultTab
+      <GraphqlResultTab
         :graphql-data="graphqlData"
         :query="query"
         :visible="resultVisible"
@@ -48,10 +48,6 @@
 </template>
 
 <script setup>
-
-import UnpaywallArgsSelectorTab from '@/components/graphql/settings/UnpaywallArgsSelectorTab.vue';
-import RequestTab from '@/components/graphql/request/RequestTab.vue';
-import ResultTab from '@/components/graphql/result/ResultTab.vue';
 
 const { t } = useI18n();
 

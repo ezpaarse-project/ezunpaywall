@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     res = await $fetch(
-      `${runtimeConfig.mailHost}/contact`,
+      `${runtimeConfig.adminURL}/contact`,
       {
         method: 'POST',
         body: {
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
           message,
         },
         headers: {
-          'x-api-key': runtimeConfig.mailApikey,
+          'x-api-key': runtimeConfig.adminAPIKey,
           'Content-type': 'application/json',
         },
       },
@@ -28,5 +28,5 @@ export default defineEventHandler(async (event) => {
     return err;
   }
 
-  return res.data;
+  return res;
 });

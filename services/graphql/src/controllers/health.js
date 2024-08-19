@@ -1,4 +1,4 @@
-const promiseWithTimeout = require('../ping');
+const promiseWithTimeout = require('../lib/ping');
 const { pingRedis } = require('../services/redis');
 const { pingElastic } = require('../services/elastic');
 

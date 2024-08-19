@@ -19,7 +19,7 @@ const {
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
+const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:59701';
 
 const doi1 = '1';
 

@@ -36,10 +36,6 @@
 
 <script setup>
 
-import JSONView from '@/components/skeleton/JSONView.vue';
-
-import { useSnacksStore } from '@/store/snacks';
-
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 

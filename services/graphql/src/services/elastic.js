@@ -1,10 +1,9 @@
-const fs = require('fs-extra');
+const fs = require('fs');
 const path = require('path');
 
 const { Client } = require('@elastic/elasticsearch');
-const { URL } = require('url');
 const { elasticsearch, nodeEnv } = require('config');
-const logger = require('../logger/appLogger');
+const logger = require('../lib/logger/appLogger');
 
 const isProd = (nodeEnv === 'production');
 
@@ -25,15 +24,13 @@ if (isProd) {
 }
 
 const elasticClient = new Client({
-  node: {
-    url: new URL(`${elasticsearch.host}:${elasticsearch.port}`),
-    auth: {
-      username: elasticsearch.user,
-      password: elasticsearch.password,
-    },
-    ssl,
+  nodes: elasticsearch.nodes.split(','),
+  auth: {
+    username: elasticsearch.username,
+    password: elasticsearch.password,
   },
-  requestTimeout: 5000,
+  ssl,
+  requestTimeout: elasticsearch.timeout,
 });
 
 /**
@@ -46,11 +43,11 @@ async function pingElastic() {
   try {
     elasticStatus = await elasticClient.ping();
   } catch (err) {
-    logger.error(`[elastic]: Cannot ping ${elasticsearch.host}:${elasticsearch.port}`, err);
+    logger.error(`[elastic]: Cannot ping ${elasticsearch.nodes}`, err);
     return false;
   }
   if (elasticStatus?.statusCode !== 200) {
-    logger.error(`[elastic]: Cannot ping ${elasticsearch.host}:${elasticsearch.port} - ${elasticStatus?.statusCode}`);
+    logger.error(`[elastic]: Cannot ping ${elasticsearch.nodes} - ${elasticStatus?.statusCode}`);
     return false;
   }
   return true;

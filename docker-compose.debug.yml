@@ -22,53 +22,6 @@ services:
     command: "npm run dev"
     ports:
       - ${GRAPHQL_PORT:-59701}:3000
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-
-  update:
-    image: node:18.19.1
-    container_name: ezunpaywall-update-dev
-    environment:
-      - NODE_ENV
-      - LOG_LEVEL=debug
-      # unpaywall
-      - UNPAYWALL_APIKEY
-      - UNPAYWALL_HOST
-      # elastic
-      - ELASTICSEARCH_HOSTS
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
-      - ELASTICSEARCH_TIMEOUT
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
-      # cron
-      - UPDATE_CRON_SCHEDULE
-      - UPDATE_CRON_ACTIVE
-      - UPDATE_CRON_INDEX
-      - UPDATE_CRON_INTERVAL
-      # password
-      - UPDATE_APIKEY
-    working_dir: /usr/src/app
-    volumes:
-      - ./services/update:/usr/src/app
-    command: "npm run dev"
-    ports:
-      - ${UPDATE_PORT:-59702}:3000
     restart: unless-stopped
     healthcheck:
       test:
@@ -90,18 +43,13 @@ services:
       - REDIS_PORT
       - REDIS_PASSWORD
       # graphql
-      - GRAPHQL_HOST=http://graphql:3000
+      - GRAPHQL_URL=http://graphql:3000
     working_dir: /usr/src/app
     volumes:
       - ./services/enrich:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${ENRICH_PORT:-59703}:3000
-    depends_on:
-      redis:
-        condition: service_healthy
-      elastic:
-        condition: service_healthy
+      - ${ENRICH_PORT:-59702}:3000
     restart: unless-stopped
     healthcheck:
       test:
@@ -112,54 +60,64 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-
-  apikey:
+  
+  admin:
     image: node:18.19.1
-    container_name: ezunpaywall-apikey-dev
+    container_name: ezunpaywall-admin-dev
     environment:
       - NODE_ENV
+      - LOG_LEVEL=debug
+      # smtp
+      - SMTP_HOST=maildev
+      - SMTP_PORT
+      # mail
+      - NOTIFICATIONS_SENDER
+      - NOTIFICATIONS_RECEIVERS
+      - NOTIFICATIONS_MACHINE
+      # unpaywall
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_URL
+      # elastic
+      - ELASTICSEARCH_HOSTS
+      - ELASTICSEARCH_PORT
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
+      - ELASTICSEARCH_TIMEOUT
       # redis
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
-    working_dir: /usr/src/app
-    volumes:
-      - ./services/apikey:/usr/src/app
-    command: "npm run dev"
-    ports:
-      - ${APIKEY_PORT:-59704}:3000
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-
-  mail:
-    image: node:18.19.1
-    container_name: ezunpaywall-mail-dev
-    environment:
-      - NODE_CONFIG
-      - MAIL_SMTP_HOST=maildev
-      - MAIL_SMTP_PORT
-      - MAIL_NOTIFICATIONS_SENDER
-      - MAIL_NOTIFICATIONS_RECEIVERS
-      - MAIL_NOTIFICATIONS_MACHINE
+      # cron snapshot
+      - CRON_DOWNLOAD_SNAPSHOT_SCHEDULE
+      - CRON_DOWNLOAD_SNAPSHOT_ACTIVE
+      - CRON_DOWNLOAD_SNAPSHOT_INDEX
+      # cron date update
+      - CRON_DATA_UPDATE_SCHEDULE
+      - CRON_DATA_UPDATE_ACTIVE
+      - CRON_DATA_UPDATE_INDEX
+      - CRON_DATA_UPDATE_INTERVAL
+      # cron date update history
+      - CRON_DATA_UPDATE_HISTORY_SCHEDULE
+      - CRON_DATA_UPDATE_HISTORY_ACTIVE
+      - CRON_DATA_UPDATE_HISTORY_INDEX_BASE
+      - CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY
+      - CRON_DATA_UPDATE_HISTORY_INTERVAL
+      # cron clean file
+      - CRON_CLEAN_FILE_SCHEDULE
+      - CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD
+      - CRON_CLEAN_FILE_REPORT_THRESHOLD
+      - CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD
       # password
-      - MAIL_APIKEY
+      - ADMIN_APIKEY
+      # health
+      - HEALTH_TIMEOUT
     working_dir: /usr/src/app
     volumes:
-      - ./services/mail:/usr/src/app
+      - ./services/admin:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${MAIL_PORT:-59705}:3000
+      - ${ADMIN_PORT:-59703}:3000
     restart: unless-stopped
     healthcheck:
       test:
@@ -186,16 +144,14 @@ services:
       - NUXT_PUBLIC_ENVIRONMENT=development
       - NUXT_PUBLIC_ELASTIC_ENV=development
       - NUXT_PUBLIC_VERSION=development
-      - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_HOST
-      - NUXT_PUBLIC_UNPAYWALL_API_HOST
-      - NUXT_PUBLIC_UNPAYWALL_HOST
-      - NUXT_PUBLIC_GRAPHQL_HOST
-      - NUXT_PUBLIC_UPDATE_HOST
-      - NUXT_PUBLIC_ENRICH_HOST
-      - NUXT_PUBLIC_APIKEY_HOST
-      - NUXT_PUBLIC_MAIL_HOST
-      - NUXT_MAIL_HOST
-      - NUXT_MAIL_APIKEY
+      - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_URL
+      - NUXT_PUBLIC_UNPAYWALL_API_URL
+      - NUXT_PUBLIC_UNPAYWALL_URL
+      - NUXT_PUBLIC_GRAPHQL_URL
+      - NUXT_PUBLIC_ENRICH_URL
+      - NUXT_PUBLIC_ADMIN_URL
+      - NUXT_ADMIN_URL
+      - NUXT_ADMIN_APIKEY
     healthcheck:
       test:
         [
@@ -231,13 +187,10 @@ services:
     environment:
       # host of service
       - NGINX_HOST=localhost
-      - FRONTEND_HOST=http://frontend:3000/
-      - GRAPHQL_HOST=http://graphql:3000/
-      - UPDATE_HOST=http://update:3000/
-      - ENRICH_HOST=http://enrich:3000/
-      - APIKEY_HOST=http://apikey:3000/
-      - MAIL_HOST=http://mail:3000/
-      - HEALTH_HOST=http://health:3000/
+      - FRONTEND_URL=http://frontend:3000/
+      - GRAPHQL_URL=http://graphql:3000/
+      - ENRICH_URL=http://enrich:3000/
+      - ADMIN_URL=http://admin:3000/
     ports:
       - ${NGINX_PORT:-80}:80
     volumes:
@@ -246,13 +199,9 @@ services:
     depends_on:
       enrich:
         condition: service_healthy
-      update:
+      admin:
         condition: service_healthy
       graphql:
-        condition: service_healthy
-      apikey:
-        condition: service_healthy
-      mail:
         condition: service_healthy
       frontend:
         condition: service_healthy

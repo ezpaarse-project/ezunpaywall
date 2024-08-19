@@ -2,7 +2,7 @@
 const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
-const fs = require('fs-extra');
+const fsp = require('fs/promises');
 const path = require('path');
 
 chai.use(chaiHttp);
@@ -28,7 +28,7 @@ const {
   deleteAllAPIKey,
 } = require('./utils/apikey');
 
-const enrichService = process.env.ENRICH_HOST || 'http://localhost:59703';
+const enrichURL = process.env.ENRICH_URL || 'http://localhost:59702';
 
 const enrichDir = path.resolve(__dirname, 'sources');
 
@@ -52,7 +52,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -66,7 +66,7 @@ describe('Test: enrich service jsonl', () => {
       it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
         // start enrich process
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -81,7 +81,7 @@ describe('Test: enrich service jsonl', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           await new Promise((resolve) => { setTimeout(resolve, 100); });
@@ -100,7 +100,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .get(`/enriched/${id}.jsonl`)
           .set('x-api-key', 'user')
           .buffer()
@@ -108,7 +108,7 @@ describe('Test: enrich service jsonl', () => {
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
-          await fs.writeFile(enrichedFile, res4.body.toString());
+          await fsp.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
           console.error(`writeFile: ${err}`);
         }
@@ -128,7 +128,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file02.jsonl'), 'file02.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -140,7 +140,7 @@ describe('Test: enrich service jsonl', () => {
       });
       it('Should enrich the file on 2 lines with all unpaywall attributes and download it', async () => {
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -156,7 +156,7 @@ describe('Test: enrich service jsonl', () => {
 
         do {
           res3 = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
@@ -176,7 +176,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .get(`/enriched/${id}.jsonl`)
           .set('x-api-key', 'user')
           .buffer()
@@ -184,7 +184,7 @@ describe('Test: enrich service jsonl', () => {
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
-          await fs.writeFile(enrichedFile, res4.body.toString());
+          await fsp.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
           console.error(`writeFile: ${err}`);
         }
@@ -203,7 +203,7 @@ describe('Test: enrich service jsonl', () => {
       let enrichedFile;
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -216,7 +216,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should enrich the file on 3 lines with args {is_oa} and download it', async () => {
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -233,7 +233,7 @@ describe('Test: enrich service jsonl', () => {
 
         do {
           res3 = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
@@ -253,7 +253,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .get(`/enriched/${id}.jsonl`)
           .set('x-api-key', 'user')
           .buffer()
@@ -261,7 +261,7 @@ describe('Test: enrich service jsonl', () => {
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
-          await fs.writeFile(enrichedFile, res4.body.toString());
+          await fsp.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
           console.error(`writeFile: ${err}`);
         }
@@ -280,7 +280,7 @@ describe('Test: enrich service jsonl', () => {
       let enrichedFile;
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -293,7 +293,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should enrich the file on 3 lines with args { best_oa_location { license } } and download it', async () => {
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -309,7 +309,7 @@ describe('Test: enrich service jsonl', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
@@ -329,7 +329,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .get(`/enriched/${id}.jsonl`)
           .set('x-api-key', 'user')
           .buffer()
@@ -337,7 +337,7 @@ describe('Test: enrich service jsonl', () => {
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
-          await fs.writeFile(enrichedFile, res4.body.toString());
+          await fsp.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
           console.error(`writeFile: ${err}`);
         }
@@ -357,7 +357,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -370,7 +370,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should enrich the file on 3 lines with args { z_authors { given } } and download it', async () => {
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -386,7 +386,7 @@ describe('Test: enrich service jsonl', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
@@ -406,7 +406,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .get(`/enriched/${id}.jsonl`)
           .set('x-api-key', 'user')
           .buffer()
@@ -414,7 +414,7 @@ describe('Test: enrich service jsonl', () => {
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
-          await fs.writeFile(enrichedFile, res4.body.toString());
+          await fsp.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
           console.error(`writeFile: ${err}`);
         }
@@ -433,7 +433,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -446,7 +446,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors{ family } } and download it', async () => {
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -462,7 +462,7 @@ describe('Test: enrich service jsonl', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
@@ -482,7 +482,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .get(`/enriched/${id}.jsonl`)
           .set('x-api-key', 'user')
           .buffer()
@@ -490,7 +490,7 @@ describe('Test: enrich service jsonl', () => {
 
         enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
         try {
-          await fs.writeFile(enrichedFile, res4.body.toString());
+          await fsp.writeFile(enrichedFile, res4.body.toString());
         } catch (err) {
           console.error(`writeFile: ${err}`);
         }
@@ -509,7 +509,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -522,7 +522,7 @@ describe('Test: enrich service jsonl', () => {
 
       it('Should return a error message', async () => {
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -540,7 +540,7 @@ describe('Test: enrich service jsonl', () => {
     describe('Don\'t do a enrichment of a jsonl file because the file doesn\'t exist', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/job')
           .send({
             id: 'hello',

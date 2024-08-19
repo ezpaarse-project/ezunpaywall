@@ -15,23 +15,23 @@
         {{ t('unpaywallArgs.selectAll') }}
       </v-btn>
     </v-card-actions>
-    <SimpleSelector
+    <UnpaywallArgsSimpleSelector
       v-if="!hideSimple"
       v-model="simpleSelected"
     />
-    <BestOaLocationSelector
+    <UnpaywallArgsBestOaLocationSelector
       v-if="!hideBestOaLocation"
       v-model="bestOaLocationSelected"
     />
-    <FirstOaLocationSelector
+    <UnpaywallArgsFirstOaLocationSelector
       v-if="!hideFirstOaLocation"
       v-model="firstOaLocationSelected"
     />
-    <OaLocationsSelector
+    <UnpaywallArgsOaLocationsSelector
       v-if="!hideOaLocations"
       v-model="oaLocationsSelected"
     />
-    <ZAuthorsSelector
+    <UnpaywallArgsZAuthorsSelector
       v-if="!hideZAuthor"
       v-model="zAuthorsSelected"
     />
@@ -39,12 +39,6 @@
 </template>
 
 <script setup>
-
-import SimpleSelector from '@/components/unpaywallArgs/selector/SimpleSelector.vue';
-import BestOaLocationSelector from '@/components/unpaywallArgs/selector/BestOaLocationSelector.vue';
-import FirstOaLocationSelector from '@/components/unpaywallArgs/selector/FirstOaLocationSelector.vue';
-import OaLocationsSelector from '@/components/unpaywallArgs/selector/OaLocationsSelector.vue';
-import ZAuthorsSelector from '@/components/unpaywallArgs/selector/ZAuthorsSelector.vue';
 
 const { t } = useI18n();
 

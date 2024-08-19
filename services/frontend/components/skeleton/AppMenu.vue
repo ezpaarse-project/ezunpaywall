@@ -6,23 +6,19 @@
     disable-route-watcher
     @input="updateVisible($event)"
   >
-    <ListRouter />
-    <LangSwitch />
+    <SkeletonMenuListRouter />
+    <SkeletonMenuLangSwitch />
 
     <v-spacer />
 
     <template #append>
-      <ThemeButton />
-      <GithubButton />
+      <SkeletonMenuThemeButton />
+      <SkeletonMenuGithubButton />
     </template>
   </v-navigation-drawer>
 </template>
 
 <script setup>
-import ListRouter from '@/components/skeleton/menu/ListRouter.vue';
-import LangSwitch from '@/components/skeleton/menu/LangSwitch.vue';
-import GithubButton from '@/components/skeleton/menu/GithubButton.vue';
-import ThemeButton from '@/components/skeleton/menu/ThemeButton.vue';
 
 const visible = defineProps({
   value: { type: Boolean, default: false },

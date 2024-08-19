@@ -1,6 +1,5 @@
 {
   "nodeEnv": "development",
-  "accessLogRotate": false,
   "timezone": "Europe/Paris",
   "redis":  {
     "host": "redis",
@@ -8,9 +7,8 @@
     "password": "changeme"
   },
   "elasticsearch": {
-    "host": "http://elastic",
-    "port": 9200,
-    "user": "elastic",
+    "nodes": "http://elastic:9200",
+    "username": "elastic",
     "password": "changeme",
     "indexBase": "unpaywall_base",
     "indexHistory": "unpaywall_history"
