@@ -20,7 +20,7 @@
       </v-tooltip>
       <AdministrationApikeyImportDialog
         v-model="importDialogVisible"
-        @imported="getApikeys()"
+        @imported="refreshApikey()"
         @closed="importDialogVisible = false"
       />
       <v-tooltip location="bottom">
@@ -36,7 +36,7 @@
       <AdministrationApikeyExportDialog
         v-model="exportDialogVisible"
         :apikeys="apikeys"
-        @created="getApikeys()"
+        @created="refreshApikey()"
         @closed="exportDialogVisible = false"
       />
       <v-tooltip location="bottom">
@@ -54,8 +54,8 @@
           <v-btn
             v-bind="props"
             icon="mdi-reload"
-            :disabled="loading"
-            @click.stop="getApikeys()"
+            :disabled="status === 'pending'"
+            @click.stop="refreshApikey"
           />
         </template>
         {{ t("administration.apikey.reload") }}
@@ -66,7 +66,7 @@
       @update:model-value="updateSearchValue"
     />
     <v-row
-      v-if="loading"
+      v-if="status === 'pending'"
       align="center"
       justify="center"
       class="ma-2"
@@ -108,17 +108,17 @@
       v-model:attributes="selectedAttributes"
       v-model:allowed="selectedAllowed"
       @closed="setUpdateDialogVisible(false)"
-      @updated="getApikeys()"
+      @updated="refreshApikey()"
     />
     <AdministrationApikeyDeleteDialog
       v-model="deleteDialogVisible"
       :apikey="selectedApikey"
       @closed="setDeleteDialogVisible(false)"
-      @deleted="getApikeys()"
+      @deleted="refreshApikey()"
     />
     <AdministrationApikeyCreateDialog
       v-model="createDialogVisible"
-      @created="getApikeys()"
+      @created="refreshApikey()"
       @closed="createDialogVisible = false"
     />
   </v-card>
@@ -132,8 +132,6 @@ const adminStore = useAdminStore();
 const { $admin } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
-
-const loading = ref(false);
 
 const searchValue = ref('');
 
@@ -151,37 +149,26 @@ const selectedOwner = ref('');
 const selectedAccess = ref([]);
 const selectedAttributes = ref([]);
 const selectedAllowed = ref(false);
-const apikeys = ref([]);
+
+const { data: apikeys, status, refresh: refreshApikey } = useFetch('/apikeys', {
+  baseURL: $admin.baseURL,
+  method: 'GET',
+  headers: {
+    'X-API-KEY': password.value,
+  },
+  onResponseError() {
+    snackStore.error(t('error.apikey.get'));
+  }
+});
 
 const apikeysFiltered = computed(() => {
-  let filteredAPIkeys = apikeys.value;
   if (searchValue.value) {
-    filteredAPIkeys = apikeys.value.filter(
-      (key) => key.apikey.includes(searchValue.value),
+    return apikeys.value.filter((key) =>
+      key.apikey.includes(searchValue.value)
     );
-    return filteredAPIkeys;
   }
   return apikeys.value;
 });
-
-async function getApikeys() {
-  let res;
-  loading.value = true;
-  try {
-    res = await $admin('/apikeys', {
-      method: 'GET',
-      headers: {
-        'X-API-KEY': password.value,
-      },
-    });
-  } catch (err) {
-    snackStore.error(t('error.apikey.get'));
-    loading.value = false;
-    return;
-  }
-  loading.value = false;
-  apikeys.value = res;
-}
 
 async function openUpdateDialog(id) {
   const apikey = apikeys.value.find((e) => e.apikey === id);
@@ -204,9 +191,5 @@ async function openDeleteDialog(id) {
 function updateSearchValue(newValue) {
   searchValue.value = newValue;
 }
-
-onMounted(() => {
-  getApikeys();
-});
 
 </script>

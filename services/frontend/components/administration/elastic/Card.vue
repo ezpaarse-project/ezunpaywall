@@ -1,4 +1,3 @@
-<!-- eslint-disable max-len -->
 <template>
   <v-card height="100%">
     <v-toolbar
@@ -14,34 +13,37 @@
           <v-btn
             v-bind="props"
             icon="mdi-reload"
-            :disabled="loading"
-            @click.stop="getElasticInfo()"
+            :disabled="indicesPending === 'pending' || aliasesPending === 'pending'"
+            @click.stop="refreshElasticInfo()"
           />
         </template>
         {{ t("administration.elastic.reload") }}
       </v-tooltip>
     </v-toolbar>
+
     <v-row
-      v-if="loading"
+      v-if="indicesPending  === 'pending' || aliasesPending === 'pending'"
       align="center"
       justify="center"
       class="ma-2"
     >
       <Loader />
     </v-row>
+
     <NoData
-      v-else-if="!indices && !aliases || indices.length === 0 && aliases.length === 0"
+      v-else-if="!indices.length && !aliases.length"
       :text="t('administration.elastic.noInfo')"
     />
+
     <v-row
       v-else
       class="ma-2"
     >
-      Alias
       <v-col cols="12">
+        <div>Alias</div>
         <v-chip
           v-for="alias in aliases"
-          :key="alias"
+          :key="alias.alias"
           class="mx-1"
         >
           alias: {{ alias.alias }}
@@ -53,11 +55,12 @@
           index: {{ alias.index }}
         </v-chip>
       </v-col>
-      Index
+
       <v-col cols="12">
+        <div>Index</div>
         <v-chip
           v-for="index in indices"
-          :key="index"
+          :key="index.index"
           class="mx-1"
         >
           <v-icon
@@ -84,47 +87,33 @@ const { $admin } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
 
-const loading = ref(false);
-const indices = ref([]);
-const aliases = ref([]);
-
-async function getElasticInfo() {
-  loading.value = true;
-
-  let indicesRes;
-  try {
-    indicesRes = await $admin('/elastic/indices',{
-      method: 'GET',
-      headers: {
-        'X-API-KEY': password.value,
-      },
-    });
-  } catch (err) {
+// Fetch indices
+const { data: indices, status: indicesPending, refresh: refreshIndices } = useFetch('/elastic/indices', {
+  baseURL: $admin.baseURL,
+  method: 'GET',
+  headers: {
+    'X-API-KEY': password.value,
+  },
+  onResponseError() {
     snackStore.error(t('error.elastic.indices'));
-    loading.value = false;
-    return;
   }
-  indices.value = indicesRes;
-
-  let aliasesRes;
-  try {
-    aliasesRes = await $admin('/elastic/aliases', {
-      method: 'GET',
-      headers: {
-        'X-API-KEY': password.value,
-      },
-    });
-  } catch (err) {
-    snackStore.error(t('error.elastic.aliases'));
-    loading.value = false;
-    return;
-  }
-  loading.value = false;
-  aliases.value = aliasesRes;
-}
-
-onMounted(() => {
-  getElasticInfo();
 });
+
+// Fetch aliases
+const { data: aliases, status: aliasesPending, refresh: refreshAliases } = useFetch('/elastic/aliases', {
+  baseURL: $admin.baseURL,
+  method: 'GET',
+  headers: {
+    'X-API-KEY': password.value,
+  },
+  onResponseError() {
+    snackStore.error(t('error.elastic.aliases'));
+  }
+});
+
+function refreshElasticInfo() {
+  refreshIndices();
+  refreshAliases();
+}
 
 </script>

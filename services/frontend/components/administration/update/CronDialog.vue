@@ -75,7 +75,7 @@
           type="submit"
           form="form"
           :disabled="!3"
-          :loading="loading"
+          :loading="status === 'pending'"
           class="green--text"
         >
           {{ t("update") }}
@@ -99,13 +99,21 @@ const emit = defineEmits({
 });
 
 const value = ref('false');
-const loading = ref(false);
 const intervals = ref(['day', 'week']);
-
-const config = ref({});
 
 const props = defineProps({
   type: { type: String, default: 'unpaywall' },
+});
+
+const { data: config, status } = useFetch(`/cron/${props.type}`, {
+  baseURL: $admin.baseURL,
+  method: 'GET',
+  headers: {
+    'X-API-KEY': password.value,
+  },
+  onResponseError() {
+    snackStore.error(t('error.cron.get'));
+  }
 });
 
 const title = computed(() => {
@@ -113,22 +121,6 @@ const title = computed(() => {
   if (props.type === 'unpaywallHistory') { return t('reports.history'); }
   return null;
 });
-
-async function getCronConfig() {
-  let cronConfig;
-  try {
-    cronConfig = await $admin(`/cron/${props.type}`, {
-      method: 'GET',
-    });
-  } catch (err) {
-    snackStore.error(t('error.cron.get'));
-    loading.value = false;
-    return;
-  }
-  loading.value = false;
-
-  config.value = cronConfig;
-}
 
 async function activeCron() {
   try {
@@ -206,9 +198,5 @@ async function updateCron() {
     await stopCron();
   }
 }
-
-onMounted(() => {
-  getCronConfig();
-});
 
 </script>

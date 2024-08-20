@@ -83,8 +83,8 @@ function getHealths() {
   loading.value = true;
   if (healthCards.value) {
     healthCards.value.forEach((card) => {
-      if (card?.getHealth) {
-        card.getHealth();
+      if (card?.refreshHealth) {
+        card.refreshHealth();
       }
     });
   }

@@ -11,14 +11,14 @@
     <v-card-text>
       <v-card-title> {{ t('home.globalMetrics') }} </v-card-title>
       <HomeGlobalMetricsChips
-        :loading="loading"
+        :loading="status === 'pending'"
         :doi="metrics.doi"
         :is-o-a="metrics.isOA"
       />
       <hr class="my-4">
       <v-card-title> {{ t('home.openAccessStatus') }} </v-card-title>
       <HomeOpenAccessMetricsChips
-        :loading="loading"
+        :loading="status === 'pending'"
         :gold-o-a="metrics.goldOA"
         :hybrid-o-a="metrics.hybridOA"
         :bronze-o-a="metrics.bronzeOA"
@@ -36,45 +36,28 @@ const snackStore = useSnacksStore();
 const runtimeConfig = useRuntimeConfig();
 const { $graphql } = useNuxtApp();
 
-const loading = ref(false);
-
-const metrics = ref({
-  doi: 0,
-  isOA: 0,
-  goldOA: 0,
-  hybridOA: 0,
-  bronzeOA: 0,
-  greenOA: 0,
-  closedOA: 0,
-});
-
-async function getMetrics() {
-  let res;
-  try {
-    loading.value = true;
-    res = await $graphql('/graphql', {
-      method: 'GET',
-      params: {
-        query:
-          '{ dailyMetrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }',
-      },
-    });
-  } catch (err) {
+const { data, status } = useFetch('/graphql', {
+  baseURL: $graphql.baseURL,
+  method: 'GET',
+  params: {
+    query: '{ dailyMetrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }',
+  },
+  onResponseError() {
     snackStore.error(t('error.graphql.request'));
   }
+});
 
-  loading.value = false;
-
-  if (res?.data?.dailyMetrics) {
-    metrics.value.doi = res?.data?.dailyMetrics.doi;
-    metrics.value.isOA = res?.data?.dailyMetrics.isOA;
-    metrics.value.goldOA = res?.data?.dailyMetrics.goldOA;
-    metrics.value.hybridOA = res?.data?.dailyMetrics.hybridOA;
-    metrics.value.bronzeOA = res?.data?.dailyMetrics.bronzeOA;
-    metrics.value.greenOA = res?.data?.dailyMetrics.greenOA;
-    metrics.value.closedOA = res?.data?.dailyMetrics.closedOA;
+const metrics = computed(() => {
+  return {
+    doi: data?.value?.data?.dailyMetrics?.doi || 0,
+    isOA: data?.value?.data?.dailyMetrics?.isOA || 0,
+    goldOA: data?.value?.data?.dailyMetrics?.goldOA || 0,
+    hybridOA: data?.value?.data?.dailyMetrics?.hybridOA || 0,
+    bronzeOA: data?.value?.data?.dailyMetrics?.bronzeOA || 0,
+    greenOA: data?.value?.data?.dailyMetrics?.greenOA || 0,
+    closedOA: data?.value?.data?.dailyMetrics?.closedOA || 0
   }
-}
+});
 
 function getElasticEnvironment() {
   if (
@@ -88,9 +71,5 @@ function getElasticEnvironment() {
   }
   return '';
 }
-
-onMounted(async () => {
-  await getMetrics();
-});
 
 </script>

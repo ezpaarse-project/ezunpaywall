@@ -39,12 +39,17 @@
 
 <script setup>
 
-const loading = ref(false);
-const health = ref();
-
 const props = defineProps({
   name: { type: String, default: '' },
   api: { type: Function, default: () => 1 },
+});
+
+const { data: health, refresh } = await useFetch('/health', {
+  baseURL: props.api.baseURL,
+  method: 'GET',
+  onResponseError() {
+    snackStore.error(t('error.apikey.get'));
+  }
 });
 
 const services = computed(() => {
@@ -54,29 +59,12 @@ const services = computed(() => {
   return copyHealth;
 });
 
-async function getHealth() {
-  let res;
-  loading.value = true;
-
-  try {
-    res = await props.api('/health', {
-      method: 'GET',
-    });
-  } catch (err) {
-    loading.value = false;
-    return;
-  }
-
-  health.value = res;
-  loading.value = false;
+function refreshHealth() {
+  refresh();
 }
 
 defineExpose({
-  getHealth,
-});
-
-onMounted(() => {
-  getHealth();
+  refreshHealth,
 });
 
 </script>
