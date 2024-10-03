@@ -1,6 +1,6 @@
 const { elasticsearch } = require('config');
 
-const { getMetrics } = require('../services/elastic');
+const { getMetrics } = require('../lib/elastic');
 
 const metrics = async (parent, args, req) => {
   let index = req?.get('index');

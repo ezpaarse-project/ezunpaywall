@@ -10,7 +10,7 @@
     "nodes": "http://elastic:9200",
     "username": "elastic",
     "password": "changeme",
-    "indexBase": "unpaywall_base",
+    "indexBase": "unpaywall",
     "indexHistory": "unpaywall_history"
   },
   "paths": {

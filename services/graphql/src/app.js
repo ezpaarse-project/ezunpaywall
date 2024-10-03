@@ -9,7 +9,7 @@ const { paths } = require('config');
 
 const { expressMiddleware } = require('@apollo/server/express4');
 
-const { pingRedis, startConnectionRedis } = require('./services/redis');
+const { pingRedis, startConnectionRedis } = require('./lib/redis');
 
 const auth = require('./middlewares/auth');
 const countDOIPlugin = require('./middlewares/countDOI');
@@ -22,7 +22,7 @@ const getConfig = require('./lib/config');
 const cronMetrics = require('./controllers/cron/metrics');
 const { setMetrics } = require('./controllers/metrics');
 
-const { pingElastic } = require('./services/elastic');
+const { pingElastic } = require('./lib/elastic');
 
 const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');

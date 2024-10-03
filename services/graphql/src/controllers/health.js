@@ -1,6 +1,6 @@
 const promiseWithTimeout = require('../lib/ping');
-const { pingRedis } = require('../services/redis');
-const { pingElastic } = require('../services/elastic');
+const { pingRedis } = require('../lib/redis');
+const { pingElastic } = require('../lib/elastic');
 
 /**
  * Controller to get health of all services connected to graphql service.

@@ -1,7 +1,7 @@
 const { createClient } = require('redis');
 const util = require('util');
 const { redis } = require('config');
-const logger = require('../lib/logger/appLogger');
+const logger = require('./logger/appLogger');
 
 const redisClient = createClient({
   legacyMode: true,

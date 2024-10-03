@@ -1,7 +1,7 @@
 const { elasticsearch } = require('config');
 
 const checkApikey = require('../middlewares/apikey');
-const { search } = require('../services/elastic');
+const { search } = require('../lib/elastic');
 
 async function unpaywall(parent, args, req, info) {
   await checkApikey(req, args, info);

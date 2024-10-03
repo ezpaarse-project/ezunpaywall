@@ -1,6 +1,6 @@
 const graphqlFields = require('graphql-fields');
 const logger = require('../lib/logger/appLogger');
-const { redisClient } = require('../services/redis');
+const { redisClient } = require('../lib/redis');
 
 /**
  * Flatten nested properties of an object by separating keys with dots.

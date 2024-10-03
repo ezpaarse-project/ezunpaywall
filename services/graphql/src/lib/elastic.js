@@ -3,7 +3,7 @@ const path = require('path');
 
 const { Client } = require('@elastic/elasticsearch');
 const { elasticsearch, nodeEnv } = require('config');
-const logger = require('../lib/logger/appLogger');
+const logger = require('./logger/appLogger');
 
 const isProd = (nodeEnv === 'production');
 
@@ -21,6 +21,8 @@ if (isProd) {
     ca,
     rejectUnauthorized: true,
   };
+} else {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
 
 const elasticClient = new Client({
