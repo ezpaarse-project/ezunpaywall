@@ -102,7 +102,7 @@ To set up this service, you can use environment variables. The config is display
 | NOTIFICATIONS_MACHINE | dev | environment of machine |
 | UNPAYWALL_URL | http://fakeunpaywall:3000 | unpaywall api URL to access to changefiles |
 | UNPAYWALL_APIKEY | changeme | unpaywall apikey to access to changefiles |
-| ELASTICSEARCH_NODES | http://elastic:9200 | elastic nodes URL seperated by comma |
+| ELASTICSEARCH_NODES | http://elastic:9200 | elastic nodes URL separated by comma |
 | ELASTICSEARCH_USERNAME | elastic | username of elastic super user |
 | ELASTICSEARCH_PASSWORD | changeme | password of elastic super user |
 | ELASTICSEARCH_MAX_BULK_SIZE | 4000 | max bulk size of update process |
