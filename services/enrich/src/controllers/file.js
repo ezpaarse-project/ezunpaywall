@@ -9,9 +9,9 @@ const { uploadDir, enrichedDir } = config.paths.data;
 /**
  * Controller to get list of enriched files of user.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function getEnrichedFiles(req, res, next) {
   const apikey = req.get('x-api-key');
@@ -31,9 +31,9 @@ async function getEnrichedFiles(req, res, next) {
 /**
  * Controller to get list of uploaded files of user.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function getUploadedFile(req, res, next) {
   const apikey = req.get('x-api-key');
@@ -52,9 +52,9 @@ async function getUploadedFile(req, res, next) {
 /**
  * Controller to get enriched file of user by filename.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function getEnrichedFileByFilename(req, res, next) {
   const { filename } = req.params;
@@ -75,9 +75,9 @@ async function getEnrichedFileByFilename(req, res, next) {
 /**
  * Controller to upload file.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function uploadFile(req, res, next) {
   if (!req?.file) return next({ message: 'File not sent' });

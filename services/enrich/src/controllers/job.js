@@ -7,9 +7,9 @@ const { enrichJSON, enrichCSV } = require('../lib/job');
 /**
  * Controller to do enrich job.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function job(req, res, next) {
   const { id, config } = req.data;

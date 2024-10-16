@@ -18,7 +18,7 @@ const elasticClient = new Client({
 /**
  * Check if index exit.
  *
- * @param {string} name - Name of index.
+ * @param {string} name Name of index.
  *
  * @returns {Promise<boolean>} is exist.
  */
@@ -76,8 +76,8 @@ async function insertDataUnpaywall(filename, indexName) {
 /**
  * Create index if it doesn't exist.
  *
- * @param {string} name - Name of index.
- * @param {Object} index - Mapping in JSON format.
+ * @param {string} name Name of index.
+ * @param {Object} index Mapping in JSON format.
  *
  * @returns {Promise<void>}
  */
@@ -98,7 +98,7 @@ async function createIndex(name, index) {
 /**
  * Delete index if it exist.
  *
- * @param {string} name - Name of index.
+ * @param {string} name Name of index.
  *
  * @returns {Promise<void>}
  */

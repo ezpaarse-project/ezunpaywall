@@ -30,7 +30,7 @@ async function orderRecentFiles(directoryPath) {
 /**
  * Get the most recent file in a directory.
  *
- * @param {string} directoryPath - Directory path.
+ * @param {string} directoryPath Directory path.
  *
  * @returns {Promise<{filename: string, stat: import('fs').Stats}|void>} Most recent filepath.
  */
@@ -42,8 +42,8 @@ async function getMostRecentFile(directoryPath) {
 /**
  * Delete files in directory when the last updated of file is more than n days.
  *
- * @param {string} directoryPath - Directory path.
- * @param {number} numberOfDays - Number of days.
+ * @param {string} directoryPath Directory path.
+ * @param {number} numberOfDays Number of days.
  *
  * @returns {Promise<Array<string>>} List of filename of deleted file.
  */

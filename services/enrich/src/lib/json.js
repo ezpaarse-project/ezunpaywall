@@ -49,7 +49,7 @@ const graphqlConfigWithAllAttributes = `
 /**
  * Add attribute doi to graphql params.
  *
- * @param {string} args - Graphql params.
+ * @param {string} args Graphql params.
  *
  * @returns {string} Graphql params with doi
  */
@@ -61,8 +61,8 @@ function addDOItoGraphqlRequest(args) {
 /**
  * Enrich data with response from ezunpaywall.
  *
- * @param {Array<Object>} data - Array of line that we will enrich.
- * @param {Array<Object>} response - Response from ezunpaywall.
+ * @param {Array<Object>} data Array of line that we will enrich.
+ * @param {Array<Object>} response Response from ezunpaywall.
  *
  * @returns {{ lineEnriched: number, enrichedArray: Array<Object> }} Number of lines
  * enriched and enriched data.
@@ -101,9 +101,9 @@ function enrichArray(data, response) {
 /**
  * Write enriched data in enriched file.
  *
- * @param {Array<Object>} data - Array of line enriched.
- * @param {string} enrichedFile - Filepath of enriched file.
- * @param {string} state - State of job.
+ * @param {Array<Object>} data Array of line enriched.
+ * @param {string} enrichedFile Filepath of enriched file.
+ * @param {string} state State of job.
  *
  * @returns {Promise<void>}
  */
@@ -121,9 +121,9 @@ async function writeInFileJSON(data, enrichedFile, state) {
 /**
  * Do a graphql request to enrich data and write it on enriched File.
  *
- * @param {Array<String>} data - Data that will be enrich.
- * @param {Object} enrichConfig - Config of enrich.
- * @param {Object} state - State of job.
+ * @param {Array<String>} data Data that will be enrich.
+ * @param {Object} enrichConfig Config of enrich.
+ * @param {Object} state State of job.
  *
  * @returns {Promise<void>}
  */
@@ -163,11 +163,11 @@ async function enrichInFile(data, enrichConfig, state) {
  *
  * A state is updated during the job.
  *
- * @param {string} id - Id of process.
- * @param {string} index - Index name of mapping.
- * @param {string} args - Attributes will be add.
- * @param {string} prefix - Prefix of new key will be add.
- * @param {string} state - State of job.
+ * @param {string} id Id of process.
+ * @param {string} index Index name of mapping.
+ * @param {string} args Attributes will be add.
+ * @param {string} prefix Prefix of new key will be add.
+ * @param {string} state State of job.
  *
  * @returns {Promise<void>}
  */

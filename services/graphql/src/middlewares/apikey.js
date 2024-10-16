@@ -6,7 +6,7 @@ const { redisClient } = require('../lib/redis');
  * Flatten nested properties of an object by separating keys with dots.
  * Example: { foo: { bar: 'foo' } } => { 'foo.bar': 'foo' }
  *
- * @param {Object} obj - Object need to be flatten.
+ * @param {Object} obj Object need to be flatten.
  *
  * @returns {Object} Flatten object.
  */

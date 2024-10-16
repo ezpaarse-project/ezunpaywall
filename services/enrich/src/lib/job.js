@@ -6,11 +6,11 @@ const processEnrichCSV = require('./csv');
 /**
  * Start an JSONL enrichment process based on an id and its config.
  *
- * @param {string} id - Name of uploaded file without the extension file.
- * @param {string} index - Index name of mapping.
- * @param {string} args - Graphql args for enrichment.
- * @param {string} prefix - Prefix of new key will be add.
- * @param {string} apikey - Apikey of user.
+ * @param {string} id Name of uploaded file without the extension file.
+ * @param {string} index Index name of mapping.
+ * @param {string} args Graphql args for enrichment.
+ * @param {string} prefix Prefix of new key will be add.
+ * @param {string} apikey Apikey of user.
  *
  * @returns {Promise<void>}
  */
@@ -23,12 +23,12 @@ async function enrichJSON(id, index, args, prefix, apikey) {
 /**
  * Start an CSV enrichment process based on an id and its config.
  *
- * @param {string} id - Name of uploaded file without the extension file.
- * @param {string} index - Index name of mapping.
- * @param {string} args - Graphql args for enrichment.
- * @param {string} apikey - Apikey of user.
- * @param {string} prefix - Prefix of new column in header.
- * @param {string} separator - Separator of enriched csv file.
+ * @param {string} id Name of uploaded file without the extension file.
+ * @param {string} index Index name of mapping.
+ * @param {string} args Graphql args for enrichment.
+ * @param {string} apikey Apikey of user.
+ * @param {string} prefix Prefix of new column in header.
+ * @param {string} separator Separator of enriched csv file.
  *
  * @returns {Promise<void>}
  */

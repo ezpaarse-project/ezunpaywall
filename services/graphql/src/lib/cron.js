@@ -10,10 +10,10 @@ class Cron {
   /**
    * @constructor
    *
-   * @param {string} name - Name of cron.
-   * @param {string} schedule - Schedule of cron.
-   * @param {Promise} task - Promise that will be executed by the cron
-   * @param {boolean} active - Indicates whether it is active or not.
+   * @param {string} name Name of cron.
+   * @param {string} schedule Schedule of cron.
+   * @param {Promise} task Promise that will be executed by the cron
+   * @param {boolean} active Indicates whether it is active or not.
    */
   constructor(name, schedule, task) {
     this.name = name;
@@ -39,7 +39,7 @@ class Cron {
   /**
    * Set new task for cron.
    *
-   * @param {function} task - Function that will be executed by the cron.
+   * @param {function} task Function that will be executed by the cron.
    */
   setTask(task) {
     this.process.stop();
@@ -52,7 +52,7 @@ class Cron {
   /**
    * Set new schedule for cron.
    *
-   * @param {string} schedule - Schedule of cron.
+   * @param {string} schedule Schedule of cron.
    */
   setSchedule(schedule) {
     this.process.stop();

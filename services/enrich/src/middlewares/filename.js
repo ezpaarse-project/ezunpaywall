@@ -3,9 +3,9 @@ const joi = require('joi');
 /**
  * Joi middleware to check if filename in param is correct.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function validateFilename(req, res, next) {
   const { filename } = req.params;

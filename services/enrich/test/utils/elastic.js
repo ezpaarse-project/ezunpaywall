@@ -18,7 +18,7 @@ const client = new Client({
 /**
  * Check if index exit.
  *
- * @param {string} name - Name of index.
+ * @param {string} name Name of index.
  *
  * @returns {Promise<boolean>} isExist
  */
@@ -37,8 +37,8 @@ async function checkIfIndexExist(name) {
 /**
  * Create index if it doesn't exist.
  *
- * @param {string} name - Name of index.
- * @param {Object} index - mapping in JSON format.
+ * @param {string} name Name of index.
+ * @param {Object} index mapping in JSON format.
  *
  * @returns {Promise<void>}
  */
@@ -59,7 +59,7 @@ async function createIndex(name, index) {
 /**
  * Delete index if it exist.
  *
- * @param {<string>} name - Name of index.
+ * @param {<string>} name Name of index.
  *
  * @returns {Promise<void>}
  */
@@ -113,7 +113,7 @@ async function insertDataUnpaywall() {
 /**
  * Count how many documents there are in an index.
  *
- * @param {string} name - Name of index.
+ * @param {string} name Name of index.
  *
  * @returns {Promise<number>} number of document.
  */

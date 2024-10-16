@@ -65,7 +65,7 @@ async function pingElastic() {
  * count of oa_status: 'green'
  * count of oa_status: 'closed'
  *
- * @param {string} indexName - Index name
+ * @param {string} indexName Index name
  *
  * @returns {Promise<Object>} metrics
  */
@@ -147,11 +147,11 @@ async function getMetrics(indexName) {
 
 /**
  * Search unpaywall document in elastic
- * @param {string} indexName - Index name
- * @param {number} size - Size of elements requested
- * @param {Object} body - Config of elastic request
+ * @param {string} indexName Index name
+ * @param {number} size Size of elements requested
+ * @param {Object} body Config of elastic request
  *
- * @returns {Object} - Elastic response
+ * @returns {Object} Elastic response
  */
 async function search(indexName, size, body) {
   let res;
