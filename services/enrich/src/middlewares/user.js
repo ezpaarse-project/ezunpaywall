@@ -17,7 +17,7 @@ const logger = require('../lib/logger/appLogger');
  *  Promise<import('express').Request>
  * }
  */
-async function checkAuth(req, res, next) {
+async function checkApiKey(req, res, next) {
   const apikey = req.get('x-api-key');
 
   if (!apikey) {
@@ -46,4 +46,4 @@ async function checkAuth(req, res, next) {
   return next();
 }
 
-module.exports = checkAuth;
+module.exports = checkApiKey;

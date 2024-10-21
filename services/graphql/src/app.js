@@ -11,21 +11,22 @@ const { expressMiddleware } = require('@apollo/server/express4');
 
 const { pingRedis, startConnectionRedis } = require('./lib/redis');
 
-const auth = require('./middlewares/auth');
+const auth = require('./middlewares/user');
 const countDOIPlugin = require('./middlewares/countDOI');
 
 const accessLogger = require('./lib/logger/access');
 const appLogger = require('./lib/logger/appLogger');
 
-const getConfig = require('./lib/config');
+const { logConfig } = require('./lib/config');
 
 const cronMetrics = require('./controllers/cron/metrics');
 const { setMetrics } = require('./controllers/metrics');
 
 const { pingElastic } = require('./lib/elastic');
 
-const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');
+const routerHealthCheck = require('./routers/healthcheck');
+const routerConfig = require('./routers/config');
 const routerOpenapi = require('./routers/openapi');
 
 const typeDefs = require('./models');
@@ -84,7 +85,8 @@ const server = new ApolloServer({
 
   // initiate all other routes
   app.use(routerPing);
-  app.use(routerPing);
+  app.use(routerHealthCheck);
+  app.use(routerConfig);
   app.use(routerOpenapi);
 
   await server.start();
@@ -97,7 +99,7 @@ const server = new ApolloServer({
     pingElastic().then(() => {
       setMetrics();
     });
-    getConfig();
+    logConfig();
     await startConnectionRedis();
     pingRedis();
 

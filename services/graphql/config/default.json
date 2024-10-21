@@ -20,5 +20,6 @@
       "healthCheckDir": "./log/healthcheck"
     }
   },
+  "apikey": "changeme",
   "healthTimeout": 3000
 }

@@ -13,7 +13,7 @@ const { getReport } = require('../../lib/update/report');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function getReports(req, res, next) {
+async function getReportsController(req, res, next) {
   const { latest, type } = req.data;
 
   if (latest) {
@@ -59,7 +59,7 @@ async function getReports(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function getReportByFilename(req, res, next) {
+async function getReportByFilenameController(req, res, next) {
   const { filename } = req.data;
 
   try {
@@ -78,6 +78,6 @@ async function getReportByFilename(req, res, next) {
 }
 
 module.exports = {
-  getReports,
-  getReportByFilename,
+  getReportsController,
+  getReportByFilenameController,
 };

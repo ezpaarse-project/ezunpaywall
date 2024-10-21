@@ -7,20 +7,20 @@ const {
   uploadFile,
 } = require('../controllers/file');
 
-const checkAuth = require('../middlewares/auth');
+const checkApiKey = require('../middlewares/user');
 const upload = require('../middlewares/multer');
 
 /**
  * Route that get list of enriched filename.
  * Auth required.
  */
-router.get('/enriched', checkAuth, getEnrichedFiles);
+router.get('/enriched', checkApiKey, getEnrichedFiles);
 
 /**
  * Route that get list of uploaded filename.
  * Auth required.
  */
-router.get('/upload', checkAuth, getUploadedFile);
+router.get('/upload', checkApiKey, getUploadedFile);
 
 /**
  * Route that get enriched file.
@@ -28,7 +28,7 @@ router.get('/upload', checkAuth, getUploadedFile);
  *
  * This route need a param which corresponds to filename.
  */
-router.get('/enriched/:filename', checkAuth, getEnrichedFileByFilename);
+router.get('/enriched/:filename', checkApiKey, getEnrichedFileByFilename);
 
 /**
  * Route that upload file.
@@ -36,6 +36,6 @@ router.get('/enriched/:filename', checkAuth, getEnrichedFileByFilename);
  *
  * This route need a body that contains the file to upload
  */
-router.post('/upload', checkAuth, upload.single('file'), uploadFile);
+router.post('/upload', checkApiKey, upload.single('file'), uploadFile);
 
 module.exports = router;

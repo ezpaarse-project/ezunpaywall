@@ -1,25 +1,47 @@
 const config = require('config');
 
-const logger = require('./logger/appLogger');
+const appLogger = require('./logger/appLogger');
 const defaultConfig = require('../../config/default.json');
 
-const copyConfig = JSON.parse(JSON.stringify(config));
+const appConfig = JSON.parse(JSON.stringify(config));
 
 /**
- * Get config of service.
+ * Hides sensitive value on config.
+ *
+ * @param conf App config.
+ *
+ * @returns Config with hidden sensitive values.
+ */
+function hideSecret(conf) {
+  const copyConfig = { ...conf };
+  copyConfig.redis.password = '********';
+  copyConfig.apikey = '********';
+  return copyConfig;
+}
+
+function logConfig() {
+  if (appConfig.redis.password === defaultConfig.redis.password) {
+    appLogger.warn('[config]: Redis password has the default value');
+  }
+
+  if (appConfig.apikey === defaultConfig.apikey) {
+    appLogger.warn('[config]: Admin API key has the default value');
+  }
+
+  const appConfigFiltered = hideSecret(appConfig);
+
+  appLogger.info(JSON.stringify(appConfigFiltered, null, 2));
+}
+
+/**
+ * Get config of service without sensitive value.
  *
  * @returns {Object} Config of service.
  */
 function getConfig() {
-  if (copyConfig.redis.password === defaultConfig.redis.password) {
-    logger.warn('[config]: Redis password has the default value');
-  }
-
-  copyConfig.redis.password = '********';
-
-  logger.info(JSON.stringify(copyConfig, null, 2));
-
-  return copyConfig;
+  return hideSecret(appConfig);
 }
-
-module.exports = getConfig;
+module.exports = {
+  logConfig,
+  getConfig,
+};

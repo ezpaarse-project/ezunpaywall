@@ -8,7 +8,7 @@ const unpaywallMapping = require('../../mapping/unpaywall.json');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function createAlias(req, res, next) {
+async function createAliasController(req, res, next) {
   try {
     await elastic.initAlias('unpaywall', unpaywallMapping, 'upw');
   } catch (err) {
@@ -25,7 +25,7 @@ async function createAlias(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function getIndices(req, res, next) {
+async function getIndicesController(req, res, next) {
   let indices;
   try {
     indices = await elastic.getIndices();
@@ -43,7 +43,7 @@ async function getIndices(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function getAlias(req, res, next) {
+async function getAliasController(req, res, next) {
   let alias;
   try {
     alias = await elastic.getAlias();
@@ -54,8 +54,29 @@ async function getAlias(req, res, next) {
   return res.status(200).json(alias);
 }
 
+/**
+ * Controller to delete index on elastic.
+ *
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
+ */
+async function deleteIndexController(req, res, next) {
+  const { indexName } = req.params;
+  let alias;
+  try {
+    alias = await elastic.removeIndex(indexName);
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
+
+  return res.status(200).json(alias);
+}
+
 module.exports = {
-  createAlias,
-  getIndices,
-  getAlias,
+  createAliasController,
+  getIndicesController,
+  getAliasController,
+  deleteIndexController,
 };

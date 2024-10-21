@@ -20,7 +20,7 @@ const { rollBack } = require('../../lib/update/history');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function downloadSnapshotJob(req, res, next) {
+async function downloadSnapshotJobController(req, res, next) {
   downloadSnapshotProcess();
   return res.status(202).json();
 }
@@ -32,7 +32,7 @@ async function downloadSnapshotJob(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function downloadAndInsertSnapshotJob(req, res, next) {
+async function downloadAndInsertSnapshotJobController(req, res, next) {
   const { index } = req.data;
 
   const jobConfig = {
@@ -53,7 +53,7 @@ async function downloadAndInsertSnapshotJob(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function insertChangefilesOnPeriodJob(req, res, next) {
+async function insertChangefilesOnPeriodJobController(req, res, next) {
   const { jobConfig } = req.data;
 
   const {
@@ -98,7 +98,7 @@ async function insertChangefilesOnPeriodJob(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function insertChangefileJob(req, res, next) {
+async function insertChangefileJobController(req, res, next) {
   const { jobConfig } = req.data;
 
   const { filename } = jobConfig;
@@ -120,7 +120,7 @@ async function insertChangefileJob(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function insertSnapshotJob(req, res, next) {
+async function insertSnapshotJobController(req, res, next) {
   const { jobConfig } = req.data;
 
   const { filename } = jobConfig;
@@ -143,7 +143,7 @@ async function insertSnapshotJob(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function insertWithOaHistory(req, res, next) {
+async function insertWithOaHistoryController(req, res, next) {
   const { jobConfig } = req.data;
 
   const {
@@ -188,7 +188,7 @@ async function insertWithOaHistory(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function historyRollBack(req, res, next) {
+async function historyRollBackController(req, res, next) {
   const { startDate, indexBase, indexHistory } = req.data.rollBackConfig;
 
   await rollBack(startDate, indexBase, indexHistory);
@@ -196,11 +196,11 @@ async function historyRollBack(req, res, next) {
 }
 
 module.exports = {
-  downloadSnapshotJob,
-  downloadAndInsertSnapshotJob,
-  insertChangefilesOnPeriodJob,
-  insertChangefileJob,
-  insertSnapshotJob,
-  insertWithOaHistory,
-  historyRollBack,
+  downloadSnapshotJobController,
+  downloadAndInsertSnapshotJobController,
+  insertChangefilesOnPeriodJobController,
+  insertChangefileJobController,
+  insertSnapshotJobController,
+  insertWithOaHistoryController,
+  historyRollBackController,
 };

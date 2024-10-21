@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const checkAuth = require('../middlewares/auth');
+const checkAdmin = require('../middlewares/admin');
 
-const sendMailContact = require('../controllers/mail');
+const sendMailContactController = require('../controllers/mail');
 
 /**
  * Route that send a contact mail.
  * Auth required.
  */
-router.post('/contact', checkAuth, sendMailContact);
+router.post('/contact', checkAdmin, sendMailContactController);
 
 module.exports = router;

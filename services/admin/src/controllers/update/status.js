@@ -7,7 +7,7 @@ const { getStatus, setStatus } = require('../../lib/update/status');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-function getUpdateStatus(req, res) {
+function getUpdateStatusController(req, res) {
   const status = getStatus();
   return res.status(200).json(status);
 }
@@ -19,13 +19,13 @@ function getUpdateStatus(req, res) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-function patchUpdateStatus(req, res) {
+function patchUpdateStatusController(req, res) {
   const status = setStatus();
   setStatus(!status);
   return res.status(200).json(!status);
 }
 
 module.exports = {
-  getUpdateStatus,
-  patchUpdateStatus,
+  getUpdateStatusController,
+  patchUpdateStatusController,
 };

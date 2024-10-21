@@ -3,7 +3,7 @@
     <v-list-group>
       <template #activator="{ props }">
         <v-list-item v-bind="props">
-          {{ t("drawer.language") }}
+          {{ t("menu.language") }}
         </v-list-item>
       </template>
       <SkeletonMenuLangList />

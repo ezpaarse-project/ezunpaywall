@@ -12,7 +12,7 @@ const logger = require('../lib/logger/appLogger');
  *
  * This middleware need a header that contains the apikey.
  */
-const checkAuth = async (req, res, next) => {
+const checkUser = async (req, res, next) => {
   let apikey = req.get('x-api-key');
 
   if (req.query.apikey && !apikey) {
@@ -48,4 +48,4 @@ const checkAuth = async (req, res, next) => {
   return next();
 };
 
-module.exports = checkAuth;
+module.exports = checkUser;

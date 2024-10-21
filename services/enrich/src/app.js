@@ -7,7 +7,7 @@ const { paths } = require('config');
 const accessLogger = require('./lib/logger/access');
 const appLogger = require('./lib/logger/appLogger');
 
-const getConfig = require('./lib/config');
+const { logConfig } = require('./lib/config');
 
 const { startConnectionRedis, pingRedis } = require('./lib/redis');
 
@@ -15,6 +15,7 @@ require('./lib/cron');
 
 const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');
+const routerConfig = require('./routers/config');
 const routerJob = require('./routers/job');
 const routerFile = require('./routers/file');
 const routerState = require('./routers/state');
@@ -70,15 +71,16 @@ app.use(routerFile);
 app.use(routerState);
 app.use(routerOpenapi);
 app.use(routerPing);
+app.use(routerConfig);
 
 // Errors and unknown routes
-app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl}- this route does not exist.` }));
+app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl} - this route does not exist.` }));
 
 app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
 app.listen(3000, async () => {
   appLogger.info('[express]: ezunpaywall enrich service listening on 3000');
-  getConfig();
+  logConfig();
   await startConnectionRedis();
   pingRedis();
 });

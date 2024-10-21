@@ -7,7 +7,7 @@ const { getState } = require('../../lib/update/state');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-function getCurrentState(req, res, next) {
+function getCurrentStateController(req, res, next) {
   let state = {};
   try {
     state = getState();
@@ -17,4 +17,4 @@ function getCurrentState(req, res, next) {
   return res.status(200).json(state);
 }
 
-module.exports = getCurrentState;
+module.exports = getCurrentStateController;

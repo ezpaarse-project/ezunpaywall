@@ -7,7 +7,7 @@ const { contactMail } = require('../lib/mail');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-function sendMailContact(req, res, next) {
+function sendMailContactController(req, res, next) {
   const {
     email, subject, message,
   } = req.body;
@@ -35,4 +35,4 @@ function sendMailContact(req, res, next) {
   return res.status(202).json();
 }
 
-module.exports = sendMailContact;
+module.exports = sendMailContactController;

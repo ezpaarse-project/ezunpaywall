@@ -4,7 +4,7 @@ const { search } = require('../lib/elastic');
 const logger = require('../lib/logger/appLogger');
 
 async function unpaywallHistory(parent, args, req, info) {
-  // TODO perf: use one requet than two
+  // TODO perf: use one request than two
   // TODO add limit for max DOI requested
 
   await checkApikey(req, args, info);

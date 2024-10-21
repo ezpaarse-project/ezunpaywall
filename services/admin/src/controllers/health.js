@@ -10,7 +10,7 @@ const { pingUnpaywall } = require('../lib/unpaywall/api');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function health(req, res, next) {
+async function healthController(req, res, next) {
   const start = Date.now();
   const p1 = promiseWithTimeout(pingRedis(), 'redis');
   const p2 = promiseWithTimeout(pingElastic(), 'elastic');
@@ -36,7 +36,7 @@ async function health(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function healthRedis(req, res, next) {
+async function healthRedisController(req, res, next) {
   const resultPing = await promiseWithTimeout(pingRedis(), 'redis');
   return res.status(200).json(resultPing);
 }
@@ -48,14 +48,14 @@ async function healthRedis(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function healthElastic(req, res, next) {
+async function healthElasticController(req, res, next) {
   const resultPing = await promiseWithTimeout(pingElastic(), 'elastic');
 
   return res.status(200).json(resultPing);
 }
 
 module.exports = {
-  health,
-  healthRedis,
-  healthElastic,
+  healthController,
+  healthRedisController,
+  healthElasticController,
 };

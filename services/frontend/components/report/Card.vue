@@ -8,14 +8,6 @@
     >
       <v-toolbar-title> {{ t('reports.title') }} </v-toolbar-title>
       <v-spacer />
-      <AdministrationUpdateProcessButton
-        v-if="isAdmin"
-        :type="props.type"
-      />
-      <AdministrationUpdateCronButton
-        v-if="isAdmin"
-        :type="props.type"
-      />
       <ReportUnpaywallButton />
       <ReportRefreshButton
         :loading="loading"
@@ -57,8 +49,6 @@ const reports = ref([]);
 const props = defineProps({
   type: { type: String, default: 'unpaywall' },
 });
-
-const isAdmin = computed(() => adminStore.isAdmin);
 
 async function getReport(filename) {
   let report;

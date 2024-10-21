@@ -10,7 +10,7 @@ const dataUpdateHistoryCron = require('../cron/dataUpdateHistory');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-function startCron(req, res, next) {
+function startCronController(req, res, next) {
   const { type } = req.data;
 
   if (type === 'dataUpdate') {
@@ -39,7 +39,7 @@ function startCron(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-function stopCron(req, res, next) {
+function stopCronController(req, res, next) {
   const { type } = req.data;
 
   if (type === 'dataUpdate') {
@@ -68,7 +68,7 @@ function stopCron(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-function patchCron(req, res, next) {
+function patchCronController(req, res, next) {
   const { cronConfig, type } = req.data;
   const { schedule } = cronConfig;
 
@@ -108,7 +108,7 @@ function patchCron(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-function getConfigCron(req, res) {
+function getConfigCronController(req, res) {
   const { type } = req.data;
 
   let config;
@@ -124,8 +124,8 @@ function getConfigCron(req, res) {
   return res.status(200).json(config);
 }
 module.exports = {
-  startCron,
-  stopCron,
-  patchCron,
-  getConfigCron,
+  startCronController,
+  stopCronController,
+  patchCronController,
+  getConfigCronController,
 };

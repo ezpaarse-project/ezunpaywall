@@ -12,7 +12,7 @@ const { getMostRecentFile, deleteFile } = require('../../lib/files');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function getChangefiles(req, res, next) {
+async function getChangefilesController(req, res, next) {
   const { latest } = req.data;
 
   if (latest) {
@@ -35,7 +35,7 @@ async function getChangefiles(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function uploadChangefile(req, res, next) {
+async function uploadChangefileController(req, res, next) {
   if (!req?.file) return next({ message: 'File not sent' });
   return res.status(202).json();
 }
@@ -47,7 +47,7 @@ async function uploadChangefile(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function deleteChangefile(req, res, next) {
+async function deleteChangefileController(req, res, next) {
   const { filename } = req.data;
 
   if (!await fs.existsSync(path.resolve(paths.data.changefilesDir, filename))) {
@@ -64,7 +64,7 @@ async function deleteChangefile(req, res, next) {
 }
 
 module.exports = {
-  getChangefiles,
-  uploadChangefile,
-  deleteChangefile,
+  getChangefilesController,
+  uploadChangefileController,
+  deleteChangefileController,
 };

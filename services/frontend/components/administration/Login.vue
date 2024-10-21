@@ -41,6 +41,8 @@
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
+
+const router = useRouter();
 const { $admin } = useNuxtApp();
 
 const loading = ref(false);
@@ -66,7 +68,10 @@ async function tryLogin() {
   }
   adminStore.setIsAdmin(true);
   adminStore.setPassword(password.value);
+
   loading.value = false;
+
+  router.push('/administration/health');
 }
 
 </script>

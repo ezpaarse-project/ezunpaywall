@@ -1,9 +1,9 @@
 const router = require('express').Router();
 
 const {
-  health,
-  healthRedis,
-  healthElastic,
+  healthController,
+  healthRedisController,
+  healthElasticController,
 } = require('../controllers/health');
 
 /**
@@ -19,16 +19,16 @@ router.get('/ping', (req, res) => res.status(204).end());
 /**
  * route that gives the state of health of the service.
  */
-router.get('/health', health);
+router.get('/health', healthController);
 
 /**
  * Route that gives the state of health of redis.
  */
-router.get('/health/redis', healthRedis);
+router.get('/health/redis', healthRedisController);
 
 /**
  * Route that gives the state of health of elastic.
  */
-router.get('/health/elastic', healthElastic);
+router.get('/health/elastic', healthElasticController);
 
 module.exports = router;

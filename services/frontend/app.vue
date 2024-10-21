@@ -4,6 +4,7 @@
       <NuxtLayout>
         <SkeletonAppBar @menu-update="updateVisibleMenu()" />
         <SkeletonAppMenu v-model="visible" />
+        <ConfirmDialog />
         <Snackbar />
         <v-main>
           <NuxtPage />

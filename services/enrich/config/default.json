@@ -22,5 +22,6 @@
       "uploadDir": "./data/upload"
     }
   },
+  "apikey": "changeme",
   "healthTimeout": 3000
 }

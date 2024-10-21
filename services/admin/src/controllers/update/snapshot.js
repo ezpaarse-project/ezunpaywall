@@ -12,7 +12,7 @@ const { getMostRecentFile, deleteFile } = require('../../lib/files');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function getSnapshots(req, res, next) {
+async function getSnapshotsController(req, res, next) {
   const { latest } = req.data;
 
   if (latest) {
@@ -35,7 +35,7 @@ async function getSnapshots(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function uploadSnapshot(req, res, next) {
+async function uploadSnapshotController(req, res, next) {
   if (!req?.file) return next({ message: 'File not sent' });
   return res.status(202).json();
 }
@@ -47,7 +47,7 @@ async function uploadSnapshot(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function deleteSnapshot(req, res, next) {
+async function deleteSnapshotController(req, res, next) {
   const { filename } = req.data;
 
   if (!await fs.existsSync(path.resolve(paths.data.snapshotsDir, filename))) {
@@ -64,7 +64,7 @@ async function deleteSnapshot(req, res, next) {
 }
 
 module.exports = {
-  getSnapshots,
-  uploadSnapshot,
-  deleteSnapshot,
+  getSnapshotsController,
+  uploadSnapshotController,
+  deleteSnapshotController,
 };

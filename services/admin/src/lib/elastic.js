@@ -117,6 +117,26 @@ async function initAlias(indexName, mapping, aliasName) {
   }
 }
 
+/**
+ * delete index if it exist
+ *
+ * @param indexName Name of index
+ */
+async function removeIndex(indexName) {
+  const exist = await checkIfIndexExist(indexName);
+  if (exist) {
+    try {
+      await elasticClient.indices.delete({
+        index: indexName,
+      });
+    } catch (err) {
+      appLogger.error(`[elastic]: Cannot delete index [${indexName}]`);
+      throw err;
+    }
+    appLogger.info(`[elastic]: Index [${indexName}] is deleted`);
+  }
+}
+
 async function searchByDOI(dois, index) {
   if (!dois) { return []; }
   // Normalize request
@@ -223,4 +243,5 @@ module.exports = {
   searchWithRange,
   getIndices,
   getAlias,
+  removeIndex,
 };

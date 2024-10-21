@@ -77,7 +77,9 @@
       "title": "Informations sur elastic",
       "noInfo": "Aucune informations sur elastic",
       "reload": "Recharger les informations sur elastic",
-      "documents": "documents"
+      "documents": "documents",
+        "deleteIndex": "Supprimer un index",
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer cet index: {indexName} ? (action irréversible)"
     },
     "health": {
       "title": "État des services",
@@ -197,7 +199,7 @@
   "header": {
     "help": "Les données du miroir Unpaywall sont mises à jour quotidiennement à 12:30"
   },
-  "drawer": {
+  "menu": {
     "home": "Accueil",
     "enrich": "Enrichissement de fichier",
     "graphql": "Démonstrateur GraphQL",
@@ -205,7 +207,14 @@
     "openapi": "Documentation",
     "language": "Langue",
     "contact": "Nous contacter",
-    "administration": "Administration"
+    "administration": {
+      "title": "Administration",
+      "cron": "Cron",
+      "update": "Mise à jour",
+      "apikey": "Clé d'API",
+      "health": "Santé",
+      "logout": "Deconnexion"
+    }
   },
   "reports": {
     "title": "Dernières mises à jour",
@@ -298,6 +307,7 @@
       "stopped": "La cron de mise à jour a été arrêter"
     }
   },
+  "noData": "Aucune données",  
   "search": "Rechercher",
   "edit": "Modifier",
   "delete": "Supprimer",

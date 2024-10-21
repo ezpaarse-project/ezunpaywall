@@ -9,5 +9,6 @@
   "graphql": {
     "host": "GRAPHQL_URL"
   },
+  "apikey": "ADMIN_APIKEY",
   "healthTimeout": "HEALTH_TIMEOUT"
 }

@@ -1,13 +1,13 @@
 const router = require('express').Router();
 
 const upload = require('../../middlewares/uploadChangefile');
-const checkAuth = require('../../middlewares/auth');
+const checkAdmin = require('../../middlewares/admin');
 const dev = require('../../middlewares/dev');
 
 const validateLatest = require('../../middlewares/format/latest');
 const validateFilename = require('../../middlewares/format/filename');
 
-const { getChangefiles, uploadChangefile, deleteChangefile } = require('../../controllers/update/changefile');
+const { getChangefilesController, uploadChangefileController, deleteChangefileController } = require('../../controllers/update/changefile');
 
 /**
  * Route that give the list of changefiles installed on ezunpaywall or the most recent file.
@@ -15,7 +15,7 @@ const { getChangefiles, uploadChangefile, deleteChangefile } = require('../../co
  *
  * This route can take in query latest.
  */
-router.get('/changefiles', checkAuth, validateLatest, getChangefiles);
+router.get('/changefiles', checkAdmin, validateLatest, getChangefilesController);
 
 /**
  * Route that upload a changefile on ezunpaywall.
@@ -24,12 +24,12 @@ router.get('/changefiles', checkAuth, validateLatest, getChangefiles);
  *
  * This route need a body that contains the file to upload.
  */
-router.post('/changefiles', dev, checkAuth, upload.single('file'), uploadChangefile);
+router.post('/changefiles', dev, checkAdmin, upload.single('file'), uploadChangefileController);
 
 /**
  * Route that delete a changefile on ezunpaywall.
  * Auth required.
  */
-router.delete('/changefiles/:filename', dev, checkAuth, validateFilename, deleteChangefile);
+router.delete('/changefiles/:filename', dev, checkAdmin, validateFilename, deleteChangefileController);
 
 module.exports = router;

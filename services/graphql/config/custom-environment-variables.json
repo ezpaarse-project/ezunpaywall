@@ -13,5 +13,6 @@
     "indexBase": "ELASTICSEARCH_INDEX_BASE",
     "indexHistory": "ELASTICSEARCH_INDEX_HISTORY"
   },
+  "apikey": "ADMIN_APIKEY",
   "healthTimeout": "HEALTH_TIMEOUT"
 }

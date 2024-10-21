@@ -1,11 +1,11 @@
 const router = require('express').Router();
 
 const {
-  downloadSnapshotJob,
-  downloadAndInsertSnapshotJob,
-  insertChangefilesOnPeriodJob,
-  insertChangefileJob,
-  insertSnapshotJob,
+  downloadSnapshotJobController,
+  downloadAndInsertSnapshotJobController,
+  insertChangefilesOnPeriodJobController,
+  insertChangefileJobController,
+  insertSnapshotJobController,
 } = require('../../controllers/update/job');
 
 const {
@@ -14,21 +14,21 @@ const {
   validateInsertFile,
 } = require('../../middlewares/format/job');
 
-const { insertWithOaHistory, historyRollBack } = require('../../controllers/update/job');
+const { insertWithOaHistoryController, historyRollBackController } = require('../../controllers/update/job');
 
 const { step1, step2, step3 } = require('../../lib/update/history');
 
 const { validateHistoryJob, validateHistoryReset } = require('../../middlewares/format/job');
 
 const checkStatus = require('../../middlewares/status');
-const checkAuth = require('../../middlewares/auth');
+const checkAdmin = require('../../middlewares/admin');
 
 /**
  * Route that download the current snapshot of unpaywall.
  * Auth required.
  * No update process should be in progress.
  */
-router.post('/job/download/snapshot', checkStatus, checkAuth, downloadSnapshotJob);
+router.post('/job/download/snapshot', checkStatus, checkAdmin, downloadSnapshotJobController);
 
 /**
  * Route that download the current snapshot of unpaywall and insert his content.
@@ -37,7 +37,7 @@ router.post('/job/download/snapshot', checkStatus, checkAuth, downloadSnapshotJo
  *
  * This route need a body that contains a config of job.
  */
-router.post('/job/download/insert/snapshot', checkStatus, checkAuth, validateSnapshotJob, downloadAndInsertSnapshotJob);
+router.post('/job/download/insert/snapshot', checkStatus, checkAdmin, validateSnapshotJob, downloadAndInsertSnapshotJobController);
 
 /**
  * Route that download and insert on elastic the changefiles from unpaywall between a period.
@@ -46,7 +46,7 @@ router.post('/job/download/insert/snapshot', checkStatus, checkAuth, validateSna
  *
  * This route need a body that contains a config of job.
  */
-router.post('/job/download/insert/changefile/period', checkStatus, checkAuth, validateJobChangefilesConfig, insertChangefilesOnPeriodJob);
+router.post('/job/download/insert/changefile/period', checkStatus, checkAdmin, validateJobChangefilesConfig, insertChangefilesOnPeriodJobController);
 
 /**
  * Route that download and insert on elastic the changefiles from unpaywall between a period
@@ -56,7 +56,7 @@ router.post('/job/download/insert/changefile/period', checkStatus, checkAuth, va
  *
  * This route need a body that contains a config of job.
  */
-router.post('/job/download/insert/history/period', checkStatus, checkAuth, validateHistoryJob, insertWithOaHistory);
+router.post('/job/download/insert/history/period', checkStatus, checkAdmin, validateHistoryJob, insertWithOaHistoryController);
 
 /**
  * Route that insert on elastic the content of changefile installed on ezunpaywall.
@@ -66,7 +66,7 @@ router.post('/job/download/insert/history/period', checkStatus, checkAuth, valid
  * This route need a body that contains a config of job
  * and a param which corresponds to the filename.
  */
-router.post('/job/insert/changefile/:filename', checkStatus, checkAuth, validateInsertFile, insertChangefileJob);
+router.post('/job/insert/changefile/:filename', checkStatus, checkAdmin, validateInsertFile, insertChangefileJobController);
 
 /**
  * Route that insert on elastic the content of file changefile on ezunpaywall
@@ -77,7 +77,7 @@ router.post('/job/insert/changefile/:filename', checkStatus, checkAuth, validate
  * This route need a body that contains a config of job
  * and a param which corresponds to the filename.
  */
-router.post('/job/insert/history/changefile/:filename', checkStatus, checkAuth, validateInsertFile, insertChangefileJob);
+router.post('/job/insert/history/changefile/:filename', checkStatus, checkAdmin, validateInsertFile, insertChangefileJobController);
 
 /**
  * Route that insert on elastic the content of snapshot installed on ezunpaywall.
@@ -87,7 +87,7 @@ router.post('/job/insert/history/changefile/:filename', checkStatus, checkAuth, 
  * This route need a body that contains a config of job
  * and a param which corresponds to the filename.
  */
-router.post('/job/insert/snapshot/:filename', checkStatus, checkAuth, validateInsertFile, insertSnapshotJob);
+router.post('/job/insert/snapshot/:filename', checkStatus, checkAdmin, validateInsertFile, insertSnapshotJobController);
 
 /**
  * Route that roll back the current and the history index according to a date.
@@ -96,24 +96,24 @@ router.post('/job/insert/snapshot/:filename', checkStatus, checkAuth, validateIn
  *
  * This route need a body that contains a config of job.
  */
-router.post('/job/download/insert/history/period/reset', checkStatus, checkAuth, validateHistoryReset, historyRollBack);
+router.post('/job/download/insert/history/period/reset', checkStatus, checkAdmin, validateHistoryReset, historyRollBackController);
 
 // Dev
-router.post('/job/download/insert/history/period/reset/step1', checkStatus, checkAuth, validateHistoryReset, async (req, res, next) => {
+router.post('/job/download/insert/history/period/reset/step1', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
   const { startDate } = req.data;
 
   await step1(startDate);
   return res.status(202).json();
 });
 
-router.post('/job/download/insert/history/period/reset/step2', checkStatus, checkAuth, validateHistoryReset, async (req, res, next) => {
+router.post('/job/download/insert/history/period/reset/step2', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
   const { startDate } = req.data;
 
   await step2(startDate);
   return res.status(202).json();
 });
 
-router.post('/job/download/insert/history/period/reset/step3', checkStatus, checkAuth, validateHistoryReset, async (req, res, next) => {
+router.post('/job/download/insert/history/period/reset/step3', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
   const { startDate } = req.data;
 
   await step3(startDate);

@@ -10,7 +10,7 @@ const { apikey } = require('config');
  *
  * This middleware need a header that contains the apikey.
  */
-async function checkAuth(req, res, next) {
+async function checkAdmin(req, res, next) {
   const key = req.get('x-api-key');
 
   if (key !== apikey) {
@@ -20,4 +20,4 @@ async function checkAuth(req, res, next) {
   return next();
 }
 
-module.exports = checkAuth;
+module.exports = checkAdmin;

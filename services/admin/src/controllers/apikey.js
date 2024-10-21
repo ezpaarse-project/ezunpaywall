@@ -10,7 +10,7 @@ const appLogger = require('../lib/logger/appLogger');
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function getApikey(req, res, next) {
+async function getApikeyController(req, res, next) {
   const apikey = req.data;
 
   let config;
@@ -36,7 +36,7 @@ async function getApikey(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function getAllApikey(req, res, next) {
+async function getAllApikeyController(req, res, next) {
   let keys;
   try {
     keys = await redisClient.keys('*');
@@ -92,7 +92,7 @@ async function getAllApikey(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function createApiKey(req, res, next) {
+async function createApiKeyController(req, res, next) {
   const apikeyConfig = req.data;
 
   const {
@@ -160,7 +160,7 @@ async function createApiKey(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function updateApiKey(req, res, next) {
+async function updateApiKeyController(req, res, next) {
   const { apikey, apikeyConfig } = req.data;
   const { name } = apikeyConfig;
 
@@ -255,7 +255,7 @@ async function updateApiKey(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function deleteApiKey(req, res, next) {
+async function deleteApiKeyController(req, res, next) {
   const apikey = req.data;
 
   let key;
@@ -287,7 +287,7 @@ async function deleteApiKey(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function deleteAllApikey(req, res, next) {
+async function deleteAllApikeyController(req, res, next) {
   try {
     await redisClient.flushall();
   } catch (err) {
@@ -304,7 +304,7 @@ async function deleteAllApikey(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function loadApikey(req, res, next) {
+async function loadApikeyController(req, res, next) {
   const loadKeys = req.data;
 
   for (let i = 0; i < loadKeys.length; i += 1) {
@@ -329,7 +329,7 @@ async function loadApikey(req, res, next) {
  * @param {import('express').Response} res HTTP response.
  * @param {import('express').NextFunction} next Do the following.
  */
-async function loadDevApikey(req, res, next) {
+async function loadDevApikeyController(req, res, next) {
   try {
     await load();
   } catch (err) {
@@ -340,12 +340,12 @@ async function loadDevApikey(req, res, next) {
 }
 
 module.exports = {
-  getApikey,
-  getAllApikey,
-  createApiKey,
-  updateApiKey,
-  deleteApiKey,
-  deleteAllApikey,
-  loadApikey,
-  loadDevApikey,
+  getApikeyController,
+  getAllApikeyController,
+  createApiKeyController,
+  updateApiKeyController,
+  deleteApiKeyController,
+  deleteAllApikeyController,
+  loadApikeyController,
+  loadDevApikeyController,
 };

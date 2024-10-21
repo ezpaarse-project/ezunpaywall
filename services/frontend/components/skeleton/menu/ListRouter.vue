@@ -16,6 +16,7 @@
         <v-icon :icon="route.icon" />
       </template>
     </v-list-item>
+    <SkeletonMenuAdminMenu />
   </v-list>
 </template>
 
@@ -24,13 +25,12 @@
 const { t } = useI18n();
 
 const routers = computed(() => [
-  { text: t('drawer.home'), icon: 'mdi-view-dashboard', path: '/' },
-  { text: t('drawer.enrich'), icon: 'mdi-code-json', path: '/enrich' },
-  { text: t('drawer.graphql'), icon: 'mdi-server', path: '/graphql' },
-  { text: t('drawer.openapi'), icon: 'mdi-api', path: '/open-api' },
-  { text: t('drawer.updateHistory'), icon: 'mdi-update', path: '/report-history' },
-  { text: t('drawer.contact'), icon: 'mdi-email', path: '/contact' },
-  { text: t('drawer.administration'), icon: 'mdi-security', path: '/administration' },
+  { text: t('menu.home'), icon: 'mdi-view-dashboard', path: '/' },
+  { text: t('menu.enrich'), icon: 'mdi-code-json', path: '/enrich' },
+  { text: t('menu.graphql'), icon: 'mdi-server', path: '/graphql' },
+  { text: t('menu.openapi'), icon: 'mdi-api', path: '/open-api' },
+  { text: t('menu.updateHistory'), icon: 'mdi-update', path: '/report-history' },
+  { text: t('menu.contact'), icon: 'mdi-email', path: '/contact' },
 ]);
 
 </script>
