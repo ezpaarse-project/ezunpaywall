@@ -96,7 +96,7 @@ const tableHeaders = computed(() => [
     title: 'Type',
     align: 'start',
     sortable: false,
-    key: 'type',
+    key: 'name',
   },
   {
     title: 'Index',

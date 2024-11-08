@@ -83,7 +83,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport('dataUpdate');
+      const report = await getReport('[insert][changefile]');
       testResult(report);
     });
 
@@ -153,7 +153,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport('dataUpdate');
+      const report = await getReport('[insert][changefile]');
       testResult(report);
     });
 
@@ -223,7 +223,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport('dataUpdate');
+      const report = await getReport('[insert][changefile]');
       testResult(report);
     });
 
@@ -294,7 +294,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport('dataUpdate');
+      const report = await getReport('[insert][changefile]');
       testResult(report);
     });
 

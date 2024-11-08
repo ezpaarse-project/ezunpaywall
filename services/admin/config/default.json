@@ -41,7 +41,7 @@
     "dataUpdateHistory": {
       "schedule": "0 0 0 * * *",
       "active": true,
-      "indexBase": "unpaywall-base",
+      "index": "unpaywall",
       "indexHistory": "unpaywall-history",
       "interval": "day"
     },

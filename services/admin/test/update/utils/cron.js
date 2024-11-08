@@ -23,7 +23,7 @@ async function resetCronConfig(type) {
   if (type === 'dataUpdateHistory') {
     config = {
       schedule: '0 0 0 * * *',
-      indexBase: 'unpaywall-base',
+      index: 'unpaywall-base',
       indexHistory: 'unpaywall-history',
       interval: 'day',
     };

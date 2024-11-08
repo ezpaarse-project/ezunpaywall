@@ -28,7 +28,7 @@
     />
     <ReportDataTable
       v-else
-      :type="props.type"
+      :name="props.name"
       :reports="reports"
     />
   </v-card>

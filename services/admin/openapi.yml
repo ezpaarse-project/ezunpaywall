@@ -163,7 +163,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /job/download/insert/changefile/period:
+  /job/download/insert/changefile:
     post:
       tags:
         - job
@@ -254,7 +254,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
                 
-  /job/download/insert/history/period:
+  /job/history/download/insert/changefile:
     post:
       tags:
         - job

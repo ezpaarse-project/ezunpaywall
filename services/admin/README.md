@@ -61,7 +61,7 @@ To set up this service, you can use environment variables. The config is display
     "dataUpdateHistory": {
       "schedule": "0 0 0 * * *",
       "active": true,
-      "indexBase": "unpaywall-base",
+      "index": "unpaywall",
       "indexHistory": "unpaywall-history",
       "interval": "day"
     },
@@ -119,7 +119,7 @@ To set up this service, you can use environment variables. The config is display
 | CRON_DATA_UPDATE_INTERVAL | day | interval of changefile |
 | CRON_DATA_UPDATE_HISTORY_SCHEDULE | 0 0 0 * * * | schedule of cron |
 | CRON_DATA_UPDATE_HISTORY_ACTIVE | true | cron active or not at the start of service |
-| CRON_DATA_UPDATE_HISTORY_INDEX_BASE | unpaywall-base | index where data is inserted |
+| CRON_DATA_UPDATE_HISTORY_INDEX | unpaywall-base | index where data is inserted |
 | CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY | unpaywall-history | index where history data is inserted |
 | CRON_DATA_UPDATE_HISTORY_INTERVAL | day | interval of changefile |
 | CRON_CLEAN_FILE_SCHEDULE | "0 0 0 * * * | schedule of cron |

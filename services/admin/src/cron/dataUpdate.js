@@ -62,7 +62,17 @@ function update(newConfig) {
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {
-  return { ...cronConfig, ...unpaywallCron.config };
+  const order = ['name', 'schedule', 'interval', 'index', 'active'];
+
+  const data = { ...cronConfig, ...unpaywallCron.config };
+
+  const result = {};
+  order.forEach((key) => {
+    if (data[key] !== undefined) {
+      result[key] = data[key];
+    }
+  });
+  return result;
 }
 
 module.exports = {

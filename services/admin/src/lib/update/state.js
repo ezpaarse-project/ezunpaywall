@@ -1,7 +1,4 @@
 /* eslint-disable no-restricted-syntax */
-const { createReport } = require('./report');
-const { setStatus } = require('./status');
-const { updateReportMail } = require('../mail');
 
 const appLogger = require('../logger/appLogger');
 
@@ -16,26 +13,24 @@ function setState(key, value) {
 }
 
 /**
- * Create a new file on folder "data/update/state" containing the update state
+ * Update local variable state containing the update state
  *
  * @return {Promise<string>} name of the file where the state is saved.
  *
- * @param {string} config.type Type of job process.
+ * @param {string} config.name Name of job process.
  * @param {string} config.index index where are inserted data.
- * @param {string} config.indexBase index where are inserted base data.
  * @param {string} config.indexHistory index where are inserted history data.
  */
 async function createState(config) {
-  appLogger.info(`[state]: create new state for [${config.type}] process`);
+  appLogger.info(`[state]: create new state for [${config.name}] process`);
   state = {
     done: false,
     createdAt: new Date(),
     endAt: null,
     steps: [],
     error: false,
-    type: config.type,
+    name: config.name,
     index: config?.index || '',
-    indexBase: config?.indexBase || '',
     indexHistory: config?.indexHistory || '',
   };
   appLogger.debug('[state]: state is created');
@@ -120,11 +115,38 @@ function end() {
   state.endAt = new Date();
   state.took = (new Date(state.endAt) - new Date(state.createdAt)) / 1000;
 
-  if (state.type === 'dataUpdate') {
-    const indices = [];
+  const indices = [];
+  const insertSteps = state.steps.filter((e) => e.task === 'insert');
 
-    const insertSteps = state.steps.filter((e) => e.task === 'insert');
+  if (state.name === '[history][download][insert][changefile]') {
+    let totalAddedBase = 0;
+    let totalUpdatedBase = 0;
+    let totalAddedHistory = 0;
+    let totalUpdatedHistory = 0;
 
+    insertSteps.forEach((step) => {
+      const keys = Object.keys(step.indices);
+      totalAddedBase += step.indices[keys[0]].addedDocs;
+      totalUpdatedBase += step.indices[keys[0]].updatedDocs;
+      totalAddedHistory += step.indices[keys[1]].addedDocs;
+      totalUpdatedHistory += step.indices[keys[1]].updatedDocs;
+    });
+
+    indices.push({
+      index: state.index,
+      added: totalAddedBase,
+      updated: totalUpdatedBase,
+    });
+    indices.push({
+      index: state.indexHistory,
+      added: totalAddedHistory,
+      updated: totalUpdatedHistory,
+    });
+    state.indices = indices;
+    return;
+  }
+
+  if (state.name.includes('[insert]')) {
     let totalAddedDocs = 0;
     let totalUpdatedDocs = 0;
 
@@ -140,40 +162,6 @@ function end() {
     });
     state.indices = indices;
   }
-
-  if (state.type === 'dataUpdateHistory') {
-    const indices = [];
-
-    const insertSteps = state.steps.filter((e) => e.task === 'insert');
-
-    let totalAddedBase = 0;
-    let totalUpdatedBase = 0;
-    let totalAddedHistory = 0;
-    let totalUpdatedHistory = 0;
-
-    insertSteps.forEach((step) => {
-      const keys = Object.keys(step.indices);
-      totalAddedBase += step.indices[keys[0]].addedDocs;
-      totalUpdatedBase += step.indices[keys[0]].updatedDocs;
-      totalAddedHistory += step.indices[keys[1]].addedDocs;
-      totalUpdatedHistory += step.indices[keys[1]].updatedDocs;
-    });
-
-    indices.push({
-      index: state.indexBase,
-      added: totalAddedBase,
-      updated: totalUpdatedBase,
-    });
-    indices.push({
-      index: state.indexHistory,
-      added: totalAddedHistory,
-      updated: totalUpdatedHistory,
-    });
-    state.indices = indices;
-  }
-  delete state.index;
-  delete state.indexBase;
-  delete state.indexHistory;
 }
 
 /**
@@ -184,23 +172,12 @@ function end() {
 async function fail(stackTrace) {
   appLogger.error('[state]: fail');
   end();
+  const step = getLatestStep();
+  step.status = 'error';
+  updateLatestStep(step);
+
   state.error = true;
   state.stackTrace = stackTrace;
-  await createReport(state);
-  updateReportMail(state);
-  setStatus(false);
-}
-
-/**
- * Update the state when the process is finished successfully.
- *
- * @returns {Promise<void>}
- */
-async function endState() {
-  appLogger.info('[state]: end process');
-  end();
-  await createReport(state);
-  setStatus(false);
 }
 
 module.exports = {
@@ -212,6 +189,6 @@ module.exports = {
   addStepInsert,
   getLatestStep,
   updateLatestStep,
+  end,
   fail,
-  endState,
 };

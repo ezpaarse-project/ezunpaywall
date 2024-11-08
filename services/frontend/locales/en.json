@@ -1,7 +1,7 @@
 {
   "home": {
     "title" : "What is ezUnpaywall?",
-    "general1": "ezUnpaywall is a mirror of {link} hosted at Inist-CNRS and developed by ezTEAM.",
+    "general1": "ezUnpaywall is a mirror of {link} hosted at Inist-CNRS and developed by ezTEAM since 2020",
     "general2": "It has an interface for enriching files with Open Access data from the DOI and a demonstrator for querying DOIs with GraphQL requests. ",
     "general3": "This server has an API that can be queried via an APIKey. You can get an APIKey on request to the team (see the contact section). For more information, see the {link}.",
     "blogPost": "Blog post",

@@ -1,78 +1,59 @@
 <template>
-  <v-dialog
-    :value="value"
-    max-width="1000px"
-    @update:model-value="emit('update:modelValue', $event)"
-  >
+  <v-dialog :value="value" max-width="1000px" @update:model-value="emit('update:modelValue', $event)">
     <v-card>
-      <v-toolbar
-        color="primary"
-        dark
-      >
+      <v-toolbar color="primary" dark>
         <v-toolbar-title>
           {{ t('administration.job.title') }}
         </v-toolbar-title>
       </v-toolbar>
+      <v-tabs v-model="tab" fixed-tabs color="primary">
+        <v-tab value="classic">
+          classic
+        </v-tab>
+        <v-tab value="history">
+          history
+        </v-tab>
+        <v-tab value="file">
+          file
+        </v-tab>
+      </v-tabs>
       <v-card-text>
-        <v-container fluid>
-          <v-form
-            id="form"
-            v-model="valid"
-            @submit.prevent="startUpdate()"
-          >
-            <v-select
-              v-model="interval"
-              class="mt-4"
-              :items="intervals"
-              :label="t('administration.job.interval')"
-            />
-            <v-text-field
-              v-if="props.type === 'unpaywall'"
-              v-model="indexBase"
-              :label="t('administration.job.index')"
-            />
-            <v-text-field
-              v-model="startDate"
-              :label="t('administration.job.startDate')"
-              :rules="[dateFormatRule, dateIsFutureRule]"
-              autofocus
-            />
-            <v-text-field
-              v-if="props.type === 'unpaywall'"
-              v-model="endDate"
-              :label="t('administration.job.endDate')"
-              :rules="[dateFormatRule, dateIsFutureRule]"
-            />
-            <v-text-field
-              v-if="props.type === 'unpaywallHistory'"
-              v-model="indexBase"
-              :label="t('administration.job.indexBase')"
-            />
-            <v-text-field
-              v-if="props.type === 'unpaywallHistory'"
-              v-model="indexHistory"
-              :label="t('administration.job.indexHistory')"
-            />
-          </v-form>
-        </v-container>
+        <v-tabs-window v-model="tab">
+          <v-tabs-window-item value="classic">
+            <v-form id="form" v-model="valid" @submit.prevent="startJob()">
+              <v-select v-model="interval" class="mt-4" :items="intervals" :label="t('administration.job.interval')" />
+              <v-text-field v-model="startDate" :label="t('administration.job.startDate')"
+                :rules="[dateFormatRule, dateIsFutureRule]" autofocus />
+              <v-text-field v-model="endDate" :label="t('administration.job.endDate')"
+                :rules="[dateFormatRule, dateIsFutureRule]" />
+              <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
+            </v-form>
+          </v-tabs-window-item>
+          <v-tabs-window-item value="history">
+            <v-form id="form" v-model="valid" @submit.prevent="startJob()">
+              <v-select v-model="interval" class="mt-4" :items="intervals" :label="t('administration.job.interval')" />
+              <v-text-field v-model="startDate" :label="t('administration.job.startDate')"
+                :rules="[dateFormatRule, dateIsFutureRule]" autofocus />
+              <v-text-field v-model="endDate" :label="t('administration.job.endDate')"
+                :rules="[dateFormatRule, dateIsFutureRule]" />
+              <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
+              <v-text-field v-model="indexHistory" :label="t('administration.job.indexHistory')" />
+            </v-form>
+          </v-tabs-window-item>
+          <v-tabs-window-item value="file">
+            <v-form id="form" v-model="valid" @submit.prevent="startJob()">
+              <v-select v-model="filetype" class="mt-4" :items="filetypes" :label="t('administration.job.filetype')" />
+              <v-text-field v-model="filename" :label="t('administration.job.filename')" autofocus />
+            </v-form>
+          </v-tabs-window-item>
+        </v-tabs-window>
       </v-card-text>
       <v-card-actions>
-        <v-btn
-          text
-          class="red--text"
-          @click.stop="emit('update:modelValue', false)"
-        >
+        <v-btn text class="red--text" @click.stop="emit('update:modelValue', false)">
           {{ t('cancel') }}
         </v-btn>
         <v-spacer />
-        <v-btn
-          text
-          type="submit"
-          form="form"
-          :disabled="!valid"
-          :loading="loading"
-          class="green--text"
-        >
+        <v-btn text type="submit" form="form" :disabled="!valid" :loading="loading" class="green--text">
           {{ t('create') }}
         </v-btn>
       </v-card-actions>
@@ -106,9 +87,20 @@ function formatDate(date) {
 }
 
 const value = ref('false');
+const tab = ref('classic');
 const valid = ref(true);
 const loading = ref(false);
 const intervals = ref(['day', 'week']);
+const filetypes = ref(['changefile', 'snapshot']);
+
+const interval = ref('day');
+const index = ref('unpaywall_base');
+const indexHistory = ref('unpaywall_history');
+const startDate = ref(formatDate(new Date()));
+const endDate = ref(formatDate(new Date()));
+const filename = ref('');
+const filetype = ref('changefile');
+
 
 const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 
@@ -119,61 +111,86 @@ const props = defineProps({
   type: { type: String, default: 'unpaywall' },
 });
 
-const interval = ref('day');
-const indexBase = ref('unpaywall_base');
-const indexHistory = ref('unpaywall_history');
-const startDate = ref(formatDate(new Date()));
-const endDate = ref(formatDate(new Date()));
-
-function startUpdatePeriod(data) {
-  return $admin('/job/period', {
-    method: 'POST',
-    body: data,
-    headers: {
-      'X-API-KEY': password.value,
-    },
-  });
-}
-
-function startUpdateHistory(data) {
-  return $admin('/job/history', {
-    method: 'POST',
-    body: data,
-    headers: {
-      'X-API-KEY': password.value,
-    },
-  });
-}
-
-async function startUpdate() {
-  loading.value = true;
-  let data;
-  if (props.type === 'unpaywall') {
-    data = {
-      index: indexBase.value,
-      interval: interval.value,
-      startDate: startDate.value,
-      endDate: endDate.value,
-    };
-    try {
-      await startUpdatePeriod(data);
-    } catch (err) {
-      snackStore.error(t('error.update.start'));
-      loading.value = false;
-    }
+async function startJob() {
+  if (tab.value === 'classic') {
+    startClassicUpdate()
   }
-  if (props.type === 'unpaywallHistory') {
-    data = {
-      indexBase: indexBase.value,
-      indexHistory: indexHistory.value,
-      interval: interval.value,
-    };
-    try {
-      await startUpdateHistory(data);
-    } catch (err) {
-      snackStore.error(t('error.update.start'));
-      loading.value = false;
-    }
+  if (tab.value === 'history') {
+    startHistoryUpdate()
+  }
+  if (tab.value === 'file') {
+    startInsertFile()
+  }
+}
+
+async function startClassicUpdate() {
+  loading.value = true;
+  const data = {
+    index: index.value,
+    interval: interval.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
+  };
+  try {
+    await $admin('/job/download/insert/changefile', {
+      method: 'POST',
+      body: data,
+      headers: {
+        'X-API-KEY': password.value,
+      },
+    });
+  } catch (err) {
+    snackStore.error(t('error.update.start'));
+    loading.value = false;
+  }
+  loading.value = false;
+  snackStore.info(t('info.update.started'));
+  emit('update:modelValue', false);
+}
+
+async function startHistoryUpdate() {
+  loading.value = true;
+  const data = {
+    index: index.value,
+    indexHistory: indexHistory.value,
+    interval: interval.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
+  };
+  try {
+    await $admin('/job/history/download/insert/changefile', {
+      method: 'POST',
+      body: data,
+      headers: {
+        'X-API-KEY': password.value,
+      },
+    });
+  } catch (err) {
+    console.log(err.data);
+    snackStore.error(t('error.update.start'));
+    loading.value = false;
+  }
+  loading.value = false;
+  snackStore.info(t('info.update.started'));
+  emit('update:modelValue', false);
+}
+
+async function startInsertFile() {
+  loading.value = true;
+  const data = {
+    index: index.value,
+  };
+  try {
+    await $admin(`/job/insert/${filetype.value}/${filename.value}`, {
+      method: 'POST',
+      body: data,
+      headers: {
+        'X-API-KEY': password.value,
+      },
+    });
+  } catch (err) {
+    snackStore.error(t('error.update.start'));
+    loading.value = false;
   }
   loading.value = false;
   snackStore.info(t('info.update.started'));

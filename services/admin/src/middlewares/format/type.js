@@ -11,7 +11,13 @@ const joi = require('joi');
  * @returns
  */
 function validateType(type, req, res, next) {
-  const { error, value } = joi.string().trim().valid('dataUpdate', 'dataUpdateHistory').validate(type);
+  const { error, value } = joi.string().trim().valid(
+    '[download][snapshot]',
+    '[download][insert][snapshot]',
+    '[download][insert][changefile]',
+    '[insert][changefile]',
+    '[history][download][insert][changefile]',
+  ).validate(type);
   if (error) return res.status(400).json({ message: error.details[0].message });
 
   if (!req.data) {

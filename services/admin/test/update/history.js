@@ -34,7 +34,7 @@ describe('Test: daily update route test with history', () => {
   describe('insert changefile 2020-01-02', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/history/period')
+        .post('/job/history/download/insert/changefile')
         .send({
           startDate: date2,
           endDate: date2,
@@ -121,12 +121,13 @@ describe('Test: daily update route test with history', () => {
       expect(result).have.property('createdAt').to.not.equal(undefined);
       expect(result).have.property('endAt').to.not.equal(undefined);
       expect(result).have.property('error').equal(false);
-      expect(result).have.property('type').equal('dataUpdateHistory');
+      expect(result).have.property('name').equal('[history][download][insert][changefile]');
       expect(result).have.property('took').to.not.equal(undefined);
       expect(result).have.property('steps').to.be.an('array');
       expect(result).have.property('indices').to.be.an('array');
 
       const { indices } = result;
+
       expect(indices[0]).have.property('index').equal('unpaywall-base');
       expect(indices[0]).have.property('added').equal(0);
       expect(indices[0]).have.property('updated').equal(3);
@@ -161,10 +162,10 @@ describe('Test: daily update route test with history', () => {
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
-      const indexBase = stepInsert.indices['unpaywall-base'];
-      expect(indexBase).have.property('addedDocs').equal(0);
-      expect(indexBase).have.property('updatedDocs').equal(3);
-      expect(indexBase).have.property('failedDocs').equal(0);
+      const index = stepInsert.indices['unpaywall-base'];
+      expect(index).have.property('addedDocs').equal(0);
+      expect(index).have.property('updatedDocs').equal(3);
+      expect(index).have.property('failedDocs').equal(0);
 
       const indexHistory = stepInsert.indices['unpaywall-history'];
       expect(indexHistory).have.property('addedDocs').equal(3);
@@ -178,7 +179,7 @@ describe('Test: daily update route test with history', () => {
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('dataUpdateHistory');
+      const report = await getReport('[history][download][insert][changefile]');
       testResult(report);
     });
   });
@@ -186,7 +187,7 @@ describe('Test: daily update route test with history', () => {
   describe('insert changefile 2020-01-03', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/history/period')
+        .post('/job/history/download/insert/changefile')
         .send({
           startDate: date3,
           endDate: date3,
@@ -286,7 +287,7 @@ describe('Test: daily update route test with history', () => {
       expect(result).have.property('createdAt').to.not.equal(undefined);
       expect(result).have.property('endAt').to.not.equal(undefined);
       expect(result).have.property('error').equal(false);
-      expect(result).have.property('type').equal('dataUpdateHistory');
+      expect(result).have.property('name').equal('[history][download][insert][changefile]');
       expect(result).have.property('took').to.not.equal(undefined);
       expect(result).have.property('steps').to.be.an('array');
 
@@ -325,10 +326,10 @@ describe('Test: daily update route test with history', () => {
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
-      const indexBase = stepInsert.indices['unpaywall-base'];
-      expect(indexBase).have.property('addedDocs').equal(0);
-      expect(indexBase).have.property('updatedDocs').equal(2);
-      expect(indexBase).have.property('failedDocs').equal(0);
+      const index = stepInsert.indices['unpaywall-base'];
+      expect(index).have.property('addedDocs').equal(0);
+      expect(index).have.property('updatedDocs').equal(2);
+      expect(index).have.property('failedDocs').equal(0);
 
       const indexHistory = stepInsert.indices['unpaywall-history'];
       expect(indexHistory).have.property('addedDocs').equal(2);
@@ -342,7 +343,7 @@ describe('Test: daily update route test with history', () => {
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('dataUpdateHistory');
+      const report = await getReport('[history][download][insert][changefile]');
       testResult(report);
     });
   });
@@ -350,7 +351,7 @@ describe('Test: daily update route test with history', () => {
   describe('insert changefile 2020-01-03 again', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/history/period')
+        .post('/job/history/download/insert/changefile')
         .send({
           startDate: date3,
           endDate: date3,
@@ -450,7 +451,7 @@ describe('Test: daily update route test with history', () => {
       expect(result).have.property('createdAt').to.not.equal(undefined);
       expect(result).have.property('endAt').to.not.equal(undefined);
       expect(result).have.property('error').equal(false);
-      expect(result).have.property('type').equal('dataUpdateHistory');
+      expect(result).have.property('name').equal('[history][download][insert][changefile]');
       expect(result).have.property('took').to.not.equal(undefined);
       expect(result).have.property('steps').to.be.an('array');
 
@@ -489,10 +490,10 @@ describe('Test: daily update route test with history', () => {
       expect(stepInsert).have.property('took').to.not.equal(undefined);
       expect(stepInsert).have.property('status').equal('success');
 
-      const indexBase = stepInsert.indices['unpaywall-base'];
-      expect(indexBase).have.property('addedDocs').equal(0);
-      expect(indexBase).have.property('updatedDocs').equal(2);
-      expect(indexBase).have.property('failedDocs').equal(0);
+      const index = stepInsert.indices['unpaywall-base'];
+      expect(index).have.property('addedDocs').equal(0);
+      expect(index).have.property('updatedDocs').equal(2);
+      expect(index).have.property('failedDocs').equal(0);
 
       const indexHistory = stepInsert.indices['unpaywall-history'];
       expect(indexHistory).have.property('addedDocs').equal(0);
@@ -506,7 +507,7 @@ describe('Test: daily update route test with history', () => {
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('dataUpdateHistory');
+      const report = await getReport('[history][download][insert][changefile]');
       testResult(report);
     });
   });
@@ -514,7 +515,7 @@ describe('Test: daily update route test with history', () => {
   describe('insert changefile 2020-01-02 again', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/history/period')
+        .post('/job/history/download/insert/changefile')
         .send({
           startDate: date2,
           endDate: date2,
@@ -552,7 +553,7 @@ describe('Test: Insert 2 time the same file in history', () => {
   describe('insert changefile 2020-01-02', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/history/period')
+        .post('/job/history/download/insert/changefile')
         .send({
           startDate: date2,
           endDate: date2,
@@ -639,7 +640,7 @@ describe('Test: Insert 2 time the same file in history', () => {
   describe('insert changefile 2020-01-02', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/history/period')
+        .post('/job/history/download/insert/changefile')
         .send({
           startDate: date2,
           endDate: date2,
@@ -735,7 +736,7 @@ describe('Test: Insert a old file 2019-01-01', () => {
   describe('insert changefile 2019-01-01', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/history/period')
+        .post('/job/history/download/insert/changefile')
         .send({
           startDate: date4,
           endDate: date4,
@@ -810,7 +811,7 @@ describe('Test: insert changefile with only new documents', () => {
   describe('insert changefile 2020-01-05 with only new lines', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/history/period')
+        .post('/job/history/download/insert/changefile')
         .send({
           startDate: date5,
           endDate: date5,
@@ -880,5 +881,12 @@ describe('Test: insert changefile with only new documents', () => {
       expect(baseRes[6]).have.property('referencedAt').equal('2020-01-05T01:00:00.000000');
       expect(baseRes[6]).have.property('updated').equal('2020-01-05T01:00:00.000000');
     });
+    after(async () => {
+      await reset();
+    });
+  });
+
+  after(async () => {
+    await reset();
   });
 });

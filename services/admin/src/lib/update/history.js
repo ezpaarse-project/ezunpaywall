@@ -91,17 +91,17 @@ async function insertUnpaywallDataInElastic(data, index) {
  * that insert normally in the index base and for the history, if doi is present in
  * index base, that will create a new entry on history index.
  *
- * @param {Array<string>} listOfDoiArray of DOI that will be inserted
- * @param {Array<Object>} newDocumentsArray of document that will be inserted
- * @param {string} indexBasename of base index
- * @param {string} indexHistoryname of history base
+ * @param {Array<string>} dois Array of DOI that will be inserted
+ * @param {Array<Object>} newDois Array of document that will be inserted
+ * @param {string} index Name of base index
+ * @param {string} indexHistoryName Name of history base
  *
  * @returns {Promise<boolean>} Success or not.
  */
-async function insertData(listOfDoi, newDocuments, indexBase, indexHistory) {
-  appLogger.debug(`[job][insert]: try to get [${listOfDoi.length}] documents in [${indexBase}]`);
-  const existingDataInBaseIndex = await searchByDOI(listOfDoi, indexBase);
-  appLogger.debug(`[job][insert]: get [${existingDataInBaseIndex.length}] documents in [${indexBase}]`);
+async function insertData(dois, newDois, index, indexHistory) {
+  appLogger.debug(`[job][insert]: try to get [${dois.length}] documents in [${index}]`);
+  const existingDataInBaseIndex = await searchByDOI(dois, index);
+  appLogger.debug(`[job][insert]: get [${existingDataInBaseIndex.length}] documents in [${index}]`);
   const bulkHistoryDocuments = [];
   const bulkDocuments = [];
 
@@ -112,7 +112,7 @@ async function insertData(listOfDoi, newDocuments, indexBase, indexHistory) {
     }),
   );
 
-  newDocuments.forEach(async (el) => {
+  newDois.forEach(async (el) => {
     const document = el;
     document.referencedAt = document.updated;
     const existingDocumentUnpaywall = existingUnpaywallDataMap.get(document.doi);
@@ -139,14 +139,14 @@ async function insertData(listOfDoi, newDocuments, indexBase, indexHistory) {
       document.referencedAt = document.updated;
     }
 
-    bulkDocuments.push({ index: { _index: indexBase, _id: document.doi } });
+    bulkDocuments.push({ index: { _index: index, _id: document.doi } });
     bulkDocuments.push(document);
   });
 
   let success = false;
 
-  appLogger.debug(`[job][insert]: try to insert [${bulkDocuments.length / 2}] documents in [${indexBase}]`);
-  success = await insertUnpaywallDataInElastic(bulkDocuments, indexBase);
+  appLogger.debug(`[job][insert]: try to insert [${bulkDocuments.length / 2}] documents in [${index}]`);
+  success = await insertUnpaywallDataInElastic(bulkDocuments, index);
   if (!success) return false;
 
   if (bulkHistoryDocuments.length > 0) {
@@ -165,7 +165,7 @@ async function insertData(listOfDoi, newDocuments, indexBase, indexHistory) {
  * @param {string} insertConfig.filenameName of the snapshot file from which the data will
  * be retrieved to be inserted into elastic.
  * @param {string} insertConfig.dateDate of file.
- * @param {string} insertConfig.indexName of the index to which the data will be inserted.
+ * @param {string} insertConfig.index of the index to which the data will be inserted.
  * @param {number} insertConfig.offsetLine of the snapshot at which the data insertion starts.
  * @param {number} insertConfig.limitLine in the file where the insertion stops.
  *
@@ -173,13 +173,13 @@ async function insertData(listOfDoi, newDocuments, indexBase, indexHistory) {
  */
 async function insertHistoryDataUnpaywall(insertConfig) {
   const {
-    filename, indexBase, indexHistory, offset, limit,
+    filename, index, indexHistory, offset, limit,
   } = insertConfig;
 
   try {
-    await createIndex(indexBase, unpaywallEnrichedMapping);
+    await createIndex(index, unpaywallEnrichedMapping);
   } catch (err) {
-    appLogger.error(`[elastic]: Cannot create index [${indexBase}]`, err);
+    appLogger.error(`[elastic]: Cannot create index [${index}]`, err);
     await fail(err);
     return false;
   }
@@ -198,7 +198,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   const step = getLatestStep();
   step.file = filename;
   step.indices = {
-    [indexBase]: {
+    [index]: {
       addedDocs: 0,
       updatedDocs: 0,
       failedDocs: 0,
@@ -254,7 +254,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   });
 
   let newData = [];
-  let listOfDoi = [];
+  let dois = [];
 
   let success;
 
@@ -276,7 +276,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
       try {
         const doc = JSON.parse(line);
         // history
-        listOfDoi.push(doc.doi);
+        dois.push(doc.doi);
         newData.push(doc);
       } catch (err) {
         appLogger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
@@ -286,8 +286,8 @@ async function insertHistoryDataUnpaywall(insertConfig) {
     }
     // bulk insertion
     if (newData.length >= maxBulkSize) {
-      success = await insertData(listOfDoi, newData, indexBase, indexHistory);
-      listOfDoi = [];
+      success = await insertData(dois, newData, index, indexHistory);
+      dois = [];
       newData = [];
 
       if (!success) return false;
@@ -303,8 +303,8 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   // last insertion if there is data left
   if (newData.length > 0) {
     // history
-    success = await insertData(listOfDoi, newData, indexBase, indexHistory);
-    listOfDoi = [];
+    success = await insertData(dois, newData, index, indexHistory);
+    dois = [];
     newData = [];
     if (!success) return false;
   }
@@ -325,7 +325,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   return true;
 }
 
-async function step1(startDate, indexBase, indexHistory) {
+async function step1(startDate, index, indexHistory) {
   appLogger.debug('----------------------------------');
   appLogger.debug('STEP 1');
   appLogger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
@@ -341,10 +341,10 @@ async function step1(startDate, indexBase, indexHistory) {
   await bulk(toRecentDataInHistoryBulk, true);
   appLogger.debug(`DELETE ${toRecentDataInHistoryBulk.length} lines`);
   appLogger.debug('UNPAYWALL: REFRESH');
-  await refreshIndex(indexBase);
+  await refreshIndex(index);
 }
 
-async function step2(startDate, indexBase, indexHistory) {
+async function step2(startDate, index, indexHistory) {
   appLogger.debug('----------------------------------');
   appLogger.debug('STEP 2');
   appLogger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
@@ -355,10 +355,10 @@ async function step2(startDate, indexBase, indexHistory) {
   const oldData = await searchWithRange(startDate, 'updated', 'lt', indexHistory);
   appLogger.debug(`oldDoc.length: ${oldData?.length}`);
 
-  const listOfDoi = oldData.map((e) => e._source.doi);
-  const listOfDoiFiltered = new Set(listOfDoi);
+  const dois = oldData.map((e) => e._source.doi);
+  const doisFiltered = new Set(dois);
 
-  for (const doi of listOfDoiFiltered) {
+  for (const doi of doisFiltered) {
     const docs = oldData.filter((e) => doi === e._source.doi);
     let nearestData;
     docs.forEach((doc) => {
@@ -374,7 +374,7 @@ async function step2(startDate, indexBase, indexHistory) {
     });
 
     appLogger.debug('step2');
-    const oldDoc = await searchByDOI([nearestData._source.doi], indexBase);
+    const oldDoc = await searchByDOI([nearestData._source.doi], index);
     appLogger.debug(`oldDoc.length:  ${oldDoc.length}`);
 
     appLogger.info(`oldData: ${format(new Date(oldDoc[0].updated), 'yyyy-MM-dd/hh:mm:ss')} < startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
@@ -382,7 +382,7 @@ async function step2(startDate, indexBase, indexHistory) {
     if (new Date(startDate) < new Date(oldDoc[0].updated)) {
       // UPDATE
       delete nearestData._source.endValidity;
-      nearestDataBulk.push({ index: { _index: indexBase, _id: nearestData._source.doi } });
+      nearestDataBulk.push({ index: { _index: index, _id: nearestData._source.doi } });
       nearestDataBulk.push(nearestData._source);
       appLogger.debug(`UNPAYWALL: UPDATE: doi: ${nearestData._source.doi}, genre: ${nearestData._source.genre}, updated: ${nearestData._source.updated}`);
 
@@ -396,7 +396,7 @@ async function step2(startDate, indexBase, indexHistory) {
   await bulk(nearestDataBulk, true);
   appLogger.debug(`UPDATE ${nearestDataBulk.length / 2} lines`);
   appLogger.debug('UNPAYWALL: REFRESH');
-  await refreshIndex(indexBase);
+  await refreshIndex(index);
 
   // DELETE
   await bulk(nearestDataDeleteBulk, true);
@@ -405,23 +405,23 @@ async function step2(startDate, indexBase, indexHistory) {
   await refreshIndex(indexHistory);
 }
 
-async function step3(startDate, indexBase) {
+async function step3(startDate, index) {
   appLogger.debug('----------------------------------');
   appLogger.debug('STEP 3');
 
   const toRecentDataBulk = [];
-  const toRecentData = await searchWithRange(startDate, 'updated', 'gte', indexBase);
+  const toRecentData = await searchWithRange(startDate, 'updated', 'gte', index);
   appLogger.debug(`startDate: ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   appLogger.debug(`Should DELETE data greater or equal than ${format(new Date(startDate), 'yyyy-MM-dd/hh:mm:ss')}`);
   toRecentData.forEach((data) => {
-    toRecentDataBulk.push({ delete: { _index: indexBase, _id: data._id } });
+    toRecentDataBulk.push({ delete: { _index: index, _id: data._id } });
     appLogger.debug(`UNPAYWALL: DELETE: doi: ${data._source.doi}, genre: ${data._source.genre}, updated: ${format(new Date(data._source.updated), 'yyyy-MM-dd/hh:mm:ss')}`);
   });
 
   await bulk(toRecentDataBulk, true);
   appLogger.debug(`DELETE ${toRecentDataBulk.length} lines`);
   appLogger.debug('UNPAYWALL: REFRESH');
-  await refreshIndex(indexBase);
+  await refreshIndex(index);
 }
 
 /**
@@ -429,10 +429,10 @@ async function step3(startDate, indexBase) {
  *
  * @param {string} startDate The date you wish to return to
  */
-async function rollBack(startDate, indexBase, indexHistory) {
-  await step1(startDate, indexBase, indexHistory);
-  await step2(startDate, indexBase, indexHistory);
-  await step3(startDate, indexBase);
+async function rollBack(startDate, index, indexHistory) {
+  await step1(startDate, index, indexHistory);
+  await step2(startDate, index, indexHistory);
+  await step3(startDate, index);
 }
 
 module.exports = {

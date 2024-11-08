@@ -6,8 +6,8 @@ const { paths } = require('config');
 const {
   downloadSnapshotProcess,
   downloadAndInsertSnapshotProcess,
-  insertChangefilesOnPeriodProcess,
-  insertChangefileProcess,
+  downloadInsertChangefilesProcess,
+  insertFileProcess,
   insertWithOaHistoryProcess,
 } = require('../../lib/update');
 
@@ -81,13 +81,13 @@ async function insertChangefilesOnPeriodJobController(req, res, next) {
     if (interval === 'week') jobConfig.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
     if (interval === 'day') jobConfig.startDate = format(new Date(), 'yyyy-MM-dd');
 
-    insertChangefilesOnPeriodProcess(jobConfig);
+    downloadInsertChangefilesProcess(jobConfig);
     return res.status(202).json();
   }
 
   if (startDate && !endDate) jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
 
-  insertChangefilesOnPeriodProcess(jobConfig);
+  downloadInsertChangefilesProcess(jobConfig);
   return res.status(202).json();
 }
 
@@ -108,7 +108,7 @@ async function insertChangefileJobController(req, res, next) {
 
   jobConfig.type = 'changefile';
 
-  insertChangefileProcess(jobConfig);
+  insertFileProcess(jobConfig);
 
   return res.status(202).json();
 }
@@ -131,7 +131,7 @@ async function insertSnapshotJobController(req, res, next) {
 
   jobConfig.type = 'snapshot';
 
-  insertChangefileProcess(jobConfig);
+  insertFileProcess(jobConfig);
 
   return res.status(202).json();
 }
@@ -189,9 +189,9 @@ async function insertWithOaHistoryController(req, res, next) {
  * @param {import('express').NextFunction} next Do the following.
  */
 async function historyRollBackController(req, res, next) {
-  const { startDate, indexBase, indexHistory } = req.data.rollBackConfig;
+  const { startDate, index, indexHistory } = req.data.rollBackConfig;
 
-  await rollBack(startDate, indexBase, indexHistory);
+  await rollBack(startDate, index, indexHistory);
   return res.status(202).json();
 }
 

@@ -75,7 +75,7 @@ async function insertUnpaywallDataInElastic(data) {
     step.status = 'error';
     updateLatestStep(step);
     await fail(errors);
-    return false;
+    throw new Error('Error in bulk insertion');
   }
 
   updateLatestStep(step);

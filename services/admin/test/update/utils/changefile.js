@@ -101,9 +101,9 @@ async function insertChangefile(filename, index) {
 async function insertInHistory(startDate, endDate) {
   try {
     await chai.request(adminURL)
-      .post('/job/download/insert/history/period')
+      .post('/job/history/download/insert/changefile')
       .send({
-        indexBase: 'unpaywall-base',
+        index: 'unpaywall-base',
         startDate,
         endDate,
       })

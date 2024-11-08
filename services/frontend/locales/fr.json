@@ -1,7 +1,7 @@
 {
   "home": {
     "title" : "ezUnpaywall, qu'est-ce que c'est ?",
-    "general1": "ezUnpaywall est un miroir des données {link} hébergé à l'Inist-CNRS et développé par l'ezTEAM. ",
+    "general1": "ezUnpaywall est un miroir des données {link} hébergé à l'Inist-CNRS et développé par l'ezTEAM depuis 2020.",
     "general2": "Il dispose d'une interface d'enrichissement de fichier en données Open Access à partir du DOI et d'un démonstrateur d'interrogation de DOI avec des requêtes GraphQL.",
     "general3": "Ce serveur dispose d'une API interrogeable via une clé d'API. Vous pouvez obtenir une clé d'API sur demande à l'équipe (voir la partie contact). Pour plus d'informations, lire {link}.",
     "blogPost": "l'article de blog",

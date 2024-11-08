@@ -1,6 +1,6 @@
 <template>
   <section class="ma-3">
-    <AdministrationUpdateCronButton />
+    <AdministrationCronTab />
   </section>
 </template>
 

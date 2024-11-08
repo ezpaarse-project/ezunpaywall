@@ -32,11 +32,11 @@ const {
  */
 async function updatePercentStepDownload(filepath, size, start) {
   const state = getState();
-  if (state.error) {
+  if (state.error || state.done) {
     return;
   }
   const step = getLatestStep();
-  appLogger.debug(`[job][download]: Percent of step: ${step.percent}`);
+  appLogger.debug(`[job][download]: Download [${filepath}] - ${step.percent}%`);
   let bytes;
   try {
     bytes = await fsp.stat(filepath);
@@ -126,16 +126,20 @@ async function downloadChangefile(info, interval) {
   const res = await getChangefile(info.filename, interval);
 
   if (!res) {
-    await fail();
-    return false;
+    appLogger.error(`[unpaywall][changefile]: Cannot get changefile [${info.filename}]`);
+    throw new Error(`[unpaywall][changefile]: Cannot get changefile [${info.filename}]`);
   }
-
-  if (!res) { return false; }
 
   const changefile = res.data;
   const { size } = info;
 
-  await download(changefile, filePath, size);
+  try {
+    await download(changefile, filePath, size);
+  } catch (err) {
+    appLogger.error(`[unpaywall][changefile]: Cannot download changefile [${info.filename}]`);
+    throw new Error(`[unpaywall][changefile]: Cannot download changefile [${info.filename}]`);
+  }
+
   return true;
 }
 
@@ -154,7 +158,7 @@ async function downloadSnapshot() {
   updateLatestStep(step);
 
   const res = await getSnapshot();
-  if (!res) return false;
+  if (!res) { throw new Error('[unpaywall]: Cannot get snapshot'); }
 
   const snapshot = res.data;
   const size = res.headers['content-length'];

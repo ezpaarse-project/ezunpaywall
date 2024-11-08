@@ -87,7 +87,7 @@ describe('Test: download and insert snapshot from unpaywall', () => {
     });
 
     it('Should get report with all information from the insertion', async () => {
-      const report = await getReport('dataUpdate');
+      const report = await getReport('[download][insert][snapshot]');
       testResult(report);
     });
 

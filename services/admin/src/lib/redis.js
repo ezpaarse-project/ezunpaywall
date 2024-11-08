@@ -17,13 +17,6 @@ let redisClient = createClient({
   password: redis.password,
 });
 
-// let redisGet;
-// let redisPing;
-// let redisSet;
-// let redisDel;
-// let redisKeys;
-// let redisFlushAll;
-
 function initClient() {
   try {
     redisClient = createClient({
@@ -55,13 +48,6 @@ function initClient() {
   redisClient.on('reconnecting', () => {
     appLogger.error('[redis]: reconnecting');
   });
-
-  // redisGet = util.promisify(redisClient.get);
-  // redisPing = util.promisify(redisClient.ping);
-  // redisSet = util.promisify(redisClient.set);
-  // redisDel = util.promisify(redisClient.del);
-  // redisKeys = util.promisify(redisClient.keys);
-  // redisFlushAll = util.promisify(redisClient.flushall);
 }
 
 redisClient.get = util.promisify(redisClient.get);

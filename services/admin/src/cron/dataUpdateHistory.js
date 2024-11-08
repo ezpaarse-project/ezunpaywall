@@ -27,7 +27,7 @@ async function task() {
   const isWeek = (cronConfig.interval === 'week');
   const startDate = format(subDays(new Date(), isWeek ? 7 : 0), 'yyyy-MM-dd');
   await insertWithOaHistoryProcess({
-    indexBase: cronConfig.indexBase,
+    index: cronConfig.index,
     indexHistory: cronConfig.indexHistory,
     interval: cronConfig.interval,
     startDate,
@@ -46,7 +46,7 @@ function update(newConfig) {
     cronConfig.schedule = newConfig.schedule;
     dataUpdateHistoryCron.setSchedule(newConfig.schedule);
   }
-  if (newConfig.indexBase) cronConfig.indexBase = newConfig.indexBase;
+  if (newConfig.index) cronConfig.index = newConfig.index;
   if (newConfig.indexHistory) cronConfig.indexHistory = newConfig.indexHistory;
   if (newConfig.interval) cronConfig.interval = newConfig.interval;
   if (newConfig.index || newConfig.interval) dataUpdateHistoryCron.setTask(task);
@@ -57,8 +57,19 @@ function update(newConfig) {
  *
  * @returns {Object} Config of update process and config of cron.
  */
+
 function getGlobalConfig() {
-  return { ...cronConfig, ...dataUpdateHistoryCron.config };
+  const order = ['name', 'schedule', 'interval', 'index', 'indexHistory', 'active'];
+
+  const data = { ...cronConfig, ...dataUpdateHistoryCron.config };
+
+  const result = {};
+  order.forEach((key) => {
+    if (data[key] !== undefined) {
+      result[key] = data[key];
+    }
+  });
+  return result;
 }
 
 module.exports = {

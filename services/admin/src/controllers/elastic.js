@@ -67,7 +67,6 @@ async function deleteIndexController(req, res, next) {
   try {
     alias = await elastic.removeIndex(indexName);
   } catch (err) {
-    console.log(err);
     return next(err);
   }
 

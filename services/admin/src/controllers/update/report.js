@@ -46,7 +46,7 @@ async function getReportsController(req, res, next) {
   });
 
   if (type) {
-    reports = reports.filter((report) => report.includes(`${type}.`));
+    reports = reports.filter((report) => report.includes(`${type}`));
   }
 
   return res.status(200).json(reports);

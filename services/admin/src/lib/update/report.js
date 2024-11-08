@@ -12,33 +12,33 @@ const appLogger = require('../logger/appLogger');
  * @returns {Promise<void>}
  */
 async function createReport(state) {
-  const { type } = state;
-  appLogger.info(`[report]: create new report for [${type}]`);
-  const filepath = path.resolve(paths.data.reportsDir, `${format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS")}_${type}.json`);
+  const { name } = state;
+  appLogger.info(`[report]: Create new report for ${name}`);
+  const filepath = path.resolve(paths.data.reportsDir, `${format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS")}_${name}.json`);
   try {
     await fsp.writeFile(filepath, JSON.stringify(state, null, 2));
   } catch (err) {
     appLogger.error(`[report] Cannot write [${JSON.stringify(state, null, 2)}] in ${filepath}`, err);
     throw err;
   }
-  appLogger.debug('[report]: report created');
+  appLogger.debug('[report]: Report created');
 }
 
 /**
  * Get report from the folder data depending on type.
  *
- * @param {string} type - Type of report (unpaywall or unpaywallHistory).
- * @param {string} filename - Report filename.
+ * @param {string} type Type of report (unpaywall or unpaywallHistory).
+ * @param {string} filename Report filename.
  *
  * @returns {Promise<Object>} Report in json format.
  */
 async function getReport(filename) {
   let report;
-  const pathfile = path.resolve(paths.data.reportsDir, filename);
+  const filepath = path.resolve(paths.data.reportsDir, filename);
   try {
-    report = await fsp.readFile(pathfile);
+    report = await fsp.readFile(filepath);
   } catch (err) {
-    appLogger.error(`[report] Cannot read [${pathfile}]`, err);
+    appLogger.error(`[report] Cannot read [${filepath}]`, err);
     throw err;
   }
   try {

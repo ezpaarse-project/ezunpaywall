@@ -95,7 +95,7 @@ const server = new ApolloServer({
   app.use('/graphql', cors(), json(), auth, expressMiddleware(server, { context: async ({ req }) => req }));
 
   app.listen(3000, async () => {
-    appLogger.info('[express]: ezunpaywall graphQL API listening on 3000');
+    appLogger.info(`[express]: graphQL API listening on 3000 in [${process.uptime().toFixed(2)}]s`);
     pingElastic().then(() => {
       setMetrics();
     });

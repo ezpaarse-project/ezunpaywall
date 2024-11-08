@@ -46,13 +46,13 @@
         cols="12"
         sm="6"
         md="4"
-        lg="3"
-        xl="3"
+        lg="4"
+        xl="4"
       >
         <AdministrationHealthCard
           ref="healthCards"
           :name="service.name"
-          :api="service.api"
+          :url="service.url"
         />
       </v-col>
     </v-row>
@@ -65,26 +65,25 @@ const { t } = useI18n();
 
 const loading = ref(false);
 
-const {
-  $graphql,
-  $admin,
-  $enrich,
-} = useNuxtApp();
-
 const healthCards = ref([]);
 
+const { $graphql, $admin, $enrich } = useNuxtApp();
+
 const services = [
-  { name: 'graphql', api: $graphql },
-  { name: 'admin', api: $admin },
-  { name: 'enrich', api: $enrich },
+  { name: 'graphql', url: $graphql.baseURL },
+  { name: 'admin', url: $admin.baseURL },
+  { name: 'enrich', url: $enrich.baseURL },
 ];
 
+/**
+ * Execute getHealth to every child
+ */
 function getHealths() {
   loading.value = true;
   if (healthCards.value) {
     healthCards.value.forEach((card) => {
-      if (card?.refreshHealth) {
-        card.refreshHealth();
+      if (card?.getHealth) {
+        card.getHealth();
       }
     });
   }

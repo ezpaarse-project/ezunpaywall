@@ -41,7 +41,7 @@
     "dataUpdateHistory": {
       "schedule": "CRON_DATA_UPDATE_HISTORY_SCHEDULE",
       "active": "CRON_DATA_UPDATE_HISTORY_ACTIVE",
-      "indexBase": "CRON_DATA_UPDATE_HISTORY_INDEX_BASE",
+      "index": "CRON_DATA_UPDATE_HISTORY_INDEX",
       "indexHistory": "CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY",
       "interval": "CRON_DATA_UPDATE_HISTORY_INTERVAL"
     },

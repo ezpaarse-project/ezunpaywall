@@ -13,7 +13,7 @@
       </v-tab>
     </v-tabs>
 
-    <AdministrationOpenApi :host="host" />
+    <OpenApi :host="host" />
   </div>
 </template>
 
