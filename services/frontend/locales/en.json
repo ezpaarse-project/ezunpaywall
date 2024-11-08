@@ -78,7 +78,7 @@
       "noInfo": "No info about elastic",
       "reload": "Reload elastic info",
       "documents": "documents",
- "deleteIndex": "Delete index",
+      "deleteIndex": "Delete index",
       "deleteMessage": "Are you sure you want to delete this index: {indexName} ? (irreversible action)"
     },
     "health": {
@@ -117,7 +117,9 @@
       "endDate": "End date",
       "index": "Elastic index for unpaywall data",
       "indexBase": "Elastic index for basic unpaywall data",
-      "indexHistory": "Elastic index for history unpaywall data"
+      "indexHistory": "Elastic index for history unpaywall data",
+      "filename": "Filename",
+      "filetype": "Type of file"
     },
     "cron": {
       "title": "Config of the cron for update process",
