@@ -6,7 +6,7 @@
   "author": "felixleo22",
   "license": "CeCILL",
   "scripts": {
-    "start": "node app.js",
+    "start": "node ./src/app.js",
     "dev": "nodemon -L  -e .js ./src/app.js",
     "test": "mocha --timeout 1000",
     "lint": "eslint --ext .js ."

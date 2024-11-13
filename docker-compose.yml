@@ -26,6 +26,15 @@ services:
       redis:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   enrich:
     build:
@@ -51,6 +60,15 @@ services:
       elastic:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   admin:
     build:
@@ -136,6 +154,15 @@ services:
       - NUXT_PUBLIC_ENRICH_URL=http://localhost/enrich
       - NUXT_PUBLIC_ADMIN_URL=http://localhost/api/admin
       - NUXT_ADMIN_APIKEY
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   redis:
     image: redis:7.2.4-alpine3.19
@@ -144,6 +171,15 @@ services:
     volumes:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli --pass changeme ping | grep PONG"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   nginx:
     build:

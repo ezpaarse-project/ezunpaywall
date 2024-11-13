@@ -6,8 +6,8 @@
   "author": "felixleo22",
   "license": "CeCILL",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon -L -e .js src/app.js",
+    "start": "node ./src/app.js",
+    "dev": "nodemon -L -e .js ./src/app.js",
     "test": "mocha 'test/**/*.js' --timeout 3000",
     "lint": "eslint --ext .js ."
   },
