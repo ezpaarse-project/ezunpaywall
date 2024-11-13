@@ -7,7 +7,6 @@ services:
     container_name: ezunpaywall-graphql-prod
     environment:
       - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
       # elastic
       - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
@@ -34,7 +33,6 @@ services:
     container_name: ezunpaywall-enrich-prod
     environment:
       - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
       # redis
       - REDIS_HOST
       - REDIS_PORT
@@ -53,6 +51,74 @@ services:
       elastic:
         condition: service_healthy
     restart: unless-stopped
+
+  admin:
+    build:
+      context: ./services/admin
+    container_name: ezunpaywall-admin-prod
+    environment:
+      - NODE_ENV
+      - LOG_LEVEL=debug
+      # smtp
+      - SMTP_HOST=maildev
+      - SMTP_PORT
+      # mail
+      - NOTIFICATIONS_SENDER
+      - NOTIFICATIONS_RECEIVERS
+      - NOTIFICATIONS_MACHINE
+      # unpaywall
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_URL
+      # elastic
+      - ELASTICSEARCH_NODES
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
+      - ELASTICSEARCH_TIMEOUT
+      # redis
+      - REDIS_HOST
+      - REDIS_PORT
+      - REDIS_PASSWORD
+      # cron snapshot
+      - CRON_DOWNLOAD_SNAPSHOT_SCHEDULE
+      - CRON_DOWNLOAD_SNAPSHOT_ACTIVE
+      - CRON_DOWNLOAD_SNAPSHOT_INDEX
+      # cron date update
+      - CRON_DATA_UPDATE_SCHEDULE
+      - CRON_DATA_UPDATE_ACTIVE
+      - CRON_DATA_UPDATE_INDEX
+      - CRON_DATA_UPDATE_INTERVAL
+      # cron date update history
+      - CRON_DATA_UPDATE_HISTORY_SCHEDULE
+      - CRON_DATA_UPDATE_HISTORY_ACTIVE
+      - CRON_DATA_UPDATE_HISTORY_INDEX
+      - CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY
+      - CRON_DATA_UPDATE_HISTORY_INTERVAL
+      # cron clean file
+      - CRON_CLEAN_FILE_SCHEDULE
+      - CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD
+      - CRON_CLEAN_FILE_REPORT_THRESHOLD
+      - CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD
+      # password
+      - ADMIN_APIKEY
+      # health
+      - HEALTH_TIMEOUT
+    volumes:
+      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/usr/src/app/log/application
+      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/usr/src/app/log/access
+      - ${UPDATE_DATA_PATH:-./src/update/data}:/usr/src/app/data
+      - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/usr/src/app/certs
+    command: "npm run start"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   frontend:
     build:

@@ -36,7 +36,6 @@ info: {
 | name | default | description |
 | --- | --- | --- |
 | NODE_ENV | development | environment of node |
-| ACCESS_LOG_ROTATE | false | Set to true if you want to use access log rotation |
 | TIMEZONE | Europe/Paris | timezone of app used in cron |
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |

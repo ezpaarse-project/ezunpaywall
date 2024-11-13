@@ -71,16 +71,19 @@
 
     <v-list-group value="Lang">
       <template #activator="{ props }">
-        <v-list-item v-bind="props" title="Config">
+        <v-list-item v-bind="props">
           <template #prepend>
             <v-icon icon="mdi-code-json" />
           </template>
+          <v-list-item-title class="custom-font-style ml-2">
+            Config
+          </v-list-item-title>
         </v-list-item>
       </template>
       <SkeletonMenuAdminConfigList />
     </v-list-group>
 
-    <v-list-item class="bg-red-lighten-4" ripple :title="t('menu.administration.logout')" @click="logout()">
+    <v-list-item class="custom-font-style bg-red-lighten-4" ripple :title="t('menu.administration.logout')" @click="logout()">
       <template #prepend>
         <v-icon icon="mdi-logout" />
       </template>
@@ -109,7 +112,7 @@ function logout() {
 
 </script>
 
-<style scoped>
+<style>
 .custom-font-style {
   font-size: 0.8125em;
   font-weight: 500;

@@ -33,7 +33,7 @@ const open = ref(['Admin']);
 
 </script>
 
-<style scoped>
+<style>
 .custom-font-style {
   font-size: 0.8125em;
   font-weight: 500;
