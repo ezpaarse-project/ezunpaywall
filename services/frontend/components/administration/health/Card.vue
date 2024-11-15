@@ -46,8 +46,6 @@
 
 <script setup>
 
-const runtimeConfig = useRuntimeConfig();
-
 const loading = ref(false);
 const health = ref({});
 

@@ -15,18 +15,16 @@ unpaywall.baseURL = config.unpaywall.url;
  * @returns {Promise<boolean>} healthy or not.
  */
 async function pingUnpaywall() {
-  let res;
   try {
-    res = await unpaywall({
+    await unpaywall({
       method: 'GET',
-      url: '/ping',
+      url: '/',
     });
+    return true;
   } catch (err) {
     appLogger.error('[unpaywall] Cannot ping unpaywall', err);
-    return err?.message;
+    return false;
   }
-  if (res?.status === 204) return true;
-  return false;
 }
 
 /**
