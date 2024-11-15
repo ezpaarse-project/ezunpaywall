@@ -17,14 +17,14 @@ server {
     proxy_pass ${GRAPHQL_URL};
   }
 
-  location /api/admin {
-    rewrite ^/api/admin(/.*)$ $1 break;
-    proxy_pass ${ADMIN_URL};
-  }
-
   location /api/enrich {
     rewrite ^/api/enrich(/.*)$ $1 break;
     proxy_pass ${ENRICH_URL};
+  }
+
+  location /api/admin {
+    rewrite ^/api/admin(/.*)$ $1 break;
+    proxy_pass ${ADMIN_URL};
   }
 
   ## client

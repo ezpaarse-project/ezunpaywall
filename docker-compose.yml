@@ -207,7 +207,7 @@ services:
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
-    container_name: ezunpaywall-elastic-dev
+    container_name: ezunpaywall-elastic-prod
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -234,7 +234,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
-    container_name: ezunpaywall-kibana-dev
+    container_name: ezunpaywall-kibana-prod
     environment:
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}

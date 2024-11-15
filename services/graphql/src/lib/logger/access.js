@@ -22,11 +22,11 @@ const accessLogger = winston.createLogger({
     apacheFormat,
   ),
   transports: [
-    nodeEnv === 'development' ? new winston.transports.Console() : null,
-    new DailyRotateFile({
-      filename: `${paths.log.accessDir}/%DATE%-access.log`,
-      datePattern: 'YYYY-MM-DD',
-    }),
+    nodeEnv === 'development' ? new winston.transports.Console()
+      : new DailyRotateFile({
+        filename: `${paths.log.accessDir}/%DATE%-access.log`,
+        datePattern: 'YYYY-MM-DD',
+      }),
   ],
 });
 
