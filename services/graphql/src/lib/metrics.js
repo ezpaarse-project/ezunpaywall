@@ -1,7 +1,7 @@
 const { elasticsearch } = require('config');
-const logger = require('../lib/logger/appLogger');
+const logger = require('./logger/appLogger');
 
-const { getMetrics } = require('../lib/elastic');
+const { getMetrics } = require('./elastic');
 
 let metrics = {
   doi: 0,

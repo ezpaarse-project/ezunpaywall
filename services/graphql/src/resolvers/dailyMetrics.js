@@ -1,4 +1,4 @@
-const { getDailyMetrics } = require('../controllers/metrics');
+const { getDailyMetrics } = require('../lib/metrics');
 
 const dailyMetrics = async () => {
   const metrics = getDailyMetrics();

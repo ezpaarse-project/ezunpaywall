@@ -20,12 +20,13 @@ const appLogger = require('./lib/logger/appLogger');
 const { logConfig } = require('./lib/config');
 
 const cronMetrics = require('./controllers/cron/metrics');
-const { setMetrics } = require('./controllers/metrics');
+const { setMetrics } = require('./lib/metrics');
 
 const { pingElastic } = require('./lib/elastic');
 
 const routerPing = require('./routers/ping');
 const routerHealthCheck = require('./routers/healthcheck');
+const routerMetrics = require('./routers/metrics');
 const routerConfig = require('./routers/config');
 const routerOpenapi = require('./routers/openapi');
 
@@ -86,6 +87,7 @@ const server = new ApolloServer({
   // initiate all other routes
   app.use(routerPing);
   app.use(routerHealthCheck);
+  app.use(routerMetrics);
   app.use(routerConfig);
   app.use(routerOpenapi);
 
