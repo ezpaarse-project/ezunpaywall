@@ -191,7 +191,7 @@ services:
       - FRONTEND_URL=http://frontend:3000/
       - GRAPHQL_URL=http://graphql:3000/
       - ADMIN_URL=http://admin:3000/
-      - ENRICH_URL=http://enrich:3000//
+      - ENRICH_URL=http://enrich:3000/
     ports:
       - ${NGINX_PORT:-80}:80
     restart: unless-stopped
