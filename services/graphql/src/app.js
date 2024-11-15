@@ -77,7 +77,7 @@ const server = new ApolloServer({
         statusCode: res.statusCode,
         userAgent: req.get('User-Agent') || '-',
         responseTime: `${duration}ms`,
-        countDOI: req.countDOI,
+        countDOI: req.countDOI || '-',
       });
     });
     return next();
