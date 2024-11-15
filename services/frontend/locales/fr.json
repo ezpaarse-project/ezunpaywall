@@ -307,6 +307,9 @@
       "updated": "La cron de mise à jour a été mise à jour",
       "activated": "La cron de mise à jour a été activé",
       "stopped": "La cron de mise à jour a été arrêter"
+    },
+    "index": {
+      "deleted": "L'index a été supprimé"
     }
   },
   "noData": "Aucune données",  

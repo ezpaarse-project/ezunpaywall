@@ -307,6 +307,9 @@
       "updated": "The update cron has been updated",
       "activated": "The update cron has been activated",
       "stopped": "The update cron has been stopped"
+    },
+    "index": {
+      "deleted": "Index has been deleted"
     }
   },
   "noData": "No data available", 

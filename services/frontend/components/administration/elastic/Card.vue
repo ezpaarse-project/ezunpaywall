@@ -84,7 +84,7 @@ async function deleteIndex(indexName) {
     snackStore.error(t('error.index.delete'));
     return;
   }
-  snackStore.info(t('success.index.deleted'));
+  snackStore.success(t('info.index.deleted'));
 }
 
 /**

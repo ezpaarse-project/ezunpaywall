@@ -83,7 +83,7 @@ async function updateActive() {
   } finally {
     loading.value = false;
   }
-  snackStore.info(t('info.cron.active'));
+  snackStore.info(t('info.cron.updated'));
 }
 
 onMounted(async () => {
