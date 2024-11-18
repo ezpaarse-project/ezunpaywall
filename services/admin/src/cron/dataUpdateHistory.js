@@ -5,7 +5,7 @@ const appLogger = require('../lib/logger/appLogger');
 const Cron = require('./cron');
 const { getStatus } = require('../lib/update/status');
 
-const { insertWithOaHistoryProcess } = require('../lib/update');
+const { downloadInsertChangefilesHistoryProcess } = require('../lib/update');
 
 const { ...cronConfig } = cron.dataUpdateHistory;
 let { active } = cron.dataUpdateHistory;
@@ -26,7 +26,7 @@ async function task() {
   }
   const isWeek = (cronConfig.interval === 'week');
   const startDate = format(subDays(new Date(), isWeek ? 7 : 0), 'yyyy-MM-dd');
-  await insertWithOaHistoryProcess({
+  await downloadInsertChangefilesHistoryProcess({
     index: cronConfig.index,
     indexHistory: cronConfig.indexHistory,
     interval: cronConfig.interval,

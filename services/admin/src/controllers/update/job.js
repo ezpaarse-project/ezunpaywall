@@ -8,7 +8,7 @@ const {
   downloadAndInsertSnapshotProcess,
   downloadInsertChangefilesProcess,
   insertFileProcess,
-  insertWithOaHistoryProcess,
+  downloadInsertChangefilesHistoryProcess,
 } = require('../../lib/update');
 
 const { rollBack } = require('../../lib/update/history');
@@ -171,13 +171,13 @@ async function insertWithOaHistoryController(req, res, next) {
     if (interval === 'week') jobConfig.startDate = format(new Date() - (7 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd');
     if (interval === 'day') jobConfig.startDate = format(new Date(), 'yyyy-MM-dd');
 
-    insertWithOaHistoryProcess(jobConfig);
+    downloadInsertChangefilesHistoryProcess(jobConfig);
     return res.status(202).json();
   }
 
   if (startDate && !endDate) jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
 
-  insertWithOaHistoryProcess(jobConfig);
+  downloadInsertChangefilesHistoryProcess(jobConfig);
   return res.status(202).json();
 }
 

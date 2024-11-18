@@ -260,7 +260,7 @@ async function insertFileProcess(jobConfig) {
  *
  * @returns {Promise<void>}
  */
-async function insertWithOaHistoryProcess(jobConfig) {
+async function downloadInsertChangefilesHistoryProcess(jobConfig) {
   setStatus(true);
 
   const {
@@ -345,5 +345,5 @@ module.exports = {
   downloadAndInsertSnapshotProcess,
   downloadInsertChangefilesProcess,
   insertFileProcess,
-  insertWithOaHistoryProcess,
+  downloadInsertChangefilesHistoryProcess,
 };
