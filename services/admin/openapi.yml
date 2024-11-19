@@ -12,9 +12,12 @@ info:
 servers:
   - url: https://unpaywall.inist.fr/api/admin
 tags:
-  - name: cron
-  - name: job
   - name: ping
+  - name: job
+  - name: apikey
+  - name: admin
+  - name: cron
+  - name: mail
 paths:
   /:
     get:
@@ -32,7 +35,6 @@ paths:
                 response:
                   value:
                     message: admin service
-  
   /ping:
     get:
       operationId: get-ping
@@ -134,17 +136,29 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/Health'
-  
-  /job/snapshot:
+
+  /healthcheck:
+    get:
+      tags:
+        - ping
+      operationId: get-healthcheck
+      summary: Checking the health of the service
+      description: Returns a status of 204 if the service is available
+      responses:
+        '204':
+          description: No Content
+          
+  /job/snapshot/download:
     post:
       tags:
         - job
-      operationId: post-update-job-snapshot
-      summary: Start process download and insert snapshot from unpaywall.
-      description: Download and insert the latest snapshot from unpaywall.org.
+      operationId: post-job-download-snapshot
+      summary: Start process download snapshot from unpaywall.
+      description: Download the latest snapshot from unpaywall.org.
       security:
         - x-api-key: []
       requestBody:
+        description: config for process
         content:
           application/json:
             schema:
@@ -152,9 +166,8 @@ paths:
               required:
                 - userName
               properties:
-                interval:
+                index:
                   type: string
-        description: index where the unpaywall data will be inserted.
       responses:
         '202':
            $ref: '#/components/responses/Accepted'
@@ -163,11 +176,74 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /job/download/insert/changefile:
+  /job/snapshot/download/insert:
     post:
       tags:
         - job
-      operationId: post-update-job-period
+      operationId: post-snapshot-job-download-insert
+      summary: Start process download and insert snapshot from unpaywall.
+      description: Download and insert the latest snapshot from unpaywall.org.
+      security:
+        - x-api-key: []
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+      responses:
+        '202':
+           $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+          
+  /job/snapshot/insert/${filename}:
+    post:
+      tags:
+        - job
+      operationId: post-job-snapshot-insert
+      summary: Start process insert snapshot from ezunpaywall.
+      description: Insert snapshot from ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+      responses:
+        '202':
+           $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  
+  /job/changefile/download/insert:
+    post:
+      tags:
+        - job
+      operationId: post-job-changefile-download-insert
       summary: Start process download and insert changefiles from unpaywall.
       description: Download and insert changefiles from unpaywall.org.
       security:
@@ -197,18 +273,18 @@ paths:
         '202':
           $ref: '#/components/responses/Accepted'
         '400':
-          description: startDate cannot be in the futur or endDate cannot be lower than startDate.
+          $ref: '#/components/responses/Error-date'
         '401':
           $ref: '#/components/responses/Not-authorized'
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /job/insert/changefile/${filename}:
+  /job/changefile/insert/${filename}:
     post:
       tags:
         - job
-      operationId: post-update-job-changefile-$-filename
-      summary: Start process insert changesfiles downloaded on ezunpaywall.
+      operationId: post-job-changefile-insert-$-filename
+      summary: Start process insert changefiles downloaded on ezunpaywall.
       description: Insert changefiles already downloaded on ezunpaywall.
       security:
         - x-api-key: []
@@ -240,13 +316,7 @@ paths:
         '202':
           $ref: '#/components/responses/Accepted'
         '400':
-          description: startDate cannot be in the futur or endDate cannot be lower than startDate.
-          content:
-            application/json:
-              examples:
-                response:
-                  value:
-                    message: startDate cannot be in the futur or endDate cannot be lower than startDate.
+          $ref: '#/components/responses/Error-date'
         '401':
           $ref: '#/components/responses/Not-authorized'
         '404':
@@ -254,11 +324,11 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
                 
-  /job/history/download/insert/changefile:
+  /job/changefile/history/download/insert:
     post:
       tags:
         - job
-      operationId: post-update-job-history
+      operationId: post-job-changefile-history-download-insert
       summary: Start process download and insert changefiles from unpaywall and feed history.
       description: Download and insert changefiles from unpaywall.org and feed history.
       security:
@@ -274,27 +344,82 @@ paths:
               properties:
                 index:
                   type: string
+                indexHistory:
+                  type: string
                 interval:
                   type: string
                 startDate:
                   type: string
                 endDate:
                   type: string
+                ignoreError:
+                  type: boolean
+                cleanFile:
+                  type: boolean
       responses:
         '202':
           $ref: '#/components/responses/Accepted'
         '400':
-          description: startDate cannot be in the futur or endDate cannot be lower than startDate.
+          $ref: '#/components/responses/Error-date'
         '401':
           $ref: '#/components/responses/Not-authorized'
         '409':
           $ref: '#/components/responses/Conflict'
           
-  /job/reset:
+  /job/changefile/history/insert/${filename}:
     post:
       tags:
         - job
-      operationId: post-update-job-reset
+      operationId: post-job-changefile-history-insert
+      summary: Start process insert changefiles from unpaywall and feed history.
+      description: Insert changefiles from unpaywall.org and feed history.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+                indexHistory:
+                  type: string
+                interval:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+                ignoreError:
+                  type: boolean
+                cleanFile:
+                  type: boolean
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/Error-date'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+          
+  /job/history/reset:
+    post:
+      tags:
+        - job
+      operationId: post-job-history-reset
       summary: Start process that roll back the current and the history index according to a date.
       description: roll back the current and the history index according to a date.
       security:
@@ -310,6 +435,8 @@ paths:
               properties:
                 index:
                   type: string
+                indexHistory:
+                  type: string
                 startDate:
                   type: string
       responses:
@@ -322,17 +449,17 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /reports/${type}:
+  /reports:
     get:
       tags:
         - job
-      operationId: get-update-reports
+      operationId: get-reports
       summary: Get reports.
       description: Get list of reports or latest report.
       parameters:
-        - in: path
+        - in: query
           name: type
-          description: type of report (unpaywall or unpaywallHistory)
+          description: type of report ([snapshot][download], [snapshot][download][insert], [changefile][download][insert], [changefile][insert], [changefile][history][download][insert])
           required: true
           schema:
             type: string
@@ -387,17 +514,17 @@ paths:
                     error: false
                     took: 0.256
   
-  /reports/${type}/${filename}:
+  /reports/${filename}:
     get:
       tags:
         - job
-      operationId: get-update-reports-$-filename
+      operationId: get-reports-$-filename
       summary: Get report.
       description: Get report with his filename.
       parameters:
-        - in: path
+        - in: query
           name: type
-          description: type of report (unpaywall or unpaywallHistory)
+          description: type of report ([snapshot][download], [snapshot][download][insert], [changefile][download][insert], [changefile][insert], [changefile][history][download][insert])
           required: true
           schema:
             type: string
@@ -475,7 +602,7 @@ paths:
     get:
       tags:
         - job
-      operationId: get-update-snapshots
+      operationId: get-snapshots
       summary: Get snapshots.
       description: Get list of snapshot or latest snapshot.
       security:
@@ -488,14 +615,21 @@ paths:
           schema:
             type: boolean
       responses:
-        '200':
-          description: snapshot
-          content:
-            Lists of snapshots:
-              examples:
-                response:
-                  value:
-                    - snapshot-2022-10-10.jsonl.gz
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+    post:
+      tags:
+        - admin
+      operationId: post-snapshots
+      summary: Upload snapshots (in dev only).
+      description: Upload snapshot on ezunpaywall.
+      security:
+        - x-api-key: []
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
         '401':
           $ref: '#/components/responses/Not-authorized'
 
@@ -503,8 +637,8 @@ paths:
     get:
       tags:
         - job
-      operationId: get-update-snapshots-$-filename
-      summary: Get snapshot.
+      operationId: get-snapshots-$-filename
+      summary: Get snapshot (deprecated).
       description: Get snapshot with his filename.
       security:
         - x-api-key: []
@@ -522,6 +656,95 @@ paths:
           $ref: '#/components/responses/Not-authorized'
         '404':
           $ref: '#/components/responses/File-not-found'
+    delete:
+      tags:
+        - admin
+      operationId: delete-snapshots-$-filename
+      summary: Delete snapshots (in dev only).
+      description: Delete snapshot on ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: snapshot
+          content:
+            Lists of snapshots:
+              examples:
+                response:
+                  value:
+                    - snapshot-2022-10-10.jsonl.gz
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+          
+  /changefiles:
+    get:
+      tags:
+        - job
+      operationId: get-changefiles
+      summary: Get changefiles.
+      description: Get list or latest of changefiles download on ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: query
+          name: latest
+          description: latest
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+    post:
+      tags:
+        - admin
+      operationId: post-changefiles
+      summary: Upload changefiles (in dev only).
+      description: Upload snapshot on ezunpaywall.
+      security:
+        - x-api-key: []
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+
+  /changefiles/${filename}:
+    delete:
+      tags:
+        - admin
+      operationId: delete-changefiles-$-filename
+      summary: Delete changefiles (in dev only).
+      description: Delete changefiles download on ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: changefiles
+          content:
+            Lists of snapshots:
+              examples:
+                response:
+                  value:
+                    - changefiles-2022-10-10.jsonl.gz
+        '401':
+          $ref: '#/components/responses/Not-authorized'
   
   /states:
     get:
@@ -563,7 +786,7 @@ paths:
       tags:
         - job
       summary: Get status.
-      operationId: get-update-status
+      operationId: get-status
       description: Get status.
       responses:
         '200':
@@ -577,7 +800,27 @@ paths:
               examples:
                 response:
                   value: true
-      
+    patch:
+      tags:
+        - admin
+      summary: Update status.
+      operationId: patch-status
+      description: Update status.
+      security:
+        - x-api-key: []
+      responses:
+        '200':
+          description: status
+          content:
+            No process in progress:
+              examples:
+                response:
+                  value: false
+            Update in progress:
+              examples:
+                response:
+                  value: true
+
   /apikey/keys/${apikey}:
     get:
       tags:
@@ -894,76 +1137,94 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
     
-  /unpaywall/changefiles:
-    get:
+  /login:
+    post:
       tags:
-        - job
-      operationId: get-update-unpaywall-changefiles
-      summary: Get changefiles from unpaywall.
-      description: Get changefiles from unpaywall.
+        - admin
+      summary: Login.
+      operationId: post-login
+      description: Login.
       security:
         - x-api-key: []
-      parameters:
-        - in: query
-          name: interval
-          description: interval of changefiles ("week" or "day")
-          required: false
-          schema:
-            type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+  
+  /config:
+    get:
+      tags:
+        - admin
+      summary: get config of service.
+      operationId: get-config
+      description: Get config or service with hidden secrets.
+      security:
+        - x-api-key: []
       responses:
         '200':
-          description: status
+          description: config
           content:
-            List of daily changefiles of unpaywall:
+            Config:
               examples:
                 response:
                   value:
-                    - date: '2022-10-10T00:00:00.000Z'
-                      filename: fake1.jsonl.gz
-                      filetype: jsonl
-                      last_modified: '2021-10-09T13:10:50.000Z'
-                      lines: 50
-                      size: 19896
-                      url: http://fakeUnpaywall:3000/daily-feed/changefiles/fake1.jsonl.gz
-                    - date: '2022-10-09T00:00:00.000Z'
-                      filename: fake2.jsonl.gz
-                      filetype: jsonl
-                      last_modified: '2022-10-09T13:10:50.000Z'
-                      lines: 100
-                      size: 44137
-                      url: http://fakeUnpaywall:3000/daily-feed/changefiles/fake2.jsonl.gz
-                    - date: '2022-10-08T00:00:00.000Z'
-                      filename: fake3.jsonl.gz
-                      filetype: jsonl
-                      last_modified: '2022-10-08T13:10:50.000Z'
-                      lines: 2000
-                      size: 877494
-                      url: http://fakeUnpaywall:3000/daily-feed/changefiles/fake3.jsonl.gz
-            List of weekly changefiles of unpaywall:
-              examples:
-                response:
-                  value:
-                    - date: '2022-10-10T00:00:00.000Z'
-                      filename: fake1.jsonl.gz
-                      filetype: jsonl
-                      last_modified: '2021-10-09T13:10:50.000Z'
-                      lines: 50
-                      size: 19896
-                      url: http://fakeUnpaywall:3000/feed/changefiles/fake1.jsonl.gz
-                    - date: '2022-10-09T00:00:00.000Z'
-                      filename: fake2.jsonl.gz
-                      filetype: jsonl
-                      last_modified: '2022-10-09T13:10:50.000Z'
-                      lines: 100
-                      size: 44137
-                      url: http://fakeUnpaywall:3000/feed/changefiles/fake2.jsonl.gz
-                    - date: '2022-10-08T00:00:00.000Z'
-                      filename: fake3.jsonl.gz
-                      filetype: jsonl
-                      last_modified: '2022-10-08T13:10:50.000Z'
-                      lines: 2000
-                      size: 877494
-                      url: http://fakeUnpaywall:3000/feed/changefiles/fake3.jsonl.gz
+                    nodeEnv: development
+                    timezone: Europe/Paris
+                    smtp:
+                      host: maildev
+                      port: 25
+                    notifications:
+                      sender: ezunpaywall
+                      receivers:
+                        - ezunpaywall@example.com
+                      machine: dev
+                    unpaywall:
+                      url: http://fakeunpaywall:3000
+                      apikey: "********"
+                    elasticsearch:
+                      nodes: http://elastic:9200
+                      username: elastic
+                      password: "********"
+                      maxBulkSize: 4000
+                      indexAlias: upw
+                      timeout: 20000
+                    redis:
+                      host: redis
+                      port: "6379"
+                      password: "********"
+                    cron:
+                      downloadSnapshot:
+                        schedule: "0 0 0 1 * *"
+                        active: true
+                      dataUpdate:
+                        schedule: "0 0 0 * * *"
+                        active: false
+                        index: unpaywall
+                        interval: day
+                      dataUpdateHistory:
+                        schedule: "0 0 0 * * *"
+                        active: true
+                        index: unpaywall
+                        indexHistory: unpaywall-history
+                        interval: day
+                      cleanFile:
+                        schedule: "0 0 0 * * *"
+                        active: true
+                        changefileThreshold: 30
+                        reportThreshold: 30
+                        snapshotThreshold: 150
+                    paths:
+                      log:
+                        applicationDir: ./log/application
+                        accessDir: ./log/access
+                        healthCheckDir: ./log/healthcheck
+                      data:
+                        changefilesDir: ./data/changefiles
+                        snapshotsDir: ./data/snapshots
+                        reportsDir: ./data/reports
+                    apikey: "********"
+                    healthTimeout: 3000
         '401':
           $ref: '#/components/responses/Not-authorized'
   
@@ -973,13 +1234,13 @@ paths:
         - cron
       operationId: post-cron-start
       summary: Start cron.
-      description: Start update cron.
+      description: Start cron.
       security:
         - x-api-key: []
       parameters:
         - in: path
           name: type
-          description: type of report (unpaywall or unpaywallHistory)
+          description: type of cron (dataUpdate or dataUpdateHistory)
           required: true
           schema:
             type: string
@@ -988,8 +1249,6 @@ paths:
           $ref: '#/components/responses/Accepted'
         '401':
           $ref: '#/components/responses/Not-authorized'
-      
-      
       
   /cron/${type}/stop:
     post:
@@ -1003,7 +1262,7 @@ paths:
       parameters:
         - in: path
           name: type
-          description: type of report (unpaywall or unpaywallHistory)
+          description: type of cron (dataUpdate or dataUpdateHistory)
           required: true
           schema:
             type: string
@@ -1019,16 +1278,44 @@ paths:
         - cron
       operationId: patch-cron
       summary: update cron.
-      description: update cron.
+      description: update config of cron.
       security:
         - x-api-key: []
       parameters:
         - in: path
           name: type
-          description: type of report (unpaywall or unpaywallHistory)
+          description: type of cron (dataUpdate or dataUpdateHistory)
           required: true
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                time:
+                  type: string
+                index:
+                  type: string
+                interval:
+                  type: string
+              x-examples:
+                example-1:
+                  time: ''
+                  index: ''
+                  interval: ''
+            examples:
+              daily:
+                value:
+                  time: 0 0 0 * * *
+                  index: unpaywall
+                  interval: day
+              weekly:
+                value:
+                  time: 0 0 0 * * 0
+                  index: unpaywall
+                  interval: weekly
       responses:
         '200':
           description: OK
@@ -1065,34 +1352,7 @@ paths:
                       interval: day
         '401':
           $ref: '#/components/responses/Not-authorized'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                time:
-                  type: string
-                index:
-                  type: string
-                interval:
-                  type: string
-              x-examples:
-                example-1:
-                  time: ''
-                  index: ''
-                  interval: ''
-            examples:
-              daily:
-                value:
-                  time: 0 0 0 * * *
-                  index: unpaywall
-                  interval: day
-              weekly:
-                value:
-                  time: 0 0 0 * * 0
-                  index: unpaywall
-                  interval: weekly
+      
   
     get:
       tags:
@@ -1103,7 +1363,7 @@ paths:
       parameters:
         - in: path
           name: type
-          description: type of report (unpaywall or unpaywallHistory)
+          description: type of cron (dataUpdate or dataUpdateHistory)
           required: true
           schema:
             type: string
@@ -1155,6 +1415,32 @@ paths:
                       status: false
                       index: unpaywall
                       interval: day
+  /contact:
+    post:
+      tags:
+        - mail
+      operationId: post-mail
+      summary: Send contact mail.
+      description: Send contact mail.
+      security:
+        - x-api-key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                subject:
+                  type: string
+                message:
+                  type: string
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
 
 components:
   responses:
@@ -1170,6 +1456,15 @@ components:
             response:
               value:
                 message: Not authorized
+    Error-date:
+      description: startDate cannot be in the future or endDate cannot be lower than startDate.
+      headers: {}
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: startDate cannot be in the future or endDate cannot be lower than startDate.
     Conflict:
       description: Conflict
       headers: {}

@@ -13,12 +13,13 @@ servers:
   - url: https://unpaywall.inist.fr/api
 tags:
   - name: ping
+  - name: admin
 paths:
   /graphql:
     get:
       tags:
         - ping
-      operationId: get-graphql
+      operationId: get
       summary: Name of service
       description: Get name of graphql service
       parameters: []
@@ -40,12 +41,11 @@ paths:
                   value:
                     message: graphql service
       
-   
-  /graphql/ping:
+  /ping:
     get:
       tags:
         - ping
-      operationId: get-graphql-ping
+      operationId: get-ping
       summary: Ping graphql service
       description: ping graphql service
       parameters: []
@@ -53,13 +53,14 @@ paths:
         '204':
           description: No Content
     
-  /graphql/health:
+  /health:
     get:
       tags:
         - ping
-      operationId: get-graphql-health
+      operationId: get-health
       summary: Health
       description: Health on all service connected to graphql service
+      parameters: []
       responses:
         '200':
           description: OK
@@ -118,12 +119,12 @@ paths:
                       status: true
                     elapsedTime: 3001
                     status: false
-    parameters: []
-  /graphql/health/redis:
+
+  /health/redis:
     get:
       tags:
         - ping
-      operationId: get-graphql-health-redis
+      operationId: get-health-redis
       summary: Health on redis service
       description: Health on redis
       parameters: []
@@ -131,21 +132,61 @@ paths:
         '200':
           $ref: '#/components/responses/Health'
       
-    
-  /graphql/health/elastic:
+  /health/elastic:
     get:
       tags:
         - ping
-      operationId: get-graphql-health-elastic
+      operationId: get-health-elastic
       summary: Health on elastic service
       description: Health on elastic
       parameters: []
       responses:
         '200':
           $ref: '#/components/responses/Health'
+
+  /healthcheck:
+    get:
+      tags:
+        - ping
+      operationId: get-healthcheck
+      summary: Checking the health of the service
+      description: Returns a status of 204 if the service is available
+      responses:
+        '204':
+          description: No Content
       
-      
-      
+  /config:
+    get:
+      tags:
+        - admin
+      summary: get config of service.
+      operationId: get-config
+      description: Get config or service with hidden secrets.
+      security:
+        - x-api-key: []
+      responses:
+        '200':
+          description: config
+          content:
+            Config:
+              examples:
+                response:
+                  value:   
+                    nodeEnv: development
+                    timezone: Europe/Paris
+                    redis:
+                      host: redis
+                      port: "6379"
+                      password: "********"
+                    elasticsearch:
+                      host: http://elastic
+                      port: 9200
+                      user: elastic
+                      password: "********"
+                      indexBase: unpaywall_base
+                      indexHistory: unpaywall_history
+                    apikey: "********"
+                    healthTimeout: 3000   
     
 externalDocs:
   description: Find out more about Swagger

@@ -10,17 +10,18 @@ info:
     name: CeCILL 2.1
     url: http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
 servers:
-  - url: https://unpaywall.inist.fr/api
+  - url: https://unpaywall.inist.fr/api/enrich
 tags:
-  - name: job
   - name: ping
+  - name: job
+  - name: admin
 paths:
-  /enrich:
+  /:
     get:
       tags:
         - ping
       summary: Name of service
-      operationId: get-enrich
+      operationId: get
       description: Get name of enrich service
       parameters: []
       responses:
@@ -36,21 +37,21 @@ paths:
                 response:
                   value: enrich service
     
-  /enrich/ping:
+  /ping:
     get:
       tags:
         - ping
       summary: Ping enrich service
-      operationId: get-enrich-ping
+      operationId: get-ping
       description: Ping enrich service
       responses:
         '204':
           description: No Content
       
-  /enrich/health:
+  /health:
     get:
       summary: Health
-      operationId: get-enrich-health
+      operationId: get-health
       description: Health on all service connected to enrich service
       parameters: []
       tags:
@@ -113,11 +114,12 @@ paths:
                       status: true
                     elapsedTime: 3003
                     status: false
-  /enrich/health/redis:
+
+  /health/redis:
     get:
       tags:
         - ping
-      operationId: get-enrich-health-redis
+      operationId: get-health-redis
       description: Health on redis
       summary: Health on redis service
       parameters: []
@@ -125,19 +127,30 @@ paths:
         '200':
           $ref: '#/components/responses/Health'
     
-  /enrich/health/elastic:
+  /health/elastic:
     get:
       tags:
         - ping
       summary: Health on graphql service
-      operationId: get-enrich-health-elastic
+      operationId: get-health-elastic
       description: Health on elastic
       parameters: []
       responses:
         '200':
           $ref: '#/components/responses/Health'
+  
+  /healthcheck:
+    get:
+      tags:
+        - ping
+      operationId: get-healthcheck
+      summary: Checking the health of the service
+      description: Returns a status of 204 if the service is available
+      responses:
+        '204':
+          description: No Content
     
-  /enrich/upload:
+  /upload:
     post:
       tags:
         - job
@@ -158,7 +171,7 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
       
-  /enrich/job/{filename}:
+  /job/{filename}:
     post:
       tags:
         - job
@@ -208,12 +221,12 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
       
-  /enrich/enriched:
+  /enriched:
     get:
       tags:
         - job
       summary: Get enriched files
-      operationId: get-enrich-enriched
+      operationId: get-enriched
       description: Get the list of enriched files
       security:
         - x-api-key: []
@@ -230,12 +243,12 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
       
-  /enrich/enriched/${filename}:
+  /enriched/${filename}:
     get:
       tags:
         - job
       summary: Get enriched file
-      operationId: get-enrich-enriched-$-filename
+      operationId: get-enriched-$-filename
       description: Get the enriched file, generated at the end of the enrichment process
       security:
         - x-api-key: []
@@ -257,12 +270,12 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
       
-  /enrich/states:
+  /states:
     get:
       tags:
         - job
       summary: Get list of states of enrich job
-      operationId: get-enrich-states
+      operationId: get-states
       description: Get list of filenames state of enrich process
       parameters:
         - in: query
@@ -284,12 +297,12 @@ paths:
         '401':
           $ref: '#/components/responses/Not-authorized'
       
-  /enrich/states/${filename}:
+  /states/${filename}:
     get:
       tags:
         - job
       summary: Get State
-      operationId: get-enrich-states-$-filename
+      operationId: get-states-$-filename
       description: Get state of enrich process with his filename
       parameters:
         - in: path
@@ -338,12 +351,12 @@ paths:
                   value:
                     message: File not found
       
-  /enrich/uploaded:
+  /uploaded:
     get:
       tags:
         - job
       summary: Get uploaded files
-      operationId: get-enriched-uploaded
+      operationId: get-uploaded
       description: Get the lists of uploaded files
       security:
         - x-api-key: []
@@ -360,6 +373,34 @@ paths:
                   default: file.csv
         '401':
           $ref: '#/components/responses/Not-authorized'
+
+  /config:
+    get:
+      tags:
+        - admin
+      summary: get config of service.
+      operationId: get-config
+      description: Get config or service with hidden secrets.
+      security:
+        - x-api-key: []
+      responses:
+        '200':
+          description: config
+          content:
+            Config:
+              examples:
+                response:
+                  value:
+                    nodeEnv: development
+                    timezone: Europe/Paris
+                    redis:
+                      host: redis
+                      port: 6379
+                      password: "********"
+                    graphql:
+                      host: http://graphql:3000
+                    apikey: "********"
+                    healthTimeout: 3000
 
 components:
   responses:
