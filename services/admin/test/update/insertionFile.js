@@ -30,7 +30,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/insert/changefile/fake1.jsonl.gz')
+        .post('/job/changefile/insert/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
         })
@@ -100,7 +100,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/insert/changefile/fake1.jsonl.gz')
+        .post('/job/changefile/insert/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
           limit: 10,
@@ -170,7 +170,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/insert/changefile/fake1.jsonl.gz')
+        .post('/job/changefile/insert/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
           offset: 40,
@@ -240,7 +240,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/insert/changefile/fake1.jsonl.gz')
+        .post('/job/changefile/insert/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
           offset: 10,
@@ -306,7 +306,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the file is in the wrong format', () => {
     it('Should return a status code 400', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/insert/changefile/fake1.jsonl')
+        .post('/job/changefile/insert/fake1.jsonl')
         .send({
           index: 'unpaywall-test',
         })
@@ -319,7 +319,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
   describe('Don\'t do a insertion of a file already installed because the File not found on ezunpaywall', () => {
     it('Should return a status code 404', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/insert/changefile/fake1.jsonl.gz')
+        .post('/job/changefile/insert/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
         })
@@ -337,7 +337,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     it('Should return a status code 400', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/insert/changefile/fake1.jsonl.gz')
+        .post('/job/changefile/insert/fake1.jsonl.gz')
         .send({
           index: 'unpaywall-test',
           offset: 100,

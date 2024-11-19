@@ -33,7 +33,7 @@ describe('Test: auth service in update service', () => {
   describe('Test with admin API key', () => {
     it('Should return status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/changefile')
+        .post('/job/changefile/download/insert')
         .send({
           index: 'unpaywall-test',
         })
@@ -53,7 +53,7 @@ describe('Test: auth service in update service', () => {
   describe('Test without API key', () => {
     it('Should return a status code 401', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/changefile')
+        .post('/job/changefile/download/insert')
         .send({
           index: 'unpaywall-test',
         })
@@ -67,7 +67,7 @@ describe('Test: auth service in update service', () => {
   describe('Test with wrong API key', () => {
     it('Should return a status code 401', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/changefile')
+        .post('/job/changefile/download/insert')
         .send({
           index: 'unpaywall-test',
         })

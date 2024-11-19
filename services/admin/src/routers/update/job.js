@@ -28,7 +28,7 @@ const checkAdmin = require('../../middlewares/admin');
  * Auth required.
  * No update process should be in progress.
  */
-router.post('/job/download/snapshot', checkStatus, checkAdmin, downloadSnapshotJobController);
+router.post('/job/snapshot/download', checkStatus, checkAdmin, downloadSnapshotJobController);
 
 /**
  * Route that download the current snapshot of unpaywall and insert his content.
@@ -37,16 +37,7 @@ router.post('/job/download/snapshot', checkStatus, checkAdmin, downloadSnapshotJ
  *
  * This route need a body that contains a config of job.
  */
-router.post('/job/download/insert/snapshot', checkStatus, checkAdmin, validateSnapshotJob, downloadAndInsertSnapshotJobController);
-
-/**
- * Route that download and insert on elastic the changefiles from unpaywall between a period.
- * Auth required.
- * No update process should be in progress.
- *
- * This route need a body that contains a config of job.
- */
-router.post('/job/download/insert/changefile', checkStatus, checkAdmin, validateJobChangefilesConfig, insertChangefilesOnPeriodJobController);
+router.post('/job/snapshot/download/insert', checkStatus, checkAdmin, validateSnapshotJob, downloadAndInsertSnapshotJobController);
 
 /**
  * Route that insert on elastic the content of snapshot installed on ezunpaywall.
@@ -56,7 +47,16 @@ router.post('/job/download/insert/changefile', checkStatus, checkAdmin, validate
  * This route need a body that contains a config of job
  * and a param which corresponds to the filename.
  */
-router.post('/job/insert/snapshot/:filename', checkStatus, checkAdmin, validateInsertFile, insertSnapshotJobController);
+router.post('/job/snapshot/insert/:filename', checkStatus, checkAdmin, validateInsertFile, insertSnapshotJobController);
+
+/**
+ * Route that download and insert on elastic the changefiles from unpaywall between a period.
+ * Auth required.
+ * No update process should be in progress.
+ *
+ * This route need a body that contains a config of job.
+ */
+router.post('/job/changefile/download/insert', checkStatus, checkAdmin, validateJobChangefilesConfig, insertChangefilesOnPeriodJobController);
 
 /**
  * Route that insert on elastic the content of changefile installed on ezunpaywall.
@@ -66,7 +66,7 @@ router.post('/job/insert/snapshot/:filename', checkStatus, checkAdmin, validateI
  * This route need a body that contains a config of job
  * and a param which corresponds to the filename.
  */
-router.post('/job/insert/changefile/:filename', checkStatus, checkAdmin, validateInsertFile, insertChangefileJobController);
+router.post('/job/changefile/insert/:filename', checkStatus, checkAdmin, validateInsertFile, insertChangefileJobController);
 
 /**
  * Route that download and insert on elastic the changefiles from unpaywall between a period
@@ -76,7 +76,7 @@ router.post('/job/insert/changefile/:filename', checkStatus, checkAdmin, validat
  *
  * This route need a body that contains a config of job.
  */
-router.post('/job/history/download/insert/changefile', checkStatus, checkAdmin, validateHistoryJob, insertWithOaHistoryController);
+router.post('/job/changefile/history/download/insert', checkStatus, checkAdmin, validateHistoryJob, insertWithOaHistoryController);
 
 /**
  * Route that insert on elastic the content of file changefile on ezunpaywall
@@ -87,7 +87,7 @@ router.post('/job/history/download/insert/changefile', checkStatus, checkAdmin, 
  * This route need a body that contains a config of job
  * and a param which corresponds to the filename.
  */
-router.post('/job/history/insert/changefile/:filename', checkStatus, checkAdmin, validateInsertFile, insertChangefileJobController);
+router.post('/job/changefile/history/insert/:filename', checkStatus, checkAdmin, validateInsertFile, insertChangefileJobController);
 
 /**
  * Route that roll back the current and the history index according to a date.
@@ -96,24 +96,24 @@ router.post('/job/history/insert/changefile/:filename', checkStatus, checkAdmin,
  *
  * This route need a body that contains a config of job.
  */
-router.post('/job/reset/history', checkStatus, checkAdmin, validateHistoryReset, historyRollBackController);
+router.post('/job/history/reset', checkStatus, checkAdmin, validateHistoryReset, historyRollBackController);
 
 // Dev
-router.post('/job/reset/history/step1', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
+router.post('/job/history/reset/step1', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
   const { startDate } = req.data;
 
   await step1(startDate);
   return res.status(202).json();
 });
 
-router.post('/job/reset/history/step2', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
+router.post('/job/history/reset/step2', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
   const { startDate } = req.data;
 
   await step2(startDate);
   return res.status(202).json();
 });
 
-router.post('/job/reset/history/step3', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
+router.post('/job/history/reset/step3', checkStatus, checkAdmin, validateHistoryReset, async (req, res, next) => {
   const { startDate } = req.data;
 
   await step3(startDate);

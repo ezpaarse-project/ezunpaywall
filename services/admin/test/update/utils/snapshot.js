@@ -56,7 +56,7 @@ async function addSnapshot(filename) {
 async function insertSnapshot(filename, index) {
   try {
     await chai.request(adminURL)
-      .post(`/job/insert/snapshot/${filename}`)
+      .post(`/job/snapshot/insert/${filename}`)
       .send({
         index,
       })

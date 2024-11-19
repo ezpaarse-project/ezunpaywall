@@ -75,7 +75,7 @@ async function updateChangefile(interval) {
 async function insertChangefile(filename, index) {
   try {
     await chai.request(adminURL)
-      .post(`/job/insert/changefile/${filename}`)
+      .post(`/job/changefile/insert/${filename}`)
       .send({
         index,
       })
@@ -101,7 +101,7 @@ async function insertChangefile(filename, index) {
 async function insertInHistory(startDate, endDate) {
   try {
     await chai.request(adminURL)
-      .post('/job/history/download/insert/changefile')
+      .post('/job/changefile/history/download/insert')
       .send({
         index: 'unpaywall-base',
         startDate,

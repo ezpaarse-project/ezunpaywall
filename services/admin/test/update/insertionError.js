@@ -31,7 +31,7 @@ describe('Test: insert the content of a file already installed on ezunpaywall', 
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/insert/changefile/fake1-error.jsonl.gz')
+        .post('/job/changefile/insert/fake1-error.jsonl.gz')
         .send({
           index: 'unpaywall-test',
         })

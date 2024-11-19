@@ -29,7 +29,7 @@ describe('Test: manage unpaywall history cron', () => {
       expect(res).have.status(200);
 
       expect(res.body).have.property('schedule').equal('0 0 0 * * *');
-      expect(res.body).have.property('active').equal(true);
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall-base');
       expect(res.body).have.property('indexHistory').equal('unpaywall-history');
       expect(res.body).have.property('interval').equal('day');
@@ -51,7 +51,7 @@ describe('Test: manage unpaywall history cron', () => {
       expect(res).have.status(200);
 
       expect(res.body).have.property('schedule').equal('0 0 0 1 * *');
-      expect(res.body).have.property('active').equal(true);
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall-base');
       expect(res.body).have.property('indexHistory').equal('unpaywall-history');
       expect(res.body).have.property('interval').equal('day');
@@ -73,7 +73,7 @@ describe('Test: manage unpaywall history cron', () => {
       expect(res).have.status(200);
 
       expect(res.body).have.property('schedule').equal('0 0 0 * * *');
-      expect(res.body).have.property('active').equal(true);
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall-base2');
       expect(res.body).have.property('indexHistory').equal('unpaywall-history');
       expect(res.body).have.property('interval').equal('day');
@@ -95,7 +95,7 @@ describe('Test: manage unpaywall history cron', () => {
       expect(res).have.status(200);
 
       expect(res.body).have.property('schedule').equal('0 0 0 * * *');
-      expect(res.body).have.property('active').equal(true);
+      expect(res.body).have.property('active').equal(false);
       expect(res.body).have.property('index').equal('unpaywall-base');
       expect(res.body).have.property('indexHistory').equal('unpaywall-history');
       expect(res.body).have.property('interval').equal('week');

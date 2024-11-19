@@ -29,7 +29,7 @@ describe('Test: download and insert snapshot from unpaywall', () => {
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/snapshot')
+        .post('/job/snapshot/download/insert')
         .send({
           index: 'unpaywall-test',
         })

@@ -34,7 +34,7 @@ describe('Test: daily update route test with history', () => {
   describe('insert changefile 2020-01-02', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/history/download/insert/changefile')
+        .post('/job/changefile/history/download/insert')
         .send({
           startDate: date2,
           endDate: date2,
@@ -187,7 +187,7 @@ describe('Test: daily update route test with history', () => {
   describe('insert changefile 2020-01-03', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/history/download/insert/changefile')
+        .post('/job/changefile/history/download/insert')
         .send({
           startDate: date3,
           endDate: date3,
@@ -351,7 +351,7 @@ describe('Test: daily update route test with history', () => {
   describe('insert changefile 2020-01-03 again', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/history/download/insert/changefile')
+        .post('/job/changefile/history/download/insert')
         .send({
           startDate: date3,
           endDate: date3,
@@ -515,7 +515,7 @@ describe('Test: daily update route test with history', () => {
   describe('insert changefile 2020-01-02 again', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/history/download/insert/changefile')
+        .post('/job/changefile/history/download/insert')
         .send({
           startDate: date2,
           endDate: date2,
@@ -553,7 +553,7 @@ describe('Test: Insert 2 time the same file in history', () => {
   describe('insert changefile 2020-01-02', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/history/download/insert/changefile')
+        .post('/job/changefile/history/download/insert')
         .send({
           startDate: date2,
           endDate: date2,
@@ -640,7 +640,7 @@ describe('Test: Insert 2 time the same file in history', () => {
   describe('insert changefile 2020-01-02', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/history/download/insert/changefile')
+        .post('/job/changefile/history/download/insert')
         .send({
           startDate: date2,
           endDate: date2,
@@ -736,7 +736,7 @@ describe('Test: Insert a old file 2019-01-01', () => {
   describe('insert changefile 2019-01-01', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/history/download/insert/changefile')
+        .post('/job/changefile/history/download/insert')
         .send({
           startDate: date4,
           endDate: date4,
@@ -811,7 +811,7 @@ describe('Test: insert changefile with only new documents', () => {
   describe('insert changefile 2020-01-05 with only new lines', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/history/download/insert/changefile')
+        .post('/job/changefile/history/download/insert')
         .send({
           startDate: date5,
           endDate: date5,

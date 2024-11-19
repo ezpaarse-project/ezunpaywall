@@ -31,7 +31,7 @@ describe('Week: Test: weekly update route test', () => {
     // test response
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/changefile')
+        .post('/job/changefile/download/insert')
         .send({
           index: 'unpaywall-test',
           interval: 'week',
@@ -109,7 +109,7 @@ describe('Week: Test: weekly update route test', () => {
 
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
-        .post('/job/download/insert/changefile')
+        .post('/job/changefile/download/insert')
         .send({
           index: 'unpaywall-test',
           interval: 'week',
