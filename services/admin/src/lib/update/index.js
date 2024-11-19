@@ -54,23 +54,23 @@ async function endJobAsSuccess() {
 async function downloadSnapshotProcess() {
   setStatus(true);
 
-  appLogger.info('[job][download][snapshot]: Start download snapshot job');
+  appLogger.info('[job][snapshot][download]: Start download snapshot job');
 
-  await createState({ name: '[download][snapshot]' });
+  await createState({ name: '[snapshot][download]' });
 
   let filename;
   try {
     filename = await downloadSnapshot();
   } catch (err) {
-    appLogger.error('[job][download][snapshot]: Cannot download snapshot');
+    appLogger.error('[job][snapshot][download]: Cannot download snapshot');
     await endJobAsError();
-    appLogger.error('[job][download][snapshot]: download snapshot job is finished with an error', err);
+    appLogger.error('[job][snapshot][download]: download snapshot job is finished with an error', err);
     return;
   }
 
-  appLogger.info(`[job][download][snapshot]: snapshot [${filename}] is downloaded`);
+  appLogger.info(`[job][snapshot][download]: snapshot [${filename}] is downloaded`);
   await endJobAsSuccess();
-  appLogger.info('[job][download][snapshot]: download snapshot job is finish');
+  appLogger.info('[job][snapshot][download]: download snapshot job is finish');
 }
 
 /**
@@ -87,40 +87,40 @@ async function downloadSnapshotProcess() {
 async function downloadAndInsertSnapshotProcess(jobConfig) {
   setStatus(true);
 
-  appLogger.info('[job][download][insert][snapshot]: Start download insert snapshot job');
-  appLogger.info(`[job][download][insert][snapshot]: index: [${jobConfig.index}]`);
-  appLogger.info(`[job][download][insert][snapshot]: offset: [${jobConfig.offset}]`);
-  appLogger.info(`[job][download][insert][snapshot]: limit: [${jobConfig.limit}]`);
+  appLogger.info('[job][snapshot][download][insert]: Start download insert snapshot job');
+  appLogger.info(`[job][snapshot][download][insert]: index: [${jobConfig.index}]`);
+  appLogger.info(`[job][snapshot][download][insert]: offset: [${jobConfig.offset}]`);
+  appLogger.info(`[job][snapshot][download][insert]: limit: [${jobConfig.limit}]`);
 
-  await createState({ name: '[download][insert][snapshot]', index: jobConfig.index });
+  await createState({ name: '[snapshot][download][insert]', index: jobConfig.index });
 
   let filename;
 
   try {
     filename = await downloadSnapshot();
   } catch (err) {
-    appLogger.error('[job][download][insert][snapshot]: Cannot download snapshot');
+    appLogger.error('[job][snapshot][download][insert]: Cannot download snapshot');
     await endJobAsError();
-    appLogger.error('[job][download][insert][snapshot]: Download insert snapshot job is finished with an error', err);
+    appLogger.error('[job][snapshot][download][insert]: Download insert snapshot job is finished with an error', err);
     return;
   }
 
-  appLogger.info(`[job][download][insert][snapshot]: Snapshot [${filename}] is downloaded`);
+  appLogger.info(`[job][snapshot][download][insert]: Snapshot [${filename}] is downloaded`);
 
   jobConfig.filename = filename;
 
   try {
     await insertDataUnpaywall(jobConfig);
   } catch (err) {
-    appLogger.error(`[job][download][insert][snapshot]: Cannot insert the content of snapshot [${jobConfig.filename}]`);
+    appLogger.error(`[job][snapshot][download][insert]: Cannot insert the content of snapshot [${jobConfig.filename}]`);
     await endJobAsError();
-    appLogger.error('[job][download][insert][snapshot]: Download insert snapshot job is finished with an error', err);
+    appLogger.error('[job][snapshot][download][insert]: Download insert snapshot job is finished with an error', err);
     return;
   }
 
   await endJobAsSuccess();
 
-  appLogger.info('[job][download][insert][snapshot]: Download insert snapshot job is finish');
+  appLogger.info('[job][snapshot][download][insert]: Download insert snapshot job is finish');
 }
 
 /**
@@ -144,17 +144,17 @@ async function downloadInsertChangefilesProcess(jobConfig) {
 
   const { interval, startDate, endDate } = jobConfig;
 
-  appLogger.info('[job][download][insert][changefile]: Start download and insert changefile job');
-  appLogger.info(`[job][download][insert][changefile]: index: [${jobConfig.index}]`);
-  appLogger.info(`[job][download][insert][changefile]: interval: [${jobConfig.interval}]`);
-  appLogger.info(`[job][download][insert][changefile]: startDate: [${format(new Date(jobConfig.startDate), 'yyyy-MM-dd')}]`);
-  appLogger.info(`[job][download][insert][changefile]: endDate: [${format(new Date(jobConfig.endDate), 'yyyy-MM-dd')}]`);
-  appLogger.info(`[job][download][insert][changefile]: offset: [${jobConfig.offset}]`);
-  appLogger.info(`[job][download][insert][changefile]: limit: [${jobConfig.limit}]`);
-  appLogger.info(`[job][download][insert][changefile]: cleanFile: [${jobConfig.cleanFile}]`);
-  appLogger.info(`[job][download][insert][changefile]: ignoreError: [${jobConfig.ignoreError}]`);
+  appLogger.info('[job][changefile][download][insert]: Start download and insert changefile job');
+  appLogger.info(`[job][changefile][download][insert]: index: [${jobConfig.index}]`);
+  appLogger.info(`[job][changefile][download][insert]: interval: [${jobConfig.interval}]`);
+  appLogger.info(`[job][changefile][download][insert]: startDate: [${format(new Date(jobConfig.startDate), 'yyyy-MM-dd')}]`);
+  appLogger.info(`[job][changefile][download][insert]: endDate: [${format(new Date(jobConfig.endDate), 'yyyy-MM-dd')}]`);
+  appLogger.info(`[job][changefile][download][insert]: offset: [${jobConfig.offset}]`);
+  appLogger.info(`[job][changefile][download][insert]: limit: [${jobConfig.limit}]`);
+  appLogger.info(`[job][changefile][download][insert]: cleanFile: [${jobConfig.cleanFile}]`);
+  appLogger.info(`[job][changefile][download][insert]: ignoreError: [${jobConfig.ignoreError}]`);
 
-  await createState({ name: '[download][insert][changefile]', index: jobConfig.index });
+  await createState({ name: '[changefile][download][insert]', index: jobConfig.index });
   const start = new Date();
   addStepGetChangefiles();
   const step = getLatestStep();
@@ -164,9 +164,9 @@ async function downloadInsertChangefilesProcess(jobConfig) {
   try {
     changefilesInfo = await getChangefiles(interval, startDate, endDate);
   } catch (err) {
-    appLogger.error('[job][download][insert][changefile]: Cannot get changefiles', err);
+    appLogger.error('[job][changefile][download][insert]: Cannot get changefiles', err);
     await endJobAsError();
-    appLogger.error('[job][download][insert][changefile]: Download and insert changefile job is finish with an error', err);
+    appLogger.error('[job][changefile][download][insert]: Download and insert changefile job is finish with an error', err);
     return;
   }
 
@@ -177,7 +177,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
   if (changefilesInfo.length === 0) {
     noChangefileMail(startDate, endDate);
     await endJobAsSuccess();
-    appLogger.info('[job][download][insert][changefile]: Download and insert changefile job is finish');
+    appLogger.info('[job][changefile][download][insert]: Download and insert changefile job is finish');
     return;
   }
 
@@ -185,9 +185,9 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     try {
       await downloadChangefile(changefilesInfo[i], interval);
     } catch (err) {
-      appLogger.error(`[job][download][insert][changefile]: Cannot download changefile [${changefilesInfo[i].filename}]`);
+      appLogger.error(`[job][changefile][download][insert]: Cannot download changefile [${changefilesInfo[i].filename}]`);
       await endJobAsError();
-      appLogger.error('[job][download][insert][changefile]: Download and insert changefile job is finish with an error', err);
+      appLogger.error('[job][changefile][download][insert]: Download and insert changefile job is finish with an error', err);
       return;
     }
 
@@ -196,15 +196,15 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     try {
       await insertDataUnpaywall(jobConfig);
     } catch (err) {
-      appLogger.error(`[job][download][insert][changefile]: Cannot insert changefile [${changefilesInfo[i].filename}]`);
+      appLogger.error(`[job][changefile][download][insert]: Cannot insert changefile [${changefilesInfo[i].filename}]`);
       await endJobAsError();
-      appLogger.error('[job][download][insert][changefile]: Download and insert changefile job is finish with an error', err);
+      appLogger.error('[job][changefile][download][insert]: Download and insert changefile job is finish with an error', err);
       return;
     }
   }
 
   await endJobAsSuccess();
-  appLogger.info('[job][download][insert][changefile]: Download and insert changefile job is finish');
+  appLogger.info('[job][changefile][download][insert]: Download and insert changefile job is finish');
 }
 
 /**
@@ -270,17 +270,17 @@ async function downloadInsertChangefilesHistoryProcess(jobConfig) {
     cleanFile,
   } = jobConfig;
 
-  appLogger.info('[job][history][download][insert][changefile]: Start history download and insert changefile job');
-  appLogger.info(`[job][history][download][insert][changefile]: index: [${jobConfig.index}]`);
-  appLogger.info(`[job][history][download][insert][changefile]: indexHistory: [${jobConfig.indexHistory}]`);
-  appLogger.info(`[job][history][download][insert][changefile]: interval: [${jobConfig.interval}]`);
-  appLogger.info(`[job][history][download][insert][changefile]: startDate: [${format(new Date(jobConfig.startDate), 'yyyy-MM-dd')}]`);
-  appLogger.info(`[job][history][download][insert][changefile]: endDate: [${format(new Date(jobConfig.endDate), 'yyyy-MM-dd')}]`);
-  appLogger.info(`[job][history][download][insert][changefile]: cleanFile: [${jobConfig.cleanFile}]`);
-  appLogger.info(`[job][history][download][insert][changefile]: ignoreError: [${jobConfig.ignoreError}]`);
+  appLogger.info('[job][changefile][history][download][insert]: Start history download and insert changefile job');
+  appLogger.info(`[job][changefile][history][download][insert]: index: [${jobConfig.index}]`);
+  appLogger.info(`[job][changefile][history][download][insert]: indexHistory: [${jobConfig.indexHistory}]`);
+  appLogger.info(`[job][changefile][history][download][insert]: interval: [${jobConfig.interval}]`);
+  appLogger.info(`[job][changefile][history][download][insert]: startDate: [${format(new Date(jobConfig.startDate), 'yyyy-MM-dd')}]`);
+  appLogger.info(`[job][changefile][history][download][insert]: endDate: [${format(new Date(jobConfig.endDate), 'yyyy-MM-dd')}]`);
+  appLogger.info(`[job][changefile][history][download][insert]: cleanFile: [${jobConfig.cleanFile}]`);
+  appLogger.info(`[job][changefile][history][download][insert]: ignoreError: [${jobConfig.ignoreError}]`);
 
   await createState({
-    name: '[history][download][insert][changefile]',
+    name: '[changefile][history][download][insert]',
     index: jobConfig.index,
     indexHistory: jobConfig.indexHistory,
   });
@@ -294,9 +294,9 @@ async function downloadInsertChangefilesHistoryProcess(jobConfig) {
   try {
     changefilesInfo = await getChangefiles(interval, startDate, endDate);
   } catch (err) {
-    appLogger.error('[job][history][download][insert][changefile]: Cannot get changefiles', err);
+    appLogger.error('[job][changefile][history][download][insert]: Cannot get changefiles', err);
     await endJobAsError();
-    appLogger.error('[job][history][download][insert][changefile]: History download and insert changefile job is finish with an error', err);
+    appLogger.error('[job][changefile][history][download][insert]: History download and insert changefile job is finish with an error', err);
     return;
   }
 
@@ -314,9 +314,9 @@ async function downloadInsertChangefilesHistoryProcess(jobConfig) {
     try {
       await downloadChangefile(changefilesInfo[i], interval);
     } catch (err) {
-      appLogger.error(`[job][history][download][insert][changefile]: Cannot download changefile [${changefilesInfo[i].filename}]`);
+      appLogger.error(`[job][changefile][history][download][insert]: Cannot download changefile [${changefilesInfo[i].filename}]`);
       await endJobAsError();
-      appLogger.error('[job][history][download][insert][changefile]: History download and insert changefile job is finish with an error', err);
+      appLogger.error('[job][changefile][history][download][insert]: History download and insert changefile job is finish with an error', err);
       return;
     }
 
@@ -325,9 +325,9 @@ async function downloadInsertChangefilesHistoryProcess(jobConfig) {
     try {
       await insertHistoryDataUnpaywall(jobConfig);
     } catch (err) {
-      appLogger.error(`[job][history][download][insert][changefile]: Cannot insert changefile [${changefilesInfo[i].filename}]`);
+      appLogger.error(`[job][changefile][history][download][insert]: Cannot insert changefile [${changefilesInfo[i].filename}]`);
       await endJobAsError();
-      appLogger.error('[job][history][download][insert][changefile]: History download and insert changefile job is finish with an error', err);
+      appLogger.error('[job][changefile][history][download][insert]: History download and insert changefile job is finish with an error', err);
       return;
     }
 
@@ -337,7 +337,7 @@ async function downloadInsertChangefilesHistoryProcess(jobConfig) {
   }
 
   await endJobAsSuccess();
-  appLogger.info('[job][history][download][insert][changefile]: History download and insert changefile job is finish');
+  appLogger.info('[job][changefile][history][download][insert]: History download and insert changefile job is finish');
 }
 
 module.exports = {

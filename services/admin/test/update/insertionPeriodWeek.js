@@ -125,7 +125,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult(report);
     });
 
@@ -222,7 +222,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult(report);
     });
 
@@ -285,7 +285,7 @@ describe('Week: Test: download and insert file from unpaywall between a period',
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult(report);
     });
 

@@ -121,7 +121,7 @@ describe('Test: daily update route test with history', () => {
       expect(result).have.property('createdAt').to.not.equal(undefined);
       expect(result).have.property('endAt').to.not.equal(undefined);
       expect(result).have.property('error').equal(false);
-      expect(result).have.property('name').equal('[history][download][insert][changefile]');
+      expect(result).have.property('name').equal('[changefile][history][download][insert]');
       expect(result).have.property('took').to.not.equal(undefined);
       expect(result).have.property('steps').to.be.an('array');
       expect(result).have.property('indices').to.be.an('array');
@@ -179,7 +179,7 @@ describe('Test: daily update route test with history', () => {
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('[history][download][insert][changefile]');
+      const report = await getReport('[changefile][history][download][insert]');
       testResult(report);
     });
   });
@@ -287,7 +287,7 @@ describe('Test: daily update route test with history', () => {
       expect(result).have.property('createdAt').to.not.equal(undefined);
       expect(result).have.property('endAt').to.not.equal(undefined);
       expect(result).have.property('error').equal(false);
-      expect(result).have.property('name').equal('[history][download][insert][changefile]');
+      expect(result).have.property('name').equal('[changefile][history][download][insert]');
       expect(result).have.property('took').to.not.equal(undefined);
       expect(result).have.property('steps').to.be.an('array');
 
@@ -343,7 +343,7 @@ describe('Test: daily update route test with history', () => {
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('[history][download][insert][changefile]');
+      const report = await getReport('[changefile][history][download][insert]');
       testResult(report);
     });
   });
@@ -451,7 +451,7 @@ describe('Test: daily update route test with history', () => {
       expect(result).have.property('createdAt').to.not.equal(undefined);
       expect(result).have.property('endAt').to.not.equal(undefined);
       expect(result).have.property('error').equal(false);
-      expect(result).have.property('name').equal('[history][download][insert][changefile]');
+      expect(result).have.property('name').equal('[changefile][history][download][insert]');
       expect(result).have.property('took').to.not.equal(undefined);
       expect(result).have.property('steps').to.be.an('array');
 
@@ -507,7 +507,7 @@ describe('Test: daily update route test with history', () => {
     });
 
     it('Should get report with all information from the download and insertion', async () => {
-      const report = await getReport('[history][download][insert][changefile]');
+      const report = await getReport('[changefile][history][download][insert]');
       testResult(report);
     });
   });

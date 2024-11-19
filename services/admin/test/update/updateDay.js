@@ -92,7 +92,7 @@ describe('Test: daily update route test', () => {
     });
 
     it('Should get report with all information from the daily update', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult(report);
     });
 
@@ -169,7 +169,7 @@ describe('Test: daily update route test', () => {
     });
 
     it('Should get report with all information from the weekly update', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult1(report);
     });
 
@@ -230,7 +230,7 @@ describe('Test: daily update route test', () => {
     });
 
     it('Should get report with all information from the weekly update', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult2(report);
     });
 
@@ -302,7 +302,7 @@ describe('Test: daily update route test', () => {
     });
 
     it('Should get report with all information from the daily update', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult(report);
     });
 

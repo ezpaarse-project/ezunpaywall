@@ -118,7 +118,7 @@ function end() {
   const indices = [];
   const insertSteps = state.steps.filter((e) => e.task === 'insert');
 
-  if (state.name === '[history][download][insert][changefile]') {
+  if (state.name === '[changefile][history][download][insert]') {
     let totalAddedBase = 0;
     let totalUpdatedBase = 0;
     let totalAddedHistory = 0;

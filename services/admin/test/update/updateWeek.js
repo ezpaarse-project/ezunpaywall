@@ -92,7 +92,7 @@ describe('Week: Test: weekly update route test', () => {
     });
 
     it('Should get report with all information from the weekly update', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult(report);
     });
 
@@ -164,7 +164,7 @@ describe('Week: Test: weekly update route test', () => {
     });
 
     it('Should get report with all information from the weekly update', async () => {
-      const report = await getReport('[download][insert][changefile]');
+      const report = await getReport('[changefile][download][insert]');
       testResult(report);
     });
 

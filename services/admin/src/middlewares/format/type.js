@@ -12,11 +12,11 @@ const joi = require('joi');
  */
 function validateType(type, req, res, next) {
   const { error, value } = joi.string().trim().valid(
-    '[download][snapshot]',
-    '[download][insert][snapshot]',
-    '[download][insert][changefile]',
-    '[insert][changefile]',
-    '[history][download][insert][changefile]',
+    '[snapshot][download]',
+    '[snapshot][download][insert]',
+    '[changefile][download][insert]',
+    '[changefile][insert]',
+    '[changefile][history][download][insert]',
   ).validate(type);
   if (error) return res.status(400).json({ message: error.details[0].message });
 
