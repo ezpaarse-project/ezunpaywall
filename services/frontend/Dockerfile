@@ -40,7 +40,7 @@ ARG NODE_ENV production
 
 COPY --from=build /usr/src/app/.output /usr/src/app
 
-HEALTHCHECK --interval=1m --timeout=10s --retries=5 --start-period=20s \
+HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
   CMD wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
 
 ENTRYPOINT [ "node", "/usr/src/app/server/index.mjs" ]
