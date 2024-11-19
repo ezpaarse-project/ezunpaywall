@@ -46,7 +46,6 @@ const filteredConfig = computed(() => {
 })
 
 const configAsArray = computed(() => {
-  console.log(Object.keys(filteredConfig.value).map(key => ({ [key]: filteredConfig.value[key] })))
   return Object.keys(filteredConfig.value).map(key => ({ [key]: filteredConfig.value[key] }));
 })
 
@@ -62,7 +61,6 @@ async function getCron() {
     return;
   }
   cronConfig.value = res;
-  console.log(cronConfig.value);
   loading.value = false;
 }
 
@@ -77,7 +75,6 @@ async function updateActive() {
       }
     });
   } catch (err) {
-    console.log(err);
     snackStore.error(t('error.cron.active'));
     return;
   } finally {

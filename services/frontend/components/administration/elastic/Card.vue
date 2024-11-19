@@ -80,7 +80,6 @@ async function deleteIndex(indexName) {
       },
     });
   } catch (err) {
-    console.log(err);
     snackStore.error(t('error.index.delete'));
     return;
   }

@@ -80,7 +80,6 @@ async function updateCron() {
       },
     });
   } catch (err) {
-    console.log(err);
     snackStore.error(t('error.cron.update'));
     loading.value = false;
     return;

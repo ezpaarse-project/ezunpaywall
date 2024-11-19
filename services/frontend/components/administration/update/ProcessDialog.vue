@@ -132,7 +132,7 @@ async function startClassicUpdate() {
     endDate: endDate.value,
   };
   try {
-    await $admin('/job/download/insert/changefile', {
+    await $admin('/job/changefile/download/insert', {
       method: 'POST',
       body: data,
       headers: {
@@ -158,7 +158,7 @@ async function startHistoryUpdate() {
     endDate: endDate.value,
   };
   try {
-    await $admin('/job/history/download/insert/changefile', {
+    await $admin('/job/changefile/history/download/insert', {
       method: 'POST',
       body: data,
       headers: {
@@ -166,7 +166,6 @@ async function startHistoryUpdate() {
       },
     });
   } catch (err) {
-    console.log(err.data);
     snackStore.error(t('error.update.start'));
     loading.value = false;
   }
