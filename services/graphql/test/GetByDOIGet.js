@@ -29,9 +29,9 @@ describe('Test GET GetByDOI resolver', () => {
     await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
-    await deleteIndex('unpaywall_base');
-    await createIndex('unpaywall_base', mappingUnpaywall);
-    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall_base');
+    await deleteIndex('unpaywall');
+    await createIndex('unpaywall', mappingUnpaywall);
+    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall');
   });
 
   describe('GET: get unpaywall data with one DOI', () => {
