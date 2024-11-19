@@ -26,7 +26,7 @@ To set up this service, you can use environment variables. The config is display
   "notifications": {
     "sender": "ezunpaywall",
     "receivers": [
-      "ezunpaywall@example.fr"
+      "ezunpaywall@example.com"
     ],
     "machine": "dev"
   },
@@ -87,52 +87,86 @@ To set up this service, you can use environment variables. The config is display
   },
   "apikey": "********",
   "healthTimeout": 3000
-} 
+}
+```
 
 ## Environment variables
 
-| name | default | description |
+| name | description | default |
 | --- | --- | --- |
-| NODE_ENV | development | environment of node |
-| TIMEZONE | Europe/Paris | timezone of app used in cron |
-| SMTP_HOST | localhost | SMTP host |
-| SMTP_PORT | 25 | SMTP port |
-| NOTIFICATIONS_SENDER | ezunpaywall | the sender for emails issued by ezunpaywall |
-| NOTIFICATIONS_RECEIVERS | ezunpaywall@example.fr" | recipients of the recent activity email |
-| NOTIFICATIONS_MACHINE | dev | environment of machine |
-| UNPAYWALL_URL | http://fakeunpaywall:3000 | unpaywall api URL to access to changefiles |
-| UNPAYWALL_APIKEY | changeme | unpaywall apikey to access to changefiles |
-| ELASTICSEARCH_NODES | http://elastic:9200 | elastic nodes URL separated by comma |
-| ELASTICSEARCH_USERNAME | elastic | username of elastic super user |
-| ELASTICSEARCH_PASSWORD | changeme | password of elastic super user |
-| ELASTICSEARCH_MAX_BULK_SIZE | 4000 | max bulk size of update process |
-| ELASTICSEARCH_INDEX_ALIAS | upw | default alias of unpaywall data |
-| ELASTICSEARCH_TIMEOUT | 20000 | timeout in mineseconds of elastic client |
-| REDIS_HOST | redis | redis host |
-| REDIS_PORT | 6379 | redis port |
-| REDIS_PASSWORD | changeme | redis password |
-| CRON_DOWNLOAD_SNAPSHOT_SCHEDULE | 0 0 0 1 * * | schedule of cron |
-| CRON_DOWNLOAD_SNAPSHOT_ACTIVE | true | cron active or not at the start of service |
-| CRON_DATA_UPDATE_SCHEDULE | 0 0 0 * * * | schedule of cron |
-| CRON_DATA_UPDATE_ACTIVE | false | cron active or not at the start of service |
-| CRON_DATA_UPDATE_INDEX | unpaywall | index where data is inserted |
-| CRON_DATA_UPDATE_INTERVAL | day | interval of changefile |
-| CRON_DATA_UPDATE_HISTORY_SCHEDULE | 0 0 0 * * * | schedule of cron |
-| CRON_DATA_UPDATE_HISTORY_ACTIVE | true | cron active or not at the start of service |
-| CRON_DATA_UPDATE_HISTORY_INDEX | unpaywall-base | index where data is inserted |
-| CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY | unpaywall-history | index where history data is inserted |
-| CRON_DATA_UPDATE_HISTORY_INTERVAL | day | interval of changefile |
-| CRON_CLEAN_FILE_SCHEDULE | "0 0 0 * * * | schedule of cron |
-| CRON_CLEAN_FILE_ACTIVE | true | cron active or not at the start of service |
-| CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD | 30 | detention time in days |
-| CRON_CLEAN_FILE_REPORT_THRESHOLD | 30 | detention time in days |
-| CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD | 150 | detention time in days |
-| ADMIN_APIKEY | changeme | admin API key |
-| HEALTH_TIMEOUT | 3000 | timeout to query the health route |
+| NODE_ENV | environment of node | development |
+| TIMEZONE | timezone of app used in cron | Europe/Paris |
+| SMTP_HOST | SMTP host | localhost |
+| SMTP_PORT | SMTP port | 25 |
+| NOTIFICATIONS_SENDER | the sender for emails issued by ezunpaywall | ezunpaywall |
+| NOTIFICATIONS_RECEIVERS | recipients of the recent activity email | ezunpaywall@example.fr |
+| NOTIFICATIONS_MACHINE | environment of machine | dev |
+| UNPAYWALL_URL | unpaywall api URL to access to changefiles | http://fakeunpaywall:3000 |
+| UNPAYWALL_APIKEY | unpaywall apikey to access to changefiles | changeme |
+| ELASTICSEARCH_NODES | elastic nodes URL separated by comma | http://elastic:9200 |
+| ELASTICSEARCH_USERNAME | username of elastic super user | elastic |
+| ELASTICSEARCH_PASSWORD | password of elastic super user | changeme |
+| ELASTICSEARCH_MAX_BULK_SIZE | max bulk size of update process | 4000 |
+| ELASTICSEARCH_INDEX_ALIAS | default alias of unpaywall data | upw |
+| ELASTICSEARCH_TIMEOUT | timeout in milliseconds of elastic client | 20000 |
+| REDIS_HOST | redis host | redis |
+| REDIS_PORT | redis port | 6379 |
+| REDIS_PASSWORD | redis password | changeme |
+| CRON_DOWNLOAD_SNAPSHOT_SCHEDULE | schedule of cron | 0 0 0 1 * * |
+| CRON_DOWNLOAD_SNAPSHOT_ACTIVE | cron active or not at the start of service | true |
+| CRON_DATA_UPDATE_SCHEDULE | schedule of cron | 0 0 0 * * * |
+| CRON_DATA_UPDATE_ACTIVE | cron active or not at the start of service | false |
+| CRON_DATA_UPDATE_INDEX | index where data is inserted | unpaywall |
+| CRON_DATA_UPDATE_INTERVAL | interval of changefile | day |
+| CRON_DATA_UPDATE_HISTORY_SCHEDULE | schedule of cron | 0 0 0 * * * |
+| CRON_DATA_UPDATE_HISTORY_ACTIVE | cron active or not at the start of service | true |
+| CRON_DATA_UPDATE_HISTORY_INDEX | index where data is inserted | unpaywall-base |
+| CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY | index where history data is inserted | unpaywall-history |
+| CRON_DATA_UPDATE_HISTORY_INTERVAL | interval of changefile | day |
+| CRON_CLEAN_FILE_SCHEDULE | schedule of cron | 0 0 0 * * * |
+| CRON_CLEAN_FILE_ACTIVE | cron active or not at the start of service | true |
+| CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD | detention time in days | 30 |
+| CRON_CLEAN_FILE_REPORT_THRESHOLD | detention time in days | 30 |
+| CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD | detention time in days | 150 |
+| ADMIN_APIKEY | admin API key | changeme |
+| HEALTH_TIMEOUT | timeout to query the health route | 3000 |
+
+## Activity diagram
+
+Update process
+
+![Activity-diagram](./docs/update-activity-diagram.png)
+
+## Data
+
+3 types of file is generated by update job :
+- changefile from unpaywall
+- snapshot from unpaywall
+- reports generated at the end of process
+
+They are structured like this
+```
+data
+├── changefiles
+│   ├── changefile1.jsonl.gz
+│   ├── ...
+│   └── changefile3.jsonl.gz
+├── snapshots
+│   ├── snapshot1.jsonl.gz
+│   ├── ...
+│   └── snapshot3.jsonl.gz
+└── reports
+    ├── report1.jsonl.gz
+    ├── ...
+    └── report3.jsonl.gz
+```
 
 ## Cron
 
-One cron automatically reset the counter at 100 000 of demo API key.
+- Demo apikey : Reset the counter at 100 000 of demo API key.
+- Data update : Starts the data update process.
+- Data history update : Starts the data update process and feeds the history.
+- Clean File : Deletes files generated by updates after a certain period of time.
 
 ## Log format
 
@@ -149,6 +183,7 @@ One cron automatically reset the counter at 100 000 of demo API key.
 ```
 # Functional tests
 npm run test
-# Unit test
-# it's your turn to play
+
+# Unit tests
+# TODO
 ```

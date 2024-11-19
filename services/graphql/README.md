@@ -27,6 +27,7 @@ info: {
     "indexBase": "unpaywall_base",
     "indexHistory": "unpaywall_history"
   },
+  "apikey": "********",
   "healthTimeout": 3000
 }
 ```
@@ -46,6 +47,7 @@ info: {
 | ELASTICSEARCH_PASSWORD | changeme | elasticsearch admin password |
 | ELASTICSEARCH_INDEX_ALIAS | upw | graphql entry point |
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |
+| ADMIN_APIKEY | admin API key | changeme |
 
 ## Activity diagram
 
@@ -99,5 +101,7 @@ One cron automatically update metrics of unpaywall data. the elastic request tak
 ```
 # Functional tests
 npm run test
-# For the rest, it's your turn to play
+
+# Unit tests
+# TODO
 ```
