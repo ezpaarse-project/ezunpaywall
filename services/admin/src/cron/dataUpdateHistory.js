@@ -27,6 +27,7 @@ async function task() {
   const isWeek = (cronConfig.interval === 'week');
   const startDate = format(subDays(new Date(), isWeek ? 7 : 0), 'yyyy-MM-dd');
   await downloadInsertChangefilesHistoryProcess({
+    type: 'changefile',
     index: cronConfig.index,
     indexHistory: cronConfig.indexHistory,
     interval: cronConfig.interval,

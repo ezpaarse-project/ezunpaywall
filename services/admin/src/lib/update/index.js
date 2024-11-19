@@ -223,27 +223,29 @@ async function downloadInsertChangefilesProcess(jobConfig) {
 async function insertFileProcess(jobConfig) {
   setStatus(true);
 
-  appLogger.info(`[job][insert][${jobConfig.type}]: Start insert changefile job`);
-  appLogger.info(`[job][insert][${jobConfig.type}]: index: [${jobConfig.index}]`);
-  appLogger.info(`[job][insert][${jobConfig.type}]: filename: [${jobConfig.filename}]`);
-  appLogger.info(`[job][insert][${jobConfig.type}]: offset: [${jobConfig.offset}]`);
-  appLogger.info(`[job][insert][${jobConfig.type}]: limit: [${jobConfig.limit}]`);
-  appLogger.info(`[job][insert][${jobConfig.type}]: cleanFile: [${jobConfig.cleanFile}]`);
-  appLogger.info(`[job][insert][${jobConfig.type}]: ignoreError: [${jobConfig.ignoreError}]`);
+  const { type } = jobConfig;
 
-  await createState({ name: `[insert][${jobConfig.type}]`, index: jobConfig.index });
+  appLogger.info(`[job][${type}][insert]: Start insert changefile job`);
+  appLogger.info(`[job][${type}][insert]: index: [${jobConfig.index}]`);
+  appLogger.info(`[job][${type}][insert]: filename: [${jobConfig.filename}]`);
+  appLogger.info(`[job][${type}][insert]: offset: [${jobConfig.offset}]`);
+  appLogger.info(`[job][${type}][insert]: limit: [${jobConfig.limit}]`);
+  appLogger.info(`[job][${type}][insert]: cleanFile: [${jobConfig.cleanFile}]`);
+  appLogger.info(`[job][${type}][insert]: ignoreError: [${jobConfig.ignoreError}]`);
+
+  await createState({ name: `[${type}][insert]`, index: jobConfig.index });
 
   try {
     await insertDataUnpaywall(jobConfig);
   } catch (err) {
-    appLogger.error(`[job][insert][${jobConfig.type}]: Cannot insert changefile [${jobConfig.filename}]`);
+    appLogger.error(`[job][${type}][insert]: Cannot insert changefile [${jobConfig.filename}]`);
     await endJobAsError();
-    appLogger.error(`[job][insert][${jobConfig.type}]: Insert changefile job is finish with an error`, err);
+    appLogger.error(`[job][${type}][insert]: Insert changefile job is finish with an error`, err);
     return;
   }
 
   await endJobAsSuccess();
-  appLogger.info(`[job][insert][${jobConfig.type}]: Insert changefile job is finish`);
+  appLogger.info(`[job][${type}][insert]: Insert changefile job is finish`);
 }
 
 /**

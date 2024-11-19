@@ -28,6 +28,7 @@ async function task() {
   const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
   const endDate = format(new Date(), 'yyyy-MM-dd');
   await downloadInsertChangefilesProcess({
+    type: 'changefile',
     index: cronConfig.index,
     interval: cronConfig.interval,
     startDate,
