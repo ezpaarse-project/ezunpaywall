@@ -119,7 +119,10 @@
       "indexBase": "Elastic index for basic unpaywall data",
       "indexHistory": "Elastic index for history unpaywall data",
       "filename": "Filename",
-      "filetype": "Type of file"
+      "filetype": "Type of file",
+      "classic": "Classic",
+      "history": "History",
+      "file": "File"
     },
     "cron": {
       "title": "Config of the cron for update process",
@@ -327,7 +330,5 @@
   "close": "Close",
   "yes": "Yes",
   "no": "No",
-  "detail": "Detail",
-  "development": "development",
-  "integration": "integration"
+  "detail": "Detail"
 }

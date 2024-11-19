@@ -8,13 +8,13 @@
       </v-toolbar>
       <v-tabs v-model="tab" fixed-tabs color="primary">
         <v-tab value="classic">
-          classic
+          {{ t('administration.job.classic') }}
         </v-tab>
         <v-tab value="history">
-          history
+          {{ t('administration.job.history') }}
         </v-tab>
         <v-tab value="file">
-          file
+          {{ t('administration.job.file') }}
         </v-tab>
       </v-tabs>
       <v-card-text>

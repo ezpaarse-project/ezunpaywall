@@ -119,7 +119,10 @@
       "indexBase": "Index elastic pour les données unpaywall basique",
       "indexHistory": "Index elastic pour les données unpaywall historique",
       "filename": "Nom du fichier",
-      "filetype": "Type du fichier"
+      "filetype": "Type du fichier",
+      "classic": "Classique",
+      "history": "Historique",
+      "file": "Fichier"
     },
     "cron": {
       "title": "Config de la cron de mise à jour des données",
@@ -327,7 +330,5 @@
   "close": "Fermer",
   "yes": "Oui",
   "no": "Non",
-  "detail": "Détail",
-  "development": "développement",
-  "integration": "integration"
+  "detail": "Détail"
 }

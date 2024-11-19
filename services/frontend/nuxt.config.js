@@ -14,7 +14,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      environment: process.env.NUXT_PUBLIC_ENVIRONMENT || 'development',
+      environment: process.env.NUXT_PUBLIC_ENVIRONMENT || 'local',
       unpaywallURL: process.env.NUXT_PUBLIC_UNPAYWALL_URL || 'https://unpaywall.org',
       unpaywallAPIURL: process.env.NUXT_PUBLIC_UNPAYWALL_API_URL || 'http://api.unpaywall.org',
       ezmesureURL: process.env.NUXT_PUBLIC_EZMESURE_URL || 'https://ezmesure.couperin.org/kibana/s/ezunpaywall/app/dashboards',

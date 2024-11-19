@@ -14,9 +14,9 @@
           <v-form id="form" @submit.prevent="updateCron()">
             <v-text-field
               v-for="(item, index) in localConfig"
-              :key="index"
+              :key="localConfig[index]"
               v-model="localConfig[index][Object.keys(item)[0]]" 
-              :label="`Field ${index + 1}`"
+              :label="Object.keys(localConfig[index])"
               class="mt-4"
             />
           </v-form>
