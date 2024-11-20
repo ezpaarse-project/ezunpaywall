@@ -142,6 +142,7 @@ async function startClassicUpdate() {
   } catch (err) {
     snackStore.error(t('error.update.start'));
     loading.value = false;
+    return;
   }
   loading.value = false;
   snackStore.info(t('info.update.started'));
@@ -180,7 +181,7 @@ async function startInsertFile() {
     index: index.value,
   };
   try {
-    await $admin(`/job/insert/${filetype.value}/${filename.value}`, {
+    await $admin(`/job/${filetype.value}/insert/${filename.value}`, {
       method: 'POST',
       body: data,
       headers: {
