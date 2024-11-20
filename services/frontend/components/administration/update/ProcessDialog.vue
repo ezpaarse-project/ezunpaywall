@@ -44,6 +44,7 @@
             <v-form id="form" v-model="valid" @submit.prevent="startJob()">
               <v-select v-model="filetype" class="mt-4" :items="filetypes" :label="t('administration.job.filetype')" />
               <v-text-field v-model="filename" :label="t('administration.job.filename')" autofocus />
+              <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
             </v-form>
           </v-tabs-window-item>
         </v-tabs-window>
@@ -94,7 +95,7 @@ const intervals = ref(['day', 'week']);
 const filetypes = ref(['changefile', 'snapshot']);
 
 const interval = ref('day');
-const index = ref('unpaywall_base');
+const index = ref('unpaywall');
 const indexHistory = ref('unpaywall_history');
 const startDate = ref(formatDate(new Date()));
 const endDate = ref(formatDate(new Date()));
