@@ -108,6 +108,14 @@
       "delete": "Suppression de la clé d'API",
       "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)"
     },
+    "file": {
+      "title": "Liste des fichiers installés d'unpaywall",
+      "reload": "Recharger les fichiers",
+      "filename": "Nom du fichier",
+      "filetype": "Type de fichier",
+      "delete": "Suppression du fichier",
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer ce fichier: {filename} ? (action irréversible)"
+    },
     "job" : {
       "title": "Lancement d'une mise à jour",
       "future": "La date est après aujourd'hui",
@@ -217,6 +225,7 @@
       "cron": "Cron",
       "update": "Mise à jour",
       "apikey": "Clé d'API",
+      "file": "Fichier",
       "health": "Santé",
       "logout": "Deconnexion"
     }
@@ -264,6 +273,10 @@
       "update": "La clé d'API n'a pas pu être mise à jour",
       "delete": "Impossible de supprimer la clé d'API"
     },
+    "file": {
+      "get": "Impossible de récuperer la liste des fichiers",
+      "delete": "Impossible de supprimer le fichier"
+    },
     "status": "Impossible d'obtenir le statut",
     "update": {
       "start": "Erreur lors du lancement de la mise à jour"
@@ -295,6 +308,9 @@
       "updated": "La clé d'API a été mise à jour",
       "deleted": "La clé d'API a été supprimée",
       "copied": "Les clés d'API ont été copiées"
+    },
+    "file": {
+      "deleted": "Le fichier a été supprimé"
     },
     "update": {
       "started": "La mise à jour a démarré"

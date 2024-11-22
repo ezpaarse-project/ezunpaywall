@@ -108,6 +108,14 @@
       "delete": "Deleting the API key",
       "deleteMessage": "Are you sure you want to delete this API key (irreversible action)"
     },
+    "file": {
+      "title": "List of installed files from unpaywall",
+      "reload": "Reload files",
+      "filename": "Filename",
+      "filetype": "File type",
+      "delete": "Delete file",
+      "deleteMessage": "Are you sure you want to delete this file: {filename} ? (irreversible action)"
+    },
     "job" : {
       "title": "Launch an update",
       "future": "The date is after today",
@@ -217,6 +225,7 @@
       "cron": "Cron",
       "update": "Update",
       "apikey": "API key",
+      "file": "File",
       "health": "Health",
       "logout": "Log out"
     }
@@ -264,6 +273,10 @@
       "update": "The API key could not be updated",
       "delete": "Cannot delete apikey"
     },
+    "file": {
+      "get": "Cannot get files",
+      "delete": "Cannot delete file"
+    },
     "status": "Cannot get status of update",
     "update": {
       "start": "Cannot start update process"
@@ -295,6 +308,9 @@
       "updated": "The API key has been updated",
       "deleted": "The API key has been deleted",
       "copied": "API keys have been copied"
+    },
+    "file": {
+      "deleted": "File is deleted"
     },
     "update" : {
       "started": "The update process has started"

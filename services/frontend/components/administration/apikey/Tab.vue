@@ -183,6 +183,24 @@ async function openUpdateDialog(id) {
   updateDialogVisible.value = true;
 }
 
+// TODO
+/**
+ * Open dialog to delete apikey.
+ *
+ * @param filename apikey.
+ */
+ async function openDeleteDialog(filename) {
+  openConfirm({
+    title: t('administration.apikey.delete'),
+    text: t('administration.apikey.deleteMessage', { apikey }),
+    agreeText: t('delete'),
+    agreeIcon: 'mdi-delete',
+    onAgree: async () => {
+      // TODO
+    },
+  });
+}
+
 async function openDeleteDialog(id) {
   selectedApikey.value = id;
   deleteDialogVisible.value = true;

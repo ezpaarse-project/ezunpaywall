@@ -27,6 +27,15 @@
       </v-list-item-title>
     </v-list-item>
 
+    <v-list-item link router :to="{ path: '/administration/file' }" ripple>
+      <template #prepend>
+        <v-icon icon="mdi-file" />
+      </template>
+      <v-list-item-title class="custom-font-style">
+        {{ t('menu.administration.file') }}
+      </v-list-item-title>
+    </v-list-item>
+
     <v-list-item link router :to="{ path: '/administration/health' }" ripple>
       <template #prepend>
         <v-icon icon="mdi-heart-pulse" />
@@ -69,19 +78,14 @@
       </v-list-item-title>
     </v-list-item>
 
-    <v-list-group value="Lang">
-      <template #activator="{ props }">
-        <v-list-item v-bind="props">
-          <template #prepend>
-            <v-icon icon="mdi-code-json" />
-          </template>
-          <v-list-item-title class="custom-font-style ml-2">
-            Config
-          </v-list-item-title>
-        </v-list-item>
+    <v-list-item link router :to="{ path: '/administration/config' }" ripple>
+      <template #prepend>
+        <v-icon icon="mdi-code-json" />
       </template>
-      <SkeletonMenuAdminConfigList />
-    </v-list-group>
+      <v-list-item-title class="custom-font-style">
+        Config
+      </v-list-item-title>
+    </v-list-item>
 
     <v-list-item class="custom-font-style bg-red-lighten-4" ripple :title="t('menu.administration.logout')" @click="logout()">
       <template #prepend>

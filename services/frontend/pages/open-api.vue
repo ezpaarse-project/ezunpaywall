@@ -37,10 +37,10 @@ const host = computed(() => {
 });
 
 onMounted(() => {
-  const presSelectionedDoc = route?.query?.doc;
-  if (presSelectionedDoc === 'graphql') { tab.value = 0; }
-  if (presSelectionedDoc === 'enrich') { tab.value = 1; }
-  if (presSelectionedDoc === 'admin') { tab.value = 2; }
+  const presSelectedDoc = route?.query?.doc;
+  if (presSelectedDoc === 'graphql') { tab.value = 0; }
+  if (presSelectedDoc === 'enrich') { tab.value = 1; }
+  if (presSelectedDoc === 'admin') { tab.value = 2; }
 });
 
 </script>
