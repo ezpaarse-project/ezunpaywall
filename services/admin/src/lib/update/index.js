@@ -118,6 +118,10 @@ async function downloadAndInsertSnapshotProcess(jobConfig) {
     return;
   }
 
+  if (jobConfig.cleanFile) {
+    await deleteFile(path.resolve(paths.data.snapshotsDir, jobConfig.filename));
+  }
+
   await endJobAsSuccess();
 
   appLogger.info('[job][snapshot][download][insert]: Download insert snapshot job is finish');
@@ -201,6 +205,10 @@ async function downloadInsertChangefilesProcess(jobConfig) {
       appLogger.error('[job][changefile][download][insert]: Download and insert changefile job is finish with an error', err);
       return;
     }
+
+    if (jobConfig.cleanFile) {
+      await deleteFile(path.resolve(paths.data.changefilesDir, jobConfig.filename));
+    }
   }
 
   await endJobAsSuccess();
@@ -242,6 +250,15 @@ async function insertFileProcess(jobConfig) {
     await endJobAsError();
     appLogger.error(`[job][${type}][insert]: Insert changefile job is finish with an error`, err);
     return;
+  }
+
+  if (jobConfig.cleanFile) {
+    if (type === 'changefile') {
+      await deleteFile(path.resolve(paths.data.changefilesDir, jobConfig.filename));
+    }
+    if (type === 'snapshot') {
+      await deleteFile(path.resolve(paths.data.snapshotsDir, jobConfig.filename));
+    }
   }
 
   await endJobAsSuccess();
