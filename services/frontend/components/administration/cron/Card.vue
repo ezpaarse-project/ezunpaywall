@@ -45,6 +45,10 @@ const filteredConfig = computed(() => {
   return copyCronConfig;
 })
 
+const action = computed(() => {
+  return cronConfig.value.active ? 'start' : 'stop';
+})
+
 const configAsArray = computed(() => {
   return Object.keys(filteredConfig.value).map(key => ({ [key]: filteredConfig.value[key] }));
 })
@@ -66,9 +70,9 @@ async function getCron() {
 
 async function updateActive() {
   loading.value = true;
-  const action = cronConfig.active ? 'stop' : 'start';
+
   try {
-    await $admin(`/cron/${props.name}/${action}`, {
+    await $admin(`/cron/${props.name}/${action.value}`, {
       method: 'POST',
       headers: {
         'x-api-key': password.value
@@ -81,6 +85,8 @@ async function updateActive() {
     loading.value = false;
   }
   snackStore.info(t('info.cron.updated'));
+
+  await getCron();
 }
 
 onMounted(async () => {
