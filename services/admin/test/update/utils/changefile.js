@@ -13,7 +13,23 @@ const adminURL = process.env.ADMIN_URL || 'http://localhost:59703';
 const fakeUnpaywall = process.env.FAKEUNPAYWALL_URL || 'http://localhost:59799';
 
 /**
- * Delete a snapshot in ezunpaywall.
+ * Get changefiles in ezunpaywall.
+ */
+async function getChangefiles() {
+  let res;
+  try {
+    res = await chai.request(adminURL)
+      .get('/changefiles')
+      .set('x-api-key', 'changeme');
+  } catch (err) {
+    console.error('Cannot get changefiles');
+    process.exit(1);
+  }
+  return res.body;
+}
+
+/**
+ * Delete a changefile in ezunpaywall.
  *
  * @param {Promise<string>} filename Name of file needed to be delete on ezunpaywall.
  */
@@ -120,6 +136,7 @@ async function insertInHistory(startDate, endDate) {
 }
 
 module.exports = {
+  getChangefiles,
   addChangefile,
   deleteChangefile,
   updateChangefile,

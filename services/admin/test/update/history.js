@@ -11,6 +11,7 @@ chai.use(chaiHttp);
 const adminURL = process.env.ADMIN_URL || 'http://localhost:59703';
 
 const { countDocuments } = require('./utils/elastic');
+const { getChangefiles } = require('./utils/changefile');
 const { addSnapshot, insertSnapshot } = require('./utils/snapshot');
 const { getState } = require('./utils/state');
 const getReport = require('./utils/report');
@@ -808,6 +809,7 @@ describe('Test: insert changefile with only new documents', () => {
     await addSnapshot('2020-01-01-snapshot.jsonl.gz');
     await insertSnapshot('2020-01-01-snapshot.jsonl.gz', 'unpaywall-base');
   });
+
   describe('insert changefile 2020-01-05 with only new lines', () => {
     it('Should return a status code 202', async () => {
       const res = await chai.request(adminURL)
@@ -881,6 +883,106 @@ describe('Test: insert changefile with only new documents', () => {
       expect(baseRes[6]).have.property('referencedAt').equal('2020-01-05T01:00:00.000000');
       expect(baseRes[6]).have.property('updated').equal('2020-01-05T01:00:00.000000');
     });
+    after(async () => {
+      await reset();
+    });
+  });
+
+  after(async () => {
+    await reset();
+  });
+});
+
+describe('Test: insert changefile with cleanFile', () => {
+  before(async function () {
+    this.timeout(5000);
+    await ping();
+    await reset();
+    await addSnapshot('2020-01-01-snapshot.jsonl.gz');
+    await insertSnapshot('2020-01-01-snapshot.jsonl.gz', 'unpaywall-base');
+  });
+
+  describe('insert changefile 2020-01-05 with only new lines', () => {
+    it('Should return a status code 202', async () => {
+      const res = await chai.request(adminURL)
+        .post('/job/changefile/history/download/insert')
+        .send({
+          startDate: date5,
+          endDate: date5,
+          interval: 'day',
+          cleanFile: true,
+        })
+        .set('x-api-key', 'changeme');
+
+      expect(res).have.status(202);
+    });
+
+    it('Should not insert new data in history', async () => {
+      // wait for the update to finish
+      let isUpdate = true;
+      while (isUpdate) {
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
+        isUpdate = await checkStatus();
+      }
+      const countUnpaywallBase = await countDocuments('unpaywall-base');
+      expect(countUnpaywallBase).to.equal(7);
+      const countUnpaywallHistory = await countDocuments('unpaywall-history');
+      expect(countUnpaywallHistory).to.equal(0);
+    });
+
+    it('Should get unpaywall document in base and history', async () => {
+      function compare(a, b) {
+        if (a.doi < b.doi) return -1;
+        if (a.doi > b.doi) return 1;
+        return 0;
+      }
+
+      const baseRes = await searchByDOI(['1', '2', '3', '4', '5', '6', '7'], 'unpaywall-base');
+
+      baseRes.sort(compare);
+
+      expect(baseRes[0]).have.property('doi').equal('1');
+      expect(baseRes[0]).have.property('version').equal(1);
+      expect(baseRes[0]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[0]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+
+      expect(baseRes[1]).have.property('doi').equal('2');
+      expect(baseRes[1]).have.property('version').equal(1);
+      expect(baseRes[1]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[1]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+
+      expect(baseRes[2]).have.property('doi').equal('3');
+      expect(baseRes[2]).have.property('version').equal(1);
+      expect(baseRes[2]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[2]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+
+      expect(baseRes[3]).have.property('doi').equal('4');
+      expect(baseRes[3]).have.property('version').equal(1);
+      expect(baseRes[3]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[3]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+
+      expect(baseRes[4]).have.property('doi').equal('5');
+      expect(baseRes[4]).have.property('version').equal(1);
+      expect(baseRes[4]).have.property('referencedAt').equal('2020-01-01T01:00:00.000000');
+      expect(baseRes[4]).have.property('updated').equal('2020-01-01T01:00:00.000000');
+
+      expect(baseRes[5]).have.property('doi').equal('6');
+      expect(baseRes[5]).have.property('version').equal(1);
+      expect(baseRes[5]).have.property('referencedAt').equal('2020-01-05T01:00:00.000000');
+      expect(baseRes[5]).have.property('updated').equal('2020-01-05T01:00:00.000000');
+
+      expect(baseRes[6]).have.property('doi').equal('7');
+      expect(baseRes[6]).have.property('version').equal(1);
+      expect(baseRes[6]).have.property('referencedAt').equal('2020-01-05T01:00:00.000000');
+      expect(baseRes[6]).have.property('updated').equal('2020-01-05T01:00:00.000000');
+    });
+
+    it('Should not get files', async () => {
+      const changefiles = await getChangefiles();
+      const changefileIsPresent = changefiles.includes('2020-01-05-history.jsonl.gz');
+      expect(changefileIsPresent).to.equal(false);
+    });
+
     after(async () => {
       await reset();
     });

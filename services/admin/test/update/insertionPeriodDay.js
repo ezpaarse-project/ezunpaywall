@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const { deleteChangefile, updateChangefile } = require('./utils/changefile');
+const { getChangefiles, deleteChangefile, updateChangefile } = require('./utils/changefile');
 const { getState } = require('./utils/state');
 const getReport = require('./utils/report');
 const { countDocuments, deleteIndex } = require('./utils/elastic');
@@ -224,6 +224,111 @@ describe('Test: download and insert file from unpaywall between a period', () =>
       const report = await getReport('[changefile][download][insert]');
       testResult(report);
     });
+    after(async () => {
+      await reset();
+    });
+  });
+
+  describe(`Day: Do a download and insert between ${date1} and now with cleanFile as true`, async () => {
+    before(async () => {
+      await reset();
+    });
+
+    it('Should return a status code 202', async () => {
+      const res = await chai.request(adminURL)
+        .post('/job/changefile/download/insert')
+        .send({
+          index: 'unpaywall-test',
+          startDate: date1,
+          interval: 'day',
+          cleanFile: true,
+        })
+        .set('x-api-key', 'changeme');
+
+      expect(res).have.status(202);
+    });
+
+    it('Should insert 150 data', async () => {
+      // wait for the update to finish
+      let isUpdate = true;
+      while (isUpdate) {
+        await new Promise((resolve) => { setTimeout(resolve, 100); });
+        isUpdate = await checkStatus();
+      }
+      const count = await countDocuments('unpaywall-test');
+
+      expect(count).to.equal(150);
+    });
+
+    function testResult(result) {
+      expect(result).have.property('done').equal(true);
+      expect(result).have.property('createdAt').to.not.equal(undefined);
+      expect(result).have.property('endAt').to.not.equal(undefined);
+      expect(result).have.property('steps').to.be.an('array');
+      expect(result).have.property('error').equal(false);
+      expect(result).have.property('took').to.not.equal(undefined);
+
+      const { indices } = result;
+      expect(indices[0]).have.property('index').equal('unpaywall-test');
+      expect(indices[0]).have.property('added').equal(150);
+      expect(indices[0]).have.property('updated').equal(0);
+
+      expect(result.steps[0]).have.property('task').equal('getChangefiles');
+      expect(result.steps[0]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[0]).have.property('status').equal('success');
+
+      expect(result.steps[1]).have.property('task').equal('download');
+      expect(result.steps[1]).have.property('file').equal('fake2.jsonl.gz');
+      expect(result.steps[1]).have.property('percent').equal(100);
+      expect(result.steps[1]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[1]).have.property('status').equal('success');
+
+      expect(result.steps[2]).have.property('task').equal('insert');
+      expect(result.steps[2]).have.property('index').equal('unpaywall-test');
+      expect(result.steps[2]).have.property('file').equal('fake2.jsonl.gz');
+      expect(result.steps[2]).have.property('percent').equal(100);
+      expect(result.steps[2]).have.property('linesRead').equal(100);
+      expect(result.steps[2]).have.property('addedDocs').equal(100);
+      expect(result.steps[2]).have.property('updatedDocs').equal(0);
+      expect(result.steps[2]).have.property('failedDocs').equal(0);
+      expect(result.steps[2]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[2]).have.property('status').equal('success');
+
+      expect(result.steps[3]).have.property('task').equal('download');
+      expect(result.steps[3]).have.property('file').equal('fake1.jsonl.gz');
+      expect(result.steps[3]).have.property('percent').equal(100);
+      expect(result.steps[3]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[3]).have.property('status').equal('success');
+
+      expect(result.steps[4]).have.property('task').equal('insert');
+      expect(result.steps[4]).have.property('file').equal('fake1.jsonl.gz');
+      expect(result.steps[4]).have.property('percent').equal(100);
+      expect(result.steps[4]).have.property('linesRead').equal(50);
+      expect(result.steps[4]).have.property('addedDocs').equal(50);
+      expect(result.steps[4]).have.property('updatedDocs').equal(0);
+      expect(result.steps[4]).have.property('failedDocs').equal(0);
+      expect(result.steps[4]).have.property('took').to.not.equal(undefined);
+      expect(result.steps[4]).have.property('status').equal('success');
+    }
+
+    it('Should get state with all information from the download and insertion', async () => {
+      const state = await getState();
+      testResult(state);
+    });
+
+    it('Should get report with all information from the download and insertion', async () => {
+      const report = await getReport('[changefile][download][insert]');
+      testResult(report);
+    });
+
+    it('Should not get files', async () => {
+      const changefiles = await getChangefiles();
+      const fake2IsPresent = changefiles.includes('fake2.jsonl.gz');
+      expect(fake2IsPresent).to.equal(false);
+      const fake1IsPresent = changefiles.includes('fake1.jsonl.gz');
+      expect(fake1IsPresent).to.equal(false);
+    });
+
     after(async () => {
       await reset();
     });
