@@ -130,7 +130,8 @@
       "filetype": "Type du fichier",
       "classic": "Classique",
       "history": "Historique",
-      "file": "Fichier"
+      "file": "Fichier",
+      "cleanFile": "Supprime le fichier après l'insertion"
     },
     "cron": {
       "title": "Config de la cron de mise à jour des données",

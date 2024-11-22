@@ -130,7 +130,8 @@
       "filetype": "Type of file",
       "classic": "Classic",
       "history": "History",
-      "file": "File"
+      "file": "File",
+      "cleanFile": "Delete file after insertion"
     },
     "cron": {
       "title": "Config of the cron for update process",

@@ -27,6 +27,7 @@
               <v-text-field v-model="endDate" :label="t('administration.job.endDate')"
                 :rules="[dateFormatRule, dateIsFutureRule]" />
               <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
+              <v-checkbox v-model="cleanFile" :label="t('administration.job.cleanFile')" hide-details />
             </v-form>
           </v-tabs-window-item>
           <v-tabs-window-item value="history">
@@ -38,6 +39,7 @@
                 :rules="[dateFormatRule, dateIsFutureRule]" />
               <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
               <v-text-field v-model="indexHistory" :label="t('administration.job.indexHistory')" />
+              <v-checkbox v-model="cleanFile" :label="t('administration.job.cleanFile')" hide-details />
             </v-form>
           </v-tabs-window-item>
           <v-tabs-window-item value="file">
@@ -45,6 +47,7 @@
               <v-select v-model="filetype" class="mt-4" :items="filetypes" :label="t('administration.job.filetype')" />
               <v-text-field v-model="filename" :label="t('administration.job.filename')" autofocus />
               <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
+              <v-checkbox v-model="cleanFile" :label="t('administration.job.cleanFile')" hide-details />
             </v-form>
           </v-tabs-window-item>
         </v-tabs-window>
@@ -101,7 +104,7 @@ const startDate = ref(formatDate(new Date()));
 const endDate = ref(formatDate(new Date()));
 const filename = ref('');
 const filetype = ref('changefile');
-
+const cleanFile = ref(false);
 
 const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 
@@ -131,6 +134,7 @@ async function startClassicUpdate() {
     interval: interval.value,
     startDate: startDate.value,
     endDate: endDate.value,
+    cleanFile: cleanFile.value,
   };
   try {
     await $admin('/job/changefile/download/insert', {
@@ -158,6 +162,7 @@ async function startHistoryUpdate() {
     interval: interval.value,
     startDate: startDate.value,
     endDate: endDate.value,
+    cleanFile: cleanFile.value,
   };
   try {
     await $admin('/job/changefile/history/download/insert', {
@@ -180,6 +185,7 @@ async function startInsertFile() {
   loading.value = true;
   const data = {
     index: index.value,
+    cleanFile: cleanFile.value,
   };
   try {
     await $admin(`/job/${filetype.value}/insert/${filename.value}`, {
