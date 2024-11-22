@@ -110,12 +110,6 @@
       @closed="setUpdateDialogVisible(false)"
       @updated="refreshApikey()"
     />
-    <AdministrationApikeyDeleteDialog
-      v-model="deleteDialogVisible"
-      :apikey="selectedApikey"
-      @closed="setDeleteDialogVisible(false)"
-      @deleted="refreshApikey()"
-    />
     <AdministrationApikeyCreateDialog
       v-model="createDialogVisible"
       @created="refreshApikey()"
@@ -130,6 +124,7 @@ const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
 const { $admin } = useNuxtApp();
+const { openConfirm } = useDialogStore();
 
 const { password } = storeToRefs(adminStore);
 
@@ -137,7 +132,6 @@ const searchValue = ref('');
 
 const createDialogVisible = ref(false);
 const updateDialogVisible = ref(false);
-const deleteDialogVisible = ref(false);
 const importDialogVisible = ref(false);
 const exportDialogVisible = ref(false);
 
@@ -149,6 +143,8 @@ const selectedOwner = ref('');
 const selectedAccess = ref([]);
 const selectedAttributes = ref([]);
 const selectedAllowed = ref(false);
+
+const loading = ref(false);
 
 const { data: apikeys, status, refresh: refreshApikey } = useFetch('/apikeys', {
   baseURL: $admin.baseURL,
@@ -183,27 +179,40 @@ async function openUpdateDialog(id) {
   updateDialogVisible.value = true;
 }
 
-// TODO
 /**
  * Open dialog to delete apikey.
  *
- * @param filename apikey.
+ * @param apikey apikey.
  */
- async function openDeleteDialog(filename) {
+ async function openDeleteDialog(apikey) {
   openConfirm({
     title: t('administration.apikey.delete'),
     text: t('administration.apikey.deleteMessage', { apikey }),
     agreeText: t('delete'),
     agreeIcon: 'mdi-delete',
     onAgree: async () => {
-      // TODO
+      deleteApikey(apikey)
     },
   });
 }
 
-async function openDeleteDialog(id) {
-  selectedApikey.value = id;
-  deleteDialogVisible.value = true;
+async function deleteApikey(apikey) {
+  loading.value = true;
+  try {
+    await $admin(`/apikeys/${apikey}`, {
+      method: 'DELETE',
+      headers: {
+        'X-API-KEY': password.value,
+      },
+    });
+  } catch (err) {
+    snackStore.error(t('error.apikey.delete'));
+    loading.value = false;
+    return;
+  }
+  snackStore.info(t('info.apikey.deleted'));
+  loading.value = false;
+  await refreshApikey();
 }
 
 function updateSearchValue(newValue) {

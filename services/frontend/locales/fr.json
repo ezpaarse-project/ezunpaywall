@@ -106,7 +106,7 @@
       "create": "Création d'une nouvelle clé d'API",
       "update": "Mise à jour de la clé d'API",
       "delete": "Suppression de la clé d'API",
-      "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API ? (action irréversible)"
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette clé d'API: {apikey} ? (action irréversible)"
     },
     "file": {
       "title": "Liste des fichiers installés d'unpaywall",

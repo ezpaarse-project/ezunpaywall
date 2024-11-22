@@ -106,7 +106,7 @@
       "create": "Creation of a new API key",
       "update": "Update API key",
       "delete": "Deleting the API key",
-      "deleteMessage": "Are you sure you want to delete this API key (irreversible action)"
+      "deleteMessage": "Are you sure you want to delete this API key: {apikey} ? (irreversible action)"
     },
     "file": {
       "title": "List of installed files from unpaywall",
