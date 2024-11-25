@@ -30,6 +30,6 @@ router.post('/changefiles', dev, checkAdmin, upload.single('file'), uploadChange
  * Route that delete a changefile on ezunpaywall.
  * Auth required.
  */
-router.delete('/changefiles/:filename', dev, checkAdmin, validateFilename, deleteChangefileController);
+router.delete('/changefiles/:filename', checkAdmin, validateFilename, deleteChangefileController);
 
 module.exports = router;

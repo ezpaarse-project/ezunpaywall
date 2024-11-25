@@ -660,7 +660,7 @@ paths:
       tags:
         - admin
       operationId: delete-snapshots-$-filename
-      summary: Delete snapshots (in dev only).
+      summary: Delete snapshots.
       description: Delete snapshot on ezunpaywall.
       security:
         - x-api-key: []
@@ -723,7 +723,7 @@ paths:
       tags:
         - admin
       operationId: delete-changefiles-$-filename
-      summary: Delete changefiles (in dev only).
+      summary: Delete changefiles.
       description: Delete changefiles download on ezunpaywall.
       security:
         - x-api-key: []

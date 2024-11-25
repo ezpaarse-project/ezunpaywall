@@ -30,6 +30,6 @@ router.post('/snapshots', dev, checkAdmin, upload.single('file'), uploadSnapshot
  * Route that delete a snapshot on ezunpaywall.
  * Auth required.
  */
-router.delete('/snapshots/:filename', dev, checkAdmin, validateFilename, deleteSnapshotController);
+router.delete('/snapshots/:filename', checkAdmin, validateFilename, deleteSnapshotController);
 
 module.exports = router;
