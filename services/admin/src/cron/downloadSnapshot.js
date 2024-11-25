@@ -19,7 +19,7 @@ else active = false;
 async function task() {
   const status = getStatus();
   if (status) {
-    appLogger.info(`[cron][${this.name}]: conflict: an update is already in progress`);
+    appLogger.info('[cron][Download snapshot]: conflict: an update is already in progress');
     return;
   }
 

@@ -21,20 +21,20 @@ async function task() {
     paths.data.changefilesDir,
     cronConfig.changefileThreshold,
   );
-  appLogger.info(`[cron][${this.name}]: ${deletedChangefiles?.join(',')} (${deletedChangefiles.length}) changefiles are deleted`);
+  appLogger.info(`[cron][Clean file]: ${deletedChangefiles?.join(',')} (${deletedChangefiles.length}) changefiles are deleted`);
 
   const deletedReportFiles = await deleteFilesInDir(
     paths.data.reportsDir,
     cronConfig.reportThreshold,
   );
-  appLogger.info(`[cron][${this.name}]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
+  appLogger.info(`[cron][Clean file]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
 
   const deletedSnapshotFiles = await deleteFilesInDir(
     paths.data.snapshotsDir,
     cronConfig.snapshotsDir,
   );
 
-  appLogger.info(`[cron][${this.name}]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
+  appLogger.info(`[cron][Clean file]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
 }
 
 const deleteFileCron = new Cron('Clean file', cronConfig.schedule, task, active);
