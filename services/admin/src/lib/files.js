@@ -42,9 +42,9 @@ async function getMostRecentFile(dir) {
 }
 
 /**
- * Delete file installed on ezunpaywall on "/data/snapshots".
+ * Delete file installed on ezunpaywall
  *
- * @param {string} filepath - Filepath.
+ * @param {string} filepath Filepath.
  *
  * @returns {Promise<void>}
  */
