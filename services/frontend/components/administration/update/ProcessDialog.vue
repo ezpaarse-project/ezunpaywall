@@ -99,7 +99,7 @@ const filetypes = ref(['changefile', 'snapshot']);
 
 const interval = ref('day');
 const index = ref('unpaywall');
-const indexHistory = ref('unpaywall_history');
+const indexHistory = ref(`unpaywall_history_${new Date().getFullYear()}`);
 const startDate = ref(formatDate(new Date()));
 const endDate = ref(formatDate(new Date()));
 const filename = ref('');

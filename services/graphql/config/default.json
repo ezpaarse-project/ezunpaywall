@@ -11,7 +11,7 @@
     "username": "elastic",
     "password": "changeme",
     "indexBase": "unpaywall",
-    "indexHistory": "unpaywall_history"
+    "indexHistory": "unpaywall_history_*"
   },
   "paths": {
     "log": {
