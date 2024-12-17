@@ -2,6 +2,7 @@ node_modules/
 log/
 data/
 test/
+docs/
 .gitignore
 .eslintrc.json
 README.md
