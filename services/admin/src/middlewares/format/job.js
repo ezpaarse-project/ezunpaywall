@@ -96,8 +96,8 @@ async function validateInsertFile(req, res, next) {
  */
 async function validateHistoryJob(req, res, next) {
   const { error, value } = joi.object({
-    index: joi.string().trim().default('unpaywall-base'),
-    indexHistory: joi.string().trim().default('unpaywall-history'),
+    index: joi.string().trim().default('unpaywall'),
+    indexHistory: joi.string().trim().default('unpaywall_history_*'),
     interval: joi.string().trim().valid('day', 'week').default('day'),
     startDate: joi.date().format('YYYY-MM-DD'),
     endDate: joi.date().format('YYYY-MM-DD').min(joi.ref('startDate')),

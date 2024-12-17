@@ -94,7 +94,7 @@ async function insertUnpaywallDataInElastic(data, index) {
  * @param {Array<string>} dois Array of DOI that will be inserted
  * @param {Array<Object>} newDois Array of document that will be inserted
  * @param {string} index Name of base index
- * @param {string} indexHistoryName Name of history base
+ * @param {string} indexHistory Name of history base
  *
  * @returns {Promise<boolean>} Success or not.
  */
