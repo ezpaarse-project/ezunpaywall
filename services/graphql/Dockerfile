@@ -30,8 +30,6 @@ ENV TIMEZONE=${TIMEZONE} \
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
   CMD wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
 
-EXPOSE 3000
-
 RUN addgroup -g 1001 appUser && adduser -u 1001 -G appUser -S appUser
 RUN mkdir -p ./log \
   && chown -R appUser:appUser ./log \ 
@@ -40,5 +38,7 @@ RUN mkdir -p ./log \
   && rm -f /bin/sh
   
 USER appUser
+
+EXPOSE 3000
 
 ENTRYPOINT [ "node", "./src/app.js" ]
