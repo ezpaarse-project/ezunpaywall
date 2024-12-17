@@ -8,6 +8,7 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
+
 FROM node:18.19.1-alpine3.19 as build
 
 FROM base
@@ -37,11 +38,10 @@ ENV NUXT_PUBLIC_ENVIRONMENT=${NUXT_PUBLIC_ENVIRONMENT} \
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
 CMD wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
 
-RUN addgroup -g 1001 appUser && adduser -u 1001 -G appUser -S appUser
-RUN rm -f /bin/bash \
-  && rm -f /bin/sh
-    
-USER appUser
+RUN addgroup -g 1001 ezunpaywall && adduser -u 1001 -G ezunpaywall -S ezunpaywall
+RUN rm -f /bin/bash && rm -f /bin/sh
+      
+USER ezunpaywall
 
 EXPOSE 3000
 
