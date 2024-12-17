@@ -42,7 +42,7 @@
       "schedule": "0 0 0 * * *",
       "active": false,
       "index": "unpaywall",
-      "indexHistory": "unpaywall-history",
+      "indexHistory": "unpaywall_history_*",
       "interval": "day"
     },
     "cleanFile": {
