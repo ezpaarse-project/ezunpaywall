@@ -24,7 +24,7 @@ ENV TIMEZONE=${TIMEZONE} \
   HEALTH_TIMEOUT=${HEALTH_TIMEOUT} 
 
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
-CMD wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+  CMD [ "node", "-e", "require('http').get('http://localhost:3000', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1));" ]
 
 RUN addgroup -g 1001 ezunpaywall && adduser -u 1001 -G ezunpaywall -S ezunpaywall
 RUN mkdir -p ./log/access ./log/application ./log/healthcheck ./data/enriched ./data/states ./data/upload \
