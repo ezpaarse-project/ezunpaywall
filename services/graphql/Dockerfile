@@ -29,10 +29,16 @@ ENV TIMEZONE=${TIMEZONE} \
 
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
   CMD wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
-
-RUN addgroup -g 1001 ezunpaywall && adduser -u 1001 -G ezunpaywall -S ezunpaywall
-RUN rm -f /bin/bash && rm -f /bin/sh
         
+RUN addgroup -g 1001 ezunpaywall && adduser -u 1001 -G ezunpaywall -S ezunpaywall
+RUN mkdir -p ./log/access ./log/application ./log/healthcheck  \
+  && chmod -R 700 ./log \
+  && chown -R ezunpaywall:ezunpaywall ./log
+
+RUN if [ "$ENV" = "production" ]; then \
+      rm -f /bin/bash /bin/sh; \
+    fi
+
 USER ezunpaywall
 
 EXPOSE 3000
