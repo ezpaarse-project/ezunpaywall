@@ -15,35 +15,14 @@ COPY --from=builder /usr/src/app/.output /usr/src/app
 
 ARG ENV=development
 
-ENV NUXT_PUBLIC_ENVIRONMENT=${NUXT_PUBLIC_ENVIRONMENT} \
-  \
-  NUXT_PUBLIC_UNPAYWALL_URL=${NUXT_PUBLIC_UNPAYWALL_URL} \
-  NUXT_PUBLIC_UNPAYWALL_API_URL=${NUXT_PUBLIC_UNPAYWALL_API_URL} \
-  \
-  NUXT_PUBLIC_DASHBOARD_URL=${NUXT_PUBLIC_DASHBOARD_URL} \
-  \
-  NUXT_PUBLIC_GRAPHQL_URL=${NUXT_PUBLIC_GRAPHQL_URL} \
-  NUXT_PUBLIC_ENRICH_URL=${NUXT_PUBLIC_ENRICH_URL} \
-  NUXT_PUBLIC_ADMIN_URL=${NUXT_PUBLIC_ADMIN_URL} \
-  \
-  NUXT_PUBLIC_ELASTIC_ENV=${NUXT_PUBLIC_ELASTIC_ENV} \
-  \
-  NUXT_PUBLIC_VERSION=${NUXT_PUBLIC_VERSION} \
-  \
-  NUXT_ADMIN_URL=${NUXT_ADMIN_URL} \
-  NUXT_ADMIN_APIKEY=${NUXT_ADMIN_APIKEY} 
-
-
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
   CMD [ "node", "-e", "require('http').get('http://localhost:3000', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1));" ]
 
-RUN addgroup -g 1001 ezunpaywall && adduser -u 1001 -G ezunpaywall -S ezunpaywall
-      
 RUN if [ "$ENV" = "production" ]; then \
       rm -f /bin/bash /bin/sh; \
     fi
 
-USER ezunpaywall
+USER node
 
 EXPOSE 3000
 

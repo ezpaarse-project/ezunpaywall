@@ -14,28 +14,18 @@ COPY . .
 
 ARG ENV=development
 
-ENV TIMEZONE=${TIMEZONE} \
-  \
-  REDIS_HOST=${REDIS_HOST} \
-  REDIS_PORT=${REDIS_PORT} \
-  REDIS_PASSWORD=${REDIS_PASSWORD} \
-  \
-  GRAPHQL_URL=${GRAPHQL_URL} \
-  HEALTH_TIMEOUT=${HEALTH_TIMEOUT} 
-
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
   CMD [ "node", "-e", "require('http').get('http://localhost:3000', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1));" ]
 
-RUN addgroup -g 1001 ezunpaywall && adduser -u 1001 -G ezunpaywall -S ezunpaywall
-RUN mkdir -p ./log/access ./log/application ./log/healthcheck ./data/enriched ./data/states ./data/upload \
+RUN mkdir -p ./log/access ./log/application ./log/healthcheck ./data/changefiles ./data/reports ./data/snapshots \
   && chmod -R 700 ./log ./data \
-  && chown -R ezunpaywall:ezunpaywall ./log ./data 
+  && chown -R node:node ./log ./data 
 
 RUN if [ "$ENV" = "production" ]; then \
       rm -f /bin/bash /bin/sh; \
     fi
 
-USER ezunpaywall
+USER node
 
 EXPOSE 3000
 

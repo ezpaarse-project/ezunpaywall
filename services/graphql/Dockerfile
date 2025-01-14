@@ -12,34 +12,20 @@ WORKDIR /usr/src/app
 COPY --from=builder  /usr/src/app/node_modules ./node_modules 
 COPY . .
 
-ENV TIMEZONE=${TIMEZONE} \
-  \
-  REDIS_HOST=${REDIS_HOST} \
-  REDIS_PORT=${REDIS_PORT} \
-  REDIS_PASSWORD=${REDIS_PASSWORD} \
-  \
-  ELASTICSEARCH_NODES=${ELASTICSEARCH_NODES} \
-  ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME} \
-  ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD} \
-  ELASTICSEARCH_MAX_BULK_SIZE=${ELASTICSEARCH_MAX_BULK_SIZE} \
-  ELASTICSEARCH_INDEX_ALIAS=${ELASTICSEARCH_INDEX_ALIAS} \
-  ELASTICSEARCH_TIMEOUT=${ELASTICSEARCH_TIMEOUT} \
-  \
-  HEALTH_TIMEOUT=${HEALTH_TIMEOUT}
+ARG ENV=development
 
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
   CMD [ "node", "-e", "require('http').get('http://localhost:3000', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1));" ]
         
-RUN addgroup -g 1001 ezunpaywall && adduser -u 1001 -G ezunpaywall -S ezunpaywall
 RUN mkdir -p ./log/access ./log/application ./log/healthcheck  \
   && chmod -R 700 ./log \
-  && chown -R ezunpaywall:ezunpaywall ./log
+  && chown -R node:node ./log
 
 RUN if [ "$ENV" = "production" ]; then \
       rm -f /bin/bash /bin/sh; \
     fi
 
-USER ezunpaywall
+USER node
 
 EXPOSE 3000
 
