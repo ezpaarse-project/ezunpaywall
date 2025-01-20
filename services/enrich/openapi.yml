@@ -1,0 +1,450 @@
+openapi: 3.0.0
+info:
+  description: The enrichment service allows to enrich a csv or jsonl file which contains a "doi" field with the metadata of the ezunpaywall mirror
+  version: 1.0.0
+  title: Enrich service
+  contact:
+    email: ezteam@couperin.org
+    name: ezTeam
+  license:
+    name: CeCILL 2.1
+    url: http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
+servers:
+  - url: https://unpaywall.inist.fr/api/enrich
+tags:
+  - name: ping
+  - name: job
+  - name: admin
+paths:
+  /:
+    get:
+      tags:
+        - ping
+      summary: Name of service
+      operationId: get
+      description: Get name of enrich service
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                x-examples:
+                  Example 1: enrich service
+              examples:
+                response:
+                  value: enrich service
+    
+  /ping:
+    get:
+      tags:
+        - ping
+      summary: Ping enrich service
+      operationId: get-ping
+      description: Ping enrich service
+      responses:
+        '204':
+          description: No Content
+      
+  /health:
+    get:
+      summary: Health
+      operationId: get-health
+      description: Health on all service connected to enrich service
+      parameters: []
+      tags:
+        - ping
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redis:
+                    type: object
+                    properties:
+                      elapsedTime:
+                        type: integer
+                      status:
+                        type: boolean
+                  graphql:
+                    type: object
+                    properties:
+                      elapsedTime:
+                        type: integer
+                      status:
+                        type: boolean
+                  elapsedTime:
+                    type: integer
+                  status:
+                    type: boolean
+                x-examples:
+                  Example 1:
+                    redis:
+                      elapsedTime: 1
+                      status: true
+                    graphql:
+                      elapsedTime: 2
+                      status: true
+                    elapsedTime: 2
+                    status: true
+              examples:
+                Success:
+                  value:
+                    redis:
+                      elapsedTime: 4
+                      status: true
+                    graphql:
+                      elapsedTime: 3
+                      status: true
+                    elapsedTime: 6
+                    status: true
+                Error redis:
+                  value:
+                    redis:
+                      elapsedTime: 3003
+                      status: false
+                      error: time out
+                    graphql:
+                      elapsedTime: 1
+                      status: true
+                    elapsedTime: 3003
+                    status: false
+
+  /health/redis:
+    get:
+      tags:
+        - ping
+      operationId: get-health-redis
+      description: Health on redis
+      summary: Health on redis service
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Health'
+    
+  /health/elastic:
+    get:
+      tags:
+        - ping
+      summary: Health on graphql service
+      operationId: get-health-elastic
+      description: Health on elastic
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Health'
+  
+  /healthcheck:
+    get:
+      tags:
+        - ping
+      operationId: get-healthcheck
+      summary: Checking the health of the service
+      description: Returns a status of 204 if the service is available
+      responses:
+        '204':
+          description: No Content
+    
+  /upload:
+    post:
+      tags:
+        - job
+      summary: Upload a file
+      operationId: post-enrich-upload
+      description: Upload a file to be enriched
+      security:
+        - x-api-key: []
+      parameters: []
+      responses:
+        '200':
+          description: filename of uploaded file
+          content:
+            application/json:
+              schema:
+                type: string
+                default: id
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+      
+  /job/{filename}:
+    post:
+      tags:
+        - job
+      summary: Enrich job
+      operationId: post-enrich-job-$-filename
+      description: Start a enrich job with uploaded file
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keys:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      type:
+                        type: string
+                      args:
+                        type: string
+                      index:
+                        type: string
+                      separator:
+                        type: string
+        description: apikeys
+        required: true
+      responses:
+        '200':
+          description: filename of process
+          content:
+            application/json:
+              schema:
+                type: string
+                default: id
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+      
+  /enriched:
+    get:
+      tags:
+        - job
+      summary: Get enriched files
+      operationId: get-enriched
+      description: Get the list of enriched files
+      security:
+        - x-api-key: []
+      responses:
+        '200':
+          description: list of enriched file
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  default: file.csv
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+      
+  /enriched/${filename}:
+    get:
+      tags:
+        - job
+      summary: Get enriched file
+      operationId: get-enriched-$-filename
+      description: Get the enriched file, generated at the end of the enrichment process
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: enriched file
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+      
+  /states:
+    get:
+      tags:
+        - job
+      summary: Get list of states of enrich job
+      operationId: get-states
+      description: Get list of filenames state of enrich process
+      parameters:
+        - in: query
+          name: latest
+          description: latest
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: list of states file
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  default: file.json
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+      
+  /states/${filename}:
+    get:
+      tags:
+        - job
+      summary: Get State
+      operationId: get-states-$-filename
+      description: Get state of enrich process with his filename
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: list of uploaded file
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  done:
+                    type: boolean
+                    default: true
+                  loaded:
+                    type: integer
+                    default: 150
+                  linesRead:
+                    type: integer
+                    default: 3
+                  enrichedLines:
+                    type: integer
+                    default: 3
+                  createdAt:
+                    type: string
+                    default: '2021-11-30T10:00:00.000Z'
+                  endAt:
+                    type: string
+                    default: '2021-11-30T10:01:00.000Z'
+                  error:
+                    type: boolean
+                    default: false
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '404':
+          description: File not found
+          content:
+            File not found:
+              examples:
+                response:
+                  value:
+                    message: File not found
+      
+  /uploaded:
+    get:
+      tags:
+        - job
+      summary: Get uploaded files
+      operationId: get-uploaded
+      description: Get the lists of uploaded files
+      security:
+        - x-api-key: []
+      parameters: []
+      responses:
+        '200':
+          description: list of uploaded file
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  default: file.csv
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+
+  /config:
+    get:
+      tags:
+        - admin
+      summary: get config of service.
+      operationId: get-config
+      description: Get config or service with hidden secrets.
+      security:
+        - x-api-key: []
+      responses:
+        '200':
+          description: config
+          content:
+            Config:
+              examples:
+                response:
+                  value:
+                    nodeEnv: development
+                    timezone: Europe/Paris
+                    redis:
+                      host: redis
+                      port: 6379
+                      password: "********"
+                    graphql:
+                      host: http://graphql:3000
+                    apikey: "********"
+                    healthTimeout: 3000
+
+components:
+  responses:
+    Not-authorized:
+      description: Not authorized
+      headers: {}
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: Not authorized
+    Health:
+      description: Example response
+      content:
+        Success:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              status:
+                type: boolean
+              elapsedTime:
+                type: integer
+            x-examples:
+              Example 1:
+                name: redis
+                status: true
+                elapsedTime: 1
+          examples:
+            Success:
+              value:
+                name: name of service
+                status: true
+                elapsedTime: 1
+            Error redis:
+              value:
+                name: redis
+                elapsedTime: 3002
+                error: time out
+                status: false
+  securitySchemes:
+    x-api-key:
+      name: API Key
+      type: apiKey
+      in: header

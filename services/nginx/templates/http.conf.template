@@ -1,0 +1,34 @@
+server {
+  server_name ${NGINX_HOST};
+
+  client_max_body_size 500M;
+
+  listen 80;
+  listen [::]:80;
+
+  ## Configuration
+  proxy_set_header X-Forwarded-Host $host;
+  proxy_set_header X-Forwarded-Server $host;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_hide_header X-Powered-By;
+
+  location /api {
+    rewrite ^/api(/.*)$ $1 break;
+    proxy_pass ${GRAPHQL_URL};
+  }
+
+  location /api/enrich {
+    rewrite ^/api/enrich(/.*)$ $1 break;
+    proxy_pass ${ENRICH_URL};
+  }
+
+  location /api/admin {
+    rewrite ^/api/admin(/.*)$ $1 break;
+    proxy_pass ${ADMIN_URL};
+  }
+
+  ## client
+  location / {
+    proxy_pass ${FRONTEND_URL};
+  }
+}

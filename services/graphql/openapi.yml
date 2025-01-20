@@ -1,0 +1,230 @@
+openapi: 3.0.0
+info:
+  description: The graphql service allows access to unpaywall data stored in elastic.
+  version: 1.0.0
+  title: Graphql service
+  contact:
+    email: ezteam@couperin.org
+    name: ezTeam
+  license:
+    name: CeCILL 2.1
+    url: http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
+servers:
+  - url: https://unpaywall.inist.fr/api
+tags:
+  - name: ping
+  - name: admin
+paths:
+  /graphql:
+    get:
+      tags:
+        - ping
+      operationId: get
+      summary: Name of service
+      description: Get name of graphql service
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                x-examples:
+                  example-1: graphql service
+              examples:
+                service:
+                  value: graphql service
+            Success:
+              examples:
+                response:
+                  value:
+                    message: graphql service
+      
+  /ping:
+    get:
+      tags:
+        - ping
+      operationId: get-ping
+      summary: Ping graphql service
+      description: ping graphql service
+      parameters: []
+      responses:
+        '204':
+          description: No Content
+    
+  /health:
+    get:
+      tags:
+        - ping
+      operationId: get-health
+      summary: Health
+      description: Health on all service connected to graphql service
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redis:
+                    type: object
+                    properties:
+                      elapsedTime:
+                        type: integer
+                      status:
+                        type: boolean
+                  elastic:
+                    type: object
+                    properties:
+                      elapsedTime:
+                        type: integer
+                      status:
+                        type: boolean
+                  elapsedTime:
+                    type: integer
+                  status:
+                    type: boolean
+                x-examples:
+                  Example 1:
+                    redis:
+                      elapsedTime: 0
+                      status: true
+                    elastic:
+                      elapsedTime: 1
+                      status: true
+                    elapsedTime: 1
+                    status: true
+              examples:
+                Success:
+                  value:
+                    redis:
+                      elapsedTime: 1
+                      status: true
+                    elastic:
+                      elapsedTime: 1
+                      status: true
+                    elapsedTime: 1
+                    status: true
+                Error redis:
+                  value:
+                    redis:
+                      elapsedTime: 3001
+                      status: false
+                      error: time out
+                    elastic:
+                      elapsedTime: 1
+                      status: true
+                    elapsedTime: 3001
+                    status: false
+
+  /health/redis:
+    get:
+      tags:
+        - ping
+      operationId: get-health-redis
+      summary: Health on redis service
+      description: Health on redis
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Health'
+      
+  /health/elastic:
+    get:
+      tags:
+        - ping
+      operationId: get-health-elastic
+      summary: Health on elastic service
+      description: Health on elastic
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Health'
+
+  /healthcheck:
+    get:
+      tags:
+        - ping
+      operationId: get-healthcheck
+      summary: Checking the health of the service
+      description: Returns a status of 204 if the service is available
+      responses:
+        '204':
+          description: No Content
+      
+  /config:
+    get:
+      tags:
+        - admin
+      summary: get config of service.
+      operationId: get-config
+      description: Get config or service with hidden secrets.
+      security:
+        - x-api-key: []
+      responses:
+        '200':
+          description: config
+          content:
+            Config:
+              examples:
+                response:
+                  value:   
+                    nodeEnv: development
+                    timezone: Europe/Paris
+                    redis:
+                      host: redis
+                      port: "6379"
+                      password: "********"
+                    elasticsearch:
+                      host: http://elastic
+                      port: 9200
+                      user: elastic
+                      password: "********"
+                      indexBase: unpaywall_base
+                      indexHistory: unpaywall_history
+                    apikey: "********"
+                    healthTimeout: 3000   
+    
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+components:
+  responses:
+    Health:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              status:
+                type: boolean
+              elapsedTime:
+                type: integer
+            x-examples:
+              Example 1:
+                name: redis
+                status: true
+                elapsedTime: 1
+          examples:
+            Success:
+              value:
+                name: name of service
+                status: true
+                elapsedTime: 1
+            Error redis:
+              value:
+                name: redis
+                elapsedTime: 3002
+                error: time out
+                status: false
+  securitySchemes:
+    x-api-key:
+      type: apiKey
+      in: header
+      name: API Key

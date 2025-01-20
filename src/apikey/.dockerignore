@@ -1,7 +1,0 @@
-node_modules/
-log/
-test/
-.eslintrc.json
-.gitignore
-README.md
-apikey-dev.json

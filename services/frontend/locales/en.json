@@ -1,0 +1,351 @@
+{
+  "home": {
+    "title" : "What is ezUnpaywall?",
+    "general1": "ezUnpaywall is a mirror of {link} hosted at Inist-CNRS and developed by ezTEAM since 2020",
+    "general2": "It has an interface for enriching files with Open Access data from the DOI and a demonstrator for querying DOIs with GraphQL requests. ",
+    "general3": "This server has an API that can be queried via an APIKey. You can get an APIKey on request to the team (see the contact section). For more information, see the {link}.",
+    "blogPost": "Blog post",
+    "metrics": "Metrics {env}",
+    "globalMetrics": "Global metrics",
+    "referencedResources": "Referenced resources",
+    "openAccess": "Open Access",
+    "openAccessStatus": "Open Access Status",
+    "referencedResourceHelp": "Number of bibliographic references recorded in the mirror",
+    "openAccessHelp": "Number of bibliographic references available for free access (is_oa: true)",
+    "goldOAHelp": "Number of bibliographic references with 'gold' status (oa_status: 'gold')",
+    "hybridOAHelp": "Number of bibliographic references with 'hybrid' status (oa_status: 'hybrid')",
+    "bronzeOAHelp": "Number of bibliographic references with 'bronze' status (oa_status: 'bronze')",
+    "greenOAHelp": "Number of bibliographic references with 'green' status (oa_status: 'green')",
+    "closedOAHelp": "Number of bibliographic references with 'closed' status (oa_status: 'closed')"
+  },
+  "contact": {
+    "contactUs": "Contact us",
+    "email": "Email address",
+    "subject": "Subject",
+    "content": "Message content",
+    "sendNavigatorVersion": "Send my browser version",
+    "requestInformation": "Information request",
+    "bugReport": "Bug report",
+    "requestApikey": "Request an API key",
+    "emailIsRequired": "The email address is required",
+    "emailMustBeValid": "The email address must be valid",
+    "contentIsRequired": "A message is required",
+    "subjectIsRequired": "Subject is required"
+  },
+  "enrich": {
+    "general": "This page allows you to test the enrichment function of jsonl and csv files with unpaywall attributes.",
+    "example": "Example files with DOIs are available for enrichment testing.",
+    "enrichFile": "Enrich your file",
+    "filesSelection": "Select files",
+    "settings": "Settings",
+    "enrich": "Enrich",
+    "authorizedFile": "Allowed types of file :",
+    "continue": "Continue",
+    "explainationLogs": "Files you want to be enriched by ezUnpaywall. The only condition is that they contain a DOI field.",
+    "apikey": "API Key",
+    "fileExtension": "File extension recognized :",
+    "unpaywallAttributes": "Unpaywall attributes",
+    "startProcess": "Start enrichment",
+    "stepUpload": "Sending the current file",
+    "stepEnrich": "Enrichment in progress",
+    "download": "Download the enriched file",
+    "end": "Enrichment complete",
+    "readLines": "Read lines",
+    "enrichedLines": "Enriched lines",
+    "duration": "Processing time (in seconds)"
+  },
+  "graphql": {
+    "title": "Graphql",
+    "general1": "This GraphQL demonstrator allows you to build an API query.",
+    "general2": "You just need to specify the DOI or DOIs separated by a comma, your API key and the desired Unpaywall fields as output.",
+    "general3": "The demonstrator builds the request and you can send the request to the server and see the answer. Use the help in the interface to get more information about the use of the form data.",
+    "general4": "If you are a developer, you can also use the documentation section (swagger) to test the different API routes.",
+    "constructor": "Graphql demonstrator",
+    "apikey": "API key",
+    "settings": "Unpaywall attributes to retrieve",
+    "request": "GraphQL request",
+    "start": "Launch request",
+    "result": "Result"
+  },
+  "administration": {
+    "title": "Administration",
+    "loginForm": "Login form",
+    "login": "Login",
+    "logout": "Logout",
+    "password": "Password",
+    "elastic": {
+      "title": "Information about elastic",
+      "noInfo": "No info about elastic",
+      "reload": "Reload elastic info",
+      "documents": "documents",
+      "deleteIndex": "Delete index",
+      "deleteMessage": "Are you sure you want to delete this index: {indexName} ? (irreversible action)"
+    },
+    "health": {
+      "title": "Services status",
+      "reload": "Reload healths",
+      "noHealth": "No service status"
+    },
+    "apikey": {
+      "title": "API keys",
+      "reload": "Reload API keys",
+      "noApikeys": "no API keys",
+      "name": "Name",
+      "ownerValue": "Owner: {owner}",
+      "descriptionValue": "Description: {description}",
+      "createdAtValue": "Created at {date}",
+      "owner": "Owner",
+      "description": "Description",
+      "createdAt": "Created at",
+      "access": "Access:",
+      "attributes": "Unpaywall Attributes:",
+      "allowed": "Allowed",
+      "notAllowed": "Not Allowed",
+      "import": "Import API keys in JSON format",
+      "export": "Export API keys in JSON format",
+      "create": "Creation of a new API key",
+      "update": "Update API key",
+      "delete": "Deleting the API key",
+      "deleteMessage": "Are you sure you want to delete this API key: {apikey} ? (irreversible action)"
+    },
+    "file": {
+      "title": "List of installed files from unpaywall",
+      "reload": "Reload files",
+      "filename": "Filename",
+      "filetype": "File type",
+      "delete": "Delete file",
+      "deleteMessage": "Are you sure you want to delete this file: {filename} ? (irreversible action)"
+    },
+    "job" : {
+      "title": "Launch an update",
+      "future": "The date is after today",
+      "invalidDate": "The date is in wrong format (YYYY-mm-dd)",
+      "interval": "Interval",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "index": "Elastic index for unpaywall data",
+      "indexBase": "Elastic index for basic unpaywall data",
+      "indexHistory": "Elastic index for history unpaywall data",
+      "filename": "Filename",
+      "filetype": "Type of file",
+      "classic": "Classic",
+      "history": "History",
+      "file": "File",
+      "cleanFile": "Delete file after insertion"
+    },
+    "cron": {
+      "title": "Config of the cron for update process",
+      "interval": "Interval",
+      "schedule": "Schedule (cron format)",
+      "index": "Elastic index for unpaywall data",
+      "indexBase": "Elastic index for basic unpaywall data",
+      "indexHistory": "Elastic index for history unpaywall data",
+      "active": "Active"
+    }
+  },
+  "unpaywallArgs": {
+    "title": "Settings",
+    "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can click to this button to see the unpaywall data format",
+    "selectAll": "Select all",
+    "unselectAll": "Unselect all",
+    "general": {
+      "doi": "Digital Object Identifier",
+      "data_standard": "Data collection approaches used for this resource",
+      "doi_url": "DOI in hyperlink form",
+      "genre": "Type of resource",
+      "is_oa": "Is there an OA copy of this resource",
+      "is_paratext": "Is the item an ancillary part of a journal, like a table of contents",
+      "journal_is_in_doaj": "Is this resource published in a DOAJ-indexed journal",
+      "journal_is_oa": "Is this resource published in a completely OA journal",
+      "journal_issn_l": "A single ISSN for the journal publishing this resource",
+      "journal_issns": "Any ISSNs assigned to the journal publishing this resource",
+      "journal_name": "Name of the journal publishing this resource",
+      "oa_status": "OA status, or color, of this resource",
+      "published_date": "Date this resource was published",
+      "publisher": "Name of this resource's publisher",
+      "title": "Title of this resource",
+      "updated": "Time when the data for this resource was last updated",
+      "year": "Year this resource was published"
+    },
+    "oa_locations": {
+      "evidence": "How unpaywall found this OA location",
+      "host_type": "Type of host that serves this OA location",
+      "is_best": "Is this location the best_oa_location for its resource",
+      "license": "License under which this copy is published",
+      "pmh_id": "OAI-PMH endpoint where we found this location",
+      "updated": "Time when the data for this location was last updated",
+      "url": "The url_for_pdf if there is one; otherwise landing page URL",
+      "url_for_landing_page": "URL for a landing page describing this OA copy",
+      "url_for_pdf": "URL with a PDF version of this OA copy",
+      "version": "Content version accessible at this location"
+    },
+    "z_authors": {
+      "family": "Family name",
+      "given": "Given name",
+      "sequence": "Indicates whether it is the first author or a secondary author",
+      "ORCID": "URL-form of an ORCID identifier",
+      "authenticated-orcid": "If true, record owner asserts that the ORCID user completed ORCID OAuth authentication"
+    }
+  },
+  "fileSelector": {
+    "filename": "Filename",
+    "size": "Size",
+    "clickToAdd": "Click or Drop to add",
+    "removeList": "Delete list",
+    "selectedFiles": "Selected files",
+    "total": "Total"
+  },
+  "status": {
+    "inUpdate": "Update in progress: {task} - {percent}% for file ${file}",
+    "noInUpdate": "The data is up to date",
+    "error": "Cannot get status"
+  },
+  "state": {
+    "createdAt": "Created at",
+    "tasks": "Tasks",
+    "task": "Task",
+    "took": "Took",
+    "percent": "Percent",
+    "file": "File",
+    "linesRead": "Lines read",
+    "status": "Status"
+  },
+  "header": {
+    "help": "The unpaywall mirror data is updated daily at 12:30 p.m."
+  },
+  "menu": {
+    "home": "Home",
+    "enrich": "File enrichment",
+    "graphql": "Graphql demonstrator",
+    "updateHistory": "Update history",
+    "openapi": "Documentation",
+    "language": "Language",
+    "contact": "Contact us",
+    "administration": {
+      "title": "Administration",
+      "cron": "Cron",
+      "update": "Update",
+      "apikey": "API key",
+      "file": "File",
+      "health": "Health",
+      "logout": "Log out"
+    }
+  },
+  "reports": {
+    "title": "Last updates",
+    "reloadReports": "Reload reports",
+    "reload": "Reload update history",
+    "source": "The update files come from unpaywall.org",
+    "goTo": "See the registry",
+    "noReport": "No report available",
+    "status": "Status",
+    "insertedDocs": "New lines",
+    "updatedDocs": "Updated lines"
+  },
+  "theme": {
+    "dark": "Dark theme",
+    "light": "Light theme"
+  },
+  "error": {
+    "default": "An error occurred",
+    "elastic": {
+      "aliases": "Cannot get aliases",
+      "indices": "Cannot get indices"
+    },
+    "enrich": {
+      "manyFile": "The number of files allowed is 1",
+      "typeOfFile": "only .csv and. jsonl files are allowed",
+      "uploadFile": "Cannot upload file",
+      "download": "Cannot download the enriched file",
+      "job": "Cannot enrich file",
+      "state": "Cannot get state of enrichment"
+    },
+    "graphql": {
+      "request": "Cannot do GraphQL request",
+      "copyRequest": "Error while saving GraphQL request",
+      "copyResult": "Error while to saving response"
+    },
+    "apikey": {
+      "import": "Cannot import API keys",
+      "copy": "Cannot copy API keys",
+      "get": "Cannot get API keys",
+      "parse": "Cannot parse the config of API key to JSON",
+      "create": "The API key could not be created",
+      "update": "The API key could not be updated",
+      "delete": "Cannot delete apikey"
+    },
+    "file": {
+      "get": "Cannot get files",
+      "delete": "Cannot delete file"
+    },
+    "status": "Cannot get status of update",
+    "update": {
+      "start": "Cannot start update process"
+    },
+    "cron": {
+      "get": "Cannot get config of update cron",
+      "update": "Cannot update config of update cron",
+      "start": "Cannot start update cron",
+      "stop": "Cannot stop update cron"
+    },
+    "report": {
+      "getAll": "Cannot get update reports",
+      "get": "Cannot get update report"
+    },
+    "health": {
+      "get": "Cannot get healths"
+    },
+    "administration": {
+      "invalidPassword": "Incorrect password"
+    },
+    "contact": {
+      "failed": "Sending the contact form failed."
+    }
+  },
+  "info" : {
+    "apikey": {
+      "imported": "API keys have been successfully imported",
+      "created": "The API key has been created",
+      "updated": "The API key has been updated",
+      "deleted": "The API key has been deleted",
+      "copied": "API keys have been copied"
+    },
+    "file": {
+      "deleted": "File is deleted"
+    },
+    "update" : {
+      "started": "The update process has started"
+    },
+    "graphql": {
+      "copyResult": "Copy result",
+      "copyRequest": "Copy GraphQL request"
+    },
+    "contact": {
+      "mailSent": "Your request has been sent to the team."
+    },
+    "cron": {
+      "updated": "The update cron has been updated",
+      "activated": "The update cron has been activated",
+      "stopped": "The update cron has been stopped"
+    },
+    "index": {
+      "deleted": "Index has been deleted"
+    }
+  },
+  "noData": "No data available", 
+  "search": "Search",
+  "edit": "Edit",
+  "delete": "Delete",
+  "download": "Download",
+  "copy": "Copy",
+  "send": "Send",
+  "create": "Create",
+  "createdAt": "Created at",
+  "required": "Required",
+  "cancel": "Cancel",
+  "update": "Update",
+  "close": "Close",
+  "yes": "Yes",
+  "no": "No",
+  "detail": "Detail"
+}
