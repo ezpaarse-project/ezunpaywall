@@ -1,4 +1,4 @@
-const fs = require('fs-extra');
+const fsp = require('fs/promises');
 
 /**
  * parses the content of the response of a request to retrieve the content of a file
@@ -25,8 +25,8 @@ const binaryParser = (res, cb) => {
  * @returns {Promise<boolean>} is identical.
  */
 async function compareFile(path1, path2) {
-  const file1 = await fs.readFile(path1, 'utf-8');
-  const file2 = await fs.readFile(path2, 'utf-8');
+  const file1 = await fsp.readFile(path1, 'utf-8');
+  const file2 = await fsp.readFile(path2, 'utf-8');
   return file1.trim().replace(/\r\n/g, '\n') === file2.trim().replace(/\r\n/g, '\n');
 }
 

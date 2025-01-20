@@ -19,7 +19,7 @@ const {
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
+const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:59701';
 
 describe('Test GET metrics resolver', () => {
   before(async function () {
@@ -27,9 +27,9 @@ describe('Test GET metrics resolver', () => {
     await deleteAllAPIKey();
     await ping();
     await loadDevAPIKey();
-    await deleteIndex('unpaywall_base');
-    await createIndex('unpaywall_base', mappingUnpaywall);
-    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall_base');
+    await deleteIndex('unpaywall');
+    await createIndex('unpaywall', mappingUnpaywall);
+    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall');
   });
 
   describe('GET: get metrics', () => {
@@ -53,8 +53,8 @@ describe('Test GET metrics resolver', () => {
 
   describe('GET: get metrics', () => {
     before(async () => {
-      await deleteIndex('unpaywall_base');
-      await createIndex('unpaywall_base', mappingUnpaywall);
+      await deleteIndex('unpaywall');
+      await createIndex('unpaywall', mappingUnpaywall);
     });
 
     it('Should get metrics - { metrics { doi, isOA, goldOA, hybridOA, bronzeOA, greenOA, closedOA } }', async () => {

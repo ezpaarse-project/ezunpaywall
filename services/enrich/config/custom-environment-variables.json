@@ -1,6 +1,5 @@
 { 
   "nodeEnv": "NODE_ENV",
-  "accessLogRotate": "ACCESS_LOG_ROTATE",
   "timezone": "TIMEZONE",
   "redis":  {
     "host": "REDIS_HOST",
@@ -8,7 +7,8 @@
     "password": "REDIS_PASSWORD"
   },
   "graphql": {
-    "host": "GRAPHQL_HOST"
+    "host": "GRAPHQL_URL"
   },
+  "apikey": "ADMIN_APIKEY",
   "healthTimeout": "HEALTH_TIMEOUT"
 }

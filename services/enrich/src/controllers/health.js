@@ -1,13 +1,13 @@
-const promiseWithTimeout = require('../ping');
-const { pingRedis } = require('../services/redis');
-const { pingGraphql } = require('../services/graphql');
+const promiseWithTimeout = require('../lib/ping');
+const { pingRedis } = require('../lib/redis');
+const { pingGraphql } = require('../lib/graphql');
 
 /**
  * Controller to get health of all services connected to apikey service.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function health(req, res, next) {
   const start = Date.now();
@@ -31,9 +31,9 @@ async function health(req, res, next) {
 /**
  * Controller to get health of redis service.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function healthRedis(req, res, next) {
   const resultPing = await promiseWithTimeout(pingRedis(), 'redis');
@@ -44,9 +44,9 @@ async function healthRedis(req, res, next) {
 /**
  * Controller to get health of graphql service.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function healthGraphql(req, res, next) {
   const resultPing = await promiseWithTimeout(pingGraphql(), 'graphql');

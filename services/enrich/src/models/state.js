@@ -1,16 +1,17 @@
 /* eslint-disable no-param-reassign */
 const path = require('path');
-const fs = require('fs-extra');
+const fs = require('fs');
+const fsp = require('fs/promises');
 const { paths } = require('config');
 
-const logger = require('../logger/appLogger');
+const logger = require('../lib/logger/appLogger');
 
 /**
  * Create a new State in file on folder data/state/<apikey>/<id>.json
  * containing the enrich state.
  *
- * @param {string} id - Id of process.
- * @param {string} apikey - Apikey of user.
+ * @param {string} id Id of process.
+ * @param {string} apikey Apikey of user.
  *
  * @returns {Promise<void>}
  */
@@ -34,14 +35,14 @@ async function createState(id, apikey) {
 
   const dir = path.resolve(paths.data.statesDir, apikey);
 
-  const exist = await fs.exists(dir);
+  const exist = await fs.existsSync(dir);
 
   if (!exist) {
-    await fs.mkdir(dir);
+    await fsp.mkdir(dir);
   }
 
   try {
-    await fs.writeFile(filenamePath, JSON.stringify(state, null, 2));
+    await fsp.writeFile(filenamePath, JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`[state]: Cannot write [${JSON.stringify(state, null, 2)}] in [${filenamePath}]`, err);
     throw err;
@@ -52,8 +53,8 @@ async function createState(id, apikey) {
 /**
  * Get the content of state from a file in the folder data/state/<apikey>/<filename>.
  *
- * @param {string} filename - State filename.
- * @param {string} apikey - Apikey of user.
+ * @param {string} filename State filename.
+ * @param {string} apikey Apikey of user.
  *
  * @returns {Promise<Object>} State of enrich process in JSON format.
  */
@@ -63,7 +64,7 @@ async function getState(filename, apikey) {
   let state;
 
   try {
-    state = await fs.readFile(filenamePath, 'utf8');
+    state = await fsp.readFile(filenamePath, 'utf8');
   } catch (err) {
     logger.error(`[state]: Cannot read ["${filenamePath}"] file`, err);
     throw err;
@@ -82,13 +83,13 @@ async function getState(filename, apikey) {
 /**
  * Write the latest version of the state of enrich process to the file.
  *
- * @param {Object} state - State of job.
+ * @param {Object} state State of job.
  *
  * @returns {Promise<void>}
  */
 async function updateStateInFile(state) {
   try {
-    await fs.writeFile(state.path, JSON.stringify(state, null, 2));
+    await fsp.writeFile(state.path, JSON.stringify(state, null, 2));
   } catch (err) {
     logger.error(`[state]: Cannot write ${JSON.stringify(state, null, 2)} in ${state.path}`, err);
     throw err;
@@ -98,7 +99,7 @@ async function updateStateInFile(state) {
 /**
  * Update the state of enrich process when there is an error.
  *
- * @param {Object} state - State of job.
+ * @param {Object} state State of job.
  *
  * @returns {Promise<void>}
  */
@@ -113,8 +114,8 @@ async function fail(state) {
 /**
  * Update the state of enrich process when the process is finished.
  *
- * @param {string} id - Id of process.
- * @param {string} apikey - Apikey of user
+ * @param {string} id Id of process.
+ * @param {string} apikey Apikey of user
  *
  * @returns {Promise<void>}.
  */

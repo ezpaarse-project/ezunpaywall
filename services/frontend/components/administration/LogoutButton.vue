@@ -9,9 +9,8 @@
 
 <script setup>
 
-import { useAdminStore } from '@/store/admin';
-
 const adminStore = useAdminStore();
+
 const { t } = useI18n();
 
 function logOut() {

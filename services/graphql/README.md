@@ -13,7 +13,6 @@ warn: [config]: Elastic password has the default value
 
 info: {
   "nodeEnv": "development",
-  "accessLogRotate": false,
   "timezone": "Europe/Paris"
   "redis": {
     "host": "redis",
@@ -28,6 +27,7 @@ info: {
     "indexBase": "unpaywall_base",
     "indexHistory": "unpaywall_history"
   },
+  "apikey": "********",
   "healthTimeout": 3000
 }
 ```
@@ -37,7 +37,6 @@ info: {
 | name | default | description |
 | --- | --- | --- |
 | NODE_ENV | development | environment of node |
-| ACCESS_LOG_ROTATE | false | Set to true if you want to use access log rotation |
 | TIMEZONE | Europe/Paris | timezone of app used in cron |
 | REDIS_HOST | redis | redis host |
 | REDIS_PORT | 6379 | redis port |
@@ -48,10 +47,11 @@ info: {
 | ELASTICSEARCH_PASSWORD | changeme | elasticsearch admin password |
 | ELASTICSEARCH_INDEX_ALIAS | upw | graphql entry point |
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |
+| ADMIN_APIKEY | admin API key | changeme |
 
 ## Activity diagram
 
-![Activity-diagram](./doc/activity-diagram-graphql.png)
+![Activity-diagram](./docs/activity-diagram-graphql.png)
 
 ### Object structure
 
@@ -89,7 +89,7 @@ One cron automatically update metrics of unpaywall data. the elastic request tak
 ## Log format
 
 ```
-:ip ":user" [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":response-time" ":user-agent" ":countDOI"
+:date :ip :method :url :statusCode :userAgent :responseTime :countDOI
 ```
 
 ## Open API
@@ -101,5 +101,7 @@ One cron automatically update metrics of unpaywall data. the elastic request tak
 ```
 # Functional tests
 npm run test
-# For the rest, it's your turn to play
+
+# Unit tests
+# TODO
 ```

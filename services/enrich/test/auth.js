@@ -21,7 +21,7 @@ const {
 
 const ping = require('./utils/ping');
 
-const enrichService = process.env.ENRICH_HOST || 'http://localhost:59703';
+const enrichURL = process.env.ENRICH_URL || 'http://localhost:59702';
 const enrichDir = path.resolve(__dirname, 'sources');
 
 describe('Test: auth service in enrich service', () => {
@@ -43,22 +43,21 @@ describe('Test: auth service in enrich service', () => {
     describe('Test with user API key', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
           .set('x-api-key', 'user');
 
         expect(res1).have.status(200);
-
-        id = res1?.body?.id;
+        id = res1?.body;
       });
     });
 
     describe('Test with enrich API key', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
@@ -66,14 +65,14 @@ describe('Test: auth service in enrich service', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
     });
 
     describe('Test without API key', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -88,7 +87,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test with wrong API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -104,7 +103,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test with graphql API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -120,7 +119,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test with notAllowed API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -136,7 +135,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test with userRestricted API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -152,7 +151,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test with user API key', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
@@ -160,14 +159,14 @@ describe('Test: auth service in enrich service', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
     });
 
     describe('Do a enrichment but try to download with a other apikey', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.csv'), 'file01.csv')
           .set('Content-Type', 'text/csv')
@@ -181,7 +180,7 @@ describe('Test: auth service in enrich service', () => {
       it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
         // start enrich process
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'csv',
@@ -196,7 +195,7 @@ describe('Test: auth service in enrich service', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           expect(res3).have.status(200);
@@ -216,7 +215,7 @@ describe('Test: auth service in enrich service', () => {
 
       it('Shouldn\'t download the enrichedfile', async () => {
         const res4 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .get(`/enriched/${id}.csv`)
           .set('x-api-key', 'test');
 
@@ -229,7 +228,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test with user API key', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -237,14 +236,14 @@ describe('Test: auth service in enrich service', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
     });
 
     describe('Test to upload with enrich API key', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -252,7 +251,7 @@ describe('Test: auth service in enrich service', () => {
 
         expect(res1).have.status(200);
 
-        id = res1?.body?.id;
+        id = res1?.body;
       });
     });
 
@@ -260,7 +259,7 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         it('Should upload the file', async () => {
           const res = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .post('/upload')
             .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
             .set('Content-Type', 'application/x-ndjson');
@@ -274,7 +273,7 @@ describe('Test: auth service in enrich service', () => {
       it('Should return a error message', async () => {
         it('Should upload the file', async () => {
           const res = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .post('/upload')
             .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
             .set('Content-Type', 'application/x-ndjson')
@@ -288,7 +287,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test to enrich without API key', () => {
       it('Should return a error message', async () => {
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -303,7 +302,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test to enrich with a wrong API key that doen\'t exist', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -319,7 +318,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test to enrich with graphql API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -335,7 +334,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test to enrich with notAllowed API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -351,7 +350,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test to enrich with notAllowed API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -367,7 +366,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test to enrich with userRestricted API key', () => {
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -383,7 +382,7 @@ describe('Test: auth service in enrich service', () => {
     describe('Test to access to user files with enrich API key', () => {
       it('Should upload the file', async () => {
         const res1 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post('/upload')
           .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file01.jsonl'), 'file01.jsonl')
           .set('Content-Type', 'application/x-ndjson')
@@ -397,7 +396,7 @@ describe('Test: auth service in enrich service', () => {
       it('Should enrich the file on 3 lines with all unpaywall attributes and download it', async () => {
         // start enrich process
         const res2 = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/job/${id}`)
           .send({
             type: 'jsonl',
@@ -412,7 +411,7 @@ describe('Test: auth service in enrich service', () => {
         let res3;
         do {
           res3 = await chai
-            .request(enrichService)
+            .request(enrichURL)
             .get(`/states/${id}.json`)
             .set('x-api-key', 'user');
           await new Promise((resolve) => { setTimeout(resolve, 100); });
@@ -431,7 +430,7 @@ describe('Test: auth service in enrich service', () => {
 
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .get(`/states/${id}.json`)
           .set('x-api-key', 'enrich');
 
@@ -440,7 +439,7 @@ describe('Test: auth service in enrich service', () => {
 
       it('Should return a error message', async () => {
         const res = await chai
-          .request(enrichService)
+          .request(enrichURL)
           .post(`/enriched/${id}.jsonl`)
           .set('x-api-key', 'enrich');
 

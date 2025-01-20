@@ -1,5 +1,6 @@
 const config = require('config');
-const fs = require('fs-extra');
+const fs = require('fs');
+const fsp = require('fs/promises');
 const path = require('path');
 const joi = require('joi');
 
@@ -8,16 +9,16 @@ const { uploadDir, enrichedDir } = config.paths.data;
 /**
  * Controller to get list of enriched files of user.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function getEnrichedFiles(req, res, next) {
   const apikey = req.get('x-api-key');
 
   let files;
   try {
-    files = await fs.readdir(path.resolve(enrichedDir, apikey));
+    files = await fsp.readdir(path.resolve(enrichedDir, apikey));
   } catch (err) {
     if (err.code !== 'ENOENT') {
       return res.status(500).end();
@@ -30,15 +31,15 @@ async function getEnrichedFiles(req, res, next) {
 /**
  * Controller to get list of uploaded files of user.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function getUploadedFile(req, res, next) {
   const apikey = req.get('x-api-key');
   let files;
   try {
-    files = await fs.readdir(path.resolve(uploadDir, apikey));
+    files = await fsp.readdir(path.resolve(uploadDir, apikey));
   } catch (err) {
     if (err.code !== 'ENOENT') {
       return res.status(500).end();
@@ -51,9 +52,9 @@ async function getUploadedFile(req, res, next) {
 /**
  * Controller to get enriched file of user by filename.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function getEnrichedFileByFilename(req, res, next) {
   const { filename } = req.params;
@@ -64,7 +65,7 @@ async function getEnrichedFileByFilename(req, res, next) {
 
   const apikey = req.get('x-api-key');
 
-  if (!await fs.pathExists(path.resolve(enrichedDir, apikey, filename))) {
+  if (!await fs.existsSync(path.resolve(enrichedDir, apikey, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
@@ -74,9 +75,9 @@ async function getEnrichedFileByFilename(req, res, next) {
 /**
  * Controller to upload file.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function uploadFile(req, res, next) {
   if (!req?.file) return next({ message: 'File not sent' });

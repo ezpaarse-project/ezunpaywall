@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    :href="dashboardHost"
+    :href="dashboardURL"
     target="_blank"
     rel="noopener noreferrer"
   >
@@ -19,6 +19,6 @@ import ezmesureLogo from '@/static/images/ezmesure-logo.svg';
 
 const runtimeConfig = useRuntimeConfig();
 
-const dashboardHost = ref(runtimeConfig.public.dashboardHost);
+const dashboardURL = ref(runtimeConfig.public.dashboardURL);
 
 </script>

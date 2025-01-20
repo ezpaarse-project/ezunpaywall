@@ -4,7 +4,7 @@
       <v-btn
         v-bind="props"
         icon="mdi-help-circle"
-        :href="unpaywallLink"
+        :href="unpaywallAPIURL"
         target="_blank"
         rel="noopener noreferrer"
       />
@@ -18,6 +18,6 @@
 const { t } = useI18n();
 const runtimeConfig = useRuntimeConfig();
 
-const unpaywallLink = computed(() => `${runtimeConfig.public.unpaywallAPIHost}/feed/changefiles?interval=day`);
+const unpaywallAPIURL = computed(() => `${runtimeConfig.public.unpaywallAPIURL}/feed/changefiles?interval=day`);
 
 </script>

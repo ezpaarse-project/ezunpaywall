@@ -1,21 +1,21 @@
-const { redisClient } = require('../services/redis');
+const { redisClient } = require('../lib/redis');
 
-const logger = require('../logger/appLogger');
+const logger = require('../lib/logger/appLogger');
 
 /**
  * Authentication middleware that checks if if the arguments passed
  * in the body match the rights of the API key.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  *
  * This middleware need a body that contains the args of enrich.
  *
  * @returns {
  *  Promise<import('express').NextFunction> |
  *  Promise<import('express').Request>
- * } next - Do the following.
+ * }
  */
 async function checkArgs(req, res, next) {
   const apikey = req.get('x-api-key');

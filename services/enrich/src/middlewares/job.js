@@ -3,9 +3,9 @@ const joi = require('joi');
 /**
  * Joi middleware to check if config of job is correct.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function validateJobConfig(req, res, next) {
   const checkParams = joi.string().trim().required().validate(req.params.filename);

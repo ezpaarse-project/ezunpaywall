@@ -1,13 +1,13 @@
-const promiseWithTimeout = require('../ping');
-const { pingRedis } = require('../services/redis');
-const { pingElastic } = require('../services/elastic');
+const promiseWithTimeout = require('../lib/ping');
+const { pingRedis } = require('../lib/redis');
+const { pingElastic } = require('../lib/elastic');
 
 /**
  * Controller to get health of all services connected to graphql service.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function health(req, res, next) {
   const start = Date.now();
@@ -31,9 +31,9 @@ async function health(req, res, next) {
 /**
  * Controller to get health of redis service.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function healthRedis(req, res, next) {
   const resultPing = await promiseWithTimeout(pingRedis(), 'redis');
@@ -43,9 +43,9 @@ async function healthRedis(req, res, next) {
 /**
  * Controller to get health of redis service.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function healthElastic(req, res, next) {
   const resultPing = await promiseWithTimeout(pingElastic(), 'elastic');

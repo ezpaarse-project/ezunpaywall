@@ -71,8 +71,6 @@
 
 <script setup>
 
-import { useSnacksStore } from '@/store/snacks';
-
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 
@@ -126,7 +124,7 @@ async function validate() {
       });
       resetForm();
       snackStore.success(t('info.contact.mailSent'));
-    } catch (e) {
+    } catch (err) {
       snackStore.error(t('error.contact.failed'));
     }
     loading.value = false;

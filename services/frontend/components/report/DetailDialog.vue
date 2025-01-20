@@ -32,8 +32,6 @@
 
 <script setup>
 
-import JSONView from '@/components/skeleton/JSONView.vue';
-
 const { t } = useI18n();
 
 const props = defineProps({

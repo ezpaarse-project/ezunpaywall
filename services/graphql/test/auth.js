@@ -19,7 +19,7 @@ const {
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
+const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:59701';
 
 const doi1 = '1';
 
@@ -29,9 +29,9 @@ describe('Test: auth service in graphql service', () => {
     await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
-    await deleteIndex('unpaywall_base');
-    await createIndex('unpaywall_base', mappingUnpaywall);
-    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall_base');
+    await deleteIndex('unpaywall');
+    await createIndex('unpaywall', mappingUnpaywall);
+    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall');
   });
 
   describe('Test with user API key', () => {

@@ -1,12 +1,12 @@
 const graphqlFields = require('graphql-fields');
-const logger = require('../logger/appLogger');
-const { redisClient } = require('../services/redis');
+const logger = require('../lib/logger/appLogger');
+const { redisClient } = require('../lib/redis');
 
 /**
  * Flatten nested properties of an object by separating keys with dots.
  * Example: { foo: { bar: 'foo' } } => { 'foo.bar': 'foo' }
  *
- * @param {Object} obj - Object need to be flatten.
+ * @param {Object} obj Object need to be flatten.
  *
  * @returns {Object} Flatten object.
  */
@@ -34,9 +34,9 @@ function flatten(obj) {
 
 /**
  *
- * @param {*} req - Request
- * @param {*} args - Graphql args
- * @param {*} info - Info about graphql
+ * @param req Request
+ * @param args Graphql args
+ * @param info Info about graphql
  */
 async function checkApikey(req, args, info) {
   const apikey = req.get('X-API-KEY');
@@ -49,7 +49,7 @@ async function checkApikey(req, args, info) {
   try {
     key = await redisClient.get(apikey);
   } catch (err) {
-    logger.error(`[redis] Cannot get [${apikey}]`, err);
+    logger.error(`[redis]: Cannot get [${apikey}]`, err);
     throw Error('Internal server error');
   }
 
@@ -57,7 +57,7 @@ async function checkApikey(req, args, info) {
   try {
     apiKeyConfig = JSON.parse(key);
   } catch (err) {
-    logger.error(`[redis] Cannot parse [${key}]`, err);
+    logger.error(`[redis]: Cannot parse [${key}]`, err);
     throw Error('Internal server error');
   }
 
@@ -74,7 +74,7 @@ async function checkApikey(req, args, info) {
     try {
       await redisClient.set(apikey, `${JSON.stringify(apiKeyConfig)}`);
     } catch (err) {
-      logger.error(`[redis] Cannot update apikey [${apikey}] with config [${JSON.stringify(apiKeyConfig)}]`, err);
+      logger.error(`[redis]: Cannot update apikey [${apikey}] with config [${JSON.stringify(apiKeyConfig)}]`, err);
       throw err;
     }
   }

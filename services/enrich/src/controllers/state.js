@@ -1,17 +1,18 @@
 const { paths } = require('config');
 const path = require('path');
-const fs = require('fs-extra');
+const fs = require('fs');
+const fsp = require('fs/promises');
 
-const { getMostRecentFile } = require('../file');
+const { getMostRecentFile } = require('../lib/file');
 
 const { getState } = require('../models/state');
 
 /**
  * Controller to get list of states of enrich job of user.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function getStates(req, res, next) {
   const apikey = req.get('x-api-key');
@@ -36,7 +37,7 @@ async function getStates(req, res, next) {
   let states;
 
   try {
-    states = await fs.readdir(path.resolve(paths.data.statesDir, apikey));
+    states = await fsp.readdir(path.resolve(paths.data.statesDir, apikey));
   } catch (err) {
     return next({ message: err.message });
   }
@@ -47,9 +48,9 @@ async function getStates(req, res, next) {
 /**
  * Controller to get state of enrich job of user by filename.
  *
- * @param {import('express').Request} req - HTTP request.
- * @param {import('express').Response} res - HTTP response.
- * @param {import('express').NextFunction} next - Do the following.
+ * @param {import('express').Request} req HTTP request.
+ * @param {import('express').Response} res HTTP response.
+ * @param {import('express').NextFunction} next Do the following.
  */
 async function getStateByFilename(req, res, next) {
   const filename = req.data;
@@ -58,7 +59,7 @@ async function getStateByFilename(req, res, next) {
 
   let fileExist = false;
   try {
-    fileExist = await fs.exists(path.resolve(paths.data.statesDir, apikey, filename));
+    fileExist = await fs.existsSync(path.resolve(paths.data.statesDir, apikey, filename));
   } catch (err) {
     return next({ message: err.message });
   }

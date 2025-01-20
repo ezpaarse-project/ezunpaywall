@@ -39,7 +39,7 @@
         v-text="t('enrich.end')"
       />
     </div>
-    <Report
+    <EnrichReport
       :time="time"
       :state="state"
     />
@@ -50,13 +50,6 @@
 
 /* eslint-disable camelcase */
 /* eslint-disable no-await-in-loop */
-
-import { storeToRefs } from 'pinia';
-
-import Report from '@/components/enrich/Report.vue';
-
-import { useEnrichStore } from '@/store/enrich';
-import { useSnacksStore } from '@/store/snacks';
 
 const { t } = useI18n();
 const enrichStore = useEnrichStore();
@@ -100,14 +93,14 @@ async function upload() {
   const formData = new FormData();
   formData.append('file', files.value[0]);
 
-  let res;
+  let id;
 
   stepTitle.value = t('enrich.stepUpload');
+
   try {
-    res = await $enrich({
+    id = await $enrich('/upload', {
       method: 'POST',
-      url: '/upload',
-      data: formData,
+      body: formData,
       headers: {
         'Content-Type': 'text/csv',
         'x-api-key': apikey.value,
@@ -118,17 +111,15 @@ async function upload() {
     snackStore.error(t('error.enrich.uploadFile'));
     return errored();
   }
-  const id = res.data;
 
   return id;
 }
 
 async function enrich(id, data) {
   try {
-    await $enrich({
+    await $enrich(`/job/${id}`, {
       method: 'POST',
-      url: `/job/${id}`,
-      data,
+      body: data,
       headers: {
         'x-api-key': apikey.value,
       },
@@ -185,21 +176,20 @@ async function getStateOfEnrichJob(id) {
 
   do {
     try {
-      stateEnrich = await $enrich({
+      stateEnrich = await $enrich(`/states/${id}.json`, {
         method: 'GET',
-        url: `/states/${id}.json`,
         responseType: 'json',
         headers: {
           'x-api-key': apikey.value,
         },
       });
-      state.value = stateEnrich?.data;
+      state.value = stateEnrich;
     } catch (err) {
       snackStore.error(t('error.enrich.state'));
       return errored();
     }
     await new Promise((resolve) => { setTimeout(resolve, 1000); });
-  } while (!stateEnrich?.data?.done);
+  } while (!stateEnrich?.done);
   return true;
 }
 

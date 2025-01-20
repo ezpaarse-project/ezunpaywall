@@ -1,6 +1,5 @@
 { 
   "nodeEnv": "development",
-  "accessLogRotate": false,
   "healthcheckLogRotate": false,
   "timezone": "Europe/Paris",
   "redis": {
@@ -23,5 +22,6 @@
       "uploadDir": "./data/upload"
     }
   },
+  "apikey": "changeme",
   "healthTimeout": 3000
 }

@@ -20,7 +20,7 @@ const {
 
 chai.use(chaiHttp);
 
-const graphqlURL = process.env.GRAPHQL_HOST || 'http://localhost:59701';
+const graphqlURL = process.env.GRAPHQL_URL || 'http://localhost:59701';
 const doi1 = '1';
 
 const date1 = '2019-06-01';
@@ -33,16 +33,16 @@ describe('Test POST 2 unpaywallHistory resolver', () => {
     await ping();
     await deleteAllAPIKey();
     await loadDevAPIKey();
-    await deleteIndex('unpaywall_base');
-    await createIndex('unpaywall_base', unpaywallBaseMapping);
+    await deleteIndex('unpaywall');
+    await createIndex('unpaywall', unpaywallBaseMapping);
     await deleteIndex('unpaywall_history');
     await createIndex('unpaywall_history', unpaywallHistoryMapping);
-    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall_base');
+    await insertDataUnpaywall('indexBaseData.jsonl', 'unpaywall');
     await insertDataUnpaywall('indexHistoryData.jsonl', 'unpaywall_history');
   });
 
   describe('Test: Try to get a unpaywall data', () => {
-    it('Should get unpaywall data from unpaywall_base and unpaywall_history index', async () => {
+    it('Should get unpaywall data from unpaywall and unpaywall_history index', async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: `{ unpaywallHistory (dois: ["${doi1}"]) { doi, is_oa, updated, endValidity, referencedAt } }` })
@@ -83,7 +83,7 @@ describe('Test POST 2 unpaywallHistory resolver', () => {
   });
 
   describe(`Test: Try to get a unpaywall data at date [${date2}]`, () => {
-    it('Should get unpaywall data from unpaywall_base index', async () => {
+    it('Should get unpaywall data from unpaywall index', async () => {
       const res = await chai.request(graphqlURL)
         .post('/graphql')
         .send({ query: `{ unpaywallHistory (dois: ["${doi1}"], date: "${date2}") { doi, is_oa, updated, endValidity, referencedAt } }` })

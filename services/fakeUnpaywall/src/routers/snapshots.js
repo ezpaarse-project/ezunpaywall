@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const express = require('express');
 const path = require('path');
-const fs = require('fs-extra');
+const fs = require('fs');
 const joi = require('joi');
 
 const checkAuth = require('../middlewares/auth');
@@ -25,7 +25,7 @@ router.get('/feed/changefile/:file', async (req, res) => {
 
   const file = value;
 
-  const fileExist = await fs.pathExists(path.resolve(snapshotsDir, file));
+  const fileExist = await fs.existsSync(path.resolve(snapshotsDir, file));
   if (!fileExist) {
     return res.status(404).json({ message: `${file} not found` });
   }
@@ -44,7 +44,7 @@ router.get('/daily-feed/changefile/:file', async (req, res) => {
 
   const file = value;
 
-  const fileExist = await fs.pathExists(path.resolve(snapshotsDir, file));
+  const fileExist = await fs.existsSync(path.resolve(snapshotsDir, file));
   if (!fileExist) {
     return res.status(404).json({ message: `${file} not found` });
   }

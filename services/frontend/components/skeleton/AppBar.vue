@@ -12,28 +12,22 @@
     />
     <v-toolbar-title> {{ title }} </v-toolbar-title>
     <v-spacer />
-    <Help />
-    <Status />
+    <SkeletonAppbarHelp />
+    <SkeletonAppbarStatus />
   </v-app-bar>
 </template>
 
 <script setup>
-
-import Help from '@/components/skeleton/appbar/Help.vue';
-import Status from '@/components/skeleton/appbar/Status.vue';
 
 const runtimeConfig = useRuntimeConfig();
 
 const i18n = useI18n();
 
 const title = computed(() => {
-  if (runtimeConfig.public.environment === 'integration') {
-    return `ezunpaywall ${i18n.t('integration')}`;
+  if (runtimeConfig.public.environment) {
+    return `ezunpaywall ${runtimeConfig.public.environment}`;
   }
-  if (runtimeConfig.public.environment === 'production') {
-    return 'ezunpaywall';
-  }
-  return `ezunpaywall ${i18n.t('development')}`;
+  return 'ezunpaywall';
 });
 
 const emit = defineEmits({

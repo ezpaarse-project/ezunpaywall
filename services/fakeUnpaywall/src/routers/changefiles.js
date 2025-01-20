@@ -2,7 +2,7 @@
 /* eslint-disable global-require */
 const router = require('express').Router();
 const path = require('path');
-const fs = require('fs-extra');
+const fsp = require('fs/promises');
 
 const snapshotsDir = path.resolve(__dirname, '..', '..', 'snapshots');
 
@@ -30,15 +30,9 @@ router.patch('/changefiles', async (req, res, next) => {
 
   // create local file if dosn't exist
   const changefilesPath = path.resolve(snapshotsDir, `changefiles-${interval}.json`);
-  try {
-    await fs.ensureFile(changefilesPath);
-  } catch (err) {
-    logger.error(`[changefiles] Cannot create file [${path.resolve(snapshotsDir, `changefiles-${interval}.json`)}]`, err);
-    return next({ message: err.message });
-  }
 
   try {
-    await fs.writeFile(changefilesPath, JSON.stringify(changefilesExample, null, 2), 'utf8');
+    await fsp.writeFile(changefilesPath, JSON.stringify(changefilesExample, null, 2), 'utf8');
   } catch (err) {
     logger.error(`[changefiles] Cannot write [${JSON.stringify(changefilesExample, null, 2)}] in file [${changefilesPath}]`, err);
     return next({ message: err.message });

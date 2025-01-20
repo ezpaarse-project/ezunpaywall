@@ -7,7 +7,6 @@ services:
     container_name: ezunpaywall-graphql-prod
     environment:
       - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
       # elastic
       - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
@@ -19,51 +18,23 @@ services:
       - REDIS_PORT
       - REDIS_PASSWORD
     volumes:
-      - ${GRAPHQL_APPLICATION_LOG_PATH:-./src/graphql/log/application}:/usr/src/app/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH:-./src/graphql/log/access}:/usr/src/app/log/access
-      - ${ELASTIC_CERT_CA_PATH:-./src/graphql/certs/ca.crt}:/usr/src/app/certs
+      - ${GRAPHQL_APPLICATION_LOG_PATH:-./services/graphql/log/application}:/usr/src/app/log/application
+      - ${GRAPHQL_ACCESS_LOG_PATH:-./services/graphql/log/access}:/usr/src/app/log/access
+      - ${ELASTIC_CERT_CA_PATH:-./services/graphql/certs/ca.crt}:/usr/src/app/certs
     command: "npm start"
     depends_on:
       redis:
         condition: service_healthy
     restart: unless-stopped
-
-  update:
-    build:
-      context: ./services/update
-      args:
-        - http_proxy
-        - https_proxy
-    container_name: ezunpaywall-update-prod
-    environment:
-      - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
-      # proxy
-      - http_proxy
-      - https_proxy
-      # unpaywall
-      - UNPAYWALL_APIKEY
-      - UNPAYWALL_HOST=http://api.unpaywall.org
-      # elastic
-      - ELASTICSEARCH_HOSTS
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
-      # cron
-      - UPDATE_CRON_SCHEDULE
-      - UPDATE_CRON_ACTIVE
-      - UPDATE_CRON_INDEX
-      - UPDATE_CRON_INTERVAL
-      # password
-      - UPDATE_APIKEY
-    volumes:
-      - ${UPDATE_APPLICATION_LOG_PATH:-./src/update/log/application}:/usr/src/app/log/application
-      - ${UPDATE_ACCESS_LOG_PATH:-./src/update/log/access}:/usr/src/app/log/access
-      - ${UPDATE_DATA_PATH:-./src/update/data}:/usr/src/app/data
-      - ${ELASTIC_CERT_CA_PATH-./src/update/certs/ca.crt}:/usr/src/app/certs
-    command: "npm start"
-    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   enrich:
     build:
@@ -71,18 +42,17 @@ services:
     container_name: ezunpaywall-enrich-prod
     environment:
       - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
       # redis
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
       # graphql
-      - GRAPHQL_HOST
+      - GRAPHQL_URL
       - GRAPHQL_PORT
     volumes:
-      - ${ENRICH_APPLICATION_LOG_PATH:-./src/enrich/log/application}:/usr/src/app/log/application
-      - ${ENRICH_ACCESS_LOG_PATH:-./src/enrich/log/access}:/usr/src/app/log/access
-      - ${ENRICH_DATA_PATH:-./src/enrich/data}:/usr/src/app/data
+      - ${ENRICH_APPLICATION_LOG_PATH:-./services/enrich/log/application}:/usr/src/app/log/application
+      - ${ENRICH_ACCESS_LOG_PATH:-./services/enrich/log/access}:/usr/src/app/log/access
+      - ${ENRICH_DATA_PATH:-./services/enrich/data}:/usr/src/app/data
     command: "npm start"
     depends_on:
       redis:
@@ -90,48 +60,83 @@ services:
       elastic:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
-  apikey:
+  admin:
     build:
-      context: ./services/apikey
-    container_name: ezunpaywall-apikey-prod
+      context: ./services/admin
+    container_name: ezunpaywall-admin-prod
     environment:
-      - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
+      - NODE_ENV
+      - LOG_LEVEL=debug
+      # smtp
+      - SMTP_HOST=maildev
+      - SMTP_PORT
+      # mail
+      - NOTIFICATIONS_SENDER
+      - NOTIFICATIONS_RECEIVERS
+      - NOTIFICATIONS_MACHINE
+      # unpaywall
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_URL
+      # elastic
+      - ELASTICSEARCH_NODES
+      - ELASTICSEARCH_USERNAME
+      - ELASTICSEARCH_PASSWORD
+      - ELASTICSEARCH_INDEX_ALIAS
+      - ELASTICSEARCH_TIMEOUT
       # redis
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
-    volumes:
-      - ${APIKEY_APPLICATION_LOG_PATH:-./src/apikey/log/application}:/usr/src/app/log/application
-      - ${APIKEY_ACCESS_LOG_PATH:-./src/apikey/log/access}:/usr/src/app/log/access
-    command: "npm start"
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-    
-  mail:
-    build:
-      context: ./services/mail
-    container_name: ezunpaywall-mail-prod
-    environment:
-      - NODE_ENV=production
-      - ACCESS_LOG_ROTATE
-      # mail
-      - NODE_CONFIG
-      - MAIL_SMTP_HOST
-      - MAIL_SMTP_PORT
-      - MAIL_NOTIFICATIONS_SENDER
-      - MAIL_NOTIFICATIONS_RECEIVERS
-      - MAIL_NOTIFICATIONS_MACHINE
+      # cron snapshot
+      - CRON_DOWNLOAD_SNAPSHOT_SCHEDULE
+      - CRON_DOWNLOAD_SNAPSHOT_ACTIVE
+      - CRON_DOWNLOAD_SNAPSHOT_INDEX
+      # cron date update
+      - CRON_DATA_UPDATE_SCHEDULE
+      - CRON_DATA_UPDATE_ACTIVE
+      - CRON_DATA_UPDATE_INDEX
+      - CRON_DATA_UPDATE_INTERVAL
+      # cron date update history
+      - CRON_DATA_UPDATE_HISTORY_SCHEDULE
+      - CRON_DATA_UPDATE_HISTORY_ACTIVE
+      - CRON_DATA_UPDATE_HISTORY_INDEX
+      - CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY
+      - CRON_DATA_UPDATE_HISTORY_INTERVAL
+      # cron clean file
+      - CRON_CLEAN_FILE_SCHEDULE
+      - CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD
+      - CRON_CLEAN_FILE_REPORT_THRESHOLD
+      - CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD
       # password
-      - MAIL_APIKEY
+      - ADMIN_APIKEY
+      # health
+      - HEALTH_TIMEOUT
     volumes:
-      - ${MAIL_APPLICATION_LOG_PATH:-./src/mail/log/application}:/usr/src/app/log/application
-      - ${MAIL_ACCESS_LOG_PATH:-./src/mail/log/access}:/usr/src/app/log/access
-    command: "npm start"
+      - ${UPDATE_APPLICATION_LOG_PATH:-./services/update/log/application}:/usr/src/app/log/application
+      - ${UPDATE_ACCESS_LOG_PATH:-./services/update/log/access}:/usr/src/app/log/access
+      - ${UPDATE_DATA_PATH:-./services/update/data}:/usr/src/app/data
+      - ${ELASTIC_CERT_CA_PATH-./services/update/certs/ca.crt}:/usr/src/app/certs
+    command: "npm run start"
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   frontend:
     build:
@@ -142,15 +147,22 @@ services:
       - NUXT_PUBLIC_ENVIRONMENT=development
       - NUXT_PUBLIC_ELASTIC_ENV=development
       - NUXT_PUBLIC_VERSION=development
-      - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_HOST
-      - NUXT_PUBLIC_UNPAYWALL_API_HOST
-      - NUXT_PUBLIC_UNPAYWALL_HOST
-      - NUXT_PUBLIC_GRAPHQL_HOST=http://localhost/api
-      - NUXT_PUBLIC_UPDATE_HOST=http://localhost/api/update
-      - NUXT_PUBLIC_ENRICH_HOST=http://localhost/api/enrich
-      - NUXT_PUBLIC_APIKEY_HOST=http://localhost/api/apikey
-      - NUXT_MAIL_APIKEY
-      - NUXT_MAIL_HOST="http://mail:3000"
+      - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_URL
+      - NUXT_PUBLIC_UNPAYWALL_API_URL
+      - NUXT_PUBLIC_UNPAYWALL_URL
+      - NUXT_PUBLIC_GRAPHQL_URL=http://localhost/api
+      - NUXT_PUBLIC_ENRICH_URL=http://localhost/enrich
+      - NUXT_PUBLIC_ADMIN_URL=http://localhost/api/admin
+      - NUXT_ADMIN_APIKEY
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   redis:
     image: redis:7.2.4-alpine3.19
@@ -159,6 +171,15 @@ services:
     volumes:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli --pass changeme ping | grep PONG"
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   nginx:
     build:
@@ -167,33 +188,26 @@ services:
     environment:
       # host of service
       - NGINX_HOST
-      - FRONTEND_HOST=http://frontend:3000/
-      - GRAPHQL_HOST=http://graphql:3000/
-      - UPDATE_HOST=http://update:3000/
-      - ENRICH_HOST=http://enrich:3000/
-      - APIKEY_HOST=http://apikey:3000/
-      - MAIL_HOST=http://mail:3000/
-      - HEALTH_HOST=http://health:3000/
+      - FRONTEND_URL=http://frontend:3000/
+      - GRAPHQL_URL=http://graphql:3000/
+      - ADMIN_URL=http://admin:3000/
+      - ENRICH_URL=http://enrich:3000/
     ports:
       - ${NGINX_PORT:-80}:80
     restart: unless-stopped
     depends_on:
-      enrich:
-        condition: service_healthy
-      update:
-        condition: service_healthy
       graphql:
         condition: service_healthy
-      apikey:
+      enrich:
         condition: service_healthy
-      mail:
+      admin:
         condition: service_healthy
       frontend:
         condition: service_healthy
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
-    container_name: ezunpaywall-elastic-dev
+    container_name: ezunpaywall-elastic-prod
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -220,7 +234,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
-    container_name: ezunpaywall-kibana-dev
+    container_name: ezunpaywall-kibana-prod
     environment:
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}

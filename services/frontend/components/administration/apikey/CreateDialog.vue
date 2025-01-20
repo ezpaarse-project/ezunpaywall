@@ -69,7 +69,7 @@
           </v-card-actions>
           <v-divider />
           <v-card-title> {{ t('administration.apikey.attributes') }} </v-card-title>
-          <SelectorAttributes
+          <UnpaywallArgsSelectorAttributes
             :simple="attributesSimple"
             :best-oa-location="attributesBestOaLocation"
             :first-oa-location="attributesFirstOaLocation"
@@ -105,17 +105,10 @@
 
 <script setup>
 
-import { storeToRefs } from 'pinia';
-
-import SelectorAttributes from '@/components/unpaywallArgs/SelectorAttributes.vue';
-
-import { useSnacksStore } from '@/store/snacks';
-import { useAdminStore } from '@/store/admin';
-
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $apikey } = useNuxtApp();
+const { $admin } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
 
@@ -156,10 +149,9 @@ const attributesZAuthors = computed(() => attributes.value?.filter((e) => e.incl
 async function createApikey() {
   loading.value = true;
   try {
-    await $apikey({
+    await $admin('/apikeys', {
       method: 'POST',
-      url: '/keys',
-      data: {
+      body: {
         name: name.value,
         owner: owner.value,
         description: description.value,

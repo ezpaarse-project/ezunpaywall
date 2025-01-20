@@ -6,32 +6,33 @@
    "license": "CeCILL",
    "scripts": {
       "prepare": "husky install",
-      "install:apikey": "npm --prefix services/apikey install",
+      "install": "run-p -ls install:*",
+      "install:admin": "npm --prefix services/admin install",
       "install:enrich": "npm --prefix services/enrich install",
       "install:fakeUnpaywall": "npm --prefix services/fakeUnpaywall install",
       "install:frontend": "npm --prefix services/frontend install",
       "install:graphql": "npm --prefix services/graphql install",
-      "install:mail": "npm --prefix services/mail install",
-      "install:update": "npm --prefix services/update install",
-      "postinstall": "npm run install:apikey; npm run install:enrich; npm run install:fakeUnpaywall; npm run install:frontend; npm run install:graphql; npm run install:mail; npm run install:update",
-      "test:apikey": "npm --prefix services/apikey run test",
+      "test": "run-p -ls test:*",
+      "test:admin": "npm --prefix services/admin run test",
       "test:enrich": "npm --prefix services/enrich run test",
       "test:graphql": "npm --prefix services/graphql run test",
-      "test:update": "npm --prefix services/update run test",
-      "test": "npm run test:apikey; npm run test:enrich; npm run test:graphql; npm run test:update;",
-      "audit:apikey": "npm --prefix services/apikey audit",
+      "audit": "run-p -ls audit:*",
+      "audit:admin": "npm --prefix services/admin audit",
       "audit:enrich": "npm --prefix services/enrich audit",
       "audit:fakeUnpaywall": "npm --prefix services/fakeUnpaywall audit",
       "audit:frontend": "npm --prefix services/frontend audit",
       "audit:graphql": "npm --prefix services/graphql audit",
-      "audit:mail": "npm --prefix services/mail audit",
-      "audit:update": "npm --prefix services/update audit",
-      "audit": "npm run audit:apikey; npm run audit:enrich; npm run audit:fakeUnpaywall; npm run audit:frontend; npm run audit:graphql; npm run audit:mail; npm run audit:update"
+      "lint": "run-p -ls lint:*",
+      "lint:admin": "npm --prefix services/admin run lint",
+      "lint:enrich": "npm --prefix services/enrich run lint",
+      "lint:frontend": "npm --prefix services/frontend run lint",
+      "lint:graphql": "npm --prefix services/graphql run lint"
    },
    "devDependencies": {
       "husky": "^8.0.3"
    },
    "dependencies": {
-      "eslint": "^8.49.0"
+      "eslint": "^8.49.0",
+      "npm-run-all": "^4.1.5"
    }
 }

@@ -1,30 +1,32 @@
-FROM node:18.19.1-alpine3.19
+FROM node:18.19.1-alpine3.19 AS base
+
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
+
+FROM base AS builder
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+FROM base
+WORKDIR /usr/src/app
+COPY --from=builder  /usr/src/app/node_modules ./node_modules 
+COPY . .
+
+ARG ENV=development
+
+HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
+  CMD [ "node", "-e", "require('http').get('http://localhost:3000', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1));" ]
+        
+RUN mkdir -p ./log/access ./log/application ./log/healthcheck  \
+  && chmod -R 700 ./log \
+  && chown -R node:node ./log
+
+RUN if [ "$ENV" = "production" ]; then \
+      rm -f /bin/bash /bin/sh; \
+    fi
+
+USER node
 
 EXPOSE 3000
 
-ENV NODE_ENV production
-
-ARG ACCESS_LOG_ROTATE
-ARG TIMEZONE
-ARG REDIS_HOST
-ARG REDIS_PORT
-ARG REDIS_PASSWORD
-ARG ELASTICSEARCH_HOSTS
-ARG ELASTICSEARCH_PORT
-ARG ELASTICSEARCH_USERNAME
-ARG ELASTICSEARCH_PASSWORD
-ARG ELASTICSEARCH_INDEX_BASE
-ARG ELASTICSEARCH_INDEX_HISTORY
-ARG HEALTH_TIMEOUT
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-RUN npm ci --omit=dev
-COPY . .
-
-HEALTHCHECK --interval=1m --timeout=10s --retries=5 --start-period=20s \
-  CMD wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
-
-CMD [ "npm", "start" ]
+ENTRYPOINT [ "node", "./src/app.js" ]
