@@ -120,30 +120,6 @@ paths:
                     elapsedTime: 3001
                     status: false
 
-  /health/redis:
-    get:
-      tags:
-        - ping
-      operationId: get-health-redis
-      summary: Health on redis service
-      description: Health on redis
-      parameters: []
-      responses:
-        '200':
-          $ref: '#/components/responses/Health'
-      
-  /health/elastic:
-    get:
-      tags:
-        - ping
-      operationId: get-health-elastic
-      summary: Health on elastic service
-      description: Health on elastic
-      parameters: []
-      responses:
-        '200':
-          $ref: '#/components/responses/Health'
-
   /healthcheck:
     get:
       tags:
@@ -192,37 +168,6 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 components:
-  responses:
-    Health:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              status:
-                type: boolean
-              elapsedTime:
-                type: integer
-            x-examples:
-              Example 1:
-                name: redis
-                status: true
-                elapsedTime: 1
-          examples:
-            Success:
-              value:
-                name: name of service
-                status: true
-                elapsedTime: 1
-            Error redis:
-              value:
-                name: redis
-                elapsedTime: 3002
-                error: time out
-                status: false
   securitySchemes:
     x-api-key:
       type: apiKey
