@@ -12,3 +12,9 @@ Entry point and reverse proxy that redirecting all services of ezunpaywall.
 | ENRICH_URL | enrich URL | "" |
 | NGINX_HOST | nginx host | "" |
 | NGINX_PORT | output port | 80 |
+
+## Command to set volume permissions (non root image docker)
+
+```sh
+docker compose run --rm --entrypoint "" --user root nginx chown -R nginx /var/log/nginx/
+```

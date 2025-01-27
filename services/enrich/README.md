@@ -41,6 +41,13 @@ info: {
 | HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
 | PORT | Port | 3000 |
 
+## Command to set volume permissions (non root image docker)
+
+```sh
+docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
+```
+
 ## Activity diagram
 
 Enrich process
