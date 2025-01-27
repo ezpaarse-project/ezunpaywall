@@ -54,5 +54,6 @@
     }
   },
   "apikey": "ADMIN_APIKEY",
-  "healthTimeout": "HEALTH_TIMEOUT"
+  "healthTimeout": "HEALTH_TIMEOUT",
+  "port": "PORT"
 }

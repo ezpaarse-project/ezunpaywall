@@ -6,6 +6,7 @@ services:
     container_name: ezunpaywall-graphql-dev
     environment:
       - NODE_ENV
+      - PORT
       # elastic
       - ELASTICSEARCH_NODES
       - ELASTICSEARCH_USERNAME
@@ -37,6 +38,7 @@ services:
     container_name: ezunpaywall-enrich-dev
     environment:
       - NODE_ENV
+      - PORT
       # redis
       - REDIS_HOST
       - REDIS_PORT
@@ -65,6 +67,7 @@ services:
     container_name: ezunpaywall-admin-dev
     environment:
       - NODE_ENV
+      - PORT
       - LOG_LEVEL=debug
       # smtp
       - SMTP_HOST=maildev
@@ -135,10 +138,11 @@ services:
       - ./services/frontend:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${FRONTEND_PORT:-59706}:3000
+      - ${FRONTEND_PORT:-59704}:3000
       - 24678:24678
     environment:
       - NODE_ENV
+      - NUXT_PORT
       - NUXT_PUBLIC_ENVIRONMENT
       - NUXT_PUBLIC_ELASTIC_ENV=development
       - NUXT_PUBLIC_VERSION=development

@@ -7,6 +7,7 @@ services:
     container_name: ezunpaywall-graphql-prod
     environment:
       - NODE_ENV=production
+      - PORT
       # elastic
       - ELASTICSEARCH_HOSTS
       - ELASTICSEARCH_PORT
@@ -26,15 +27,6 @@ services:
       redis:
         condition: service_healthy
     restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
 
   enrich:
     build:
@@ -42,6 +34,7 @@ services:
     container_name: ezunpaywall-enrich-prod
     environment:
       - NODE_ENV=production
+      - PORT
       # redis
       - REDIS_HOST
       - REDIS_PORT
@@ -60,15 +53,6 @@ services:
       elastic:
         condition: service_healthy
     restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
 
   admin:
     build:
@@ -76,6 +60,7 @@ services:
     container_name: ezunpaywall-admin-prod
     environment:
       - NODE_ENV
+      - PORT
       - LOG_LEVEL=debug
       # smtp
       - SMTP_HOST=maildev
@@ -122,21 +107,12 @@ services:
       # health
       - HEALTH_TIMEOUT
     volumes:
-      - ${UPDATE_APPLICATION_LOG_PATH:-./services/update/log/application}:/usr/src/app/log/application
-      - ${UPDATE_ACCESS_LOG_PATH:-./services/update/log/access}:/usr/src/app/log/access
-      - ${UPDATE_DATA_PATH:-./services/update/data}:/usr/src/app/data
-      - ${ELASTIC_CERT_CA_PATH-./services/update/certs/ca.crt}:/usr/src/app/certs
+      - ${ADMIN_APPLICATION_LOG_PATH:-./services/admin/log/application}:/usr/src/app/log/application
+      - ${ADMIN_ACCESS_LOG_PATH:-./services/admin/log/access}:/usr/src/app/log/access
+      - ${ADMIN_DATA_PATH:-./services/admin/data}:/usr/src/app/data
+      - ${ELASTIC_CERT_CA_PATH-./services/admin/certs/ca.crt}:/usr/src/app/certs
     command: "npm run start"
     restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
 
   frontend:
     build:
@@ -144,6 +120,7 @@ services:
     container_name: ezunpaywall-frontend-prod
     environment:
       - NODE_ENV=development
+      - NUXT_PORT
       - NUXT_PUBLIC_ENVIRONMENT=development
       - NUXT_PUBLIC_ELASTIC_ENV=development
       - NUXT_PUBLIC_VERSION=development
@@ -151,18 +128,9 @@ services:
       - NUXT_PUBLIC_UNPAYWALL_API_URL
       - NUXT_PUBLIC_UNPAYWALL_URL
       - NUXT_PUBLIC_GRAPHQL_URL=http://localhost/api
-      - NUXT_PUBLIC_ENRICH_URL=http://localhost/enrich
+      - NUXT_PUBLIC_ENRICH_URL=http://localhost/api/enrich
       - NUXT_PUBLIC_ADMIN_URL=http://localhost/api/admin
       - NUXT_ADMIN_APIKEY
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000 || exit 1"
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 5
 
   redis:
     image: redis:7.2.4-alpine3.19
