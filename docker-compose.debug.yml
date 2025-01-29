@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   graphql:
-    image: node:18.19.1
+    image: node:22.13.1
     container_name: ezunpaywall-graphql-dev
     environment:
       - NODE_ENV
@@ -34,7 +34,7 @@ services:
       retries: 5
 
   enrich:
-    image: node:18.19.1
+    image: node:22.13.1
     container_name: ezunpaywall-enrich-dev
     environment:
       - NODE_ENV
@@ -63,7 +63,7 @@ services:
       retries: 5
   
   admin:
-    image: node:18.19.1
+    image: node:22.13.1
     container_name: ezunpaywall-admin-dev
     environment:
       - NODE_ENV
@@ -131,7 +131,7 @@ services:
       retries: 5
 
   frontend:
-    image: node:18.19.1
+    image: node:22.13.1
     container_name: ezunpaywall-frontend-dev
     working_dir: /usr/src/app
     volumes:
@@ -218,7 +218,7 @@ services:
 
   fakeunpaywall:
     container_name: ezunpaywall-fakeunpaywall-dev
-    image: node:18.19.1
+    image: node:22.13.1
     working_dir: /usr/src/app
     volumes:
       - ./services/fakeUnpaywall:/usr/src/app
