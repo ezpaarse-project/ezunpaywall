@@ -12,6 +12,7 @@ RUN npm run build
 FROM base
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/.output /usr/src/app
+COPY ./healthcheck.js ./healthcheck.js
 
 ARG ENV=development
 ENV PORT=3000
