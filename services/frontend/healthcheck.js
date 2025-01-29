@@ -6,7 +6,7 @@ const URL = `http://localhost:${PORT}`;
 console.log(`[healthcheck]: Checking health at: ${URL}`);
 
 http.get(URL, (res) => {
-  if (res.statusCode === 204) {
+  if (res.statusCode === 200) {
     process.exit(0);
   } else {
     console.error(`[healthcheck]: Cannot request ${URL} - failed with status code: ${res.statusCode}`);
