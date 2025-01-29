@@ -6,7 +6,7 @@
       flat
       dense
     >
-      <v-toolbar-title> {{ t('home.metrics', { env: getElasticEnvironment() }) }} </v-toolbar-title>
+      <v-toolbar-title> {{ t('home.metrics', { env: title }) }} </v-toolbar-title>
     </v-toolbar>
     <v-card-text>
       <v-card-title> {{ t('home.globalMetrics') }} </v-card-title>
@@ -59,17 +59,11 @@ const metrics = computed(() => {
   }
 });
 
-function getElasticEnvironment() {
-  if (
-    !(runtimeConfig.public.elasticEnv === 'integration'
-      || runtimeConfig.public.elasticEnv === 'production')
-  ) {
-    return t('development');
+const title = computed(() => {
+  if (runtimeConfig.public.elasticEnv) {
+    return `ezunpaywall ${runtimeConfig.public.elasticEnv}`;
   }
-  if (runtimeConfig.public.elasticEnv === 'integration') {
-    return t('integration');
-  }
-  return '';
-}
+  return 'ezunpaywall';
+});
 
 </script>
