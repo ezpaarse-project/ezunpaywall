@@ -46,13 +46,13 @@ paths:
         '204':
           description: No Content
   
-  /health:
+  /status:
     get:
       tags:
         - ping
-      operationId: get-health
-      summary: Health.
-      description: Health on all service connected to admin service.
+      operationId: get-status
+      summary: Status.
+      description: status on all service connected to admin service.
       parameters: []
       responses:
         '200':
@@ -757,7 +757,7 @@ paths:
                     error: false
                     took: 0.167
   
-  /status:
+  /job/status:
     get:
       tags:
         - job

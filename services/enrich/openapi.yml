@@ -48,11 +48,11 @@ paths:
         '204':
           description: No Content
       
-  /health:
+  /status:
     get:
-      summary: Health
-      operationId: get-health
-      description: Health on all service connected to enrich service
+      summary: Status
+      operationId: get-status
+      description: Status on all service connected to enrich service
       parameters: []
       tags:
         - ping
