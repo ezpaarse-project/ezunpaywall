@@ -14,7 +14,7 @@ const adminURL = process.env.ADMIN_URL || 'http://localhost:59703';
 async function checkStatus() {
   let res = true;
   try {
-    res = await chai.request(adminURL).get('/status');
+    res = await chai.request(adminURL).get('/job/status');
   } catch (err) {
     console.error(`checkStatus : ${err}`);
   }

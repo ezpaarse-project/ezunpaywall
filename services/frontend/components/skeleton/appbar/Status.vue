@@ -72,7 +72,7 @@ async function getState() {
 async function checkIfUpdate() {
   let res;
   try {
-    res = await $admin('/status', {
+    res = await $admin('/job/status', {
       method: 'get',
     });
   } catch (err) {
