@@ -44,8 +44,8 @@ info: {
 ## Command to set volume permissions (non root image docker)
 
 ```sh
-docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/log
-docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
+docker compose run --rm --entrypoint "" --user node enrich chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user node enrich chown -R node /usr/src/app/data
 ```
 
 ## Activity diagram

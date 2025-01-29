@@ -136,8 +136,8 @@ To set up this service, you can use environment variables. The config is display
 ## Command to set volume permissions (non root image docker)
 
 ```sh
-docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/log
-docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/data
+docker compose run --rm --entrypoint "" --user node admin chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user node admin chown -R node /usr/src/app/data
 ```
 
 ## Activity diagram
