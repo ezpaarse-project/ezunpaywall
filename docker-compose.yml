@@ -23,9 +23,6 @@ services:
       - ${GRAPHQL_ACCESS_LOG_PATH:-./services/graphql/log/access}:/usr/src/app/log/access
       - ${ELASTIC_CERT_CA_PATH:-./services/graphql/certs/ca.crt}:/usr/src/app/certs
     command: "npm start"
-    depends_on:
-      redis:
-        condition: service_healthy
     restart: unless-stopped
 
   enrich:
@@ -47,11 +44,6 @@ services:
       - ${ENRICH_ACCESS_LOG_PATH:-./services/enrich/log/access}:/usr/src/app/log/access
       - ${ENRICH_DATA_PATH:-./services/enrich/data}:/usr/src/app/data
     command: "npm start"
-    depends_on:
-      redis:
-        condition: service_healthy
-      elastic:
-        condition: service_healthy
     restart: unless-stopped
 
   admin:
@@ -135,7 +127,7 @@ services:
   redis:
     image: redis:7.2.4-alpine3.19
     container_name: ezunpaywall-redis-prod
-    command: redis-server --requirepass "${REDIS_PASSWORD}"
+    command: redis-server --requirepass "${REDIS_PASSWORD:-changeme}"
     volumes:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
     restart: unless-stopped
