@@ -54,8 +54,7 @@ info: {
 ## Command to set volume permissions (non root image docker)
 
 ```sh
-docker compose run --rm --entrypoint "" --user node graphql chown -R node /usr/src/app/log
-docker compose run --rm --entrypoint "" --user node graphql chown -R node /usr/src/app/data
+docker compose run --rm --entrypoint "" --user root graphql chown -R node /usr/src/app/log
 ```
 
 ## Activity diagram

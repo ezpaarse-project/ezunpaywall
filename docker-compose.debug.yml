@@ -21,13 +21,13 @@ services:
       - ./services/graphql:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${GRAPHQL_PORT:-59701}:3000
+      - ${GRAPHQL_PORT:-59701}:3001
     restart: unless-stopped
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3001/healthcheck || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -44,19 +44,19 @@ services:
       - REDIS_PORT
       - REDIS_PASSWORD
       # graphql
-      - GRAPHQL_URL=http://graphql:3000
+      - GRAPHQL_URL=http://graphql:3001
     working_dir: /usr/src/app
     volumes:
       - ./services/enrich:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${ENRICH_PORT:-59702}:3000
+      - ${ENRICH_PORT:-59702}:3002
     restart: unless-stopped
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3002/healthcheck || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -124,7 +124,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3003/healthcheck || exit 1"
         ]
       interval: 10s
       timeout: 10s
@@ -190,9 +190,9 @@ services:
       # host of service
       - NGINX_HOST=localhost
       - FRONTEND_URL=http://frontend:3000/
-      - GRAPHQL_URL=http://graphql:3000/
-      - ENRICH_URL=http://enrich:3000/
-      - ADMIN_URL=http://admin:3000/
+      - GRAPHQL_URL=http://graphql:3001/
+      - ENRICH_URL=http://enrich:3002/
+      - ADMIN_URL=http://admin:3003/
     ports:
       - ${NGINX_PORT:-80}:80
     volumes:

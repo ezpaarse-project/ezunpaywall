@@ -13,7 +13,6 @@ COPY --from=builder  /usr/src/app/node_modules ./node_modules
 COPY . .
 
 ARG ENV=development
-ENV PORT=3000
 
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s CMD ["node", "./healthcheck.js"]
 
@@ -27,6 +26,6 @@ RUN if [ "$ENV" = "production" ]; then \
 
 USER node
 
-EXPOSE $PORT
+EXPOSE 3001
 
 ENTRYPOINT [ "node", "./src/app.js" ]

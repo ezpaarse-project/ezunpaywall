@@ -16,5 +16,5 @@ Entry point and reverse proxy that redirecting all services of ezunpaywall.
 ## Command to set volume permissions (non root image docker)
 
 ```sh
-docker compose run --rm --entrypoint "" --user node nginx chown -R nginx /var/log/nginx/
+docker compose run --rm --entrypoint "" --user root nginx chown -R nginx /var/log/nginx/
 ```

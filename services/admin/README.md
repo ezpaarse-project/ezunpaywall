@@ -131,13 +131,13 @@ To set up this service, you can use environment variables. The config is display
 | CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD | Detention time in days | 150 |
 | ADMIN_APIKEY | Admin API key | changeme |
 | HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
-| PORT | Port | 3000 |
+| PORT | Port | 3003 |
 
 ## Command to set volume permissions (non root image docker)
 
 ```sh
-docker compose run --rm --entrypoint "" --user node admin chown -R node /usr/src/app/log
-docker compose run --rm --entrypoint "" --user node admin chown -R node /usr/src/app/data
+docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/data
 ```
 
 ## Activity diagram

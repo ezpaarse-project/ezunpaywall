@@ -23,7 +23,7 @@ info: {
   },
   "apikey": "********",
   "healthTimeout": 3000,
-  "port": 3000
+  "port": 3002
 }
 ```
 
@@ -36,16 +36,16 @@ info: {
 | REDIS_HOST | Redis host | redis |
 | REDIS_PORT | Redis port | 6379 |
 | REDIS_PASSWORD | Redis password | changeme |
-| GRAPHQL_URL | Graphql host | http://graphql:3000 |
+| GRAPHQL_URL | Graphql URL | http://graphql:3000 |
 | ADMIN_APIKEY | Admin API key | changeme |
 | HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
-| PORT | Port | 3000 |
+| PORT | Port | 3002 |
 
 ## Command to set volume permissions (non root image docker)
 
 ```sh
-docker compose run --rm --entrypoint "" --user node enrich chown -R node /usr/src/app/log
-docker compose run --rm --entrypoint "" --user node enrich chown -R node /usr/src/app/data
+docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
 ```
 
 ## Activity diagram

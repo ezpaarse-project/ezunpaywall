@@ -1,6 +1,6 @@
 const http = require('http');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 const URL = `http://localhost:${PORT}/healthcheck`;
 
 console.log(`[healthcheck]: Checking health at: ${URL}`);
