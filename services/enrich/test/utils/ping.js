@@ -4,20 +4,20 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const enrichHost = process.env.ENRICH_URL || 'http://localhost:59702';
-const elasticHost = process.env.UPDATE_HOST || 'http://elastic:changeme@localhost:9200';
-const adminURL = process.env.APIKEY_HOST || 'http://localhost:59703';
+const enrichURL = process.env.ENRICH_URL || 'http://localhost:59702';
+const elasticURL = process.env.ELASITC_URL || 'http://elastic:changeme@localhost:9200';
+const adminURL = process.env.ADMIN_URL || 'http://localhost:59703';
 
 /**
  * ping all services to see if they are available
  */
 async function ping() {
-  const enrich = await chai.request(enrichHost).get('/ping');
+  const enrich = await chai.request(enrichURL).get('/ping');
   if (enrich?.status !== 204) {
     throw new Error(`[enrich] Bad status : ${enrich?.status}`);
   }
 
-  const elastic = await chai.request(elasticHost).get('/');
+  const elastic = await chai.request(elasticURL).get('/');
   if (elastic?.status !== 200) {
     throw new Error(`[elastic] Bad status : ${elastic?.status}`);
   }
