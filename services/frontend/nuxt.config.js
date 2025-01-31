@@ -25,7 +25,7 @@ export default defineNuxtConfig({
       elasticEnv: process.env.NUXT_PUBLIC_ELASTIC_ENV || 'local',
       version: process.env.NUXT_PUBLIC_VERSION || 'local',
     },
-    adminURL: process.env.NUXT_ADMIN_URL || 'http://admin:3000',
+    adminURL: process.env.NUXT_ADMIN_URL || 'http://admin:3003',
     adminAPIKey: process.env.NUXT_ADMIN_APIKEY || 'changeme',
   },
 

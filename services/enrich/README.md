@@ -19,7 +19,7 @@ info: {
     "password": "********"
   },
   "graphql": {
-    "host": "http://graphql:3000"
+    "host": "http://graphql:3001"
   },
   "apikey": "********",
   "healthTimeout": 3000,
@@ -36,7 +36,7 @@ info: {
 | REDIS_HOST | Redis host | redis |
 | REDIS_PORT | Redis port | 6379 |
 | REDIS_PASSWORD | Redis password | changeme |
-| GRAPHQL_URL | Graphql URL | http://graphql:3000 |
+| GRAPHQL_URL | Graphql URL | http://graphql:3001 |
 | ADMIN_APIKEY | Admin API key | changeme |
 | HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
 | PORT | Port | 3002 |
