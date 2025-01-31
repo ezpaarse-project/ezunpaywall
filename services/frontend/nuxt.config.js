@@ -22,10 +22,10 @@ export default defineNuxtConfig({
       graphqlURL: process.env.NUXT_PUBLIC_GRAPHQL_URL || 'http://localhost:59701',
       enrichURL: process.env.NUXT_PUBLIC_ENRICH_URL || 'http://localhost:59702',
       adminURL: process.env.NUXT_PUBLIC_ADMIN_URL || 'http://localhost:59703',
-      elasticEnv: process.env.NUXT_PUBLIC_ELASTIC_ENV || 'development',
-      version: process.env.NUXT_PUBLIC_VERSION || 'development',
+      elasticEnv: process.env.NUXT_PUBLIC_ELASTIC_ENV || 'local',
+      version: process.env.NUXT_PUBLIC_VERSION || 'local',
     },
-    adminURL: process.env.NUXT_ADMIN_URL || 'http://admin:3000',
+    adminURL: process.env.NUXT_ADMIN_URL || 'http://admin:3003',
     adminAPIKey: process.env.NUXT_ADMIN_APIKEY || 'changeme',
   },
 
@@ -41,7 +41,7 @@ export default defineNuxtConfig({
 
   devServer: {
     host: '0.0.0.0',
-    port: 3000,
+    port: process.env.PORT || 3000,
   },
 
   devtools: { enabled: true },

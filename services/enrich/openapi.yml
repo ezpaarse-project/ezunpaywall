@@ -48,11 +48,11 @@ paths:
         '204':
           description: No Content
       
-  /health:
+  /status:
     get:
-      summary: Health
-      operationId: get-health
-      description: Health on all service connected to enrich service
+      summary: Status
+      operationId: get-status
+      description: Status on all service connected to enrich service
       parameters: []
       tags:
         - ping
@@ -114,30 +114,6 @@ paths:
                       status: true
                     elapsedTime: 3003
                     status: false
-
-  /health/redis:
-    get:
-      tags:
-        - ping
-      operationId: get-health-redis
-      description: Health on redis
-      summary: Health on redis service
-      parameters: []
-      responses:
-        '200':
-          $ref: '#/components/responses/Health'
-    
-  /health/elastic:
-    get:
-      tags:
-        - ping
-      summary: Health on graphql service
-      operationId: get-health-elastic
-      description: Health on elastic
-      parameters: []
-      responses:
-        '200':
-          $ref: '#/components/responses/Health'
   
   /healthcheck:
     get:
@@ -413,36 +389,6 @@ components:
             response:
               value:
                 message: Not authorized
-    Health:
-      description: Example response
-      content:
-        Success:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              status:
-                type: boolean
-              elapsedTime:
-                type: integer
-            x-examples:
-              Example 1:
-                name: redis
-                status: true
-                elapsedTime: 1
-          examples:
-            Success:
-              value:
-                name: name of service
-                status: true
-                elapsedTime: 1
-            Error redis:
-              value:
-                name: redis
-                elapsedTime: 3002
-                error: time out
-                status: false
   securitySchemes:
     x-api-key:
       name: API Key

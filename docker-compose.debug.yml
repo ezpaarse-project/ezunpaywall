@@ -2,10 +2,11 @@ version: "3.3"
 
 services:
   graphql:
-    image: node:18.19.1
+    image: node:22.13.1
     container_name: ezunpaywall-graphql-dev
     environment:
       - NODE_ENV
+      - PORT
       # elastic
       - ELASTICSEARCH_NODES
       - ELASTICSEARCH_USERNAME
@@ -20,51 +21,53 @@ services:
       - ./services/graphql:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${GRAPHQL_PORT:-59701}:3000
+      - ${GRAPHQL_PORT:-59701}:3001
     restart: unless-stopped
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3001/healthcheck || exit 1"
         ]
       interval: 10s
       timeout: 10s
       retries: 5
 
   enrich:
-    image: node:18.19.1
+    image: node:22.13.1
     container_name: ezunpaywall-enrich-dev
     environment:
       - NODE_ENV
+      - PORT
       # redis
       - REDIS_HOST
       - REDIS_PORT
       - REDIS_PASSWORD
       # graphql
-      - GRAPHQL_URL=http://graphql:3000
+      - GRAPHQL_URL=http://graphql:3001
     working_dir: /usr/src/app
     volumes:
       - ./services/enrich:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${ENRICH_PORT:-59702}:3000
+      - ${ENRICH_PORT:-59702}:3002
     restart: unless-stopped
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3002/healthcheck || exit 1"
         ]
       interval: 10s
       timeout: 10s
       retries: 5
   
   admin:
-    image: node:18.19.1
+    image: node:22.13.1
     container_name: ezunpaywall-admin-dev
     environment:
       - NODE_ENV
+      - PORT
       - LOG_LEVEL=debug
       # smtp
       - SMTP_HOST=maildev
@@ -115,33 +118,34 @@ services:
       - ./services/admin:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${ADMIN_PORT:-59703}:3000
+      - ${ADMIN_PORT:-59703}:3003
     restart: unless-stopped
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3003/healthcheck || exit 1"
         ]
       interval: 10s
       timeout: 10s
       retries: 5
 
   frontend:
-    image: node:18.19.1
+    image: node:22.13.1
     container_name: ezunpaywall-frontend-dev
     working_dir: /usr/src/app
     volumes:
       - ./services/frontend:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${FRONTEND_PORT:-59706}:3000
+      - ${FRONTEND_PORT:-59704}:3000
       - 24678:24678
     environment:
       - NODE_ENV
+      - NUXT_PORT
       - NUXT_PUBLIC_ENVIRONMENT
-      - NUXT_PUBLIC_ELASTIC_ENV=development
-      - NUXT_PUBLIC_VERSION=development
+      - NUXT_PUBLIC_ELASTIC_ENV
+      - NUXT_PUBLIC_VERSION
       - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_URL
       - NUXT_PUBLIC_UNPAYWALL_API_URL
       - NUXT_PUBLIC_UNPAYWALL_URL
@@ -186,9 +190,9 @@ services:
       # host of service
       - NGINX_HOST=localhost
       - FRONTEND_URL=http://frontend:3000/
-      - GRAPHQL_URL=http://graphql:3000/
-      - ENRICH_URL=http://enrich:3000/
-      - ADMIN_URL=http://admin:3000/
+      - GRAPHQL_URL=http://graphql:3001/
+      - ENRICH_URL=http://enrich:3002/
+      - ADMIN_URL=http://admin:3003/
     ports:
       - ${NGINX_PORT:-80}:80
     volumes:
@@ -214,7 +218,7 @@ services:
 
   fakeunpaywall:
     container_name: ezunpaywall-fakeunpaywall-dev
-    image: node:18.19.1
+    image: node:22.13.1
     working_dir: /usr/src/app
     volumes:
       - ./services/fakeUnpaywall:/usr/src/app

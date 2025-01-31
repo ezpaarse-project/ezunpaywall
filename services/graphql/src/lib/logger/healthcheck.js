@@ -8,11 +8,10 @@ const apacheFormat = winston.format.printf((info) => {
     method,
     url,
     statusCode,
-    contentLength,
     userAgent,
     responseTime,
   } = info.message;
-  return `${info.timestamp} ${method} ${url} ${statusCode} ${contentLength} ${userAgent} ${responseTime}`;
+  return `${info.timestamp} ${method} ${url} ${statusCode} ${userAgent} ${responseTime}`;
 });
 
 const healthcheckLogger = winston.createLogger({

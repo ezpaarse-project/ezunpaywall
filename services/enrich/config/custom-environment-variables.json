@@ -7,8 +7,9 @@
     "password": "REDIS_PASSWORD"
   },
   "graphql": {
-    "host": "GRAPHQL_URL"
+    "url": "GRAPHQL_URL"
   },
   "apikey": "ADMIN_APIKEY",
-  "healthTimeout": "HEALTH_TIMEOUT"
+  "healthTimeout": "HEALTH_TIMEOUT",
+  "port": "PORT"
 }

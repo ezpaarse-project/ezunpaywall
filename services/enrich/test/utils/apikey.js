@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-const adminURL = process.env.APIKEY_HOST || 'http://localhost:59703';
+const adminURL = process.env.ADMIN_URL || 'http://localhost:59703';
 
 /**
  * Load default dev apikey.

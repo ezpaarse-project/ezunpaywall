@@ -79,24 +79,24 @@ async function getChangefiles(interval, startDate, endDate) {
     return false;
   }
 
-  let snapshotsInfo = res.data.list;
-  snapshotsInfo = snapshotsInfo
+  let changefilesInfo = res.data.list;
+  changefilesInfo = changefilesInfo
     .reverse()
     .filter((file) => file.filetype === 'jsonl');
 
   if (interval === 'week') {
-    snapshotsInfo = snapshotsInfo
+    changefilesInfo = changefilesInfo
       .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
       .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
   }
 
   if (interval === 'day') {
-    snapshotsInfo = snapshotsInfo
+    changefilesInfo = changefilesInfo
       .filter((file) => new Date(file.date).getTime() >= new Date(startDate).getTime())
       .filter((file) => new Date(file.date).getTime() <= new Date(endDate).getTime());
   }
 
-  return snapshotsInfo;
+  return changefilesInfo;
 }
 
 /**

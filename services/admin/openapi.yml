@@ -46,13 +46,13 @@ paths:
         '204':
           description: No Content
   
-  /health:
+  /status:
     get:
       tags:
         - ping
-      operationId: get-health
-      summary: Health.
-      description: Health on all service connected to admin service.
+      operationId: get-status
+      summary: Status.
+      description: status on all service connected to admin service.
       parameters: []
       responses:
         '200':
@@ -112,30 +112,6 @@ paths:
                       status: true
                     elapsedTime: 3001
                     status: false
-  
-  /health/redis:
-    get:
-      tags:
-        - ping
-      operationId: get-update-health-redis
-      summary: Health on redis service.
-      description: Health on redis.
-      parameters: []
-      responses:
-        '200':
-          $ref: '#/components/responses/Health'
-  
-  /health/elastic:
-    get:
-      tags:
-        - ping
-      operationId: get-update-health-elastic
-      summary: Health on elastic service.
-      description: Health on elastic.
-      parameters: []
-      responses:
-        '200':
-          $ref: '#/components/responses/Health'
 
   /healthcheck:
     get:
@@ -781,7 +757,7 @@ paths:
                     error: false
                     took: 0.167
   
-  /status:
+  /job/status:
     get:
       tags:
         - job
@@ -1483,36 +1459,6 @@ components:
             response:
               value:
                 message: File not found.
-    Health:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              status:
-                type: boolean
-              elapsedTime:
-                type: integer
-            x-examples:
-              Example 1:
-                name: redis
-                status: true
-                elapsedTime: 1
-          examples:
-            Success:
-              value:
-                name: name of service
-                status: true
-                elapsedTime: 1
-            Error redis:
-              value:
-                name: redis
-                elapsedTime: 3002
-                error: time out
-                status: false
   securitySchemes:
     x-api-key:
       type: apiKey

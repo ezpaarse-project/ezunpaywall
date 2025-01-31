@@ -5,7 +5,7 @@ const cors = require('cors');
 const { json } = require('body-parser');
 const { ApolloServer } = require('@apollo/server');
 const { ApolloServerPluginLandingPageProductionDefault } = require('@apollo/server/plugin/landingPage/default');
-const { paths } = require('config');
+const { paths, port } = require('config');
 
 const { expressMiddleware } = require('@apollo/server/express4');
 
@@ -96,8 +96,8 @@ const server = new ApolloServer({
   // initiate graphql endpoint
   app.use('/graphql', cors(), json(), auth, expressMiddleware(server, { context: async ({ req }) => req }));
 
-  app.listen(3000, async () => {
-    appLogger.info(`[express]: graphQL API listening on 3000 in [${process.uptime().toFixed(2)}]s`);
+  app.listen(port, async () => {
+    appLogger.info(`[express]: ezunpaywall graphQL API listening on port ${port} in [${process.uptime().toFixed(2)}]s`);
     pingElastic().then(() => {
       setMetrics();
     });

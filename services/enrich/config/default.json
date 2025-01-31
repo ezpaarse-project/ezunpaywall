@@ -8,8 +8,11 @@
     "password": "changeme"
   },
   "graphql": {
-    "host": "http://graphql:3000"
+    "url": "http://graphql:3001"
   },
+  "apikey": "changeme",
+  "healthTimeout": 3000,
+  "port": 3002,
   "paths": {
     "log": {
       "applicationDir": "./log/application", 
@@ -21,7 +24,5 @@
       "statesDir": "./data/states",
       "uploadDir": "./data/upload"
     }
-  },
-  "apikey": "changeme",
-  "healthTimeout": 3000
+  }
 }

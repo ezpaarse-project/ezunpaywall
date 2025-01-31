@@ -19,25 +19,34 @@ info: {
     "password": "********"
   },
   "graphql": {
-    "host": "http://graphql:3000"
+    "host": "http://graphql:3001"
   },
   "apikey": "********",
-  "healthTimeout": 3000
+  "healthTimeout": 3000,
+  "port": 3002
 }
 ```
 
 ## Service environment variables
 
-| name | default | description |
+| Name | Description | Default |
 | --- | --- | --- |
-| NODE_ENV | development | environment of node |
-| TIMEZONE | Europe/Paris | timezone of app used in cron |
-| REDIS_HOST | redis | redis host |
-| REDIS_PORT | 6379 | redis port |
-| REDIS_PASSWORD | changeme | redis password |
-| GRAPHQL_URL | http://graphql:3000 | graphql host |
-| ADMIN_APIKEY | admin API key | changeme |
-| HEALTH_TIMEOUT | 3000 | timeout to query the health route |
+| NODE_ENV | Environment of node | development |
+| TIMEZONE | Timezone of app used in cron | Europe/Paris |
+| REDIS_HOST | Redis host | redis |
+| REDIS_PORT | Redis port | 6379 |
+| REDIS_PASSWORD | Redis password | changeme |
+| GRAPHQL_URL | Graphql URL | http://graphql:3001 |
+| ADMIN_APIKEY | Admin API key | changeme |
+| HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
+| PORT | Port | 3002 |
+
+## Command to set volume permissions (non root image docker)
+
+```sh
+docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
+```
 
 ## Activity diagram
 

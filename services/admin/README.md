@@ -73,6 +73,9 @@ To set up this service, you can use environment variables. The config is display
       "snapshotThreshold": 150
     }
   },
+  "apikey": "********",
+  "healthTimeout": 3000,
+  "port": 3003,
   "paths": {
     "log": {
       "applicationDir": "./log/application",
@@ -84,52 +87,58 @@ To set up this service, you can use environment variables. The config is display
       "snapshotsDir": "./data/snapshots",
       "reportsDir": "./data/reports"
     }
-  },
-  "apikey": "********",
-  "healthTimeout": 3000
+  }
 }
 ```
 
 ## Environment variables
 
-| name | description | default |
+| name | Description | Default |
 | --- | --- | --- |
-| NODE_ENV | environment of node | development |
-| TIMEZONE | timezone of app used in cron | Europe/Paris |
+| NODE_ENV | Environment of node | development |
+| TIMEZONE | Timezone of app used in cron | Europe/Paris |
 | SMTP_HOST | SMTP host | localhost |
 | SMTP_PORT | SMTP port | 25 |
-| NOTIFICATIONS_SENDER | the sender for emails issued by ezunpaywall | ezunpaywall |
-| NOTIFICATIONS_RECEIVERS | recipients of the recent activity email | ezunpaywall@example.fr |
-| NOTIFICATIONS_MACHINE | environment of machine | dev |
-| UNPAYWALL_URL | unpaywall api URL to access to changefiles | http://fakeunpaywall:3000 |
-| UNPAYWALL_APIKEY | unpaywall apikey to access to changefiles | changeme |
-| ELASTICSEARCH_NODES | elastic nodes URL separated by comma | http://elastic:9200 |
-| ELASTICSEARCH_USERNAME | username of elastic super user | elastic |
-| ELASTICSEARCH_PASSWORD | password of elastic super user | changeme |
-| ELASTICSEARCH_MAX_BULK_SIZE | max bulk size of update process | 4000 |
-| ELASTICSEARCH_INDEX_ALIAS | default alias of unpaywall data | upw |
-| ELASTICSEARCH_TIMEOUT | timeout in milliseconds of elastic client | 20000 |
-| REDIS_HOST | redis host | redis |
-| REDIS_PORT | redis port | 6379 |
-| REDIS_PASSWORD | redis password | changeme |
-| CRON_DOWNLOAD_SNAPSHOT_SCHEDULE | schedule of cron | 0 0 0 1 * * |
-| CRON_DOWNLOAD_SNAPSHOT_ACTIVE | cron active or not at the start of service | true |
-| CRON_DATA_UPDATE_SCHEDULE | schedule of cron | 0 0 0 * * * |
-| CRON_DATA_UPDATE_ACTIVE | cron active or not at the start of service | false |
-| CRON_DATA_UPDATE_INDEX | index where data is inserted | unpaywall |
-| CRON_DATA_UPDATE_INTERVAL | interval of changefile | day |
-| CRON_DATA_UPDATE_HISTORY_SCHEDULE | schedule of cron | 0 0 0 * * * |
-| CRON_DATA_UPDATE_HISTORY_ACTIVE | cron active or not at the start of service | true |
-| CRON_DATA_UPDATE_HISTORY_INDEX | index where data is inserted | unpaywall-base |
-| CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY | index where history data is inserted | unpaywall-history |
-| CRON_DATA_UPDATE_HISTORY_INTERVAL | interval of changefile | day |
-| CRON_CLEAN_FILE_SCHEDULE | schedule of cron | 0 0 0 * * * |
-| CRON_CLEAN_FILE_ACTIVE | cron active or not at the start of service | true |
-| CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD | detention time in days | 30 |
-| CRON_CLEAN_FILE_REPORT_THRESHOLD | detention time in days | 30 |
-| CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD | detention time in days | 150 |
-| ADMIN_APIKEY | admin API key | changeme |
-| HEALTH_TIMEOUT | timeout to query the health route | 3000 |
+| NOTIFICATIONS_SENDER | The sender for emails issued by ezunpaywall | ezunpaywall |
+| NOTIFICATIONS_RECEIVERS | Recipients of the recent activity email | ezunpaywall@example.fr |
+| NOTIFICATIONS_MACHINE | Environment of machine | dev |
+| UNPAYWALL_URL | Unpaywall API URL to access to changefiles | http://fakeunpaywall:3000 |
+| UNPAYWALL_APIKEY | Unpaywall apikey to access to changefiles | changeme |
+| ELASTICSEARCH_NODES | Elastic nodes URL separated by comma | http://elastic:9200 |
+| ELASTICSEARCH_USERNAME | Username of elastic super user | elastic |
+| ELASTICSEARCH_PASSWORD | Password of elastic super user | changeme |
+| ELASTICSEARCH_MAX_BULK_SIZE | Max bulk size of update process | 4000 |
+| ELASTICSEARCH_INDEX_ALIAS | Default alias of unpaywall data | upw |
+| ELASTICSEARCH_TIMEOUT | Timeout in milliseconds of elastic client | 20000 |
+| REDIS_HOST | Redis host | redis |
+| REDIS_PORT | Redis port | 6379 |
+| REDIS_PASSWORD | Redis password | changeme |
+| CRON_DOWNLOAD_SNAPSHOT_SCHEDULE | Schedule of cron | 0 0 0 1 * * |
+| CRON_DOWNLOAD_SNAPSHOT_ACTIVE | Cron active or not at the start of service | true |
+| CRON_DATA_UPDATE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
+| CRON_DATA_UPDATE_ACTIVE | Cron active or not at the start of service | false |
+| CRON_DATA_UPDATE_INDEX | Index where data is inserted | unpaywall |
+| CRON_DATA_UPDATE_INTERVAL | Interval of changefile | day |
+| CRON_DATA_UPDATE_HISTORY_SCHEDULE | Schedule of cron | 0 0 0 * * * |
+| CRON_DATA_UPDATE_HISTORY_ACTIVE | Cron active or not at the start of service | true |
+| CRON_DATA_UPDATE_HISTORY_INDEX | Index where data is inserted | unpaywall-base |
+| CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY | Index where history data is inserted | unpaywall-history |
+| CRON_DATA_UPDATE_HISTORY_INTERVAL | Interval of changefile | day |
+| CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
+| CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
+| CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD | Detention time in days | 30 |
+| CRON_CLEAN_FILE_REPORT_THRESHOLD | Detention time in days | 30 |
+| CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD | Detention time in days | 150 |
+| ADMIN_APIKEY | Admin API key | changeme |
+| HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
+| PORT | Port | 3003 |
+
+## Command to set volume permissions (non root image docker)
+
+```sh
+docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/data
+```
 
 ## Activity diagram
 

@@ -11,7 +11,7 @@
           variant="text"
           :disabled="loading"
           :loading="loading"
-          @click.stop="getHealth()"
+          @click.stop="getStatus()"
         >
           {{ health?.elapsedTime }} ms
         </v-btn>
@@ -58,11 +58,11 @@ const props = defineProps({
  * Get all health.
  * API and Elastic.
  */
-async function getHealth() {
+async function getStatus() {
   let res;
   loading.value = true;
   try {
-    res = await $fetch(`${props.url}/health`, {
+    res = await $fetch(`${props.url}/status`, {
       method: 'GET',
     });
   } catch (err) {
@@ -81,11 +81,11 @@ const services = computed(() => {
 });
 
 defineExpose({
-  getHealth,
+  getStatus,
 });
 
 onMounted(() => {
-  getHealth();
+  getStatus();
 });
 
 </script>

@@ -57,18 +57,18 @@ async function updatePercentStepDownload(filepath, size, start) {
 /**
  * Download file
  *
- * @param {Readable} file File.
+ * @param {Readable} fileStream File.
  * @param {string} filepath Filepath of file.
  * @param {number} size Size of file.
  *
  * @returns {Promise<void>}
  */
-async function download(file, filepath, size) {
+async function download(fileStream, filepath, size) {
   const step = getLatestStep();
-  if (file instanceof Readable) {
+  if (fileStream instanceof Readable) {
     await new Promise((resolve, reject) => {
       // download unpaywall file with stream
-      const writeStream = file.pipe(fs.createWriteStream(filepath));
+      const writeStream = fileStream.pipe(fs.createWriteStream(filepath));
 
       const start = new Date();
       writeStream.on('ready', async () => {
@@ -93,7 +93,7 @@ async function download(file, filepath, size) {
     });
   } else {
     const writeStream = await fs.createWriteStream(filepath);
-    writeStream.write(file);
+    writeStream.write(fileStream);
     writeStream.end();
   }
 }
