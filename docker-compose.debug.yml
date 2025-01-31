@@ -118,7 +118,7 @@ services:
       - ./services/admin:/usr/src/app
     command: "npm run dev"
     ports:
-      - ${ADMIN_PORT:-59703}:3000
+      - ${ADMIN_PORT:-59703}:3003
     restart: unless-stopped
     healthcheck:
       test:
