@@ -1,6 +1,9 @@
 const path = require('path');
-const { createClient } = require('redis');
-const util = require('util');
+
+const Redis = process.env.NODE_ENV === 'test'
+  ? require('ioredis-mock')
+  : require('ioredis');
+
 const { redis } = require('config');
 const fsp = require('fs/promises');
 
@@ -8,23 +11,17 @@ const appLogger = require('./logger/appLogger');
 
 let apiKeys;
 
-let redisClient = createClient({
-  legacyMode: true,
-  socket: {
-    host: redis.host,
-    port: redis.port,
-  },
-  password: redis.password,
-});
+let redisClient;
+
+function getClient() {
+  return redisClient;
+}
 
 function initClient() {
   try {
-    redisClient = createClient({
-      legacyMode: true,
-      socket: {
-        host: redis.host,
-        port: redis.port,
-      },
+    redisClient = new Redis({
+      host: redis.host,
+      port: redis.port,
       password: redis.password,
     });
     appLogger.info('[redis]: client is created');
@@ -34,7 +31,7 @@ function initClient() {
   }
 
   redisClient.on('connect', () => {
-    appLogger.info('[redis]: redis is connect');
+    appLogger.info('[redis]: redis is connected');
   });
 
   redisClient.on('ready', () => {
@@ -42,36 +39,13 @@ function initClient() {
   });
 
   redisClient.on('error', (err) => {
-    appLogger.error(`[redis]: redis in on error [${err}]`);
+    appLogger.error(`[redis]: redis error [${err}]`);
   });
 
   redisClient.on('reconnecting', () => {
     appLogger.error('[redis]: reconnecting');
   });
 }
-
-redisClient.get = util.promisify(redisClient.get);
-redisClient.del = util.promisify(redisClient.del);
-redisClient.ping = util.promisify(redisClient.ping);
-redisClient.set = util.promisify(redisClient.set);
-redisClient.keys = util.promisify(redisClient.keys);
-redisClient.flushall = util.promisify(redisClient.flushall);
-
-redisClient.on('connect', () => {
-  appLogger.info('[redis]: redis is connect');
-});
-
-redisClient.on('ready', () => {
-  appLogger.info('[redis]: redis is ready');
-});
-
-redisClient.on('error', (err) => {
-  appLogger.error(`[redis]: redis in on error [${err}]`);
-});
-
-redisClient.on('reconnecting', () => {
-  appLogger.error('[redis]: reconnecting');
-});
 
 /**
  * Load the dev apiKeys on redis from apikey-dev.json.
@@ -112,7 +86,7 @@ async function pingRedis() {
   return true;
 }
 
-async function startConnectionRedis() {
+async function connectRedis() {
   try {
     await redisClient.connect();
   } catch (err) {
@@ -148,10 +122,10 @@ async function loadDemoAPIKey() {
 }
 
 module.exports = {
-  redisClient,
+  getClient,
   initClient,
   pingRedis,
-  startConnectionRedis,
+  connectRedis,
   load,
   loadDemoAPIKey,
 };

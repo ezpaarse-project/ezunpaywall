@@ -23,14 +23,14 @@
     "timeout": 20000
   },
   "redis":  {
-    "host": "redis",
+    "host": "localhost",
     "port": "6379",
     "password": "changeme"
   },
   "cron": {
     "downloadSnapshot": {
       "schedule": "0 0 0 1 * *",
-      "active": true
+      "active": false
     },
     "dataUpdate": {
       "schedule": "0 0 0 * * *",
@@ -47,14 +47,14 @@
     },
     "cleanFile": {
       "schedule": "0 0 0 * * *",
-      "active": true,
+      "active": false,
       "changefileThreshold": 30,
       "reportThreshold": 30,
       "snapshotThreshold": 150
     },
     "demoApikey": {
       "schedule": "0 0 0 * * *",
-      "active": true,
+      "active": false,
       "count": 100000
     }
   },
@@ -65,9 +65,9 @@
       "healthCheckDir": "./log/healthcheck"
     },
     "data": {
-      "changefilesDir": "./data/changefiles",
-      "snapshotsDir": "./data/snapshots",
-      "reportsDir": "./data/reports"
+      "changefilesDir": "./tmp/data/changefiles",
+      "snapshotsDir": "./tmp/data/snapshots",
+      "reportsDir": "./tmp/data/reports"
     }
   },
   "apikey": "changeme",

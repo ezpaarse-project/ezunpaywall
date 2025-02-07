@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const { format } = require('date-fns');
 
-const { redisClient } = require('./redis');
+const { getClient } = require('./redis');
 const appLogger = require('./logger/appLogger');
 
 /**
@@ -11,6 +11,7 @@ const appLogger = require('./logger/appLogger');
  * @returns {Object} Apikey config.
  */
 async function get(apikey) {
+  const redisClient = getClient();
   const apikeyConfig = await redisClient.get(apikey);
   return JSON.parse(apikeyConfig);
 }
@@ -22,6 +23,7 @@ async function get(apikey) {
  * @returns {Object} Apikey config.
  */
 async function checkIfExist(apikey) {
+  const redisClient = getClient();
   return !!await redisClient.get(apikey);
 }
 
@@ -39,6 +41,7 @@ async function checkIfExist(apikey) {
  * @returns {Promise<string>} The randomly generated API key.
  */
 async function create(config) {
+  const redisClient = getClient();
   const apikeyConfig = config;
 
   const currentDate = Date.now();
@@ -77,6 +80,7 @@ async function create(config) {
  * @returns {Promise<Object>} Config of apikey.
  */
 async function update(id, newConfig) {
+  const redisClient = getClient();
   const {
     name, access, owner, description, attributes, allowed,
   } = newConfig;
@@ -109,6 +113,7 @@ async function update(id, newConfig) {
  * @returns {Promise<void>}
  */
 async function remove(id) {
+  const redisClient = getClient();
   try {
     await redisClient.del(id);
   } catch (err) {

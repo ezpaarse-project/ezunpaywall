@@ -128,6 +128,9 @@ To set up this service, you can use environment variables. The config is display
 | CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD | detention time in days | 30 |
 | CRON_CLEAN_FILE_REPORT_THRESHOLD | detention time in days | 30 |
 | CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD | detention time in days | 150 |
+| CRON_DEMO_APIKEY_SCHEDULE | schedule of cron | 0 0 0 * * * |
+| CRON_DEMO_APIKEY_ACTIVE | cron active or not at the start of service | true |
+| CRON_DEMO_APIKEY_COUNT | count of demo request | 100000 | 
 | ADMIN_APIKEY | admin API key | changeme |
 | HEALTH_TIMEOUT | timeout to query the health route | 3000 |
 
