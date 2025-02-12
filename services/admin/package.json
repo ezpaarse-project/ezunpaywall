@@ -34,6 +34,7 @@
     "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
+    "@elastic/elasticsearch-mock": "^1.0.0",
     "chai": "^4.3.8",
     "chai-http": "^4.4.0",
     "eslint": "^8.49.0",

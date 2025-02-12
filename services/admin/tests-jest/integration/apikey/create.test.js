@@ -7,6 +7,13 @@ const redis = require('../../../src/lib/redis');
 const apikeyLib = require('../../utils/apikey');
 
 describe('API key: create', () => {
+  afterAll(async () => {
+    const redisClient = redis.getClient();
+    await redisClient.flushall();
+    await redisClient.quit();
+    app.close();
+  });
+
   it('Should create apikey with config', async () => {
     const testValue = apikeyLib.data.apikey1;
 
@@ -131,12 +138,5 @@ describe('API key: create', () => {
       .set('x-api-key', 'changeme');
 
     expect(response.statusCode).toBe(400);
-  });
-
-  afterAll(async () => {
-    const redisClient = redis.getClient();
-    await redisClient.flushall();
-    await redisClient.quit();
-    app.close();
   });
 });

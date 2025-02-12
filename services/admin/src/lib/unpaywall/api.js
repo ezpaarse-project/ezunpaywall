@@ -1,13 +1,23 @@
 const axios = require('axios');
 const config = require('config');
 const appLogger = require('../logger/appLogger');
+const unpaywallMock = require('./mock');
 
 const { apikey } = config.unpaywall;
 
-const unpaywall = axios.create({
-  baseURL: config.unpaywall.url,
-});
-unpaywall.baseURL = config.unpaywall.url;
+const isTest = config.nodeEnv === 'test';
+
+let unpaywall;
+
+if (isTest) {
+  appLogger.info('[unpaywall]: Using mock Unpaywall client for tests.');
+  unpaywall = unpaywallMock;
+} else {
+  unpaywall = axios.create({
+    baseURL: config.unpaywall.url,
+  });
+  unpaywall.baseURL = config.unpaywall.url;
+}
 
 /**
  * Ping unpaywall.
@@ -78,6 +88,8 @@ async function getChangefiles(interval, startDate, endDate) {
     appLogger.error(`[unpaywall][${interval}]: Cannot get changefiles on interval between [${startDate}] end [${endDate}]`);
     return false;
   }
+
+  console.log(res)
 
   let snapshotsInfo = res.data.list;
   snapshotsInfo = snapshotsInfo

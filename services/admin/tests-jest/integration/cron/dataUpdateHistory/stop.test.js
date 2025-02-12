@@ -10,6 +10,10 @@ describe('Cron: dataUpdate stop', () => {
     await resetDataUpdateHistoryCron();
   });
 
+  afterAll(async () => {
+    app.close();
+  });
+
   it('Should active cron', async () => {
     const resultValue = {
       ...dataUpdateHistory,
@@ -27,9 +31,5 @@ describe('Cron: dataUpdate stop', () => {
       .get('/cron/dataUpdateHistory');
 
     expect(getResponse.body).toEqual(resultValue);
-  });
-
-  afterAll(async () => {
-    app.close();
   });
 });

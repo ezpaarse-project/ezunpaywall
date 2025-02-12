@@ -4,6 +4,11 @@ const { stopDataUpdateCron } = require('../../../utils/cron');
 const app = require('../../../../src/app');
 
 describe('Cron: auth for dataUpdate', () => {
+  afterAll(async () => {
+    await stopDataUpdateCron();
+    app.close();
+  });
+
   it('Should not start cron', async () => {
     const updateResponse = await request(app)
       .post('/cron/dataUpdate/start');
@@ -40,10 +45,5 @@ describe('Cron: auth for dataUpdate', () => {
       .send(testValue);
 
     expect(updateResponse.statusCode).toBe(401);
-  });
-
-  afterAll(async () => {
-    await stopDataUpdateCron();
-    app.close();
   });
 });

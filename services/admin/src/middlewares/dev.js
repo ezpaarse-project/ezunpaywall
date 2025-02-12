@@ -12,8 +12,8 @@ const { nodeEnv } = require('config');
 async function dev(req, res, next) {
   const env = nodeEnv;
 
-  if (env !== 'development') {
-    return res.status(404).json({ message: 'Not found' });
+  if (env !== 'test' && env !== 'development') {
+    return res.status(404).json({ message: 'This route is not available' });
   }
 
   return next();

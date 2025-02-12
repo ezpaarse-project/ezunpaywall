@@ -6,6 +6,11 @@ const app = require('../../../../src/app');
 
 const { dataUpdateHistory } = cron;
 describe('Cron: start dataUpdateHistory', () => {
+  afterAll(async () => {
+    await stopDataUpdateHistoryCron();
+    app.close();
+  });
+
   it('Should active cron', async () => {
     const resultValue = {
       ...dataUpdateHistory,
@@ -23,10 +28,5 @@ describe('Cron: start dataUpdateHistory', () => {
       .get('/cron/dataUpdateHistory');
 
     expect(getResponse.body).toEqual(resultValue);
-  });
-
-  afterAll(async () => {
-    await stopDataUpdateHistoryCron();
-    app.close();
   });
 });

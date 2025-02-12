@@ -10,6 +10,10 @@ describe('Cron: update dataUpdateHistory', () => {
     await resetDataUpdateHistoryCron();
   });
 
+  afterAll(async () => {
+    app.close();
+  });
+
   it('Should update schedule of cron', async () => {
     const testValue = {
       schedule: '0 0 0 1 * *',
@@ -109,9 +113,5 @@ describe('Cron: update dataUpdateHistory', () => {
       .set('x-api-key', apikey);
 
     expect(updateResponse.statusCode).toBe(400);
-  });
-
-  afterAll(async () => {
-    app.close();
   });
 });

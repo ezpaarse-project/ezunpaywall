@@ -19,6 +19,13 @@ describe('API Key: update', () => {
     await redisClient.flushall();
   });
 
+  afterAll(async () => {
+    const redisClient = redis.getClient();
+    await redisClient.flushall();
+    await redisClient.quit();
+    app.close();
+  });
+
   it('Should update name of apikey', async () => {
     const testValue = {
       name: 'test-user2',
@@ -143,12 +150,5 @@ describe('API Key: update', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual(resultValue);
-  });
-
-  afterAll(async () => {
-    const redisClient = redis.getClient();
-    await redisClient.flushall();
-    await redisClient.quit();
-    app.close();
   });
 });

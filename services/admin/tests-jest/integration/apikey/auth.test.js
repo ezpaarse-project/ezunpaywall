@@ -20,6 +20,13 @@ describe('API Key: auth', () => {
     key = await apikeyLib.create(configApikey);
   });
 
+  afterAll(async () => {
+    const redisClient = redis.getClient();
+    await redisClient.flushall();
+    await redisClient.quit();
+    app.close();
+  });
+
   it('Should get all API key', async () => {
     const response = await request(app)
       .get('/apikeys')
@@ -55,12 +62,5 @@ describe('API Key: auth', () => {
       .delete(`/apikeys/${key}`);
 
     expect(response.statusCode).toBe(401);
-  });
-
-  afterAll(async () => {
-    const redisClient = redis.getClient();
-    await redisClient.flushall();
-    await redisClient.quit();
-    app.close();
   });
 });

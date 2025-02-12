@@ -136,6 +136,7 @@ async function searchByDOI(dois, index) {
 
 /**
  * Search data with range
+ *
  * @param {string} date The date on which you want to obtain all the changes
  * @param {string} index Elastic index name
  * @returns {Promise<void>}

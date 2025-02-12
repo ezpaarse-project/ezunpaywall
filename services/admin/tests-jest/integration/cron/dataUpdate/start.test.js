@@ -6,6 +6,11 @@ const app = require('../../../../src/app');
 
 const { dataUpdate } = cron;
 describe('Cron: start dataUpdate', () => {
+  afterAll(async () => {
+    await stopDataUpdateCron();
+    app.close();
+  });
+
   it('Should active cron', async () => {
     const resultValue = {
       ...dataUpdate,
@@ -23,10 +28,5 @@ describe('Cron: start dataUpdate', () => {
       .get('/cron/dataUpdate');
 
     expect(getResponse.body).toEqual(resultValue);
-  });
-
-  afterAll(async () => {
-    await stopDataUpdateCron();
-    app.close();
   });
 });

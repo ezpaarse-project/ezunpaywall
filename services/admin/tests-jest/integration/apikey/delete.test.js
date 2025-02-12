@@ -8,13 +8,23 @@ const apikeyLib = require('../../utils/apikey');
 describe('API Key: delete', () => {
   let key;
   const configApikey = apikeyLib.data.apikey1;
+
   beforeEach(async () => {
     key = await apikeyLib.create(configApikey);
   });
+
   afterEach(async () => {
     const redisClient = redis.getClient();
     await redisClient.flushall();
   });
+
+  afterAll(async () => {
+    const redisClient = redis.getClient();
+    await redisClient.flushall();
+    await redisClient.quit();
+    app.close();
+  });
+
   it('Should delete apikey', async () => {
     const deleteResponse = await request(app)
       .delete(`/apikeys/${key}`)
@@ -34,12 +44,5 @@ describe('API Key: delete', () => {
       .set('x-api-key', apikey);
 
     expect(deleteResponse.statusCode).toBe(404);
-  });
-
-  afterAll(async () => {
-    const redisClient = redis.getClient();
-    await redisClient.flushall();
-    await redisClient.quit();
-    app.close();
   });
 });

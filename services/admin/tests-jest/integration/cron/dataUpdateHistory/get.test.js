@@ -6,6 +6,11 @@ const app = require('../../../../src/app');
 
 const { dataUpdateHistory } = cron;
 describe('Cron: get dataUpdateHistory', () => {
+  afterAll(async () => {
+    await resetDataUpdateHistoryCron();
+    app.close();
+  });
+
   it('Should get cron', async () => {
     const resultValue = {
       ...dataUpdateHistory,
@@ -17,10 +22,5 @@ describe('Cron: get dataUpdateHistory', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual(resultValue);
-  });
-
-  afterAll(async () => {
-    await resetDataUpdateHistoryCron();
-    app.close();
   });
 });

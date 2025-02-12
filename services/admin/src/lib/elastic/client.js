@@ -4,7 +4,7 @@ const { Client } = require('@elastic/elasticsearch');
 const { elasticsearch } = require('config');
 const { nodeEnv } = require('config');
 const appLogger = require('../logger/appLogger');
-const elasticMock = require('./test');
+const elasticMock = require('./mock/client');
 
 const isProd = nodeEnv === 'production';
 const isTest = nodeEnv === 'test';

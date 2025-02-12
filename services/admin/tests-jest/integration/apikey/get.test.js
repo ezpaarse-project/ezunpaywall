@@ -22,6 +22,13 @@ describe('API Key: get', () => {
     await redisClient.flushall();
   });
 
+  afterAll(async () => {
+    const redisClient = redis.getClient();
+    await redisClient.flushall();
+    await redisClient.quit();
+    app.close();
+  });
+
   it('Should get config of API key', async () => {
     const response = await request(app)
       .get(`/apikeys/${key1}`);
@@ -67,12 +74,5 @@ describe('API Key: get', () => {
       .set('x-api-key', apikey);
 
     expect(response.statusCode).toBe(404);
-  });
-
-  afterAll(async () => {
-    const redisClient = redis.getClient();
-    await redisClient.flushall();
-    await redisClient.quit();
-    app.close();
   });
 });
