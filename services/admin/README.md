@@ -188,5 +188,4 @@ data
 npm run test
 
 # Unit tests
-# TODO
 ```
