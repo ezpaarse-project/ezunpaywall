@@ -1,6 +1,10 @@
+/* eslint-disable global-require */
 const { elasticsearch } = require('config');
+const getElasticClient = require('./client');
+
 const appLogger = require('../logger/appLogger');
-const elasticClient = require('./client');
+
+const elasticClient = getElasticClient();
 
 /**
  * Ping elastic service.
@@ -124,7 +128,6 @@ async function searchByDOI(dois, index) {
       body: {
         query,
       },
-
     });
   } catch (err) {
     appLogger.error('[elastic]: Cannot search documents with DOI as ID', err);

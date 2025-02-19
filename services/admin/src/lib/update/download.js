@@ -57,21 +57,27 @@ async function updatePercentStepDownload(filepath, size, start) {
 /**
  * Download file
  *
- * @param {Readable} file File.
+ * @param {Readable} readStream File.
  * @param {string} filepath Filepath of file.
  * @param {number} size Size of file.
  *
  * @returns {Promise<void>}
  */
-async function download(file, filepath, size) {
+async function download(readStream, filepath, size) {
   const step = getLatestStep();
-  if (file instanceof Readable) {
+  if (readStream instanceof Readable) {
     await new Promise((resolve, reject) => {
       // download unpaywall file with stream
-      const writeStream = file.pipe(fs.createWriteStream(filepath));
+      const writeStream = fs.createWriteStream(filepath);
+
+      readStream.on('error', async (err) => {
+        appLogger.info('[job][download]: Cannot read file');
+        await fail(err);
+      });
 
       const start = new Date();
       writeStream.on('ready', async () => {
+        appLogger.debug('[job][download]: File is ready to write');
         // update the percentage of the download step in parallel
         updatePercentStepDownload(filepath, size, start);
       });
@@ -90,10 +96,12 @@ async function download(file, filepath, size) {
         await fail(err);
         return reject(err);
       });
+
+      readStream.pipe(writeStream);
     });
   } else {
     const writeStream = await fs.createWriteStream(filepath);
-    writeStream.write(file);
+    writeStream.write(readStream);
     writeStream.end();
   }
 }
@@ -126,18 +134,18 @@ async function downloadChangefile(info, interval) {
   const res = await getChangefile(info.filename, interval);
 
   if (!res) {
-    appLogger.error(`[unpaywall][changefile]: Cannot get changefile [${info.filename}]`);
-    throw new Error(`[unpaywall][changefile]: Cannot get changefile [${info.filename}]`);
+    appLogger.error(`[unpaywall][changefiles]: Cannot get changefile [${info.filename}]`);
+    throw new Error(`[unpaywall][changefiles]: Cannot get changefile [${info.filename}]`);
   }
 
-  const changefile = res.data;
+  const changefileStream = res.data;
   const { size } = info;
 
   try {
-    await download(changefile, filePath, size);
+    await download(changefileStream, filePath, size);
   } catch (err) {
-    appLogger.error(`[unpaywall][changefile]: Cannot download changefile [${info.filename}]`);
-    throw new Error(`[unpaywall][changefile]: Cannot download changefile [${info.filename}]`);
+    appLogger.error(`[unpaywall][changefiles]: Cannot download changefile [${info.filename}]`);
+    throw err;
   }
 
   return true;

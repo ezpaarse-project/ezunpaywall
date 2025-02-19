@@ -1,6 +1,7 @@
 const apikeyService = require('../lib/apikeys');
 
-const { getClient, load } = require('../lib/redis');
+const { getClient } = require('../lib/redis/client');
+const { load } = require('../lib/redis');
 const appLogger = require('../lib/logger/appLogger');
 
 /**

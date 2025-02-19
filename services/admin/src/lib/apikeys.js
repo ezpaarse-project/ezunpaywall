@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const { format } = require('date-fns');
 
-const { getClient } = require('./redis');
+const { getClient } = require('./redis/client');
 const appLogger = require('./logger/appLogger');
 
 /**

@@ -1,9 +1,10 @@
-const Cron = require('./cron');
 const { cron } = require('config');
+
+const Cron = require('./cron');
 
 const appLogger = require('../lib/logger/appLogger');
 
-const { redisClient } = require('../lib/redis');
+const { getClient } = require('../lib/redis/client');
 
 const { ...cronConfig } = cron.dataUpdate;
 let { active } = cronConfig;
@@ -11,6 +12,7 @@ if (active === 'true' || active) active = true;
 else active = false;
 
 async function task() {
+  const redisClient = getClient();
   let apikeyConfig;
   try {
     apikeyConfig = await redisClient.get('demo');

@@ -1,10 +1,11 @@
+/* eslint-disable global-require */
 const fs = require('fs');
-const path = require('path');
-const { Client } = require('@elastic/elasticsearch');
 const { elasticsearch } = require('config');
+const path = require('path');
 const { nodeEnv } = require('config');
+const { Client } = require('@elastic/elasticsearch');
+
 const appLogger = require('../logger/appLogger');
-const elasticMock = require('./mock/client');
 
 const isProd = nodeEnv === 'production';
 const isTest = nodeEnv === 'test';
@@ -29,6 +30,7 @@ if (isProd) {
 }
 
 if (isTest) {
+  const elasticMock = require('./mock');
   appLogger.info('[Elastic]: Using Mock Elasticsearch Client for tests.');
   elasticClient = elasticMock;
 } else {
@@ -43,4 +45,6 @@ if (isTest) {
   });
 }
 
-module.exports = elasticClient;
+function getElasticClient() { return elasticClient; }
+
+module.exports = getElasticClient;

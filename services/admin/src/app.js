@@ -9,7 +9,8 @@ const appLogger = require('./lib/logger/appLogger');
 
 const { logConfig } = require('./lib/config');
 
-const { pingRedis, initClient, loadDemoAPIKey } = require('./lib/redis');
+const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
+const { initClient } = require('./lib/redis/client');
 
 const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');
