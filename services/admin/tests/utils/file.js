@@ -5,8 +5,8 @@ const { apikey, paths } = require('config');
 const app = require('../../src/app');
 const { getStatus } = require('./job');
 
-const changefilesDir = path.resolve(__dirname, 'data', 'changefiles');
-const snapshotsDir = path.resolve(__dirname, 'data', 'snapshots');
+const changefilesDir = path.resolve(__dirname, 'sources', 'changefiles');
+const snapshotsDir = path.resolve(__dirname, 'sources', 'snapshots');
 
 /**
  * Add a changefile in ezunpaywall.

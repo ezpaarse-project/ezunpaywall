@@ -8,7 +8,7 @@ const {
 
 const app = require('../../../src/app');
 
-describe('Job: start changefile download and insert', () => {
+describe('Job: check auth', () => {
   const snapshotFilename = 'snapshot.jsonl.gz';
   const changefileFilename = 'fake1.jsonl.gz';
 
