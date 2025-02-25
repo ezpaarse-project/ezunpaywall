@@ -1,6 +1,6 @@
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
-const { paths, nodeEnv } = require('config');
+const { paths } = require('config');
 
 const apacheFormat = winston.format.printf((info) => {
   const {
@@ -16,11 +16,11 @@ const apacheFormat = winston.format.printf((info) => {
 
 const transports = [];
 
-if (nodeEnv === 'test') {
+if (process.env.NODE_ENV === 'test') {
   transports.push(new winston.transports.Console());
 } else {
   transports.push(
-    nodeEnv === 'development' ? new winston.transports.Console() : new DailyRotateFile({
+    process.env.NODE_ENV === 'development' ? new winston.transports.Console() : new DailyRotateFile({
       filename: `${paths.log.accessDir}/%DATE%-access.log`,
       datePattern: 'YYYY-MM-DD',
     }),

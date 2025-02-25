@@ -1,36 +1,8 @@
-const path = require('path');
 const { redis } = require('config');
-const fsp = require('fs/promises');
 
 const { getClient } = require('./client');
 
 const appLogger = require('../logger/appLogger');
-
-let apiKeys;
-
-/**
- * Load the dev apiKeys on redis from apikey-dev.json.
- * Using for test.
- *
- * @returns {Promise<void>}
- */
-async function load() {
-  const redisClient = getClient();
-  apiKeys = await fsp.readFile(path.resolve(__dirname, '..', '..', 'apikey-dev.json'), 'utf8');
-  apiKeys = JSON.parse(apiKeys);
-
-  for (let i = 0; i < apiKeys.length; i += 1) {
-    const { apikey } = apiKeys[i];
-    const configApikey = apiKeys[i].config;
-
-    try {
-      await redisClient.set(apikey, JSON.stringify(configApikey));
-      appLogger.info(`[redis]: [${configApikey.name}] is loaded`);
-    } catch (err) {
-      appLogger.error(`[redis]: Cannot load [${apikey}] with config [${JSON.stringify(configApikey)}]`, err);
-    }
-  }
-}
 
 /**
  * Load the dev apiKeys on redis from apikey-dev.json.
@@ -89,6 +61,5 @@ async function loadDemoAPIKey() {
 module.exports = {
   pingRedis,
   connectRedis,
-  load,
   loadDemoAPIKey,
 };

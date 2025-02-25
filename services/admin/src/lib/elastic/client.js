@@ -2,20 +2,16 @@
 const fs = require('fs');
 const { elasticsearch } = require('config');
 const path = require('path');
-const { nodeEnv } = require('config');
 const { Client } = require('@elastic/elasticsearch');
 
 const appLogger = require('../logger/appLogger');
 
-const isProd = nodeEnv === 'production';
-const isTest = nodeEnv === 'test';
-
 let elasticClient;
 let ssl;
 
-if (isProd) {
+if (process.env.NODE_ENV === 'production') {
   let ca;
-  const caPath = path.resolve(__dirname, '..', '..', 'certs', 'ca.crt');
+  const caPath = path.resolve(__dirname, '..', '..', '..', 'certs', 'ca.crt');
   try {
     ca = fs.readFileSync(caPath, 'utf8');
   } catch (err) {
@@ -29,7 +25,7 @@ if (isProd) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
 
-if (isTest) {
+if (process.env.NODE_ENV === 'test') {
   const elasticMock = require('./mock');
   appLogger.info('[Elastic]: Using Mock Elasticsearch Client for tests.');
   elasticClient = elasticMock;

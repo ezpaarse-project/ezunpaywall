@@ -153,65 +153,6 @@ mock.add(
   },
 );
 
-/**
- * Bulk
- */
-mock.add(
-  {
-    method: 'POST',
-    path: '/_bulk',
-  },
-  (req) => {
-    const requestBody = req.body;
-    const responseItems = [];
-    const insertedData = {};
-
-    let index;
-    let error = false;
-
-    for (let i = 0; i < requestBody.length; i += 2) {
-      const action = requestBody[i]; // index / update / delete command
-      const dataToBulk = requestBody[i + 1]; // document payload
-
-      if (typeof dataToBulk.is_oa !== 'boolean') {
-        error = true;
-        responseItems.push({
-          index: {
-            _index: action.index._index,
-            _id: action.index._id || dataToBulk.doi,
-            error: {
-              type: 'illegal_argument_exception',
-              reason: '`is_oa` Should be boolean',
-            },
-          },
-        });
-      } else {
-        if (action.index) {
-          index = action.index._index;
-          responseItems.push({
-            index: {
-              _index: action.index._index,
-              _id: action.index._id || dataToBulk.doi,
-              result: 'created',
-            },
-          });
-        }
-        insertedData[action.index._id] = dataToBulk;
-      }
-    }
-
-    if (!error) {
-      data[index] = insertedData;
-    }
-
-    return {
-      took: 10,
-      errors: responseItems.some((item) => item.index.status >= 400),
-      items: responseItems,
-    };
-  },
-);
-
 mock.add({ method: 'POST', path: '/:index/_search' }, (req) => {
   const [, indexName] = req.path.split('/');
   if (!data[indexName]) return { hits: { hits: [] } };

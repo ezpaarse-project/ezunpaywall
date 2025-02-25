@@ -1,5 +1,5 @@
 { 
-  "nodeEnv": "development",
+  "nodeEnv": "test",
   "timezone": "Europe/Paris",
   "smtp": {
     "host": "localhost",

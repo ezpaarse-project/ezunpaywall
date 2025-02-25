@@ -5,8 +5,8 @@ const { format } = require('date-fns');
 const { unpaywall } = require('config');
 const appLogger = require('../logger/appLogger');
 
-const changefilesDir = path.resolve(__dirname, '..', '..', '..', 'tests', 'utils', 'data', 'changefiles');
-const snapshotDir = path.resolve(__dirname, '..', '..', '..', 'tests', 'utils', 'data', 'snapshots');
+const changefilesDir = path.resolve(__dirname, '..', '..', '..', 'tests', 'utils', 'sources', 'changefiles');
+const snapshotDir = path.resolve(__dirname, '..', '..', '..', 'tests', 'utils', 'sources', 'snapshots');
 
 const { apikey, url } = unpaywall;
 
@@ -130,11 +130,11 @@ const changefileWeeklyList = [
   },
 ];
 
-const unpaywallMockInstance = jest.fn(async (config) => {
-  if (config.url === '/') {
+const unpaywallMockInstance = jest.fn(async (req) => {
+  if (req.url === '/') {
     return Promise.resolve({});
   }
-  if (config.url === '/feed/snapshot') {
+  if (req.url === '/feed/snapshot') {
     const filePath = path.resolve(snapshotDir, 'snapshot.jsonl.gz');
     let readStream;
     try {
@@ -152,8 +152,8 @@ const unpaywallMockInstance = jest.fn(async (config) => {
       data: readStream,
     });
   }
-  if (config.url === '/feed/changefiles') {
-    if (config.params.interval === 'day') {
+  if (req.url === '/feed/changefiles') {
+    if (req.params.interval === 'day') {
       return Promise.resolve({
         data: {
           list: changefileDailyList,
@@ -161,7 +161,7 @@ const unpaywallMockInstance = jest.fn(async (config) => {
       });
     }
 
-    if (config.params.interval === 'week') {
+    if (req.params.interval === 'week') {
       return Promise.resolve({
         data: {
           list: changefileWeeklyList,
@@ -169,8 +169,8 @@ const unpaywallMockInstance = jest.fn(async (config) => {
       });
     }
   }
-  if (config.url.includes('/feed/changefiles/')) {
-    const filename = config.url.split('/').pop();
+  if (req.url.includes('/feed/changefiles/')) {
+    const filename = req.url.split('/').pop();
     const filePath = path.resolve(changefilesDir, filename);
     let readStream;
     try {
@@ -181,11 +181,11 @@ const unpaywallMockInstance = jest.fn(async (config) => {
     }
     return Promise.resolve({ data: readStream });
   }
-  if (config.url.includes('/daily-feed/changefiles/')) {
-    if (config?.params?.api_key !== apikey) {
+  if (req.url.includes('/daily-feed/changefiles/')) {
+    if (req?.params?.api_key !== apikey) {
       return Promise.resolve(401);
     }
-    const filename = config.url.split('/').pop();
+    const filename = req.url.split('/').pop();
     const filePath = path.resolve(changefilesDir, filename);
     let readStream;
     try {

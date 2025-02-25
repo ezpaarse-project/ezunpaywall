@@ -13,6 +13,9 @@ function getClient() {
 }
 
 function initClient() {
+  if (process.env.NODE_ENV === 'test') {
+    appLogger.info('[Redis]: Using ioredis-mock Client for tests.');
+  }
   try {
     redisClient = new Redis({
       host: redis.host,
