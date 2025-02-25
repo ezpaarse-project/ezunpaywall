@@ -1,13 +1,11 @@
-const axios = require('axios');
+/* eslint-disable global-require */
 const config = require('config');
 const appLogger = require('../logger/appLogger');
+const getUnpaywallClient = require('./client');
 
 const { apikey } = config.unpaywall;
 
-const unpaywall = axios.create({
-  baseURL: config.unpaywall.url,
-});
-unpaywall.baseURL = config.unpaywall.url;
+const unpaywall = getUnpaywallClient();
 
 /**
  * Ping unpaywall.
@@ -79,24 +77,25 @@ async function getChangefiles(interval, startDate, endDate) {
     return false;
   }
 
-  let snapshotsInfo = res.data.list;
-  snapshotsInfo = snapshotsInfo
+  let changefilesInfo = res.data.list;
+
+  changefilesInfo = changefilesInfo
     .reverse()
     .filter((file) => file.filetype === 'jsonl');
 
   if (interval === 'week') {
-    snapshotsInfo = snapshotsInfo
+    changefilesInfo = changefilesInfo
       .filter((file) => new Date(file.to_date).getTime() >= new Date(startDate).getTime())
       .filter((file) => new Date(file.to_date).getTime() <= new Date(endDate).getTime());
   }
 
   if (interval === 'day') {
-    snapshotsInfo = snapshotsInfo
+    changefilesInfo = changefilesInfo
       .filter((file) => new Date(file.date).getTime() >= new Date(startDate).getTime())
       .filter((file) => new Date(file.date).getTime() <= new Date(endDate).getTime());
   }
 
-  return snapshotsInfo;
+  return changefilesInfo;
 }
 
 /**
@@ -119,16 +118,17 @@ async function getChangefile(filename, interval) {
   try {
     res = await unpaywall({
       method: 'get',
-      url: `/${feed}/changefile/${filename}`,
+      url: `/${feed}/changefiles/${filename}`,
       responseType: 'stream',
       params: {
         api_key: apikey,
       },
     });
   } catch (err) {
-    appLogger.error(`[unpaywall]: Cannot get /${feed}/changefile/${filename}`);
+    appLogger.error(`[unpaywall]: Cannot get /${feed}/changefiles/${filename}`);
     return false;
   }
+
   return res;
 }
 

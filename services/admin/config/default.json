@@ -51,6 +51,11 @@
       "changefileThreshold": 30,
       "reportThreshold": 30,
       "snapshotThreshold": 150
+    },
+    "demoApikey": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "count": 100000
     }
   },
   "paths": {

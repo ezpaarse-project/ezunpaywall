@@ -148,7 +148,7 @@ paths:
         '204':
           description: No Content
           
-  /job/snapshot/download:
+  /job/snapshots/download:
     post:
       tags:
         - job
@@ -176,7 +176,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /job/snapshot/download/insert:
+  /job/snapshots/download/insert:
     post:
       tags:
         - job
@@ -204,7 +204,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
           
-  /job/snapshot/insert/${filename}:
+  /job/snapshots/insert/${filename}:
     post:
       tags:
         - job
@@ -239,7 +239,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /job/changefile/download/insert:
+  /job/changefiles/download/insert:
     post:
       tags:
         - job
@@ -279,7 +279,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
   
-  /job/changefile/insert/${filename}:
+  /job/changefiles/insert/${filename}:
     post:
       tags:
         - job
@@ -324,7 +324,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
                 
-  /job/changefile/history/download/insert:
+  /job/changefiles/history/download/insert:
     post:
       tags:
         - job
@@ -366,7 +366,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
           
-  /job/changefile/history/insert/${filename}:
+  /job/changefiles/history/insert/${filename}:
     post:
       tags:
         - job
@@ -459,7 +459,7 @@ paths:
       parameters:
         - in: query
           name: type
-          description: type of report ([snapshot][download], [snapshot][download][insert], [changefile][download][insert], [changefile][insert], [changefile][history][download][insert])
+          description: type of report ([snapshot][download], [snapshot][download][insert], [changefiles][download][insert], [changefiles][insert], [changefiles][history][download][insert])
           required: true
           schema:
             type: string
@@ -524,7 +524,7 @@ paths:
       parameters:
         - in: query
           name: type
-          description: type of report ([snapshot][download], [snapshot][download][insert], [changefile][download][insert], [changefile][insert], [changefile][history][download][insert])
+          description: type of report ([snapshot][download], [snapshot][download][insert], [changefiles][download][insert], [changefiles][insert], [changefiles][history][download][insert])
           required: true
           schema:
             type: string

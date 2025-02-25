@@ -1,7 +1,9 @@
 node_modules/
 data/
 log/
-test/
+tests/
+coverage/
+tmp/
 .eslintrc.json
 .gitignore
 README.md

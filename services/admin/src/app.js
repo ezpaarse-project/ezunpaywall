@@ -9,9 +9,8 @@ const appLogger = require('./lib/logger/appLogger');
 
 const { logConfig } = require('./lib/config');
 
-const { pingRedis, startConnectionRedis, loadDemoAPIKey } = require('./lib/redis');
-
-const cronDemo = require('./lib/cron');
+const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
+const { initClient } = require('./lib/redis/client');
 
 const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');
@@ -30,9 +29,10 @@ const routerChangefile = require('./routers/update/changefile');
 const routerSnapshot = require('./routers/update/snapshot');
 
 const cronFile = require('./cron/cleanFile');
-const dataUpdate = require('./cron/dataUpdate');
-const dataUpdateHistoryCron = require('./cron/dataUpdateHistory');
+const cronDataUpdate = require('./cron/dataUpdate');
+const cronDataUpdateHistory = require('./cron/dataUpdateHistory');
 const cronDownloadSnapshot = require('./cron/downloadSnapshot');
+const cronDemo = require('./cron/demoApikey');
 
 // create data directory
 fsp.mkdir(path.resolve(paths.data.changefilesDir), { recursive: true });
@@ -96,26 +96,30 @@ app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method
 
 app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
-app.listen(3000, async () => {
+const server = app.listen(3000, async () => {
   appLogger.info(`[express]: ezunpaywall admin service listening on 3000 in [${process.uptime().toFixed(2)}]s`);
   logConfig();
-  await startConnectionRedis();
+  await initClient();
   pingRedis();
   loadDemoAPIKey();
-  cronDemo.start();
+  if (cronDemo.active) {
+    cronDemo.start();
+  }
 
   if (cronFile.active) {
     cronFile.start();
   }
 
-  if (dataUpdate.cron.active) {
-    dataUpdate.cron.start();
+  if (cronDataUpdate.cron.active) {
+    cronDataUpdate.cron.start();
   }
 
-  if (dataUpdateHistoryCron.cron.active) {
-    dataUpdateHistoryCron.cron.start();
+  if (cronDataUpdateHistory.cron.active) {
+    cronDataUpdateHistory.cron.start();
   }
   if (cronDownloadSnapshot.active) {
     cronDownloadSnapshot.start();
   }
 });
+
+module.exports = server;

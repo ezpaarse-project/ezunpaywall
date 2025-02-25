@@ -1,0 +1,75 @@
+{ 
+  "nodeEnv": "test",
+  "timezone": "Europe/Paris",
+  "smtp": {
+    "host": "localhost",
+    "port": 25
+  },
+  "notifications": {
+    "sender": "ezunpaywall",
+    "receivers": ["ezunpaywall@example.com"],
+    "machine": "dev"
+  },
+  "unpaywall": {
+    "url": "http://fakeunpaywall:3000",
+    "apikey": "default"
+  },
+  "elasticsearch": {
+    "nodes": "http://elastic:9200",
+    "username": "elastic",
+    "password": "changeme",
+    "maxBulkSize": 4000,
+    "indexAlias": "upw",
+    "timeout": 20000
+  },
+  "redis":  {
+    "host": "localhost",
+    "port": "6379",
+    "password": "changeme"
+  },
+  "cron": {
+    "downloadSnapshot": {
+      "schedule": "0 0 0 1 * *",
+      "active": false
+    },
+    "dataUpdate": {
+      "schedule": "0 0 0 * * *",
+      "active": false,
+      "index": "unpaywall",
+      "interval": "day"
+    },
+    "dataUpdateHistory": {
+      "schedule": "0 0 0 * * *",
+      "active": false,
+      "index": "unpaywall",
+      "indexHistory": "unpaywall_history_*",
+      "interval": "day"
+    },
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": false,
+      "changefileThreshold": 30,
+      "reportThreshold": 30,
+      "snapshotThreshold": 150
+    },
+    "demoApikey": {
+      "schedule": "0 0 0 * * *",
+      "active": false,
+      "count": 100000
+    }
+  },
+  "paths": {
+    "log": {
+      "applicationDir": "./log/application", 
+      "accessDir": "./log/access",
+      "healthCheckDir": "./log/healthcheck"
+    },
+    "data": {
+      "changefilesDir": "./tmp/data/changefiles",
+      "snapshotsDir": "./tmp/data/snapshots",
+      "reportsDir": "./tmp/data/reports"
+    }
+  },
+  "apikey": "changeme",
+  "healthTimeout": 3000
+}

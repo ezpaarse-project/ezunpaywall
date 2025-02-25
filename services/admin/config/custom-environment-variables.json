@@ -51,6 +51,11 @@
       "changefileThreshold": "CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD",
       "reportThreshold": "CRON_CLEAN_FILE_REPORT_THRESHOLD",
       "snapshotThreshold": "CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD"
+    },
+    "demoApikey": {
+      "schedule": "CRON_DEMO_APIKEY_SCHEDULE",
+      "active": "CRON_DEMO_APIKEY_ACTIVE",
+      "count": "CRON_DEMO_APIKEY_COUNT"
     }
   },
   "apikey": "ADMIN_APIKEY",

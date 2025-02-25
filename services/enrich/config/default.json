@@ -10,6 +10,17 @@
   "graphql": {
     "host": "http://graphql:3000"
   },
+  "cron": {
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "enrichedFileThreshold": 1,
+      "uploadedFileThreshold": 1,
+      "stateFileThreshold": 1
+    }
+  },
+  "apikey": "changeme",
+  "healthTimeout": 3000,
   "paths": {
     "log": {
       "applicationDir": "./log/application", 
@@ -21,7 +32,5 @@
       "statesDir": "./data/states",
       "uploadDir": "./data/upload"
     }
-  },
-  "apikey": "changeme",
-  "healthTimeout": 3000
+  }
 }

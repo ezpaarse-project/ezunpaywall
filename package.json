@@ -5,7 +5,6 @@
    "author": "felixleo22",
    "license": "CeCILL",
    "scripts": {
-      "prepare": "husky install",
       "install": "run-p -ls install:*",
       "install:admin": "npm --prefix services/admin install",
       "install:enrich": "npm --prefix services/enrich install",

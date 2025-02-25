@@ -1,0 +1,25 @@
+{
+  "nodeEnv": "test",
+  "timezone": "Europe/Paris",
+  "redis":  {
+    "host": "redis",
+    "port": "6379",
+    "password": "changeme"
+  },
+  "elasticsearch": {
+    "nodes": "http://elastic:9200",
+    "username": "elastic",
+    "password": "changeme",
+    "indexBase": "unpaywall",
+    "indexHistory": "unpaywall_history_*"
+  },
+  "paths": {
+    "log": {
+      "applicationDir": "./log/application", 
+      "accessDir": "./log/access",
+      "healthCheckDir": "./log/healthcheck"
+    }
+  },
+  "apikey": "changeme",
+  "healthTimeout": 3000
+}
