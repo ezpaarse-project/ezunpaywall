@@ -1,13 +1,7 @@
-const axios = require('axios');
-const config = require('config');
+const getGraphqlClient = require('./client');
+const appLogger = require('../logger/appLogger');
 
-const logger = require('./logger/appLogger');
-
-const graphql = axios.create({
-  baseURL: config.graphql.host,
-  timeout: 30000,
-});
-graphql.host = config.graphql.host;
+const graphql = getGraphqlClient();
 
 /**
  * Request graphql service to get unpaywall data.
@@ -36,7 +30,7 @@ async function requestGraphql(data, args, index, apikey) {
       url: '/graphql',
       data:
       {
-        query: `{ GetByDOI(dois: ["${dois}"]) ${args.toString()} }`,
+        query: `{ unpaywall(dois: ["${dois}"]) ${args.toString()} }`,
       },
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
@@ -45,11 +39,11 @@ async function requestGraphql(data, args, index, apikey) {
       },
     });
   } catch (err) {
-    logger.error('[graphql]: Cannot get unpaywall data');
+    appLogger.error('[graphql]: Cannot get unpaywall data');
     throw err;
   }
 
-  return res?.data?.data?.GetByDOI;
+  return res?.data?.data?.unpaywall;
 }
 
 /**
@@ -65,7 +59,7 @@ async function pingGraphql() {
       url: '/ping',
     });
   } catch (err) {
-    logger.error('[graphql]: Cannot request graphql', err);
+    appLogger.error('[graphql]: Cannot request graphql', err);
     return err?.message;
   }
   if (res?.status === 204) return true;

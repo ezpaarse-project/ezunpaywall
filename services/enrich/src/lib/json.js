@@ -15,7 +15,7 @@ const {
   fail,
 } = require('../models/state');
 
-const { requestGraphql } = require('./graphql');
+const { requestGraphql } = require('./graphql/api');
 
 const { uploadDir, enrichedDir } = config.paths.data;
 

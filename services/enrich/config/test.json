@@ -13,7 +13,7 @@
   "cron": {
     "cleanFile": {
       "schedule": "0 0 0 * * *",
-      "active": true,
+      "active": false,
       "enrichedFileThreshold": 1,
       "uploadedFileThreshold": 1,
       "stateFileThreshold": 1
@@ -28,9 +28,9 @@
       "healthCheckDir": "./log/healthcheck"
     },
     "data": {
-      "enrichedDir": "./data/enriched",
-      "statesDir": "./data/states",
-      "uploadDir": "./data/upload"
+      "enrichedDir": "./tmp/data/enriched",
+      "statesDir": "./tmp/data/states",
+      "uploadDir": "./tmp/data/upload"
     }
   }
 }

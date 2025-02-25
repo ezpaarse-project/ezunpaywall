@@ -10,5 +10,14 @@
     "host": "GRAPHQL_URL"
   },
   "apikey": "ADMIN_APIKEY",
-  "healthTimeout": "HEALTH_TIMEOUT"
+  "healthTimeout": "HEALTH_TIMEOUT",
+  "cron": {
+    "cleanFile": {
+      "schedule": "CRON_CLEAN_FILE_SCHEDULE",
+      "active": "CRON_CLEAN_FILE_ACTIVE",
+      "enrichedFileThreshold": "CRON_CLEAN_FILE_ENRICHED_THRESHOLD",
+      "uploadedFileThreshold": "CRON_CLEAN_FILE_UPLOADED_THRESHOLD",
+      "stateFileThreshold": "CRON_CLEAN_FILE_STATE_THRESHOLD"
+    }
+  }
 }
