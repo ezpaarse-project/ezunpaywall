@@ -21,6 +21,15 @@ info: {
   "graphql": {
     "host": "http://graphql:3000"
   },
+  "cron": {
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "enrichedFileThreshold": 1,
+      "uploadedFileThreshold": 1,
+      "stateFileThreshold": 1
+    }
+  },
   "apikey": "********",
   "healthTimeout": 3000
 }
@@ -36,6 +45,11 @@ info: {
 | REDIS_PORT | 6379 | redis port |
 | REDIS_PASSWORD | changeme | redis password |
 | GRAPHQL_URL | http://graphql:3000 | graphql host |
+| CRON_CLEAN_FILE_SCHEDULE | schedule of cron | 0 0 0 * * * |
+| CRON_CLEAN_FILE_ACTIVE | cron active or not at the start of service | true |
+| CRON_CLEAN_FILE_ENRICHED_THRESHOLD | detention time in days of enriched file | 1 |
+| CRON_CLEAN_FILE_UPLOADED_THRESHOLD | detention time in days of uploaded file | 1 |
+| CRON_CLEAN_FILE_STATE_THRESHOLD | detention time in days of state file | 1 |
 | ADMIN_APIKEY | admin API key | changeme |
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |
 
