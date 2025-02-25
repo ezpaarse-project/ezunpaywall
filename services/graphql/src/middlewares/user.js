@@ -1,4 +1,4 @@
-const { redisClient } = require('../lib/redis');
+const { getClient } = require('../lib/redis/client');
 
 const logger = require('../lib/logger/appLogger');
 
@@ -13,6 +13,7 @@ const logger = require('../lib/logger/appLogger');
  * This middleware need a header that contains the apikey.
  */
 const checkUser = async (req, res, next) => {
+  const redisClient = getClient();
   let apikey = req.get('x-api-key');
 
   if (req.query.apikey && !apikey) {

@@ -9,19 +9,16 @@ const { paths } = require('config');
 
 const { expressMiddleware } = require('@apollo/server/express4');
 
-const { pingRedis, startConnectionRedis } = require('./lib/redis');
+const { pingRedis } = require('./lib/redis');
+const { initClient } = require('./lib/redis/client');
 
 const auth = require('./middlewares/user');
 const countDOIPlugin = require('./middlewares/countDOI');
-
 const accessLogger = require('./lib/logger/access');
 const appLogger = require('./lib/logger/appLogger');
-
 const { logConfig } = require('./lib/config');
-
 const cronMetrics = require('./controllers/cron/metrics');
 const { setMetrics } = require('./lib/metrics');
-
 const { pingElastic } = require('./lib/elastic');
 
 const routerPing = require('./routers/ping');
@@ -33,78 +30,94 @@ const routerOpenapi = require('./routers/openapi');
 const typeDefs = require('./models');
 const resolvers = require('./resolvers');
 
-// create log directory
+// create log directories
 fsp.mkdir(path.resolve(paths.log.applicationDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.log.accessDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.log.healthCheckDir), { recursive: true });
 
-process.env.NODE_ENV = 'production';
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  introspection: true,
-  csrfPrevention: false,
-  plugins: [ApolloServerPluginLandingPageProductionDefault({ footer: false }), countDOIPlugin],
-  context: ({ req }) => ({ req }),
-});
-
-(async () => {
-  const app = express();
-
+function configureMiddleware(app) {
   app.use(cors({
     origin: '*',
     allowedHeaders: ['Content-Type', 'x-api-key'],
-    method: ['GET', 'POST'],
+    methods: ['GET', 'POST'],
   }));
 
-  // initiate healthcheck router with his logger
-  app.use(routerHealthCheck);
-
-  // initiate access logger
   app.use((req, res, next) => {
     const start = Date.now();
     res.on('finish', () => {
       const duration = Date.now() - start;
-
-      if (req.url.includes('/healthcheck')) {
-        next();
+      if (!req.url.includes('/healthcheck')) {
+        accessLogger.info({
+          ip: req.ip,
+          method: req.method,
+          url: req.url,
+          statusCode: res.statusCode,
+          userAgent: req.get('User-Agent') || '-',
+          responseTime: `${duration}ms`,
+          countDOI: req.countDOI || '-',
+        });
       }
-
-      accessLogger.info({
-        ip: req.ip,
-        method: req.method,
-        url: req.url,
-        statusCode: res.statusCode,
-        userAgent: req.get('User-Agent') || '-',
-        responseTime: `${duration}ms`,
-        countDOI: req.countDOI || '-',
-      });
     });
-    return next();
+    next();
   });
+}
 
-  // initiate all other routes
-  app.use(routerPing);
+function configureRoutes(app) {
   app.use(routerHealthCheck);
+  app.use(routerPing);
   app.use(routerMetrics);
   app.use(routerConfig);
   app.use(routerOpenapi);
+}
 
-  await server.start();
-
-  // initiate graphql endpoint
-  app.use('/graphql', cors(), json(), auth, expressMiddleware(server, { context: async ({ req }) => req }));
-
-  app.listen(3000, async () => {
-    appLogger.info(`[express]: graphQL API listening on 3000 in [${process.uptime().toFixed(2)}]s`);
-    pingElastic().then(() => {
-      setMetrics();
-    });
-    logConfig();
-    await startConnectionRedis();
-    pingRedis();
-
-    cronMetrics.start();
+async function startApolloServer(app) {
+  const apolloServer = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: true,
+    csrfPrevention: false,
+    plugins: [ApolloServerPluginLandingPageProductionDefault({ footer: false }), countDOIPlugin],
+    context: ({ req }) => ({ req }),
   });
-})();
+  await apolloServer.start();
+  app.use('/graphql', cors(), json(), auth, expressMiddleware(apolloServer, { context: async ({ req }) => req }));
+}
+
+async function startListening(app) {
+  let server;
+  return new Promise((resolve, reject) => {
+    server = app.listen(3000, async () => {
+      appLogger.info(`[express]: GraphQL API listening on 3000 in [${process.uptime().toFixed(2)}]s`);
+      await pingElastic();
+      setMetrics();
+      logConfig();
+      await initClient();
+      pingRedis();
+      if (process.env.NODE_ENV !== 'test') {
+        cronMetrics.start();
+      }
+      resolve(server);
+    });
+
+    server.on('error', (err) => {
+      console.error('[express]: GraphQL API is on error', err);
+      reject(err);
+    });
+  });
+}
+
+async function startServer() {
+  const app = express();
+
+  configureMiddleware(app);
+  configureRoutes(app);
+  await startApolloServer(app);
+  const server = await startListening(app);
+  return server;
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  startServer();
+}
+
+module.exports = startServer;

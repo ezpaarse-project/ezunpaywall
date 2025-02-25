@@ -1,39 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+const { elasticsearch } = require('config');
+const logger = require('../logger/appLogger');
 
-const { Client } = require('@elastic/elasticsearch');
-const { elasticsearch, nodeEnv } = require('config');
-const logger = require('./logger/appLogger');
+const getElasticClient = require('./client');
 
-const isProd = (nodeEnv === 'production');
-
-let ssl;
-
-if (isProd) {
-  let ca;
-  const caPath = path.resolve(__dirname, '..', '..', 'certs', 'ca.crt');
-  try {
-    ca = fs.readFileSync(caPath, 'utf8');
-  } catch (err) {
-    logger.error(`[elastic]: Cannot read elastic certificate file in [${caPath}]`, err);
-  }
-  ssl = {
-    ca,
-    rejectUnauthorized: true,
-  };
-} else {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-}
-
-const elasticClient = new Client({
-  nodes: elasticsearch.nodes.split(','),
-  auth: {
-    username: elasticsearch.username,
-    password: elasticsearch.password,
-  },
-  ssl,
-  requestTimeout: elasticsearch.timeout,
-});
+const elasticClient = getElasticClient();
 
 /**
  * Ping elastic service.
@@ -127,6 +97,7 @@ async function getMetrics(indexName) {
   }
 
   const { aggregations } = res.body;
+
   const isOA = aggregations.isOA.doc_count;
   const goldOA = aggregations.goldOA.doc_count;
   const hybridOA = aggregations.hybridOA.doc_count;
