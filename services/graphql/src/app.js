@@ -54,7 +54,7 @@ function configureMiddleware(app) {
           url: req.url,
           statusCode: res.statusCode,
           userAgent: req.get('User-Agent') || '-',
-          responseTime: `${duration}ms`,
+          responseTime: `${duration}`,
           countDOI: req.countDOI || '-',
           user: req.user,
         });

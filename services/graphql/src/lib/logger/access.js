@@ -1,6 +1,7 @@
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 const { paths } = require('config');
+const { format } = require('date-fns');
 
 const apacheFormat = winston.format.printf((info) => {
   const {
@@ -13,7 +14,10 @@ const apacheFormat = winston.format.printf((info) => {
     countDOI,
     user,
   } = info.message;
-  return `${info.timestamp} ${ip} ${user} ${method} ${url} ${statusCode} ${userAgent} ${responseTime} ${countDOI}`;
+
+  const timestamp = format(new Date(info.timestamp), 'dd/MMM/yyyy:HH:mm:ss xxx');
+
+  return `${ip || '-'} "${user || '-'}" [${timestamp}] "${method} ${url} HTTP/1.1" ${statusCode} - "-" "${responseTime}" "${userAgent || '-'}" "${countDOI || 0}"`;
 });
 
 const transports = [];
