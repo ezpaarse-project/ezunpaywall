@@ -8,8 +8,9 @@
   "scripts": {
     "start": "node ./src/app.js",
     "dev": "nodemon -L -e .js ./src/app.js",
-    "test": "npx jest --runInBand",
-    "test:coverage": "npx jest --runInBand --coverage",
+    "test": "npx jest --runInBand --testPathIgnorePatterns=mirror.test.js",
+    "test:mirror": "npx jest ./tests/integration/mirror.test.js",
+    "test:coverage": "npx jest --runInBand --coverage --testPathIgnorePatterns=mirror.test.js",
     "lint": "eslint --ext .js ."
   },
   "dependencies": {

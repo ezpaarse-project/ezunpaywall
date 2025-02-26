@@ -11,7 +11,7 @@ async function getStatus() {
   let response;
   try {
     response = await request(app)
-      .get('/status')
+      .get('/job/status')
       .set('x-api-key', apikey);
   } catch (err) {
     console.error('[test][utils][status]: Cannot get status');
