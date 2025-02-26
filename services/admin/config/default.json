@@ -58,6 +58,9 @@
       "count": 100000
     }
   },
+  "apikey": "changeme",
+  "healthTimeout": 3000,
+  "port": 3003,
   "paths": {
     "log": {
       "applicationDir": "./log/application", 
@@ -69,7 +72,5 @@
       "snapshotsDir": "./data/snapshots",
       "reportsDir": "./data/reports"
     }
-  },
-  "apikey": "changeme",
-  "healthTimeout": 3000
+  }
 }

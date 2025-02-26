@@ -19,7 +19,7 @@ info: {
     "password": "********"
   },
   "graphql": {
-    "host": "http://graphql:3000"
+    "host": "http://graphql:3001"
   },
   "cron": {
     "cleanFile": {
@@ -31,13 +31,14 @@ info: {
     }
   },
   "apikey": "********",
-  "healthTimeout": 3000
+  "healthTimeout": 3000,
+  "port": 3002
 }
 ```
 
 ## Service environment variables
 
-| name | default | description |
+| Name | Description | Default |
 | --- | --- | --- |
 | NODE_ENV | development | environment of node |
 | TIMEZONE | Europe/Paris | timezone of app used in cron |
@@ -52,6 +53,14 @@ info: {
 | CRON_CLEAN_FILE_STATE_THRESHOLD | detention time in days of state file | 1 |
 | ADMIN_APIKEY | admin API key | changeme |
 | HEALTH_TIMEOUT | 3000 | timeout to query the health route |
+| PORT | Port | 3002 |
+
+## Command to set volume permissions (non root image docker)
+
+```sh
+docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
+```
 
 ## Activity diagram
 

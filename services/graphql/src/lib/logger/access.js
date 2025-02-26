@@ -19,13 +19,20 @@ const transports = [];
 
 if (process.env.NODE_ENV === 'test') {
   transports.push(new winston.transports.Console());
+} else if (process.env.NODE_ENV === 'development') {
+  transports.push(new winston.transports.Console());
+  transports.push(
+    new DailyRotateFile({
+      filename: `${paths.log.accessDir}/%DATE%-access.log`,
+      datePattern: 'YYYY-MM-DD',
+    }),
+  );
 } else {
   transports.push(
-    process.env.NODE_ENV === 'development' ? new winston.transports.Console()
-      : new DailyRotateFile({
-        filename: `${paths.log.accessDir}/%DATE%-access.log`,
-        datePattern: 'YYYY-MM-DD',
-      }),
+    new DailyRotateFile({
+      filename: `${paths.log.accessDir}/%DATE%-access.log`,
+      datePattern: 'YYYY-MM-DD',
+    }),
   );
 }
 

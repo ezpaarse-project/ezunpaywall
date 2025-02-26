@@ -8,7 +8,7 @@
     "password": "changeme"
   },
   "graphql": {
-    "host": "http://graphql:3000"
+    "url": "http://graphql:3001"
   },
   "cron": {
     "cleanFile": {
@@ -21,6 +21,7 @@
   },
   "apikey": "changeme",
   "healthTimeout": 3000,
+  "port": 3002,
   "paths": {
     "log": {
       "applicationDir": "./log/application", 

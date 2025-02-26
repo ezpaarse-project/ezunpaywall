@@ -28,26 +28,34 @@ info: {
     "indexHistory": "unpaywall_history"
   },
   "apikey": "********",
-  "healthTimeout": 3000
+  "healthTimeout": 3000,
+  "port": 3000
 }
 ```
 
 ## Environment variables
 
-| name | default | description |
-| --- | --- | --- |
-| NODE_ENV | development | environment of node |
-| TIMEZONE | Europe/Paris | timezone of app used in cron |
-| REDIS_HOST | redis | redis host |
-| REDIS_PORT | 6379 | redis port |
-| REDIS_PASSWORD | changeme | redis password |
-| ELASTICSEARCH_HOSTS | http://elastic | elasticsearch host |
-| ELASTICSEARCH_PORT | 9200 | elasticsearch port |
-| ELASTICSEARCH_USERNAME | elastic | elasticsearch admin username |
-| ELASTICSEARCH_PASSWORD | changeme | elasticsearch admin password |
-| ELASTICSEARCH_INDEX_ALIAS | upw | graphql entry point |
-| HEALTH_TIMEOUT | 3000 | timeout to query the health route |
-| ADMIN_APIKEY | admin API key | changeme |
+| name | description | default |
+|---|---|---|
+| NODE_ENV | Environment of node | development |
+| TIMEZONE | Timezone of app used in cron | Europe/Paris |
+| REDIS_HOST | Redis host | redis |
+| REDIS_PORT | Redis port | 6379 |
+| REDIS_PASSWORD | Redis password | changeme |
+| ELASTICSEARCH_HOSTS | Elasticsearch host | http://elastic |
+| ELASTICSEARCH_PORT | Elasticsearch port | 9200 |
+| ELASTICSEARCH_USERNAME | Elasticsearch admin username | elastic |
+| ELASTICSEARCH_PASSWORD | Elasticsearch admin password | changeme |
+| ELASTICSEARCH_INDEX_ALIAS | Graphql entry point | upw |
+| HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
+| ADMIN_APIKEY | Admin API key | changeme |
+| PORT | Port | 3000 |
+
+## Command to set volume permissions (non root image docker)
+
+```sh
+docker compose run --rm --entrypoint "" --user root graphql chown -R node /usr/src/app/log
+```
 
 ## Activity diagram
 

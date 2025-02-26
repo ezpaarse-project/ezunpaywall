@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fsp = require('fs/promises');
 const path = require('path');
-const { paths } = require('config');
+const { paths, port } = require('config');
 
 const accessLogger = require('./lib/logger/access');
 const appLogger = require('./lib/logger/appLogger');
@@ -96,8 +96,8 @@ app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method
 
 app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
-const server = app.listen(3000, async () => {
-  appLogger.info(`[express]: ezunpaywall admin service listening on 3000 in [${process.uptime().toFixed(2)}]s`);
+const server = app.listen(port, async () => {
+  appLogger.info(`[express]: ezunpaywall admin service listening on ${port} in [${process.uptime().toFixed(2)}]s`);
   logConfig();
   await initClient();
   pingRedis();

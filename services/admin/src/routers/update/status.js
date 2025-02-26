@@ -6,12 +6,12 @@ const { getUpdateStatusController, patchUpdateStatusController } = require('../.
 /**
  * Route that indicate if an update is in progress.
  */
-router.get('/status', getUpdateStatusController);
+router.get('/job/status', getUpdateStatusController);
 
 /**
  * Route that reverses the status.
  * Auth required.
  */
-router.patch('/status', checkAdmin, patchUpdateStatusController);
+router.patch('/job/status', checkAdmin, patchUpdateStatusController);
 
 module.exports = router;

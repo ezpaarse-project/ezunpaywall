@@ -5,7 +5,7 @@ const cors = require('cors');
 const { json } = require('body-parser');
 const { ApolloServer } = require('@apollo/server');
 const { ApolloServerPluginLandingPageProductionDefault } = require('@apollo/server/plugin/landingPage/default');
-const { paths } = require('config');
+const { paths, port } = require('config');
 
 const { expressMiddleware } = require('@apollo/server/express4');
 
@@ -86,8 +86,8 @@ async function startApolloServer(app) {
 async function startListening(app) {
   let server;
   return new Promise((resolve, reject) => {
-    server = app.listen(3000, async () => {
-      appLogger.info(`[express]: GraphQL API listening on 3000 in [${process.uptime().toFixed(2)}]s`);
+    server = app.listen(port, async () => {
+      appLogger.info(`[express]: GraphQL API listening on ${port} in [${process.uptime().toFixed(2)}]s`);
       await pingElastic();
       setMetrics();
       logConfig();
@@ -100,7 +100,7 @@ async function startListening(app) {
     });
 
     server.on('error', (err) => {
-      console.error('[express]: GraphQL API is on error', err);
+      appLogger.error('[express]: GraphQL API is on error', err);
       reject(err);
     });
   });

@@ -1,10 +1,6 @@
 const router = require('express').Router();
 
-const {
-  healthController,
-  healthRedisController,
-  healthElasticController,
-} = require('../controllers/health');
+const statusController = require('../controllers/status');
 
 /**
  * Route that give the name of service.
@@ -17,18 +13,8 @@ router.get('/', (req, res) => res.status(200).json('ezUNPAYWALL admin API'));
 router.get('/ping', (req, res) => res.status(204).end());
 
 /**
- * route that gives the state of health of the service.
+ * route that gives the status of each services connected to admin service.
  */
-router.get('/health', healthController);
-
-/**
- * Route that gives the state of health of redis.
- */
-router.get('/health/redis', healthRedisController);
-
-/**
- * Route that gives the state of health of elastic.
- */
-router.get('/health/elastic', healthElasticController);
+router.get('/status', statusController);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-FROM node:18.19.1-alpine3.19 AS base
+FROM node:22.13.1-alpine3.21 AS base
 
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
@@ -14,19 +14,18 @@ COPY . .
 
 ARG ENV=development
 
-HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s \
-  CMD [ "node", "-e", "require('http').get('http://localhost:3000', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1));" ]
-        
+HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s CMD ["node", "./healthcheck.js"]
+
 RUN mkdir -p ./log/access ./log/application ./log/healthcheck  \
   && chmod -R 700 ./log \
   && chown -R node:node ./log
 
 RUN if [ "$ENV" = "production" ]; then \
-      rm -f /bin/bash /bin/sh; \
+      rm -f /bin/sh; \
     fi
 
 USER node
 
-EXPOSE 3000
+EXPOSE 3001
 
 ENTRYPOINT [ "node", "./src/app.js" ]

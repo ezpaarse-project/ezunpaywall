@@ -1,15 +1,11 @@
 const router = require('express').Router();
 
-const {
-  health,
-  healthRedis,
-  healthGraphql,
-} = require('../controllers/health');
+const statusController = require('../controllers/status');
 
 /**
  * Route that give the name of service.
  */
-router.get('/', (req, res) => res.status(200).json('enrich service'));
+router.get('/', (req, res) => res.status(200).json('ezUNPAYWALL enrich API'));
 
 /**
  * Route that ping the service.
@@ -17,18 +13,8 @@ router.get('/', (req, res) => res.status(200).json('enrich service'));
 router.get('/ping', (req, res) => res.status(204).end());
 
 /**
- * route that gives the state of health of the service.
+ * Route that gives status of each service.
  */
-router.get('/health', health);
-
-/**
- * Route that gives the state of health of redis.
- */
-router.get('/health/redis', healthRedis);
-
-/**
- * Route that gives the state of health of graphql.
- */
-router.get('/health/graphql', healthGraphql);
+router.get('/status', statusController);
 
 module.exports = router;

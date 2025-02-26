@@ -73,6 +73,9 @@ To set up this service, you can use environment variables. The config is display
       "snapshotThreshold": 150
     }
   },
+  "apikey": "********",
+  "healthTimeout": 3000,
+  "port": 3003,
   "paths": {
     "log": {
       "applicationDir": "./log/application",
@@ -84,18 +87,16 @@ To set up this service, you can use environment variables. The config is display
       "snapshotsDir": "./data/snapshots",
       "reportsDir": "./data/reports"
     }
-  },
-  "apikey": "********",
-  "healthTimeout": 3000
+  }
 }
 ```
 
 ## Environment variables
 
-| name | description | default |
+| name | Description | Default |
 | --- | --- | --- |
-| NODE_ENV | environment of node | development |
-| TIMEZONE | timezone of app used in cron | Europe/Paris |
+| NODE_ENV | Environment of node | development |
+| TIMEZONE | Timezone of app used in cron | Europe/Paris |
 | SMTP_HOST | SMTP host | localhost |
 | SMTP_PORT | SMTP port | 25 |
 | NOTIFICATIONS_SENDER | the sender for emails issued by ezunpaywall | ezunpaywall |
@@ -133,6 +134,14 @@ To set up this service, you can use environment variables. The config is display
 | CRON_DEMO_APIKEY_COUNT | count of demo request | 100000 | 
 | ADMIN_APIKEY | admin API key | changeme |
 | HEALTH_TIMEOUT | timeout to query the health route | 3000 |
+| PORT | Port | 3003 |
+
+## Command to set volume permissions (non root image docker)
+
+```sh
+docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/log
+docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/data
+```
 
 ## Activity diagram
 
