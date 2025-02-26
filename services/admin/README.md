@@ -80,7 +80,7 @@ To set up this service, you can use environment variables. The config is display
     "log": {
       "applicationDir": "./log/application",
       "accessDir": "./log/access",
-      "healthCheckDir": "./log/healthcheck"
+      "healthcheckDir": "./log/healthcheck"
     },
     "data": {
       "changefilesDir": "./data/changefiles",

@@ -11,8 +11,9 @@ const apacheFormat = winston.format.printf((info) => {
     userAgent,
     responseTime,
     countDOI,
+    user,
   } = info.message;
-  return `${info.timestamp} ${ip} ${method} ${url} ${statusCode} ${userAgent} ${responseTime} ${countDOI}`;
+  return `${info.timestamp} ${ip} ${user} ${method} ${url} ${statusCode} ${userAgent} ${responseTime} ${countDOI}`;
 });
 
 const transports = [];

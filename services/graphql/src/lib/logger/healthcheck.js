@@ -11,7 +11,7 @@ const apacheFormat = winston.format.printf((info) => {
     userAgent,
     responseTime,
   } = info.message;
-  return `${info.timestamp} ${method} ${url} ${statusCode} ${userAgent} ${responseTime}`;
+  return `${info.timestamp} - - ${method} ${url} ${statusCode} ${userAgent} ${responseTime} 0`;
 });
 
 const transports = [];
@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'test') {
 } else {
   transports.push(
     new DailyRotateFile({
-      filename: `${paths.log.accessDir}/%DATE%-access.log`,
+      filename: `${paths.log.healthcheckDir}/%DATE%-access.log`,
       datePattern: 'YYYY-MM-DD',
     }),
   );

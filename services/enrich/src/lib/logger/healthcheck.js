@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'test') {
 } else {
   transports.push(
     new DailyRotateFile({
-      filename: `${paths.log.accessDir}/%DATE%-access.log`,
+      filename: `${paths.log.healthcheckDir}/%DATE%-access.log`,
       datePattern: 'YYYY-MM-DD',
     }),
   );

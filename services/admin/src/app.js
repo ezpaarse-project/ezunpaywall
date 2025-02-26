@@ -42,7 +42,7 @@ fsp.mkdir(path.resolve(paths.data.reportsDir), { recursive: true });
 // create log directory
 fsp.mkdir(path.resolve(paths.log.applicationDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.log.accessDir), { recursive: true });
-fsp.mkdir(path.resolve(paths.log.healthCheckDir), { recursive: true });
+fsp.mkdir(path.resolve(paths.log.healthcheckDir), { recursive: true });
 
 const app = express();
 

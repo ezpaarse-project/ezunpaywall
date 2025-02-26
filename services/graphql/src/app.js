@@ -12,8 +12,8 @@ const { expressMiddleware } = require('@apollo/server/express4');
 const { pingRedis } = require('./lib/redis');
 const { initClient } = require('./lib/redis/client');
 
-const auth = require('./middlewares/user');
 const countDOIPlugin = require('./middlewares/countDOI');
+const userPlugin = require('./middlewares/user');
 const accessLogger = require('./lib/logger/access');
 const appLogger = require('./lib/logger/appLogger');
 const { logConfig } = require('./lib/config');
@@ -33,7 +33,7 @@ const resolvers = require('./resolvers');
 // create log directories
 fsp.mkdir(path.resolve(paths.log.applicationDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.log.accessDir), { recursive: true });
-fsp.mkdir(path.resolve(paths.log.healthCheckDir), { recursive: true });
+fsp.mkdir(path.resolve(paths.log.healthcheckDir), { recursive: true });
 
 function configureMiddleware(app) {
   app.use(cors({
@@ -46,6 +46,7 @@ function configureMiddleware(app) {
     const start = Date.now();
     res.on('finish', () => {
       const duration = Date.now() - start;
+
       if (!req.url.includes('/healthcheck')) {
         accessLogger.info({
           ip: req.ip,
@@ -55,6 +56,7 @@ function configureMiddleware(app) {
           userAgent: req.get('User-Agent') || '-',
           responseTime: `${duration}ms`,
           countDOI: req.countDOI || '-',
+          user: req.user,
         });
       }
     });
@@ -76,11 +78,13 @@ async function startApolloServer(app) {
     resolvers,
     introspection: true,
     csrfPrevention: false,
-    plugins: [ApolloServerPluginLandingPageProductionDefault({ footer: false }), countDOIPlugin],
+    plugins: [ApolloServerPluginLandingPageProductionDefault({ footer: false }),
+      userPlugin, countDOIPlugin,
+    ],
     context: ({ req }) => ({ req }),
   });
   await apolloServer.start();
-  app.use('/graphql', cors(), json(), auth, expressMiddleware(apolloServer, { context: async ({ req }) => req }));
+  app.use('/graphql', cors(), json(), expressMiddleware(apolloServer, { context: async ({ req }) => req }));
 }
 
 async function startListening(app) {
