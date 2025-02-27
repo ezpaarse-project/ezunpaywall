@@ -80,7 +80,7 @@ async function checkApikey(req, args, info) {
     }
   }
 
-  const { attributes } = req;
+  const { attributes } = apiKeyConfig;
 
   if (!attributes.includes('*')) {
     const test = graphqlFields(info);

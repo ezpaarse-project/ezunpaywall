@@ -6,27 +6,22 @@ const { getClient } = require('../lib/redis/client');
 const userPlugin = {
   requestDidStart() {
     return {
-      async didResolveOperation(tt) {
-        const { request } = tt;
-        let apiKey = request.http?.headers.get('x-api-key');
+      async didResolveOperation(context) {
+        const { request } = context;
+        const apiKey = request.http?.headers.get('x-api-key');
+
+        if (!apiKey) {
+          return;
+        }
 
         const redisClient = getClient();
-
-        if (!apiKey) {
-          apiKey = request.http?.query.apikey;
-          request.http.headers['x-api-key'] = request.http.query.apikey;
-        }
-
-        if (!apiKey) {
-          throw new Error('Invalid or missing API key');
-        }
 
         let apikeyConfig;
         try {
           apikeyConfig = await redisClient.get(apiKey);
         } catch (err) {
           appLogger.error(`[redis]: Cannot get [${apiKey}]`, err);
-          throw new Error('Invalid or missing API key');
+          return;
         }
 
         let config;
@@ -34,14 +29,10 @@ const userPlugin = {
           config = JSON.parse(apikeyConfig);
         } catch (err) {
           appLogger.error(`[redis]: Cannot parse [${apikeyConfig}]`, err);
-          throw new Error('Invalid or missing API key');
+          return;
         }
 
-        if (!Array.isArray(config?.access) || !config?.access?.includes('graphql') || !config?.allowed) {
-          throw new Error('Invalid or missing API key');
-        }
-
-        tt.contextValue.res.req.user = config.name;
+        context.contextValue.res.req.user = config.name;
       },
     };
   },

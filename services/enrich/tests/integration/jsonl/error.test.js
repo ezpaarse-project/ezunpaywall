@@ -43,7 +43,6 @@ describe('Enrich: job on jsonl file', () => {
 
       // TODO 2023-02-02 Add 401
       expect(response.statusCode).toBe(200);
-      // console.log(response.body);
     });
   });
 
