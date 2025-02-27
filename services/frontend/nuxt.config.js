@@ -21,12 +21,12 @@ export default defineNuxtConfig({
       kibanaURL: process.env.NUXT_PUBLIC_KIBANA_URL || 'http://localhost:5601',
       graphqlURL: process.env.NUXT_PUBLIC_GRAPHQL_URL || 'http://localhost:59701',
       enrichURL: process.env.NUXT_PUBLIC_ENRICH_URL || 'http://localhost:59702',
-      adminURL: process.env.NUXT_PUBLIC_ADMIN_URL || 'http://localhost:59703',
+      adminUrl: process.env.NUXT_PUBLIC_ADMIN_URL || 'http://localhost:59703',
       elasticEnv: process.env.NUXT_PUBLIC_ELASTIC_ENV || 'local',
       version: process.env.NUXT_PUBLIC_VERSION || 'local',
     },
-    adminURL: process.env.NUXT_ADMIN_URL || 'http://admin:3003',
-    adminApiKey: process.env.NUXT_ADMIN_APIKEY || 'changeme',
+    adminUrl: process.env.NUXT_ADMIN_URL || 'http://admin:3003',
+    adminApikey: process.env.NUXT_ADMIN_APIKEY || 'changeme',
   },
 
   vite: {
