@@ -118,14 +118,14 @@ async function getChangefile(filename, interval) {
   try {
     res = await unpaywall({
       method: 'get',
-      url: `/${feed}/changefiles/${filename}`,
+      url: `/${feed}/changefile/${filename}`,
       responseType: 'stream',
       params: {
         api_key: apikey,
       },
     });
   } catch (err) {
-    appLogger.error(`[unpaywall]: Cannot get /${feed}/changefiles/${filename}`);
+    appLogger.error(`[unpaywall]: Cannot get /${feed}/changefile/${filename} - ${err}`);
     return false;
   }
 

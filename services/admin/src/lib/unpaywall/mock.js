@@ -33,7 +33,7 @@ const changefileDailyList = [
     last_modified: today,
     lines: 2,
     size: 80,
-    url: `${url}/daily-feed/changefiles/fake1.jsonl.gz?api_key=default`,
+    url: `${url}/daily-feed/changefile/fake1.jsonl.gz?api_key=default`,
   },
   {
     date: format(oneDaysAgo, 'yyyy-MM-dd'),
@@ -42,7 +42,7 @@ const changefileDailyList = [
     last_modified: oneDaysAgo,
     lines: 2,
     size: 80,
-    url: `${url}/daily-feed/changefiles/fake2.jsonl.gz?api_key=default`,
+    url: `${url}/daily-feed/changefile/fake2.jsonl.gz?api_key=default`,
   },
   {
     date: format(twoDaysAgo, 'yyyy-MM-dd'),
@@ -51,7 +51,7 @@ const changefileDailyList = [
     last_modified: twoDaysAgo,
     lines: 2,
     size: 80,
-    url: `${url}/daily-feed/changefiles/fake3.jsonl.gz?api_key=default`,
+    url: `${url}/daily-feed/changefile/fake3.jsonl.gz?api_key=default`,
   },
   {
     date: '2020-01-05',
@@ -60,7 +60,7 @@ const changefileDailyList = [
     last_modified: '2020-01-05',
     lines: 2,
     size: 80,
-    url: `${url}/daily-feed/changefiles/2020-01-05-history.jsonl.gz?api_key=default`,
+    url: `${url}/daily-feed/changefile/2020-01-05-history.jsonl.gz?api_key=default`,
   },
   {
     date: '2020-01-04',
@@ -69,7 +69,7 @@ const changefileDailyList = [
     last_modified: '2020-01-04',
     lines: 2,
     size: 80,
-    url: `${url}/daily-feed/changefiles/2020-01-04-history.jsonl.gz?api_key=default`,
+    url: `${url}/daily-feed/changefile/2020-01-04-history.jsonl.gz?api_key=default`,
   },
   {
     date: '2020-01-03',
@@ -78,7 +78,7 @@ const changefileDailyList = [
     last_modified: '2020-01-03',
     lines: 2,
     size: 80,
-    url: `${url}/daily-feed/changefiles/2020-01-03-history.jsonl.gz?api_key=default`,
+    url: `${url}/daily-feed/changefile/2020-01-03-history.jsonl.gz?api_key=default`,
   },
   {
     date: '2020-01-02',
@@ -87,7 +87,7 @@ const changefileDailyList = [
     last_modified: '2020-01-02',
     lines: 2,
     size: 80,
-    url: `${url}/daily-feed/changefiles/2020-01-02-history.jsonl.gz?api_key=default`,
+    url: `${url}/daily-feed/changefile/2020-01-02-history.jsonl.gz?api_key=default`,
   },
   {
     date: '2019-01-02',
@@ -96,7 +96,7 @@ const changefileDailyList = [
     last_modified: '2019-01-02',
     lines: 2,
     size: 80,
-    url: `${url}/daily-feed/changefiles/2019-01-02-history.jsonl.gz?api_key=default`,
+    url: `${url}/daily-feed/changefile/2019-01-02-history.jsonl.gz?api_key=default`,
   },
 ];
 
@@ -108,7 +108,7 @@ const changefileWeeklyList = [
     last_modified: oneWeekAgo,
     lines: 2,
     size: 80,
-    url: `${url}/feed/changefiles/fake1.jsonl.gz?api_key=default`,
+    url: `${url}/feed/changefile/fake1.jsonl.gz?api_key=default`,
   },
   {
     to_date: format(twoWeekAgo, 'yyyy-MM-dd'),
@@ -117,7 +117,7 @@ const changefileWeeklyList = [
     last_modified: twoWeekAgo,
     lines: 2,
     size: 80,
-    url: `${url}/feed/changefiles/fake2.jsonl.gz?api_key=default`,
+    url: `${url}/feed/changefile/fake2.jsonl.gz?api_key=default`,
   },
   {
     to_date: format(threeWeekAgo, 'yyyy-MM-dd'),
@@ -126,7 +126,7 @@ const changefileWeeklyList = [
     last_modified: threeWeekAgo,
     lines: 2,
     size: 80,
-    url: `${url}/feed/changefiles/fake3.jsonl.gz?api_key=default`,
+    url: `${url}/feed/changefile/fake3.jsonl.gz?api_key=default`,
   },
 ];
 
@@ -169,7 +169,7 @@ const unpaywallMockInstance = jest.fn(async (req) => {
       });
     }
   }
-  if (req.url.includes('/feed/changefiles/')) {
+  if (req.url.includes('/feed/changefile/')) {
     const filename = req.url.split('/').pop();
     const filePath = path.resolve(changefilesDir, filename);
     let readStream;
@@ -181,7 +181,7 @@ const unpaywallMockInstance = jest.fn(async (req) => {
     }
     return Promise.resolve({ data: readStream });
   }
-  if (req.url.includes('/daily-feed/changefiles/')) {
+  if (req.url.includes('/daily-feed/changefile/')) {
     if (req?.params?.api_key !== apikey) {
       return Promise.resolve(401);
     }
