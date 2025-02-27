@@ -25,7 +25,7 @@ async function getSnapshotsController(req, res, next) {
     return res.status(200).json(latestSnapshot?.filename);
   }
   const files = await fsp.readdir(paths.data.snapshotsDir);
-  return res.status(200).json(files);
+  return res.status(200).json(files.reverse());
 }
 
 /**
