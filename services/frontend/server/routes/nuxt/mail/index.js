@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
           message,
         },
         headers: {
-          'x-api-key': runtimeConfig.adminAPIKey,
+          'x-api-key': runtimeConfig.adminApiKey,
           'Content-type': 'application/json',
         },
       },
