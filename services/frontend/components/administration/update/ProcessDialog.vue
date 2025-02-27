@@ -137,7 +137,7 @@ async function startClassicUpdate() {
     cleanFile: cleanFile.value,
   };
   try {
-    await $admin('/job/changefile/download/insert', {
+    await $admin('/job/changefiles/download/insert', {
       method: 'POST',
       body: data,
       headers: {
@@ -165,7 +165,7 @@ async function startHistoryUpdate() {
     cleanFile: cleanFile.value,
   };
   try {
-    await $admin('/job/changefile/history/download/insert', {
+    await $admin('/job/changefiles/history/download/insert', {
       method: 'POST',
       body: data,
       headers: {

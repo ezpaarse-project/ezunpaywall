@@ -1,6 +1,6 @@
 const graphqlFields = require('graphql-fields');
 const logger = require('../lib/logger/appLogger');
-const { redisClient } = require('../lib/redis');
+const { getClient } = require('../lib/redis/client');
 
 /**
  * Flatten nested properties of an object by separating keys with dots.
@@ -39,6 +39,7 @@ function flatten(obj) {
  * @param info Info about graphql
  */
 async function checkApikey(req, args, info) {
+  const redisClient = getClient();
   const apikey = req.get('X-API-KEY');
 
   if (!apikey) {
@@ -79,7 +80,7 @@ async function checkApikey(req, args, info) {
     }
   }
 
-  const { attributes } = req;
+  const { attributes } = apiKeyConfig;
 
   if (!attributes.includes('*')) {
     const test = graphqlFields(info);

@@ -11,7 +11,7 @@ const logger = require('./logger/appLogger');
 
 const { updateStateInFile, fail } = require('../models/state');
 
-const { requestGraphql } = require('./graphql');
+const { requestGraphql } = require('./graphql/api');
 
 const { uploadDir, enrichedDir } = config.paths.data;
 
@@ -185,7 +185,7 @@ async function enrichHeaderCSV(headers, prefix, args) {
   deleted.forEach((el) => {
     args = args.replace(el, '');
   });
-  // delete doublon
+  // delete duplicate
   const uSet = new Set(headers.concat(args.split(',')));
   let result = [...uSet];
   if (prefix) {

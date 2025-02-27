@@ -32,7 +32,7 @@ const items = ref([
 const host = computed(() => {
   if (tab.value === 0) { return runtimeConfig.public.graphqlURL; }
   if (tab.value === 1) { return runtimeConfig.public.enrichURL; }
-  if (tab.value === 2) { return runtimeConfig.public.adminURL; }
+  if (tab.value === 2) { return runtimeConfig.public.adminUrl; }
   return runtimeConfig.public.graphqlURL;
 });
 

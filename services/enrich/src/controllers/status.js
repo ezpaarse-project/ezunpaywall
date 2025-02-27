@@ -1,6 +1,6 @@
 const promiseWithTimeout = require('../lib/ping');
 const { pingRedis } = require('../lib/redis');
-const { pingGraphql } = require('../lib/graphql');
+const { pingGraphql } = require('../lib/graphql/api');
 
 /**
  * Controller to get status of all services connected to enrich service.

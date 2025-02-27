@@ -1,6 +1,7 @@
 const apikeyService = require('../lib/apikeys');
 
-const { redisClient, load } = require('../lib/redis');
+const { getClient } = require('../lib/redis/client');
+const { load } = require('../lib/redis');
 const appLogger = require('../lib/logger/appLogger');
 
 /**
@@ -37,6 +38,7 @@ async function getApikeyController(req, res, next) {
  * @param {import('express').NextFunction} next Do the following.
  */
 async function getAllApikeyController(req, res, next) {
+  const redisClient = getClient();
   let keys;
   try {
     keys = await redisClient.keys('*');
@@ -93,6 +95,8 @@ async function getAllApikeyController(req, res, next) {
  * @param {import('express').NextFunction} next Do the following.
  */
 async function createApiKeyController(req, res, next) {
+  const redisClient = getClient();
+
   const apikeyConfig = req.data;
 
   const {
@@ -161,6 +165,8 @@ async function createApiKeyController(req, res, next) {
  * @param {import('express').NextFunction} next Do the following.
  */
 async function updateApiKeyController(req, res, next) {
+  const redisClient = getClient();
+
   const { apikey, apikeyConfig } = req.data;
   const { name } = apikeyConfig;
 
@@ -256,6 +262,8 @@ async function updateApiKeyController(req, res, next) {
  * @param {import('express').NextFunction} next Do the following.
  */
 async function deleteApiKeyController(req, res, next) {
+  const redisClient = getClient();
+
   const apikey = req.data;
 
   let key;
@@ -288,6 +296,8 @@ async function deleteApiKeyController(req, res, next) {
  * @param {import('express').NextFunction} next Do the following.
  */
 async function deleteAllApikeyController(req, res, next) {
+  const redisClient = getClient();
+
   try {
     await redisClient.flushall();
   } catch (err) {
@@ -305,6 +315,8 @@ async function deleteAllApikeyController(req, res, next) {
  * @param {import('express').NextFunction} next Do the following.
  */
 async function loadApikeyController(req, res, next) {
+  const redisClient = getClient();
+
   const loadKeys = req.data;
 
   for (let i = 0; i < loadKeys.length; i += 1) {

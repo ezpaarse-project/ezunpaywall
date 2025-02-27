@@ -63,8 +63,8 @@ async function validateUpdateApiKey(req, res, next) {
 
   const { error, value: apikeyConfig } = joi.object({
     name: joi.string().trim(),
-    attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)).default(['*']),
-    access: joi.array().items(joi.string().trim().valid(...availableAccess)).default(['graphql', 'enrich']),
+    attributes: joi.array().items(joi.string().trim().valid(...unpaywallAttrs)),
+    access: joi.array().items(joi.string().trim().valid(...availableAccess)),
     owner: joi.string().trim().optional().allow(''),
     description: joi.string().trim().optional().allow(''),
     allowed: joi.boolean().default(true),
