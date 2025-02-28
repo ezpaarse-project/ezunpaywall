@@ -51,7 +51,7 @@ function configureMiddleware(app) {
         accessLogger.info({
           ip: req.ip,
           method: req.method,
-          url: req.url,
+          url: req.baseUrl,
           statusCode: res.statusCode,
           userAgent: req.get('User-Agent') || '-',
           responseTime: `${duration}`,
@@ -81,7 +81,6 @@ async function startApolloServer(app) {
     plugins: [ApolloServerPluginLandingPageProductionDefault({ footer: false }),
       userPlugin, countDOIPlugin,
     ],
-    context: ({ req }) => ({ req }),
   });
   await apolloServer.start();
   app.use('/graphql', cors(), json(), expressMiddleware(apolloServer, { context: async ({ req }) => req }));
