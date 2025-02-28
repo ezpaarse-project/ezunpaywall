@@ -25,7 +25,7 @@ async function getChangefilesController(req, res, next) {
     return res.status(200).json(latestChangefile?.filename);
   }
   const files = await fsp.readdir(paths.data.changefilesDir);
-  return res.status(200).json(files);
+  return res.status(200).json(files.reverse());
 }
 
 /**

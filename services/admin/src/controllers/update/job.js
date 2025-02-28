@@ -5,7 +5,7 @@ const { paths } = require('config');
 
 const {
   downloadSnapshotProcess,
-  downloadAndInsertSnapshotProcess,
+  downloadInsertSnapshotProcess,
   downloadInsertChangefilesProcess,
   insertFileProcess,
   downloadInsertChangefilesHistoryProcess,
@@ -42,7 +42,7 @@ async function downloadAndInsertSnapshotJobController(req, res, next) {
     limit: -1,
   };
 
-  downloadAndInsertSnapshotProcess(jobConfig);
+  downloadInsertSnapshotProcess(jobConfig);
   return res.status(202).json();
 }
 

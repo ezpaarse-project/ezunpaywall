@@ -9,9 +9,10 @@ const appLogger = require('./lib/logger/appLogger');
 
 const { logConfig } = require('./lib/config');
 
-const { startConnectionRedis, pingRedis } = require('./lib/redis');
+const { pingRedis } = require('./lib/redis');
+const { initClient } = require('./lib/redis/client');
 
-require('./lib/cron');
+const cronCleanFile = require('./cron/cleanFile');
 
 const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');
@@ -27,7 +28,7 @@ fsp.mkdir(path.resolve(paths.data.statesDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.data.uploadDir), { recursive: true });
 
 // create log directory
-fsp.mkdir(path.resolve(paths.log.healthCheckDir), { recursive: true });
+fsp.mkdir(path.resolve(paths.log.healthcheckDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.log.applicationDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.log.accessDir), { recursive: true });
 
@@ -78,9 +79,15 @@ app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method
 
 app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
-app.listen(port, async () => {
-  appLogger.info(`[express]: ezunpaywall enrich service listening on port ${port} in [${process.uptime().toFixed(2)}]s`);
+const server = app.listen(port, async () => {
+  appLogger.info(`[express]: ezunpaywall enrich service listening on ${port} in [${process.uptime().toFixed(2)}]s`);
   logConfig();
-  await startConnectionRedis();
+  await initClient();
   pingRedis();
+
+  if (cronCleanFile.active) {
+    cronCleanFile.start();
+  }
 });
+
+module.exports = server;

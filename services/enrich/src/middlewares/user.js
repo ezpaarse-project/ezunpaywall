@@ -1,4 +1,4 @@
-const { redisClient } = require('../lib/redis');
+const { getClient } = require('../lib/redis/client');
 
 const logger = require('../lib/logger/appLogger');
 
@@ -18,6 +18,7 @@ const logger = require('../lib/logger/appLogger');
  * }
  */
 async function checkApiKey(req, res, next) {
+  const redisClient = getClient();
   const apikey = req.get('x-api-key');
 
   if (!apikey) {

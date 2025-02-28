@@ -1,12 +1,12 @@
 export default defineNuxtPlugin((nuxtApp) => {
-  const adminURL = nuxtApp.$config.public.adminURL;
+  const adminUrl = nuxtApp.$config.public.adminUrl;
   const graphqlURL = nuxtApp.$config.public.graphqlURL;
   const enrichURL = nuxtApp.$config.public.enrichURL;
 
   const adminFetch = $fetch.create({
-    baseURL: adminURL,
+    baseURL: adminUrl,
   });
-  adminFetch.baseURL = adminURL;
+  adminFetch.baseURL = adminUrl;
 
   const enrichFetch = $fetch.create({
     baseURL: enrichURL,

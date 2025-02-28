@@ -1,51 +1,41 @@
-const { redisClient } = require('../lib/redis');
+/* eslint-disable no-param-reassign */
 
-const logger = require('../lib/logger/appLogger');
+const appLogger = require('../lib/logger/appLogger');
+const { getClient } = require('../lib/redis/client');
 
-/**
- * Authentication middleware that checks if the content of the x-api-key header
- * matches the apikey in redis and the apikey config.
- *
- * @param {import('express').Request} req HTTP request.
- * @param {import('express').Response} res HTTP response.
- * @param {import('express').NextFunction} next Do the following.
- *
- * This middleware need a header that contains the apikey.
- */
-const checkUser = async (req, res, next) => {
-  let apikey = req.get('x-api-key');
+const userPlugin = {
+  requestDidStart() {
+    return {
+      async didResolveOperation(context) {
+        const { request } = context;
+        const apiKey = request.http?.headers.get('x-api-key');
 
-  if (req.query.apikey && !apikey) {
-    apikey = req.query.apikey;
-    req.headers['x-api-key'] = req.query.apikey;
-  }
+        if (!apiKey) {
+          return;
+        }
 
-  if (!apikey) return next();
+        const redisClient = getClient();
 
-  let apikeyConfig;
-  try {
-    apikeyConfig = await redisClient.get(apikey);
-  } catch (err) {
-    logger.error(`[redis]: Cannot get [${apikey}]`, err);
-    return next();
-  }
+        let apikeyConfig;
+        try {
+          apikeyConfig = await redisClient.get(apiKey);
+        } catch (err) {
+          appLogger.error(`[redis]: Cannot get [${apiKey}]`, err);
+          return;
+        }
 
-  let config;
-  try {
-    config = JSON.parse(apikeyConfig);
-  } catch (err) {
-    logger.error(`[redis]: Cannot parse [${apikeyConfig}]`, err);
-    return next();
-  }
+        let config;
+        try {
+          config = JSON.parse(apikeyConfig);
+        } catch (err) {
+          appLogger.error(`[redis]: Cannot parse [${apikeyConfig}]`, err);
+          return;
+        }
 
-  if (!Array.isArray(config?.access) || !config?.access?.includes('graphql') || !config?.allowed) {
-    return next();
-  }
-
-  req.user = config.name;
-
-  req.attributes = config.attributes;
-  return next();
+        context.contextValue.res.req.user = config?.name;
+      },
+    };
+  },
 };
 
-module.exports = checkUser;
+module.exports = userPlugin;

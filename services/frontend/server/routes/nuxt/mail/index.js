@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     res = await $fetch(
-      `${runtimeConfig.adminURL}/contact`,
+      `${runtimeConfig.adminUrl}/contact`,
       {
         method: 'POST',
         body: {
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
           message,
         },
         headers: {
-          'x-api-key': runtimeConfig.adminAPIKey,
+          'x-api-key': runtimeConfig.adminApikey,
           'Content-type': 'application/json',
         },
       },

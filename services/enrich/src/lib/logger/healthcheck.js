@@ -15,18 +15,26 @@ const apacheFormat = winston.format.printf((info) => {
   return `${info.timestamp} ${ip} ${method} ${url} ${statusCode} ${userAgent} ${responseTime}`;
 });
 
+const transports = [];
+
+if (process.env.NODE_ENV === 'test') {
+  transports.push(new winston.transports.Console());
+} else {
+  transports.push(
+    new DailyRotateFile({
+      filename: `${paths.log.healthcheckDir}/%DATE%-healthcheck.log`,
+      datePattern: 'YYYY-MM-DD',
+    }),
+  );
+}
+
 const healthcheckLogger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     apacheFormat,
   ),
-  transports: [
-    new DailyRotateFile({
-      filename: `${paths.log.healthCheckDir}/%DATE%-healthcheck.log`,
-      datePattern: 'YYYY-MM-DD',
-    }),
-  ],
+  transports,
 });
 
 module.exports = healthcheckLogger;

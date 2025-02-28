@@ -10,6 +10,15 @@
   "graphql": {
     "url": "http://graphql:3001"
   },
+  "cron": {
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "enrichedFileThreshold": 1,
+      "uploadedFileThreshold": 1,
+      "stateFileThreshold": 1
+    }
+  },
   "apikey": "changeme",
   "healthTimeout": 3000,
   "port": 3002,
@@ -17,7 +26,7 @@
     "log": {
       "applicationDir": "./log/application", 
       "accessDir": "./log/access",
-      "healthCheckDir": "./log/healthcheck"
+      "healthcheckDir": "./log/healthcheck"
     },
     "data": {
       "enrichedDir": "./data/enriched",
