@@ -32,7 +32,7 @@ const userPlugin = {
           return;
         }
 
-        context.contextValue.res.req.user = config.name;
+        context.contextValue.res.req.user = config?.name;
       },
     };
   },
