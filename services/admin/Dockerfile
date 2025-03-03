@@ -24,7 +24,7 @@ RUN if [ "$ENV" = "production" ]; then \
       rm -f /bin/sh; \
     fi
 
-USER node
+# USER node
 
 EXPOSE 3003
 
