@@ -153,7 +153,6 @@ const {
   type,
   apikey,
   attributes,
-  fileSeparator,
   enrichedFileSeparator,
   files,
   isError,
@@ -171,7 +170,7 @@ const attributesFiltered = computed(() => {
   return attributes.value;
 });
 
-const hasFile = computed(() => files.value.length > 0 || false);
+const hasFile = computed(() => files.value !== null || false);
 
 function startTimer(startTime) {
   timer.value = setInterval(() => {
@@ -192,7 +191,7 @@ function errored() {
 
 async function upload() {
   const formData = new FormData();
-  formData.append('file', files.value[0]);
+  formData.append('file', files.value);
 
   let id;
 

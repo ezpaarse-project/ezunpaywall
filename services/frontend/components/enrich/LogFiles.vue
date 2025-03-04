@@ -24,10 +24,10 @@ const enrichStore = useEnrichStore();
 const { files } = storeToRefs(enrichStore);
 
 function inputChanged() {
-  const ext = files.value[0].name.split('.').pop();
+  const ext = files.value.name.split('.').pop();
   if (ext !== 'jsonl' && ext !== 'csv') {
     snackStore.error(t('error.enrich.typeOfFile'));
-    enrichStore.setFiles([]);
+    enrichStore.setFiles(null);
   }
   enrichStore.setType(ext);
 }

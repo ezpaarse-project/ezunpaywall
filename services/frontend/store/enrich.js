@@ -5,7 +5,7 @@ import { defineStore } from 'pinia';
 
 export const useEnrichStore = defineStore('enrich', () => {
   const start = ref(false);
-  const files = ref([]);
+  const files = ref(null);
   const type = ref('');
   const apikey = ref('demo');
   const attributes = ref([]);
