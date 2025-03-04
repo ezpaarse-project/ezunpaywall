@@ -51,7 +51,7 @@ function configureMiddleware(app) {
         accessLogger.info({
           ip: req.ip,
           method: req.method,
-          url: req.baseUrl,
+          url: req.originalUrl,
           statusCode: res.statusCode,
           userAgent: req.get('User-Agent') || '-',
           responseTime: `${duration}`,
