@@ -17,6 +17,7 @@ else active = false;
  * @returns {Promise<void>}
  */
 async function task() {
+  appLogger.info('[cron][Clean file]: Has start');
   const deletedChangefiles = await deleteFilesInDir(
     paths.data.changefilesDir,
     cronConfig.changefileThreshold,
@@ -34,7 +35,7 @@ async function task() {
     cronConfig.snapshotsDir,
   );
 
-  appLogger.info(`[cron][Clean file]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
+  appLogger.info(`[cron][Clean file]: Has finished: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
 }
 
 const deleteFileCron = new Cron('Clean file', cronConfig.schedule, task, active);

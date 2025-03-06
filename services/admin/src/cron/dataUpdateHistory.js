@@ -19,9 +19,10 @@ else active = false;
  * @returns {Promise<void>}
  */
 async function task() {
+  appLogger.info('[cron][Data update history]: Has started');
   const status = getStatus();
   if (status) {
-    appLogger.info('[cron][Data update history]: conflict: an update is already in progress');
+    appLogger.info('[cron][Data update history]: Has finished: conflict: an update is already in progress');
     return;
   }
   const isWeek = (cronConfig.interval === 'week');
@@ -33,6 +34,7 @@ async function task() {
     interval: cronConfig.interval,
     startDate,
   });
+  appLogger.info('[cron][Data update history]: Has finished');
 }
 
 const dataUpdateHistoryCron = new Cron('Data update history', cronConfig.schedule, task, active);

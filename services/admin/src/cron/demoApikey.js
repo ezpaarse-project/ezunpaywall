@@ -12,6 +12,7 @@ if (active === 'true' || active) active = true;
 else active = false;
 
 async function task() {
+  appLogger.info('[cron][demo]: Has started');
   const redisClient = getClient();
   let apikeyConfig;
   try {
@@ -36,7 +37,7 @@ async function task() {
     appLogger.error(`[cron][demo]: Cannot update apikey [demo] with config [${JSON.stringify(apikeyConfig)}]`, err);
     return Promise.reject(err);
   }
-  appLogger.info('[cron][demo]: Demo apikey has been reset');
+  appLogger.info('[cron][demo]: Has finished: Demo apikey has been reset');
 }
 
 /**

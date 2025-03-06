@@ -19,13 +19,14 @@ else active = false;
  * @returns {Promise<void>}
  */
 async function task() {
+  appLogger.info('[cron][Data update]: Has started');
   const status = getStatus();
   if (status) {
-    appLogger.info('[cron][Data update]: conflict: an update is already in progress');
+    appLogger.info('[cron][Data update]: Finished: conflict: an update is already in progress');
     return;
   }
   const week = (cronConfig.interval === 'week');
-  const startDate = format(subDays(new Date(), week ? 7 : 0), 'yyyy-MM-dd');
+  const startDate = format(subDays(new Date(), week ? 7 : 1), 'yyyy-MM-dd');
   const endDate = format(new Date(), 'yyyy-MM-dd');
   await downloadInsertChangefilesProcess({
     type: 'changefile',
@@ -36,6 +37,7 @@ async function task() {
     offset: 0,
     limit: -1,
   });
+  appLogger.info('[cron][Data update]: Has finished');
 }
 
 const unpaywallCron = new Cron('Data update', cronConfig.schedule, task, active);
