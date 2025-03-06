@@ -25,8 +25,9 @@ async function task() {
     appLogger.info('[cron][Data update]: Finished: conflict: an update is already in progress');
     return;
   }
+
   const week = (cronConfig.interval === 'week');
-  const startDate = format(subDays(new Date(), week ? 7 : 1), 'yyyy-MM-dd');
+  const startDate = format(subDays(new Date(), week ? 7 : cronConfig.anteriority), 'yyyy-MM-dd');
   const endDate = format(new Date(), 'yyyy-MM-dd');
   await downloadInsertChangefilesProcess({
     type: 'changefile',
@@ -54,6 +55,7 @@ function update(newConfig) {
   }
   if (newConfig.index) cronConfig.index = newConfig.index;
   if (newConfig.interval) cronConfig.interval = newConfig.interval;
+  if (newConfig.anteriority) cronConfig.anteriority = newConfig.anteriority;
   if (newConfig.index || newConfig.interval) {
     unpaywallCron.setTask(task);
   }
@@ -65,7 +67,7 @@ function update(newConfig) {
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {
-  const order = ['name', 'schedule', 'interval', 'index', 'active'];
+  const order = ['name', 'schedule', 'interval', 'anteriority', 'index', 'active'];
 
   const data = { ...cronConfig, ...unpaywallCron.config };
 

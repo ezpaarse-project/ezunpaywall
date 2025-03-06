@@ -119,6 +119,7 @@ To set up this service, you can use environment variables. The config is display
 | CRON_DATA_UPDATE_ACTIVE | cron active or not at the start of service | false |
 | CRON_DATA_UPDATE_INDEX | index where data is inserted | unpaywall |
 | CRON_DATA_UPDATE_INTERVAL | interval of changefile | day |
+| CRON_DATA_UPDATE_ANTERIORITY | Number of days the update starts from today's date | 0 |
 | CRON_DATA_UPDATE_HISTORY_SCHEDULE | schedule of cron | 0 0 0 * * * |
 | CRON_DATA_UPDATE_HISTORY_ACTIVE | cron active or not at the start of service | true |
 | CRON_DATA_UPDATE_HISTORY_INDEX | index where data is inserted | unpaywall-base |

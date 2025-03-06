@@ -36,7 +36,8 @@
       "schedule": "CRON_DATA_UPDATE_SCHEDULE",
       "active": "CRON_DATA_UPDATE_ACTIVE",
       "index": "CRON_DATA_UPDATE_INDEX",
-      "interval": "CRON_DATA_UPDATE_INTERVAL"
+      "interval": "CRON_DATA_UPDATE_INTERVAL",
+      "anteriority": "CRON_DATA_UPDATE_ANTERIORITY"
     },
     "dataUpdateHistory": {
       "schedule": "CRON_DATA_UPDATE_HISTORY_SCHEDULE",

@@ -89,6 +89,31 @@ describe('Cron: update dataUpdate', () => {
     expect(getResponse.body).toEqual(resultValue);
   });
 
+  it('Should update anteriority of cron', async () => {
+    const testValue = {
+      anteriority: 5,
+    };
+
+    const resultValue = {
+      ...dataUpdate,
+      anteriority: testValue.anteriority,
+      name: 'Data update',
+    };
+
+    const updateResponse = await request(app)
+      .patch('/cron/dataUpdate')
+      .send(testValue)
+      .set('x-api-key', apikey);
+
+    expect(updateResponse.statusCode).toBe(200);
+    expect(updateResponse.body).toEqual(resultValue);
+
+    const getResponse = await request(app)
+      .get('/cron/dataUpdate');
+
+    expect(getResponse.body).toEqual(resultValue);
+  });
+
   it('Should not update interval of cron because month is not allowed', async () => {
     const testValue = {
       interval: 'month',

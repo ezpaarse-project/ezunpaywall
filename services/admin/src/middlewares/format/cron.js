@@ -14,6 +14,7 @@ function checkCronConfig(type, body) {
       return joi.object({
         schedule: joi.string().trim(),
         index: joi.string().trim(),
+        anteriority: joi.number().min(0),
         interval: joi.string().trim().valid('day', 'week'),
       }).validate(body);
 

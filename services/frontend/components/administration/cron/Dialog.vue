@@ -1,21 +1,35 @@
 <template>
-  <v-dialog :value="value" max-width="1000px" @update:model-value="emit('update:modelValue', $event)">
+  <v-dialog
+    :value="value"
+    max-width="1000px"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <v-card>
-      <v-toolbar color="primary" dark>
+      <v-toolbar
+        color="primary"
+        dark
+      >
         <v-toolbar-title>
           {{ t('administration.cron.title') }}
-          <v-chip label class="primary" text-color="white">
+          <v-chip
+            label
+            class="primary"
+            text-color="white"
+          >
             {{ t('reports.basic') }}
           </v-chip>
         </v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-container fluid>
-          <v-form id="form" @submit.prevent="updateCron()">
+          <v-form
+            id="form"
+            @submit.prevent="updateCron()"
+          >
             <v-text-field
               v-for="(item, index) in localConfig"
               :key="localConfig[index]"
-              v-model="localConfig[index][Object.keys(item)[0]]" 
+              v-model="localConfig[index][Object.keys(item)[0]]"
               :label="Object.keys(localConfig[index])"
               class="mt-4"
             />
@@ -23,11 +37,21 @@
         </v-container>
       </v-card-text>
       <v-card-actions>
-        <v-btn text class="red--text" @click.stop="emit('update:modelValue', false)">
+        <v-btn
+          text
+          class="red--text"
+          @click.stop="emit('update:modelValue', false)"
+        >
           {{ t("cancel") }}
         </v-btn>
         <v-spacer />
-        <v-btn text type="submit" form="form" :loading="loading" class="green--text">
+        <v-btn
+          text
+          type="submit"
+          form="form"
+          :loading="loading"
+          class="green--text"
+        >
           {{ t("update") }}
         </v-btn>
       </v-card-actions>

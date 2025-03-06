@@ -36,7 +36,8 @@
       "schedule": "0 0 0 * * *",
       "active": false,
       "index": "unpaywall",
-      "interval": "day"
+      "interval": "day",
+      "anteriority": 0
     },
     "dataUpdateHistory": {
       "schedule": "0 0 0 * * *",
