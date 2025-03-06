@@ -7,7 +7,7 @@
       dense
     >
       <v-toolbar-title>
-       Cron
+        Cron
       </v-toolbar-title>
       <v-spacer />
     </v-toolbar>
@@ -16,7 +16,7 @@
     >
       <v-col
         v-for="name in names"
-        :key="cron"
+        :key="name"
         cols="12"
         sm="6"
         md="6"
@@ -30,8 +30,6 @@
 </template>
 
 <script setup>
-
-const { t } = useI18n();
 
 const names = ['dataUpdate', 'dataUpdateHistory'];
 
