@@ -188,17 +188,15 @@ async function bulk(data, refresh = false) {
 }
 
 async function getIndices() {
-  const res = await elasticClient.cat.indices({ format: 'json' });
-  let indices = res.body;
-  indices = indices.filter((index) => index.index.charAt(0) !== '.');
-  return indices;
+  const res = await elasticClient.cat.indices({ format: 'json', index: 'unpaywall*,-.*' });
+  return res.body;
 }
 
 async function getAlias() {
-  const regexILM = /^ilm-history-[0-9]$/;
-  const res = await elasticClient.cat.aliases({ format: 'json' });
+  const regexILM = /^history$/;
+  const res = await elasticClient.cat.aliases({ format: 'json', index: '-.*' });
   let alias = res.body;
-  alias = alias.filter((index) => index.index.charAt(0) !== '.').filter((index) => !regexILM.test(index.alias));
+  alias = alias.filter((index) => !regexILM.test(index.alias));
   return alias;
 }
 
