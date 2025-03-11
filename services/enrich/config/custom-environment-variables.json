@@ -1,6 +1,9 @@
 { 
   "nodeEnv": "NODE_ENV",
+  "apikey": "ADMIN_APIKEY",
   "timezone": "TIMEZONE",
+  "healthTimeout": "HEALTH_TIMEOUT",
+  "port": "PORT",
   "redis":  {
     "host": "REDIS_HOST",
     "port": "REDIS_PORT",
@@ -9,16 +12,16 @@
   "graphql": {
     "url": "GRAPHQL_URL"
   },
-  "apikey": "ADMIN_APIKEY",
-  "healthTimeout": "HEALTH_TIMEOUT",
-  "port": "PORT",
   "cron": {
     "cleanFile": {
       "schedule": "CRON_CLEAN_FILE_SCHEDULE",
       "active": "CRON_CLEAN_FILE_ACTIVE",
       "enrichedFileThreshold": "CRON_CLEAN_FILE_ENRICHED_THRESHOLD",
       "uploadedFileThreshold": "CRON_CLEAN_FILE_UPLOADED_THRESHOLD",
-      "stateFileThreshold": "CRON_CLEAN_FILE_STATE_THRESHOLD"
+      "stateFileThreshold": "CRON_CLEAN_FILE_STATE_THRESHOLD",
+      "accessLogThreshold": "CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD",
+      "applicationLogThreshold": "CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD",
+      "healthcheckLogThreshold": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD"
     }
   }
 }

@@ -1,6 +1,9 @@
 { 
   "nodeEnv": "NODE_ENV",
   "timezone": "TIMEZONE",
+  "apikey": "ADMIN_APIKEY",
+  "healthTimeout": "HEALTH_TIMEOUT",
+  "port": "PORT",
   "smtp": {
     "host": "SMTP_HOST",
     "port": "SMTP_PORT"
@@ -51,15 +54,15 @@
       "active": "CRON_CLEAN_FILE_ACTIVE",
       "changefileThreshold": "CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD",
       "reportThreshold": "CRON_CLEAN_FILE_REPORT_THRESHOLD",
-      "snapshotThreshold": "CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD"
+      "snapshotThreshold": "CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD",
+      "accessLogThreshold": "CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD",
+      "applicationLogThreshold": "CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD",
+      "healthcheckLogThreshold": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD"
     },
     "demoApikey": {
       "schedule": "CRON_DEMO_APIKEY_SCHEDULE",
       "active": "CRON_DEMO_APIKEY_ACTIVE",
       "count": "CRON_DEMO_APIKEY_COUNT"
     }
-  },
-  "apikey": "ADMIN_APIKEY",
-  "healthTimeout": "HEALTH_TIMEOUT",
-  "port": "PORT"
+  }
 }

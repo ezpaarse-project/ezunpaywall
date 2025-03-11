@@ -17,7 +17,10 @@ const userPlugin = require('./middlewares/user');
 const accessLogger = require('./lib/logger/access');
 const appLogger = require('./lib/logger/appLogger');
 const { logConfig } = require('./lib/config');
-const cronMetrics = require('./controllers/cron/metrics');
+
+const cronFile = require('./cron/cleanFile');
+const cronMetrics = require('./cron/metrics');
+
 const { setMetrics } = require('./lib/metrics');
 const { pingElastic } = require('./lib/elastic');
 
@@ -98,6 +101,9 @@ async function startListening(app) {
       pingRedis();
       if (process.env.NODE_ENV !== 'test') {
         cronMetrics.start();
+      }
+      if (cronFile.active) {
+        cronFile.start();
       }
       resolve(server);
     });

@@ -1,7 +1,7 @@
 const { paths, cron } = require('config');
 
 const Cron = require('../models/cron');
-const logger = require('../lib/logger/appLogger');
+const appLogger = require('../lib/logger/appLogger');
 
 const { deleteFilesInDir } = require('../lib/file');
 
@@ -17,17 +17,41 @@ else active = false;
  * @returns {Promise<void>}
  */
 async function task() {
+  appLogger.info('[cron][Clean file]: Has start');
+
+  // Data
   const deletedEnrichedFiles = await
   deleteFilesInDir(paths.data.enrichedDir, cronConfig.enrichedFileThreshold);
-  logger.info(`[cron][files]: ${deletedEnrichedFiles?.join(',')} (${deletedEnrichedFiles.length}) enriched files are deleted`);
+  appLogger.info(`[cron][Clean file]: ${deletedEnrichedFiles?.join(',')} (${deletedEnrichedFiles.length}) enriched files are deleted`);
 
   const deletedStatesFiles = await
   deleteFilesInDir(paths.data.statesDir, cronConfig.stateFileThreshold);
-  logger.info(`[cron][files]: ${deletedStatesFiles?.join(',')} (${deletedStatesFiles.length}) states files are deleted`);
+  appLogger.info(`[cron][Clean file]: ${deletedStatesFiles?.join(',')} (${deletedStatesFiles.length}) states files are deleted`);
 
   const deletedUploadedFiles = await
   deleteFilesInDir(paths.data.uploadDir, cronConfig.uploadedFileThreshold);
-  logger.info(`[cron][files]: ${deletedUploadedFiles?.join(',')} (${deletedUploadedFiles.length}) uploaded files are deleted`);
+  appLogger.info(`[cron][Clean file]: ${deletedUploadedFiles?.join(',')} (${deletedUploadedFiles.length}) uploaded files are deleted`);
+
+  // Logs
+  const accessLogFiles = await deleteFilesInDir(
+    paths.log.accessDir,
+    cronConfig.accessLogThreshold,
+  );
+  appLogger.info(`[cron][Clean file]: ${accessLogFiles?.join(',')} (${accessLogFiles.length}) access log file are deleted`);
+
+  const applicationLogFile = await deleteFilesInDir(
+    paths.log.applicationDir,
+    cronConfig.applicationLogThreshold,
+  );
+  appLogger.info(`[cron][Clean file]: ${applicationLogFile?.join(',')} (${applicationLogFile.length}) application log file are deleted`);
+
+  const healthcheckLogFile = await deleteFilesInDir(
+    paths.log.healthcheckDir,
+    cronConfig.healthcheckLogThreshold,
+  );
+  appLogger.info(`[cron][Clean file]: ${healthcheckLogFile?.join(',')} (${healthcheckLogFile.length}) healthcheck log file are deleted`);
+
+  appLogger.info('[cron][Clean file]: Has finished');
 }
 
 /**

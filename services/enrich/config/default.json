@@ -1,7 +1,9 @@
 { 
   "nodeEnv": "development",
-  "healthcheckLogRotate": false,
+  "apikey": "changeme",
   "timezone": "Europe/Paris",
+  "healthTimeout": 3000,
+  "port": 3002,
   "redis": {
     "host": "redis",
     "port": 6379,
@@ -16,12 +18,12 @@
       "active": true,
       "enrichedFileThreshold": 1,
       "uploadedFileThreshold": 1,
-      "stateFileThreshold": 1
+      "stateFileThreshold": 1,
+      "accessLogThreshold": 365,
+      "applicationLogThreshold": 365,
+      "healthcheckLogThreshold": 30
     }
   },
-  "apikey": "changeme",
-  "healthTimeout": 3000,
-  "port": 3002,
   "paths": {
     "log": {
       "applicationDir": "./log/application", 

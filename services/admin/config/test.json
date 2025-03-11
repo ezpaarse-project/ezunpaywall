@@ -1,6 +1,9 @@
 { 
   "nodeEnv": "test",
   "timezone": "Europe/Paris",
+  "apikey": "changeme",
+  "healthTimeout": 10000,
+  "port": 3003,
   "smtp": {
     "host": "localhost",
     "port": 25
@@ -51,7 +54,10 @@
       "active": false,
       "changefileThreshold": 30,
       "reportThreshold": 30,
-      "snapshotThreshold": 150
+      "snapshotThreshold": 150,
+      "accessLogThreshold": 365,
+      "applicationLogThreshold": 365,
+      "healthcheckLogThreshold": 30
     },
     "demoApikey": {
       "schedule": "0 0 0 * * *",
@@ -70,7 +76,5 @@
       "snapshotsDir": "./tmp/data/snapshots",
       "reportsDir": "./tmp/data/reports"
     }
-  },
-  "apikey": "changeme",
-  "healthTimeout": 3000
+  }
 }

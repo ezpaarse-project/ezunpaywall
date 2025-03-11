@@ -18,6 +18,8 @@ else active = false;
  */
 async function task() {
   appLogger.info('[cron][Clean file]: Has start');
+
+  // Data
   const deletedChangefiles = await deleteFilesInDir(
     paths.data.changefilesDir,
     cronConfig.changefileThreshold,
@@ -32,10 +34,30 @@ async function task() {
 
   const deletedSnapshotFiles = await deleteFilesInDir(
     paths.data.snapshotsDir,
-    cronConfig.snapshotsDir,
+    cronConfig.snapshotThreshold,
   );
+  appLogger.info(`[cron][Clean file]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
 
-  appLogger.info(`[cron][Clean file]: Has finished: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
+  // Logs
+  const accessLogFiles = await deleteFilesInDir(
+    paths.log.accessDir,
+    cronConfig.accessLogThreshold,
+  );
+  appLogger.info(`[cron][Clean file]: ${accessLogFiles?.join(',')} (${accessLogFiles.length}) access log file are deleted`);
+
+  const applicationLogFile = await deleteFilesInDir(
+    paths.log.applicationDir,
+    cronConfig.applicationLogThreshold,
+  );
+  appLogger.info(`[cron][Clean file]: ${applicationLogFile?.join(',')} (${applicationLogFile.length}) application log file are deleted`);
+
+  const healthcheckLogFile = await deleteFilesInDir(
+    paths.log.healthcheckDir,
+    cronConfig.healthcheckLogThreshold,
+  );
+  appLogger.info(`[cron][Clean file]: ${healthcheckLogFile?.join(',')} (${healthcheckLogFile.length}) healthcheck log file are deleted`);
+
+  appLogger.info('[cron][Clean file]: Has finished');
 }
 
 const deleteFileCron = new Cron('Clean file', cronConfig.schedule, task, active);
