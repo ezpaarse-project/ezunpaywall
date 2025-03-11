@@ -1,7 +1,7 @@
-const Cron = require('../../lib/cron');
-const logger = require('../../lib/logger/appLogger');
+const Cron = require('./cron');
+const logger = require('../lib/logger/appLogger');
 
-const { setMetrics } = require('../../lib/metrics');
+const { setMetrics } = require('../lib/metrics');
 
 /**
  * Get the metrics from unpaywall and cache them.
