@@ -41,7 +41,7 @@
     "enrich": "Enrich",
     "authorizedFile": "Allowed types of file :",
     "continue": "Continue",
-    "explainationLogs": "Files you want to be enriched by ezUnpaywall. The only condition is that they contain a DOI field.",
+    "explicationLogs": "Files you want to be enriched by ezUnpaywall. The only condition is that they contain a DOI field.",
     "apikey": "API Key",
     "fileExtension": "File extension recognized :",
     "unpaywallAttributes": "Unpaywall attributes",

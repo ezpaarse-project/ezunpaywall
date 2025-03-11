@@ -41,7 +41,7 @@
     "enrich": "Enrichissement",
     "authorizedFile": "Types de fichier autorisés :",
     "continue": "Continuer",
-    "explainationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezUnpaywall. Ils doivent simplement contenir un champ DOI.",
+    "explicationLogs": "Indiquez ici les fichiers que vous souhaitez enrichir par ezUnpaywall. Ils doivent simplement contenir un champ DOI.",
     "apikey": "Clé d'API",
     "fileExtension": "Extension de fichier reconnue :",
     "unpaywallAttributes": "Attributs unpaywall",
