@@ -16,6 +16,15 @@
     "indexBase": "unpaywall",
     "indexHistory": "unpaywall_history_*"
   },
+  "cron": {
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "accessLogThreshold": 365,
+      "applicationLogThreshold": 365,
+      "healthcheckLogThreshold": 30
+    }
+  },
   "paths": {
     "log": {
       "applicationDir": "./log/application", 

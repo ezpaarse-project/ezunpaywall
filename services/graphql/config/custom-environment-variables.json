@@ -15,5 +15,14 @@
     "password": "ELASTICSEARCH_PASSWORD",
     "indexBase": "ELASTICSEARCH_INDEX_BASE",
     "indexHistory": "ELASTICSEARCH_INDEX_HISTORY"
+  },
+  "cron": {
+    "cleanFile": {
+      "schedule": "CRON_CLEAN_FILE_SCHEDULE",
+      "active": "CRON_CLEAN_FILE_ACTIVE",
+      "accessLogThreshold": "CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD",
+      "applicationLogThreshold": "CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD",
+      "healthcheckLogThreshold": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD"
+    }
   }
 }
