@@ -159,10 +159,12 @@ async function getEzunpaywallData(doi) {
 }
 
 /**
- * Compare deux objets et retourne leurs différences.
- * @param {Object} unpaywallData - Premier objet à comparer.
- * @param {Object} ezunpaywallData - Deuxième objet à comparer.
- * @returns {Object} Différences entre les deux objets.
+ * Compare two objects and return their differences.
+ *
+ * @param {Object} unpaywallData - First object to compare from unpaywall.
+ * @param {Object} ezunpaywallData - Second object to compare from ezunpaywall.
+ *
+ * @returns {Object} Differences between the two objects.
  */
 function getObjectDiff(unpaywallData, ezunpaywallData) {
   return _.reduce(unpaywallData, (result, value, key) => {
@@ -180,6 +182,7 @@ describe('unpaywall: test integrity', () => {
   beforeAll(async () => {
     dois = await getRandomDOIs('unpaywall', count);
   });
+
   it('Unpaywall and Ezunpaywall should be the same', async () => {
     let i = 0;
     let same = 0;
