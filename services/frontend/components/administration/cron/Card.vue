@@ -24,13 +24,13 @@
     <v-card-actions>
       <v-spacer />
       <v-btn @click.stop="visible = true">
-        update
+        {{ t('update') }}
       </v-btn>
     </v-card-actions>
   </v-card>
   <AdministrationCronDialog
     v-model="visible"
-    :name="'dataUpdate'"
+    :name="props.name"
     :config="configAsArray"
     @updated="getCron()"
   />
@@ -41,12 +41,12 @@
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $admin } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
 
 const props = defineProps({
   name: { type: String, default: '' },
+  host: { type: Function, default: () => {} },
 });
 
 const visible = ref(false);
@@ -70,7 +70,7 @@ async function getCron() {
   let res;
   loading.value = true;
   try {
-    res = await $admin(`/cron/${props.name}`, {
+    res = await props.host(`/cron/${props.name}`, {
       method: 'GET',
     });
   } catch (err) {
@@ -85,7 +85,7 @@ async function updateActive() {
   loading.value = true;
 
   try {
-    await $admin(`/cron/${props.name}/${action.value}`, {
+    await props.host(`/cron/${props.name}/${action.value}`, {
       method: 'POST',
       headers: {
         'x-api-key': password.value,
@@ -103,6 +103,10 @@ async function updateActive() {
 }
 
 onMounted(async () => {
+  // TODO
+  await nextTick();
   await getCron();
+  // TODO
+  await nextTick();
 });
 </script>

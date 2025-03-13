@@ -36,7 +36,7 @@ class Cron {
   setTask(task) {
     this.process.stop();
     this.task = task;
-    appLogger.info(`[cron][${this.name}]: task updated`);
+    appLogger.info(`[cron][${this.name}]: Task updated`);
     this.process = new CronJob(this.schedule, this.task, null, false, timezone);
     if (this.active) this.process.start();
   }
@@ -49,7 +49,7 @@ class Cron {
   setSchedule(schedule) {
     this.process.stop();
     this.schedule = schedule;
-    appLogger.info(`[cron][${this.name}]: schedule is updated [${this.schedule}]`);
+    appLogger.info(`[cron][${this.name}]: Schedule is updated [${this.schedule}]`);
     this.process = new CronJob(this.schedule, async () => {
       await this.task();
     }, null, false, timezone);
@@ -62,8 +62,8 @@ class Cron {
   start() {
     try {
       this.process.start();
-      appLogger.info(`[cron][${this.name}]: started`);
-      appLogger.info(`[cron][${this.name}]: schedule [${this.schedule}]`);
+      appLogger.info(`[cron][${this.name}]: Is active`);
+      appLogger.info(`[cron][${this.name}]: Schedule [${this.schedule}]`);
     } catch (err) {
       appLogger.error(`[cron][${this.name}]: Cannot start`, err);
       return;
@@ -77,7 +77,7 @@ class Cron {
   stop() {
     try {
       this.process.stop();
-      appLogger.info(`[cron][${this.name}]: stopped`);
+      appLogger.info(`[cron][${this.name}]: Is inactive`);
     } catch (err) {
       appLogger.error(`[cron][${this.name}]: Cannot stop`, err);
       return;

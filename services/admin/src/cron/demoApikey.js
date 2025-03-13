@@ -6,7 +6,8 @@ const appLogger = require('../lib/logger/appLogger');
 
 const { getClient } = require('../lib/redis/client');
 
-const { ...cronConfig } = cron.dataUpdate;
+const { ...cronConfig } = cron.demoApikey;
+
 let { active } = cronConfig;
 if (active === 'true' || active) active = true;
 else active = false;
@@ -55,11 +56,7 @@ function update(newConfig) {
     cronConfig.schedule = newConfig.schedule;
     apikeyDemoCron.setSchedule(newConfig.schedule);
   }
-  if (newConfig.index) cronConfig.index = newConfig.index;
-  if (newConfig.interval) cronConfig.interval = newConfig.interval;
-  if (newConfig.index || newConfig.interval) {
-    apikeyDemoCron.setTask(task);
-  }
+  if (newConfig.count) cronConfig.count = newConfig.count;
 }
 
 /**
@@ -68,8 +65,21 @@ function update(newConfig) {
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {
+  const order = [
+    'name',
+    'schedule',
+    'count',
+    'active',
+  ];
   const data = { ...cronConfig, ...apikeyDemoCron.config };
-  return data;
+
+  const result = {};
+  order.forEach((key) => {
+    if (data[key] !== undefined) {
+      result[key] = data[key];
+    }
+  });
+  return result;
 }
 
 module.exports = {

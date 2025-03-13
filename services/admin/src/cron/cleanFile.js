@@ -62,4 +62,62 @@ async function task() {
 
 const deleteFileCron = new Cron('Clean file', cronConfig.schedule, task, active);
 
-module.exports = deleteFileCron;
+/**
+ * Update config of update process and config of cron.
+ *
+ * @param {Object} newConfig Global config.
+ */
+function update(newConfig) {
+  if (newConfig.schedule) {
+    cronConfig.schedule = newConfig.schedule;
+    deleteFileCron.setSchedule(newConfig.schedule);
+  }
+  if (newConfig.changefileThreshold) cronConfig.changefileThreshold = newConfig.changefileThreshold;
+  if (newConfig.reportThreshold) cronConfig.reportThreshold = newConfig.reportThreshold;
+  if (newConfig.snapshotThreshold) cronConfig.snapshotThreshold = newConfig.snapshotThreshold;
+  if (newConfig.accessLogThreshold) cronConfig.accessLogThreshold = newConfig.accessLogThreshold;
+  if (newConfig.applicationLogThreshold) {
+    cronConfig.applicationLogThreshold = newConfig.applicationLogThreshold;
+  }
+  if (newConfig.healthcheckLogThreshold) {
+    cronConfig.healthcheckLogThreshold = newConfig.healthcheckLogThreshold;
+  }
+  if (newConfig.changefileThreshold
+    || newConfig.reportThreshold
+    || newConfig.snapshotThreshold
+    || newConfig.accessLogThreshold
+    || newConfig.applicationLogThreshold
+    || newConfig.healthcheckLogThreshold) {
+    deleteFileCron.setTask(task);
+  }
+}
+
+function getGlobalConfig() {
+  const order = [
+    'name',
+    'schedule',
+    'changefileThreshold',
+    'reportThreshold',
+    'snapshotThreshold',
+    'accessLogThreshold',
+    'applicationLogThreshold',
+    'healthcheckLogThreshold',
+    'active',
+  ];
+
+  const data = { ...cronConfig, ...deleteFileCron.config };
+
+  const result = {};
+  order.forEach((key) => {
+    if (data[key] !== undefined) {
+      result[key] = data[key];
+    }
+  });
+  return result;
+}
+
+module.exports = {
+  getGlobalConfig,
+  update,
+  cron: deleteFileCron,
+};

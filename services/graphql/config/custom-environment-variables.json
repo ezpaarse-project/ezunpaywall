@@ -23,6 +23,10 @@
       "accessLogThreshold": "CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD",
       "applicationLogThreshold": "CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD",
       "healthcheckLogThreshold": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD"
+    },
+    "metrics": {
+      "schedule": "CRON_METRICS_SCHEDULE",
+      "active": "CRON_METRICS_ACTIVE"
     }
   }
 }

@@ -3,9 +3,6 @@ const { timezone } = require('config');
 
 const logger = require('../lib/logger/appLogger');
 
-/**
- * Class cron which overloads the node-cron library by adding features.
- */
 class Cron {
   /**
    * @constructor
@@ -28,7 +25,7 @@ class Cron {
    *
    * @returns {Object} config of cron.
    */
-  getConfig() {
+  get config() {
     return {
       name: this.name,
       schedule: this.schedule,

@@ -16,7 +16,7 @@
   "dependencies": {
     "@elastic/elasticsearch": "^7.13.0",
     "@hapi/joi-date": "^2.0.1",
-    "axios": "^1.5.0",
+    "axios": "^1.8.3",
     "config": "^3.3.9",
     "cors": "^2.8.5",
     "cron": "^2.4.3",

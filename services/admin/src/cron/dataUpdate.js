@@ -8,8 +8,8 @@ const { getStatus } = require('../lib/update/status');
 const { downloadInsertChangefilesProcess } = require('../lib/update');
 
 const { ...cronConfig } = cron.dataUpdate;
-let { active } = cronConfig;
 
+let { active } = cronConfig;
 if (active === 'true' || active) active = true;
 else active = false;
 
@@ -67,7 +67,14 @@ function update(newConfig) {
  * @returns {Object} Config of update process and config of cron.
  */
 function getGlobalConfig() {
-  const order = ['name', 'schedule', 'interval', 'anteriority', 'index', 'active'];
+  const order = [
+    'name',
+    'schedule',
+    'interval',
+    'anteriority',
+    'index',
+    'active',
+  ];
 
   const data = { ...cronConfig, ...unpaywallCron.config };
 

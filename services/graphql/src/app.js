@@ -26,6 +26,7 @@ const { pingElastic } = require('./lib/elastic');
 
 const routerPing = require('./routers/ping');
 const routerHealthCheck = require('./routers/healthcheck');
+const routerCron = require('./routers/cron');
 const routerMetrics = require('./routers/metrics');
 const routerConfig = require('./routers/config');
 const routerOpenapi = require('./routers/openapi');
@@ -70,6 +71,7 @@ function configureMiddleware(app) {
 function configureRoutes(app) {
   app.use(routerHealthCheck);
   app.use(routerPing);
+  app.use(routerCron);
   app.use(routerMetrics);
   app.use(routerConfig);
   app.use(routerOpenapi);
@@ -100,10 +102,10 @@ async function startListening(app) {
       await initClient();
       pingRedis();
       if (process.env.NODE_ENV !== 'test') {
-        cronMetrics.start();
+        cronMetrics.cron.start();
       }
       if (cronFile.active) {
-        cronFile.start();
+        cronFile.cron.start();
       }
       resolve(server);
     });

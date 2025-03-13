@@ -10,42 +10,15 @@ const joi = require('joi').extend(require('@hapi/joi-date'));
  */
 function checkCronConfig(type, body) {
   switch (type) {
-    case 'dataUpdate':
-      return joi.object({
-        schedule: joi.string().trim(),
-        index: joi.string().trim(),
-        anteriority: joi.number().min(0),
-        interval: joi.string().trim().valid('day', 'week'),
-      }).validate(body);
-
-    case 'dataUpdateHistory':
-      return joi.object({
-        schedule: joi.string().trim(),
-        index: joi.string().trim(),
-        indexHistory: joi.string().trim(),
-        interval: joi.string().trim().valid('day', 'week'),
-      }).validate(body);
-
     case 'cleanFile':
       return joi.object({
         schedule: joi.string().trim(),
-        changefileThreshold: joi.number().min(1),
-        reportThreshold: joi.number().min(1),
-        snapshotThreshold: joi.number().min(1),
+        enrichedFileThreshold: joi.number().min(1),
+        stateFileThreshold: joi.number().min(1),
+        uploadedFileThreshold: joi.number().min(1),
         accessLogThreshold: joi.number().min(1),
         applicationLogThreshold: joi.number().min(1),
         healthcheckLogThreshold: joi.number().min(1),
-      }).validate(body);
-
-    case 'demoApiKey':
-      return joi.object({
-        schedule: joi.string().trim(),
-        count: joi.number().min(0),
-      }).validate(body);
-
-    case 'downloadSnapshot':
-      return joi.object({
-        schedule: joi.string().trim(),
       }).validate(body);
 
     default:
@@ -87,7 +60,7 @@ function validateCronConfig(req, res, next) {
  */
 function validateCronType(req, res, next) {
   const { type } = req.params;
-  const { error, value } = joi.string().trim().valid('dataUpdate', 'dataUpdateHistory', 'cleanFile', 'demoApiKey', 'downloadSnapshot').validate(type);
+  const { error, value } = joi.string().trim().valid('cleanFile').validate(type);
   if (error) return res.status(400).json({ message: error.details[0].message });
 
   if (!req.data) {

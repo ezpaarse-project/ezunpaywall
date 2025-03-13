@@ -16,6 +16,7 @@ const cronCleanFile = require('./cron/cleanFile');
 
 const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');
+const routerCron = require('./routers/cron');
 const routerConfig = require('./routers/config');
 const routerJob = require('./routers/job');
 const routerFile = require('./routers/file');
@@ -70,6 +71,7 @@ app.use((req, res, next) => {
 app.use(routerJob);
 app.use(routerFile);
 app.use(routerState);
+app.use(routerCron);
 app.use(routerOpenapi);
 app.use(routerPing);
 app.use(routerConfig);

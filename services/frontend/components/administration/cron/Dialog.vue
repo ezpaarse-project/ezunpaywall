@@ -16,7 +16,7 @@
             class="primary"
             text-color="white"
           >
-            {{ t('reports.basic') }}
+            {{ props.name }}
           </v-chip>
         </v-toolbar-title>
       </v-toolbar>
