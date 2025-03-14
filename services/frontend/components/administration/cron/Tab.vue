@@ -29,7 +29,7 @@
     >
       <v-col
         v-for="name in names"
-        :key="name"
+        :key="`${tab}-${name}`"
         cols="12"
         sm="6"
         md="6"
