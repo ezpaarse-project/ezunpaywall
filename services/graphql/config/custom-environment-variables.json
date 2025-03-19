@@ -1,6 +1,6 @@
 { 
   "nodeEnv": "NODE_ENV",
-  "timezone": "TIMEZONE",
+  "timezone": "TZ",
   "apikey": "ADMIN_APIKEY",
   "healthTimeout": "HEALTH_TIMEOUT",
   "port": "PORT",
@@ -20,9 +20,9 @@
     "cleanFile": {
       "schedule": "CRON_CLEAN_FILE_SCHEDULE",
       "active": "CRON_CLEAN_FILE_ACTIVE",
-      "accessLogThreshold": "CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD",
-      "applicationLogThreshold": "CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD",
-      "healthcheckLogThreshold": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD"
+      "accessLogRetention": "CRON_CLEAN_FILE_ACCESS_LOG_RETENTION",
+      "applicationLogRetention": "CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION",
+      "healthcheckLogRetention": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION"
     },
     "metrics": {
       "schedule": "CRON_METRICS_SCHEDULE",

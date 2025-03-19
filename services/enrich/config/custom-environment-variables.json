@@ -1,7 +1,7 @@
 { 
   "nodeEnv": "NODE_ENV",
   "apikey": "ADMIN_APIKEY",
-  "timezone": "TIMEZONE",
+  "timezone": "TZ",
   "healthTimeout": "HEALTH_TIMEOUT",
   "port": "PORT",
   "redis":  {
