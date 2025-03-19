@@ -22,38 +22,38 @@ async function task() {
   // Data
   const deletedChangefiles = await deleteFilesInDir(
     paths.data.changefilesDir,
-    cronConfig.changefileThreshold,
+    cronConfig.changefileRetention,
   );
   appLogger.info(`[cron][Clean file]: ${deletedChangefiles?.join(',')} (${deletedChangefiles.length}) changefiles are deleted`);
 
   const deletedReportFiles = await deleteFilesInDir(
     paths.data.reportsDir,
-    cronConfig.reportThreshold,
+    cronConfig.reportRetention,
   );
   appLogger.info(`[cron][Clean file]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
 
   const deletedSnapshotFiles = await deleteFilesInDir(
     paths.data.snapshotsDir,
-    cronConfig.snapshotThreshold,
+    cronConfig.snapshotRetention,
   );
   appLogger.info(`[cron][Clean file]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
 
   // Logs
   const accessLogFiles = await deleteFilesInDir(
     paths.log.accessDir,
-    cronConfig.accessLogThreshold,
+    cronConfig.accessLogRetention,
   );
   appLogger.info(`[cron][Clean file]: ${accessLogFiles?.join(',')} (${accessLogFiles.length}) access log file are deleted`);
 
   const applicationLogFile = await deleteFilesInDir(
     paths.log.applicationDir,
-    cronConfig.applicationLogThreshold,
+    cronConfig.applicationLogRetention,
   );
   appLogger.info(`[cron][Clean file]: ${applicationLogFile?.join(',')} (${applicationLogFile.length}) application log file are deleted`);
 
   const healthcheckLogFile = await deleteFilesInDir(
     paths.log.healthcheckDir,
-    cronConfig.healthcheckLogThreshold,
+    cronConfig.healthcheckLogRetention,
   );
   appLogger.info(`[cron][Clean file]: ${healthcheckLogFile?.join(',')} (${healthcheckLogFile.length}) healthcheck log file are deleted`);
 
@@ -72,22 +72,22 @@ function update(newConfig) {
     cronConfig.schedule = newConfig.schedule;
     deleteFileCron.setSchedule(newConfig.schedule);
   }
-  if (newConfig.changefileThreshold) cronConfig.changefileThreshold = newConfig.changefileThreshold;
-  if (newConfig.reportThreshold) cronConfig.reportThreshold = newConfig.reportThreshold;
-  if (newConfig.snapshotThreshold) cronConfig.snapshotThreshold = newConfig.snapshotThreshold;
-  if (newConfig.accessLogThreshold) cronConfig.accessLogThreshold = newConfig.accessLogThreshold;
-  if (newConfig.applicationLogThreshold) {
-    cronConfig.applicationLogThreshold = newConfig.applicationLogThreshold;
+  if (newConfig.changefileRetention) cronConfig.changefileRetention = newConfig.changefileRetention;
+  if (newConfig.reportRetention) cronConfig.reportRetention = newConfig.reportRetention;
+  if (newConfig.snapshotRetention) cronConfig.snapshotRetention = newConfig.snapshotRetention;
+  if (newConfig.accessLogRetention) cronConfig.accessLogRetention = newConfig.accessLogRetention;
+  if (newConfig.applicationLogRetention) {
+    cronConfig.applicationLogRetention = newConfig.applicationLogRetention;
   }
-  if (newConfig.healthcheckLogThreshold) {
-    cronConfig.healthcheckLogThreshold = newConfig.healthcheckLogThreshold;
+  if (newConfig.healthcheckLogRetention) {
+    cronConfig.healthcheckLogRetention = newConfig.healthcheckLogRetention;
   }
-  if (newConfig.changefileThreshold
-    || newConfig.reportThreshold
-    || newConfig.snapshotThreshold
-    || newConfig.accessLogThreshold
-    || newConfig.applicationLogThreshold
-    || newConfig.healthcheckLogThreshold) {
+  if (newConfig.changefileRetention
+    || newConfig.reportRetention
+    || newConfig.snapshotRetention
+    || newConfig.accessLogRetention
+    || newConfig.applicationLogRetention
+    || newConfig.healthcheckLogRetention) {
     deleteFileCron.setTask(task);
   }
 }
@@ -96,12 +96,12 @@ function getGlobalConfig() {
   const order = [
     'name',
     'schedule',
-    'changefileThreshold',
-    'reportThreshold',
-    'snapshotThreshold',
-    'accessLogThreshold',
-    'applicationLogThreshold',
-    'healthcheckLogThreshold',
+    'changefileRetention',
+    'reportRetention',
+    'snapshotRetention',
+    'accessLogRetention',
+    'applicationLogRetention',
+    'healthcheckLogRetention',
     'active',
   ];
 

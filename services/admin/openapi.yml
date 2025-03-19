@@ -1187,9 +1187,9 @@ paths:
                       cleanFile:
                         schedule: "0 0 0 * * *"
                         active: true
-                        changefileThreshold: 30
-                        reportThreshold: 30
-                        snapshotThreshold: 150
+                        changefileRetention: 30
+                        reportRetention: 30
+                        snapshotRetention: 150
                     paths:
                       log:
                         applicationDir: ./log/application

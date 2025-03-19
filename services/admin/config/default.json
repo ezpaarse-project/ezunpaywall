@@ -52,12 +52,12 @@
     "cleanFile": {
       "schedule": "0 0 0 * * *",
       "active": true,
-      "changefileThreshold": 30,
-      "reportThreshold": 30,
-      "snapshotThreshold": 100,
-      "accessLogThreshold": 365,
-      "applicationLogThreshold": 365,
-      "healthcheckLogThreshold": 30
+      "changefileRetention": 30,
+      "reportRetention": 30,
+      "snapshotRetention": 100,
+      "accessLogRetention": 365,
+      "applicationLogRetention": 365,
+      "healthcheckLogRetention": 30
     },
     "demoApikey": {
       "schedule": "0 0 0 * * *",

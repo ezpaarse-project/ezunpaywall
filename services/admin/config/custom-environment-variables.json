@@ -52,12 +52,12 @@
     "cleanFile": {
       "schedule": "CRON_CLEAN_FILE_SCHEDULE",
       "active": "CRON_CLEAN_FILE_ACTIVE",
-      "changefileThreshold": "CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD",
-      "reportThreshold": "CRON_CLEAN_FILE_REPORT_THRESHOLD",
-      "snapshotThreshold": "CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD",
-      "accessLogThreshold": "CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD",
-      "applicationLogThreshold": "CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD",
-      "healthcheckLogThreshold": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD"
+      "changefileRetention": "CRON_CLEAN_FILE_CHANGEFILE_RETENTION",
+      "reportRetention": "CRON_CLEAN_FILE_REPORT_RETENTION",
+      "snapshotRetention": "CRON_CLEAN_FILE_SNAPSHOT_RETENTION",
+      "accessLogRetention": "CRON_CLEAN_FILE_ACCESS_LOG_RETENTION",
+      "applicationLogRetention": "CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION",
+      "healthcheckLogRetention": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION"
     },
     "demoApikey": {
       "schedule": "CRON_DEMO_APIKEY_SCHEDULE",

@@ -71,12 +71,12 @@ info: {
     "cleanFile": {
       "schedule": "0 0 0 * * *",
       "active": true,
-      "changefileThreshold": 30,
-      "reportThreshold": 30,
-      "snapshotThreshold": 100,
-      "accessLogThreshold": 365,
-      "applicationLogThreshold": 365,
-      "healthcheckLogThreshold": 30
+      "changefileRetention": 30,
+      "reportRetention": 30,
+      "snapshotRetention": 100,
+      "accessLogRetention": 365,
+      "applicationLogRetention": 365,
+      "healthcheckLogRetention": 30
     },
     "demoApikey": {
       "schedule": "0 0 0 * * *",
@@ -183,12 +183,12 @@ info: {
 | --- | --- | --- |
 | CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
 | CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
-| CRON_CLEAN_FILE_CHANGEFILE_THRESHOLD | Detention time in days for changefiles from unpaywall | 30 |
-| CRON_CLEAN_FILE_REPORT_THRESHOLD | Detention time in days for report of update process | 30 |
-| CRON_CLEAN_FILE_SNAPSHOT_THRESHOLD | Detention time in days for snapshot from unpaywall | 150 |
-| CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD | Detention time in days for access log | 365 |
-| CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD | Detention time in days for application log | 365 |
-| CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD | Detention time in days for healthcheck log | 30 |
+| CRON_CLEAN_FILE_CHANGEFILE_RETENTION | Detention time in days for changefiles from unpaywall | 30 |
+| CRON_CLEAN_FILE_REPORT_RETENTION | Detention time in days for report of update process | 30 |
+| CRON_CLEAN_FILE_SNAPSHOT_RETENTION | Detention time in days for snapshot from unpaywall | 150 |
+| CRON_CLEAN_FILE_ACCESS_LOG_RETENTION | Detention time in days for access log | 365 |
+| CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION | Detention time in days for application log | 365 |
+| CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION | Detention time in days for healthcheck log | 30 |
 
 #### Demo apikey
 
