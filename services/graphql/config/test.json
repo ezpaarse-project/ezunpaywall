@@ -20,9 +20,9 @@
     "cleanFile": {
       "schedule": "0 0 0 * * *",
       "active": false,
-      "accessLogThreshold": 365,
-      "applicationLogThreshold": 365,
-      "healthcheckLogThreshold": 30
+      "accessLogRetention": 365,
+      "applicationLogRetention": 365,
+      "healthcheckLogRetention": 30
     },
     "metrics": {
       "schedule": "0 0 0 * * *",

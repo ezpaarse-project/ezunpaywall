@@ -13,12 +13,12 @@ function checkCronConfig(type, body) {
     case 'cleanFile':
       return joi.object({
         schedule: joi.string().trim(),
-        enrichedFileThreshold: joi.number().min(1),
-        stateFileThreshold: joi.number().min(1),
-        uploadedFileThreshold: joi.number().min(1),
-        accessLogThreshold: joi.number().min(1),
-        applicationLogThreshold: joi.number().min(1),
-        healthcheckLogThreshold: joi.number().min(1),
+        enrichedFileRetention: joi.number().min(1),
+        stateFileRetention: joi.number().min(1),
+        uploadedFileRetention: joi.number().min(1),
+        accessLogRetention: joi.number().min(1),
+        applicationLogRetention: joi.number().min(1),
+        healthcheckLogRetention: joi.number().min(1),
       }).validate(body);
 
     default:

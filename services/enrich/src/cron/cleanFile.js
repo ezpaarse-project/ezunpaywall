@@ -21,33 +21,33 @@ async function task() {
 
   // Data
   const deletedEnrichedFiles = await
-  deleteFilesInDir(paths.data.enrichedDir, cronConfig.enrichedFileThreshold);
+  deleteFilesInDir(paths.data.enrichedDir, cronConfig.enrichedFileRetention);
   appLogger.info(`[cron][Clean file]: ${deletedEnrichedFiles?.join(',')} (${deletedEnrichedFiles.length}) enriched files are deleted`);
 
   const deletedStatesFiles = await
-  deleteFilesInDir(paths.data.statesDir, cronConfig.stateFileThreshold);
+  deleteFilesInDir(paths.data.statesDir, cronConfig.stateFileRetention);
   appLogger.info(`[cron][Clean file]: ${deletedStatesFiles?.join(',')} (${deletedStatesFiles.length}) states files are deleted`);
 
   const deletedUploadedFiles = await
-  deleteFilesInDir(paths.data.uploadDir, cronConfig.uploadedFileThreshold);
+  deleteFilesInDir(paths.data.uploadDir, cronConfig.uploadedFileRetention);
   appLogger.info(`[cron][Clean file]: ${deletedUploadedFiles?.join(',')} (${deletedUploadedFiles.length}) uploaded files are deleted`);
 
   // Logs
   const accessLogFiles = await deleteFilesInDir(
     paths.log.accessDir,
-    cronConfig.accessLogThreshold,
+    cronConfig.accessLogRetention,
   );
   appLogger.info(`[cron][Clean file]: ${accessLogFiles?.join(',')} (${accessLogFiles.length}) access log file are deleted`);
 
   const applicationLogFile = await deleteFilesInDir(
     paths.log.applicationDir,
-    cronConfig.applicationLogThreshold,
+    cronConfig.applicationLogRetention,
   );
   appLogger.info(`[cron][Clean file]: ${applicationLogFile?.join(',')} (${applicationLogFile.length}) application log file are deleted`);
 
   const healthcheckLogFile = await deleteFilesInDir(
     paths.log.healthcheckDir,
-    cronConfig.healthcheckLogThreshold,
+    cronConfig.healthcheckLogRetention,
   );
   appLogger.info(`[cron][Clean file]: ${healthcheckLogFile?.join(',')} (${healthcheckLogFile.length}) healthcheck log file are deleted`);
 
@@ -66,32 +66,32 @@ function update(newConfig) {
     cronConfig.schedule = newConfig.schedule;
     deleteFileCron.setSchedule(newConfig.schedule);
   }
-  if (newConfig.enrichedFileThreshold) {
-    cronConfig.enrichedFileThreshold = newConfig.enrichedFileThreshold;
+  if (newConfig.enrichedFileRetention) {
+    cronConfig.enrichedFileRetention = newConfig.enrichedFileRetention;
   }
-  if (newConfig.stateFileThreshold) {
-    cronConfig.stateFileThreshold = newConfig.stateFileThreshold;
-  }
-
-  if (newConfig.uploadedFileThreshold) {
-    cronConfig.uploadedFileThreshold = newConfig.uploadedFileThreshold;
-  }
-  if (newConfig.accessLogThreshold) {
-    cronConfig.accessLogThreshold = newConfig.accessLogThreshold;
-  }
-  if (newConfig.applicationLogThreshold) {
-    cronConfig.applicationLogThreshold = newConfig.applicationLogThreshold;
-  }
-  if (newConfig.healthcheckLogThreshold) {
-    cronConfig.healthcheckLogThreshold = newConfig.healthcheckLogThreshold;
+  if (newConfig.stateFileRetention) {
+    cronConfig.stateFileRetention = newConfig.stateFileRetention;
   }
 
-  if (newConfig.enrichedFileThreshold
-    || newConfig.stateFileThreshold
-    || newConfig.uploadedFileThreshold
-    || newConfig.accessLogThreshold
-    || newConfig.applicationLogThreshold
-    || newConfig.healthcheckLogThreshold) {
+  if (newConfig.uploadedFileRetention) {
+    cronConfig.uploadedFileRetention = newConfig.uploadedFileRetention;
+  }
+  if (newConfig.accessLogRetention) {
+    cronConfig.accessLogRetention = newConfig.accessLogRetention;
+  }
+  if (newConfig.applicationLogRetention) {
+    cronConfig.applicationLogRetention = newConfig.applicationLogRetention;
+  }
+  if (newConfig.healthcheckLogRetention) {
+    cronConfig.healthcheckLogRetention = newConfig.healthcheckLogRetention;
+  }
+
+  if (newConfig.enrichedFileRetention
+    || newConfig.stateFileRetention
+    || newConfig.uploadedFileRetention
+    || newConfig.accessLogRetention
+    || newConfig.applicationLogRetention
+    || newConfig.healthcheckLogRetention) {
     deleteFileCron.setTask(task);
   }
 }
@@ -100,12 +100,12 @@ function getGlobalConfig() {
   const order = [
     'name',
     'schedule',
-    'enrichedFileThreshold',
-    'stateFileThreshold',
-    'uploadedFileThreshold',
-    'accessLogThreshold',
-    'applicationLogThreshold',
-    'healthcheckLogThreshold',
+    'enrichedFileRetention',
+    'stateFileRetention',
+    'uploadedFileRetention',
+    'accessLogRetention',
+    'applicationLogRetention',
+    'healthcheckLogRetention',
     'active',
   ];
 

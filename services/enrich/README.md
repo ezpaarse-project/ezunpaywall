@@ -26,9 +26,9 @@ info: {
     "cleanFile": {
       "schedule": "0 0 0 * * *",
       "active": true,
-      "enrichedFileThreshold": 1,
-      "uploadedFileThreshold": 1,
-      "stateFileThreshold": 1
+      "enrichedFileRetention": 1,
+      "uploadedFileRetention": 1,
+      "stateFileRetention": 1
     }
   },
   "apikey": "********",
@@ -83,12 +83,12 @@ info: {
 | --- | --- | --- |
 | CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
 | CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
-| CRON_CLEAN_FILE_ENRICHED_THRESHOLD | Detention time in days for enriched file | 1 |
-| CRON_CLEAN_FILE_UPLOADED_THRESHOLD | Detention time in days for uploaded file | 1 |
-| CRON_CLEAN_FILE_STATE_THRESHOLD | Detention time in days for state file | 1 |
-| CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD | Detention time in days for access log | 365 |
-| CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD | Detention time in days for application log | 365 |
-| CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD | Detention time in days for healthcheck log | 30 |
+| CRON_CLEAN_FILE_ENRICHED_RETENTION | Detention time in days for enriched file | 1 |
+| CRON_CLEAN_FILE_UPLOADED_RETENTION | Detention time in days for uploaded file | 1 |
+| CRON_CLEAN_FILE_STATE_RETENTION | Detention time in days for state file | 1 |
+| CRON_CLEAN_FILE_ACCESS_LOG_RETENTION | Detention time in days for access log | 365 |
+| CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION | Detention time in days for application log | 365 |
+| CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION | Detention time in days for healthcheck log | 30 |
 
 ## Command to set volume permissions (non root image docker)
 

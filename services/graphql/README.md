@@ -52,9 +52,9 @@ info: {
 | ELASTICSEARCH_INDEX_ALIAS | Graphql entry point | upw |
 | CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
 | CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
-| CRON_CLEAN_FILE_ACCESS_LOG_THRESHOLD | Detention time in days for access log | 365 |
-| CRON_CLEAN_FILE_APPLICATION_LOG_THRESHOLD | Detention time in days for application log | 365 |
-| CRON_CLEAN_FILE_HEALTHCHECK_LOG_THRESHOLD | Detention time in days for healthcheck log | 30 |
+| CRON_CLEAN_FILE_ACCESS_LOG_RETENTION | Detention time in days for access log | 365 |
+| CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION | Detention time in days for application log | 365 |
+| CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION | Detention time in days for healthcheck log | 30 |
 | CRON_METRICS_SCHEDULE | Schedule of cron | 0 0 0 * * * |
 | CRON_METRICS_ACTIVE | Cron active or not at the start of service | true |
 

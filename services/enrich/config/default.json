@@ -16,12 +16,12 @@
     "cleanFile": {
       "schedule": "0 0 0 * * *",
       "active": true,
-      "enrichedFileThreshold": 1,
-      "uploadedFileThreshold": 1,
-      "stateFileThreshold": 1,
-      "accessLogThreshold": 365,
-      "applicationLogThreshold": 365,
-      "healthcheckLogThreshold": 30
+      "enrichedFileRetention": 1,
+      "uploadedFileRetention": 1,
+      "stateFileRetention": 1,
+      "accessLogRetention": 365,
+      "applicationLogRetention": 365,
+      "healthcheckLogRetention": 30
     }
   },
   "paths": {
