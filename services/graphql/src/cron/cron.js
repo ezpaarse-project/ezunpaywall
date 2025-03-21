@@ -12,11 +12,11 @@ class Cron {
    * @param {Promise} task Promise that will be executed by the cron
    * @param {boolean} active Indicates whether it is active or not.
    */
-  constructor(name, schedule, task) {
+  constructor(name, schedule, task, active) {
     this.name = name;
     this.schedule = schedule;
     this.task = task;
-    this.active = false;
+    this.active = active;
     this.process = new CronJob(schedule, this.task, null, false, timezone);
   }
 
