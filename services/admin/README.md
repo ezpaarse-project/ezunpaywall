@@ -15,26 +15,24 @@ warn: [config]: Unpaywall apikey has the default value
 warn: [config]: Elasticsearch password has the default value 
 warn: [config]: Apikey has the default value 
 warn: [config]: Redis password has the default value
-info: {
+{ 
   "nodeEnv": "development",
   "timezone": "Europe/Paris",
   "apikey": "********",
   "healthTimeout": 10000,
   "port": 3003,
   "smtp": {
-    "host": "maildev",
+    "host": "localhost",
     "port": 25
   },
   "notifications": {
     "sender": "ezunpaywall",
-    "receivers": [
-      "ezunpaywall@example.com"
-    ],
+    "receivers": ["ezunpaywall@example.com"],
     "machine": "dev"
   },
   "unpaywall": {
     "url": "http://fakeunpaywall:3000",
-    "apikey": "********"
+    "apikey": "default"
   },
   "elasticsearch": {
     "nodes": "http://elastic:9200",
@@ -44,7 +42,7 @@ info: {
     "indexAlias": "upw",
     "timeout": 20000
   },
-  "redis": {
+  "redis":  {
     "host": "redis",
     "port": "6379",
     "password": "********"
@@ -86,7 +84,7 @@ info: {
   },
   "paths": {
     "log": {
-      "applicationDir": "./log/application",
+      "applicationDir": "./log/application", 
       "accessDir": "./log/access",
       "healthcheckDir": "./log/healthcheck"
     },
@@ -96,7 +94,7 @@ info: {
       "reportsDir": "./data/reports"
     }
   }
-} 
+}
 ```
 
 ## Environment variables
@@ -257,4 +255,24 @@ data
 npm run test
 
 # Unit tests
+```
+
+### Mirror quality
+
+To check if unpaywall.inist.fr is equal to unpaywall API. you can use this test :
+
+```sh
+export ELASTIC_NODES="<elastic node of ezunpaywall>"
+export ELASTIC_PASSWORD="<elastic password of ezunpaywall>"
+export TEST_MIRROR_SIZE="<size of id tested>"
+
+npm run test:mirror
+```
+
+Warning: Unpaywall is slow to respond.
+
+At the end of the test, this should log something like that : 
+```
+OA: 100/100
+Pure same: 75/100
 ```

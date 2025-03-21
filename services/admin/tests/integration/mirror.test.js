@@ -6,6 +6,7 @@ const { Client } = require('@elastic/elasticsearch');
 const _ = require('lodash');
 
 const nodes = process.env.ELASTIC_NODES;
+const size = process.env.TEST_MIRROR_SIZE || 10;
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const client = new Client({
@@ -17,7 +18,7 @@ const client = new Client({
   ssl: { rejectUnauthorized: false },
 });
 
-async function getRandomDOIs(index, size = 10) {
+async function getRandomDOIs(index) {
   const response = await client.search({
     index,
     size,
@@ -168,10 +169,11 @@ async function getEzunpaywallData(doi) {
  */
 function getObjectDiff(unpaywallData, ezunpaywallData) {
   return _.reduce(unpaywallData, (result, value, key) => {
+    const res = result;
     if (!_.isEqual(value, ezunpaywallData[key])) {
-      result[key] = { unpaywall: value, ezunpaywall: ezunpaywallData[key] };
+      res[key] = { unpaywall: value, ezunpaywall: ezunpaywallData[key] };
     }
-    return result;
+    return res;
   }, {});
 }
 
