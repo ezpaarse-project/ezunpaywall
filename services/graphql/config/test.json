@@ -31,9 +31,9 @@
   },
   "paths": {
     "log": {
-      "applicationDir": "./log/application", 
-      "accessDir": "./log/access",
-      "healthcheckDir": "./log/healthcheck"
+      "applicationDir": "./data-test/application", 
+      "accessDir": "./data-test/access",
+      "healthcheckDir": "./data-test/healthcheck"
     }
   }
 }

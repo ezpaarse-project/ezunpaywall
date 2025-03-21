@@ -22,9 +22,7 @@ const apacheFormat = winston.format.printf((info) => {
 
 const transports = [];
 
-if (process.env.NODE_ENV === 'test') {
-  transports.push(new winston.transports.Console());
-} else if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development') {
   transports.push(new winston.transports.Console());
   transports.push(
     new DailyRotateFile({
