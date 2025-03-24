@@ -104,22 +104,22 @@ const server = app.listen(port, async () => {
   await initClient();
   pingRedis();
   loadDemoAPIKey();
-  if (cronDemo.active) {
-    cronDemo.start();
+  if (cronDemo?.cron?.active) {
+    cronDemo.cron.start();
   }
 
-  if (cronFile.active) {
-    cronFile.start();
+  if (cronFile?.cron?.active) {
+    cronFile.cron.start();
   }
 
-  if (cronDataUpdate.cron.active) {
+  if (cronDataUpdate?.cron?.active) {
     cronDataUpdate.cron.start();
   }
 
-  if (cronDataUpdateHistory.cron.active) {
+  if (cronDataUpdateHistory?.cron?.active) {
     cronDataUpdateHistory.cron.start();
   }
-  if (cronDownloadSnapshot.active) {
+  if (cronDownloadSnapshot?.active) {
     cronDownloadSnapshot.start();
   }
 });

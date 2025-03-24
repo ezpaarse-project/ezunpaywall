@@ -101,10 +101,11 @@ async function startListening(app) {
       logConfig();
       await initClient();
       pingRedis();
-      if (process.env.NODE_ENV !== 'test') {
+
+      if (cronMetrics?.cron?.active) {
         cronMetrics.cron.start();
       }
-      if (cronFile.active) {
+      if (cronFile?.cron?.active) {
         cronFile.cron.start();
       }
       resolve(server);

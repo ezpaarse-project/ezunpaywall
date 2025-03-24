@@ -21,7 +21,7 @@ async function task() {
   logger.info('[cron][metrics]: metrics is updated');
 }
 
-const metricsCron = new Cron('metrics', '0 0 0 * * *', task);
+const metricsCron = new Cron('metrics', cronConfig.schedule, task, active);
 
 /**
  * Update config of update process and config of cron.

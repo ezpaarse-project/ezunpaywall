@@ -87,8 +87,8 @@ const server = app.listen(port, async () => {
   await initClient();
   pingRedis();
 
-  if (cronCleanFile.active) {
-    cronCleanFile.start();
+  if (cronCleanFile?.cron?.active) {
+    cronCleanFile.cron.start();
   }
 });
 
