@@ -3,6 +3,7 @@ log/
 data/
 tests/
 docs/
+data-test/
 coverage/
 .gitignore
 .eslintrc.json

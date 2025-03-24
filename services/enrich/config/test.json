@@ -26,14 +26,14 @@
   },
   "paths": {
     "log": {
-      "applicationDir": "./log/application", 
-      "accessDir": "./log/access",
-      "healthcheckDir": "./log/healthcheck"
+      "applicationDir": "./data-test/log/application", 
+      "accessDir": "./data-test/log/access",
+      "healthcheckDir": "./data-test/log/healthcheck"
     },
     "data": {
-      "enrichedDir": "./tmp/data/enriched",
-      "statesDir": "./tmp/data/states",
-      "uploadDir": "./tmp/data/upload"
+      "enrichedDir": "./data-test/data/enriched",
+      "statesDir": "./data-test/data/states",
+      "uploadDir": "./data-test/data/upload"
     }
   }
 }

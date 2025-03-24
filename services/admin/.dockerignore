@@ -3,7 +3,7 @@ log/
 data/
 tests/
 coverage/
-tmp/
+data-test/
 .eslintrc.json
 .gitignore
 README.md

@@ -67,14 +67,14 @@
   },
   "paths": {
     "log": {
-      "applicationDir": "./log/application", 
-      "accessDir": "./log/access",
-      "healthcheckDir": "./log/healthcheck"
+      "applicationDir": "./data-test/log/application", 
+      "accessDir": "./data-test/log/access",
+      "healthcheckDir": "./data-test/log/healthcheck"
     },
     "data": {
-      "changefilesDir": "./tmp/data/changefiles",
-      "snapshotsDir": "./tmp/data/snapshots",
-      "reportsDir": "./tmp/data/reports"
+      "changefilesDir": "./data-test/data/changefiles",
+      "snapshotsDir": "./data-test/data/snapshots",
+      "reportsDir": "./data-test/data/reports"
     }
   }
 }
