@@ -76,6 +76,7 @@ const emit = defineEmits({
 const props = defineProps({
   name: { type: String, default: '' },
   config: { type: Array, default: () => [] },
+  host: { type: Function, default: () => {} },
 });
 
 const localConfig = computed({
@@ -96,7 +97,7 @@ async function updateCron() {
   loading.value = true;
   const data = Object.assign({}, ...localConfig.value);
   try {
-    await $admin(`/cron/${props.name}`, {
+    await props.host(`/cron/${props.name}`, {
       method: 'PATCH',
       body: data,
       headers: {

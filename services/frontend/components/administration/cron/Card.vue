@@ -97,16 +97,13 @@ async function updateActive() {
   } finally {
     loading.value = false;
   }
+
   snackStore.info(t('info.cron.updated'));
 
   await getCron();
 }
 
 onMounted(async () => {
-  // TODO
-  await nextTick();
   await getCron();
-  // TODO
-  await nextTick();
 });
 </script>
