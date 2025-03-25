@@ -64,7 +64,6 @@
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $admin } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
 
@@ -111,6 +110,8 @@ async function updateCron() {
   }
   loading.value = false;
   snackStore.info(t('info.cron.updated'));
+
+  console.log(props.host);
 
   emit('updated');
   emit('update:modelValue', false);

@@ -31,6 +31,7 @@
   <AdministrationCronDialog
     v-model="visible"
     :name="props.name"
+    :host="props.host"
     :config="configAsArray"
     @updated="getCron()"
   />
