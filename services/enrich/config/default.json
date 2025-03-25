@@ -1,7 +1,9 @@
 { 
   "nodeEnv": "development",
-  "healthcheckLogRotate": false,
+  "apikey": "changeme",
   "timezone": "Europe/Paris",
+  "healthTimeout": 3000,
+  "port": 3002,
   "redis": {
     "host": "redis",
     "port": 6379,
@@ -10,14 +12,23 @@
   "graphql": {
     "url": "http://graphql:3001"
   },
-  "apikey": "changeme",
-  "healthTimeout": 3000,
-  "port": 3002,
+  "cron": {
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "enrichedFileRetention": 1,
+      "uploadedFileRetention": 1,
+      "stateFileRetention": 1,
+      "accessLogRetention": 365,
+      "applicationLogRetention": 365,
+      "healthcheckLogRetention": 30
+    }
+  },
   "paths": {
     "log": {
       "applicationDir": "./log/application", 
       "accessDir": "./log/access",
-      "healthCheckDir": "./log/healthcheck"
+      "healthcheckDir": "./log/healthcheck"
     },
     "data": {
       "enrichedDir": "./data/enriched",

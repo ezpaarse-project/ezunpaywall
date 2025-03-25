@@ -1,8 +1,9 @@
 node_modules/
 log/
 data/
-test/
+tests/
+coverage/
+data-test/
 .eslintrc.json
 .gitignore
 README.md
-apikey-dev.json

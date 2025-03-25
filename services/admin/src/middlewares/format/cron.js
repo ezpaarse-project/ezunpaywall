@@ -14,6 +14,7 @@ function checkCronConfig(type, body) {
       return joi.object({
         schedule: joi.string().trim(),
         index: joi.string().trim(),
+        anteriority: joi.number().min(0),
         interval: joi.string().trim().valid('day', 'week'),
       }).validate(body);
 
@@ -24,6 +25,29 @@ function checkCronConfig(type, body) {
         indexHistory: joi.string().trim(),
         interval: joi.string().trim().valid('day', 'week'),
       }).validate(body);
+
+    case 'cleanFile':
+      return joi.object({
+        schedule: joi.string().trim(),
+        changefileRetention: joi.number().min(1),
+        reportRetention: joi.number().min(1),
+        snapshotRetention: joi.number().min(1),
+        accessLogRetention: joi.number().min(1),
+        applicationLogRetention: joi.number().min(1),
+        healthcheckLogRetention: joi.number().min(1),
+      }).validate(body);
+
+    case 'demoApiKey':
+      return joi.object({
+        schedule: joi.string().trim(),
+        count: joi.number().min(0),
+      }).validate(body);
+
+    case 'downloadSnapshot':
+      return joi.object({
+        schedule: joi.string().trim(),
+      }).validate(body);
+
     default:
   }
   return false;
@@ -63,7 +87,7 @@ function validateCronConfig(req, res, next) {
  */
 function validateCronType(req, res, next) {
   const { type } = req.params;
-  const { error, value } = joi.string().trim().valid('dataUpdate', 'dataUpdateHistory').validate(type);
+  const { error, value } = joi.string().trim().valid('dataUpdate', 'dataUpdateHistory', 'cleanFile', 'demoApiKey', 'downloadSnapshot').validate(type);
   if (error) return res.status(400).json({ message: error.details[0].message });
 
   if (!req.data) {

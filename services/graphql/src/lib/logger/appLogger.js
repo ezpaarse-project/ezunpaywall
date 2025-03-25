@@ -13,9 +13,19 @@ const baseLogger = {
   ),
 };
 
-winston.loggers.add('app', {
-  ...baseLogger,
-  transports: [
+const transports = [];
+
+if (process.env.NODE_ENV === 'test') {
+  transports.push(new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.timestamp(),
+      winston.format.label({ label: 'app' }),
+      winston.format.printf(formatter),
+    ),
+  }));
+} else {
+  transports.push(
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
@@ -28,7 +38,12 @@ winston.loggers.add('app', {
       filename: `${paths.log.applicationDir}/%DATE%-application.log`,
       datePattern: 'YYYY-MM-DD',
     }),
-  ],
+  );
+}
+
+winston.loggers.add('app', {
+  ...baseLogger,
+  transports,
 });
 
 const appLogger = winston.loggers.get('app');

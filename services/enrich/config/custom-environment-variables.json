@@ -1,6 +1,9 @@
 { 
   "nodeEnv": "NODE_ENV",
-  "timezone": "TIMEZONE",
+  "apikey": "ADMIN_APIKEY",
+  "timezone": "TZ",
+  "healthTimeout": "HEALTH_TIMEOUT",
+  "port": "PORT",
   "redis":  {
     "host": "REDIS_HOST",
     "port": "REDIS_PORT",
@@ -9,7 +12,16 @@
   "graphql": {
     "url": "GRAPHQL_URL"
   },
-  "apikey": "ADMIN_APIKEY",
-  "healthTimeout": "HEALTH_TIMEOUT",
-  "port": "PORT"
+  "cron": {
+    "cleanFile": {
+      "schedule": "CRON_CLEAN_FILE_SCHEDULE",
+      "active": "CRON_CLEAN_FILE_ACTIVE",
+      "enrichedFileRetention": "CRON_CLEAN_FILE_ENRICHED_RETENTION",
+      "uploadedFileRetention": "CRON_CLEAN_FILE_UPLOADED_RETENTION",
+      "stateFileRetention": "CRON_CLEAN_FILE_STATE_RETENTION",
+      "accessLogRetention": "CRON_CLEAN_FILE_ACCESS_LOG_RETENTION",
+      "applicationLogRetention": "CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION",
+      "healthcheckLogRetention": "CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION"
+    }
+  }
 }

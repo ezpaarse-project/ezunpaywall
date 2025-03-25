@@ -39,6 +39,9 @@ info: {
 |---|---|---|
 | NODE_ENV | Environment of node | development |
 | TIMEZONE | Timezone of app used in cron | Europe/Paris |
+| HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
+| ADMIN_APIKEY | Admin API key | changeme |
+| PORT | Port | 3000 |
 | REDIS_HOST | Redis host | redis |
 | REDIS_PORT | Redis port | 6379 |
 | REDIS_PASSWORD | Redis password | changeme |
@@ -47,9 +50,13 @@ info: {
 | ELASTICSEARCH_USERNAME | Elasticsearch admin username | elastic |
 | ELASTICSEARCH_PASSWORD | Elasticsearch admin password | changeme |
 | ELASTICSEARCH_INDEX_ALIAS | Graphql entry point | upw |
-| HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
-| ADMIN_APIKEY | Admin API key | changeme |
-| PORT | Port | 3000 |
+| CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
+| CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
+| CRON_CLEAN_FILE_ACCESS_LOG_RETENTION | Detention time in days for access log | 365 |
+| CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION | Detention time in days for application log | 365 |
+| CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION | Detention time in days for healthcheck log | 30 |
+| CRON_METRICS_SCHEDULE | Schedule of cron | 0 0 0 * * * |
+| CRON_METRICS_ACTIVE | Cron active or not at the start of service | true |
 
 ## Command to set volume permissions (non root image docker)
 

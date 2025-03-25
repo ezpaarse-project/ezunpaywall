@@ -1,12 +1,12 @@
 export default defineNuxtPlugin((nuxtApp) => {
-  const adminURL = nuxtApp.$config.public.adminURL;
-  const graphqlURL = nuxtApp.$config.public.graphqlURL;
-  const enrichURL = nuxtApp.$config.public.enrichURL;
+  const { adminUrl } = nuxtApp.$config.public;
+  const { graphqlURL } = nuxtApp.$config.public;
+  const { enrichURL } = nuxtApp.$config.public;
 
   const adminFetch = $fetch.create({
-    baseURL: adminURL,
+    baseURL: adminUrl,
   });
-  adminFetch.baseURL = adminURL;
+  adminFetch.baseURL = adminUrl;
 
   const enrichFetch = $fetch.create({
     baseURL: enrichURL,
@@ -16,7 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const graphqlFetch = $fetch.create({
     baseURL: graphqlURL,
   });
-  graphqlFetch.baseURL = graphqlURL
+  graphqlFetch.baseURL = graphqlURL;
 
   nuxtApp.provide('admin', adminFetch);
   nuxtApp.provide('enrich', enrichFetch);

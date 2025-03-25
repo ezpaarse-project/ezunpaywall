@@ -12,6 +12,7 @@ warn: [config]: Redis password has the default value
 
 info: {
   "nodeEnv": "development",
+  "healthcheckLogRotate": false,
   "timezone": "Europe/Paris",
   "redis": {
     "host": "redis",
@@ -19,27 +20,75 @@ info: {
     "password": "********"
   },
   "graphql": {
-    "host": "http://graphql:3001"
+    "url": "http://graphql:3001"
+  },
+  "cron": {
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "enrichedFileRetention": 1,
+      "uploadedFileRetention": 1,
+      "stateFileRetention": 1
+    }
   },
   "apikey": "********",
   "healthTimeout": 3000,
-  "port": 3002
+  "port": 3002,
+  "paths": {
+    "log": {
+      "applicationDir": "./log/application",
+      "accessDir": "./log/access",
+      "healthcheckDir": "./log/healthcheck"
+    },
+    "data": {
+      "enrichedDir": "./data/enriched",
+      "statesDir": "./data/states",
+      "uploadDir": "./data/upload"
+    }
+  }
 }
 ```
 
-## Service environment variables
+## Environment variables
+
+### Application
 
 | Name | Description | Default |
 | --- | --- | --- |
 | NODE_ENV | Environment of node | development |
-| TIMEZONE | Timezone of app used in cron | Europe/Paris |
+| TIMEZONE |  Timezone of app used in cron | Europe/Paris |
+| ADMIN_APIKEY | Admin API key | changeme |
+| HEALTH_TIMEOUT | Timeout to query the health route |  3000 |
+| PORT | Port | 3002 |
+
+### Redis
+
+| Name | Description | Default |
+| --- | --- | --- |
 | REDIS_HOST | Redis host | redis |
 | REDIS_PORT | Redis port | 6379 |
 | REDIS_PASSWORD | Redis password | changeme |
-| GRAPHQL_URL | Graphql URL | http://graphql:3001 |
-| ADMIN_APIKEY | Admin API key | changeme |
-| HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
-| PORT | Port | 3002 |
+
+### Graphql
+
+| Name | Description | Default |
+| --- | --- | --- |
+| GRAPHQL_URL | Graphql host | http://graphql:3000 |
+
+### Cron
+
+#### Clean File
+
+| Name | Description | Default |
+| --- | --- | --- |
+| CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
+| CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
+| CRON_CLEAN_FILE_ENRICHED_RETENTION | Detention time in days for enriched file | 1 |
+| CRON_CLEAN_FILE_UPLOADED_RETENTION | Detention time in days for uploaded file | 1 |
+| CRON_CLEAN_FILE_STATE_RETENTION | Detention time in days for state file | 1 |
+| CRON_CLEAN_FILE_ACCESS_LOG_RETENTION | Detention time in days for access log | 365 |
+| CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION | Detention time in days for application log | 365 |
+| CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION | Detention time in days for healthcheck log | 30 |
 
 ## Command to set volume permissions (non root image docker)
 
@@ -66,37 +115,31 @@ They are structured like this
 data
 ├── enriched
 │   ├── user01
-|       ├── 00000000-0000-0000-0000-000000000001.csv
-│       ├── 00000000-0000-0000-0000-000000000001.jsonl
-│       ├── ...
-│       └── 00000000-0000-0000-0000-000000000010.csv
+|   |   ├── 00000000-0000-0000-0000-000000000001.csv
+│   |   ├── 00000000-0000-0000-0000-000000000001.jsonl
+│   |   └── ...
 │   └── user02
-│       ├── 00000000-0000-0000-0000-000000000001.csv
-│       ├── 00000000-0000-0000-0000-000000000001.jsonl
-│       ├── ...
-│       └── 00000000-0000-0000-0000-000000000010.csv
+│       ├── 00000000-0000-0000-0000-000000000002.csv
+│       ├── 00000000-0000-0000-0000-000000000002.jsonl
+│       └── ...
 ├── states
 │   ├── user01
-|       ├── 00000000-0000-0000-0000-000000000001.csv
-│       ├── 00000000-0000-0000-0000-000000000001.jsonl
-│       ├── ...
-│       └── 00000000-0000-0000-0000-000000000010.csv
+|   |   ├── 00000000-0000-0000-0000-000000000001.csv
+│   |   ├── 00000000-0000-0000-0000-000000000001.jsonl
+│   |   └── ...
 │   └── user02
-│       ├── 00000000-0000-0000-0000-000000000001.csv
-│       ├── 00000000-0000-0000-0000-000000000001.jsonl
-│       ├── ...
-│       └── 00000000-0000-0000-0000-000000000010.csv
+│       ├── 00000000-0000-0000-0000-000000000002.csv
+│       ├── 00000000-0000-0000-0000-000000000002.jsonl
+│       └── ...
 └── upload
     ├── user01
-        ├── 00000000-0000-0000-0000-000000000001.csv
-        ├── 00000000-0000-0000-0000-000000000001.jsonl
-        ├── ...
-        └── 00000000-0000-0000-0000-000000000010.csv
+    |   ├── 00000000-0000-0000-0000-000000000001.csv
+    |   ├── 00000000-0000-0000-0000-000000000001.jsonl
+    |   └── ...
     └── user02
-        ├── 00000000-0000-0000-0000-000000000001.csv
-        ├── 00000000-0000-0000-0000-000000000001.jsonl
-        ├── ...
-        └── 00000000-0000-0000-0000-000000000010.csv
+        ├── 00000000-0000-0000-0000-000000000002.csv
+        ├── 00000000-0000-0000-0000-000000000002.jsonl
+        └── ...
 ```
 
 ### Cron
@@ -120,5 +163,4 @@ data
 npm run test
 
 # Unit tests
-# TODO
 ```

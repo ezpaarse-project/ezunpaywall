@@ -9,9 +9,8 @@ const appLogger = require('./lib/logger/appLogger');
 
 const { logConfig } = require('./lib/config');
 
-const { pingRedis, startConnectionRedis, loadDemoAPIKey } = require('./lib/redis');
-
-const cronDemo = require('./lib/cron');
+const { pingRedis, loadDemoAPIKey } = require('./lib/redis');
+const { initClient } = require('./lib/redis/client');
 
 const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');
@@ -22,6 +21,7 @@ const routerMail = require('./routers/mail');
 const routerApikeys = require('./routers/apikey');
 const routerElastic = require('./routers/elastic');
 const routerCron = require('./routers/cron');
+const routerDisk = require('./routers/disk');
 const routerStatus = require('./routers/update/status');
 const routerState = require('./routers/update/state');
 const routerJob = require('./routers/update/job');
@@ -30,9 +30,10 @@ const routerChangefile = require('./routers/update/changefile');
 const routerSnapshot = require('./routers/update/snapshot');
 
 const cronFile = require('./cron/cleanFile');
-const dataUpdate = require('./cron/dataUpdate');
-const dataUpdateHistoryCron = require('./cron/dataUpdateHistory');
+const cronDataUpdate = require('./cron/dataUpdate');
+const cronDataUpdateHistory = require('./cron/dataUpdateHistory');
 const cronDownloadSnapshot = require('./cron/downloadSnapshot');
+const cronDemo = require('./cron/demoApikey');
 
 // create data directory
 fsp.mkdir(path.resolve(paths.data.changefilesDir), { recursive: true });
@@ -42,7 +43,7 @@ fsp.mkdir(path.resolve(paths.data.reportsDir), { recursive: true });
 // create log directory
 fsp.mkdir(path.resolve(paths.log.applicationDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.log.accessDir), { recursive: true });
-fsp.mkdir(path.resolve(paths.log.healthCheckDir), { recursive: true });
+fsp.mkdir(path.resolve(paths.log.healthcheckDir), { recursive: true });
 
 const app = express();
 
@@ -82,6 +83,7 @@ app.use(routerMail);
 app.use(routerApikeys);
 app.use(routerOpenapi);
 app.use(routerPing);
+app.use(routerDisk);
 app.use(routerElastic);
 app.use(routerStatus);
 app.use(routerState);
@@ -96,26 +98,30 @@ app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method
 
 app.use((error, req, res, next) => res.status(500).json({ message: error.message }));
 
-app.listen(port, async () => {
-  appLogger.info(`[express]: ezunpaywall admin service listening on port ${port} in [${process.uptime().toFixed(2)}]s`);
+const server = app.listen(port, async () => {
+  appLogger.info(`[express]: ezunpaywall admin service listening on ${port} in [${process.uptime().toFixed(2)}]s`);
   logConfig();
-  await startConnectionRedis();
+  await initClient();
   pingRedis();
   loadDemoAPIKey();
-  cronDemo.start();
-
-  if (cronFile.active) {
-    cronFile.start();
+  if (cronDemo?.cron?.active) {
+    cronDemo.cron.start();
   }
 
-  if (dataUpdate.cron.active) {
-    dataUpdate.cron.start();
+  if (cronFile?.cron?.active) {
+    cronFile.cron.start();
   }
 
-  if (dataUpdateHistoryCron.cron.active) {
-    dataUpdateHistoryCron.cron.start();
+  if (cronDataUpdate?.cron?.active) {
+    cronDataUpdate.cron.start();
   }
-  if (cronDownloadSnapshot.active) {
+
+  if (cronDataUpdateHistory?.cron?.active) {
+    cronDataUpdateHistory.cron.start();
+  }
+  if (cronDownloadSnapshot?.active) {
     cronDownloadSnapshot.start();
   }
 });
+
+module.exports = server;

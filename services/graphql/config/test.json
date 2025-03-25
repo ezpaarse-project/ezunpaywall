@@ -1,0 +1,39 @@
+{
+  "nodeEnv": "test",
+  "timezone": "Europe/Paris",
+  "apikey": "changeme",
+  "healthTimeout": 3000,
+  "port": 3001,
+  "redis":  {
+    "host": "redis",
+    "port": "6379",
+    "password": "changeme"
+  },
+  "elasticsearch": {
+    "nodes": "http://elastic:9200",
+    "username": "elastic",
+    "password": "changeme",
+    "indexBase": "unpaywall",
+    "indexHistory": "unpaywall_history_*"
+  },
+  "cron": {
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": false,
+      "accessLogRetention": 365,
+      "applicationLogRetention": 365,
+      "healthcheckLogRetention": 30
+    },
+    "metrics": {
+      "schedule": "0 0 0 * * *",
+      "active": false
+    }
+  },
+  "paths": {
+    "log": {
+      "applicationDir": "./data-test/log/application", 
+      "accessDir": "./data-test/log/access",
+      "healthcheckDir": "./data-test/log/healthcheck"
+    }
+  }
+}

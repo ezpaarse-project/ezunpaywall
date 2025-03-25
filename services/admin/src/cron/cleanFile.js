@@ -17,26 +17,107 @@ else active = false;
  * @returns {Promise<void>}
  */
 async function task() {
+  appLogger.info('[cron][Clean file]: Has start');
+
+  // Data
   const deletedChangefiles = await deleteFilesInDir(
     paths.data.changefilesDir,
-    cronConfig.changefileThreshold,
+    cronConfig.changefileRetention,
   );
   appLogger.info(`[cron][Clean file]: ${deletedChangefiles?.join(',')} (${deletedChangefiles.length}) changefiles are deleted`);
 
   const deletedReportFiles = await deleteFilesInDir(
     paths.data.reportsDir,
-    cronConfig.reportThreshold,
+    cronConfig.reportRetention,
   );
   appLogger.info(`[cron][Clean file]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
 
   const deletedSnapshotFiles = await deleteFilesInDir(
     paths.data.snapshotsDir,
-    cronConfig.snapshotsDir,
+    cronConfig.snapshotRetention,
   );
-
   appLogger.info(`[cron][Clean file]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
+
+  // Logs
+  const accessLogFiles = await deleteFilesInDir(
+    paths.log.accessDir,
+    cronConfig.accessLogRetention,
+  );
+  appLogger.info(`[cron][Clean file]: ${accessLogFiles?.join(',')} (${accessLogFiles.length}) access log file are deleted`);
+
+  const applicationLogFile = await deleteFilesInDir(
+    paths.log.applicationDir,
+    cronConfig.applicationLogRetention,
+  );
+  appLogger.info(`[cron][Clean file]: ${applicationLogFile?.join(',')} (${applicationLogFile.length}) application log file are deleted`);
+
+  const healthcheckLogFile = await deleteFilesInDir(
+    paths.log.healthcheckDir,
+    cronConfig.healthcheckLogRetention,
+  );
+  appLogger.info(`[cron][Clean file]: ${healthcheckLogFile?.join(',')} (${healthcheckLogFile.length}) healthcheck log file are deleted`);
+
+  appLogger.info('[cron][Clean file]: Has finished');
 }
 
 const deleteFileCron = new Cron('Clean file', cronConfig.schedule, task, active);
 
-module.exports = deleteFileCron;
+/**
+ * Update config of update process and config of cron.
+ *
+ * @param {Object} newConfig Global config.
+ */
+function update(newConfig) {
+  if (newConfig.schedule) {
+    cronConfig.schedule = newConfig.schedule;
+    deleteFileCron.setSchedule(newConfig.schedule);
+  }
+  if (newConfig.changefileRetention) cronConfig.changefileRetention = newConfig.changefileRetention;
+  if (newConfig.reportRetention) cronConfig.reportRetention = newConfig.reportRetention;
+  if (newConfig.snapshotRetention) cronConfig.snapshotRetention = newConfig.snapshotRetention;
+  if (newConfig.accessLogRetention) cronConfig.accessLogRetention = newConfig.accessLogRetention;
+  if (newConfig.applicationLogRetention) {
+    cronConfig.applicationLogRetention = newConfig.applicationLogRetention;
+  }
+  if (newConfig.healthcheckLogRetention) {
+    cronConfig.healthcheckLogRetention = newConfig.healthcheckLogRetention;
+  }
+  if (newConfig.changefileRetention
+    || newConfig.reportRetention
+    || newConfig.snapshotRetention
+    || newConfig.accessLogRetention
+    || newConfig.applicationLogRetention
+    || newConfig.healthcheckLogRetention) {
+    deleteFileCron.setTask(task);
+  }
+}
+
+function getGlobalConfig() {
+  const order = [
+    'name',
+    'schedule',
+    'changefileRetention',
+    'reportRetention',
+    'snapshotRetention',
+    'accessLogRetention',
+    'applicationLogRetention',
+    'healthcheckLogRetention',
+    'active',
+  ];
+
+  const data = { ...cronConfig, ...deleteFileCron.config };
+
+  const result = {};
+  order.forEach((key) => {
+    if (data[key] !== undefined) {
+      result[key] = data[key];
+    }
+  });
+  return result;
+}
+
+module.exports = {
+  getGlobalConfig,
+  update,
+  cron: deleteFileCron,
+};

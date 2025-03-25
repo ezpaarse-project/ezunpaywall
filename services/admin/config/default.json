@@ -1,6 +1,9 @@
 { 
   "nodeEnv": "development",
   "timezone": "Europe/Paris",
+  "apikey": "changeme",
+  "healthTimeout": 10000,
+  "port": 3003,
   "smtp": {
     "host": "localhost",
     "port": 25
@@ -36,7 +39,8 @@
       "schedule": "0 0 0 * * *",
       "active": false,
       "index": "unpaywall",
-      "interval": "day"
+      "interval": "day",
+      "anteriority": 0
     },
     "dataUpdateHistory": {
       "schedule": "0 0 0 * * *",
@@ -48,19 +52,24 @@
     "cleanFile": {
       "schedule": "0 0 0 * * *",
       "active": true,
-      "changefileThreshold": 30,
-      "reportThreshold": 30,
-      "snapshotThreshold": 150
+      "changefileRetention": 30,
+      "reportRetention": 30,
+      "snapshotRetention": 100,
+      "accessLogRetention": 365,
+      "applicationLogRetention": 365,
+      "healthcheckLogRetention": 30
+    },
+    "demoApikey": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "count": 100000
     }
   },
-  "apikey": "changeme",
-  "healthTimeout": 3000,
-  "port": 3003,
   "paths": {
     "log": {
       "applicationDir": "./log/application", 
       "accessDir": "./log/access",
-      "healthCheckDir": "./log/healthcheck"
+      "healthcheckDir": "./log/healthcheck"
     },
     "data": {
       "changefilesDir": "./data/changefiles",

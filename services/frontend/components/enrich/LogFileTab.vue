@@ -26,7 +26,7 @@
             class="mr-5"
           />
         </template>
-        {{ t("enrich.explainationLogs") }}
+        {{ t("enrich.explicationLogs") }}
       </v-tooltip>
     </v-row>
     <EnrichLogFiles class="ma-1" />

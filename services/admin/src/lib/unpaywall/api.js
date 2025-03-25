@@ -1,13 +1,11 @@
-const axios = require('axios');
+/* eslint-disable global-require */
 const config = require('config');
 const appLogger = require('../logger/appLogger');
+const getUnpaywallClient = require('./client');
 
 const { apikey } = config.unpaywall;
 
-const unpaywall = axios.create({
-  baseURL: config.unpaywall.url,
-});
-unpaywall.baseURL = config.unpaywall.url;
+const unpaywall = getUnpaywallClient();
 
 /**
  * Ping unpaywall.
@@ -80,6 +78,7 @@ async function getChangefiles(interval, startDate, endDate) {
   }
 
   let changefilesInfo = res.data.list;
+
   changefilesInfo = changefilesInfo
     .reverse()
     .filter((file) => file.filetype === 'jsonl');
@@ -126,9 +125,10 @@ async function getChangefile(filename, interval) {
       },
     });
   } catch (err) {
-    appLogger.error(`[unpaywall]: Cannot get /${feed}/changefile/${filename}`);
+    appLogger.error(`[unpaywall]: Cannot get /${feed}/changefile/${filename} - ${err}`);
     return false;
   }
+
   return res;
 }
 

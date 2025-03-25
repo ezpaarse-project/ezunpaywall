@@ -1,7 +1,10 @@
 const cronValidator = require('cron-validator');
 
-const dataUpdate = require('../cron/dataUpdate');
+const dataUpdateCron = require('../cron/dataUpdate');
 const dataUpdateHistoryCron = require('../cron/dataUpdateHistory');
+const cleanFileCron = require('../cron/cleanFile');
+const demoApiKeyCron = require('../cron/demoApikey');
+const downloadSnapshotCron = require('../cron/downloadSnapshot');
 
 /**
  * Controller to start update cron.
@@ -13,20 +16,24 @@ const dataUpdateHistoryCron = require('../cron/dataUpdateHistory');
 function startCronController(req, res, next) {
   const { type } = req.data;
 
-  if (type === 'dataUpdate') {
-    try {
-      dataUpdate.cron.start();
-    } catch (err) {
-      return next(err);
+  try {
+    if (type === 'dataUpdate') {
+      dataUpdateCron.cron.start();
     }
-  }
-
-  if (type === 'dataUpdateHistory') {
-    try {
+    if (type === 'dataUpdateHistory') {
       dataUpdateHistoryCron.cron.start();
-    } catch (err) {
-      return next(err);
     }
+    if (type === 'cleanFile') {
+      cleanFileCron.cron.start();
+    }
+    if (type === 'demoApiKey') {
+      demoApiKeyCron.cron.start();
+    }
+    if (type === 'downloadSnapshot') {
+      downloadSnapshotCron.start();
+    }
+  } catch (err) {
+    return next(err);
   }
 
   return res.status(202).json();
@@ -42,20 +49,24 @@ function startCronController(req, res, next) {
 function stopCronController(req, res, next) {
   const { type } = req.data;
 
-  if (type === 'dataUpdate') {
-    try {
-      dataUpdate.cron.stop();
-    } catch (err) {
-      return next(err);
+  try {
+    if (type === 'dataUpdate') {
+      dataUpdateCron.cron.stop();
     }
-  }
-
-  if (type === 'dataUpdateHistory') {
-    try {
+    if (type === 'dataUpdateHistory') {
       dataUpdateHistoryCron.cron.stop();
-    } catch (err) {
-      return next(err);
     }
+    if (type === 'cleanFile') {
+      cleanFileCron.cron.stop();
+    }
+    if (type === 'demoApiKey') {
+      demoApiKeyCron.cron.stop();
+    }
+    if (type === 'downloadSnapshot') {
+      downloadSnapshotCron.stop();
+    }
+  } catch (err) {
+    return next(err);
   }
 
   return res.status(202).json();
@@ -74,28 +85,34 @@ function patchCronController(req, res, next) {
 
   if (schedule) {
     const validCron = cronValidator.isValidCron(schedule, { seconds: true });
-    if (!validCron) { return res.status(400).json('schedule is invalid'); }
+    if (!validCron) { return res.status(400).json('Schedule is invalid'); }
   }
 
   let config;
 
-  if (type === 'dataUpdate') {
-    try {
-      dataUpdate.update(cronConfig);
-    } catch (err) {
-      return next(err);
+  try {
+    if (type === 'dataUpdate') {
+      dataUpdateCron.update(cronConfig);
+      config = dataUpdateCron.getGlobalConfig();
     }
-
-    config = dataUpdate.getGlobalConfig();
-  }
-
-  if (type === 'dataUpdateHistory') {
-    try {
+    if (type === 'dataUpdateHistory') {
       dataUpdateHistoryCron.update(cronConfig);
-    } catch (err) {
-      return next(err);
+      config = dataUpdateHistoryCron.getGlobalConfig();
     }
-    config = dataUpdateHistoryCron.getGlobalConfig();
+    if (type === 'cleanFile') {
+      cleanFileCron.update(cronConfig);
+      config = cleanFileCron.getGlobalConfig();
+    }
+    if (type === 'demoApiKey') {
+      demoApiKeyCron.update(cronConfig);
+      config = demoApiKeyCron.getGlobalConfig();
+    }
+    if (type === 'downloadSnapshot') {
+      downloadSnapshotCron.update(cronConfig);
+      config = downloadSnapshotCron.config();
+    }
+  } catch (err) {
+    return next(err);
   }
 
   return res.status(200).json(config);
@@ -114,11 +131,23 @@ function getConfigCronController(req, res) {
   let config;
 
   if (type === 'dataUpdate') {
-    config = dataUpdate.getGlobalConfig();
+    config = dataUpdateCron.getGlobalConfig();
   }
 
   if (type === 'dataUpdateHistory') {
     config = dataUpdateHistoryCron.getGlobalConfig();
+  }
+
+  if (type === 'cleanFile') {
+    config = cleanFileCron.getGlobalConfig();
+  }
+
+  if (type === 'demoApiKey') {
+    config = demoApiKeyCron.getGlobalConfig();
+  }
+
+  if (type === 'downloadSnapshot') {
+    config = downloadSnapshotCron.config;
   }
 
   return res.status(200).json(config);

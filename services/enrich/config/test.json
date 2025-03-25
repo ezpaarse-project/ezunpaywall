@@ -1,0 +1,39 @@
+{ 
+  "nodeEnv": "development",
+  "apikey": "changeme",
+  "timezone": "Europe/Paris",
+  "healthTimeout": 3000,
+  "port": 3002,
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "password": "changeme"
+  },
+  "graphql": {
+    "url": "http://graphql:3000"
+  },
+  "cron": {
+    "cleanFile": {
+      "schedule": "0 0 0 * * *",
+      "active": false,
+      "enrichedFileRetention": 1,
+      "uploadedFileRetention": 1,
+      "stateFileRetention": 1,
+      "accessLogRetention": 365,
+      "applicationLogRetention": 365,
+      "healthcheckLogRetention": 30
+    }
+  },
+  "paths": {
+    "log": {
+      "applicationDir": "./data-test/log/application", 
+      "accessDir": "./data-test/log/access",
+      "healthcheckDir": "./data-test/log/healthcheck"
+    },
+    "data": {
+      "enrichedDir": "./data-test/data/enriched",
+      "statesDir": "./data-test/data/states",
+      "uploadDir": "./data-test/data/upload"
+    }
+  }
+}

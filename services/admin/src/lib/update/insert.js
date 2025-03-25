@@ -40,11 +40,12 @@ const { maxBulkSize } = elasticsearch;
 async function insertUnpaywallDataInElastic(data) {
   const step = getLatestStep();
   let res;
+
   try {
     res = await bulk(data);
   } catch (err) {
     appLogger.error('[elastic]: Cannot bulk', err);
-    await fail(err?.[0]?.reason);
+    await fail(err);
     return false;
   }
 
