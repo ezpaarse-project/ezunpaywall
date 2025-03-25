@@ -1,7 +1,10 @@
+const path = require('path');
+const fsp = require('fs/promises');
 const { paths, cron } = require('config');
 
 const Cron = require('./cron');
 const appLogger = require('../lib/logger/appLogger');
+const { getClient } = require('../lib/redis/client');
 
 const { deleteFilesInDir } = require('../lib/file');
 
@@ -19,18 +22,47 @@ else active = false;
 async function task() {
   appLogger.info('[cron][Clean file]: Has start');
 
-  // Data
-  const deletedEnrichedFiles = await
-  deleteFilesInDir(paths.data.enrichedDir, cronConfig.enrichedFileRetention);
-  appLogger.info(`[cron][Clean file]: ${deletedEnrichedFiles?.join(',')} (${deletedEnrichedFiles.length}) enriched files are deleted`);
+  const redisClient = getClient();
 
-  const deletedStatesFiles = await
-  deleteFilesInDir(paths.data.statesDir, cronConfig.stateFileRetention);
-  appLogger.info(`[cron][Clean file]: ${deletedStatesFiles?.join(',')} (${deletedStatesFiles.length}) states files are deleted`);
+  let keys;
 
-  const deletedUploadedFiles = await
-  deleteFilesInDir(paths.data.uploadDir, cronConfig.uploadedFileRetention);
-  appLogger.info(`[cron][Clean file]: ${deletedUploadedFiles?.join(',')} (${deletedUploadedFiles.length}) uploaded files are deleted`);
+  try {
+    keys = await redisClient.keys('*');
+  } catch (err) {
+    appLogger.error('[redis]: Cannot get all keys', err);
+    return;
+  }
+
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i];
+
+    const uploadFolderPath = path.resolve(paths.data.uploadDir, key);
+    const stateFolderPath = path.resolve(paths.data.statesDir, key);
+    const enrichedFolderPath = path.resolve(paths.data.enrichedDir, key);
+
+    let stats;
+
+    try {
+      stats = await fsp.stat(uploadFolderPath);
+    } catch (err) {
+      continue;
+    }
+
+    if (stats.isDirectory()) {
+      // Data
+      const deletedEnrichedFiles = await
+      deleteFilesInDir(enrichedFolderPath, cronConfig.enrichedFileRetention);
+      appLogger.info(`[cron][Clean file]: ${deletedEnrichedFiles?.join(',')} (${deletedEnrichedFiles.length}) enriched files are deleted`);
+
+      const deletedStatesFiles = await
+      deleteFilesInDir(stateFolderPath, cronConfig.stateFileRetention);
+      appLogger.info(`[cron][Clean file]: ${deletedStatesFiles?.join(',')} (${deletedStatesFiles.length}) states files are deleted`);
+
+      const deletedUploadedFiles = await
+      deleteFilesInDir(uploadFolderPath, cronConfig.uploadedFileRetention);
+      appLogger.info(`[cron][Clean file]: ${deletedUploadedFiles?.join(',')} (${deletedUploadedFiles.length}) uploaded files are deleted`);
+    }
+  }
 
   // Logs
   const accessLogFiles = await deleteFilesInDir(
@@ -63,6 +95,7 @@ const deleteFileCron = new Cron('Clean file', cronConfig.schedule, task, active)
  */
 function update(newConfig) {
   if (newConfig.schedule) {
+    console.log(newConfig);
     cronConfig.schedule = newConfig.schedule;
     deleteFileCron.setSchedule(newConfig.schedule);
   }
