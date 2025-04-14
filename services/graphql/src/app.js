@@ -52,12 +52,9 @@ function configureMiddleware(app) {
       const duration = Date.now() - start;
 
       if (!req.url.includes('/healthcheck')) {
-        let ip;
-        if (typeof req.headers['x-forwarded-for'] === 'string') {
-          [ip] = req.headers['x-forwarded-for'].split(',');
-        } else {
-          ip = req.ip;
-        }
+        const ip = typeof req.headers['x-forwarded-for'] === 'string'
+          ? req.headers['x-forwarded-for'].split(',')[0].trim()
+          : req.ip;
         accessLogger.info({
           ip,
           method: req.method,
