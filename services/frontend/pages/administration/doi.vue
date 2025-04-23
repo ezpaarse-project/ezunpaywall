@@ -53,6 +53,10 @@
 
 <script setup>
 
+definePageMeta({
+  middleware: 'admin',
+});
+
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const { $admin } = useNuxtApp();
