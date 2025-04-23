@@ -70,7 +70,7 @@ async function getCounter() {
 async function updateDOI() {
   loading.value = true;
   try {
-    await $admin('/update/doi', {
+    await $admin('/doi/update', {
       method: 'POST',
       body: {
         dois: dois.value.split(','),
