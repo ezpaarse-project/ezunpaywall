@@ -25,6 +25,14 @@ twoWeekAgo.setDate(twoWeekAgo.getDate() - 14);
 const threeWeekAgo = new Date();
 threeWeekAgo.setDate(threeWeekAgo.getDate() - 21);
 
+const data = [
+  { doi: '10.01', is_oa: true, title: 'title1' },
+  { doi: '10.02', is_oa: false, title: 'title2' },
+  { doi: '10.03', is_oa: false, title: 'title3' },
+  { doi: '10.04', is_oa: true, title: 'title4' },
+  { doi: '10.05', is_oa: true, title: 'title5' },
+];
+
 const changefileDailyList = [
   {
     date: format(today, 'yyyy-MM-dd'),
@@ -134,6 +142,7 @@ const unpaywallMockInstance = jest.fn(async (req) => {
   if (req.url === '/') {
     return Promise.resolve({});
   }
+  // download current snapshot
   if (req.url === '/feed/snapshot') {
     const filePath = path.resolve(snapshotDir, 'snapshot.jsonl.gz');
     let readStream;
@@ -152,6 +161,7 @@ const unpaywallMockInstance = jest.fn(async (req) => {
       data: readStream,
     });
   }
+  // get list of changefile
   if (req.url === '/feed/changefiles') {
     if (req.params.interval === 'day') {
       return Promise.resolve({
@@ -169,6 +179,7 @@ const unpaywallMockInstance = jest.fn(async (req) => {
       });
     }
   }
+  // download weekly changefile
   if (req.url.includes('/feed/changefile/')) {
     const filename = req.url.split('/').pop();
     const filePath = path.resolve(changefilesDir, filename);
@@ -181,6 +192,7 @@ const unpaywallMockInstance = jest.fn(async (req) => {
     }
     return Promise.resolve({ data: readStream });
   }
+  // download daily changefile
   if (req.url.includes('/daily-feed/changefile/')) {
     if (req?.params?.api_key !== apikey) {
       return Promise.resolve(401);
@@ -201,6 +213,24 @@ const unpaywallMockInstance = jest.fn(async (req) => {
     }
 
     return Promise.resolve({ data: readStream });
+  }
+  if (req.url.includes('/10.')) {
+    const splitURL = req.url.split('?');
+    let doi = splitURL[0];
+    const params = splitURL[1];
+    doi = doi.substring(1);
+    const [, email] = params.split('=');
+    if (!email) {
+      return Promise.resolve({ statusCode: 422 });
+    }
+
+    const res = data.filter((doc) => doc.doi === doi);
+
+    if (res.length === 0) {
+      return Promise.resolve({ statusCode: 404 });
+    }
+
+    return Promise.resolve({ data: res[0] });
   }
 });
 

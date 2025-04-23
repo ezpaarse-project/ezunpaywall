@@ -15,7 +15,8 @@
   },
   "unpaywall": {
     "url": "http://fakeunpaywall:3000",
-    "apikey": "default"
+    "apikey": "default",
+    "email": "john.doe@example.com"
   },
   "elasticsearch": {
     "nodes": "http://elastic:9200",
@@ -63,6 +64,11 @@
       "schedule": "0 0 0 * * *",
       "active": true,
       "count": 100000
+    },
+    "doiUpdate": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "limit": 100000
     }
   },
   "paths": {

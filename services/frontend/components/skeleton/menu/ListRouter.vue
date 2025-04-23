@@ -29,6 +29,7 @@ const routers = computed(() => [
   { text: t('menu.enrich'), icon: 'mdi-code-json', path: '/enrich' },
   { text: t('menu.graphql'), icon: 'mdi-server', path: '/graphql' },
   { text: t('menu.updateHistory'), icon: 'mdi-update', path: '/report-history' },
+  { text: t('menu.doi'), icon: 'mdi-identifier', path: '/doi' },
   { text: t('menu.contact'), icon: 'mdi-email', path: '/contact' },
   { text: t('menu.openapi'), icon: 'mdi-api', path: '/open-api' },
 ]);

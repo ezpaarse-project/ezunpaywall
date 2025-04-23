@@ -7,6 +7,29 @@ const mock = new Mock();
 const data = {};
 
 /**
+ * Mock update document
+ */
+mock.add(
+  {
+    method: 'POST',
+    path: '/:index/_update/:id',
+  },
+  (req) => {
+    const [, indexName] = req.path.split('/');
+    const id = req.path.split('/')[3];
+    const { doc } = req.body;
+
+    data[indexName] = { id: doc };
+
+    return {
+      _index: indexName,
+      _id: id,
+      result: 'updated',
+    };
+  },
+);
+
+/**
  * Add index
  */
 mock.add(
