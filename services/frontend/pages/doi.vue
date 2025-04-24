@@ -26,7 +26,7 @@
           color="primary"
           @click="updateDOI()"
         >
-          {{ t("update") }}
+          {{ t("report") }}
         </v-btn>
       </v-card-actions>
     </v-card>
