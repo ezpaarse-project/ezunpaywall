@@ -2,7 +2,7 @@ const { cron } = require('config');
 const appLogger = require('../lib/logger/appLogger');
 
 const Cron = require('./cron');
-const { setCount } = require('../lib/update/doi');
+const { getCount, reset } = require('../lib/update/doi');
 
 let { active } = cron.doiUpdate;
 
@@ -16,7 +16,9 @@ else active = false;
  */
 async function task() {
   appLogger.info('[cron][updateDOI]: Has started');
-  setCount(0);
+  const count = getCount();
+  reset();
+  appLogger.info(`[cron][updateDOI]: ${count} DOIs reset`);
   appLogger.info('[cron][updateDOI]: Has finished');
 }
 

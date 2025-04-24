@@ -10,12 +10,13 @@ let count = 0;
 
 let cachedDOI = [];
 
-async function getCount() {
+function getCount() {
   return count;
 }
 
-async function setCount(value) {
-  count = value;
+function reset() {
+  count = 0;
+  cachedDOI = [];
 }
 
 async function getCachedDOI() {
@@ -52,7 +53,7 @@ async function updateDOI(dois, index = 'unpaywall') {
 
 module.exports = {
   getCount,
-  setCount,
+  reset,
   getCachedDOI,
   setCachedDOI,
   updateDOI,
