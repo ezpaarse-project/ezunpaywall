@@ -175,29 +175,63 @@ async function searchWithRange(date, param, rangeParam, index) {
   return res.body.hits.hits;
 }
 
+/**
+ * Refresh an index.
+ *
+ * @param {string} index Elastic index name
+ * @returns {Promise<void>}
+ */
 async function refreshIndex(index) {
   return elasticClient.indices.refresh({ index });
 }
 
+/**
+ * Do a bulk request to elastic.
+ *
+ * @param {Array<Object>} data List of object to send in bulk.
+ * @param {boolean} refresh If true, refresh index after bulk.
+ * @returns {Promise<Array<Object>>} list of response of elastic.
+ */
 async function bulk(data, refresh = false) {
   if (data.length === 0) {
-    // appLogger.warn('[elastic]: No data is send for bulk');
+    appLogger.warn('[elastic]: No data is send for bulk');
     return [];
   }
   return elasticClient.bulk({ body: data, refresh });
 }
 
+/**
+ * Get all unpaywall indices in elastic
+ *
+ * @returns {Promise<Array<Object>>} A list of indices and their config
+ */
 async function getIndices() {
   const res = await elasticClient.cat.indices({ format: 'json', index: 'unpaywall*,-.*' });
   return res.body;
 }
 
+/**
+ * Get all history aliases from elastic
+ *
+ * @returns {Promise<Array<Object>>} A list of indices and their config
+ */
 async function getAlias() {
   const regexILM = /^history$/;
   const res = await elasticClient.cat.aliases({ format: 'json', index: '-.*' });
   let alias = res.body;
   alias = alias.filter((index) => !regexILM.test(index.alias));
   return alias;
+}
+
+async function updateDocument(index, id, doc) {
+  return elasticClient.update({
+    index,
+    id,
+    body: {
+      doc,
+      doc_as_upsert: true,
+    },
+  });
 }
 
 module.exports = {
@@ -212,4 +246,5 @@ module.exports = {
   getIndices,
   getAlias,
   removeIndex,
+  updateDocument,
 };

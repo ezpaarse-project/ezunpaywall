@@ -32,7 +32,8 @@ warn: [config]: Redis password has the default value
   },
   "unpaywall": {
     "url": "http://fakeunpaywall:3000",
-    "apikey": "default"
+    "apikey": "default",
+    "email": "john.doe@example.com"
   },
   "elasticsearch": {
     "nodes": "http://elastic:9200",
@@ -77,6 +78,11 @@ warn: [config]: Redis password has the default value
       "healthcheckLogRetention": 30
     },
     "demoApikey": {
+      "schedule": "0 0 0 * * *",
+      "active": true,
+      "count": 100000
+    },
+    "doiUpdate": {
       "schedule": "0 0 0 * * *",
       "active": true,
       "count": 100000
@@ -126,6 +132,7 @@ warn: [config]: Redis password has the default value
 | --- | --- | --- |
 | UNPAYWALL_URL | Unpaywall api URL to access to changefiles | http://fakeunpaywall:3000 |
 | UNPAYWALL_APIKEY | Unpaywall apikey to access to changefiles | changeme |
+| UNPAYWALL_EMAIL | Email to request Unpaywall API | john.doe@exmaple.com | 
 
 ### Elasticsearch
 
@@ -194,7 +201,16 @@ warn: [config]: Redis password has the default value
 | --- | --- | --- |
 | CRON_DEMO_APIKEY_SCHEDULE | Schedule of cron | 0 0 0 * * * |
 | CRON_DEMO_APIKEY_ACTIVE | Cron active or not at the start of service | true |
-| CRON_DEMO_APIKEY_COUNT | Count of demo request | 100000 | 
+| CRON_DEMO_APIKEY_COUNT | Count of demo request | 100000 |
+
+
+#### DOI update
+
+| name | Description | Default |
+| --- | --- | --- |
+| CRON_DOI_UPDATE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
+| CRON_DOI_UPDATE_ACTIVE | Cron active or not at the start of service | true |
+| CRON_DOI_UPDATE_LIMIT | DOI limit that can be updated | 100000 | 
 
 ## Command to set volume permissions (non root image docker)
 

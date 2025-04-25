@@ -44,20 +44,18 @@ const { data, status } = useFetch('/graphql', {
   },
   onResponseError() {
     snackStore.error(t('error.graphql.request'));
-  }
+  },
 });
 
-const metrics = computed(() => {
-  return {
-    doi: data?.value?.data?.dailyMetrics?.doi || 0,
-    isOA: data?.value?.data?.dailyMetrics?.isOA || 0,
-    goldOA: data?.value?.data?.dailyMetrics?.goldOA || 0,
-    hybridOA: data?.value?.data?.dailyMetrics?.hybridOA || 0,
-    bronzeOA: data?.value?.data?.dailyMetrics?.bronzeOA || 0,
-    greenOA: data?.value?.data?.dailyMetrics?.greenOA || 0,
-    closedOA: data?.value?.data?.dailyMetrics?.closedOA || 0
-  }
-});
+const metrics = computed(() => ({
+  doi: data?.value?.data?.dailyMetrics?.doi || 0,
+  isOA: data?.value?.data?.dailyMetrics?.isOA || 0,
+  goldOA: data?.value?.data?.dailyMetrics?.goldOA || 0,
+  hybridOA: data?.value?.data?.dailyMetrics?.hybridOA || 0,
+  bronzeOA: data?.value?.data?.dailyMetrics?.bronzeOA || 0,
+  greenOA: data?.value?.data?.dailyMetrics?.greenOA || 0,
+  closedOA: data?.value?.data?.dailyMetrics?.closedOA || 0,
+}));
 
 const title = computed(() => {
   if (runtimeConfig.public.elasticEnv) {

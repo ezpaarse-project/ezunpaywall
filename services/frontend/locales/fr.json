@@ -62,7 +62,7 @@
     "general4": "Si vous êtes développeur, vous pouvez aussi utiliser la section documentation (swagger) pour tester les différentes routes de l'API.",
     "constructor": "Démonstrateur graphql",
     "apikey": "clé d'API",
-    "settings": "Attributs unpaywall à récuperer",
+    "settings": "Attributs unpaywall à récupérer",
     "request": "Requête GraphQL",
     "start": "Lancer la requête",
     "result": "Résultat"
@@ -143,9 +143,17 @@
       "active": "Active"
     }
   },
+  "doi": {
+    "title": "Mise à jour du mirroir par DOI",
+    "counter": "Nombre de DOI mis à jour aujourd'hui : {count}",
+    "text1": "Cette page vous permet de signaler des documents dont les métadonnées présentes dans ezUNPAYWALL ne correspondent pas à celles présentes dans la base de données Unpaywall.",
+    "text2": "Si vous constatez qu’un document a des informations incorrectes, incomplètes ou différentes de celles renvoyées par Unpaywall, vous pouvez le signaler ici en indiquant son DOI. Une mise à jour de celui-ci sera effectif dans les plus brèves délais",
+    "list": "Liste des DOIs mis à jour aujourd'hui :",
+    "comma": "DOIs séparés par une virgule"
+  },
   "unpaywallArgs": {
     "title": "Paramètres",
-    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récuperer. Pour plus d'informations, vous pouvez cliquer sur ce bouton pour voir le format de données unpaywall",
+    "help": "Dans cette partie, vous pouvez sélectionner les attributs unpaywall que vous voulez récupérer. Pour plus d'informations, vous pouvez cliquer sur ce bouton pour voir le format de données unpaywall",
     "selectAll": "Tout sélectionner",
     "unselectAll": "Tout désélectionner",
     "general": {
@@ -220,11 +228,13 @@
     "updateHistory": "Historique de mises à jour",
     "openapi": "Documentation",
     "language": "Langue",
+    "doi": "Signalement de DOI",
     "contact": "Nous contacter",
     "administration": {
       "title": "Administration",
-      "cron": "Cron",
       "update": "Mise à jour",
+      "doi": "Mise à jour de DOI",
+      "cron": "Cron",
       "apikey": "Clé d'API",
       "file": "Fichier",
       "health": "Santé",
@@ -248,9 +258,14 @@
   },
   "error": {
     "default": "Une erreur est survenue",
+    "doi": {
+      "report": "Impossible de signaler les DOIs",
+      "counter": "Impossible de récupérer le nombre de DOIs mis à jour",
+      "cached": "Impossible de récupérer les DOIs mis en cache"
+    },
     "elastic": {
-      "aliases": "Impossible de récuperer les alias",
-      "indices": "Impossible de récuperer les index"
+      "aliases": "Impossible de récupérer les alias",
+      "indices": "Impossible de récupérer les index"
     },
     "enrich": {
       "manyFile": "Le nombre de fichier autorisé est de 1",
@@ -268,14 +283,14 @@
     "apikey":{
       "import": "Impossible d'importer les clé d'API",
       "copy": "Impossible de copier les clés d'API",
-      "get": "Impossible de récuperer les clés d'API",
+      "get": "Impossible de récupérer les clés d'API",
       "parse": "Impossible de parser la config de la clé d'API en format JSON",
       "create": "La clé d'API n'a pas pu être créée",
       "update": "La clé d'API n'a pas pu être mise à jour",
       "delete": "Impossible de supprimer la clé d'API"
     },
     "file": {
-      "get": "Impossible de récuperer la liste des fichiers",
+      "get": "Impossible de récupérer la liste des fichiers",
       "delete": "Impossible de supprimer le fichier"
     },
     "status": "Impossible d'obtenir le statut",
@@ -303,6 +318,10 @@
     }
   },
   "info" : {
+    "doi": {
+      "reported": "Le signalement des DOIs ont été enregistré",
+      "updated": "Les DOIs ont été mise à jour"
+    },
     "apikey": {
       "imported": "Les clés d'API ont bien été importées",
       "created": "La clé d'API a été créée",
@@ -344,6 +363,7 @@
   "required": "Requis",
   "cancel": "Annuler",
   "update": "Mettre à jour",
+  "report": "Signaler",
   "close": "Fermer",
   "yes": "Oui",
   "no": "Non",

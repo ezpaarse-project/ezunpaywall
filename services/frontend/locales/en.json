@@ -143,6 +143,14 @@
       "active": "Active"
     }
   },
+  "doi": {
+    "title": "Update mirror by DOI",
+    "counter": "Number of updated DOIs today: {count}",
+    "text1": "This page lets you report documents whose metadata in ezUNPAYWALL does not match that in the Unpaywall database.",
+    "text2": "If you notice that a document has incorrect, incomplete or different information from that returned by Unpaywall, you can report it here by indicating its DOI. The DOI will be updated as soon as possible.",
+    "list": "List of DOIs updated today:",
+    "comma": "DOI split by comma"
+  },
   "unpaywallArgs": {
     "title": "Settings",
     "help": "In this part you can select the unpaywall attributes you want to retrieve. For more information, you can click to this button to see the unpaywall data format",
@@ -221,10 +229,12 @@
     "openapi": "Documentation",
     "language": "Language",
     "contact": "Contact us",
+    "doi": "DOI report",
     "administration": {
       "title": "Administration",
-      "cron": "Cron",
       "update": "Update",
+      "doi": "DOI update",
+      "cron": "Cron",
       "apikey": "API key",
       "file": "File",
       "health": "Health",
@@ -248,6 +258,11 @@
   },
   "error": {
     "default": "An error occurred",
+    "doi": {
+      "report": "Cannot report DOIs",
+      "counter": "Cannot get count of DOIs",
+      "cached": "Cannot get DOIs cached"
+    },
     "elastic": {
       "aliases": "Cannot get aliases",
       "indices": "Cannot get indices"
@@ -303,6 +318,10 @@
     }
   },
   "info" : {
+    "doi": {
+      "reported": "The DOI reports have been registered",
+       "updated": "DOIs is updated"
+    },
     "apikey": {
       "imported": "API keys have been successfully imported",
       "created": "The API key has been created",
@@ -344,6 +363,7 @@
   "required": "Required",
   "cancel": "Cancel",
   "update": "Update",
+  "report": "Report",
   "close": "Close",
   "yes": "Yes",
   "no": "No",

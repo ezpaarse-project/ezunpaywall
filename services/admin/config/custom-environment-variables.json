@@ -15,7 +15,8 @@
   },
   "unpaywall": {
     "url": "UNPAYWALL_URL",
-    "apikey": "UNPAYWALL_APIKEY"
+    "apikey": "UNPAYWALL_APIKEY",
+    "email": "UNPAYWALL_EMAIL"
   },
   "elasticsearch": {
     "nodes": "ELASTICSEARCH_NODES",
@@ -63,6 +64,11 @@
       "schedule": "CRON_DEMO_APIKEY_SCHEDULE",
       "active": "CRON_DEMO_APIKEY_ACTIVE",
       "count": "CRON_DEMO_APIKEY_COUNT"
+    },
+    "doiUpdate": {
+      "schedule": "CRON_DOI_UPDATE_SCHEDULE",
+      "active": "CRON_DOI_UPDATE_ACTIVE",
+      "limit": "CRON_DOI_UPDATE_LIMIT"
     }
   }
 }

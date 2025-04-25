@@ -16,7 +16,7 @@
 
 <script setup>
 
-const visible = ref(false);
+const visible = ref(true);
 
 const emit = defineEmits({
   updated: () => true,

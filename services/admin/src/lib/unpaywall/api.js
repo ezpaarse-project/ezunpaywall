@@ -3,9 +3,29 @@ const config = require('config');
 const appLogger = require('../logger/appLogger');
 const getUnpaywallClient = require('./client');
 
-const { apikey } = config.unpaywall;
+const { apikey, email } = config.unpaywall;
 
 const unpaywall = getUnpaywallClient();
+
+/**
+ * Get unpaywall data for a given DOI.
+ *
+ * @param {string} doi The DOI to query.
+ * @returns {Promise<Object>} The unpaywall data.
+ */
+async function getDocumentByDOI(doi) {
+  let res;
+  try {
+    res = await unpaywall({
+      method: 'GET',
+      url: `/${doi}?email=${email}`,
+    });
+  } catch (err) {
+    appLogger.error(`[unpaywall] Cannot get document by DOI ${doi}`, err);
+    throw err;
+  }
+  return res.data;
+}
 
 /**
  * Ping unpaywall.
@@ -43,7 +63,7 @@ async function getSnapshot() {
     });
   } catch (err) {
     appLogger.error('[unpaywall]: Cannot get current snapshot');
-    return false;
+    throw err;
   }
   return res;
 }
@@ -74,7 +94,7 @@ async function getChangefiles(interval, startDate, endDate) {
     });
   } catch (err) {
     appLogger.error(`[unpaywall][${interval}]: Cannot get changefiles on interval between [${startDate}] end [${endDate}]`);
-    return false;
+    throw err;
   }
 
   let changefilesInfo = res.data.list;
@@ -126,13 +146,14 @@ async function getChangefile(filename, interval) {
     });
   } catch (err) {
     appLogger.error(`[unpaywall]: Cannot get /${feed}/changefile/${filename} - ${err}`);
-    return false;
+    throw err;
   }
 
   return res;
 }
 
 module.exports = {
+  getDocumentByDOI,
   pingUnpaywall,
   getSnapshot,
   getChangefiles,

@@ -28,11 +28,13 @@ const routerJob = require('./routers/update/job');
 const routerReport = require('./routers/update/report');
 const routerChangefile = require('./routers/update/changefile');
 const routerSnapshot = require('./routers/update/snapshot');
+const routerDOI = require('./routers/update/doi');
 
 const cronFile = require('./cron/cleanFile');
 const cronDataUpdate = require('./cron/dataUpdate');
 const cronDataUpdateHistory = require('./cron/dataUpdateHistory');
 const cronDownloadSnapshot = require('./cron/downloadSnapshot');
+const cronDoiUpdate = require('./cron/doi');
 const cronDemo = require('./cron/demoApikey');
 
 // create data directory
@@ -92,6 +94,7 @@ app.use(routerReport);
 app.use(routerCron);
 app.use(routerChangefile);
 app.use(routerSnapshot);
+app.use(routerDOI);
 
 // Errors and unknown routes
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl} - this route does not exist.` }));
@@ -119,8 +122,13 @@ const server = app.listen(port, async () => {
   if (cronDataUpdateHistory?.cron?.active) {
     cronDataUpdateHistory.cron.start();
   }
+
   if (cronDownloadSnapshot?.active) {
     cronDownloadSnapshot.start();
+  }
+
+  if (cronDoiUpdate?.active) {
+    cronDoiUpdate.start();
   }
 });
 

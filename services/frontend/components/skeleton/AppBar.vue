@@ -21,8 +21,6 @@
 
 const runtimeConfig = useRuntimeConfig();
 
-const i18n = useI18n();
-
 const title = computed(() => {
   if (runtimeConfig.public.environment) {
     return `ezunpaywall ${runtimeConfig.public.environment}`;
