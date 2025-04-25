@@ -79,6 +79,7 @@ services:
       # unpaywall
       - UNPAYWALL_APIKEY
       - UNPAYWALL_URL
+      - UNPAYWALL_EMAIL
       # elastic
       - ELASTICSEARCH_NODES
       - ELASTICSEARCH_USERNAME

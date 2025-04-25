@@ -32,7 +32,7 @@
   </v-tooltip>
 </template>
 
-<script setup>;
+<script setup>
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
