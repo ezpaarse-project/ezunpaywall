@@ -70,9 +70,16 @@ async function download(readStream, filepath, size) {
       // download unpaywall file with stream
       const writeStream = fs.createWriteStream(filepath);
 
+      readStream.on('aborted', () => {
+        appLogger.error('[job][download]: Read stream aborted');
+      });
+      readStream.on('close', () => {
+        appLogger.warn('[job][download]: Read stream closed unexpectedly');
+      });
+
       readStream.on('error', async (err) => {
-        appLogger.info('[job][download]: Cannot read file');
-        await fail(err);
+        appLogger.error(`[job][download]: Cannot read file ${err}`);
+        return reject(err);
       });
 
       const start = new Date();
@@ -166,7 +173,9 @@ async function downloadSnapshot() {
   updateLatestStep(step);
 
   const res = await getSnapshot();
-  if (!res) { throw new Error('[unpaywall]: Cannot get snapshot'); }
+  if (!res) {
+    throw new Error('[unpaywall][snapshot]: Cannot get snapshot');
+  }
 
   const snapshot = res.data;
   const size = res.headers['content-length'];
