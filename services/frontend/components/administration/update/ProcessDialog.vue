@@ -1,12 +1,23 @@
 <template>
-  <v-dialog :value="value" max-width="1000px" @update:model-value="emit('update:modelValue', $event)">
+  <v-dialog
+    :value="value"
+    max-width="1000px"
+    @update:model-value="emit('update:modelValue', $event)"
+  >
     <v-card>
-      <v-toolbar color="primary" dark>
+      <v-toolbar
+        color="primary"
+        dark
+      >
         <v-toolbar-title>
           {{ t('administration.job.title') }}
         </v-toolbar-title>
       </v-toolbar>
-      <v-tabs v-model="tab" fixed-tabs color="primary">
+      <v-tabs
+        v-model="tab"
+        fixed-tabs
+        color="primary"
+      >
         <v-tab value="classic">
           {{ t('administration.job.classic') }}
         </v-tab>
@@ -20,44 +31,124 @@
       <v-card-text>
         <v-tabs-window v-model="tab">
           <v-tabs-window-item value="classic">
-            <v-form id="form" v-model="valid" @submit.prevent="startJob()">
-              <v-select v-model="interval" class="mt-4" :items="intervals" :label="t('administration.job.interval')" />
-              <v-text-field v-model="startDate" :label="t('administration.job.startDate')"
-                :rules="[dateFormatRule, dateIsFutureRule]" autofocus />
-              <v-text-field v-model="endDate" :label="t('administration.job.endDate')"
-                :rules="[dateFormatRule, dateIsFutureRule]" />
-              <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
-              <v-checkbox v-model="cleanFile" :label="t('administration.job.cleanFile')" hide-details />
+            <v-form
+              id="form"
+              v-model="valid"
+              @submit.prevent="startJob()"
+            >
+              <v-select
+                v-model="interval"
+                class="mt-4"
+                :items="intervals"
+                :label="t('administration.job.interval')"
+              />
+              <v-text-field
+                v-model="startDate"
+                :label="t('administration.job.startDate')"
+                :rules="[dateFormatRule, dateIsFutureRule]"
+                autofocus
+              />
+              <v-text-field
+                v-model="endDate"
+                :label="t('administration.job.endDate')"
+                :rules="[dateFormatRule, dateIsFutureRule]"
+              />
+              <v-text-field
+                v-model="index"
+                :label="t('administration.job.indexBase')"
+              />
+              <v-checkbox
+                v-model="cleanFile"
+                :label="t('administration.job.cleanFile')"
+                hide-details
+              />
             </v-form>
           </v-tabs-window-item>
           <v-tabs-window-item value="history">
-            <v-form id="form" v-model="valid" @submit.prevent="startJob()">
-              <v-select v-model="interval" class="mt-4" :items="intervals" :label="t('administration.job.interval')" />
-              <v-text-field v-model="startDate" :label="t('administration.job.startDate')"
-                :rules="[dateFormatRule, dateIsFutureRule]" autofocus />
-              <v-text-field v-model="endDate" :label="t('administration.job.endDate')"
-                :rules="[dateFormatRule, dateIsFutureRule]" />
-              <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
-              <v-text-field v-model="indexHistory" :label="t('administration.job.indexHistory')" />
-              <v-checkbox v-model="cleanFile" :label="t('administration.job.cleanFile')" hide-details />
+            <v-form
+              id="form"
+              v-model="valid"
+              @submit.prevent="startJob()"
+            >
+              <v-select
+                v-model="interval"
+                class="mt-4"
+                :items="intervals"
+                :label="t('administration.job.interval')"
+              />
+              <v-text-field
+                v-model="startDate"
+                :label="t('administration.job.startDate')"
+                :rules="[dateFormatRule, dateIsFutureRule]"
+                autofocus
+              />
+              <v-text-field
+                v-model="endDate"
+                :label="t('administration.job.endDate')"
+                :rules="[dateFormatRule, dateIsFutureRule]"
+              />
+              <v-text-field
+                v-model="index"
+                :label="t('administration.job.indexBase')"
+              />
+              <v-text-field
+                v-model="indexHistory"
+                :label="t('administration.job.indexHistory')"
+              />
+              <v-checkbox
+                v-model="cleanFile"
+                :label="t('administration.job.cleanFile')"
+                hide-details
+              />
             </v-form>
           </v-tabs-window-item>
           <v-tabs-window-item value="file">
-            <v-form id="form" v-model="valid" @submit.prevent="startJob()">
-              <v-select v-model="filetype" class="mt-4" :items="filetypes" :label="t('administration.job.filetype')" />
-              <v-text-field v-model="filename" :label="t('administration.job.filename')" autofocus />
-              <v-text-field v-model="index" :label="t('administration.job.indexBase')" />
-              <v-checkbox v-model="cleanFile" :label="t('administration.job.cleanFile')" hide-details />
+            <v-form
+              id="form"
+              v-model="valid"
+              @submit.prevent="startJob()"
+            >
+              <v-select
+                v-model="filetype"
+                class="mt-4"
+                :items="filetypes"
+                :label="t('administration.job.filetype')"
+              />
+              <v-text-field
+                v-model="filename"
+                :label="t('administration.job.filename')"
+                autofocus
+              />
+              <v-text-field
+                v-model="index"
+                :label="t('administration.job.indexBase')"
+              />
+              <v-checkbox
+                v-model="cleanFile"
+                :label="t('administration.job.cleanFile')"
+                hide-details
+              />
             </v-form>
           </v-tabs-window-item>
         </v-tabs-window>
       </v-card-text>
       <v-card-actions>
-        <v-btn text class="red--text" @click.stop="emit('update:modelValue', false)">
+        <v-btn
+          text
+          class="red--text"
+          @click.stop="emit('update:modelValue', false)"
+        >
           {{ t('cancel') }}
         </v-btn>
         <v-spacer />
-        <v-btn text type="submit" form="form" :disabled="!valid" :loading="loading" class="green--text">
+        <v-btn
+          text
+          type="submit"
+          form="form"
+          :disabled="!valid"
+          :loading="loading"
+          class="green--text"
+        >
           {{ t('create') }}
         </v-btn>
       </v-card-actions>
@@ -95,7 +186,7 @@ const tab = ref('classic');
 const valid = ref(true);
 const loading = ref(false);
 const intervals = ref(['day', 'week']);
-const filetypes = ref(['changefile', 'snapshot']);
+const filetypes = ref(['changefiles', 'snapshots']);
 
 const interval = ref('day');
 const index = ref('unpaywall');
@@ -117,13 +208,13 @@ const props = defineProps({
 
 async function startJob() {
   if (tab.value === 'classic') {
-    startClassicUpdate()
+    startClassicUpdate();
   }
   if (tab.value === 'history') {
-    startHistoryUpdate()
+    startHistoryUpdate();
   }
   if (tab.value === 'file') {
-    startInsertFile()
+    startInsertFile();
   }
 }
 
