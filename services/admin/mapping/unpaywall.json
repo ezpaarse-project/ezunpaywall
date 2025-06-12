@@ -63,7 +63,7 @@
           "endpoint_id": { "type": "keyword" },
           "repository_institution": { "type": "text" },
           "oa_date": { "type": "date" },
-          "updated": { "type": "date" }
+          "updated": { "type": "text" }
         }
       },
       "first_oa_location": {
@@ -81,7 +81,7 @@
           "endpoint_id": { "type": "keyword" },
           "repository_institution": { "type": "text" },
           "oa_date": { "type": "date" },
-          "updated": { "type": "date" }
+          "updated": { "type": "text" }
         }
       },
       "oa_locations": {
@@ -99,7 +99,7 @@
           "endpoint_id": { "type": "keyword" },
           "repository_institution": { "type": "text" },
           "oa_date": { "type": "date" },
-          "updated": { "type": "date" }
+          "updated": { "type": "text" }
         }
       },
       "oa_locations_embargoed": {
@@ -117,7 +117,7 @@
           "endpoint_id": { "type": "keyword" },
           "repository_institution": { "type": "text" },
           "oa_date": { "type": "date" },
-          "updated": { "type": "date" }
+          "updated": { "type": "text" }
         }
       }
     }
