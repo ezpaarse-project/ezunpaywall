@@ -25,6 +25,13 @@ if (process.env.NODE_ENV === 'production') {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 }
 
+const customLogger = {
+  debug: (...args) => console.debug('[DEBUG]', ...args),
+  info: (...args) => console.info('[INFO]', ...args),
+  warn: (...args) => console.warn('[WARN]', ...args),
+  error: (...args) => console.error('[ERROR]', ...args),
+};
+
 if (process.env.NODE_ENV === 'test') {
   const elasticMock = require('./mock');
   appLogger.info('[Elastic]: Using Mock Elasticsearch Client for tests.');
@@ -38,6 +45,7 @@ if (process.env.NODE_ENV === 'test') {
     },
     ssl,
     requestTimeout: elasticsearch.timeout,
+    logger: customLogger,
   });
 }
 
