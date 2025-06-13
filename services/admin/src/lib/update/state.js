@@ -177,6 +177,9 @@ async function fail(stackTrace) {
   updateLatestStep(step);
 
   state.error = true;
+  if (stackTrace?.meta?.meta?.request?.params?.bulkBody) {
+    delete stackTrace.meta.meta.request.params.bulkBody;
+  }
   state.stackTrace = stackTrace;
 }
 
