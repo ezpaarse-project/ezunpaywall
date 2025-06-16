@@ -246,7 +246,7 @@ async function insertFileProcess(jobConfig) {
   try {
     await insertDataUnpaywall(jobConfig);
   } catch (err) {
-    appLogger.error(`[job][${type}][insert]: Cannot insert changefile [${jobConfig.filename}]`);
+    appLogger.error(`[job][${type}][insert]: Cannot insert ${type} [${jobConfig.filename}]`);
     await endJobAsError();
     appLogger.error(`[job][${type}][insert]: Insert changefile job is finish with an error`, err);
     return;
