@@ -35,7 +35,7 @@ A web interface is also available as a demonstrator. It allows you to :
 On the front, a nginx acts as a reverse proxy, redirecting all these services to a single entry point.
 
 Each service : 
-* [admin](./services/update#ezunpaywall-admin)
+* [admin](./services/admin#ezunpaywall-admin)
 * [graphql](./services/graphql#ezunpaywall-graphql)
 * [enrich](./services/enrich#ezunpaywall-enrich)
 * [frontend](./services/frontend#ezunpaywall-frontend)
