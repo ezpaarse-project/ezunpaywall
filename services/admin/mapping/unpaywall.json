@@ -36,11 +36,6 @@
       "z_authors": {
         "type": "object",
         "properties": {
-          "ORCID": { "type": "keyword" },
-          "given": { "type": "text" },
-          "family": { "type": "text" },
-          "sequence": { "type": "keyword" },
-          "authenticated-orcid": { "type": "boolean" },
           "author_position": { "type": "keyword" },
           "raw_author_name": { "type": "text" },
           "is_corresponding": { "type": "boolean" },
