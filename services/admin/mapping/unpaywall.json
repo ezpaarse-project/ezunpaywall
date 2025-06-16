@@ -34,7 +34,7 @@
       "updated": { "type": "date" },
 
       "z_authors": {
-        "type": "nested",
+        "type": "object",
         "properties": {
           "ORCID": { "type": "keyword" },
           "given": { "type": "text" },
@@ -85,7 +85,7 @@
         }
       },
       "oa_locations": {
-        "type": "nested",
+        "type": "object",
         "properties": {
           "url": { "type": "keyword" },
           "url_for_pdf": { "type": "keyword" },
@@ -103,7 +103,7 @@
         }
       },
       "oa_locations_embargoed": {
-        "type": "nested",
+        "type": "object",
         "properties": {
           "url": { "type": "keyword" },
           "url_for_pdf": { "type": "keyword" },
