@@ -2,7 +2,7 @@
   <v-autocomplete
     :value="value"
     :items="items"
-    label="oa_locations"
+    :label="name"
     chips
     closable-chips
     multiple
@@ -41,6 +41,7 @@ const { t } = useI18n();
 
 defineProps({
   value: { type: Array, default: () => [] },
+  name: { type: String, default: '' },
 });
 
 const items = ref([

@@ -60,17 +60,19 @@ const formatDOIs = computed(() => {
 
 function parseUnpaywallAttributesToGraphqlAttributes(args) {
   const simple = args.filter((e) => !e?.includes('.'));
-  let best_oa_location = args.filter((e) => e?.includes('best_oa_location'));
-  let first_oa_location = args.filter((e) => e?.includes('first_oa_location'));
-  let oa_locations = args.filter((e) => e?.includes('oa_locations'));
-  let z_authors = args.filter((e) => e?.includes('z_authors'));
+  let bestOaLocation = args.filter((e) => e?.includes('best_oa_location.'));
+  let firstOaLocation = args.filter((e) => e?.includes('first_oa_location.'));
+  let oaLocations = args.filter((e) => e?.includes('oa_locations.'));
+  let oaLocationEmbargoed = args.filter((e) => e?.includes('oa_locations_embargoed.'));
+  let zAuthors = args.filter((e) => e?.includes('z_authors'));
 
   if (
     !simple.length
-    && !best_oa_location.length
-    && !first_oa_location.length
-    && !oa_locations.length
-    && !z_authors.length
+    && !bestOaLocation.length
+    && !firstOaLocation.length
+    && !oaLocations.length
+    && !oaLocationEmbargoed.length
+    && !zAuthors.length
   ) {
     return '';
   }
@@ -78,21 +80,25 @@ function parseUnpaywallAttributesToGraphqlAttributes(args) {
   if (simple.length) {
     attrs.push(simple.join(', '));
   }
-  if (best_oa_location.length) {
-    best_oa_location = best_oa_location.map((e) => e.split('.')[1]);
-    attrs.push(`best_oa_location { ${best_oa_location.join(', ')} }`);
+  if (bestOaLocation.length) {
+    bestOaLocation = bestOaLocation.map((e) => e.split('.')[1]);
+    attrs.push(`best_oa_location { ${bestOaLocation.join(', ')} }`);
   }
-  if (first_oa_location.length) {
-    first_oa_location = first_oa_location.map((e) => e.split('.')[1]);
-    attrs.push(`first_oa_location { ${first_oa_location.join(', ')} }`);
+  if (firstOaLocation.length) {
+    firstOaLocation = firstOaLocation.map((e) => e.split('.')[1]);
+    attrs.push(`first_oa_location { ${firstOaLocation.join(', ')} }`);
   }
-  if (oa_locations.length) {
-    oa_locations = oa_locations.map((e) => e.split('.')[1]);
-    attrs.push(`oa_locations { ${oa_locations.join(', ')} }`);
+  if (oaLocations.length) {
+    oaLocations = oaLocations.map((e) => e.split('.')[1]);
+    attrs.push(`oa_locations { ${oaLocations.join(', ')} }`);
   }
-  if (z_authors.length) {
-    z_authors = z_authors.map((e) => e.split('.')[1]);
-    attrs.push(`z_authors { ${z_authors.join(', ')} }`);
+  if (oaLocationEmbargoed.length) {
+    oaLocationEmbargoed = oaLocationEmbargoed.map((e) => e.split('.')[1]);
+    attrs.push(`oa_locations_embargoed { ${oaLocationEmbargoed.join(', ')} }`);
+  }
+  if (zAuthors.length) {
+    zAuthors = zAuthors.map((e) => e.split('.')[1]);
+    attrs.push(`z_authors { ${zAuthors.join(', ')} }`);
   }
   return `{ ${attrs.join(', ')} }`;
 }

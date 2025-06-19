@@ -6,6 +6,8 @@
       :default-simple="['doi', 'is_oa']"
       :default-best-oa-location="['url_for_pdf']"
       :default-first-oa-location="[]"
+      :default-oa-locations="[]"
+      :default-oa-locations-embargoed="[]"
       :default-z-authors="['raw_author_name']"
       @attributes="setAttributes"
     />
