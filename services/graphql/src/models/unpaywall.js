@@ -1,28 +1,30 @@
-const unpaywallType = `
-  type UnpaywallType {
+const Unpaywall = `
+  type Unpaywall {
     doi: ID
-    best_oa_location: OaLocationType
-    first_oa_location: OaLocationType
-    data_standard: Int
     doi_url: String
+    title: String
     genre: String
     is_paratext: Boolean
-    has_repository_copy: Boolean
-    is_oa: Boolean
-    journal_is_in_doaj: Boolean
-    journal_is_oa: Boolean
-    journal_issns: String
-    journal_issn_l: String
-    journal_name: String
-    oa_locations: [OaLocationType]
-    oa_status: String
     published_date: String
+    year: Int
+    journal_name: String
+    journal_issns: [String]
+    journal_issn_l: String
+    journal_is_oa: Boolean
+    journal_is_in_doaj: Boolean
     publisher: String
-    title: String
+    is_oa: Boolean
+    oa_status: String
+    has_repository_copy: Boolean
+    data_standard: Int
     updated: String
-    year: String
-    z_authors: [ZAuthorsType]
+
+    z_authors: [Author]
+    best_oa_location: OALocation
+    first_oa_location: OALocation
+    oa_locations: [OALocation]
+    oa_locations_embargoed: [OALocation]
   }
 `;
 
-module.exports = unpaywallType;
+module.exports = Unpaywall;

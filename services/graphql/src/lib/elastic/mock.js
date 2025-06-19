@@ -7,7 +7,38 @@ const mock = new Mock();
 
 const data = {
   unpaywall: {
-    '1': { doi: '1', is_oa: true, oa_status: 'gold' },
+    '1': {
+      doi: '1',
+      is_oa: true,
+      oa_status: 'gold',
+      z_authors: [
+        {
+          author_position: '1',
+          raw_author_name: 'John Doe',
+          is_corresponding: true,
+          raw_affiliation_strings: [
+            'University',
+          ],
+        },
+      ],
+      oa_locations: [
+        {
+          url: 'http://localhost',
+          url_for_pdf: 'http://localhost',
+          url_for_landing_page: 'http://localhost',
+          evidence: 'deprecated',
+          license: 'cc-by',
+          version: 'submittedVersion',
+          host_type: 'repository',
+          is_best: true,
+          pmh_id: 'oai:http://localhost',
+          endpoint_id: '1',
+          repository_institution: 'University',
+          oa_date: '2020-01-01',
+          updated: 'deprecated',
+        },
+      ],
+    },
     '2': { doi: '2', is_oa: true, oa_status: 'hybrid' },
     '3aA': { doi: '3aA', is_oa: true, oa_status: 'bronze' },
     '4A': { doi: '4A', is_oa: true, oa_status: 'green' },

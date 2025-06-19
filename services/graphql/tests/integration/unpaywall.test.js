@@ -22,7 +22,7 @@ describe('Graphql: POST1 unpaywall resolver', () => {
   });
 
   describe(`POST: get unpaywall data for DOI ${doi1}`, () => {
-    const graphqlRequest = `{ unpaywall(dois: ["${doi1}"]) { doi, is_oa } }`;
+    const graphqlRequest = `{ unpaywall(dois: ["${doi1}"]) { doi, is_oa, z_authors { author_position, raw_author_name }, oa_locations { url, url_for_pdf, oa_date } } }`;
     it(`Should get unpaywall data - ${graphqlRequest}`, async () => {
       const response = await request(app)
         .post('/graphql')
@@ -32,11 +32,28 @@ describe('Graphql: POST1 unpaywall resolver', () => {
       expect(response.statusCode).toBe(200);
 
       const data = response?.body?.data?.unpaywall;
+      console.log(data);
       expect(data).toBeInstanceOf(Array);
       expect(data).toHaveLength(1);
 
       expect(data).toMatchObject([
-        { doi: doi1, is_oa: true },
+        {
+          doi: doi1,
+          is_oa: true,
+          z_authors: [
+            {
+              author_position: '1',
+              raw_author_name: 'John Doe',
+            },
+          ],
+          oa_locations: [
+            {
+              url: 'http://localhost',
+              url_for_pdf: 'http://localhost',
+              oa_date: '2020-01-01',
+            },
+          ],
+        },
       ]);
     });
   });

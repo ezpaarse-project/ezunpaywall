@@ -44,29 +44,31 @@ defineProps({
 });
 
 const items = ref([
-  'evidence',
-  'host_type',
-  'is_best',
-  'license',
-  'pmh_id',
-  'updated',
   'url',
   'url_for_landing_page',
   'url_for_pdf',
-  'version',
+  'license',
+  'host_type',
+  'is_best',
+  'pmh_id',
+  'endpoint_id',
+  'repository_institution',
+  'oa_date',
+  'updated',
 ]);
 
 const subItems = computed(() => ({
-  evidence: t('unpaywallArgs.oa_locations.evidence'),
-  host_type: t('unpaywallArgs.oa_locations.host_type'),
-  is_best: t('unpaywallArgs.oa_locations.is_best'),
-  license: t('unpaywallArgs.oa_locations.license'),
-  pmh_id: t('unpaywallArgs.oa_locations.pmh_id'),
-  updated: t('unpaywallArgs.oa_locations.updated'),
   url: t('unpaywallArgs.oa_locations.url'),
   url_for_landing_page: t('unpaywallArgs.oa_locations.url_for_landing_page'),
   url_for_pdf: t('unpaywallArgs.oa_locations.url_for_pdf'),
+  license: t('unpaywallArgs.oa_locations.license'),
   version: t('unpaywallArgs.oa_locations.version'),
+  host_type: t('unpaywallArgs.oa_locations.host_type'),
+  is_best: t('unpaywallArgs.oa_locations.is_best'),
+  pmh_id: t('unpaywallArgs.oa_locations.pmh_id'),
+  endpoint_id: t('unpaywallArgs.oa_locations.endpoint_id'),
+  repository_institution: t('unpaywallArgs.oa_locations.repository_institution'),
+  oa_date: t('unpaywallArgs.oa_locations.oa_date'),
 }));
 
 const emit = defineEmits({

@@ -1,18 +1,19 @@
-const oaLocationType = `
-  type OaLocationType {
-    endpoint_id: ID
+const OALocation = `
+  type OALocation {
+    url: String
+    url_for_pdf: String
+    url_for_landing_page: String
     evidence: String
+    license: String
+    version: String
     host_type: String
     is_best: Boolean
-    license: String
     pmh_id: String
+    endpoint_id: String
     repository_institution: String
+    oa_date: String
     updated: String
-    url: String
-    url_for_landing_page: String
-    url_for_pdf: String
-    version: String
   }
 `;
 
-module.exports = oaLocationType;
+module.exports = OALocation;

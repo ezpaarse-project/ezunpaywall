@@ -44,15 +44,17 @@ defineProps({
 });
 
 const items = ref([
-  'family',
-  'given',
-  'ORCID',
+  'author_position',
+  'raw_author_name',
+  'is_corresponding',
+  'raw_affiliation_strings',
 ]);
 
-const subItems = ref(() => ({
-  family: t('unpaywallArgs.z_authors.family'),
-  given: t('unpaywallArgs.z_authors.given'),
-  ORCID: t('unpaywallArgs.z_authors.ORCID'),
+const subItems = computed(() => ({
+  author_position: t('unpaywallArgs.z_authors.author_position'),
+  raw_author_name: t('unpaywallArgs.z_authors.raw_author_name'),
+  is_corresponding: t('unpaywallArgs.z_authors.is_corresponding'),
+  raw_affiliation_strings: t('unpaywallArgs.z_authors.raw_affiliation_strings'),
 }));
 
 const emit = defineEmits({

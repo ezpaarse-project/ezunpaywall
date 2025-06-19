@@ -48,10 +48,10 @@
 
     <UnpaywallArgsSelectorAttributes
       :hide-oa-locations="type === 'csv'"
-      :default-simple="['doi']"
-      :default-best-oa-location="['evidence', 'is_best']"
-      :default-first-oa-location="['url_for_pdf']"
-      :default-z-authors="['family', 'given']"
+      :default-simple="['doi', 'is_oa']"
+      :default-best-oa-location="['url_for_pdf']"
+      :default-first-oa-location="[]"
+      :default-z-authors="['raw_author_name']"
       :simple="attributesSimple"
       :best-oa-location="attributesBestOaLocation"
       :first-oa-location="attributesFirstOaLocation"
