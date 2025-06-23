@@ -6,55 +6,56 @@ const data = {
 };
 
 const schema = buildSchema(`
-  type UnpaywallType {
+  type Unpaywall {
     doi: ID
-    best_oa_location: OaLocationType
-    first_oa_location: OaLocationType
-    data_standard: Int
     doi_url: String
+    title: String
     genre: String
     is_paratext: Boolean
-    has_repository_copy: Boolean
-    is_oa: Boolean
-    journal_is_in_doaj: Boolean
-    journal_is_oa: Boolean
-    journal_issns: String
-    journal_issn_l: String
-    journal_name: String
-    oa_locations: [OaLocationType]
-    oa_status: String
     published_date: String
+    year: Int
+    journal_name: String
+    journal_issns: [String]
+    journal_issn_l: String
+    journal_is_oa: Boolean
+    journal_is_in_doaj: Boolean
     publisher: String
-    title: String
+    is_oa: Boolean
+    oa_status: String
+    has_repository_copy: Boolean
+    data_standard: Int
     updated: String
-    year: String
-    z_authors: [ZAuthorsType]
+
+    z_authors: [Author]
+    best_oa_location: OALocation
+    first_oa_location: OALocation
+    oa_locations: [OALocation]
+    oa_locations_embargoed: [OALocation]
   }
 
-  type OaLocationType {
-    endpoint_id: ID
-    evidence: String
+  type OALocation {
+    url: String
+    url_for_pdf: String
+    url_for_landing_page: String
+    license: String
+    version: String
     host_type: String
     is_best: Boolean
-    license: String
     pmh_id: String
+    endpoint_id: String
     repository_institution: String
-    updated: String
-    url: String
-    url_for_landing_page: String
-    url_for_pdf: String
-    version: String
+    oa_date: String
   }
 
-  type ZAuthorsType {
-    ORCID: String
-    family: String
-    given: String
-    sequence: String
+  type Author {
+    author_position: String
+    raw_author_name: String
+    is_corresponding: Boolean
+    raw_affiliation_strings: [String]
   }
 
   type Query {
-    unpaywall(dois: [ID!]!): [UnpaywallType]
+    unpaywall(dois: [ID!]!): [Unpaywall]
   }
 `);
 

@@ -79,7 +79,7 @@ describe('Enrich: job on csv file', () => {
       });
     });
 
-    it('Should download the enrichedfile', async () => {
+    it('Should download the enriched file', async () => {
       const response = await request(app)
         .get(`/enriched/${id}.csv`)
         .set('x-api-key', apikey1)
@@ -158,7 +158,7 @@ describe('Enrich: job on csv file', () => {
       });
     });
 
-    it('Should download the enrichedfile', async () => {
+    it('Should download the enriched file', async () => {
       const response = await request(app)
         .get(`/enriched/${id}.csv`)
         .set('x-api-key', apikey1)
@@ -341,7 +341,7 @@ describe('Enrich: job on csv file', () => {
     });
   });
 
-  describe('[job][csv]: Enrich 3/3 lines with z_authors.given', () => {
+  describe('[job][csv]: Enrich 3/3 lines with z_authors.raw_author_name', () => {
     let id;
     let enrichedFile;
 
@@ -357,13 +357,13 @@ describe('Enrich: job on csv file', () => {
       id = response?.body;
     });
 
-    it('Should enrich the file on 3 lines with args { z_authors { given } } and download it', async () => {
+    it('Should enrich the file on 3 lines with args { z_authors { raw_author_name } } and download it', async () => {
       const response = await request(app)
         .post(`/job/${id}`)
         .send({
           type: 'csv',
           index: 'unpaywall-test',
-          args: '{ z_authors { given } }',
+          args: '{ z_authors { raw_author_name } }',
         })
         .set('x-api-key', apikey1);
 
@@ -421,7 +421,7 @@ describe('Enrich: job on csv file', () => {
     });
   });
 
-  describe('[job][csv]: Enrich 3/3 lines with is_oa, best_oa_location.license, z_authors.family', () => {
+  describe('[job][csv]: Enrich 3/3 lines with is_oa, best_oa_location.license, z_authors.raw_author_name', () => {
     let id;
     let enrichedFile;
 
@@ -437,13 +437,13 @@ describe('Enrich: job on csv file', () => {
       id = response?.body;
     });
 
-    it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors { family } } and download it', async () => {
+    it('Should enrich the file on 3 lines with args { is_oa, best_oa_location { license }, z_authors { raw_author_name } } and download it', async () => {
       const response = await request(app)
         .post(`/job/${id}`)
         .send({
           type: 'csv',
           index: 'unpaywall-test',
-          args: '{ is_oa, best_oa_location { license }, z_authors { family } }',
+          args: '{ is_oa, best_oa_location { license }, z_authors { raw_author_name } }',
         })
         .set('x-api-key', apikey1);
 
@@ -557,7 +557,7 @@ describe('Enrich: job on csv file', () => {
       });
     });
 
-    it('Should download the enrichedfile', async () => {
+    it('Should download the enriched file', async () => {
       const response = await request(app)
         .get(`/enriched/${id}.csv`)
         .set('x-api-key', apikey1)
@@ -762,7 +762,13 @@ describe('Enrich: job on csv file', () => {
         .send({
           type: 'csv',
           index: 'unpaywall-test',
-          args: '{ doi, data_standard, doi_url, genre, is_oa, is_paratext, journal_is_in_doaj, journal_is_oa, journal_issn_l, journal_issns, journal_name, oa_status, published_date, publisher, title, updated, year, best_oa_location { evidence, host_type, is_best, license, pmh_id, updated, url, url_for_landing_page, url_for_pdf, version }, first_oa_location { evidence, host_type, is_best, license, pmh_id, updated, url, url_for_landing_page, url_for_pdf, version }, z_authors { family, given, ORCID } }',
+          args: `{ 
+          doi, data_standard, title, genre, is_paratext, published_date, year, doi_url, 
+          journal_name, journal_issns, journal_issn_l,journal_is_oa, journal_is_in_doaj,  
+          best_oa_location { url, url_for_landing_page, url_for_pdf, license, host_type, is_best, pmh_id, endpoint_id, repository_institution, oa_date }, 
+          first_oa_location { url, url_for_landing_page, url_for_pdf, license, host_type, is_best, pmh_id, endpoint_id, repository_institution, oa_date },
+          z_authors { author_position, raw_author_name, is_corresponding } 
+          }`,
         })
         .set('x-api-key', apikey1);
 
@@ -840,7 +846,13 @@ describe('Enrich: job on csv file', () => {
         .send({
           type: 'csv',
           index: 'unpaywall-test',
-          args: '{ doi, data_standard, doi_url, genre, is_oa, is_paratext, journal_is_in_doaj, journal_is_oa, journal_issn_l, journal_issns, journal_name, oa_status, published_date, publisher, title, updated, year, best_oa_location { evidence, host_type, is_best, license, pmh_id, updated, url, url_for_landing_page, url_for_pdf, version }, first_oa_location { evidence, host_type, is_best, license, pmh_id, updated, url, url_for_landing_page, url_for_pdf, version }, z_authors { family, given, ORCID } }',
+          args: `{ 
+          doi, data_standard, title, genre, is_paratext, published_date, year, doi_url, 
+          journal_name, journal_issns, journal_issn_l,journal_is_oa, journal_is_in_doaj,  
+          best_oa_location { url, url_for_landing_page, url_for_pdf, license, host_type, is_best, pmh_id, endpoint_id, repository_institution, oa_date }, 
+          first_oa_location { url, url_for_landing_page, url_for_pdf, license, host_type, is_best, pmh_id, endpoint_id, repository_institution, oa_date },
+          z_authors { author_position, raw_author_name, is_corresponding } 
+          }`,
         })
         .set('x-api-key', apikey1);
 

@@ -32,7 +32,6 @@ describe('Graphql: POST1 unpaywall resolver', () => {
       expect(response.statusCode).toBe(200);
 
       const data = response?.body?.data?.unpaywall;
-      console.log(data);
       expect(data).toBeInstanceOf(Array);
       expect(data).toHaveLength(1);
 

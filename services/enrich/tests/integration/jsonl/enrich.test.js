@@ -79,7 +79,7 @@ describe('Enrich: job on csv file', () => {
       });
     });
 
-    it('Should download the enrichedfile', async () => {
+    it('Should download the enriched file', async () => {
       const response = await request(app)
         .get(`/enriched/${id}.jsonl`)
         .set('x-api-key', apikey1)
@@ -342,7 +342,7 @@ describe('Enrich: job on csv file', () => {
     });
   });
 
-  describe('[job][jsonl]: Enrich 3/3 lines with z_authors.given', () => {
+  describe('[job][jsonl]: Enrich 3/3 lines with z_authors.raw_author_name', () => {
     let id;
     let enrichedFile;
 
@@ -358,14 +358,14 @@ describe('Enrich: job on csv file', () => {
       id = response?.body;
     });
 
-    it('Should enrich the file on 3 lines with all { z_authors { given } } and download it', async () => {
+    it('Should enrich the file on 3 lines with all { z_authors { raw_author_name } } and download it', async () => {
       // start enrich process
       const response = await request(app)
         .post(`/job/${id}`)
         .send({
           type: 'jsonl',
           index: 'unpaywall-test',
-          args: '{ z_authors { given } }',
+          args: '{ z_authors { raw_author_name } }',
         })
         .set('x-api-key', apikey1);
 
@@ -422,7 +422,7 @@ describe('Enrich: job on csv file', () => {
     });
   });
 
-  describe('[job][jsonl]: Enrich 3/3 lines with is_oa, z_authors.family best_oa_location.license', () => {
+  describe('[job][jsonl]: Enrich 3/3 lines with is_oa, z_authors.raw_author_name best_oa_location.license', () => {
     let id;
     let enrichedFile;
 
@@ -438,14 +438,14 @@ describe('Enrich: job on csv file', () => {
       id = response?.body;
     });
 
-    it('Should enrich the file on 3 lines with all { is_oa, best_oa_location { license }, z_authors { family } } and download it', async () => {
+    it('Should enrich the file on 3 lines with all { is_oa, best_oa_location { license }, z_authors { raw_author_name } } and download it', async () => {
       // start enrich process
       const response = await request(app)
         .post(`/job/${id}`)
         .send({
           type: 'jsonl',
           index: 'unpaywall-test',
-          args: '{ is_oa, best_oa_location { license }, z_authors { family } }',
+          args: '{ is_oa, best_oa_location { license }, z_authors { raw_author_name } }',
         })
         .set('x-api-key', apikey1);
 
