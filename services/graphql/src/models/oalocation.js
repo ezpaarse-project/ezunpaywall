@@ -3,7 +3,6 @@ const OALocation = `
     url: String
     url_for_pdf: String
     url_for_landing_page: String
-    evidence: String
     license: String
     version: String
     host_type: String
@@ -12,7 +11,6 @@ const OALocation = `
     endpoint_id: String
     repository_institution: String
     oa_date: String
-    updated: String
   }
 `;
 
