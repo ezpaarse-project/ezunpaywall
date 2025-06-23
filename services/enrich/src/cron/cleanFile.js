@@ -45,7 +45,8 @@ async function task() {
     try {
       stats = await fsp.stat(uploadFolderPath);
     } catch (err) {
-      continue;
+      appLogger.error(`[cron][Clean file]: Cannot get stats of ${uploadFolderPath}`, err);
+      return;
     }
 
     if (stats.isDirectory()) {
@@ -95,7 +96,6 @@ const deleteFileCron = new Cron('Clean file', cronConfig.schedule, task, active)
  */
 function update(newConfig) {
   if (newConfig.schedule) {
-    console.log(newConfig);
     cronConfig.schedule = newConfig.schedule;
     deleteFileCron.setSchedule(newConfig.schedule);
   }
