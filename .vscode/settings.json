@@ -9,14 +9,11 @@
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "conventionalCommits.scopes": [
-    "apikey",
-    "enrich",
     "fakeUnpaywall",
     "frontend",
     "graphql",
-    "health",
-    "mail",
     "nginx",
-    "update"
+    "admin",
+    "enrich"
   ],
 }
