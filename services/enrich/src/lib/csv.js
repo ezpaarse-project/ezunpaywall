@@ -20,21 +20,22 @@ const { uploadDir, enrichedDir } = config.paths.data;
  */
 const graphqlConfigWithAllAttributes = ` 
 {
-  data_standard,doi_url,genre,is_paratext,has_repository_copy,is_oa,journal_is_in_doaj,journal_is_oa,
-  journal_issns,journal_issn_l,journal_name,oa_status,published_date,publisher,title,updated,year,
-  best_oa_location {
-    endpoint_id,evidence,host_type,is_best,license,pmh_id,repository_institution,
-    updated,url,url_for_landing_page,url_for_pdf,version
+  data_standard, title, genre, is_paratext, published_date, year, doi_url, 
+  journal_name, journal_issns, journal_issn_l,journal_is_oa, journal_is_in_doaj, 
+  publisher, is_oa, oa_status, has_repository_copy, updated,
+  best_oa_location { 
+    url, url_for_landing_page, url_for_pdf, license, host_type, 
+    is_best, pmh_id, endpoint_id, repository_institution, oa_date,
   },
   first_oa_location { 
-    endpoint_id,evidence,host_type,is_best,license,pmh_id,repository_institution,
-    updated,url,url_for_landing_page,url_for_pdf,version
+    url, url_for_landing_page, url_for_pdf, license, host_type, 
+    is_best, pmh_id, endpoint_id, repository_institution, oa_date,
   },
   z_authors {
-    family,
-    given,
-    sequence,
-    ORCID
+    author_position,
+    raw_author_name,
+    is_corresponding,
+    raw_affiliation_strings,
   }
 }`;
 
@@ -51,7 +52,7 @@ function addDOItoGraphqlRequest(args) {
 }
 
 /**
- * Flatten nested properties of an object by seperating keys with dots.
+ * Flatten nested properties of an object by separating keys with dots.
  * Example: { foo: { bar: 'foo' } } => { 'foo.bar': 'foo' }
  *
  * @param {Object} obj Object need to be flatten.
