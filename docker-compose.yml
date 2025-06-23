@@ -4,20 +4,9 @@ services:
   graphql:
     build:
       context: ./services/graphql
-    container_name: ezunpaywall-graphql-prod
+    container_name: ezunpaywall-graphql
     environment:
       - NODE_ENV=production
-      - PORT
-      # elastic
-      - ELASTICSEARCH_HOSTS
-      - ELASTICSEARCH_PORT
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
     volumes:
       - ${GRAPHQL_APPLICATION_LOG_PATH:-./services/graphql/log/application}:/usr/src/app/log/application
       - ${GRAPHQL_ACCESS_LOG_PATH:-./services/graphql/log/access}:/usr/src/app/log/access
@@ -28,17 +17,9 @@ services:
   enrich:
     build:
       context: ./services/enrich
-    container_name: ezunpaywall-enrich-prod
+    container_name: ezunpaywall-enrich
     environment:
       - NODE_ENV=production
-      - PORT
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
-      # graphql
-      - GRAPHQL_URL
-      - GRAPHQL_PORT
     volumes:
       - ${ENRICH_APPLICATION_LOG_PATH:-./services/enrich/log/application}:/usr/src/app/log/application
       - ${ENRICH_ACCESS_LOG_PATH:-./services/enrich/log/access}:/usr/src/app/log/access
@@ -49,55 +30,12 @@ services:
   admin:
     build:
       context: ./services/admin
-    container_name: ezunpaywall-admin-prod
+    container_name: ezunpaywall-admin
     environment:
-      - NODE_ENV
-      - PORT
+      - NODE_ENV=production
       - LOG_LEVEL=debug
       # smtp
       - SMTP_HOST=maildev
-      - SMTP_PORT
-      # mail
-      - NOTIFICATIONS_SENDER
-      - NOTIFICATIONS_RECEIVERS
-      - NOTIFICATIONS_MACHINE
-      # unpaywall
-      - UNPAYWALL_APIKEY
-      - UNPAYWALL_URL
-      # elastic
-      - ELASTICSEARCH_NODES
-      - ELASTICSEARCH_USERNAME
-      - ELASTICSEARCH_PASSWORD
-      - ELASTICSEARCH_INDEX_ALIAS
-      - ELASTICSEARCH_TIMEOUT
-      # redis
-      - REDIS_HOST
-      - REDIS_PORT
-      - REDIS_PASSWORD
-      # cron snapshot
-      - CRON_DOWNLOAD_SNAPSHOT_SCHEDULE
-      - CRON_DOWNLOAD_SNAPSHOT_ACTIVE
-      - CRON_DOWNLOAD_SNAPSHOT_INDEX
-      # cron date update
-      - CRON_DATA_UPDATE_SCHEDULE
-      - CRON_DATA_UPDATE_ACTIVE
-      - CRON_DATA_UPDATE_INDEX
-      - CRON_DATA_UPDATE_INTERVAL
-      # cron date update history
-      - CRON_DATA_UPDATE_HISTORY_SCHEDULE
-      - CRON_DATA_UPDATE_HISTORY_ACTIVE
-      - CRON_DATA_UPDATE_HISTORY_INDEX
-      - CRON_DATA_UPDATE_HISTORY_INDEX_HISTORY
-      - CRON_DATA_UPDATE_HISTORY_INTERVAL
-      # cron clean file
-      - CRON_CLEAN_FILE_SCHEDULE
-      - CRON_CLEAN_FILE_CHANGEFILE_RETENTION
-      - CRON_CLEAN_FILE_REPORT_RETENTION
-      - CRON_CLEAN_FILE_SNAPSHOT_RETENTION
-      # password
-      - ADMIN_APIKEY
-      # health
-      - HEALTH_TIMEOUT
     volumes:
       - ${ADMIN_APPLICATION_LOG_PATH:-./services/admin/log/application}:/usr/src/app/log/application
       - ${ADMIN_ACCESS_LOG_PATH:-./services/admin/log/access}:/usr/src/app/log/access
@@ -109,16 +47,12 @@ services:
   frontend:
     build:
       context: ./services/frontend
-    container_name: ezunpaywall-frontend-prod
+    container_name: ezunpaywall-frontend
     environment:
       - NODE_ENV=production
-      - NUXT_PORT
-      - NUXT_PUBLIC_ENVIRONMENT=development
-      - NUXT_PUBLIC_ELASTIC_ENV=development
-      - NUXT_PUBLIC_VERSION=development
-      - NUXT_PUBLIC_UNPAYWALL_HOMEPAGE_URL
-      - NUXT_PUBLIC_UNPAYWALL_API_URL
-      - NUXT_PUBLIC_UNPAYWALL_URL
+      - NUXT_PUBLIC_ENVIRONMENT=local
+      - NUXT_PUBLIC_ELASTIC_ENV=local
+      - NUXT_PUBLIC_VERSION=local
       - NUXT_PUBLIC_GRAPHQL_URL=http://localhost/api
       - NUXT_PUBLIC_ENRICH_URL=http://localhost/api/enrich
       - NUXT_PUBLIC_ADMIN_URL=http://localhost/api/admin
@@ -126,7 +60,7 @@ services:
 
   redis:
     image: redis:7.2.4-alpine3.19
-    container_name: ezunpaywall-redis-prod
+    container_name: ezunpaywall-redis
     command: redis-server --requirepass "${REDIS_PASSWORD:-changeme}"
     volumes:
       - ${REDIS_DATA_PATH:-./data/redis}:/data
@@ -144,10 +78,9 @@ services:
   nginx:
     build:
       context: ./services/nginx
-    container_name: ezunpaywall-nginx-prod
+    container_name: ezunpaywall-nginx
     environment:
       # host of service
-      - NGINX_HOST
       - FRONTEND_URL=http://frontend:3000/
       - GRAPHQL_URL=http://graphql:3001/
       - ENRICH_URL=http://enrich:3002/
@@ -167,7 +100,7 @@ services:
 
   elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
-    container_name: ezunpaywall-elastic-prod
+    container_name: ezunpaywall-elastic
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -194,7 +127,7 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.2
-    container_name: ezunpaywall-kibana-prod
+    container_name: ezunpaywall-kibana
     environment:
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
