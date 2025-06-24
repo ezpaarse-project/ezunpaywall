@@ -154,14 +154,12 @@ const { data: apikeys, status, refresh: refreshApikey } = useFetch('/apikeys', {
   },
   onResponseError() {
     snackStore.error(t('error.apikey.get'));
-  }
+  },
 });
 
 const apikeysFiltered = computed(() => {
   if (searchValue.value) {
-    return apikeys.value.filter((key) =>
-      key.apikey.includes(searchValue.value)
-    );
+    return apikeys.value.filter((key) => key.config.name.includes(searchValue.value));
   }
   return apikeys.value;
 });
@@ -177,23 +175,6 @@ async function openUpdateDialog(id) {
   selectedAllowed.value = apikey.config.allowed;
   await nextTick();
   updateDialogVisible.value = true;
-}
-
-/**
- * Open dialog to delete apikey.
- *
- * @param apikey apikey.
- */
- async function openDeleteDialog(apikey) {
-  openConfirm({
-    title: t('administration.apikey.delete'),
-    text: t('administration.apikey.deleteMessage', { apikey }),
-    agreeText: t('delete'),
-    agreeIcon: 'mdi-delete',
-    onAgree: async () => {
-      deleteApikey(apikey)
-    },
-  });
 }
 
 async function deleteApikey(apikey) {
@@ -213,6 +194,23 @@ async function deleteApikey(apikey) {
   snackStore.info(t('info.apikey.deleted'));
   loading.value = false;
   await refreshApikey();
+}
+
+/**
+ * Open dialog to delete apikey.
+ *
+ * @param apikey apikey.
+ */
+async function openDeleteDialog(apikey) {
+  openConfirm({
+    title: t('administration.apikey.delete'),
+    text: t('administration.apikey.deleteMessage', { apikey }),
+    agreeText: t('delete'),
+    agreeIcon: 'mdi-delete',
+    onAgree: async () => {
+      deleteApikey(apikey);
+    },
+  });
 }
 
 function updateSearchValue(newValue) {
