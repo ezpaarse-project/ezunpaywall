@@ -8,7 +8,7 @@ const Unpaywall = `
     published_date: String
     year: Int
     journal_name: String
-    journal_issns: [String]
+    journal_issns: String
     journal_issn_l: String
     journal_is_oa: Boolean
     journal_is_in_doaj: Boolean
