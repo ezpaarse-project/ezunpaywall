@@ -48,6 +48,7 @@
 
     <UnpaywallArgsSelectorAttributes
       :hide-oa-locations="type === 'csv'"
+      :hide-oa-locations-embargoed="type === 'csv'"
       :default-simple="['doi', 'is_oa']"
       :default-best-oa-location="['url_for_pdf']"
       :default-first-oa-location="[]"
