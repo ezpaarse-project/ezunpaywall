@@ -49,13 +49,13 @@ const items = ref([
   'url_for_landing_page',
   'url_for_pdf',
   'license',
+  'version',
   'host_type',
   'is_best',
   'pmh_id',
   'endpoint_id',
   'repository_institution',
   'oa_date',
-  'updated',
 ]);
 
 const subItems = computed(() => ({
