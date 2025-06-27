@@ -110,6 +110,7 @@ const oaLocationsItems = ref([
   'url_for_pdf',
   'license',
   'host_type',
+  'version',
   'is_best',
   'pmh_id',
   'endpoint_id',
