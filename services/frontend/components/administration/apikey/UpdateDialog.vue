@@ -224,8 +224,8 @@ async function updateApikey() {
   emit('update:modelValue', false);
 }
 function updateAttributes(attributesSelected) {
-  // TODO 50 is the sum of attributes available through ezunpaywall
-  if (attributesSelected.length === 50) {
+  // TODO 18 + 5 + 4 * 10 = 63 is the sum of attributes available through ezunpaywall
+  if (attributesSelected.length === 62) {
     attributes.value = ['*'];
   } else {
     attributes.value = attributesSelected;
