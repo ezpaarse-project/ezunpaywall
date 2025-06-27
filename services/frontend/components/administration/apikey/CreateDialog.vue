@@ -70,11 +70,6 @@
           <v-divider />
           <v-card-title> {{ t('administration.apikey.attributes') }} </v-card-title>
           <UnpaywallArgsSelectorAttributes
-            :simple="attributesSimple"
-            :best-oa-location="attributesBestOaLocation"
-            :first-oa-location="attributesFirstOaLocation"
-            :oa-locations="attributesOaLocations"
-            :z-authors="attributesZAuthors"
             @attributes="updateAttributes"
           />
         </v-form>
@@ -140,12 +135,6 @@ const validForm = computed(() => attributes.value?.length > 0
   && name.value?.length > 0
   && access.value?.length > 0);
 
-const attributesSimple = computed(() => attributes.value?.filter((e) => !e.includes('.')));
-const attributesBestOaLocation = computed(() => attributes.value?.filter((e) => e.includes('best_oa_location')).map((e) => e.split('.')[1]));
-const attributesFirstOaLocation = computed(() => attributes.value?.filter((e) => e.includes('first_oa_location')).map((e) => e.split('.')[1]));
-const attributesOaLocations = computed(() => attributes.value?.filter((e) => e.includes('oa_locations')).map((e) => e.split('.')[1]));
-const attributesZAuthors = computed(() => attributes.value?.filter((e) => e.includes('z_authors')).map((e) => e.split('.')[1]));
-
 async function createApikey() {
   loading.value = true;
   try {
@@ -174,13 +163,12 @@ async function createApikey() {
   emit('update:modelValue', false);
 }
 
-function updateAttributes(attributesSelected) {
-  // TODO 50 is the sum of attributes available through ezunpaywall
-  if (attributesSelected.length === 50) {
+function updateAttributes(selectedAttributes) {
+  // 18 + 5 + 4 * 11 = 67 is the sum of attributes available through ezunpaywall
+  if (selectedAttributes.length === 66) {
     attributes.value = ['*'];
   } else {
-    attributes.value = attributesSelected;
+    attributes.value = selectedAttributes;
   }
 }
-
 </script>
