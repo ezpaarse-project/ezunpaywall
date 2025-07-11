@@ -17,11 +17,11 @@ async function requestGraphql(data, args, index, apikey) {
   let dois = [];
   let res = [];
   // contain index of doi
+  const map1 = data.map((elem) => elem?.doi);
 
-  const map1 = await data.map((elem) => elem?.doi);
+  // remove duplicate, undefined and doi not start with 10.
+  dois = [...new Set(map1.filter((doi) => doi !== undefined && doi.startsWith('10.')))];
 
-  // contain array of doi to request ezunpaywall
-  dois = await map1.filter((elem) => elem !== undefined);
   dois = dois.join('","');
 
   try {
