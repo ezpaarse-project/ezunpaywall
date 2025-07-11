@@ -16,7 +16,7 @@ async function unpaywall(parent, args, req, info) {
   // Normalize request
   const dois = [];
   args.dois.forEach((doi) => {
-    dois.push(doi.toLowerCase());
+    dois.push(doi.toLowerCase().trim());
   });
 
   const body = {
