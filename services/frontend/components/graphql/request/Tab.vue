@@ -55,7 +55,7 @@ const emit = defineEmits({
 const formatDOIs = computed(() => {
   const doisValue = props.dois;
   const doisSplitted = doisValue.split(',');
-  return `"${doisSplitted.join('", "')}"`;
+  return `"${doisSplitted.join('", "').trim()}"`;
 });
 
 function parseUnpaywallAttributesToGraphqlAttributes(args) {
