@@ -9,17 +9,15 @@
               :code="stringifiedGraphqlResult"
             />
           </v-col>
-          <v-col class="flex-grow-0 flex-shrink-1 text-center pa-0">
-            <v-btn
-              icon="mdi-content-copy"
-              variant="plain"
-              @click="copyResult()"
-            />
-          </v-col>
         </v-row>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
+        <v-btn
+          icon="mdi-content-copy"
+          variant="plain"
+          @click="copyResult()"
+        />
       </v-card-actions>
     </div>
   </div>
