@@ -14,6 +14,7 @@
     <template #append>
       <SkeletonMenuThemeButton />
       <SkeletonMenuGithubButton />
+      <SkeletonMenuInistImg />
     </template>
   </v-navigation-drawer>
 </template>
