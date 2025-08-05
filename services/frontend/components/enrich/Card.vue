@@ -1,3 +1,5 @@
+<!-- eslint-disable vue/valid-v-slot -->
+
 <template>
   <v-card class="my-3">
     <v-toolbar

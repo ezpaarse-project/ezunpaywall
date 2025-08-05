@@ -20,26 +20,26 @@
     <v-card-text>
       {{ props.url }}
       <v-list>
-      <v-list-item
-        v-for="(serviceDependency, serviceName) in services"
-        :key="serviceName"
-        :value="serviceDependency"
-      >
-        <v-list-item-title> {{ serviceName }} </v-list-item-title>
-        <span v-if="serviceDependency?.error">
-          Error: {{ serviceDependency?.error }}
-        </span>
+        <v-list-item
+          v-for="(serviceDependency, serviceName) in services"
+          :key="serviceName"
+          :value="serviceDependency"
+        >
+          <v-list-item-title> {{ serviceName }} </v-list-item-title>
+          <span v-if="serviceDependency?.error">
+            Error: {{ serviceDependency?.error }}
+          </span>
 
-        <template #append>
-          <v-chip :color="serviceDependency?.healthy ? 'green darken-1' : 'red darken-1'">
-            {{ serviceDependency?.elapsedTime }} ms
-            <v-icon right>
-              {{ serviceDependency?.healthy ? 'mdi-check' : 'mdi-close' }}
-            </v-icon>
-          </v-chip>
-        </template>
-      </v-list-item>
-    </v-list>
+          <template #append>
+            <v-chip :color="serviceDependency?.healthy ? 'green darken-1' : 'red darken-1'">
+              {{ serviceDependency?.elapsedTime }} ms
+              <v-icon right>
+                {{ serviceDependency?.healthy ? 'mdi-check' : 'mdi-close' }}
+              </v-icon>
+            </v-chip>
+          </template>
+        </v-list-item>
+      </v-list>
     </v-card-text>
   </v-card>
 </template>

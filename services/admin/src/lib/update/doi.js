@@ -1,6 +1,6 @@
-const appLogger = require('../logger/appLogger');
-
 const config = require('config');
+
+const appLogger = require('../logger/appLogger');
 
 const { getDocumentByDOI } = require('../unpaywall/api');
 const { updateDocument } = require('../elastic');

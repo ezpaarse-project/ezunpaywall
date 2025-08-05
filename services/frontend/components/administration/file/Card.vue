@@ -1,12 +1,24 @@
 <template>
   <v-card>
-    <v-toolbar color="secondary" dark flat dense>
+    <v-toolbar
+      color="secondary"
+      dark
+      flat
+      dense
+    >
       <v-toolbar-title>
         {{ t('administration.file.title') }}
       </v-toolbar-title>
-      <v-btn icon="mdi-reload" :disabled="loading" @click.stop="getAllFiles()" />
+      <v-btn
+        icon="mdi-reload"
+        :disabled="loading"
+        @click.stop="getAllFiles()"
+      />
     </v-toolbar>
-    <v-tabs v-model="tab" fixed-tabs>
+    <v-tabs
+      v-model="tab"
+      fixed-tabs
+    >
       <v-tab value="changefiles">
         changefiles
       </v-tab>
@@ -17,28 +29,47 @@
     <v-tabs-window v-model="tab">
       <v-tabs-window-item value="changefiles">
         <v-list v-if="changefiles.length > 0">
-          <v-list-item v-for="filename in changefiles" :key="filename">
+          <v-list-item
+            v-for="filename in changefiles"
+            :key="filename"
+          >
             {{ filename }}
             <template #append>
-              <v-btn icon="mdi-delete" variant="text" @click.stop="openDeleteDialog('changefiles', filename)" />
+              <v-btn
+                icon="mdi-delete"
+                variant="text"
+                @click.stop="openDeleteDialog('changefiles', filename)"
+              />
             </template>
           </v-list-item>
         </v-list>
-        <NoData v-else :text="t('noData')"/>
+        <NoData
+          v-else
+          :text="t('noData')"
+        />
       </v-tabs-window-item>
       <v-tabs-window-item value="snapshots">
         <v-list v-if="snapshots.length > 0">
-          <v-list-item v-for="filename in snapshots" :key="filename">
+          <v-list-item
+            v-for="filename in snapshots"
+            :key="filename"
+          >
             {{ filename }}
             <template #append>
-              <v-btn icon="mdi-delete" variant="text" @click.stop="openDeleteDialog('snapshots', filename)" />
+              <v-btn
+                icon="mdi-delete"
+                variant="text"
+                @click.stop="openDeleteDialog('snapshots', filename)"
+              />
             </template>
           </v-list-item>
         </v-list>
-        <NoData v-else :text="t('noData')"/>
+        <NoData
+          v-else
+          :text="t('noData')"
+        />
       </v-tabs-window-item>
     </v-tabs-window>
-
   </v-card>
 </template>
 
@@ -54,8 +85,8 @@ const { password } = storeToRefs(adminStore);
 
 const tab = ref('changefiles');
 const loading = ref(false);
-let changefiles = ref([]);
-let snapshots = ref([]);
+const changefiles = ref([]);
+const snapshots = ref([]);
 
 /**
  * Get files
@@ -73,11 +104,11 @@ async function getFiles(type) {
     });
   } catch (err) {
     snackStore.error(t('error.file.get'));
-    return;
+    return null;
   }
 
   loading.value = false;
-  return files
+  return files;
 }
 
 async function getAllFiles() {

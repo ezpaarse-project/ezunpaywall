@@ -202,22 +202,6 @@ const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 const dateFormatRule = ref((date) => dateRegex.test(date) || t('administration.job.invalidDate'));
 const dateIsFutureRule = ref((date) => Date.now() > new Date(date) || t('administration.job.future'));
 
-const props = defineProps({
-  type: { type: String, default: 'unpaywall' },
-});
-
-async function startJob() {
-  if (tab.value === 'classic') {
-    startClassicUpdate();
-  }
-  if (tab.value === 'history') {
-    startHistoryUpdate();
-  }
-  if (tab.value === 'file') {
-    startInsertFile();
-  }
-}
-
 async function startClassicUpdate() {
   loading.value = true;
   const data = {
@@ -293,6 +277,18 @@ async function startInsertFile() {
   loading.value = false;
   snackStore.info(t('info.update.started'));
   emit('update:modelValue', false);
+}
+
+async function startJob() {
+  if (tab.value === 'classic') {
+    startClassicUpdate();
+  }
+  if (tab.value === 'history') {
+    startHistoryUpdate();
+  }
+  if (tab.value === 'file') {
+    startInsertFile();
+  }
 }
 
 </script>

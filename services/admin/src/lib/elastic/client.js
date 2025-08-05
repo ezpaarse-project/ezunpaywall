@@ -26,10 +26,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const customLogger = {
-  debug: (...args) => console.debug('[DEBUG]', ...args),
-  info: (...args) => console.info('[INFO]', ...args),
-  warn: (...args) => console.warn('[WARN]', ...args),
-  error: (...args) => console.error('[ERROR]', ...args),
+  debug: (...args) => appLogger.debug('[DEBUG]', ...args),
+  info: (...args) => appLogger.info('[INFO]', ...args),
+  warn: (...args) => appLogger.warn('[WARN]', ...args),
+  error: (...args) => appLogger.error('[ERROR]', ...args),
 };
 
 if (process.env.NODE_ENV === 'test') {

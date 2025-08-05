@@ -18,5 +18,19 @@
         "import/no-extraneous-dependencies": [
           "error", { "devDependencies": true }
         ]
-    }
+    },
+    "overrides": [
+      {
+        "files": ["tests/**/*.js"],
+        "rules": {
+          "no-console": "off"
+        }
+      },
+      {
+        "files": ["healthcheck.js"],
+        "rules": {
+          "no-console": "off"
+        }
+      }
+    ]
 }

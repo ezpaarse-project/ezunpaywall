@@ -11,7 +11,6 @@ import { defineStore, ref } from '#imports';
  * @property {string} [disagreeIcon] Icon to display on the disagree button (Defaults to unset)
  * @property {() => void | Promise<void>} [onDisagree] Callback to execute when user disagrees
  */
-
 export const useDialogStore = defineStore('dialog', () => {
   let close;
   const show = ref(false);
@@ -63,3 +62,5 @@ export const useDialogStore = defineStore('dialog', () => {
     openConfirm,
   };
 });
+
+export default useDialogStore;

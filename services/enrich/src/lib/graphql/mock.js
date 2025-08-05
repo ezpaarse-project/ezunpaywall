@@ -1,5 +1,6 @@
 const { graphql, buildSchema } = require('graphql');
 const mockData = require('./mock.json');
+const appLogger = require('../../../../admin/src/lib/logger/appLogger');
 
 const data = {
   unpaywall: mockData,
@@ -73,7 +74,7 @@ const graphqlMockInstance = jest.fn(async (req) => {
       response = await graphql({ schema, source: graphqlQuery, rootValue: resolversRoot });
       return { data: { data: response.data } };
     } catch (error) {
-      console.error('Error during GraphQL execution:', error);
+      appLogger.error('Error during GraphQL execution:', error);
       return { data: { data: [] } };
     }
   }

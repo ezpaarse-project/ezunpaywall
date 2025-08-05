@@ -9,7 +9,12 @@
       <v-toolbar-title> {{ t('home.title') }} </v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <i18n-t scope="global" keypath="home.general1" tag="p" class="my-4">
+      <i18n-t
+        scope="global"
+        keypath="home.general1"
+        tag="p"
+        class="my-4"
+      >
         <template #link>
           <a
             :href="unpaywallURL"
@@ -22,7 +27,12 @@
       </i18n-t>
       <br>
       {{ t("home.general2") }}
-      <i18n-t scope="global" keypath="home.general3" tag="p" class="my-4">
+      <i18n-t
+        scope="global"
+        keypath="home.general3"
+        tag="p"
+        class="my-4"
+      >
         <template #link>
           <a
             :href="blogURL"

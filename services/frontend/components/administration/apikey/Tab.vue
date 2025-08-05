@@ -71,7 +71,7 @@
       justify="center"
       class="ma-2"
     >
-      <Loader />
+      <AppLoader />
     </v-row>
     <NoData
       v-else-if="!apikeysFiltered || apikeysFiltered.length === 0"

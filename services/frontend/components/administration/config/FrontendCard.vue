@@ -18,8 +18,6 @@
 
 const runtimeConfig = useRuntimeConfig();
 
-const { t } = useI18n();
-
 const config = ref(JSON.stringify(runtimeConfig.public, null, 2));
 
 </script>

@@ -1,3 +1,7 @@
+/* eslint-disable no-undef */
+
+import { defineNuxtPlugin } from '#imports';
+
 export default defineNuxtPlugin((nuxtApp) => {
   const { adminUrl } = nuxtApp.$config.public;
   const { graphqlURL } = nuxtApp.$config.public;

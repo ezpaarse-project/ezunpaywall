@@ -1,6 +1,9 @@
 <template>
   <section class="ma-3">
-    <v-tabs v-model="tab" fixed-tabs>
+    <v-tabs
+      v-model="tab"
+      fixed-tabs
+    >
       <v-tab value="admin">
         admin
       </v-tab>

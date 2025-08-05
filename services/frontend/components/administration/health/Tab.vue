@@ -30,7 +30,7 @@
       justify="center"
       class="ma-2"
     >
-      <Loader />
+      <AppLoader />
     </v-row>
     <NoData
       v-else-if="!services || Object.keys(services).length === 0"

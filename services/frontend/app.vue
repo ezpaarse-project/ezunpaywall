@@ -5,7 +5,7 @@
         <SkeletonAppBar @menu-update="updateVisibleMenu()" />
         <SkeletonAppMenu v-model="visible" />
         <ConfirmDialog />
-        <Snackbar />
+        <SnackBar />
         <v-main>
           <NuxtPage />
         </v-main>
@@ -28,3 +28,10 @@ async function updateVisibleMenu() {
 }
 
 </script>
+
+<style>
+html {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+</style>

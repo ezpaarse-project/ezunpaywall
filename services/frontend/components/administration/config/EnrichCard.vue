@@ -21,8 +21,6 @@ const { password } = storeToRefs(adminStore);
 
 const { $enrich } = useNuxtApp();
 
-const { t } = useI18n();
-
 const loading = ref(false);
 const APIconfig = ref('');
 

@@ -20,7 +20,7 @@
       justify="center"
       class="ma-2"
     >
-      <Loader />
+      <AppLoader />
     </v-row>
     <NoData
       v-else-if="reports.length === 0"
@@ -40,7 +40,6 @@
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
-const adminStore = useAdminStore();
 const { $admin } = useNuxtApp();
 
 const loading = ref(false);
@@ -58,7 +57,7 @@ async function getReport(filename) {
     });
   } catch (err) {
     snackStore.error(t('error.report.get'));
-    return;
+    return null;
   }
   return report;
 }

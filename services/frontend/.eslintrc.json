@@ -10,9 +10,9 @@
   ],
   "overrides": [
     {
-      "files": ["nuxt.config.js"],
+      "files": ["healthcheck.js"],
       "rules": {
-        "import/no-extraneous-dependencies": "off"
+        "no-console": "off"
       }
     }
   ],

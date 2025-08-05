@@ -170,6 +170,7 @@ function end() {
  * @param {Promise<Array<string>>} stackTrace Log of error.
  */
 async function fail(stackTrace) {
+  const stack = stackTrace;
   appLogger.error('[state]: fail');
   end();
   const step = getLatestStep();
@@ -177,10 +178,10 @@ async function fail(stackTrace) {
   updateLatestStep(step);
 
   state.error = true;
-  if (stackTrace?.meta?.meta?.request?.params?.bulkBody) {
-    delete stackTrace.meta.meta.request.params.bulkBody;
+  if (stack?.meta?.meta?.request?.params?.bulkBody) {
+    delete stack.meta.meta.request.params.bulkBody;
   }
-  state.stackTrace = stackTrace;
+  state.stackTrace = stack;
 }
 
 module.exports = {
