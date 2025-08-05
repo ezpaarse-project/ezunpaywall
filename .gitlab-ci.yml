@@ -1,0 +1,66 @@
+stages:
+  - install
+  - lint
+  - test
+  - docker
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - services/*/node_modules/
+
+install-dependencies:
+  stage: install
+  image: node:22
+  script:
+    - npm install
+    - npm run install
+  artifacts:
+    paths:
+      - node_modules/
+      - services/*/node_modules/
+    expire_in: 1h
+
+lint-code:
+  stage: lint
+  image: node:22
+  script:
+    - npm run lint
+  dependencies:
+    - install-dependencies
+  allow_failure: false
+
+run-tests:
+  stage: test
+  image: node:22
+  script:
+    - npm run test:admin
+  dependencies:
+    - install-dependencies
+
+docker-build:
+  stage: docker
+  services:
+    - name: docker:dind
+      alias: docker
+  script:
+    - docker info
+    - docker compose -f docker-compose-build.yml build
+    - docker tag ezunpaywall-graphql $DOCKER_REGISTRY/ezunpaywall/graphql:$VERSION
+    - docker tag ezunpaywall-enrich $DOCKER_REGISTRY/ezunpaywall/enrich:$VERSION
+    - docker tag ezunpaywall-admin $DOCKER_REGISTRY/ezunpaywall/admin:$VERSION
+    - docker tag ezunpaywall-frontend $DOCKER_REGISTRY/ezunpaywall/frontend:$VERSION
+    - docker tag ezunpaywall-nginx $DOCKER_REGISTRY/ezunpaywall/nginx:$VERSION
+
+# docker-push:
+#   stage: docker
+#   services:
+#     - name: docker:dind
+#     alias: docker
+#   script:
+#     - docker push $DOCKER_REGISTRY/ezunpaywall/graphql:$VERSION ;
+#     - docker push $DOCKER_REGISTRY/ezunpaywall/enrich:$VERSION ;
+#     - docker push $DOCKER_REGISTRY/ezunpaywall/admin:$VERSION ;
+#     - docker push $DOCKER_REGISTRY/ezunpaywall/frontend:$VERSION ;
+#     - docker push $DOCKER_REGISTRY/ezunpaywall/nginx:$VERSION ;
