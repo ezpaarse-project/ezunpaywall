@@ -7,3 +7,4 @@ data/
 ssl/
 node_modules/
 log/
+.gitlab-ci-local-variables.yml
