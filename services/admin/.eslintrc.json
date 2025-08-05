@@ -17,6 +17,21 @@
         "consistent-return": 0,
         "import/no-extraneous-dependencies": [
           "error", { "devDependencies": true }
-        ]
-    }
+        ],
+        "no-continue": 0
+    },
+    "overrides": [
+      {
+        "files": ["tests/**/*.js"],
+        "rules": {
+          "no-console": "off"
+        }
+      },
+      {
+        "files": ["healthcheck.js"],
+        "rules": {
+          "no-console": "off"
+        }
+      }
+    ]
 }
