@@ -8,3 +8,4 @@ ssl/
 node_modules/
 log/
 .gitlab-ci-local-variables.yml
+.gitlab-ci-local
