@@ -17,7 +17,6 @@
           :placeholder="t('administration.password')"
           :rules="[passwordRules]"
           :type="passwordVisible ? 'text' : 'password'"
-          :label="t('administration.password')"
           @click:append="passwordVisible = !passwordVisible"
         />
       </v-form>
@@ -47,7 +46,7 @@ const { $admin } = useNuxtApp();
 
 const loading = ref(false);
 const valid = ref(false);
-const password = ref('changeme');
+const password = ref('');
 const passwordVisible = ref(false);
 
 const passwordRules = computed(() => (value) => !!value || t('required'));
