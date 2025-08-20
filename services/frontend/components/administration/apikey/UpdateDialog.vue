@@ -132,6 +132,8 @@ const props = defineProps({
   name: { type: String, default: '' },
   description: { type: String, default: '' },
   owner: { type: String, default: '' },
+  enrich: { type: Boolean, default: false },
+  graphql: { type: Boolean, default: false },
   attributes: { type: Array, default: () => [] },
   allowed: { type: Boolean, default: false },
 });
@@ -143,6 +145,8 @@ const emit = defineEmits({
   'update:owner': (val) => val,
   'update:attributes': (val) => val,
   'update:allowed': (val) => val,
+  'update:enrich': (val) => val,
+  'update:graphql': (val) => val,
   updated: () => true,
 });
 
@@ -169,20 +173,18 @@ const allowed = computed({
   get: () => props.allowed,
   set: (val) => emit('update:allowed', val),
 });
-
-const enrich = ref(() => false);
-const graphql = ref(() => false);
-
-const access = computed(() => {
-  const res = [];
-  if (enrich.value) { res.push('enrich'); }
-  if (graphql.value) { res.push('graphql'); }
-  return res;
+const enrich = computed({
+  get: () => props.enrich,
+  set: (val) => emit('update:enrich', val),
+});
+const graphql = computed({
+  get: () => props.graphql,
+  set: (val) => emit('update:graphql', val),
 });
 
 const nameRule = computed(() => [(v) => !!v || t('required')]);
 const attributesRules = computed(() => attributes.value.length > 0);
-const accessRules = computed(() => access.value.length > 0);
+const accessRules = computed(() => graphql.value || enrich.value);
 
 const validForm = ref(false);
 
@@ -194,13 +196,10 @@ const attributesOaLocationsEmbargoed = computed(() => attributes?.value?.filter(
 const attributesZAuthors = computed(() => attributes?.value?.filter((e) => e.includes('z_authors.')).map((e) => e.split('.')[1]));
 const allSelected = computed(() => attributes?.value?.includes('*'));
 
-onMounted(() => {
-  graphql.value = props.config?.access.includes('graphql');
-  enrich.value = props.config?.access.includes('enrich');
-});
-
 async function updateApikey() {
   loading.value = true;
+  const access = graphql.value ? ['graphql'] : [];
+  if (enrich.value) { access.push('enrich'); }
   try {
     await $admin(`/apikeys/${props.apikey}`, {
       method: 'PUT',
@@ -209,7 +208,7 @@ async function updateApikey() {
         owner: owner.value,
         description: description.value,
         attributes: attributes.value,
-        access: access.value,
+        access,
         allowed: allowed.value,
       },
       headers: {

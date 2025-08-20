@@ -104,7 +104,8 @@
       v-model:name="selectedName"
       v-model:description="selectedDescription"
       v-model:owner="selectedOwner"
-      v-model:access="selectedAccess"
+      v-model:graphql="selectedGraphql"
+      v-model:enrich="selectedEnrich"
       v-model:attributes="selectedAttributes"
       v-model:allowed="selectedAllowed"
       @closed="setUpdateDialogVisible(false)"
@@ -140,7 +141,8 @@ const selectedApikey = ref('');
 const selectedName = ref('');
 const selectedDescription = ref('');
 const selectedOwner = ref('');
-const selectedAccess = ref([]);
+const selectedEnrich = ref(false);
+const selectedGraphql = ref(false);
 const selectedAttributes = ref([]);
 const selectedAllowed = ref(false);
 
@@ -170,7 +172,8 @@ async function openUpdateDialog(id) {
   selectedName.value = apikey.config.name;
   selectedDescription.value = apikey.config.description;
   selectedOwner.value = apikey.config.owner;
-  selectedAccess.value = apikey.config.access;
+  selectedEnrich.value = apikey.config.access.includes('enrich');
+  selectedGraphql.value = apikey.config.access.includes('graphql');
   selectedAttributes.value = apikey.config.attributes;
   selectedAllowed.value = apikey.config.allowed;
   await nextTick();
