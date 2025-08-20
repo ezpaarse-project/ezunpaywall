@@ -1,5 +1,7 @@
 <template>
   <v-text-field
+    variant="solo"
+    class="ma-6"
     :value="textFieldValue"
     hide-details
     prepend-icon="mdi-magnify"
