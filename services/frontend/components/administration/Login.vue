@@ -70,7 +70,7 @@ async function tryLogin() {
 
   loading.value = false;
 
-  router.push('/administration/health');
+  router.push('/administration/update');
 }
 
 </script>
