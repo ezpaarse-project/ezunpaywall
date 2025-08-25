@@ -4,7 +4,7 @@
     <UnpaywallArgsHelpButton />
     <UnpaywallArgsSelectorAttributes
       :default-simple="['doi', 'is_oa']"
-      :default-best-oa-location="['url_for_pdf']"
+      :default-best-oa-location="['url_for_pdf', 'url']"
       :default-first-oa-location="[]"
       :default-oa-locations="[]"
       :default-oa-locations-embargoed="[]"
