@@ -5,35 +5,16 @@ services:
     build:
       context: ./services/graphql
     container_name: ezunpaywall-graphql
-    volumes:
-      - ${GRAPHQL_APPLICATION_LOG_PATH:-./services/graphql/log/application}:/usr/src/app/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH:-./services/graphql/log/access}:/usr/src/app/log/access
-      - ${ELASTIC_CERT_CA_PATH:-./services/graphql/certs/ca.crt}:/usr/src/app/certs
-    command: "npm start"
-    restart: unless-stopped
 
   enrich:
     build:
       context: ./services/enrich
     container_name: ezunpaywall-enrich
-    volumes:
-      - ${ENRICH_APPLICATION_LOG_PATH:-./services/enrich/log/application}:/usr/src/app/log/application
-      - ${ENRICH_ACCESS_LOG_PATH:-./services/enrich/log/access}:/usr/src/app/log/access
-      - ${ENRICH_DATA_PATH:-./services/enrich/data}:/usr/src/app/data
-    command: "npm start"
-    restart: unless-stopped
 
   admin:
     build:
       context: ./services/admin
     container_name: ezunpaywall-admin
-    volumes:
-      - ${ADMIN_APPLICATION_LOG_PATH:-./services/admin/log/application}:/usr/src/app/log/application
-      - ${ADMIN_ACCESS_LOG_PATH:-./services/admin/log/access}:/usr/src/app/log/access
-      - ${ADMIN_DATA_PATH:-./services/admin/data}:/usr/src/app/data
-      - ${ELASTIC_CERT_CA_PATH-./services/admin/certs/ca.crt}:/usr/src/app/certs
-    command: "npm run start"
-    restart: unless-stopped
 
   frontend:
     build:
@@ -44,6 +25,3 @@ services:
     build:
       context: ./services/nginx
     container_name: ezunpaywall-nginx
-    ports:
-      - ${NGINX_PORT:-80}:80
-    restart: unless-stopped
