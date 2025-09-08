@@ -1,5 +1,4 @@
 ezunpaywall.local.env.sh
-ezunpaywall.env.local.sh
 config/kibana/certificates/
 config/elastic/certificates/
 certs/instances.yml
