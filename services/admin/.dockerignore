@@ -7,3 +7,4 @@ data-test/
 .eslintrc.json
 .gitignore
 README.md
+ca.crt
