@@ -25,7 +25,8 @@ const { uploadDir, enrichedDir } = config.paths.data;
 const graphqlConfigWithAllAttributes = ` 
 {
   data_standard, title, genre, is_paratext, published_date, year, doi_url, 
-  journal_name, journal_issns, journal_issn_l,journal_is_oa, journal_is_in_doaj, 
+  journal_name, journal_issns, journal_issn_l, journal_is_oa, journal_is_in_doaj, 
+  publisher, is_oa, oa_status, has_repository_copy, updated,
   best_oa_location { 
     url, url_for_landing_page, url_for_pdf, license, host_type, 
     is_best, pmh_id, endpoint_id, repository_institution, oa_date,
