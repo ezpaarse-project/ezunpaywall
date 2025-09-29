@@ -1,6 +1,9 @@
 {
   "eslint.workingDirectories": [
-    "src/**",
+    { "directory": "services/admin", "changeProcessCWD": true },
+    { "directory": "services/enrich", "changeProcessCWD": true },
+    { "directory": "services/frontend", "changeProcessCWD": true },
+    { "directory": "services/graphql", "changeProcessCWD": true }
   ],
   "eslint.validate": [
     "javascript",
@@ -8,12 +11,4 @@
   ],
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
-  "conventionalCommits.scopes": [
-    "fakeUnpaywall",
-    "frontend",
-    "graphql",
-    "nginx",
-    "admin",
-    "enrich"
-  ],
 }

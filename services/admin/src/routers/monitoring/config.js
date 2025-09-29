@@ -1,25 +1,25 @@
-const { getState } = require('../../lib/update/state');
+const { getConfig } = require('../../lib/config');
 
 const checkAdmin = require('../../plugins/admin');
 
 function routes(fastify) {
   fastify.route({
     method: 'GET',
-    url: '/states',
+    route: '/',
     schema: {
-      tags: ['State'],
-      summary: 'Get current state',
-      description: 'Get the current state of job',
+      tags: ['Monitoring'],
+      summary: 'Get config',
+      description: 'Get config of service.',
       response: {
         200: {
           type: 'object',
         },
       },
     },
-    preHandler: checkAdmin,
+    prehandler: checkAdmin,
     handler: async (request, reply) => {
-      const state = await getState();
-      return reply.code(200).send(state);
+      const config = getConfig();
+      return reply.code(200).send(config);
     },
   });
 }

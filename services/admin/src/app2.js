@@ -1,5 +1,8 @@
 const Fastify = require('fastify');
+const rateLimit = require('@fastify/rate-limit');
+const fastifyMultipart = require('@fastify/multipart');
 const fastifyCors = require('@fastify/cors');
+
 const fsp = require('fs/promises');
 const path = require('path');
 const { paths, port } = require('config');
@@ -20,6 +23,25 @@ const cronDownloadSnapshot = require('./cron/downloadSnapshot');
 const cronDoiUpdate = require('./cron/doi');
 const cronDemo = require('./cron/demoApikey');
 
+const routerHealthCheck = require('./routers/monitoring/healthcheck');
+const routerConfig = require('./routers/monitoring/config');
+const routerPing = require('./routers/monitoring/ping');
+const routerDisk = require('./routers/monitoring/disk');
+
+const routerJob = require('./routers/update/job');
+const routerChangefile = require('./routers/update/changefile');
+const routerDOI = require('./routers/update/doi');
+const routerReport = require('./routers/update/report');
+const routerSnapshot = require('./routers/update/snapshot');
+const routerState = require('./routers/update/state');
+const routerStatus = require('./routers/update/status');
+
+const routerCron = require('./routers/cron');
+const routerApiKey = require('./routers/apikey');
+const routerElastic = require('./routers/elastic');
+const routerLogin = require('./routers/login');
+const routerMail = require('./routers/login');
+
 // create data directory
 fsp.mkdir(path.resolve(paths.data.changefilesDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.data.snapshotsDir), { recursive: true });
@@ -32,6 +54,9 @@ fsp.mkdir(path.resolve(paths.log.healthcheckDir), { recursive: true });
 
 async function start() {
   const fastify = Fastify();
+
+  await fastify.register(rateLimit);
+  await fastify.register(fastifyMultipart);
 
   logConfig();
   await initClient();
@@ -72,17 +97,24 @@ async function start() {
   fastify.register(openapiPlugin);
 
   // register routes
+  fastify.register(routerHealthCheck);
+  fastify.register(routerConfig);
   fastify.register(routerPing);
   fastify.register(routerDisk);
-  fastify.register(routerElastic);
-  fastify.register(routerStatus);
-  fastify.register(routerState);
+
   fastify.register(routerJob);
-  fastify.register(routerReport);
-  fastify.register(routerCron);
   fastify.register(routerChangefile);
-  fastify.register(routerSnapshot);
   fastify.register(routerDOI);
+  fastify.register(routerReport);
+  fastify.register(routerSnapshot);
+  fastify.register(routerState);
+  fastify.register(routerStatus);
+
+  fastify.register(routerCron);
+  fastify.register(routerApiKey);
+  fastify.register(routerElastic);
+  fastify.register(routerLogin);
+  fastify.register(routerMail);
 
   // Errors and unknown routes
   fastify.setErrorHandler((error, request, reply) => {

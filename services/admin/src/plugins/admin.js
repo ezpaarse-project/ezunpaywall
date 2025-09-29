@@ -3,12 +3,12 @@ const { config } = require('../lib/config');
 const { apikey } = config;
 
 /**
- * Middleware for administrators only
+ * Middleware for administrators route only
  *
  * @param request
  * @param reply
  */
-export default async function admin(request, reply) {
+function admin(request, reply) {
   const key = request.headers['x-api-key'];
 
   if (!key) {
@@ -20,3 +20,5 @@ export default async function admin(request, reply) {
     reply.code(403).send({ error: 'Invalid API key' });
   }
 }
+
+module.exports = admin;
