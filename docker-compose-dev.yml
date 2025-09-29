@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   graphql:
     image: node:22.13.1
