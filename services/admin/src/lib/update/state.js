@@ -181,6 +181,11 @@ async function fail(stackTrace) {
   if (stack?.meta?.meta?.request?.params?.bulkBody) {
     delete stack.meta.meta.request.params.bulkBody;
   }
+
+  if (stack?.meta?.meta?.request?.params?.body) {
+    delete stack.meta.meta.request.params.body;
+  }
+
   state.stackTrace = stack;
 }
 
