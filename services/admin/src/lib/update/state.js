@@ -178,15 +178,22 @@ async function fail(stackTrace) {
   updateLatestStep(step);
 
   state.error = true;
-  if (stack?.meta?.meta?.request?.params?.bulkBody) {
-    delete stack.meta.meta.request.params.bulkBody;
-  }
 
-  if (stack?.meta?.meta?.request?.params?.body) {
-    delete stack.meta.meta.request.params.body;
-  }
+  if (stack.name === 'TimeoutError') {
+    state.stackTrace = {
+      name: stack.name,
+      ...stack?.meta?.meta?.connection,
+    };
+  } else {
+    if (stack?.meta?.meta?.request?.params?.bulkBody) {
+      delete stack.meta.meta.request.params.bulkBody;
+    }
 
-  state.stackTrace = stack;
+    if (stack?.meta?.meta?.request?.params?.body) {
+      delete stack.meta.meta.request.params.body;
+    }
+    state.stackTrace = stack;
+  }
 }
 
 module.exports = {
