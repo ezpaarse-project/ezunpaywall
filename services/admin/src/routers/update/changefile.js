@@ -46,20 +46,27 @@ async function routes(fastify) {
       summary: 'Upload a changefile',
       description: 'Upload a changefile on ezunpaywall. Requires a multipart body with a `file` field.',
     },
-    preHandler: [checkAdmin, upload.single('file')],
+    preHandler: checkAdmin,
     handler: async (request, reply) => {
       const data = await request.file();
-      const saveTo = path.join(paths.data.changefilesDir, data.filename);
 
+      if (!data) {
+        return reply.code(400).send({ error: 'Missing file in request' });
+      }
+
+      const saveTo = path.join(paths.data.changefilesDir, data.filename);
       const writeStream = fs.createWriteStream(saveTo);
-      await data.file.pipe(writeStream);
 
       await new Promise((resolve, reject) => {
-        writeStream.on('finish', resolve);
-        writeStream.on('error', reject);
+        data.file.pipe(writeStream);
+        data.file.on('end', resolve);
+        data.file.on('error', reject);
       });
 
-      reply.code(200).send({ filename: data.filename, mimetype: data.mimetype });
+      return reply.code(200).send({
+        filename: data.filename,
+        mimetype: data.mimetype,
+      });
     },
   });
 
@@ -78,7 +85,7 @@ async function routes(fastify) {
         required: ['filename'],
       },
     },
-    preHandler: [checkAdmin],
+    preHandler: checkAdmin,
     handler: async (request, reply) => {
       const { filename } = request.data;
 

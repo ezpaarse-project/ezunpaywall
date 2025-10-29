@@ -1,11 +1,10 @@
-const request = require('supertest');
 const { apikey } = require('config');
-
-const app = require('../../../src/app');
+const buildApp = require('../../../src/app');
 const { getClient } = require('../../../src/lib/redis/client');
 const apikeyLib = require('../../utils/apikey');
 
 describe('API Key: auth', () => {
+  let app;
   let key;
 
   const configApikey = {
@@ -16,6 +15,12 @@ describe('API Key: auth', () => {
     attributes: ['*'],
     allowed: true,
   };
+
+  beforeAll(async () => {
+    app = await buildApp();
+    await app.ready();
+  });
+
   beforeEach(async () => {
     key = await apikeyLib.create(configApikey);
   });
@@ -24,13 +29,15 @@ describe('API Key: auth', () => {
     const redisClient = getClient();
     await redisClient.flushall();
     await redisClient.quit();
-    app.close();
+    await app.close();
   });
 
   it('Should get all API key', async () => {
-    const response = await request(app)
-      .get('/apikeys')
-      .set('x-api-key', apikey);
+    const response = await app.inject({
+      method: 'GET',
+      url: '/apikeys',
+      headers: { 'x-api-key': apikey },
+    });
 
     expect(response.statusCode).toBe(200);
   });
@@ -38,28 +45,34 @@ describe('API Key: auth', () => {
   it('Should not create API key', async () => {
     const testValue = apikeyLib.data.apikey2;
 
-    const response = await request(app)
-      .post('/apikeys')
-      .send(testValue);
+    const response = await app.inject({
+      method: 'POST',
+      url: '/apikeys',
+      payload: testValue,
+    });
 
     expect(response.statusCode).toBe(401);
   });
 
   it('Should not update API key', async () => {
-    const testValue = {
-      name: 'test-user2',
-    };
+    const testValue = { name: 'test-user2' };
 
-    const response = await request(app)
-      .put(`/apikeys/${key}`)
-      .send(testValue);
+    const response = await app.inject({
+      method: 'PUT',
+      url: `/apikeys/${key}`,
+      payload: {
+        apikeyConfig: testValue,
+      },
+    });
 
     expect(response.statusCode).toBe(401);
   });
 
-  it('Should not update API key', async () => {
-    const response = await request(app)
-      .delete(`/apikeys/${key}`);
+  it('Should not delete API key', async () => {
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/apikeys/${key}`,
+    });
 
     expect(response.statusCode).toBe(401);
   });

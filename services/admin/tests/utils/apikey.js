@@ -1,7 +1,15 @@
-const request = require('supertest');
-
 const { apikey } = require('config');
-const app = require('../../src/app');
+const buildApp = require('../../src/app');
+
+let appInstance;
+
+async function getApp() {
+  if (!appInstance) {
+    appInstance = await buildApp();
+    await appInstance.ready();
+  }
+  return appInstance;
+}
 
 const data = {
   apikey1: {
@@ -30,17 +38,19 @@ const data = {
  * @returns key of API key
  */
 async function create(config) {
-  let response;
   try {
-    response = await request(app)
-      .post('/apikeys')
-      .send(config)
-      .set('x-api-key', apikey);
+    const app = await getApp();
+    const response = await app.inject({
+      method: 'POST',
+      url: '/apikeys',
+      payload: config,
+      headers: { 'x-api-key': apikey },
+    });
+    const body = response.json();
+    return body.apikey;
   } catch (err) {
-    console.error('[test][utils][apikey]: Cannot create API key');
-    console.error(err);
+    console.error('[test][utils][apikey]: Cannot create API key', err);
   }
-  return response.body.apikey;
 }
 
 /**
@@ -50,12 +60,14 @@ async function create(config) {
  */
 async function deleteAll() {
   try {
-    await request(app)
-      .delete('/apikeys')
-      .set('x-api-key', apikey);
+    const app = await getApp();
+    await app.inject({
+      method: 'DELETE',
+      url: '/apikeys',
+      headers: { 'x-api-key': apikey },
+    });
   } catch (err) {
-    console.error('[test][utils][apikey]: Cannot delete all API key');
-    console.error(err);
+    console.error('[test][utils][apikey]: Cannot delete all API key', err);
   }
 }
 
@@ -67,15 +79,17 @@ async function deleteAll() {
  * @returns config of API key
  */
 async function get(key) {
-  let response;
   try {
-    response = await request(app)
-      .get(`/apikeys/${key}`);
+    const app = await getApp();
+    const response = await app.inject({
+      method: 'GET',
+      url: `/apikeys/${key}`,
+      headers: { 'x-api-key': apikey },
+    });
+    return response.json();
   } catch (err) {
-    console.error('[test][utils][apikey]: Cannot get API key');
-    console.error(err);
+    console.error('[test][utils][apikey]: Cannot get API key', err);
   }
-  return response.body;
 }
 
 module.exports = {

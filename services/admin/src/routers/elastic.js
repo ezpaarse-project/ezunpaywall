@@ -26,9 +26,9 @@ function routes(fastify) {
   });
 
   // Get alias on elastic
-  fastify.get({
+  fastify.route({
     method: 'GET',
-    route: '/elastic/aliases',
+    url: '/elastic/aliases',
     schema: {
       tags: ['Elastic'],
       summary: 'Get all aliases',
@@ -47,9 +47,9 @@ function routes(fastify) {
     },
   });
 
-  fastify.get({
+  fastify.route({
     method: 'GET',
-    route: '/elastic/indices',
+    url: '/elastic/indices',
     schema: {
       tags: ['Elastic'],
       summary: 'Get all indices',
@@ -71,7 +71,7 @@ function routes(fastify) {
 
   fastify.route({
     method: 'DELETE',
-    route: '/elastic/indices/:indexName',
+    url: '/elastic/indices/:indexName',
     schema: {
       tags: ['Elastic'],
       summary: 'Delete an index',

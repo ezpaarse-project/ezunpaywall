@@ -1,4 +1,4 @@
-const { config } = require('../lib/config');
+const config = require('config');
 
 const { apikey } = config;
 
@@ -8,7 +8,7 @@ const { apikey } = config;
  * @param request
  * @param reply
  */
-function admin(request, reply) {
+function admin(request, reply, done) {
   const key = request.headers['x-api-key'];
 
   if (!key) {
@@ -18,7 +18,10 @@ function admin(request, reply) {
 
   if (key !== apikey) {
     reply.code(403).send({ error: 'Invalid API key' });
+    return;
   }
+
+  done();
 }
 
 module.exports = admin;

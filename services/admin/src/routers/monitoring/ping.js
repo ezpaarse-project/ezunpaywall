@@ -9,7 +9,7 @@ const statusSchema = { type: 'object', properties: { healthy: { type: 'boolean' 
 function routes(fastify) {
   fastify.route({
     method: 'GET',
-    route: '/',
+    url: '/',
     schema: {
       tags: ['Monitoring'],
       summary: 'Home',
@@ -26,9 +26,10 @@ function routes(fastify) {
     },
   });
 
-  fastify.route('/ping', {
+  fastify.route({
+    method: 'GET',
+    url: '/ping',
     schema: {
-      method: 'GET',
       tags: ['Monitoring'],
       summary: 'Ping the service',
       description: 'Check if the API service is reachable.',
@@ -41,7 +42,7 @@ function routes(fastify) {
 
   fastify.route({
     method: 'GET',
-    route: '/status',
+    url: '/status',
     schema: {
       tags: ['Monitoring'],
       summary: 'Ping all services',

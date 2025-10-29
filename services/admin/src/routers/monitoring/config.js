@@ -5,7 +5,7 @@ const checkAdmin = require('../../plugins/admin');
 function routes(fastify) {
   fastify.route({
     method: 'GET',
-    route: '/',
+    url: '/config',
     schema: {
       tags: ['Monitoring'],
       summary: 'Get config',

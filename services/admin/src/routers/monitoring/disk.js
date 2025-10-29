@@ -3,9 +3,9 @@ const { getDiskSpace, formatBytes } = require('../../lib/disk');
 const checkAdmin = require('../../middlewares/admin');
 
 function routes(fastify) {
-  fastify.get({
+  fastify.route({
     method: 'GET',
-    route: '/',
+    url: '/disk',
     schema: {
       tags: ['Monitoring'],
       summary: 'Disk space',

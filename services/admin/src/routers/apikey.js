@@ -166,9 +166,8 @@ function routes(fastify) {
       description: 'Update an existing API key configuration.',
       body: {
         type: 'object',
-        required: ['apikey', 'apikeyConfig'],
+        required: ['apikeyConfig'],
         properties: {
-          apikey: { type: 'string' },
           apikeyConfig: { type: 'object' },
         },
       },

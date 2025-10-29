@@ -6,6 +6,17 @@ const downloadSnapshotCron = require('../cron/downloadSnapshot');
 
 const checkAdmin = require('../plugins/admin');
 
+const paramsType = {
+  type: 'object',
+  properties: {
+    type: {
+      type: 'string',
+      enum: ['dataUpdate', 'dataUpdateHistory', 'cleanFile', 'demoApiKey', 'downloadSnapshot'],
+    },
+  },
+  required: ['type'],
+};
+
 function routes(fastify) {
   fastify.route({
     method: 'POST',
@@ -14,12 +25,7 @@ function routes(fastify) {
       tags: ['Cron'],
       summary: 'Start cron',
       description: 'Start cron.',
-      params: {
-        type: {
-          type: 'string',
-          enum: ['dataUpdate', 'dataUpdateHistory', 'cleanFile', 'demoApiKey', 'downloadSnapshot'],
-        },
-      },
+      params: paramsType,
       response: {
         200: {
           type: 'object',
@@ -61,12 +67,7 @@ function routes(fastify) {
       tags: ['Cron'],
       summary: 'Stop cron',
       description: 'Stop cron.',
-      params: {
-        type: {
-          type: 'string',
-          enum: ['dataUpdate', 'dataUpdateHistory', 'cleanFile', 'demoApiKey', 'downloadSnapshot'],
-        },
-      },
+      params: paramsType,
       response: {
         200: {
           type: 'object',
@@ -108,12 +109,7 @@ function routes(fastify) {
       tags: ['Cron'],
       summary: 'Update cron',
       description: 'Update cron.',
-      params: {
-        type: {
-          type: 'string',
-          enum: ['dataUpdate', 'dataUpdateHistory', 'cleanFile', 'demoApiKey', 'downloadSnapshot'],
-        },
-      },
+      params: paramsType,
       body: {
         type: 'object',
         properties: {
@@ -170,12 +166,7 @@ function routes(fastify) {
       tags: ['Cron'],
       summary: 'Get config cron',
       description: 'Get config cron.',
-      params: {
-        type: {
-          type: 'string',
-          enum: ['dataUpdate', 'dataUpdateHistory', 'cleanFile', 'demoApiKey', 'downloadSnapshot'],
-        },
-      },
+      params: paramsType,
       response: {
         200: {
           type: 'object',
