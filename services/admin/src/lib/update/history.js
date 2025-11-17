@@ -48,8 +48,7 @@ async function insertUnpaywallDataInElastic(data, index) {
     res = await bulk(data);
   } catch (err) {
     appLogger.error(`[elastic]: Cannot bulk on index [${index}]`, err);
-    await fail(err?.[0]?.reason);
-    return false;
+    throw err;
   }
 
   const errors = [];
