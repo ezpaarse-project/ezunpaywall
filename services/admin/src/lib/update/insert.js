@@ -45,7 +45,6 @@ async function insertUnpaywallDataInElastic(data) {
     res = await bulk(data);
   } catch (err) {
     appLogger.error('[elastic]: Cannot bulk', err);
-    await fail(err);
     throw err;
   }
 
@@ -75,13 +74,10 @@ async function insertUnpaywallDataInElastic(data) {
     });
     step.status = 'error';
     updateLatestStep(step);
-    await fail(errors);
-    throw new Error('Error in bulk insertion');
+    throw errors;
   }
 
   updateLatestStep(step);
-
-  return true;
 }
 
 /**
@@ -139,7 +135,6 @@ async function insertDataUnpaywall(insertConfig) {
     bytes = await fsp.stat(filePath);
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot get bytes [${filePath}]`, err);
-    await fail(err);
     throw err;
   }
 
@@ -149,7 +144,6 @@ async function insertDataUnpaywall(insertConfig) {
     readStream = fs.createReadStream(filePath);
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot read [${filePath}]`, err);
-    await fail(err);
     throw err;
   }
 
@@ -164,7 +158,6 @@ async function insertDataUnpaywall(insertConfig) {
     decompressedStream = readStream.pipe(zlib.createGunzip());
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot pipe [${readStream?.filename}]`, err);
-    await fail(err);
     throw err;
   }
 
@@ -175,8 +168,6 @@ async function insertDataUnpaywall(insertConfig) {
 
   // array that will contain the packet of 1000 unpaywall data
   let bulkOps = [];
-
-  let success;
 
   appLogger.info(`[job][insert]: Start insert with [${filename}]`);
 
@@ -202,18 +193,21 @@ async function insertDataUnpaywall(insertConfig) {
       } catch (err) {
         appLogger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
         if (!ignoreError) {
-          await fail(err);
           throw err;
         }
       }
     }
     // bulk insertion
     if (bulkOps.length >= maxBulkSize) {
-      success = await insertUnpaywallDataInElastic(bulkOps, step);
-      bulkOps = [];
-      if (!success) {
-        throw new Error('Cannot insert unpaywall data in elastic');
+      try {
+        await insertUnpaywallDataInElastic(bulkOps, step);
+      } catch (err) {
+        appLogger.error('[job][insert]: Cannot insert unpaywall data in elastic', err);
+        if (!ignoreError) {
+          throw err;
+        }
       }
+      bulkOps = [];
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       updateLatestStep(step);
@@ -225,9 +219,15 @@ async function insertDataUnpaywall(insertConfig) {
   }
   // last insertion if there is data left
   if (bulkOps.length > 0) {
-    success = await insertUnpaywallDataInElastic(bulkOps, step);
+    try {
+      await insertUnpaywallDataInElastic(bulkOps, step);
+    } catch (err) {
+      appLogger.error('[job][insert]: Cannot insert unpaywall data in elastic', err);
+      if (!ignoreError) {
+        throw err;
+      }
+    }
     bulkOps = [];
-    if (!success) return false;
   }
 
   appLogger.info('[job][insert]: insertion completed');

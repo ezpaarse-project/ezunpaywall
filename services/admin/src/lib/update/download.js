@@ -100,7 +100,6 @@ async function download(readStream, filepath, size) {
 
       writeStream.on('error', async (err) => {
         appLogger.error('[job][download]: Error on stream', err);
-        await fail(err);
         return reject(err);
       });
 
