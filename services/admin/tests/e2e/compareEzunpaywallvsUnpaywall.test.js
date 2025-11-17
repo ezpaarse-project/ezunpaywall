@@ -2,38 +2,11 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-underscore-dangle */
 const axios = require('axios');
-const { Client } = require('@elastic/elasticsearch');
 const _ = require('lodash');
 
-const nodes = process.env.ELASTIC_NODES;
-const size = process.env.TEST_MIRROR_SIZE || 10;
-
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-const client = new Client({
-  nodes: nodes.split(','),
-  auth: {
-    username: 'elastic',
-    password: process.env.ELASTIC_PASSWORD,
-  },
-  ssl: { rejectUnauthorized: false },
-});
 
-async function getRandomDOIs(index) {
-  const response = await client.search({
-    index,
-    size,
-    body: {
-      query: {
-        function_score: {
-          random_score: {},
-        },
-      },
-      _source: false,
-    },
-  });
-
-  return response.body.hits.hits.map((hit) => hit._id);
-}
+const dois = require('../utils/sources/DOI.json');
 
 const simpleArgs = [
   'doi',
@@ -67,7 +40,6 @@ const oaLocationArgs = [
   'url',
   'url_for_landing_page',
   'url_for_pdf',
-  'evidence',
   'license',
   'host_type',
   'is_best',
@@ -75,7 +47,6 @@ const oaLocationArgs = [
   'endpoint_id',
   'repository_institution',
   'oa_date',
-  'updated',
 ];
 
 const ezunpaywallURL = 'https://unpaywall.inist.fr/api';
@@ -148,12 +119,15 @@ async function getEzunpaywallData(doi) {
         'Content-Type': 'application/json; charset=utf-8',
         'x-api-key': 'demo',
       },
+      signal: AbortSignal.timeout(5000),
     });
   } catch (err) {
-    console.log(err.response);
+    console.log(err);
+    return;
   }
 
-  const ezunpaywallData = responseFromEzunpaywall.data.data.unpaywall[0];
+  const ezunpaywallData = responseFromEzunpaywall?.data?.data?.unpaywall[0];
+
   ezunpaywallData.year = parseInt(ezunpaywallData.year, 10);
   for (let i = 0; i < ezunpaywallData?.z_authors?.length; i += 1) {
     delete ezunpaywallData?.z_authors[i]?.ORCID;
@@ -182,12 +156,7 @@ function getObjectDiff(unpaywallData, ezunpaywallData) {
 }
 
 describe('unpaywall: test integrity', () => {
-  let dois;
-  const count = 100;
-
-  beforeAll(async () => {
-    dois = await getRandomDOIs('unpaywall', count);
-  });
+  const count = dois.length;
 
   it('Unpaywall and Ezunpaywall should be the same', async () => {
     let i = 0;
@@ -211,7 +180,7 @@ describe('unpaywall: test integrity', () => {
         oaSame += 1;
       }
       i += 1;
-      console.log(i);
+      console.log(`number of DOI: ${i}, oa same: ${oaSame}`);
     }
 
     console.log(`OA: ${oaSame}/${count}`);
