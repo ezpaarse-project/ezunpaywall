@@ -145,8 +145,8 @@ async function updateReportMail(state) {
   let updatedDocs = 0;
   state?.steps?.forEach((step) => {
     if (step.task === 'insert') {
-      insertedDocs += step.insertedDocs;
-      updatedDocs += step.updatedDocs;
+      insertedDocs += step.insertedDocs || 0;
+      updatedDocs += step.updatedDocs || 0;
     }
   });
 
