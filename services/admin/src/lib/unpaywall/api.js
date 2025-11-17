@@ -93,7 +93,7 @@ async function getChangefiles(interval, startDate, endDate) {
       },
     });
   } catch (err) {
-    appLogger.error(`[unpaywall][${interval}]: Cannot get changefiles on interval between [${startDate}] end [${endDate}]`);
+    appLogger.error(`[unpaywall][${interval}]: Cannot get changefiles on interval between [${startDate}] and [${endDate}]`);
     throw err;
   }
 
