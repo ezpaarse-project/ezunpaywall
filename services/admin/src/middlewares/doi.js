@@ -1,6 +1,6 @@
 const { cron } = require('config');
 
-const { getCount } = require('../lib/update/doi');
+const { getCount } = require('../lib/doi');
 
 const { limit } = cron.doiUpdate;
 /**
