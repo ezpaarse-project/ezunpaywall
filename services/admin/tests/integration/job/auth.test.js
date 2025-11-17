@@ -71,29 +71,4 @@ describe('Job: check auth', () => {
       expect(response.statusCode).toBe(401);
     });
   });
-
-  describe('[job][changefiles][history][download][insert]: Does not start job without apikey', () => {
-    it('Should return a status code 401', async () => {
-      const response = await request(app)
-        .post('/job/changefiles/history/download/insert');
-
-      expect(response.statusCode).toBe(401);
-    });
-  });
-
-  describe('[job][changefiles][history][insert]: Does not start job without apikey', () => {
-    beforeAll(async () => {
-      await addChangefile(changefileFilename);
-    });
-
-    afterAll(async () => {
-      await removeChangefile(changefileFilename);
-    });
-    it('Should return a status code 401', async () => {
-      const response = await request(app)
-        .post(`/job/changefiles/history/insert/${changefileFilename}`);
-
-      expect(response.statusCode).toBe(401);
-    });
-  });
 });

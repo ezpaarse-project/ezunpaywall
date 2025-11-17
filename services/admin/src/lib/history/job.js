@@ -21,8 +21,7 @@ const {
   addStepInsert,
   getLatestStep,
   updateLatestStep,
-  fail,
-} = require('./state');
+} = require('../update/state');
 
 const {
   refreshIndex,

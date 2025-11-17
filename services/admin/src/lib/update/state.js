@@ -31,8 +31,10 @@ async function createState(config) {
     error: false,
     name: config.name,
     index: config?.index || '',
-    indexHistory: config?.indexHistory || '',
   };
+  if (config.indexHistory) {
+    state.indexHistory = config.indexHistory;
+  }
   appLogger.debug('[state]: state is created');
 }
 

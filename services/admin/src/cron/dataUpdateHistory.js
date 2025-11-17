@@ -5,7 +5,7 @@ const appLogger = require('../lib/logger/appLogger');
 const Cron = require('./cron');
 const { getStatus } = require('../lib/update/status');
 
-const { downloadInsertChangefilesHistoryProcess } = require('../lib/update');
+const downloadInsertChangefilesHistoryProcess = require('../lib/update');
 
 const { ...cronConfig } = cron.dataUpdateHistory;
 let { active } = cron.dataUpdateHistory;
