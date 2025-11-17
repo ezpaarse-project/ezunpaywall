@@ -25,11 +25,13 @@ const insertDataUnpaywall = require('./insert');
 const { deleteFile } = require('../files');
 const { insertHistoryDataUnpaywall } = require('./history');
 const { getChangefiles } = require('../unpaywall/api');
+const { updateReportMail } = require('../mail');
 
 async function endJobAsError() {
   await fail();
   const state = getState();
   await createReport(state);
+  updateReportMail(state);
   setStatus(false);
 }
 
