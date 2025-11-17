@@ -6,48 +6,7 @@ Service that enrich csv and jsonl file with unpaywall data.
 
 To set up this service, you can use environment variables. The config is displayed at startup. Sensitive data are not displayed.
 
-```
-# if sensitive data are not updated
-warn: [config]: Redis password has the default value
-
-info: {
-  "nodeEnv": "development",
-  "healthcheckLogRotate": false,
-  "timezone": "Europe/Paris",
-  "redis": {
-    "host": "redis",
-    "port": 6379,
-    "password": "********"
-  },
-  "graphql": {
-    "url": "http://graphql:3001"
-  },
-  "cron": {
-    "cleanFile": {
-      "schedule": "0 0 0 * * *",
-      "active": true,
-      "enrichedFileRetention": 1,
-      "uploadedFileRetention": 1,
-      "stateFileRetention": 1
-    }
-  },
-  "apikey": "********",
-  "healthTimeout": 3000,
-  "port": 3002,
-  "paths": {
-    "log": {
-      "applicationDir": "./log/application",
-      "accessDir": "./log/access",
-      "healthcheckDir": "./log/healthcheck"
-    },
-    "data": {
-      "enrichedDir": "./data/enriched",
-      "statesDir": "./data/states",
-      "uploadDir": "./data/upload"
-    }
-  }
-}
-```
+see [default config](./config/default.json)
 
 ## Environment variables
 
@@ -59,7 +18,7 @@ info: {
 | TIMEZONE |  Timezone of app used in cron | Europe/Paris |
 | ADMIN_APIKEY | Admin API key | changeme |
 | HEALTH_TIMEOUT | Timeout to query the health route |  3000 |
-| PORT | Port | 3002 |
+| PORT | Port | 3000 |
 
 ### Redis
 

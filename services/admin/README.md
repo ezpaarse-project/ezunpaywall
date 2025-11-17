@@ -22,7 +22,7 @@ see [default config](./config/default.json)
 | CRON_DEMO_APIKEY_COUNT | Count of demo request | 100000 | 
 | ADMIN_APIKEY | Admin API key | changeme |
 | HEALTH_TIMEOUT | Timeout to query the health route | 10000 |
-| PORT | Port | 3003 |
+| PORT | Port | 3000 |
 
 ### Mail
 
