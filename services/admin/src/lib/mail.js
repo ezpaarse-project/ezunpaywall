@@ -150,6 +150,8 @@ async function updateReportMail(state) {
     }
   });
 
+  const stackTrace = JSON.stringify(state.stackTrace, null, 2);
+
   try {
     await sendMail({
       from: notifications.sender,
@@ -160,6 +162,7 @@ async function updateReportMail(state) {
         status,
         insertedDocs,
         updatedDocs,
+        stackTrace,
         date: format(new Date(), 'dd-MM-yyyy'),
       }),
     });

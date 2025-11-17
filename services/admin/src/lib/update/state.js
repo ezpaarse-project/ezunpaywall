@@ -179,20 +179,20 @@ async function fail(stackTrace) {
 
   state.error = true;
 
-  if (stack.name === 'TimeoutError') {
-    state.stackTrace = {
-      name: stack.name,
-      ...stack?.meta?.meta?.connection,
-    };
-  } else {
-    if (stack?.meta?.meta?.request?.params?.bulkBody) {
-      delete stack.meta.meta.request.params.bulkBody;
+  if (stack) {
+    if (stack.name === 'TimeoutError') {
+      state.stackTrace = {
+        name: stack.name,
+        connection: stack?.meta?.meta?.connection,
+      };
+    } else {
+      state.stackTrace = {
+        name: stack.name,
+        message: stack.message,
+        connection: stack.meta.meta.connection,
+        statusCode: stack.meta.statusCode,
+      };
     }
-
-    if (stack?.meta?.meta?.request?.params?.body) {
-      delete stack.meta.meta.request.params.body;
-    }
-    state.stackTrace = stack;
   }
 }
 

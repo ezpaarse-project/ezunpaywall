@@ -95,10 +95,12 @@
     </mj-text>
 
     {% if status == 'error' %}
-    <mj-text>
-      <strong> Stacktrace : </strong>
-      <p> {{ state.stackTrace[0].reason }} </p>
-    </mj-text>
+      <mj-text>
+        <div> Stacktrace :&nbsp;</div>
+      </mj-text>
+      <mj-text font-family="monospace" padding="10px" background-color="#f4f4f4">
+        <pre><code>{{ stackTrace | safe }}</code></pre>
+      </mj-text>
     {% endif %}
 
     <mj-text>
