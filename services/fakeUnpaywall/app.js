@@ -5,8 +5,8 @@ const logger = require('./src/logger');
 
 const updateChangefilesExample = require('./src/controllers/changefiles');
 
-const routerSnapshots = require('./src/routers/snapshots');
-const routerChangeFiles = require('./src/routers/changefiles');
+const routerUnpaywall = require('./src/routers/unpaywall');
+const routerAdmin = require('./src/routers/admin');
 const routerPing = require('./src/routers/ping');
 
 // start server
@@ -15,8 +15,8 @@ const app = express();
 app.use('/snapshots', cors());
 app.use(express.json());
 
-app.use(routerSnapshots);
-app.use(routerChangeFiles);
+app.use(routerUnpaywall);
+app.use(routerAdmin);
 app.use(routerPing);
 
 // Errors and unknown routes
