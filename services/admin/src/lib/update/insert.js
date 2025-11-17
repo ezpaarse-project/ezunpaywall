@@ -46,7 +46,7 @@ async function insertUnpaywallDataInElastic(data) {
   } catch (err) {
     appLogger.error('[elastic]: Cannot bulk', err);
     await fail(err);
-    return false;
+    throw err;
   }
 
   const errors = [];
@@ -112,12 +112,16 @@ async function insertDataUnpaywall(insertConfig) {
   try {
     await createIndex(index, unpaywallMapping);
   } catch (err) {
-    appLogger.error(`[elastic]: Cannot create index [${index}]`, err);
-    await fail(err);
-    return false;
+    appLogger.error(`[insert][elastic][index]: Cannot create index [${index}]`, err);
+    throw err;
   }
 
-  await initAlias(index, unpaywallMapping, indexAlias);
+  try {
+    await initAlias(index, unpaywallMapping, indexAlias);
+  } catch (err) {
+    appLogger.error(`[insert][elastic][alias]: Cannot create alias [${index}]`, err);
+    throw err;
+  }
 
   let filePath;
 
@@ -136,7 +140,7 @@ async function insertDataUnpaywall(insertConfig) {
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot get bytes [${filePath}]`, err);
     await fail(err);
-    return false;
+    throw err;
   }
 
   // read file with stream
@@ -146,7 +150,7 @@ async function insertDataUnpaywall(insertConfig) {
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot read [${filePath}]`, err);
     await fail(err);
-    return false;
+    throw err;
   }
 
   // get information "loaded" for state
@@ -161,7 +165,7 @@ async function insertDataUnpaywall(insertConfig) {
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot pipe [${readStream?.filename}]`, err);
     await fail(err);
-    return false;
+    throw err;
   }
 
   const rl = readline.createInterface({
@@ -199,7 +203,7 @@ async function insertDataUnpaywall(insertConfig) {
         appLogger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
         if (!ignoreError) {
           await fail(err);
-          return false;
+          throw err;
         }
       }
     }
@@ -207,7 +211,9 @@ async function insertDataUnpaywall(insertConfig) {
     if (bulkOps.length >= maxBulkSize) {
       success = await insertUnpaywallDataInElastic(bulkOps, step);
       bulkOps = [];
-      if (!success) return false;
+      if (!success) {
+        throw new Error('Cannot insert unpaywall data in elastic');
+      }
       step.percent = ((loaded / bytes.size) * 100).toFixed(2);
       step.took = (new Date() - start) / 1000;
       updateLatestStep(step);
