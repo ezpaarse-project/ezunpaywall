@@ -197,7 +197,16 @@ async function bulk(data, refresh = false) {
     appLogger.warn('[elastic]: No data is send for bulk');
     return [];
   }
-  return elasticClient.bulk({ body: data, refresh });
+
+  let elasticResult;
+  try {
+    elasticResult = await elasticClient.bulk({ body: data, refresh });
+  } catch (err) {
+    appLogger.error('[elastic]: Cannot bulk', err);
+    throw err;
+  }
+
+  return elasticResult;
 }
 
 /**
@@ -206,8 +215,16 @@ async function bulk(data, refresh = false) {
  * @returns {Promise<Array<Object>>} A list of indices and their config
  */
 async function getIndices() {
-  const res = await elasticClient.cat.indices({ format: 'json', index: 'unpaywall*,-.*' });
-  return res.body;
+  let elasticResult;
+
+  try {
+    elasticResult = await elasticClient.cat.indices({ format: 'json', index: 'unpaywall*,-.*' });
+  } catch (err) {
+    appLogger.error('[elastic]: Cannot get indices', err);
+    throw err;
+  }
+
+  return elasticResult.body;
 }
 
 /**
@@ -217,21 +234,34 @@ async function getIndices() {
  */
 async function getAlias() {
   const regexILM = /^history$/;
-  const res = await elasticClient.cat.aliases({ format: 'json', index: '-.*' });
-  let alias = res.body;
+  let elasticResult;
+  try {
+    elasticResult = await elasticClient.cat.aliases({ format: 'json', index: '-.*' });
+  } catch (err) {
+    appLogger.error('[elastic]: Cannot get aliases', err);
+    throw err;
+  }
+  let alias = elasticResult.body;
   alias = alias.filter((index) => !regexILM.test(index.alias));
   return alias;
 }
 
 async function updateDocument(index, id, doc) {
-  return elasticClient.update({
-    index,
-    id,
-    body: {
-      doc,
-      doc_as_upsert: true,
-    },
-  });
+  let elasticResult;
+  try {
+    elasticResult = await elasticClient.update({
+      index,
+      id,
+      body: {
+        doc,
+        doc_as_upsert: true,
+      },
+    });
+  } catch (err) {
+    appLogger.error(`[elastic]: Cannot update document with id [${id}]`, err);
+    throw err;
+  }
+  return elasticResult;
 }
 
 module.exports = {
