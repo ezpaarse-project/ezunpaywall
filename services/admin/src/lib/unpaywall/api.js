@@ -1,5 +1,6 @@
 /* eslint-disable global-require */
 const config = require('config');
+const { format } = require('date-fns');
 const appLogger = require('../logger/appLogger');
 const getUnpaywallClient = require('./client');
 
@@ -93,7 +94,7 @@ async function getChangefiles(interval, startDate, endDate) {
       },
     });
   } catch (err) {
-    appLogger.error(`[unpaywall][${interval}]: Cannot get changefiles on interval between [${startDate}] and [${endDate}]`);
+    appLogger.error(`[unpaywall][${interval}]: Cannot get changefiles on interval between [[${format(new Date(startDate), 'yyyy-MM-dd')}] and [${format(new Date(endDate), 'yyyy-MM-dd')}]`);
     throw err;
   }
 
