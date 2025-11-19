@@ -2,7 +2,7 @@ const { cron } = require('config');
 const appLogger = require('../lib/logger/appLogger');
 
 const Cron = require('./cron');
-const { getCount, reset } = require('../lib/update/doi');
+const { getCount, reset } = require('../lib/doi');
 
 let { active } = cron.doiUpdate;
 

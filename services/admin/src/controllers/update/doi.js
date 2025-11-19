@@ -1,4 +1,4 @@
-const { updateDOI, getCount, getCachedDOI } = require('../../lib/update/doi');
+const { updateDOI, getCount, getCachedDOI } = require('../../lib/doi');
 
 async function updateDOIController(req, res, next) {
   const { dois } = req.body;

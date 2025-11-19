@@ -31,8 +31,10 @@ async function createState(config) {
     error: false,
     name: config.name,
     index: config?.index || '',
-    indexHistory: config?.indexHistory || '',
   };
+  if (config.indexHistory) {
+    state.indexHistory = config.indexHistory;
+  }
   appLogger.debug('[state]: state is created');
 }
 
@@ -178,10 +180,22 @@ async function fail(stackTrace) {
   updateLatestStep(step);
 
   state.error = true;
-  if (stack?.meta?.meta?.request?.params?.bulkBody) {
-    delete stack.meta.meta.request.params.bulkBody;
+
+  if (stack) {
+    if (stack.name === 'TimeoutError') {
+      state.stackTrace = {
+        name: stack.name,
+        connection: stack?.meta?.meta?.connection,
+      };
+    } else {
+      state.stackTrace = {
+        name: stack.name,
+        message: stack.message,
+        connection: stack.meta.meta.connection,
+        statusCode: stack.meta.statusCode,
+      };
+    }
   }
-  state.stackTrace = stack;
 }
 
 module.exports = {

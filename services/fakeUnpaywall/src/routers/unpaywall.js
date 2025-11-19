@@ -37,7 +37,7 @@ router.get('/feed/changefiles/:file', async (req, res) => {
  *
  * This route need a param that contains the filename of changefile.
  */
-router.get('/daily-feed/changefiles/:file', async (req, res) => {
+router.get('/daily-feed/changefile/:file', async (req, res) => {
   const { error, value } = joi.string().trim().validate(req.params.file);
 
   if (error) return res.status(400).json({ message: error.details[0].message });

@@ -26,6 +26,6 @@ RUN if [ "$ENV" = "production" ]; then \
 
 USER node
 
-EXPOSE 3003
+EXPOSE 3000
 
 ENTRYPOINT [ "node", "./src/app.js" ]

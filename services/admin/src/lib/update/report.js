@@ -27,7 +27,6 @@ async function createReport(state) {
 /**
  * Get report from the folder data depending on type.
  *
- * @param {string} type Type of report (unpaywall or unpaywallHistory).
  * @param {string} filename Report filename.
  *
  * @returns {Promise<Object>} Report in json format.

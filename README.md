@@ -67,15 +67,15 @@ Command :
 npm i
 
 # create volume for elastic
-docker-compose -f docker-compose.debug.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/ 
+docker compose -f docker-compose-dev.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/ 
 # create volume for admin service
-docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/log
-docker compose run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/data
+docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/log
+docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/data
 # create volume for enrich service
-docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/log
-docker compose run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
+docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/log
+docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
 # create volume for graphql service
-docker compose run --rm --entrypoint "" --user root graphql chown -R node /usr/src/app/log
+docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root graphql chown -R node /usr/src/app/log
 
 ```
 #### Start

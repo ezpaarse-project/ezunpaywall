@@ -21,8 +21,7 @@ const {
   addStepInsert,
   getLatestStep,
   updateLatestStep,
-  fail,
-} = require('./state');
+} = require('../update/state');
 
 const {
   refreshIndex,
@@ -47,9 +46,8 @@ async function insertUnpaywallDataInElastic(data, index) {
   try {
     res = await bulk(data);
   } catch (err) {
-    appLogger.error(`[elastic]: Cannot bulk on index [${index}]`, err);
-    await fail(err?.[0]?.reason);
-    return false;
+    appLogger.error(`[history][insert][elastic]: Cannot bulk on index [${index}]`, err);
+    throw err;
   }
 
   const errors = [];
@@ -72,19 +70,16 @@ async function insertUnpaywallDataInElastic(data, index) {
   });
 
   if (errors.length > 0) {
-    appLogger.error('[elastic]: Error in bulk insertion');
+    appLogger.error('[history][insert][elastic]: Error in bulk insertion');
     errors.forEach((error) => {
-      appLogger.error(`[elastic]: ${JSON.stringify(error, null, 2)}`);
+      appLogger.error(`[history][insert][elastic]: ${JSON.stringify(error, null, 2)}`);
     });
     step.status = 'error';
     updateLatestStep(step);
-    await fail(errors);
-    return false;
+    throw errors;
   }
 
   updateLatestStep(step);
-
-  return true;
 }
 /**
  * Insert data in unpaywall index base and history index.
@@ -99,9 +94,9 @@ async function insertUnpaywallDataInElastic(data, index) {
  * @returns {Promise<boolean>} Success or not.
  */
 async function insertData(dois, newDois, index, indexHistory) {
-  appLogger.debug(`[job][insert]: try to get [${dois.length}] documents in [${index}]`);
+  appLogger.debug(`[job][insert][history]: try to get [${dois.length}] documents in [${index}]`);
   const existingDataInBaseIndex = await searchByDOI(dois, index);
-  appLogger.debug(`[job][insert]: get [${existingDataInBaseIndex.length}] documents in [${index}]`);
+  appLogger.debug(`[job][insert][history]: get [${existingDataInBaseIndex.length}] documents in [${index}]`);
   const bulkHistoryDocuments = [];
   const bulkDocuments = [];
 
@@ -143,16 +138,21 @@ async function insertData(dois, newDois, index, indexHistory) {
     bulkDocuments.push(document);
   });
 
-  let success = false;
-
-  appLogger.debug(`[job][insert]: try to insert [${bulkDocuments.length / 2}] documents in [${index}]`);
-  success = await insertUnpaywallDataInElastic(bulkDocuments, index);
-  if (!success) return false;
-
+  appLogger.debug(`[job][insert][history]: try to insert [${bulkDocuments.length / 2}] documents in [${index}]`);
+  try {
+    insertUnpaywallDataInElastic(bulkDocuments, index);
+  } catch (err) {
+    appLogger.error('[job][insert][history]: Error in bulk insertion');
+    throw err;
+  }
   if (bulkHistoryDocuments.length > 0) {
-    appLogger.debug(`[job][insert]: try to insert [${bulkHistoryDocuments.length / 2}] documents in [${indexHistory}]`);
-    success = await insertUnpaywallDataInElastic(bulkHistoryDocuments, indexHistory);
-    if (!success) return false;
+    appLogger.debug(`[job][insert][history]: try to insert [${bulkHistoryDocuments.length / 2}] documents in [${indexHistory}]`);
+    try {
+      insertUnpaywallDataInElastic(bulkHistoryDocuments, indexHistory);
+    } catch (err) {
+      appLogger.error('[job][insert][history]: Error in bulk insertion');
+      throw err;
+    }
   }
 
   return true;
@@ -179,17 +179,15 @@ async function insertHistoryDataUnpaywall(insertConfig) {
   try {
     await createIndex(index, unpaywallEnrichedMapping);
   } catch (err) {
-    appLogger.error(`[elastic]: Cannot create index [${index}]`, err);
-    await fail(err);
-    return false;
+    appLogger.error(`[insert][elastic]: Cannot create index [${index}]`, err);
+    throw err;
   }
 
   try {
     await createIndex(indexHistory, unpaywallHistoryMapping);
   } catch (err) {
-    appLogger.error(`[elastic]: Cannot create index [${indexHistory}]`, err);
-    await fail(err);
-    return false;
+    appLogger.error(`[insert][elastic]: Cannot create index [${indexHistory}]`, err);
+    throw err;
   }
 
   // step insertion in the state
@@ -219,8 +217,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
     bytes = await fsp.stat(filePath);
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot get bytes [${filePath}]`, err);
-    await fail(err);
-    return false;
+    throw err;
   }
 
   // read file with stream
@@ -229,8 +226,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
     readStream = fs.createReadStream(filePath);
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot read [${filePath}]`, err);
-    await fail(err);
-    return false;
+    throw err;
   }
 
   // get information "loaded" for state
@@ -244,8 +240,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
     decompressedStream = readStream.pipe(zlib.createGunzip());
   } catch (err) {
     appLogger.error(`[job][insert]: Cannot pipe [${readStream?.filename}]`, err);
-    await fail(err);
-    return false;
+    throw err;
   }
 
   const rl = readline.createInterface({
@@ -280,8 +275,7 @@ async function insertHistoryDataUnpaywall(insertConfig) {
         newData.push(doc);
       } catch (err) {
         appLogger.error(`[job][insert]: Cannot parse [${line}] in json format`, err);
-        await fail(err);
-        return false;
+        throw err;
       }
     }
     // bulk insertion

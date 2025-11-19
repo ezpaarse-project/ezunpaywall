@@ -100,7 +100,6 @@ async function download(readStream, filepath, size) {
 
       writeStream.on('error', async (err) => {
         appLogger.error('[job][download]: Error on stream', err);
-        await fail(err);
         return reject(err);
       });
 
@@ -130,7 +129,7 @@ async function downloadChangefile(info, interval) {
   if (alreadyInstalled) stats = await fsp.stat(filePath);
   if (alreadyInstalled && stats.size === info.size) {
     appLogger.info(`[job][download]: File [${info.filename}] is already installed`);
-    return true;
+    return;
   }
 
   addStepDownload();
@@ -154,8 +153,6 @@ async function downloadChangefile(info, interval) {
     appLogger.error(`[unpaywall][changefiles]: Cannot download changefile [${info.filename}]`);
     throw err;
   }
-
-  return true;
 }
 
 /**

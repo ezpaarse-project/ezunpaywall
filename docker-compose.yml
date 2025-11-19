@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   graphql:
     build:
@@ -8,9 +6,9 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - ${GRAPHQL_APPLICATION_LOG_PATH:-./services/graphql/log/application}:/usr/src/app/log/application
-      - ${GRAPHQL_ACCESS_LOG_PATH:-./services/graphql/log/access}:/usr/src/app/log/access
-      - ${ELASTIC_CERT_CA_PATH:-./services/graphql/certs/ca.crt}:/usr/src/app/certs
+      - ./services/graphql/log/application:/usr/src/app/log/application
+      - ./services/graphql/log/access:/usr/src/app/log/access
+      - ./services/graphql/certs/ca.crt:/usr/src/app/certs
     command: "npm start"
     restart: unless-stopped
 
@@ -21,9 +19,9 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - ${ENRICH_APPLICATION_LOG_PATH:-./services/enrich/log/application}:/usr/src/app/log/application
-      - ${ENRICH_ACCESS_LOG_PATH:-./services/enrich/log/access}:/usr/src/app/log/access
-      - ${ENRICH_DATA_PATH:-./services/enrich/data}:/usr/src/app/data
+      - ./services/enrich/log/application:/usr/src/app/log/application
+      - ./services/enrich/log/access:/usr/src/app/log/access
+      - ./services/enrich/data:/usr/src/app/data
     command: "npm start"
     restart: unless-stopped
 
@@ -37,10 +35,10 @@ services:
       # smtp
       - SMTP_HOST=maildev
     volumes:
-      - ${ADMIN_APPLICATION_LOG_PATH:-./services/admin/log/application}:/usr/src/app/log/application
-      - ${ADMIN_ACCESS_LOG_PATH:-./services/admin/log/access}:/usr/src/app/log/access
-      - ${ADMIN_DATA_PATH:-./services/admin/data}:/usr/src/app/data
-      - ${ELASTIC_CERT_CA_PATH-./services/admin/certs/ca.crt}:/usr/src/app/certs
+      - ./services/admin/log/application:/usr/src/app/log/application
+      - ./services/admin/log/access:/usr/src/app/log/access
+      - ./services/admin/data:/usr/src/app/data
+      - ./services/admin/certs/ca.crt:/usr/src/app/certs
     command: "npm run start"
     restart: unless-stopped
 
@@ -59,7 +57,7 @@ services:
       - NUXT_ADMIN_APIKEY
 
   redis:
-    image: redis:7.2.4-alpine3.19
+    image: redis:8.2.2-alpine3.22
     container_name: ezunpaywall-redis
     command: redis-server --requirepass "${REDIS_PASSWORD:-changeme}"
     volumes:
@@ -82,11 +80,11 @@ services:
     environment:
       # host of service
       - FRONTEND_URL=http://frontend:3000/
-      - GRAPHQL_URL=http://graphql:3001/
-      - ENRICH_URL=http://enrich:3002/
-      - ADMIN_URL=http://admin:3003/
+      - GRAPHQL_URL=http://graphql:3000/
+      - ENRICH_URL=http://enrich:3000/
+      - ADMIN_URL=http://admin:3000/
     ports:
-      - ${NGINX_PORT:-80}:80
+      - 80:80
     restart: unless-stopped
     depends_on:
       graphql:

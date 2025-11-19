@@ -3,3 +3,4 @@ log/
 data/
 coverage/
 data-test/
+ca.crt

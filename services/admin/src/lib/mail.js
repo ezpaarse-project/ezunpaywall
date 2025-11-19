@@ -145,10 +145,12 @@ async function updateReportMail(state) {
   let updatedDocs = 0;
   state?.steps?.forEach((step) => {
     if (step.task === 'insert') {
-      insertedDocs += step.insertedDocs;
-      updatedDocs += step.updatedDocs;
+      insertedDocs += step.insertedDocs || 0;
+      updatedDocs += step.updatedDocs || 0;
     }
   });
+
+  const stackTrace = JSON.stringify(state.stackTrace, null, 2);
 
   try {
     await sendMail({
@@ -160,6 +162,7 @@ async function updateReportMail(state) {
         status,
         insertedDocs,
         updatedDocs,
+        stackTrace,
         date: format(new Date(), 'dd-MM-yyyy'),
       }),
     });

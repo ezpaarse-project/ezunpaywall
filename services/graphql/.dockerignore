@@ -8,3 +8,4 @@ coverage/
 .gitignore
 .eslintrc.json
 README.md
+ca.crt

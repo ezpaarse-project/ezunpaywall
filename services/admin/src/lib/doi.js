@@ -1,9 +1,9 @@
 const config = require('config');
 
-const appLogger = require('../logger/appLogger');
+const appLogger = require('./logger/appLogger');
 
-const { getDocumentByDOI } = require('../unpaywall/api');
-const { updateDocument } = require('../elastic');
+const { getDocumentByDOI } = require('./unpaywall/api');
+const { updateDocument } = require('./elastic');
 
 const { limit } = config.cron.doiUpdate;
 let count = 0;

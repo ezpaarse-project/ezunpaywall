@@ -9,99 +9,7 @@ This service is for administrators.
 
 To set up this service, you can use environment variables. The config is displayed at startup. Sensitive data are not displayed.
 
-```
-# if sensitive data are not updated
-warn: [config]: Unpaywall apikey has the default value 
-warn: [config]: Elasticsearch password has the default value 
-warn: [config]: Apikey has the default value 
-warn: [config]: Redis password has the default value
-{ 
-  "nodeEnv": "development",
-  "timezone": "Europe/Paris",
-  "apikey": "********",
-  "healthTimeout": 10000,
-  "port": 3003,
-  "smtp": {
-    "host": "localhost",
-    "port": 25
-  },
-  "notifications": {
-    "sender": "ezunpaywall",
-    "receivers": ["ezunpaywall@example.com"],
-    "machine": "dev"
-  },
-  "unpaywall": {
-    "url": "http://fakeunpaywall:3000",
-    "apikey": "default",
-    "email": "john.doe@example.com"
-  },
-  "elasticsearch": {
-    "nodes": "http://elastic:9200",
-    "username": "elastic",
-    "password": "********",
-    "maxBulkSize": 4000,
-    "indexAlias": "upw",
-    "timeout": 20000
-  },
-  "redis":  {
-    "host": "redis",
-    "port": "6379",
-    "password": "********"
-  },
-  "cron": {
-    "downloadSnapshot": {
-      "schedule": "0 0 0 1 * *",
-      "active": true
-    },
-    "dataUpdate": {
-      "schedule": "0 0 0 * * *",
-      "active": false,
-      "index": "unpaywall",
-      "interval": "day",
-      "anteriority": 0
-    },
-    "dataUpdateHistory": {
-      "schedule": "0 0 0 * * *",
-      "active": false,
-      "index": "unpaywall",
-      "indexHistory": "unpaywall_history_*",
-      "interval": "day"
-    },
-    "cleanFile": {
-      "schedule": "0 0 0 * * *",
-      "active": true,
-      "changefileRetention": 30,
-      "reportRetention": 30,
-      "snapshotRetention": 100,
-      "accessLogRetention": 365,
-      "applicationLogRetention": 365,
-      "healthcheckLogRetention": 30
-    },
-    "demoApikey": {
-      "schedule": "0 0 0 * * *",
-      "active": true,
-      "count": 100000
-    },
-    "doiUpdate": {
-      "schedule": "0 0 0 * * *",
-      "active": true,
-      "count": 100000
-    }
-  },
-  "paths": {
-    "log": {
-      "applicationDir": "./log/application", 
-      "accessDir": "./log/access",
-      "healthcheckDir": "./log/healthcheck"
-    },
-    "data": {
-      "changefilesDir": "./data/changefiles",
-      "snapshotsDir": "./data/snapshots",
-      "reportsDir": "./data/reports"
-    }
-  }
-}
-```
+see [default config](./config/default.json)
 
 ## Environment variables
 
@@ -114,7 +22,7 @@ warn: [config]: Redis password has the default value
 | CRON_DEMO_APIKEY_COUNT | Count of demo request | 100000 | 
 | ADMIN_APIKEY | Admin API key | changeme |
 | HEALTH_TIMEOUT | Timeout to query the health route | 10000 |
-| PORT | Port | 3003 |
+| PORT | Port | 3000 |
 
 ### Mail
 
