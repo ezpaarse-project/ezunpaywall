@@ -26,8 +26,8 @@ const { deleteFile } = require('../files');
 const { getChangefiles } = require('../unpaywall/api');
 const { updateReportMail } = require('../mail');
 
-async function endJobAsError() {
-  await fail();
+async function endJobAsError(err) {
+  await fail(err);
   const state = getState();
   await createReport(state);
   updateReportMail(state);
@@ -64,7 +64,7 @@ async function downloadSnapshotProcess() {
     filename = await downloadSnapshot();
   } catch (err) {
     appLogger.error('[job][snapshot][download]: Cannot download snapshot');
-    await endJobAsError();
+    await endJobAsError(err);
     appLogger.error('[job][snapshot][download]: download snapshot job is finished with an error', err);
     return;
   }
@@ -101,7 +101,7 @@ async function downloadInsertSnapshotProcess(jobConfig) {
     filename = await downloadSnapshot();
   } catch (err) {
     appLogger.error('[job][snapshot][download][insert]: Cannot download snapshot');
-    await endJobAsError();
+    await endJobAsError(err);
     appLogger.error('[job][snapshot][download][insert]: Download insert snapshot job is finished with an error', err);
     return;
   }
@@ -114,7 +114,7 @@ async function downloadInsertSnapshotProcess(jobConfig) {
     await insertDataUnpaywall(jobConfig);
   } catch (err) {
     appLogger.error(`[job][snapshot][download][insert]: Cannot insert the content of snapshot [${jobConfig.filename}]`);
-    await endJobAsError();
+    await endJobAsError(err);
     appLogger.error('[job][snapshot][download][insert]: Download insert snapshot job is finished with an error', err);
     return;
   }
@@ -170,7 +170,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     changefilesInfo = await getChangefiles(interval, startDate, endDate);
   } catch (err) {
     appLogger.error('[job][changefiles][download][insert]: Cannot get changefiles', err);
-    await endJobAsError();
+    await endJobAsError(err);
     appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
     return;
   }
@@ -191,7 +191,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
       await downloadChangefile(changefilesInfo[i], interval);
     } catch (err) {
       appLogger.error(`[job][changefiles][download][insert]: Cannot download changefile [${changefilesInfo[i].filename}]`);
-      await endJobAsError();
+      await endJobAsError(err);
       appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
       return;
     }
@@ -202,7 +202,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
       await insertDataUnpaywall(jobConfig);
     } catch (err) {
       appLogger.error(`[job][changefiles][download][insert]: Cannot insert changefile [${changefilesInfo[i].filename}]`);
-      await endJobAsError();
+      await endJobAsError(err);
       appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
       return;
     }
@@ -248,7 +248,7 @@ async function insertFileProcess(jobConfig) {
     await insertDataUnpaywall(jobConfig);
   } catch (err) {
     appLogger.error(`[job][${type}][insert]: Cannot insert ${type} [${jobConfig.filename}]`);
-    await endJobAsError();
+    await endJobAsError(err);
     appLogger.error(`[job][${type}][insert]: Insert changefile job is finish with an error`, err);
     return;
   }

@@ -91,7 +91,7 @@ async function downloadInsertChangefilesHistoryProcess(jobConfig) {
     changefilesInfo = await getChangefiles(interval, startDate, endDate);
   } catch (err) {
     appLogger.error('[job][changefiles][history][download][insert]: Cannot get changefiles', err);
-    await endJobAsError();
+    await endJobAsError(err);
     appLogger.error('[job][changefiles][history][download][insert]: History download and insert changefile job is finish with an error', err);
     return;
   }
@@ -111,7 +111,7 @@ async function downloadInsertChangefilesHistoryProcess(jobConfig) {
       await downloadChangefile(changefilesInfo[i], interval);
     } catch (err) {
       appLogger.error(`[job][changefiles][history][download][insert]: Cannot download changefile [${changefilesInfo[i].filename}]`);
-      await endJobAsError();
+      await endJobAsError(err);
       appLogger.error('[job][changefiles][history][download][insert]: History download and insert changefile job is finish with an error', err);
       return;
     }
@@ -122,7 +122,7 @@ async function downloadInsertChangefilesHistoryProcess(jobConfig) {
       await insertHistoryDataUnpaywall(jobConfig);
     } catch (err) {
       appLogger.error(`[job][changefiles][history][download][insert]: Cannot insert changefile [${changefilesInfo[i].filename}]`);
-      await endJobAsError();
+      await endJobAsError(err);
       appLogger.error('[job][changefiles][history][download][insert]: History download and insert changefile job is finish with an error', err);
       return;
     }

@@ -200,7 +200,7 @@ async function bulk(data, refresh = false) {
 
   let elasticResult;
   try {
-    elasticResult = await elasticClient.bulk({ body: data, refresh });
+    elasticResult = await elasticClient.bulk({ body: data, refresh }, { requestTimeout: 1 });
   } catch (err) {
     appLogger.error('[elastic]: Cannot bulk', err);
     throw err;
