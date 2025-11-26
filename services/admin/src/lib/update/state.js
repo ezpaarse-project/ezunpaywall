@@ -191,8 +191,8 @@ async function fail(stackTrace) {
       state.stackTrace = {
         name: stack.name,
         message: stack.message,
-        connection: stack.meta.meta.connection,
-        statusCode: stack.meta.statusCode,
+        connection: stack?.meta?.meta?.connection,
+        statusCode: stack?.meta?.statusCode,
       };
     }
   }
