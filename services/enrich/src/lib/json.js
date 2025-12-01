@@ -219,6 +219,15 @@ async function processEnrichJSON(id, index, args, prefix, state) {
     let parsedLine;
     try {
       parsedLine = JSON.parse(line);
+
+      // clean malformated DOI
+      if (parsedLine.doi) {
+        parsedLine.doi = parsedLine.doi
+          .replace(/\\/g, '')
+          .toLowerCase()
+          .trim();
+      }
+
       data.push(parsedLine);
     } catch (err) {
       logger.error(`[job][jsonl]: Cannot parse [${line}] in json format`, err);

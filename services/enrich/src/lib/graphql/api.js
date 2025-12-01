@@ -20,7 +20,12 @@ async function requestGraphql(data, args, index, apikey) {
   const map1 = data.map((elem) => elem?.doi);
 
   // remove duplicate, undefined and doi not start with 10.
-  dois = [...new Set(map1.filter((doi) => doi !== undefined && doi.startsWith('10.')))];
+  dois = [...new Set(
+    map1
+      .filter((doi) => typeof doi === 'string')
+      .map((doi) => doi.replace(/\\/g, '').toLowerCase().trim())
+      .filter((doi) => doi.startsWith('10.')),
+  )];
 
   dois = dois.join('","');
 

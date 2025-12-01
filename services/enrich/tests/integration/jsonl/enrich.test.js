@@ -501,4 +501,84 @@ describe('Enrich: job on csv file', () => {
       expect(same).toBe(true);
     });
   });
+
+  describe('[job][jsonl]: Enrich 1/1 lines with is_oa', () => {
+    let id;
+    let enrichedFile;
+
+    it('Should upload the file', async () => {
+      const response = await request(app)
+        .post('/upload')
+        .attach('file', path.resolve(enrichDir, 'mustBeEnrich', 'file03.jsonl'), 'file03.jsonl')
+        .set('Content-Type', 'application/x-ndjson')
+        .set('x-api-key', apikey1);
+
+      expect(response.statusCode).toBe(200);
+
+      id = response?.body;
+    });
+
+    it('Should enrich the file on 1 lines with { is_oa } and download it', async () => {
+      // start enrich process
+      const response = await request(app)
+        .post(`/job/${id}`)
+        .send({
+          type: 'jsonl',
+          index: 'unpaywall-test',
+          args: '{ is_oa }',
+        })
+        .set('x-api-key', apikey1);
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    it('Should get the state of enrich', async () => {
+      let response;
+      do {
+        response = await request(app)
+          .get(`/states/${id}.json`)
+          .set('x-api-key', apikey1);
+        expect(response.statusCode).toBe(200);
+        await setTimeout(100);
+      } while (!response?.body?.done);
+
+      const state = response?.body;
+
+      expect(state).toMatchObject({
+        done: true,
+        apikey: apikey1,
+        linesRead: 1,
+        enrichedLines: 1,
+        error: false,
+      });
+
+      fieldToBeDefined.forEach((key) => {
+        expect(state).toHaveProperty(key);
+        expect(state[key]).not.toBeUndefined();
+      });
+    });
+
+    it('Should download the enriched file', async () => {
+      const response = await request(app)
+        .get(`/enriched/${id}.jsonl`)
+        .set('x-api-key', apikey1)
+        .buffer()
+        .parse(binaryParser);
+
+      expect(response.statusCode).toBe(200);
+
+      enrichedFile = path.resolve(enrichDir, 'tmp', 'enriched.jsonl');
+      try {
+        await fsp.writeFile(enrichedFile, response.body.toString());
+      } catch (err) {
+        console.error(`writeFile: ${err}`);
+      }
+    });
+
+    it('Should be the same', async () => {
+      const reference = path.resolve(enrichDir, 'enriched', 'jsonl', 'file07.jsonl');
+      const same = await compareFile(reference, enrichedFile);
+      expect(same).toBe(true);
+    });
+  });
 });
