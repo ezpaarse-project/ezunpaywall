@@ -502,7 +502,7 @@ describe('Enrich: job on csv file', () => {
     });
   });
 
-  describe('[job][jsonl]: Enrich 1/1 lines with is_oa', () => {
+  describe('[job][jsonl]: Enrich 2/2 lines of DOI with \\ with is_oa', () => {
     let id;
     let enrichedFile;
 
@@ -547,8 +547,8 @@ describe('Enrich: job on csv file', () => {
       expect(state).toMatchObject({
         done: true,
         apikey: apikey1,
-        linesRead: 1,
-        enrichedLines: 1,
+        linesRead: 2,
+        enrichedLines: 2,
         error: false,
       });
 
