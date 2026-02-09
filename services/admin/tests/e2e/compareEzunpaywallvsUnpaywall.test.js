@@ -122,7 +122,7 @@ async function getEzunpaywallData(doi) {
       signal: AbortSignal.timeout(5000),
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.response);
     return;
   }
 
