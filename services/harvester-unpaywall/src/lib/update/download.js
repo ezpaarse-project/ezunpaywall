@@ -12,7 +12,6 @@ const {
   getState,
   getLatestStep,
   addStepDownload,
-  fail,
   updateLatestStep,
 } = require('./state');
 

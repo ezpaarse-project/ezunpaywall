@@ -4,6 +4,7 @@ import { defineNuxtPlugin } from '#imports';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const { adminUrl } = nuxtApp.$config.public;
+  const { harvesterUnpaywallUrl } = nuxtApp.$config.public;
   const { graphqlURL } = nuxtApp.$config.public;
   const { enrichURL } = nuxtApp.$config.public;
 
@@ -11,6 +12,11 @@ export default defineNuxtPlugin((nuxtApp) => {
     baseURL: adminUrl,
   });
   adminFetch.baseURL = adminUrl;
+
+  const harvesterUnpaywallFetch = $fetch.create({
+    baseURL: harvesterUnpaywallUrl,
+  });
+  harvesterUnpaywallFetch.baseURL = harvesterUnpaywallUrl;
 
   const enrichFetch = $fetch.create({
     baseURL: enrichURL,
@@ -23,6 +29,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   graphqlFetch.baseURL = graphqlURL;
 
   nuxtApp.provide('admin', adminFetch);
+  nuxtApp.provide('harvesterUnpaywall', harvesterUnpaywallFetch);
   nuxtApp.provide('enrich', enrichFetch);
   nuxtApp.provide('graphql', graphqlFetch);
 });

@@ -63,6 +63,31 @@ services:
       timeout: 10s
       retries: 5
 
+  harvester-unpaywall:
+    image: node:22.13.1
+    container_name: ezunpaywall-harvester-unpaywall-dev
+    environment:
+      - LOG_LEVEL=debug
+      # smtp
+      - SMTP_HOST=maildev
+    working_dir: /usr/src/app
+    volumes:
+      - ./services/harvester-unpaywall:/usr/src/app
+    command: "npm run dev"
+    ports:
+      - 59708:3000
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+
   frontend:
     image: node:22.13.1
     container_name: ezunpaywall-frontend-dev

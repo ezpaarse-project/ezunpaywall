@@ -40,7 +40,7 @@
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
-const { $admin } = useNuxtApp();
+const { $harvesterUnpaywall } = useNuxtApp();
 
 const loading = ref(false);
 const reports = ref([]);
@@ -52,7 +52,7 @@ const props = defineProps({
 async function getReport(filename) {
   let report;
   try {
-    report = await $admin(`/reports/${filename}`, {
+    report = await $harvesterUnpaywall(`/reports/${filename}`, {
       method: 'GET',
     });
   } catch (err) {
@@ -67,7 +67,7 @@ async function getReports() {
   let res;
 
   try {
-    res = await $admin('/reports', {
+    res = await $harvesterUnpaywall('/reports', {
       method: 'GET',
     });
   } catch (err) {

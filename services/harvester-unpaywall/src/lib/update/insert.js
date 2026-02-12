@@ -17,7 +17,6 @@ const {
   addStepInsert,
   getLatestStep,
   updateLatestStep,
-  fail,
 } = require('./state');
 
 const {

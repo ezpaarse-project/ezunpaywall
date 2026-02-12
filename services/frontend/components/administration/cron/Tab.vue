@@ -49,19 +49,26 @@
 
 const route = useRoute();
 
-const { $admin, $enrich, $graphql } = useNuxtApp();
+const {
+  $admin,
+  $enrich,
+  $graphql,
+  $harvesterUnpaywall,
+} = useNuxtApp();
 
 const tab = ref('Graphql');
 const items = ref([
   'Graphql',
   'Enrich',
   'Admin',
+  'Harvester-unpaywall',
 ]);
 
 const names = computed(() => {
-  if (tab.value === 'Graphql') { return ['metrics', 'cleanFile']; }
+  if (tab.value === 'Graphql') { return ['cleanFile', 'metrics']; }
   if (tab.value === 'Enrich') { return ['cleanFile']; }
-  if (tab.value === 'Admin') { return ['dataUpdate', 'dataUpdateHistory', 'cleanFile', 'demoApiKey', 'downloadSnapshot']; }
+  if (tab.value === 'Admin') { return ['cleanFile', 'demoApiKey']; }
+  if (tab.value === 'Harvester-unpaywall') { return ['cleanFile', 'downloadSnapshot', 'dataUpdate']; }
   return [];
 });
 
@@ -69,6 +76,7 @@ const host = computed(() => {
   if (tab.value === 'Graphql') { return $graphql; }
   if (tab.value === 'Enrich') { return $enrich; }
   if (tab.value === 'Admin') { return $admin; }
+  if (tab.value === 'Harvester-unpaywall') { return $harvesterUnpaywall; }
   return [];
 });
 
@@ -77,6 +85,11 @@ onMounted(() => {
   if (presSelectedDoc === 'graphql') { tab.value = 'Graphql'; }
   if (presSelectedDoc === 'enrich') { tab.value = 'Enrich'; }
   if (presSelectedDoc === 'admin') { tab.value = 'Admin'; }
+  if (presSelectedDoc === 'Harvester-unpaywall') { tab.value = 'Harvester-unpaywall'; }
+});
+
+definePageMeta({
+  middleware: 'admin',
 });
 
 </script>

@@ -36,7 +36,7 @@
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
-const { $admin } = useNuxtApp();
+const { $harvesterUnpaywall } = useNuxtApp();
 
 const timeout = ref(null);
 const inUpdate = ref(false);
@@ -57,7 +57,7 @@ const latestFilename = computed(() => latestStep.value?.file);
 async function getState() {
   let res;
   try {
-    res = await $admin('/states', {
+    res = await $harvesterUnpaywall('/states', {
       method: 'get',
       params: {
         latest: true,
@@ -72,7 +72,7 @@ async function getState() {
 async function checkIfUpdate() {
   let res;
   try {
-    res = await $admin('/job/status', {
+    res = await $harvesterUnpaywall('/job/status', {
       method: 'get',
     });
   } catch (err) {

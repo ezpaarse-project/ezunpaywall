@@ -1,0 +1,1185 @@
+openapi: 3.0.0
+info:
+  description: 'The harvester unpaywall API to manage unpaywall data.'
+  version: 1.0.0
+  title: Harvester unpaywall service
+  contact:
+    email: ezteam@couperin.org
+    name: ezTeam
+  license:
+    name: CeCILL 2.1
+    url: http://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
+servers:
+  - url: https://unpaywall.inist.fr/api/harvester-unpaywall
+tags:
+  - name: ping
+  - name: job
+  - name: doi
+  - name: cron
+  - name: mail
+paths:
+  /:
+    get:
+      tags:
+        - ping
+      operationId: get
+      summary: Name of service.
+      description: Get name of service.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    message: harvester unpaywall service
+  /ping:
+    get:
+      operationId: get-ping
+      summary: Ping harvester unpaywall service.
+      description: Ping harvester unpaywall service.
+      tags:
+        - ping
+      responses:
+        '204':
+          description: No Content
+  
+  /status:
+    get:
+      tags:
+        - ping
+      operationId: get-status
+      summary: Status.
+      description: status on all service connected to harvester unpaywall service.
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redis:
+                    type: object
+                    properties:
+                      elapsedTime:
+                        type: integer
+                      status:
+                        type: boolean
+                  elastic:
+                    type: object
+                    properties:
+                      elapsedTime:
+                        type: integer
+                      status:
+                        type: boolean
+                  elapsedTime:
+                    type: integer
+                  status:
+                    type: boolean
+                x-examples:
+                  Example 1:
+                    redis:
+                      elapsedTime: 1
+                      status: true
+                    elastic:
+                      elapsedTime: 1
+                      status: true
+                    elapsedTime: 1
+                    status: true
+              examples:
+                Success:
+                  value:
+                    redis:
+                      elapsedTime: 1
+                      status: true
+                    elastic:
+                      elapsedTime: 1
+                      status: true
+                    elapsedTime: 1
+                    status: true
+                Error redis:
+                  value:
+                    redis:
+                      elapsedTime: 3001
+                      status: false
+                      error: time out
+                    elastic:
+                      elapsedTime: 1
+                      status: true
+                    elapsedTime: 3001
+                    status: false
+
+  /doi/update:
+    post:
+      tags:
+        - doi
+      operationId: post-doi-update
+      summary: Update DOI on ezunpaywall with unpaywall data
+      description: Update DOI on ezunpaywall with unpaywall depending on unpaywall limit
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          description: Dois must be an array
+        '409':
+          description: Limit is reached, try tomorrow
+
+  /doi/update/count:
+    get:
+      tags:
+        - doi
+      operationId: get-doi-update-count
+      summary: Get count of DOIs updated today
+      description:  Get count of DOIs updated today
+      responses:
+        '200':
+          description: count of DOIs updated
+          content:
+            Count:
+              examples:
+                response:
+                  value: 5
+
+  
+  /doi/update/cache:
+    get:
+      tags:
+        - doi
+      operationId: get-doi-update-cache
+      summary: Get list of DOIs updated today
+      description:  Get list of DOIs updated today
+      responses:
+        '200':
+          description: count of DOIs updated today
+          content:
+            Count:
+              examples:
+                response:
+                  value:
+                    - 10.01
+                    - 10.02
+
+  /healthcheck:
+    get:
+      tags:
+        - ping
+      operationId: get-healthcheck
+      summary: Checking the health of the service
+      description: Returns a status of 204 if the service is available
+      responses:
+        '204':
+          description: No Content
+          
+  /job/snapshots/download:
+    post:
+      tags:
+        - job
+      operationId: post-job-download-snapshot
+      summary: Start process download snapshot from unpaywall.
+      description: Download the latest snapshot from unpaywall.org.
+      security:
+        - x-api-key: []
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  
+  /job/snapshots/download/insert:
+    post:
+      tags:
+        - job
+      operationId: post-snapshot-job-download-insert
+      summary: Start process download and insert snapshot from unpaywall.
+      description: Download and insert the latest snapshot from unpaywall.org.
+      security:
+        - x-api-key: []
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+          
+  /job/snapshots/insert/${filename}:
+    post:
+      tags:
+        - job
+      operationId: post-job-snapshot-insert
+      summary: Start process insert snapshot from ezunpaywall.
+      description: Insert snapshot from ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+      responses:
+        '202':
+           $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  
+  /job/changefiles/download/insert:
+    post:
+      tags:
+        - job
+      operationId: post-job-changefile-download-insert
+      summary: Start process download and insert changefiles from unpaywall.
+      description: Download and insert changefiles from unpaywall.org.
+      security:
+        - x-api-key: []
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+                interval:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+                ignoreError:
+                  type: boolean
+                cleanFile:
+                  type: boolean
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/Error-date'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  
+  /job/changefiles/insert/${filename}:
+    post:
+      tags:
+        - job
+      operationId: post-job-changefile-insert-$-filename
+      summary: Start process insert changefiles downloaded on ezunpaywall.
+      description: Insert changefiles already downloaded on ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                index:
+                  type: string
+                offset:
+                  type: integer
+                limit:
+                  type: integer
+                ignoreError:
+                  type: boolean
+                cleanFile:
+                  type: boolean
+        description: config for process
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/Error-date'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '404':
+          $ref: '#/components/responses/File-not-found'
+        '409':
+          $ref: '#/components/responses/Conflict'
+                
+  /job/changefiles/history/download/insert:
+    post:
+      tags:
+        - job
+      operationId: post-job-changefile-history-download-insert
+      summary: Start process download and insert changefiles from unpaywall and feed history.
+      description: Download and insert changefiles from unpaywall.org and feed history.
+      security:
+        - x-api-key: []
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+                indexHistory:
+                  type: string
+                interval:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+                ignoreError:
+                  type: boolean
+                cleanFile:
+                  type: boolean
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/Error-date'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+          
+  /job/changefiles/history/insert/${filename}:
+    post:
+      tags:
+        - job
+      operationId: post-job-changefile-history-insert
+      summary: Start process insert changefiles from unpaywall and feed history.
+      description: Insert changefiles from unpaywall.org and feed history.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+                indexHistory:
+                  type: string
+                interval:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+                ignoreError:
+                  type: boolean
+                cleanFile:
+                  type: boolean
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/Error-date'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+          
+  /job/history/reset:
+    post:
+      tags:
+        - job
+      operationId: post-job-history-reset
+      summary: Start process that roll back the current and the history index according to a date.
+      description: roll back the current and the history index according to a date.
+      security:
+        - x-api-key: []
+      requestBody:
+        description: config for process
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userName
+              properties:
+                index:
+                  type: string
+                indexHistory:
+                  type: string
+                startDate:
+                  type: string
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          description: startDate required
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  
+  /reports:
+    get:
+      tags:
+        - job
+      operationId: get-reports
+      summary: Get reports.
+      description: Get list of reports or latest report.
+      parameters:
+        - in: query
+          name: type
+          description: type of report ([snapshot][download], [snapshot][download][insert], [changefiles][download][insert], [changefiles][insert], [changefiles][history][download][insert])
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: latest
+          description: latest
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: report
+          content:
+            List of reports:
+              examples:
+                response:
+                  value:
+                    - 2022-10-10 13:10:51.json
+                    - 2022-10-10 13:10:50.json
+                    - 2022-10-10 13:10:49.json
+                    - 2022-10-10 13:10:48.json
+                    - 2022-10-10 13:10:47.json
+                    - 2022-10-10 13:10:46.json
+                    - 2022-10-10 13:10:45.json
+                    - 2022-10-10 13:10:44.json
+            Latest report:
+              examples:
+                response:
+                  value:
+                    done: true
+                    createdAt: '2022-10-10T13:10:46.828Z'
+                    endAt: '2022-10-10T13:10:47.084Z'
+                    steps:
+                      - task: getChangefiles
+                        took: 0.002
+                        status: success
+                      - task: download
+                        file: fake2.jsonl.gz
+                        percent: 100
+                        took: 0
+                        status: success
+                      - task: insert
+                        index: unpaywall-test
+                        file: fake2.jsonl.gz
+                        linesRead: 100
+                        addedDocs: 100
+                        updatedDocs: 0
+                        failedDocs: 0
+                        percent: 100
+                        took: 0.202
+                        status: success
+                    error: false
+                    took: 0.256
+  
+  /reports/${filename}:
+    get:
+      tags:
+        - job
+      operationId: get-reports-$-filename
+      summary: Get report.
+      description: Get report with his filename.
+      parameters:
+        - in: query
+          name: type
+          description: type of report ([snapshot][download], [snapshot][download][insert], [changefiles][download][insert], [changefiles][insert], [changefiles][history][download][insert])
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: report
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    done: true
+                    createdAt: '2022-10-10T13:10:46.828Z'
+                    endAt: '2022-10-10T13:10:47.084Z'
+                    steps:
+                      - task: getChangefiles
+                        took: 0.002
+                        status: success
+                      - task: download
+                        file: fake2.jsonl.gz
+                        percent: 100
+                        took: 0
+                        status: success
+                      - task: insert
+                        index: unpaywall-test
+                        file: fake2.jsonl.gz
+                        linesRead: 100
+                        addedDocs: 100
+                        updatedDocs: 0
+                        failedDocs: 0
+                        percent: 100
+                        took: 0.202
+                        status: success
+                    error: false
+                    took: 0.256
+            Report:
+              examples:
+                response:
+                  value:
+                    done: true
+                    createdAt: '2022-10-10T13:10:46.828Z'
+                    endAt: '2022-10-10T13:10:47.084Z'
+                    steps:
+                      - task: getChangefiles
+                        took: 0.002
+                        status: success
+                      - task: download
+                        file: fake2.jsonl.gz
+                        percent: 100
+                        took: 0
+                        status: success
+                      - task: insert
+                        index: unpaywall-test
+                        file: fake2.jsonl.gz
+                        linesRead: 100
+                        addedDocs: 100
+                        updatedDocs: 0
+                        failedDocs: 0
+                        percent: 100
+                        took: 0.202
+                        status: success
+                    error: false
+                    took: 0.256
+        '404':
+          $ref: '#/components/responses/File-not-found'
+  
+  /snapshots:
+    get:
+      tags:
+        - job
+      operationId: get-snapshots
+      summary: Get snapshots.
+      description: Get list of snapshot or latest snapshot.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: query
+          name: latest
+          description: latest
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+    post:
+      tags:
+        - job
+      operationId: post-snapshots
+      summary: Upload snapshots (in dev only).
+      description: Upload snapshot on ezunpaywall.
+      security:
+        - x-api-key: []
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+
+  /snapshots/${filename}:
+    get:
+      tags:
+        - job
+      operationId: get-snapshots-$-filename
+      summary: Get snapshot (deprecated).
+      description: Get snapshot with his filename.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: snapshot
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+        '404':
+          $ref: '#/components/responses/File-not-found'
+    delete:
+      tags:
+        - job
+      operationId: delete-snapshots-$-filename
+      summary: Delete snapshots.
+      description: Delete snapshot on ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: snapshot
+          content:
+            Lists of snapshots:
+              examples:
+                response:
+                  value:
+                    - snapshot-2022-10-10.jsonl.gz
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+          
+  /changefiles:
+    get:
+      tags:
+        - job
+      operationId: get-changefiles
+      summary: Get changefiles.
+      description: Get list or latest of changefiles download on ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: query
+          name: latest
+          description: latest
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+    post:
+      tags:
+        - job
+      operationId: post-changefiles
+      summary: Upload changefiles (in dev only).
+      description: Upload snapshot on ezunpaywall.
+      security:
+        - x-api-key: []
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+
+  /changefiles/${filename}:
+    delete:
+      tags:
+        - job
+      operationId: delete-changefiles-$-filename
+      summary: Delete changefiles.
+      description: Delete changefiles download on ezunpaywall.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: filename
+          description: filename
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: changefiles
+          content:
+            Lists of snapshots:
+              examples:
+                response:
+                  value:
+                    - changefiles-2022-10-10.jsonl.gz
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+  
+  /states:
+    get:
+      tags:
+        - job
+      operationId: get-update-states
+      summary: Get state.
+      description: Get latest state.
+      responses:
+        '200':
+          description: state
+          content:
+            Latest state:
+              examples:
+                response:
+                  value:
+                    done: true
+                    createdAt: '2022-10-10T13:10:51.417Z'
+                    endAt: '2022-10-10T13:10:51.584Z'
+                    steps:
+                      - task: getChangefiles
+                        took: 0.002
+                        status: success
+                      - task: insert
+                        index: unpaywall-test
+                        file: fake1.jsonl.gz
+                        linesRead: 50
+                        addedDocs: 50
+                        updatedDocs: 0
+                        failedDocs: 0
+                        percent: 100
+                        took: 0.165
+                        status: success
+                    error: false
+                    took: 0.167
+  
+  /job/status:
+    get:
+      tags:
+        - job
+      summary: Get status.
+      operationId: get-status
+      description: Get status.
+      responses:
+        '200':
+          description: status
+          content:
+            No process in progress:
+              examples:
+                response:
+                  value: false
+            Update in progress:
+              examples:
+                response:
+                  value: true
+    patch:
+      tags:
+        - job
+      summary: Update status.
+      operationId: patch-status
+      description: Update status.
+      security:
+        - x-api-key: []
+      responses:
+        '200':
+          description: status
+          content:
+            No process in progress:
+              examples:
+                response:
+                  value: false
+            Update in progress:
+              examples:
+                response:
+                  value: true
+  
+  /config:
+    get:
+      tags:
+        - job
+      summary: get config of service.
+      operationId: get-config
+      description: Get config or service with hidden secrets.
+      security:
+        - x-api-key: []
+      responses:
+        '200':
+          description: config
+          content:
+            Config:
+              examples:
+                response:
+                  value:
+                    nodeEnv: development
+                    timezone: Europe/Paris
+                    smtp:
+                      host: maildev
+                      port: 25
+                    notifications:
+                      sender: ezunpaywall
+                      receivers:
+                        - ezunpaywall@example.com
+                      machine: dev
+                    unpaywall:
+                      url: http://fakeunpaywall:3000
+                      apikey: "********"
+                    elasticsearch:
+                      nodes: http://elastic:9200
+                      username: elastic
+                      password: "********"
+                      maxBulkSize: 4000
+                      indexAlias: upw
+                      timeout: 20000
+                    redis:
+                      host: redis
+                      port: "6379"
+                      password: "********"
+                    cron:
+                      downloadSnapshot:
+                        schedule: "0 0 0 1 * *"
+                        active: true
+                      dataUpdate:
+                        schedule: "0 0 0 * * *"
+                        active: false
+                        index: unpaywall
+                        interval: day
+                      dataUpdateHistory:
+                        schedule: "0 0 0 * * *"
+                        active: true
+                        index: unpaywall
+                        indexHistory: unpaywall-history
+                        interval: day
+                      cleanFile:
+                        schedule: "0 0 0 * * *"
+                        active: true
+                        changefileRetention: 30
+                        reportRetention: 30
+                        snapshotRetention: 150
+                    paths:
+                      log:
+                        applicationDir: ./log/application
+                        accessDir: ./log/access
+                        healthcheckDir: ./log/healthcheck
+                      data:
+                        changefilesDir: ./data/changefiles
+                        snapshotsDir: ./data/snapshots
+                        reportsDir: ./data/reports
+                    apikey: "********"
+                    healthTimeout: 3000
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+  
+  /cron/${type}/start:
+    post:
+      tags:
+        - cron
+      operationId: post-cron-start
+      summary: Start cron.
+      description: Start cron.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: type
+          description: type of cron (dataUpdate or dataUpdateHistory)
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+      
+  /cron/${type}/stop:
+    post:
+      tags:
+        - cron
+      operationId: post-cron-stop
+      description: Stop cron.
+      summary: Stop cron.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: type
+          description: type of cron (dataUpdate or dataUpdateHistory)
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+      
+  /cron/${type}:
+    patch:
+      tags:
+        - cron
+      operationId: patch-cron
+      summary: update cron.
+      description: update config of cron.
+      security:
+        - x-api-key: []
+      parameters:
+        - in: path
+          name: type
+          description: type of cron (dataUpdate or dataUpdateHistory)
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                time:
+                  type: string
+                index:
+                  type: string
+                interval:
+                  type: string
+              x-examples:
+                example-1:
+                  time: ''
+                  index: ''
+                  interval: ''
+            examples:
+              daily:
+                value:
+                  time: 0 0 0 * * *
+                  index: unpaywall
+                  interval: day
+              weekly:
+                value:
+                  time: 0 0 0 * * 0
+                  index: unpaywall
+                  interval: weekly
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  config:
+                    type: object
+                    properties:
+                      time:
+                        type: string
+                      status:
+                        type: boolean
+                      index:
+                        type: string
+                      interval:
+                        type: string
+                x-examples:
+                  example-1:
+                    config:
+                      time: '* * * * * *'
+                      status: false
+                      index: unpaywall
+                      interval: day
+              examples:
+                updated:
+                  value:
+                    config:
+                      time: '* 30 12-15 * * *'
+                      status: true
+                      index: unpaywall
+                      interval: day
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+      
+  
+    get:
+      tags:
+        - cron
+      operationId: get-cron
+      summary: Get config of cron.
+      description: Get config of cron.
+      parameters:
+        - in: path
+          name: type
+          description: type of cron (dataUpdate or dataUpdateHistory)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  config:
+                    type: object
+                    properties:
+                      time:
+                        type: string
+                      status:
+                        type: boolean
+                      index:
+                        type: string
+                      interval:
+                        type: string
+                x-examples:
+                  example-1:
+                    config:
+                      time: '* * * * * *'
+                      status: false
+                      index: unpaywall
+                      interval: day
+              examples:
+                day:
+                  value:
+                    config:
+                      time: 0 0 0 * * *
+                      status: true
+                      index: unpaywall
+                      interval: day
+                week:
+                  value:
+                    config:
+                      time: 0 0 0 * * *
+                      status: true
+                      index: unpaywall
+                      interval: day
+                off:
+                  value:
+                    config:
+                      time: 0 0 0 * * *
+                      status: false
+                      index: unpaywall
+                      interval: day
+  /contact:
+    post:
+      tags:
+        - mail
+      operationId: post-mail
+      summary: Send contact mail.
+      description: Send contact mail.
+      security:
+        - x-api-key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                subject:
+                  type: string
+                message:
+                  type: string
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '401':
+          $ref: '#/components/responses/Not-authorized'
+
+components:
+  responses:
+    Accepted:
+      description: Accepted
+      headers: {}
+    Not-authorized:
+      description: Not authorized
+      headers: {}
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: Not authorized
+    Error-date:
+      description: startDate cannot be in the future or endDate cannot be lower than startDate.
+      headers: {}
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: startDate cannot be in the future or endDate cannot be lower than startDate.
+    Conflict:
+      description: Conflict
+      headers: {}
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: Update in progress.
+    File-not-found:
+      description: File not found
+      headers: {}
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: File not found.
+  securitySchemes:
+    x-api-key:
+      type: apiKey
+      in: header
+      name: API Key
+  schemas: {}

@@ -1,0 +1,10 @@
+node_modules/
+log/
+data/
+tests/
+coverage/
+data-test/
+.eslintrc.json
+.gitignore
+README.md
+ca.crt

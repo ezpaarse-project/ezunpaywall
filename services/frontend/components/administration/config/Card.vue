@@ -7,10 +7,10 @@
       dense
     >
       <v-toolbar-title>
-        Graphql
+        {{ props.name }}
       </v-toolbar-title>
     </v-toolbar>
-    <JSONView :code="APIconfig" />
+    <JSONView :code="serviceConfig" />
   </v-card>
 </template>
 
@@ -19,19 +19,22 @@
 const adminStore = useAdminStore();
 const { password } = storeToRefs(adminStore);
 
-const { $graphql } = useNuxtApp();
-
 const loading = ref(false);
-const APIconfig = ref('');
+const serviceConfig = ref('');
+
+const props = defineProps({
+  name: { type: String, default: '' },
+  host: { type: Function, default: () => {} },
+});
 
 /**
- * Get config of graphql service
+ * Get config of admin service
  */
-async function getGraphqlConfig() {
+async function getAdminConfig() {
   let appConfig;
   loading.value = true;
   try {
-    appConfig = await $graphql('/config', {
+    appConfig = await props.host('/config', {
       method: 'GET',
       headers: {
         'x-api-key': password.value,
@@ -45,11 +48,11 @@ async function getGraphqlConfig() {
   loading.value = false;
 
   const stringifiedConfig = JSON.stringify(appConfig, null, 2);
-  APIconfig.value = stringifiedConfig;
+  serviceConfig.value = stringifiedConfig;
 }
 
 onMounted(() => {
-  getGraphqlConfig();
+  getAdminConfig();
 });
 
 </script>

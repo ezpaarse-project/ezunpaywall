@@ -161,7 +161,7 @@
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $admin } = useNuxtApp();
+const { $harvesterUnpaywall } = useNuxtApp();
 
 const { password } = storeToRefs(adminStore);
 
@@ -190,7 +190,6 @@ const filetypes = ref(['changefiles', 'snapshots']);
 
 const interval = ref('day');
 const index = ref('unpaywall');
-const indexHistory = ref(`unpaywall_history_${new Date().getFullYear()}`);
 const startDate = ref(formatDate(new Date()));
 const endDate = ref(formatDate(new Date()));
 const filename = ref('');
@@ -212,7 +211,7 @@ async function startClassicUpdate() {
     cleanFile: cleanFile.value,
   };
   try {
-    await $admin('/job/changefiles/download/insert', {
+    await $harvesterUnpaywall('/job/changefiles/download/insert', {
       method: 'POST',
       body: data,
       headers: {
@@ -229,33 +228,6 @@ async function startClassicUpdate() {
   emit('update:modelValue', false);
 }
 
-async function startHistoryUpdate() {
-  loading.value = true;
-  const data = {
-    index: index.value,
-    indexHistory: indexHistory.value,
-    interval: interval.value,
-    startDate: startDate.value,
-    endDate: endDate.value,
-    cleanFile: cleanFile.value,
-  };
-  try {
-    await $admin('/job/changefiles/history/download/insert', {
-      method: 'POST',
-      body: data,
-      headers: {
-        'X-API-KEY': password.value,
-      },
-    });
-  } catch (err) {
-    snackStore.error(t('error.update.start'));
-    loading.value = false;
-  }
-  loading.value = false;
-  snackStore.info(t('info.update.started'));
-  emit('update:modelValue', false);
-}
-
 async function startInsertFile() {
   loading.value = true;
   const data = {
@@ -263,7 +235,7 @@ async function startInsertFile() {
     cleanFile: cleanFile.value,
   };
   try {
-    await $admin(`/job/${filetype.value}/insert/${filename.value}`, {
+    await $harvesterUnpaywall(`/job/${filetype.value}/insert/${filename.value}`, {
       method: 'POST',
       body: data,
       headers: {
@@ -282,9 +254,6 @@ async function startInsertFile() {
 async function startJob() {
   if (tab.value === 'classic') {
     startClassicUpdate();
-  }
-  if (tab.value === 'history') {
-    startHistoryUpdate();
   }
   if (tab.value === 'file') {
     startInsertFile();
