@@ -10,8 +10,11 @@ const downloadInsertChangefilesHistoryProcess = require('../lib/update');
 const { ...cronConfig } = cron.dataUpdateHistory;
 let { active } = cron.dataUpdateHistory;
 
-if (active === 'true' || active) active = true;
-else active = false;
+if (typeof active === 'string') {
+  active = active.toLowerCase() === 'true';
+} else {
+  active = Boolean(active);
+}
 
 /**
  * Starts an update daily process if no update process is started.
