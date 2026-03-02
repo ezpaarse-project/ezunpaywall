@@ -9,9 +9,6 @@ const appLogger = require('./lib/logger/appLogger');
 
 const { logConfig } = require('./lib/config');
 
-const { pingRedis } = require('./lib/redis');
-const { initClient } = require('./lib/redis/client');
-
 const routerHealthCheck = require('./routers/healthcheck');
 const routerPing = require('./routers/ping');
 const routerConfig = require('./routers/config');
@@ -91,8 +88,6 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 const server = app.listen(port, async () => {
   appLogger.info(`[express]: ezunpaywall harvester unpaywall API listening on ${port} in [${process.uptime().toFixed(2)}]s`);
   logConfig();
-  await initClient();
-  pingRedis();
 
   if (cronFile?.cron?.active) {
     cronFile.cron.start();

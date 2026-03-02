@@ -104,7 +104,7 @@ One cron automatically update metrics of unpaywall data. the elastic request tak
 ## Log format
 
 ```
-:date :ip :method :url :statusCode :userAgent :responseTime :countDOI
+{IP} "{apiKey}" [{timestamp}] "{HTTP method} {HTTP request} {HTTP protocole}" {HTTP code} - "-" "{responseTime}" "{userAgent}" "{countDOI}"
 ```
 
 ## Open API

@@ -13,10 +13,10 @@
     "receivers": "NOTIFICATIONS_RECEIVERS",
     "machine": "NOTIFICATIONS_MACHINE"
   },
-  "unpaywall": {
-    "url": "UNPAYWALL_URL",
-    "apikey": "UNPAYWALL_APIKEY",
-    "email": "UNPAYWALL_EMAIL"
+  "openalex": {
+    "url": "OPENALEX_URL",
+    "apikey": "OPENALEX_APIKEY",
+    "email": "OPENALEX_EMAIL"
   },
   "elasticsearch": {
     "nodes": "ELASTICSEARCH_NODES",
@@ -25,6 +25,11 @@
     "maxBulkSize": "ELASTICSEARCH_MAX_BULK_SIZE",
     "indexAlias": "ELASTICSEARCH_INDEX_ALIAS",
     "timeout": "ELASTICSEARCH_TIMEOUT"
+  },
+  "redis":  {
+    "host": "REDIS_HOST",
+    "port": "REDIS_PORT",
+    "password": "REDIS_PASSWORD"
   },
   "cron": {
     "downloadSnapshot": {

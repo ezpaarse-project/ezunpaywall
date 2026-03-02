@@ -51,14 +51,6 @@ see [default config](./config/default.json)
 | ELASTICSEARCH_INDEX_ALIAS | Default alias of unpaywall data | upw |
 | ELASTICSEARCH_TIMEOUT | Timeout in milliseconds of elastic client | 20000 |
 
-### Redis
-
-| name | Description | Default |
-| --- | --- | --- |
-| REDIS_HOST | Redis host | redis |
-| REDIS_PORT | Redis port | 6379 |
-| REDIS_PASSWORD | Redis password | changeme |
-
 ### Cron
 
 #### Download snapshot
