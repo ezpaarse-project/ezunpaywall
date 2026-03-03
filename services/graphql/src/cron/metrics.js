@@ -8,8 +8,12 @@ const { setMetrics } = require('../lib/metrics');
 const cronConfig = cron.metrics;
 
 let { active } = cronConfig;
-if (active === 'true' || active) active = true;
-else active = false;
+
+if (typeof active === 'string') {
+  active = active.toLowerCase() === 'true';
+} else {
+  active = Boolean(active);
+}
 
 /**
  * Get the metrics from unpaywall and cache them.

@@ -9,8 +9,12 @@ const { getClient } = require('../lib/redis/client');
 const { ...cronConfig } = cron.demoApikey;
 
 let { active } = cronConfig;
-if (active === 'true' || active) active = true;
-else active = false;
+
+if (typeof active === 'string') {
+  active = active.toLowerCase() === 'true';
+} else {
+  active = Boolean(active);
+}
 
 async function task() {
   appLogger.info('[cron][demo]: Has started');

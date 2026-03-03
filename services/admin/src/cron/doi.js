@@ -6,8 +6,11 @@ const { getCount, reset } = require('../lib/doi');
 
 let { active } = cron.doiUpdate;
 
-if (active === 'true' || active) active = true;
-else active = false;
+if (typeof active === 'string') {
+  active = active.toLowerCase() === 'true';
+} else {
+  active = Boolean(active);
+}
 
 /**
  * Reset count of update doi.

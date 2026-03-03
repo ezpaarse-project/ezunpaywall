@@ -8,8 +8,11 @@ const { downloadSnapshot } = require('../lib/update/download');
 
 let { active } = cron.downloadSnapshot;
 
-if (active === 'true' || active) active = true;
-else active = false;
+if (typeof active === 'string') {
+  active = active.toLowerCase() === 'true';
+} else {
+  active = Boolean(active);
+}
 
 /**
  * Starts regular download snapshot.
