@@ -1,5 +1,7 @@
 const { format, subDays } = require('date-fns');
 const { cron } = require('config');
+const { setTimeout } = require('timers/promises');
+
 const appLogger = require('../lib/logger/appLogger');
 
 const Cron = require('./cron');
@@ -33,15 +35,28 @@ async function task() {
   const week = (cronConfig.interval === 'week');
   const startDate = format(subDays(new Date(), week ? 7 : cronConfig.anteriority), 'yyyy-MM-dd');
   const endDate = format(new Date(), 'yyyy-MM-dd');
-  await downloadInsertChangefilesProcess({
-    type: 'changefile',
-    index: cronConfig.index,
-    interval: cronConfig.interval,
-    startDate,
-    endDate,
-    offset: 0,
-    limit: -1,
-  });
+
+  let i = 0;
+
+  let res;
+
+  while (i < 5) {
+    res = await downloadInsertChangefilesProcess({
+      type: 'changefile',
+      index: cronConfig.index,
+      interval: cronConfig.interval,
+      startDate,
+      endDate,
+      offset: 0,
+      limit: -1,
+    });
+    if (res) {
+      return;
+    }
+    await setTimeout(30000);
+    i += 1;
+  }
+
   appLogger.info('[cron][Data update]: Has finished');
 }
 

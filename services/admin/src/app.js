@@ -21,7 +21,7 @@ const routerMail = require('./routers/mail');
 const routerApikeys = require('./routers/apikey');
 const routerCron = require('./routers/cron');
 const routerDisk = require('./routers/disk');
-const routerDOI = require('./routers/update/doi');
+const routerDOI = require('./routers/doi');
 
 const cronFile = require('./cron/cleanFile');
 const cronDoiUpdate = require('./cron/doi');
