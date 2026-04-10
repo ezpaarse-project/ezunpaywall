@@ -1,6 +1,6 @@
 services:
   graphql:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-graphql-dev
     working_dir: /usr/src/app
     volumes:
@@ -20,7 +20,7 @@ services:
       retries: 5
 
   enrich:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-enrich-dev
     working_dir: /usr/src/app
     volumes:
@@ -40,7 +40,7 @@ services:
       retries: 5
   
   admin:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-admin-dev
     environment:
       - LOG_LEVEL=debug
@@ -64,7 +64,7 @@ services:
       retries: 5
 
   harvester-unpaywall:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-harvester-unpaywall-dev
     environment:
       - LOG_LEVEL=debug
@@ -89,7 +89,7 @@ services:
 
 
   frontend:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-frontend-dev
     working_dir: /usr/src/app
     volumes:
@@ -109,7 +109,7 @@ services:
       retries: 5
 
   redis:
-    image: redis:7.2.4
+    image: redis:8.6.2
     container_name: ezunpaywall-redis-dev
     command: redis-server --requirepass "${REDIS_PASSWORD:-changeme}"
     volumes:
@@ -126,7 +126,7 @@ services:
       retries: 5
 
   nginx:
-    image: nginx:1.27.2
+    image: nginx:1.29.8
     container_name: ezunpaywall-nginx-dev
     environment:
       # host of service
@@ -159,7 +159,7 @@ services:
 
   fakeunpaywall:
     container_name: ezunpaywall-fakeunpaywall-dev
-    image: node:22.13.1
+    image: node:24.14.1
     working_dir: /usr/src/app
     volumes:
       - ./services/fakeUnpaywall:/usr/src/app

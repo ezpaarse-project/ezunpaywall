@@ -19,6 +19,11 @@ services:
       context: ./services/frontend
     container_name: ezunpaywall-frontend
 
+  harvester-unpaywall:
+    build:
+      context: ./services/harvester-unpaywall
+    container_name: ezunpaywall-harvester-unpaywall
+
   nginx:
     build:
       context: ./services/nginx

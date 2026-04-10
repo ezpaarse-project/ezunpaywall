@@ -57,7 +57,7 @@ services:
       - NUXT_ADMIN_APIKEY
 
   redis:
-    image: redis:8.2.2-alpine3.22
+    image: redis:8.6.2-alpine3.23
     container_name: ezunpaywall-redis
     command: redis-server --requirepass "${REDIS_PASSWORD:-changeme}"
     volumes:
