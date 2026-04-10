@@ -21,10 +21,8 @@ const routerMail = require('./routers/mail');
 const routerApikeys = require('./routers/apikey');
 const routerCron = require('./routers/cron');
 const routerDisk = require('./routers/disk');
-const routerDOI = require('./routers/doi');
 
 const cronFile = require('./cron/cleanFile');
-const cronDoiUpdate = require('./cron/doi');
 const cronDemo = require('./cron/demoApikey');
 
 // create data directory
@@ -77,7 +75,6 @@ app.use(routerOpenapi);
 app.use(routerPing);
 app.use(routerDisk);
 app.use(routerCron);
-app.use(routerDOI);
 
 // Errors and unknown routes
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl} - this route does not exist.` }));
@@ -96,10 +93,6 @@ const server = app.listen(port, async () => {
 
   if (cronFile?.cron?.active) {
     cronFile.cron.start();
-  }
-
-  if (cronDoiUpdate?.active) {
-    cronDoiUpdate.start();
   }
 });
 

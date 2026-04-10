@@ -4,29 +4,9 @@ const { format } = require('date-fns');
 const appLogger = require('../logger/appLogger');
 const getUnpaywallClient = require('./client');
 
-const { apikey, email } = config.unpaywall;
+const { apikey } = config.unpaywall;
 
 const unpaywall = getUnpaywallClient();
-
-/**
- * Get unpaywall data for a given DOI.
- *
- * @param {string} doi The DOI to query.
- * @returns {Promise<Object>} The unpaywall data.
- */
-async function getDocumentByDOI(doi) {
-  let res;
-  try {
-    res = await unpaywall({
-      method: 'GET',
-      url: `/${doi}?email=${email}`,
-    });
-  } catch (err) {
-    appLogger.error(`[unpaywall] Cannot get document by DOI ${doi}`, err);
-    throw err;
-  }
-  return res.data;
-}
 
 /**
  * Ping unpaywall.
@@ -154,7 +134,6 @@ async function getChangefile(filename, interval) {
 }
 
 module.exports = {
-  getDocumentByDOI,
   pingUnpaywall,
   getSnapshot,
   getChangefiles,

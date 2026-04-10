@@ -43,11 +43,6 @@
       "schedule": "CRON_DEMO_APIKEY_SCHEDULE",
       "active": "CRON_DEMO_APIKEY_ACTIVE",
       "count": "CRON_DEMO_APIKEY_COUNT"
-    },
-    "doiUpdate": {
-      "schedule": "CRON_DOI_UPDATE_SCHEDULE",
-      "active": "CRON_DOI_UPDATE_ACTIVE",
-      "limit": "CRON_DOI_UPDATE_LIMIT"
     }
   }
 }

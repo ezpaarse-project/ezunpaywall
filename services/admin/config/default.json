@@ -43,11 +43,6 @@
       "schedule": "0 0 0 * * *",
       "active": true,
       "count": 100000
-    },
-    "doiUpdate": {
-      "schedule": "0 0 0 * * *",
-      "active": true,
-      "limit": 100000
     }
   },
   "paths": {

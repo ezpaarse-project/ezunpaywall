@@ -45,7 +45,7 @@ Each service :
 ## Network-flow
 
 ezunpaywall is made up of several services which are distributed in several docker containers.
-![Network-flow](./doc/network-flow.png)
+![Network-flow](./docs/network-flow.png)
 
 ## Installation
 

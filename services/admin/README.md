@@ -110,14 +110,6 @@ see [default config](./config/default.json)
 | CRON_DEMO_APIKEY_COUNT | Count of demo request | 100000 |
 
 
-#### DOI update
-
-| name | Description | Default |
-| --- | --- | --- |
-| CRON_DOI_UPDATE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
-| CRON_DOI_UPDATE_ACTIVE | Cron active or not at the start of service | true |
-| CRON_DOI_UPDATE_LIMIT | DOI limit that can be updated | 100000 | 
-
 ## Command to set volume permissions (non root image docker)
 
 ```sh
