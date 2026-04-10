@@ -14,7 +14,6 @@ servers:
 tags:
   - name: ping
   - name: job
-  - name: doi
   - name: cron
   - name: mail
 paths:
@@ -111,56 +110,6 @@ paths:
                       status: true
                     elapsedTime: 3001
                     status: false
-
-  /doi/update:
-    post:
-      tags:
-        - doi
-      operationId: post-doi-update
-      summary: Update DOI on ezunpaywall with unpaywall data
-      description: Update DOI on ezunpaywall with unpaywall depending on unpaywall limit
-      responses:
-        '202':
-          $ref: '#/components/responses/Accepted'
-        '400':
-          description: Dois must be an array
-        '409':
-          description: Limit is reached, try tomorrow
-
-  /doi/update/count:
-    get:
-      tags:
-        - doi
-      operationId: get-doi-update-count
-      summary: Get count of DOIs updated today
-      description:  Get count of DOIs updated today
-      responses:
-        '200':
-          description: count of DOIs updated
-          content:
-            Count:
-              examples:
-                response:
-                  value: 5
-
-  
-  /doi/update/cache:
-    get:
-      tags:
-        - doi
-      operationId: get-doi-update-cache
-      summary: Get list of DOIs updated today
-      description:  Get list of DOIs updated today
-      responses:
-        '200':
-          description: count of DOIs updated today
-          content:
-            Count:
-              examples:
-                response:
-                  value:
-                    - 10.01
-                    - 10.02
 
   /healthcheck:
     get:
