@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     res = await $fetch(
-      `${runtimeConfig.adminUrl}/contact`,
+      `${runtimeConfig.adminURL}/contact`,
       {
         method: 'POST',
         body: {

@@ -15,7 +15,12 @@
 
 <script setup>
 const route = useRoute();
-const { $admin, $enrich, $graphql, $harvesterUnpaywall } = useNuxtApp();
+const {
+  $admin,
+  $enrich,
+  $graphql,
+  $harvesterUnpaywall,
+} = useNuxtApp();
 
 const tab = ref('Admin');
 
