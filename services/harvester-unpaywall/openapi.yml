@@ -1109,32 +1109,6 @@ paths:
                       status: false
                       index: unpaywall
                       interval: day
-  /contact:
-    post:
-      tags:
-        - mail
-      operationId: post-mail
-      summary: Send contact mail.
-      description: Send contact mail.
-      security:
-        - x-api-key: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                subject:
-                  type: string
-                message:
-                  type: string
-      responses:
-        '202':
-          $ref: '#/components/responses/Accepted'
-        '401':
-          $ref: '#/components/responses/Not-authorized'
 
 components:
   responses:
