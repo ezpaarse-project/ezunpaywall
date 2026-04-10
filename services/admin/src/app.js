@@ -25,11 +25,6 @@ const routerDisk = require('./routers/disk');
 const cronFile = require('./cron/cleanFile');
 const cronDemo = require('./cron/demoApikey');
 
-// create data directory
-fsp.mkdir(path.resolve(paths.data.changefilesDir), { recursive: true });
-fsp.mkdir(path.resolve(paths.data.snapshotsDir), { recursive: true });
-fsp.mkdir(path.resolve(paths.data.reportsDir), { recursive: true });
-
 // create log directory
 fsp.mkdir(path.resolve(paths.log.applicationDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.log.accessDir), { recursive: true });

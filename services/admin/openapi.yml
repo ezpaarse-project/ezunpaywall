@@ -489,7 +489,6 @@ paths:
                       nodes: http://elastic:9200
                       username: elastic
                       password: "********"
-                      indexAlias: upw
                       timeout: 20000
                     redis:
                       host: redis
