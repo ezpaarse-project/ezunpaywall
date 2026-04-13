@@ -87,6 +87,20 @@
     <v-list-item
       link
       router
+      :to="{ path: '/administration/config' }"
+      ripple
+    >
+      <template #prepend>
+        <v-icon icon="mdi-code-json" />
+      </template>
+      <v-list-item-title class="custom-font-style">
+        Config
+      </v-list-item-title>
+    </v-list-item>
+
+    <v-list-item
+      link
+      router
       to="/administration/elastic"
       ripple
     >
@@ -145,20 +159,6 @@
       </template>
       <v-list-item-title class="custom-font-style ml-2">
         ezMESURE
-      </v-list-item-title>
-    </v-list-item>
-
-    <v-list-item
-      link
-      router
-      :to="{ path: '/administration/config' }"
-      ripple
-    >
-      <template #prepend>
-        <v-icon icon="mdi-code-json" />
-      </template>
-      <v-list-item-title class="custom-font-style">
-        Config
       </v-list-item-title>
     </v-list-item>
 
