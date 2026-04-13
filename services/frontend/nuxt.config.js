@@ -22,7 +22,7 @@ export default ({
       graphqlURL: process.env.NUXT_PUBLIC_GRAPHQL_URL || 'http://localhost:59701',
       enrichURL: process.env.NUXT_PUBLIC_ENRICH_URL || 'http://localhost:59702',
       adminURL: process.env.NUXT_PUBLIC_ADMIN_URL || 'http://localhost:59703',
-      harvesterUnpaywallURL: process.env.NUXT_PUBLIC_HARVESTER_UNPAYWALL || 'http://localhost:59708',
+      harvesterUnpaywallURL: process.env.NUXT_PUBLIC_HARVESTER_UNPAYWALL_URL || 'http://localhost:59708',
       elasticEnv: process.env.NUXT_PUBLIC_ELASTIC_ENV || 'local',
       version: process.env.NUXT_PUBLIC_VERSION || 'local',
     },
