@@ -5,7 +5,7 @@ const statusController = require('../controllers/status');
 /**
  * Route that give the name of service.
  */
-router.get('/', (req, res) => res.status(200).json('ezUNPAYWALL admin API'));
+router.get('/', (req, res) => res.status(200).json('ezUNPAYWALL harvester unpaywall API'));
 
 /**
  * Route that ping the service.
