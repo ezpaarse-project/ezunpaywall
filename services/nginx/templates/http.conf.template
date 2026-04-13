@@ -29,8 +29,8 @@ server {
     proxy_pass ${ADMIN_URL};
   }
 
-  location /api/harvester/unpaywall {
-    rewrite ^/api/harvester/unpaywall(/.*)$ $1 break;
+  location /api/harvester-unpaywall {
+    rewrite ^/api/harvester-unpaywall(/.*)$ $1 break;
     proxy_pass ${HARVESTER_UNPAYWALL_URL};
   }
 
