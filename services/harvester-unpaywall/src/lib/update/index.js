@@ -141,9 +141,8 @@ async function downloadInsertSnapshotProcess(jobConfig) {
  * @param {boolean} jobConfig.cleanFile Delete file after job.
  * @param {boolean} jobConfig.ignoreError Ignore error in file.
  *
- * @returns {Promise<void>}
+ * @returns {Promise<Boolean>}
  */
-// TODO 2025-02-19 mail if error
 async function downloadInsertChangefilesProcess(jobConfig) {
   setStatus(true);
 
@@ -172,7 +171,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     appLogger.error('[job][changefiles][download][insert]: Cannot get changefiles', err);
     await endJobAsError(err);
     appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
-    return;
+    return false;
   }
 
   step.took = (new Date() - start) / 1000;
@@ -183,7 +182,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     noChangefileMail(startDate, endDate);
     await endJobAsSuccess();
     appLogger.info('[job][changefiles][download][insert]: Download and insert changefile job is finish');
-    return;
+    return false;
   }
 
   for (let i = 0; i < changefilesInfo.length; i += 1) {
@@ -193,7 +192,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
       appLogger.error(`[job][changefiles][download][insert]: Cannot download changefile [${changefilesInfo[i].filename}]`);
       await endJobAsError(err);
       appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
-      return;
+      return false;
     }
 
     jobConfig.filename = changefilesInfo[i].filename;
@@ -204,7 +203,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
       appLogger.error(`[job][changefiles][download][insert]: Cannot insert changefile [${changefilesInfo[i].filename}]`);
       await endJobAsError(err);
       appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
-      return;
+      return false;
     }
 
     if (jobConfig.cleanFile) {
@@ -214,6 +213,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
 
   await endJobAsSuccess();
   appLogger.info('[job][changefiles][download][insert]: Download and insert changefile job is finish');
+  return true;
 }
 
 /**
