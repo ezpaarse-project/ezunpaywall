@@ -112,7 +112,7 @@ async function updateStartedMail(config) {
  *
  * @returns {Promise<void>}
  */
-async function updateReportMail(state) {
+async function sendUpdateReportMail(state) {
   const status = state.error === true ? 'error' : 'success';
 
   let insertedDocs = 0;
@@ -178,6 +178,6 @@ module.exports = {
   sendMail,
   pingSMTP,
   updateStartedMail,
-  updateReportMail,
+  sendUpdateReportMail,
   noChangefileMail,
 };

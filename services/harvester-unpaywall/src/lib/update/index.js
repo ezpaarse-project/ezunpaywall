@@ -24,21 +24,27 @@ const {
 const insertDataUnpaywall = require('./insert');
 const { deleteFile } = require('../files');
 const { getChangefiles } = require('../unpaywall/api');
-const { updateReportMail } = require('../mail');
+const { sendUpdateReportMail } = require('../mail');
 
 async function endJobAsError(err) {
   await fail(err);
   const state = getState();
   await createReport(state);
-  updateReportMail(state);
+  sendUpdateReportMail(state);
   setStatus(false);
 }
 
-async function endJobAsSuccess() {
+/**
+ *
+ * @param {boolean} mail if true send mail
+ */
+async function endJobAsSuccess(mail) {
   await end();
   const state = getState();
   await createReport(state);
-  updateReportMail(state);
+  if (mail) {
+    sendUpdateReportMail(state);
+  }
   setStatus(false);
 }
 
@@ -52,7 +58,6 @@ async function endJobAsSuccess() {
  *
  * @returns {Promise<void>}
  */
-// TODO 2025-02-19 mail if error
 async function downloadSnapshotProcess() {
   setStatus(true);
 
@@ -71,7 +76,7 @@ async function downloadSnapshotProcess() {
   }
 
   appLogger.info(`[job][snapshot][download]: snapshot [${filename}] is downloaded`);
-  await endJobAsSuccess();
+  await endJobAsSuccess(true);
   appLogger.info('[job][snapshot][download]: download snapshot job is finish');
 }
 
@@ -85,7 +90,6 @@ async function downloadSnapshotProcess() {
  *
  * @returns {Promise<void>}
  */
-// TODO 2025-02-19 mail if error
 async function downloadInsertSnapshotProcess(jobConfig) {
   setStatus(true);
 
@@ -124,7 +128,7 @@ async function downloadInsertSnapshotProcess(jobConfig) {
     await deleteFile(path.resolve(paths.data.snapshotsDir, jobConfig.filename));
   }
 
-  await endJobAsSuccess();
+  await endJobAsSuccess(true);
 
   appLogger.info('[job][snapshot][download][insert]: Download insert snapshot job is finish');
 }
@@ -181,7 +185,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
 
   if (changefilesInfo.length === 0) {
     noChangefileMail(startDate, endDate);
-    await endJobAsSuccess();
+    await endJobAsSuccess(false);
     appLogger.info('[job][changefiles][download][insert]: Download and insert changefile job is finish');
     return false;
   }
@@ -212,7 +216,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     }
   }
 
-  await endJobAsSuccess();
+  await endJobAsSuccess(true);
   appLogger.info('[job][changefiles][download][insert]: Download and insert changefile job is finish');
   return true;
 }
@@ -263,7 +267,7 @@ async function insertFileProcess(jobConfig) {
     }
   }
 
-  await endJobAsSuccess();
+  await endJobAsSuccess(true);
   appLogger.info(`[job][${type}][insert]: Insert changefile job is finish`);
 }
 

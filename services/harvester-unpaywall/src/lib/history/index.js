@@ -25,13 +25,13 @@ const {
 
 const { deleteFile } = require('../files');
 const { getChangefiles } = require('../unpaywall/api');
-const { updateReportMail } = require('../mail');
+const { sendUpdateReportMail } = require('../mail');
 
 async function endJobAsError() {
   await fail();
   const state = getState();
   await createReport(state);
-  updateReportMail(state);
+  sendUpdateReportMail(state);
   setStatus(false);
 }
 
