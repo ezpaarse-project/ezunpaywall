@@ -102,7 +102,7 @@ async function updateStartedMail(config) {
     logger.error('[mail]: Cannot send update started mail', err);
     return;
   }
-  logger.info('[mail]: Update start mail was sent');
+  logger.info('[mail]: Update started mail was sent');
 }
 
 /**
