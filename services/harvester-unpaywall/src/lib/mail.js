@@ -92,7 +92,7 @@ async function updateStartedMail(config) {
     await sendMail({
       from: notifications.sender,
       to: notifications.receivers,
-      subject: `[ezUNPAYWALL][${notifications.machine}]: Mise à jour des données`,
+      subject: `[ezUNPAYWALL][${notifications.machine}]: start: data update`,
       ...generateMail('updateStarted', {
         config,
         date: format(new Date(), 'dd-MM-yyyy'),
@@ -130,7 +130,7 @@ async function updateReportMail(state) {
     await sendMail({
       from: notifications.sender,
       to: notifications.receivers,
-      subject: `[ezUNPAYWALL][${notifications.machine}]: Rapport de mise à jour - ${status}`,
+      subject: `[ezUNPAYWALL][${notifications.machine}]: ${status} - report`,
       ...generateMail('updateReport', {
         state,
         status,
@@ -160,7 +160,7 @@ async function noChangefileMail(startDate, endDate) {
     await sendMail({
       from: notifications.sender,
       to: notifications.receivers,
-      subject: `[ezUNPAYWALL][${notifications.machine}]: Aucune mise à jour n'est disponible`,
+      subject: `[ezUNPAYWALL][${notifications.machine}]: no changefiles available`,
       ...generateMail('noChangefile', {
         startDate: format(new Date(startDate), 'dd-MM-yyyy'),
         endDate: format(new Date(endDate), 'dd-MM-yyyy'),

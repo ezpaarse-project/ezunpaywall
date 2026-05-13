@@ -38,6 +38,7 @@ async function endJobAsSuccess() {
   await end();
   const state = getState();
   await createReport(state);
+  updateReportMail(state);
   setStatus(false);
 }
 
