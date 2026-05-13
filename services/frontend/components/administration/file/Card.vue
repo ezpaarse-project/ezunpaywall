@@ -78,10 +78,10 @@
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $admin } = useNuxtApp();
-const { openConfirm } = useDialogStore();
-
+const { $harvesterUnpaywall } = useNuxtApp();
 const { password } = storeToRefs(adminStore);
+
+const { openConfirm } = useDialogStore();
 
 const tab = ref('changefiles');
 const loading = ref(false);
@@ -96,7 +96,7 @@ async function getFiles(type) {
   let files;
 
   try {
-    files = await $admin(`/${type}`, {
+    files = await $harvesterUnpaywall(`/${type}`, {
       method: 'GET',
       headers: {
         'X-API-KEY': password.value,
@@ -123,7 +123,7 @@ async function getAllFiles() {
  */
 async function deleteFile(type, filename) {
   try {
-    await $admin(`/${type}/${filename}`, {
+    await $harvesterUnpaywall(`/${type}/${filename}`, {
       method: 'DELETE',
       headers: {
         'X-API-KEY': password.value,

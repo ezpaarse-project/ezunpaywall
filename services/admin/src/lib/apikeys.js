@@ -17,10 +17,11 @@ async function get(apikey) {
 }
 
 /**
- * Get config of apikey
- * @param {string} apikey Apikey.
+ * Check if apikey exist
  *
- * @returns {Object} Apikey config.
+ * @param {string} apikey - Apikey
+ *
+ * @returns {Promise<boolean>} IfExist
  */
 async function checkIfExist(apikey) {
   const redisClient = getClient();

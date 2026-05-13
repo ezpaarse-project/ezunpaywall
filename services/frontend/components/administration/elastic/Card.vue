@@ -71,7 +71,7 @@
 const { t } = useI18n();
 const snackStore = useSnacksStore();
 const adminStore = useAdminStore();
-const { $admin } = useNuxtApp();
+const { $harvesterUnpaywall } = useNuxtApp();
 const { openConfirm } = useDialogStore();
 
 const { password } = storeToRefs(adminStore);
@@ -87,7 +87,7 @@ async function getIndices() {
   let indicesRes;
 
   try {
-    indicesRes = await $admin('/elastic/indices', {
+    indicesRes = await $harvesterUnpaywall('/elastic/indices', {
       method: 'GET',
       headers: {
         'X-API-KEY': password.value,
@@ -109,7 +109,7 @@ async function getIndices() {
  */
 async function deleteIndex(indexName) {
   try {
-    await $admin(`/elastic/indices/${indexName}`, {
+    await $harvesterUnpaywall(`/elastic/indices/${indexName}`, {
       method: 'DELETE',
       headers: {
         'X-API-KEY': password.value,

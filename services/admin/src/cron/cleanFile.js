@@ -23,25 +23,6 @@ if (typeof active === 'string') {
 async function task() {
   appLogger.info('[cron][Clean file]: Has start');
 
-  // Data
-  const deletedChangefiles = await deleteFilesInDir(
-    paths.data.changefilesDir,
-    cronConfig.changefileRetention,
-  );
-  appLogger.info(`[cron][Clean file]: ${deletedChangefiles?.join(',')} (${deletedChangefiles.length}) changefiles are deleted`);
-
-  const deletedReportFiles = await deleteFilesInDir(
-    paths.data.reportsDir,
-    cronConfig.reportRetention,
-  );
-  appLogger.info(`[cron][Clean file]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
-
-  const deletedSnapshotFiles = await deleteFilesInDir(
-    paths.data.snapshotsDir,
-    cronConfig.snapshotRetention,
-  );
-  appLogger.info(`[cron][Clean file]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
-
   // Logs
   const accessLogFiles = await deleteFilesInDir(
     paths.log.accessDir,
@@ -76,9 +57,6 @@ function update(newConfig) {
     cronConfig.schedule = newConfig.schedule;
     deleteFileCron.setSchedule(newConfig.schedule);
   }
-  if (newConfig.changefileRetention) cronConfig.changefileRetention = newConfig.changefileRetention;
-  if (newConfig.reportRetention) cronConfig.reportRetention = newConfig.reportRetention;
-  if (newConfig.snapshotRetention) cronConfig.snapshotRetention = newConfig.snapshotRetention;
   if (newConfig.accessLogRetention) cronConfig.accessLogRetention = newConfig.accessLogRetention;
   if (newConfig.applicationLogRetention) {
     cronConfig.applicationLogRetention = newConfig.applicationLogRetention;
@@ -86,10 +64,7 @@ function update(newConfig) {
   if (newConfig.healthcheckLogRetention) {
     cronConfig.healthcheckLogRetention = newConfig.healthcheckLogRetention;
   }
-  if (newConfig.changefileRetention
-    || newConfig.reportRetention
-    || newConfig.snapshotRetention
-    || newConfig.accessLogRetention
+  if (newConfig.accessLogRetention
     || newConfig.applicationLogRetention
     || newConfig.healthcheckLogRetention) {
     deleteFileCron.setTask(task);
@@ -100,7 +75,6 @@ function getGlobalConfig() {
   const order = [
     'name',
     'schedule',
-    'changefileRetention',
     'reportRetention',
     'snapshotRetention',
     'accessLogRetention',

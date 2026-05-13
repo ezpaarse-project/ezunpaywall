@@ -19,28 +19,11 @@ const routerAdmin = require('./routers/admin');
 const routerOpenapi = require('./routers/openapi');
 const routerMail = require('./routers/mail');
 const routerApikeys = require('./routers/apikey');
-const routerElastic = require('./routers/elastic');
 const routerCron = require('./routers/cron');
 const routerDisk = require('./routers/disk');
-const routerStatus = require('./routers/update/status');
-const routerState = require('./routers/update/state');
-const routerJob = require('./routers/update/job');
-const routerReport = require('./routers/update/report');
-const routerChangefile = require('./routers/update/changefile');
-const routerSnapshot = require('./routers/update/snapshot');
-const routerDOI = require('./routers/update/doi');
 
 const cronFile = require('./cron/cleanFile');
-const cronDataUpdate = require('./cron/dataUpdate');
-const cronDataUpdateHistory = require('./cron/dataUpdateHistory');
-const cronDownloadSnapshot = require('./cron/downloadSnapshot');
-const cronDoiUpdate = require('./cron/doi');
 const cronDemo = require('./cron/demoApikey');
-
-// create data directory
-fsp.mkdir(path.resolve(paths.data.changefilesDir), { recursive: true });
-fsp.mkdir(path.resolve(paths.data.snapshotsDir), { recursive: true });
-fsp.mkdir(path.resolve(paths.data.reportsDir), { recursive: true });
 
 // create log directory
 fsp.mkdir(path.resolve(paths.log.applicationDir), { recursive: true });
@@ -86,15 +69,7 @@ app.use(routerApikeys);
 app.use(routerOpenapi);
 app.use(routerPing);
 app.use(routerDisk);
-app.use(routerElastic);
-app.use(routerStatus);
-app.use(routerState);
-app.use(routerJob);
-app.use(routerReport);
 app.use(routerCron);
-app.use(routerChangefile);
-app.use(routerSnapshot);
-app.use(routerDOI);
 
 // Errors and unknown routes
 app.use((req, res, next) => res.status(404).json({ message: `Cannot ${req.method} ${req.originalUrl} - this route does not exist.` }));
@@ -113,22 +88,6 @@ const server = app.listen(port, async () => {
 
   if (cronFile?.cron?.active) {
     cronFile.cron.start();
-  }
-
-  if (cronDataUpdate?.cron?.active) {
-    cronDataUpdate.cron.start();
-  }
-
-  if (cronDataUpdateHistory?.cron?.active) {
-    cronDataUpdateHistory.cron.start();
-  }
-
-  if (cronDownloadSnapshot?.active) {
-    cronDownloadSnapshot.start();
-  }
-
-  if (cronDoiUpdate?.active) {
-    cronDoiUpdate.start();
   }
 });
 

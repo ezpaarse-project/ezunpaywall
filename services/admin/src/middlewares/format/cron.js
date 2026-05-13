@@ -10,28 +10,9 @@ const joi = require('joi').extend(require('@hapi/joi-date'));
  */
 function checkCronConfig(type, body) {
   switch (type) {
-    case 'dataUpdate':
-      return joi.object({
-        schedule: joi.string().trim(),
-        index: joi.string().trim(),
-        anteriority: joi.number().min(0),
-        interval: joi.string().trim().valid('day', 'week'),
-      }).validate(body);
-
-    case 'dataUpdateHistory':
-      return joi.object({
-        schedule: joi.string().trim(),
-        index: joi.string().trim(),
-        indexHistory: joi.string().trim(),
-        interval: joi.string().trim().valid('day', 'week'),
-      }).validate(body);
-
     case 'cleanFile':
       return joi.object({
         schedule: joi.string().trim(),
-        changefileRetention: joi.number().min(1),
-        reportRetention: joi.number().min(1),
-        snapshotRetention: joi.number().min(1),
         accessLogRetention: joi.number().min(1),
         applicationLogRetention: joi.number().min(1),
         healthcheckLogRetention: joi.number().min(1),
@@ -42,12 +23,6 @@ function checkCronConfig(type, body) {
         schedule: joi.string().trim(),
         count: joi.number().min(0),
       }).validate(body);
-
-    case 'downloadSnapshot':
-      return joi.object({
-        schedule: joi.string().trim(),
-      }).validate(body);
-
     default:
   }
   return false;

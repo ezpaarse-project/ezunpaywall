@@ -67,12 +67,13 @@ const loading = ref(false);
 
 const healthCards = ref([]);
 
-const { $graphql, $admin, $enrich } = useNuxtApp();
+const { $graphql, $admin, $enrich, $harvesterUnpaywall } = useNuxtApp();
 
 const services = [
   { name: 'graphql', url: $graphql.baseURL },
   { name: 'admin', url: $admin.baseURL },
   { name: 'enrich', url: $enrich.baseURL },
+  { name: 'harvester-unpaywall', url: $harvesterUnpaywall.baseURL },
 ];
 
 /**

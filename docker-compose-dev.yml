@@ -1,6 +1,6 @@
 services:
   graphql:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-graphql-dev
     working_dir: /usr/src/app
     volumes:
@@ -20,7 +20,7 @@ services:
       retries: 5
 
   enrich:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-enrich-dev
     working_dir: /usr/src/app
     volumes:
@@ -40,7 +40,7 @@ services:
       retries: 5
   
   admin:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-admin-dev
     environment:
       - LOG_LEVEL=debug
@@ -63,8 +63,33 @@ services:
       timeout: 10s
       retries: 5
 
+  harvester-unpaywall:
+    image: node:22.22.2
+    container_name: ezunpaywall-harvester-unpaywall-dev
+    environment:
+      - LOG_LEVEL=debug
+      # smtp
+      - SMTP_HOST=maildev
+    working_dir: /usr/src/app
+    volumes:
+      - ./services/harvester-unpaywall:/usr/src/app
+    command: "npm run dev"
+    ports:
+      - 59708:3000
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -Y off --no-verbose --tries=1 --spider http://localhost:3000/healthcheck || exit 1"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+
   frontend:
-    image: node:22.13.1
+    image: node:24.14.1
     container_name: ezunpaywall-frontend-dev
     working_dir: /usr/src/app
     volumes:
@@ -84,7 +109,7 @@ services:
       retries: 5
 
   redis:
-    image: redis:7.2.4
+    image: redis:8.6.2
     container_name: ezunpaywall-redis-dev
     command: redis-server --requirepass "${REDIS_PASSWORD:-changeme}"
     volumes:
@@ -101,7 +126,7 @@ services:
       retries: 5
 
   nginx:
-    image: nginx:1.27.2
+    image: nginx:1.29.8
     container_name: ezunpaywall-nginx-dev
     environment:
       # host of service
@@ -109,6 +134,7 @@ services:
       - GRAPHQL_URL=http://graphql:3000/
       - ENRICH_URL=http://enrich:3000/
       - ADMIN_URL=http://admin:3000/
+      - HARVESTER_UNPAYWALL_URL=http://harvester-unpaywall:3000/
     ports:
       - 80:80
     volumes:
@@ -134,7 +160,7 @@ services:
 
   fakeunpaywall:
     container_name: ezunpaywall-fakeunpaywall-dev
-    image: node:22.13.1
+    image: node:24.14.1
     working_dir: /usr/src/app
     volumes:
       - ./services/fakeUnpaywall:/usr/src/app

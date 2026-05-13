@@ -27,12 +27,14 @@ const items = ref([
   'Graphql',
   'Enrich',
   'Admin',
+  'Harvester-unpaywall',
 ]);
 
 const host = computed(() => {
   if (tab.value === 0) { return runtimeConfig.public.graphqlURL; }
   if (tab.value === 1) { return runtimeConfig.public.enrichURL; }
-  if (tab.value === 2) { return runtimeConfig.public.adminUrl; }
+  if (tab.value === 2) { return runtimeConfig.public.adminURL; }
+  if (tab.value === 3) { return runtimeConfig.public.harvesterUnpaywallURL; }
   return runtimeConfig.public.graphqlURL;
 });
 
@@ -41,6 +43,7 @@ onMounted(() => {
   if (presSelectedDoc === 'graphql') { tab.value = 0; }
   if (presSelectedDoc === 'enrich') { tab.value = 1; }
   if (presSelectedDoc === 'admin') { tab.value = 2; }
+  if (presSelectedDoc === 'harvester-unpaywall') { tab.value = 3; }
 });
 
 </script>

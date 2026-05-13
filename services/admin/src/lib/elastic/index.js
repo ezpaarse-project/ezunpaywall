@@ -107,36 +107,6 @@ async function removeIndex(indexName) {
   }
 }
 
-async function searchByDOI(dois, index) {
-  if (!dois) { return []; }
-  // Normalize request
-  const normalizeDOI = dois.map((doi) => doi.toLowerCase());
-
-  const filter = [{ terms: { doi: normalizeDOI } }];
-
-  const query = {
-    bool: {
-      filter,
-    },
-  };
-
-  let res;
-  try {
-    res = await elasticClient.search({
-      index,
-      size: normalizeDOI.length || 1000,
-      body: {
-        query,
-      },
-    });
-  } catch (err) {
-    appLogger.error('[elastic]: Cannot search documents with DOI as ID', err);
-    return [];
-  }
-  // eslint-disable-next-line no-underscore-dangle
-  return res.body.hits.hits.map((hit) => hit._source);
-}
-
 /**
  * Search data with range
  *
@@ -269,7 +239,6 @@ module.exports = {
   pingElastic,
   createIndex,
   initAlias,
-  searchByDOI,
   refreshIndex,
   bulk,
   searchWithRange,

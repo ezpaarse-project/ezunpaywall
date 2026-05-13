@@ -37,7 +37,7 @@
 
 const { t } = useI18n();
 const snackStore = useSnacksStore();
-const { $admin } = useNuxtApp();
+const { $harvesterUnpaywall } = useNuxtApp();
 
 const loading = ref(false);
 const dois = ref('');
@@ -54,7 +54,7 @@ async function getCounter() {
   loading.value = true;
   let res;
   try {
-    res = await $admin('/doi/update/count', {
+    res = await $harvesterUnpaywall('/doi/update/count', {
       method: 'GET',
     });
   } catch (err) {
@@ -70,7 +70,7 @@ async function getCounter() {
 async function updateDOI() {
   loading.value = true;
   try {
-    await $admin('/doi/update', {
+    await $harvesterUnpaywall('/doi/update', {
       method: 'POST',
       body: {
         dois: dois.value.split(','),

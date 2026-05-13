@@ -22,8 +22,6 @@
     "nodes": "http://elastic:9200",
     "username": "elastic",
     "password": "changeme",
-    "maxBulkSize": 4000,
-    "indexAlias": "upw",
     "timeout": 20000
   },
   "redis":  {
@@ -32,30 +30,9 @@
     "password": "changeme"
   },
   "cron": {
-    "downloadSnapshot": {
-      "schedule": "0 0 0 1 * *",
-      "active": true
-    },
-    "dataUpdate": {
-      "schedule": "0 0 0 * * *",
-      "active": false,
-      "index": "unpaywall",
-      "interval": "day",
-      "anteriority": 0
-    },
-    "dataUpdateHistory": {
-      "schedule": "0 0 0 * * *",
-      "active": false,
-      "index": "unpaywall",
-      "indexHistory": "unpaywall_history_*",
-      "interval": "day"
-    },
     "cleanFile": {
       "schedule": "0 0 0 * * *",
       "active": true,
-      "changefileRetention": 30,
-      "reportRetention": 30,
-      "snapshotRetention": 100,
       "accessLogRetention": 365,
       "applicationLogRetention": 365,
       "healthcheckLogRetention": 30
@@ -64,11 +41,6 @@
       "schedule": "0 0 0 * * *",
       "active": true,
       "count": 100000
-    },
-    "doiUpdate": {
-      "schedule": "0 0 0 * * *",
-      "active": true,
-      "limit": 100000
     }
   },
   "paths": {
@@ -76,11 +48,6 @@
       "applicationDir": "./log/application", 
       "accessDir": "./log/access",
       "healthcheckDir": "./log/healthcheck"
-    },
-    "data": {
-      "changefilesDir": "./data/changefiles",
-      "snapshotsDir": "./data/snapshots",
-      "reportsDir": "./data/reports"
     }
   }
 }
