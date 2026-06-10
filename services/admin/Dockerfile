@@ -16,9 +16,9 @@ ARG ENV=development
 
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s CMD ["node", "./healthcheck.js"]
 
-RUN mkdir -p ./log/access ./log/application ./log/healthcheck ./data/changefiles ./data/reports ./data/snapshots \
-  && chmod -R 700 ./log ./data \
-  && chown -R node:node ./log ./data
+RUN mkdir -p ./log/access ./log/application ./log/healthcheck \
+  && chmod -R 700 ./log \
+  && chown -R node:node ./log
 
 RUN if [ "$ENV" = "production" ]; then \
       rm -f /bin/sh; \
