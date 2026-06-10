@@ -16,7 +16,7 @@ ARG ENV=development
 
 HEALTHCHECK --interval=15s --timeout=10s --retries=5 --start-period=20s CMD ["node", "./healthcheck.js"]
 
-RUN mkdir -p ./log/access ./log/application ./log/healthcheck ./data/changefiles ./data/reports ./data/snapshots \
+RUN mkdir -p ./log/access ./log/application ./log/healthcheck ./data/enriched ./data/states ./data/upload \
   && chmod -R 700 ./log ./data \
   && chown -R node:node ./log ./data 
 
