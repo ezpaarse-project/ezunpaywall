@@ -14,6 +14,7 @@ if (process.env.NODE_ENV === 'production') {
   const caPath = path.resolve(__dirname, '..', '..', '..', 'certs', 'ca.crt');
   try {
     ca = fs.readFileSync(caPath, 'utf8');
+    appLogger.info(`[elastic]: Read elastic certificate file in [${caPath}]`);
   } catch (err) {
     appLogger.error(`[elastic]: Cannot read elastic certificate file in [${caPath}]`, err);
   }
