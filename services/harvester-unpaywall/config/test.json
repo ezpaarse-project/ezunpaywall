@@ -23,7 +23,6 @@
     "username": "elastic",
     "password": "changeme",
     "maxBulkSize": 4000,
-    "indexAlias": "upw",
     "timeout": 20000
   },
   "redis":  {

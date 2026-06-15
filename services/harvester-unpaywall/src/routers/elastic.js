@@ -1,23 +1,7 @@
 const router = require('express').Router();
 
 const elastic = require('../lib/elastic');
-const unpaywallMapping = require('../../mapping/unpaywall.json');
 const checkAdmin = require('../middlewares/admin');
-
-/**
- * Route that init unpaywall elastic alias with local mapping.
- *
- * Auth required.
- */
-router.post('/elastic/alias', checkAdmin, async (req, res, next) => {
-  try {
-    await elastic.initAlias('unpaywall', unpaywallMapping, 'upw');
-  } catch (err) {
-    return next(err);
-  }
-
-  return res.status(202).end();
-});
 
 /**
  * Route that get alias on elastic.

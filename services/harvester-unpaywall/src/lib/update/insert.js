@@ -22,11 +22,9 @@ const {
 const {
   refreshIndex,
   bulk,
-  initAlias,
   createIndex,
 } = require('../elastic');
 
-const { indexAlias } = elasticsearch;
 const { maxBulkSize } = elasticsearch;
 
 /**
@@ -108,13 +106,6 @@ async function insertDataUnpaywall(insertConfig) {
     await createIndex(index, unpaywallMapping);
   } catch (err) {
     appLogger.error(`[insert][elastic][index]: Cannot create index [${index}]`, err);
-    throw err;
-  }
-
-  try {
-    await initAlias(index, unpaywallMapping, indexAlias);
-  } catch (err) {
-    appLogger.error(`[insert][elastic][alias]: Cannot create alias [${index}]`, err);
     throw err;
   }
 

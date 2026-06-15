@@ -30,7 +30,6 @@ module.exports = {
     username: 'ELASTICSEARCH_USERNAME', // Username of elastic super user
     password: 'ELASTICSEARCH_PASSWORD', // Password of elastic super user
     maxBulkSize: 'ELASTICSEARCH_MAX_BULK_SIZE', // Max bulk size of update process
-    indexAlias: 'ELASTICSEARCH_INDEX_ALIAS', // Default alias of unpaywall data
     timeout: 'ELASTICSEARCH_TIMEOUT', // Timeout in milliseconds of elastic client
   },
 

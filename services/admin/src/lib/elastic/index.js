@@ -57,37 +57,6 @@ async function createIndex(index, mapping) {
 }
 
 /**
- * Create alias on elastic.
- *
- * @param {string} indexName Name of index.
- * @param {Object} mapping Mapping of index.
- * @param {string} aliasName Name of alias.
- *
- * @returns {Promise<void>}
- */
-async function initAlias(indexName, mapping, aliasName) {
-  try {
-    await createIndex(indexName, mapping);
-  } catch (err) {
-    appLogger.error(`[elastic]: Cannot create index [${indexName}]`, err);
-    return;
-  }
-
-  try {
-    const { body: aliasExists } = await elasticClient.indices.existsAlias({ name: aliasName });
-
-    if (aliasExists) {
-      appLogger.info(`[elastic]: Alias [${aliasName}] already exists`);
-    } else {
-      appLogger.info(`[elastic]: Creating alias [${aliasName}] pointing to index [${indexName}]`);
-      await elasticClient.indices.putAlias({ index: indexName, name: aliasName });
-    }
-  } catch (err) {
-    appLogger.error(`[elastic]: Cannot create alias [${aliasName}] pointing to index [${indexName}]`, err);
-  }
-}
-
-/**
  * delete index if it exist
  *
  * @param indexName Name of index
@@ -238,7 +207,6 @@ module.exports = {
   elasticClient,
   pingElastic,
   createIndex,
-  initAlias,
   refreshIndex,
   bulk,
   searchWithRange,

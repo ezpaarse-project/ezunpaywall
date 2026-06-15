@@ -881,7 +881,6 @@ paths:
                       username: elastic
                       password: "********"
                       maxBulkSize: 4000
-                      indexAlias: upw
                       timeout: 20000
                     redis:
                       host: redis
