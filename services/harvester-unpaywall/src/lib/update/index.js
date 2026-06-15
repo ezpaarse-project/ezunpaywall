@@ -173,7 +173,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
   const baseLogMessage = '[job][changefiles][download][insert]';
 
   appLogger.info(`${baseLogMessage}: Start download and insert changefile job`);
-  appLogger.info(`${baseLogMessage}: index: [${index}], interval: [${interval}], startDate: [${startDate}], endDate: [${endDate}], offset: [${offset}], limit: [${limit}], cleanFile: [${cleanFile}], ignoreError: [${ignoreError}], mail: [${mail}]`);
+  appLogger.info(`${baseLogMessage}: index: [${index}], interval: [${interval}], startDate: [${format(new Date(startDate), 'yyyy-MM-dd')}], endDate: [${format(new Date(endDate), 'yyyy-MM-dd')}], offset: [${offset}], limit: [${limit}], cleanFile: [${cleanFile}], ignoreError: [${ignoreError}], mail: [${mail}]`);
 
   await createState({ name: '[changefiles][download][insert]', index });
   const start = new Date();
