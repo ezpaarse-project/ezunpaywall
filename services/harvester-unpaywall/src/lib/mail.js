@@ -81,7 +81,7 @@ async function pingSMTP() {
 }
 
 /**
- * Sends a mail that inform that an update has started start.
+ * Sends a mail that inform that "an update has started" start.
  *
  * @param {string} config Config of mail that content.
  *
@@ -103,6 +103,50 @@ async function updateStartedMail(config) {
     return;
   }
   logger.info('[mail]: Update started mail was sent');
+}
+
+/**
+ * Sends the update report email.
+ *
+ * @param {Object} state report of update process.
+ * @param {number} attempts Number of iteration.
+ *
+ * @returns {Promise<void>}
+ */
+async function sendDailyUpdateReportMail(state, attempts) {
+  const status = state.error === true ? 'error' : 'success';
+
+  let insertedDocs = 0;
+  let updatedDocs = 0;
+  state?.steps?.forEach((step) => {
+    if (step.task === 'insert') {
+      insertedDocs += step.insertedDocs || 0;
+      updatedDocs += step.updatedDocs || 0;
+    }
+  });
+
+  const stackTrace = JSON.stringify(state.stackTrace, null, 2);
+
+  try {
+    await sendMail({
+      from: notifications.sender,
+      to: notifications.receivers,
+      subject: `[ezUNPAYWALL][${notifications.machine}]: report - ${status} - nombre de tentatives: ${attempts}`,
+      ...generateMail('dailyUpdateReport', {
+        state,
+        status,
+        insertedDocs,
+        updatedDocs,
+        attempts,
+        stackTrace,
+        date: format(new Date(), 'dd-MM-yyyy'),
+      }),
+    });
+  } catch (err) {
+    logger.error('[mail]: Cannot send daily update report mail', err);
+    return;
+  }
+  logger.info('[mail]: Daily update report mail was sent');
 }
 
 /**
@@ -179,5 +223,6 @@ module.exports = {
   pingSMTP,
   updateStartedMail,
   sendUpdateReportMail,
+  sendDailyUpdateReportMail,
   noChangefileMail,
 };

@@ -5,9 +5,12 @@ const { setTimeout } = require('timers/promises');
 const appLogger = require('../lib/logger/appLogger');
 
 const Cron = require('./cron');
+
 const { getStatus } = require('../lib/update/status');
+const { getState } = require('../lib/update/state');
 
 const { downloadInsertChangefilesProcess } = require('../lib/update');
+const { sendDailyUpdateReportMail } = require('../lib/mail');
 
 const { ...cronConfig } = cron.dataUpdate;
 
@@ -25,10 +28,10 @@ if (typeof active === 'string') {
  * @returns {Promise<void>}
  */
 async function task() {
-  appLogger.info('[cron][Data update]: Has started');
+  appLogger.info('[cron][data-update]: Has started');
   const status = getStatus();
   if (status) {
-    appLogger.info('[cron][Data update]: Finished: conflict: an update is already in progress');
+    appLogger.info('[cron][data-update]: Finished: conflict: an update is already in progress');
     return;
   }
 
@@ -40,27 +43,33 @@ async function task() {
 
   let res;
 
+  const jobConfig = {
+    type: 'changefile',
+    index: cronConfig.index,
+    interval: cronConfig.interval,
+    startDate,
+    endDate,
+    offset: 0,
+    limit: -1,
+    mail: false,
+  };
+
   while (i < 5) {
-    res = await downloadInsertChangefilesProcess({
-      type: 'changefile',
-      index: cronConfig.index,
-      interval: cronConfig.interval,
-      startDate,
-      endDate,
-      offset: 0,
-      limit: -1,
-    });
+    res = await downloadInsertChangefilesProcess(jobConfig);
+    i += 1;
     if (res) {
-      return;
+      break;
     }
     await setTimeout(30000);
-    i += 1;
   }
 
-  appLogger.info('[cron][Data update]: Has finished');
+  const state = getState();
+  sendDailyUpdateReportMail(state, i);
+
+  appLogger.info('[cron][data-update]: Has finished');
 }
 
-const unpaywallCron = new Cron('Data update', cronConfig.schedule, task, active);
+const unpaywallCron = new Cron('data-update', cronConfig.schedule, task, active);
 
 /**
  * Update config of update process and config of cron.
