@@ -20,17 +20,17 @@ if (typeof active === 'string') {
  * @returns {Promise<void>}
  */
 async function task() {
-  appLogger.info('[cron][Download snapshot]: Has started');
+  appLogger.info('[cron][download-snapshot]: Has started');
   const status = getStatus();
   if (status) {
-    appLogger.info('[cron][Download snapshot]: Finished: conflict: an update is already in progress');
+    appLogger.info('[cron][download-snapshot]: Finished: conflict: an update is already in progress');
     return;
   }
 
   await downloadSnapshot();
-  appLogger.info('[cron][Download snapshot]: Has finished');
+  appLogger.info('[cron][download-snapshot]: Has finished');
 }
 
-const downloadSnapshotCron = new Cron('Download snapshot', cron.downloadSnapshot.schedule, task, active);
+const downloadSnapshotCron = new Cron('download-snapshot', cron.downloadSnapshot.schedule, task, active);
 
 module.exports = downloadSnapshotCron;

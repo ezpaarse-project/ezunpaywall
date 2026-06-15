@@ -18,13 +18,13 @@ if (typeof active === 'string') {
  * @returns {Promise<void>}
  */
 async function task() {
-  appLogger.info('[cron][updateDOI]: Has started');
+  appLogger.info('[cron][DOI-update]: Has started');
   const count = getCount();
   reset();
-  appLogger.info(`[cron][updateDOI]: ${count} DOIs reset`);
-  appLogger.info('[cron][updateDOI]: Has finished');
+  appLogger.info(`[cron][DOI-update]: ${count} DOIs reset`);
+  appLogger.info('[cron][DOI-update]: Has finished');
 }
 
-const doiUpdateCron = new Cron('updateDOI', cron.doiUpdate.schedule, task, active);
+const doiUpdateCron = new Cron('DOI-update', cron.doiUpdate.schedule, task, active);
 
 module.exports = doiUpdateCron;

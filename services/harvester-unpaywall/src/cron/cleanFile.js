@@ -17,50 +17,50 @@ else active = false;
  * @returns {Promise<void>}
  */
 async function task() {
-  appLogger.info('[cron][Clean file]: Has start');
+  appLogger.info('[cron][clean-file]: Has started');
 
   // Data
   const deletedChangefiles = await deleteFilesInDir(
     paths.data.changefilesDir,
     cronConfig.changefileRetention,
   );
-  appLogger.info(`[cron][Clean file]: ${deletedChangefiles?.join(',')} (${deletedChangefiles.length}) changefiles are deleted`);
+  appLogger.info(`[cron][clean-file]: ${deletedChangefiles?.join(',')} (${deletedChangefiles.length}) changefiles are deleted`);
 
   const deletedReportFiles = await deleteFilesInDir(
     paths.data.reportsDir,
     cronConfig.reportRetention,
   );
-  appLogger.info(`[cron][Clean file]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
+  appLogger.info(`[cron][clean-file]: ${deletedReportFiles?.join(',')} (${deletedReportFiles.length}) reports are deleted`);
 
   const deletedSnapshotFiles = await deleteFilesInDir(
     paths.data.snapshotsDir,
     cronConfig.snapshotRetention,
   );
-  appLogger.info(`[cron][Clean file]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
+  appLogger.info(`[cron][clean-file]: ${deletedSnapshotFiles?.join(',')} (${deletedSnapshotFiles.length}) snapshots are deleted`);
 
   // Logs
   const accessLogFiles = await deleteFilesInDir(
     paths.log.accessDir,
     cronConfig.accessLogRetention,
   );
-  appLogger.info(`[cron][Clean file]: ${accessLogFiles?.join(',')} (${accessLogFiles.length}) access log file are deleted`);
+  appLogger.info(`[cron][clean-file]: ${accessLogFiles?.join(',')} (${accessLogFiles.length}) access log file are deleted`);
 
   const applicationLogFile = await deleteFilesInDir(
     paths.log.applicationDir,
     cronConfig.applicationLogRetention,
   );
-  appLogger.info(`[cron][Clean file]: ${applicationLogFile?.join(',')} (${applicationLogFile.length}) application log file are deleted`);
+  appLogger.info(`[cron][clean-file]: ${applicationLogFile?.join(',')} (${applicationLogFile.length}) application log file are deleted`);
 
   const healthcheckLogFile = await deleteFilesInDir(
     paths.log.healthcheckDir,
     cronConfig.healthcheckLogRetention,
   );
-  appLogger.info(`[cron][Clean file]: ${healthcheckLogFile?.join(',')} (${healthcheckLogFile.length}) healthcheck log file are deleted`);
+  appLogger.info(`[cron][clean-file]: ${healthcheckLogFile?.join(',')} (${healthcheckLogFile.length}) healthcheck log file are deleted`);
 
-  appLogger.info('[cron][Clean file]: Has finished');
+  appLogger.info('[cron][clean-file]: Has finished');
 }
 
-const deleteFileCron = new Cron('Clean file', cronConfig.schedule, task, active);
+const deleteFileCron = new Cron('clean-file', cronConfig.schedule, task, active);
 
 /**
  * Update config of update process and config of cron.

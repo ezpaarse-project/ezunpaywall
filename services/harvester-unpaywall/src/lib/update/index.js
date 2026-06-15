@@ -38,13 +38,10 @@ async function endJobAsError(err) {
  *
  * @param {boolean} mail if true send mail
  */
-async function endJobAsSuccess(mail) {
+async function endJobAsSuccess() {
   await end();
   const state = getState();
   await createReport(state);
-  if (mail) {
-    sendUpdateReportMail(state);
-  }
   setStatus(false);
 }
 
@@ -58,7 +55,7 @@ async function endJobAsSuccess(mail) {
  *
  * @returns {Promise<void>}
  */
-async function downloadSnapshotProcess() {
+async function downloadSnapshotProcess(mail) {
   setStatus(true);
 
   appLogger.info('[job][snapshot][download]: Start download snapshot job');
@@ -76,7 +73,13 @@ async function downloadSnapshotProcess() {
   }
 
   appLogger.info(`[job][snapshot][download]: snapshot [${filename}] is downloaded`);
-  await endJobAsSuccess(true);
+  await endJobAsSuccess();
+
+  if (mail) {
+    const state = getState();
+    sendUpdateReportMail(state);
+  }
+
   appLogger.info('[job][snapshot][download]: download snapshot job is finish');
 }
 
@@ -87,40 +90,47 @@ async function downloadSnapshotProcess() {
  * @param {string} jobConfig.index Name of the index to which the data will be inserted.
  * @param {number} jobConfig.offset Line of the snapshot at which the data insertion starts.
  * @param {number} jobConfig.limit Line in the file where the insertion stops.
+ * @param {boolean} jobConfig.cleanFile Delete file after job.
+ * @param {boolean} jobConfig.ignoreError Ignore error in file.
+ * @param {boolean} jobConfig.mail Send mail
  *
  * @returns {Promise<void>}
  */
 async function downloadInsertSnapshotProcess(jobConfig) {
   setStatus(true);
 
-  appLogger.info('[job][snapshot][download][insert]: Start download insert snapshot job');
-  appLogger.info(`[job][snapshot][download][insert]: index: [${jobConfig.index}]`);
-  appLogger.info(`[job][snapshot][download][insert]: offset: [${jobConfig.offset}]`);
-  appLogger.info(`[job][snapshot][download][insert]: limit: [${jobConfig.limit}]`);
+  const {
+    index, offset, limit, cleanFile, ignoreError, mail,
+  } = jobConfig;
 
-  await createState({ name: '[snapshot][download][insert]', index: jobConfig.index });
+  const baseLogMessage = '[job][snapshot][download][insert]';
+
+  appLogger.info(`${baseLogMessage}: Start download insert snapshot job`);
+  appLogger.info(`${baseLogMessage}: index: [${index}], offset: [${offset}], limit: [${limit}], cleanFile: [${cleanFile}], ignoreError: [${ignoreError}], mail: [${mail}]`);
+
+  await createState({ name: '[snapshot][download][insert]', index });
 
   let filename;
 
   try {
     filename = await downloadSnapshot();
   } catch (err) {
-    appLogger.error('[job][snapshot][download][insert]: Cannot download snapshot');
+    appLogger.error(`${baseLogMessage}: Cannot download snapshot`);
     await endJobAsError(err);
-    appLogger.error('[job][snapshot][download][insert]: Download insert snapshot job is finished with an error', err);
+    appLogger.error(`${baseLogMessage}: Download insert snapshot job is finished with an error`, err);
     return;
   }
 
-  appLogger.info(`[job][snapshot][download][insert]: Snapshot [${filename}] is downloaded`);
+  appLogger.info(`${baseLogMessage}: Snapshot [${filename}] is downloaded`);
 
   jobConfig.filename = filename;
 
   try {
     await insertDataUnpaywall(jobConfig);
   } catch (err) {
-    appLogger.error(`[job][snapshot][download][insert]: Cannot insert the content of snapshot [${jobConfig.filename}]`);
+    appLogger.error(`${baseLogMessage}: Cannot insert the content of snapshot [${jobConfig.filename}]`);
     await endJobAsError(err);
-    appLogger.error('[job][snapshot][download][insert]: Download insert snapshot job is finished with an error', err);
+    appLogger.error(`${baseLogMessage}: Download insert snapshot job is finished with an error`, err);
     return;
   }
 
@@ -128,9 +138,14 @@ async function downloadInsertSnapshotProcess(jobConfig) {
     await deleteFile(path.resolve(paths.data.snapshotsDir, jobConfig.filename));
   }
 
-  await endJobAsSuccess(true);
+  await endJobAsSuccess();
 
-  appLogger.info('[job][snapshot][download][insert]: Download insert snapshot job is finish');
+  if (mail) {
+    const state = getState();
+    sendUpdateReportMail(state);
+  }
+
+  appLogger.info(`${baseLogMessage}: Download insert snapshot job is finish`);
 }
 
 /**
@@ -151,19 +166,16 @@ async function downloadInsertSnapshotProcess(jobConfig) {
 async function downloadInsertChangefilesProcess(jobConfig) {
   setStatus(true);
 
-  const { interval, startDate, endDate } = jobConfig;
+  const {
+    index, interval, startDate, endDate, offset, limit, cleanFile, ignoreError, mail,
+  } = jobConfig;
 
-  appLogger.info('[job][changefiles][download][insert]: Start download and insert changefile job');
-  appLogger.info(`[job][changefiles][download][insert]: index: [${jobConfig.index}]`);
-  appLogger.info(`[job][changefiles][download][insert]: interval: [${jobConfig.interval}]`);
-  appLogger.info(`[job][changefiles][download][insert]: startDate: [${format(new Date(jobConfig.startDate), 'yyyy-MM-dd')}]`);
-  appLogger.info(`[job][changefiles][download][insert]: endDate: [${format(new Date(jobConfig.endDate), 'yyyy-MM-dd')}]`);
-  appLogger.info(`[job][changefiles][download][insert]: offset: [${jobConfig.offset}]`);
-  appLogger.info(`[job][changefiles][download][insert]: limit: [${jobConfig.limit}]`);
-  appLogger.info(`[job][changefiles][download][insert]: cleanFile: [${jobConfig.cleanFile}]`);
-  appLogger.info(`[job][changefiles][download][insert]: ignoreError: [${jobConfig.ignoreError}]`);
+  const baseLogMessage = '[job][changefiles][download][insert]';
 
-  await createState({ name: '[changefiles][download][insert]', index: jobConfig.index });
+  appLogger.info(`${baseLogMessage}: Start download and insert changefile job`);
+  appLogger.info(`${baseLogMessage}: index: [${index}], interval: [${interval}], startDate: [${startDate}], endDate: [${endDate}], offset: [${offset}], limit: [${limit}], cleanFile: [${cleanFile}], ignoreError: [${ignoreError}], mail: [${mail}]`);
+
+  await createState({ name: '[changefiles][download][insert]', index });
   const start = new Date();
   addStepGetChangefiles();
   const step = getLatestStep();
@@ -173,9 +185,9 @@ async function downloadInsertChangefilesProcess(jobConfig) {
   try {
     changefilesInfo = await getChangefiles(interval, startDate, endDate);
   } catch (err) {
-    appLogger.error('[job][changefiles][download][insert]: Cannot get changefiles', err);
+    appLogger.error(`${baseLogMessage}: Cannot get changefiles`, err);
     await endJobAsError(err);
-    appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
+    appLogger.error(`${baseLogMessage}: Download and insert changefile job is finish with an error`, err);
     return false;
   }
 
@@ -184,9 +196,9 @@ async function downloadInsertChangefilesProcess(jobConfig) {
   updateLatestStep(step);
 
   if (changefilesInfo.length === 0) {
+    await endJobAsSuccess();
     noChangefileMail(startDate, endDate);
-    await endJobAsSuccess(false);
-    appLogger.info('[job][changefiles][download][insert]: Download and insert changefile job is finish');
+    appLogger.info(`${baseLogMessage}: Download and insert changefile job is finish`);
     return false;
   }
 
@@ -194,9 +206,9 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     try {
       await downloadChangefile(changefilesInfo[i], interval);
     } catch (err) {
-      appLogger.error(`[job][changefiles][download][insert]: Cannot download changefile [${changefilesInfo[i].filename}]`);
+      appLogger.error(`${baseLogMessage}: Cannot download changefile [${changefilesInfo[i].filename}]`);
       await endJobAsError(err);
-      appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
+      appLogger.error(`${baseLogMessage}: Download and insert changefile job is finish with an error`, err);
       return false;
     }
 
@@ -205,9 +217,9 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     try {
       await insertDataUnpaywall(jobConfig);
     } catch (err) {
-      appLogger.error(`[job][changefiles][download][insert]: Cannot insert changefile [${changefilesInfo[i].filename}]`);
+      appLogger.error(`${baseLogMessage}: Cannot insert changefile [${changefilesInfo[i].filename}]`);
       await endJobAsError(err);
-      appLogger.error('[job][changefiles][download][insert]: Download and insert changefile job is finish with an error', err);
+      appLogger.error(`${baseLogMessage}: Download and insert changefile job is finish with an error`, err);
       return false;
     }
 
@@ -216,8 +228,14 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     }
   }
 
-  await endJobAsSuccess(true);
-  appLogger.info('[job][changefiles][download][insert]: Download and insert changefile job is finish');
+  await endJobAsSuccess();
+
+  if (mail) {
+    const state = getState();
+    sendUpdateReportMail(state);
+  }
+
+  appLogger.info(`${baseLogMessage}: Download and insert changefile job is finish`);
   return true;
 }
 
@@ -229,6 +247,8 @@ async function downloadInsertChangefilesProcess(jobConfig) {
  * @param {string} jobConfig.filename Filename.
  * @param {number} jobConfig.offset Line of the snapshot at which the data insertion starts.
  * @param {number} jobConfig.limit Line in the file where the insertion stops.
+ * @param {string} jobConfig.type Type of job.
+ * @param {boolean} jobConfig.mail Send mail or not.
  * @param {boolean} jobConfig.cleanFile Delete file after job.
  * @param {boolean} jobConfig.ignoreError Ignore error in file.
  *
@@ -237,24 +257,23 @@ async function downloadInsertChangefilesProcess(jobConfig) {
 async function insertFileProcess(jobConfig) {
   setStatus(true);
 
-  const { type } = jobConfig;
+  const {
+    type, index, filename, offset, limit, cleanFile, ignoreError, mail,
+  } = jobConfig;
 
-  appLogger.info(`[job][${type}][insert]: Start insert changefile job`);
-  appLogger.info(`[job][${type}][insert]: index: [${jobConfig.index}]`);
-  appLogger.info(`[job][${type}][insert]: filename: [${jobConfig.filename}]`);
-  appLogger.info(`[job][${type}][insert]: offset: [${jobConfig.offset}]`);
-  appLogger.info(`[job][${type}][insert]: limit: [${jobConfig.limit}]`);
-  appLogger.info(`[job][${type}][insert]: cleanFile: [${jobConfig.cleanFile}]`);
-  appLogger.info(`[job][${type}][insert]: ignoreError: [${jobConfig.ignoreError}]`);
+  const baseLogMessage = `[job][${type}][insert]`;
 
-  await createState({ name: `[${type}][insert]`, index: jobConfig.index });
+  appLogger.info(`${baseLogMessage}: Start insert file job`);
+  appLogger.info(`${baseLogMessage}: index: [${index}], filename: [${filename}], offset: [${offset}], limit: [${limit}], cleanFile: [${cleanFile}], ignoreError: [${ignoreError}], mail: [${mail}]`);
+
+  await createState({ name: `[${type}][insert]`, index });
 
   try {
     await insertDataUnpaywall(jobConfig);
   } catch (err) {
-    appLogger.error(`[job][${type}][insert]: Cannot insert ${type} [${jobConfig.filename}]`);
+    appLogger.error(`${baseLogMessage}: Cannot insert ${type} [${jobConfig.filename}]`);
     await endJobAsError(err);
-    appLogger.error(`[job][${type}][insert]: Insert changefile job is finish with an error`, err);
+    appLogger.error(`${baseLogMessage}: Insert changefile job is finish with an error`, err);
     return;
   }
 
@@ -267,8 +286,14 @@ async function insertFileProcess(jobConfig) {
     }
   }
 
-  await endJobAsSuccess(true);
-  appLogger.info(`[job][${type}][insert]: Insert changefile job is finish`);
+  await endJobAsSuccess();
+
+  if (mail) {
+    const state = getState();
+    sendUpdateReportMail(state);
+  }
+
+  appLogger.info(`${baseLogMessage}: Insert changefile job is finish`);
 }
 
 module.exports = {
