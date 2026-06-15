@@ -6,57 +6,8 @@ A graphql API for querying unpaywall data via one or more DOIs.
 
 To set up this service, you can use environment variables. The config is displayed at startup. Sensitive data are not displayed.
 
-```
-# if sensitive data are not updated
-warn: [config]: Redis password has the default value
-warn: [config]: Elastic password has the default value
-
-info: {
-  "nodeEnv": "development",
-  "timezone": "Europe/Paris"
-  "redis": {
-    "host": "redis",
-    "port": "6379",
-    "password": "********"
-  },
-  "elasticsearch": {
-    "host": "http://elastic",
-    "port": 9200,
-    "user": "elastic",
-    "password": "********",
-    "indexBase": "unpaywall_base",
-    "indexHistory": "unpaywall_history"
-  },
-  "apikey": "********",
-  "healthTimeout": 3000,
-  "port": 3000
-}
-```
-
-## Environment variables
-
-| name | description | default |
-|---|---|---|
-| NODE_ENV | Environment of node | development |
-| TIMEZONE | Timezone of app used in cron | Europe/Paris |
-| HEALTH_TIMEOUT | Timeout to query the health route | 3000 |
-| ADMIN_APIKEY | Admin API key | changeme |
-| PORT | Port | 3000 |
-| REDIS_HOST | Redis host | redis |
-| REDIS_PORT | Redis port | 6379 |
-| REDIS_PASSWORD | Redis password | changeme |
-| ELASTICSEARCH_HOSTS | Elasticsearch host | http://elastic |
-| ELASTICSEARCH_PORT | Elasticsearch port | 9200 |
-| ELASTICSEARCH_USERNAME | Elasticsearch admin username | elastic |
-| ELASTICSEARCH_PASSWORD | Elasticsearch admin password | changeme |
-| ELASTICSEARCH_INDEX_ALIAS | Graphql entry point | upw |
-| CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
-| CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
-| CRON_CLEAN_FILE_ACCESS_LOG_RETENTION | Detention time in days for access log | 365 |
-| CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION | Detention time in days for application log | 365 |
-| CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION | Detention time in days for healthcheck log | 30 |
-| CRON_METRICS_SCHEDULE | Schedule of cron | 0 0 0 * * * |
-| CRON_METRICS_ACTIVE | Cron active or not at the start of service | true |
+- see [default config](./config/default.json)
+- see [env variables](./config/custom-environment-variables.js)
 
 ## Command to set volume permissions (non root image docker)
 
@@ -100,6 +51,9 @@ curl --request POST \
 ## Cron
 
 One cron automatically update metrics of unpaywall data. the elastic request takes time and is saved locally.
+
+- Clean File : Deletes log files after a certain period of time.
+- metrics : Put in cache the metrics of ezunpaywall data (aggregation of oa_status)
 
 ## Log format
 

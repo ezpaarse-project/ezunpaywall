@@ -6,48 +6,8 @@ Service that enrich csv and jsonl file with unpaywall data.
 
 To set up this service, you can use environment variables. The config is displayed at startup. Sensitive data are not displayed.
 
-see [default config](./config/default.json)
-
-## Environment variables
-
-### Application
-
-| Name | Description | Default |
-| --- | --- | --- |
-| NODE_ENV | Environment of node | development |
-| TIMEZONE |  Timezone of app used in cron | Europe/Paris |
-| ADMIN_APIKEY | Admin API key | changeme |
-| HEALTH_TIMEOUT | Timeout to query the health route |  3000 |
-| PORT | Port | 3000 |
-
-### Redis
-
-| Name | Description | Default |
-| --- | --- | --- |
-| REDIS_HOST | Redis host | redis |
-| REDIS_PORT | Redis port | 6379 |
-| REDIS_PASSWORD | Redis password | changeme |
-
-### Graphql
-
-| Name | Description | Default |
-| --- | --- | --- |
-| GRAPHQL_URL | Graphql host | http://graphql:3000 |
-
-### Cron
-
-#### Clean File
-
-| Name | Description | Default |
-| --- | --- | --- |
-| CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
-| CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
-| CRON_CLEAN_FILE_ENRICHED_RETENTION | Detention time in days for enriched file | 1 |
-| CRON_CLEAN_FILE_UPLOADED_RETENTION | Detention time in days for uploaded file | 1 |
-| CRON_CLEAN_FILE_STATE_RETENTION | Detention time in days for state file | 1 |
-| CRON_CLEAN_FILE_ACCESS_LOG_RETENTION | Detention time in days for access log | 365 |
-| CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION | Detention time in days for application log | 365 |
-| CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION | Detention time in days for healthcheck log | 30 |
+- see [default config](./config/default.json)
+- see [env variables](./config/custom-environment-variables.js)
 
 ## Command to set volume permissions (non root image docker)
 

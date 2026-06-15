@@ -9,7 +9,7 @@ This service is for administrators.
 To set up this service, you can use environment variables. The config is displayed at startup. Sensitive data are not displayed.
 
 - see [default config](./config/default.json)
-- see [env variables](./config/custom-environment-variables.jsonc)
+- see [env variables](./config/custom-environment-variables.js)
 
 ## Command to set volume permissions (non root image docker)
 
