@@ -14,7 +14,7 @@ describe('Cron: get dataUpdate', () => {
   it('Should get cron', async () => {
     const resultValue = {
       ...dataUpdate,
-      name: 'Data update',
+      name: 'data-update',
     };
 
     const response = await request(app)

@@ -18,7 +18,7 @@ describe('Cron: dataUpdate stop', () => {
     const resultValue = {
       ...dataUpdate,
       active: false,
-      name: 'Data update',
+      name: 'data-update',
     };
 
     const updateResponse = await request(app)

@@ -22,7 +22,7 @@ describe('Cron: update dataUpdate', () => {
     const resultValue = {
       ...dataUpdate,
       schedule: testValue.schedule,
-      name: 'Data update',
+      name: 'data-update',
     };
 
     const updateResponse = await request(app)
@@ -47,7 +47,7 @@ describe('Cron: update dataUpdate', () => {
     const resultValue = {
       ...dataUpdate,
       index: testValue.index,
-      name: 'Data update',
+      name: 'data-update',
     };
 
     const updateResponse = await request(app)
@@ -72,7 +72,7 @@ describe('Cron: update dataUpdate', () => {
     const resultValue = {
       ...dataUpdate,
       interval: testValue.interval,
-      name: 'Data update',
+      name: 'data-update',
     };
 
     const updateResponse = await request(app)
@@ -97,7 +97,7 @@ describe('Cron: update dataUpdate', () => {
     const resultValue = {
       ...dataUpdate,
       anteriority: testValue.anteriority,
-      name: 'Data update',
+      name: 'data-update',
     };
 
     const updateResponse = await request(app)
