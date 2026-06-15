@@ -8,96 +8,8 @@ This service is for administrators.
 
 To set up this service, you can use environment variables. The config is displayed at startup. Sensitive data are not displayed.
 
-see [default config](./config/default.json)
-
-## Environment variables
-
-### Application
-
-| name | Description | Default |
-| --- | --- | --- |
-| NODE_ENV | Environment of node | development |
-| TIMEZONE | Timezone of app used in cron | Europe/Paris |
-| ADMIN_APIKEY | Admin API key | changeme |
-| HEALTH_TIMEOUT | Timeout to query the health route | 10000 |
-| PORT | Port | 3000 |
-
-### Mail
-
-| name | Description | Default |
-| --- | --- | --- |
-| SMTP_HOST | SMTP host | localhost |
-| SMTP_PORT | SMTP port | 25 |
-| NOTIFICATIONS_SENDER | The sender for emails issued by ezunpaywall | ezunpaywall |
-| NOTIFICATIONS_RECEIVERS | Recipients of the recent activity email | ezunpaywall@example.fr |
-| NOTIFICATIONS_MACHINE | Environment of deployment | dev |
-
-### unpaywall
-
-| name | Description | Default |
-| --- | --- | --- |
-| UNPAYWALL_URL | Unpaywall api URL to access to changefiles | http://fakeunpaywall:3000 |
-| UNPAYWALL_APIKEY | Unpaywall apikey to access to changefiles | changeme |
-| UNPAYWALL_EMAIL | Email to request Unpaywall API | john.doe@exmaple.com | 
-
-### Elasticsearch
-
-| name | Description | Default |
-| --- | --- | --- |
-| ELASTICSEARCH_NODES | Elastic nodes URL separated by comma | http://elastic:9200 |
-| ELASTICSEARCH_USERNAME | Username of elastic super user | elastic |
-| ELASTICSEARCH_PASSWORD | Password of elastic super user | changeme |
-| ELASTICSEARCH_MAX_BULK_SIZE | Max bulk size of update process | 4000 |
-| ELASTICSEARCH_INDEX_ALIAS | Default alias of unpaywall data | upw |
-| ELASTICSEARCH_TIMEOUT | Timeout in milliseconds of elastic client | 20000 |
-
-### Redis
-
-| name | Description | Default |
-| --- | --- | --- |
-| REDIS_HOST | Redis host | redis |
-| REDIS_PORT | Redis port | 6379 |
-| REDIS_PASSWORD | Redis password | changeme |
-
-### Cron
-
-#### Download snapshot
-
-| name | Description | Default |
-| --- | --- | --- |
-| CRON_DOWNLOAD_SNAPSHOT_SCHEDULE | Schedule of cron | 0 0 0 1 * * |
-| CRON_DOWNLOAD_SNAPSHOT_ACTIVE | Cron active or not at the start of service | true |
-
-#### Data update
-
-| name | Description | Default |
-| --- | --- | --- |
-| CRON_DATA_UPDATE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
-| CRON_DATA_UPDATE_ACTIVE | Cron active or not at the start of service | false |
-| CRON_DATA_UPDATE_INDEX | Index where data is inserted | unpaywall |
-| CRON_DATA_UPDATE_INTERVAL | Interval of changefile | day |
-| CRON_DATA_UPDATE_ANTERIORITY | Number of days the update starts from today's date | 0 |
-
-#### Clean file
-
-| name | Description | Default |
-| --- | --- | --- |
-| CRON_CLEAN_FILE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
-| CRON_CLEAN_FILE_ACTIVE | Cron active or not at the start of service | true |
-| CRON_CLEAN_FILE_CHANGEFILE_RETENTION | Detention time in days for changefiles from unpaywall | 30 |
-| CRON_CLEAN_FILE_REPORT_RETENTION | Detention time in days for report of update process | 30 |
-| CRON_CLEAN_FILE_SNAPSHOT_RETENTION | Detention time in days for snapshot from unpaywall | 150 |
-| CRON_CLEAN_FILE_ACCESS_LOG_RETENTION | Detention time in days for access log | 365 |
-| CRON_CLEAN_FILE_APPLICATION_LOG_RETENTION | Detention time in days for application log | 365 |
-| CRON_CLEAN_FILE_HEALTHCHECK_LOG_RETENTION | Detention time in days for healthcheck log | 30 |
-
-#### DOI update
-
-| name | Description | Default |
-| --- | --- | --- |
-| CRON_DOI_UPDATE_SCHEDULE | Schedule of cron | 0 0 0 * * * |
-| CRON_DOI_UPDATE_ACTIVE | Cron active or not at the start of service | true |
-| CRON_DOI_UPDATE_LIMIT | DOI limit that can be updated | 100000 | 
+- see [default config](./config/default.json)
+- see [env variables](./config/custom-environment-variables.jsonc)
 
 ## Command to set volume permissions (non root image docker)
 
@@ -135,10 +47,11 @@ data
 
 ## Cron
 
-- Demo apikey : Reset the counter at 100 000 of demo API key.
-- Data update : Starts the data update process.
-- Download snapshot : Download current snapshot of unpaywall.
-- Clean File : Deletes data or log files after a certain period of time.
+- demo-apikey : Reset the counter at 100 000 for the demo API key.
+- data-update : Starts the data update process.
+- download-snapshot : Download current snapshot of unpaywall.
+- clean-File : Deletes data or log files after a certain period of time.
+- update-doi : Resets the DOI counter directly from the Unpaywall API
 
 ## Log format
 
