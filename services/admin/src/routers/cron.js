@@ -1,26 +1,53 @@
 const router = require('express').Router();
+const cronValidator = require('cron-validator');
 
 const checkAdmin = require('../middlewares/admin');
 const { validateCronConfig, validateCronType } = require('../middlewares/format/cron');
 
-const {
-  startCronController,
-  stopCronController,
-  patchCronController,
-  getConfigCronController,
-} = require('../controllers/cron');
+const cleanFileCron = require('../cron/cleanFile');
+const demoApiKeyCron = require('../cron/demoApikey');
 
 /**
  * Route that start the update cron.
  * Auth required.
  */
-router.post('/cron/:type/start', checkAdmin, validateCronType, startCronController);
+router.post('/cron/:type/start', checkAdmin, validateCronType, (req, res, next) => {
+  const { type } = req.data;
+
+  try {
+    if (type === 'cleanFile') {
+      cleanFileCron.cron.start();
+    }
+    if (type === 'demoApiKey') {
+      demoApiKeyCron.cron.start();
+    }
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(202).json();
+});
 
 /**
  * Route that stop the update cron.
  * Auth required.
  */
-router.post('/cron/:type/stop', checkAdmin, validateCronType, stopCronController);
+router.post('/cron/:type/stop', checkAdmin, validateCronType, (req, res, next) => {
+  const { type } = req.data;
+
+  try {
+    if (type === 'cleanFile') {
+      cleanFileCron.cron.stop();
+    }
+    if (type === 'demoApiKey') {
+      demoApiKeyCron.cron.stop();
+    }
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(202).json();
+});
 
 /**
  * Route that update the update cron.
@@ -28,11 +55,49 @@ router.post('/cron/:type/stop', checkAdmin, validateCronType, stopCronController
  *
  * This route need a body that contains a config of cron.
  */
-router.patch('/cron/:type', checkAdmin, validateCronType, validateCronConfig, patchCronController);
+router.patch('/cron/:type', checkAdmin, validateCronType, validateCronConfig, (req, res, next) => {
+  const { cronConfig, type } = req.data;
+  const { schedule } = cronConfig;
+
+  if (schedule) {
+    const validCron = cronValidator.isValidCron(schedule, { seconds: true });
+    if (!validCron) { return res.status(400).json('Schedule is invalid'); }
+  }
+
+  let config;
+
+  try {
+    if (type === 'cleanFile') {
+      cleanFileCron.update(cronConfig);
+      config = cleanFileCron.getGlobalConfig();
+    }
+    if (type === 'demoApiKey') {
+      demoApiKeyCron.update(cronConfig);
+      config = demoApiKeyCron.getGlobalConfig();
+    }
+  } catch (err) {
+    return next(err);
+  }
+
+  return res.status(200).json(config);
+});
 
 /**
  * Route that get the config of update cron.
  */
-router.get('/cron/:type', validateCronType, getConfigCronController);
+router.get('/cron/:type', validateCronType, (req, res) => {
+  const { type } = req.data;
+
+  let config;
+
+  if (type === 'cleanFile') {
+    config = cleanFileCron.getGlobalConfig();
+  }
+  if (type === 'demoApiKey') {
+    config = demoApiKeyCron.getGlobalConfig();
+  }
+
+  return res.status(200).json(config);
+});
 
 module.exports = router;

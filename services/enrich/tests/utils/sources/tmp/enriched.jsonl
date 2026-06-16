@@ -1,3 +1,2 @@
-{"name":"name1","doi":"10.100/1","is_oa":true,"best_oa_location":{"license":"cc-by"},"z_authors":[{"raw_author_name":"John doe"}]}
-{"name":"name2","doi":"10.100/2","is_oa":true,"best_oa_location":{"license":"cc-by-nc"},"z_authors":[{"raw_author_name":"Jane Smith"}]}
-{"name":"name3","doi":"10.100/3","is_oa":false,"best_oa_location":null,"z_authors":[{"raw_author_name":"Alice Johnson"}]}
+{"name":"name1","doi":"10.100/1","is_oa":true}
+{"name":"name1","doi":"10.100/2","is_oa":true}
