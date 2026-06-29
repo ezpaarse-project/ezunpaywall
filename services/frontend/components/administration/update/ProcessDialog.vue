@@ -18,11 +18,8 @@
         fixed-tabs
         color="primary"
       >
-        <v-tab value="classic">
-          {{ t('administration.job.classic') }}
-        </v-tab>
-        <v-tab value="history">
-          {{ t('administration.job.history') }}
+        <v-tab value="changefile">
+          {{ t('administration.job.changefile') }}
         </v-tab>
         <v-tab value="file">
           {{ t('administration.job.file') }}
@@ -30,7 +27,7 @@
       </v-tabs>
       <v-card-text>
         <v-tabs-window v-model="tab">
-          <v-tabs-window-item value="classic">
+          <v-tabs-window-item value="changefile">
             <v-form
               id="form"
               v-model="valid"
@@ -56,44 +53,6 @@
               <v-text-field
                 v-model="index"
                 :label="t('administration.job.indexBase')"
-              />
-              <v-checkbox
-                v-model="cleanFile"
-                :label="t('administration.job.cleanFile')"
-                hide-details
-              />
-            </v-form>
-          </v-tabs-window-item>
-          <v-tabs-window-item value="history">
-            <v-form
-              id="form"
-              v-model="valid"
-              @submit.prevent="startJob()"
-            >
-              <v-select
-                v-model="interval"
-                class="mt-4"
-                :items="intervals"
-                :label="t('administration.job.interval')"
-              />
-              <v-text-field
-                v-model="startDate"
-                :label="t('administration.job.startDate')"
-                :rules="[dateFormatRule, dateIsFutureRule]"
-                autofocus
-              />
-              <v-text-field
-                v-model="endDate"
-                :label="t('administration.job.endDate')"
-                :rules="[dateFormatRule, dateIsFutureRule]"
-              />
-              <v-text-field
-                v-model="index"
-                :label="t('administration.job.indexBase')"
-              />
-              <v-text-field
-                v-model="indexHistory"
-                :label="t('administration.job.indexHistory')"
               />
               <v-checkbox
                 v-model="cleanFile"
@@ -182,7 +141,7 @@ function formatDate(date) {
 }
 
 const value = ref('false');
-const tab = ref('classic');
+const tab = ref('changefile');
 const valid = ref(true);
 const loading = ref(false);
 const intervals = ref(['day', 'week']);
@@ -201,7 +160,7 @@ const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 const dateFormatRule = ref((date) => dateRegex.test(date) || t('administration.job.invalidDate'));
 const dateIsFutureRule = ref((date) => Date.now() > new Date(date) || t('administration.job.future'));
 
-async function startClassicUpdate() {
+async function startChangefileUpdate() {
   loading.value = true;
   const data = {
     index: index.value,
@@ -252,8 +211,8 @@ async function startInsertFile() {
 }
 
 async function startJob() {
-  if (tab.value === 'classic') {
-    startClassicUpdate();
+  if (tab.value === 'changefile') {
+    startChangefileUpdate();
   }
   if (tab.value === 'file') {
     startInsertFile();

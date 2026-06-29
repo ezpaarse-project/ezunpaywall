@@ -125,11 +125,9 @@
       "endDate": "End date",
       "index": "Elastic index for unpaywall data",
       "indexBase": "Elastic index for basic unpaywall data",
-      "indexHistory": "Elastic index for history unpaywall data",
       "filename": "Filename",
       "filetype": "Type of file",
-      "classic": "Classic",
-      "history": "History",
+      "changefile": "Changefile",
       "file": "File",
       "cleanFile": "Delete file after insertion"
     },
@@ -139,7 +137,6 @@
       "schedule": "Schedule (cron format)",
       "index": "Elastic index for unpaywall data",
       "indexBase": "Elastic index for basic unpaywall data",
-      "indexHistory": "Elastic index for history unpaywall data",
       "active": "Active"
     }
   },
