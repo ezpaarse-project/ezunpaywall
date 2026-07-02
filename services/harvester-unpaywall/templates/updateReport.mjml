@@ -83,7 +83,7 @@
     <mj-text>
       <div style="display: inline-flex">
         <div> Nouvelles lignes ajoutées:&nbsp;</div>
-        <div> {{ insertedDocs }} </div>
+        <div> {{ addedDocs }} </div>
       </div>
     </mj-text>
 
