@@ -25,11 +25,6 @@
     "maxBulkSize": 4000,
     "timeout": 20000
   },
-  "redis":  {
-    "host": "redis",
-    "port": "6379",
-    "password": "changeme"
-  },
   "cron": {
     "downloadSnapshot": {
       "schedule": "0 0 0 1 * *",

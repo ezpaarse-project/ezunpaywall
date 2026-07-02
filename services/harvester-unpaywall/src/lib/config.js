@@ -16,7 +16,6 @@ function hideSecret(conf) {
   const copyConfig = { ...conf };
   copyConfig.unpaywall.apikey = '********';
   copyConfig.elasticsearch.password = '********';
-  copyConfig.redis.password = '********';
   copyConfig.apikey = '********';
   return copyConfig;
 }
@@ -35,10 +34,6 @@ function logConfig() {
 
   if (appConfig.apikey === defaultConfig.apikey) {
     appLogger.warn('[config]: Apikey has the default value');
-  }
-
-  if (appConfig.redis.password === defaultConfig.redis.password) {
-    appLogger.warn('[config]: Redis password has the default value');
   }
 
   const appConfigFiltered = hideSecret(appConfig);

@@ -33,13 +33,6 @@ module.exports = {
     timeout: 'ELASTICSEARCH_TIMEOUT', // Timeout in milliseconds of elastic client
   },
 
-  // Redis
-  redis: {
-    host: 'REDIS_HOST', // Redis host
-    port: 'REDIS_PORT', // Redis port
-    password: 'REDIS_PASSWORD', // Redis password
-  },
-
   // Cron
   cron: {
     // Download snapshot

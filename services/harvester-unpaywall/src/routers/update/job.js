@@ -69,12 +69,15 @@ router.post('/job/snapshots/insert/:filename', checkStatus, checkAdmin, validate
   const { jobConfig } = req.data;
 
   const { filename } = jobConfig;
+  let { mail } = req.data;
+  mail = mail ?? true;
 
   if (!await fs.existsSync(path.resolve(paths.data.snapshotsDir, filename))) {
     return res.status(404).json({ message: `File [${filename}] not found` });
   }
 
   jobConfig.type = 'snapshot';
+  jobConfig.mail = mail;
 
   insertFileProcess(jobConfig);
 
@@ -90,6 +93,9 @@ router.post('/job/snapshots/insert/:filename', checkStatus, checkAdmin, validate
  */
 router.post('/job/changefiles/download/insert', checkStatus, checkAdmin, validateJobChangefilesConfig, async (req, res, next) => {
   const { jobConfig } = req.data;
+
+  let { mail } = req.data;
+  mail = mail ?? true;
 
   const {
     startDate,
@@ -110,6 +116,7 @@ router.post('/job/changefiles/download/insert', checkStatus, checkAdmin, validat
   jobConfig.type = 'changefile';
   jobConfig.offset = 0;
   jobConfig.limit = -1;
+  jobConfig.mail = mail;
 
   if (!startDate && !endDate) {
     jobConfig.endDate = format(new Date(), 'yyyy-MM-dd');
@@ -136,6 +143,8 @@ router.post('/job/changefiles/download/insert', checkStatus, checkAdmin, validat
  */
 router.post('/job/changefiles/insert/:filename', checkStatus, checkAdmin, validateInsertFile, async (req, res, next) => {
   const { jobConfig } = req.data;
+  let { mail } = req.data;
+  mail = mail ?? true;
 
   const { filename } = jobConfig;
   if (!await fs.existsSync(path.resolve(paths.data.changefilesDir, filename))) {
@@ -143,6 +152,7 @@ router.post('/job/changefiles/insert/:filename', checkStatus, checkAdmin, valida
   }
 
   jobConfig.type = 'changefile';
+  jobConfig.mail = mail;
 
   insertFileProcess(jobConfig);
 
