@@ -6,5 +6,6 @@ data/
 ssl/
 node_modules/
 log/
+env.sh
 .gitlab-ci-local-variables.yml
 .gitlab-ci-local

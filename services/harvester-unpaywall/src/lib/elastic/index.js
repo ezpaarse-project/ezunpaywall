@@ -17,7 +17,7 @@ async function pingElastic() {
     elasticStatus = await elasticClient.ping();
   } catch (err) {
     appLogger.error(`[elastic]: Cannot ping ${elasticsearch.nodes}`, err);
-    return err.message;
+    return false;
   }
   if (elasticStatus?.statusCode !== 200) {
     appLogger.error(`[elastic]: Cannot ping ${elasticsearch.nodes}. ${elasticStatus?.statusCode}`);

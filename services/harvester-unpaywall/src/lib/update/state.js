@@ -32,9 +32,6 @@ async function createState(config) {
     name: config.name,
     index: config?.index || '',
   };
-  if (config.indexHistory) {
-    state.indexHistory = config.indexHistory;
-  }
   appLogger.debug('[state]: state is created');
 }
 
@@ -120,50 +117,20 @@ function end() {
   const indices = [];
   const insertSteps = state.steps.filter((e) => e.task === 'insert');
 
-  if (state.name === '[changefiles][history][download][insert]') {
-    let totalAddedBase = 0;
-    let totalUpdatedBase = 0;
-    let totalAddedHistory = 0;
-    let totalUpdatedHistory = 0;
+  let totalAddedDocs = 0;
+  let totalUpdatedDocs = 0;
 
-    insertSteps.forEach((step) => {
-      const keys = Object.keys(step.indices);
-      totalAddedBase += step.indices[keys[0]].addedDocs;
-      totalUpdatedBase += step.indices[keys[0]].updatedDocs;
-      totalAddedHistory += step.indices[keys[1]].addedDocs;
-      totalUpdatedHistory += step.indices[keys[1]].updatedDocs;
-    });
+  insertSteps.forEach((step) => {
+    totalAddedDocs += step?.addedDocs || 0;
+    totalUpdatedDocs += step?.updatedDocs || 0;
+  });
 
-    indices.push({
-      index: state.index,
-      added: totalAddedBase,
-      updated: totalUpdatedBase,
-    });
-    indices.push({
-      index: state.indexHistory,
-      added: totalAddedHistory,
-      updated: totalUpdatedHistory,
-    });
-    state.indices = indices;
-    return;
-  }
-
-  if (state.name.includes('[insert]')) {
-    let totalAddedDocs = 0;
-    let totalUpdatedDocs = 0;
-
-    insertSteps.forEach((step) => {
-      totalAddedDocs += step?.addedDocs || 0;
-      totalUpdatedDocs += step?.updatedDocs || 0;
-    });
-
-    indices.push({
-      index: state.index,
-      added: totalAddedDocs,
-      updated: totalUpdatedDocs,
-    });
-    state.indices = indices;
-  }
+  indices.push({
+    index: state.index,
+    added: totalAddedDocs,
+    updated: totalUpdatedDocs,
+  });
+  state.indices = indices;
 }
 
 /**

@@ -99,11 +99,20 @@ async function startListening(app) {
   return new Promise((resolve, reject) => {
     server = app.listen(port, async () => {
       appLogger.info(`[express]: GraphQL API listening on ${port} in [${process.uptime().toFixed(2)}]s`);
-      await pingElastic();
-      setMetrics();
+
       logConfig();
+
+      const elasticStatus = await pingElastic();
+      if (elasticStatus) {
+        appLogger.info('[elastic]: ping ok');
+      } else {
+        appLogger.error('[elastic]: ping not ok');
+      }
+
       await initClient();
       pingRedis();
+
+      setMetrics();
 
       if (cronMetrics?.cron?.active) {
         cronMetrics.cron.start();
@@ -128,6 +137,7 @@ async function startServer() {
   configureRoutes(app);
   await startApolloServer(app);
   const server = await startListening(app);
+
   return server;
 }
 

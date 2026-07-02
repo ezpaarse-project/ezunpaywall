@@ -1,6 +1,6 @@
 {
   "name": "ezunpaywall_admin",
-  "version": "1.4.2",
+  "version": "1.10.0",
   "description": "",
   "main": "src/app.js",
   "author": "felixleo22",

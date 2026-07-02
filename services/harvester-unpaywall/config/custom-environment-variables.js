@@ -27,8 +27,7 @@ module.exports = {
   // Elasticsearch
   elasticsearch: {
     nodes: 'ELASTICSEARCH_NODES', // Elastic nodes URL separated by comma
-    username: 'ELASTICSEARCH_USERNAME', // Username of elastic super user
-    password: 'ELASTICSEARCH_PASSWORD', // Password of elastic super user
+    apiKey: 'ELASTICSEARCH_APIKEY', // Elasticsearch API key
     maxBulkSize: 'ELASTICSEARCH_MAX_BULK_SIZE', // Max bulk size of update process
     timeout: 'ELASTICSEARCH_TIMEOUT', // Timeout in milliseconds of elastic client
   },

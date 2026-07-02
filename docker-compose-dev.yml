@@ -2,6 +2,9 @@ services:
   graphql:
     image: node:24.14.1
     container_name: ezunpaywall-graphql-dev
+    environment:
+      # elastic
+      - ELASTICSEARCH_APIKEY=$GRAPHQL_ELASTIC_APIKEY
     working_dir: /usr/src/app
     volumes:
       - ./services/graphql:/usr/src/app
@@ -70,6 +73,8 @@ services:
       - LOG_LEVEL=debug
       # smtp
       - SMTP_HOST=maildev
+      # elastic
+      - ELASTICSEARCH_APIKEY=$HARVESTER_UNPAYWALL_ELASTIC_APIKEY
     working_dir: /usr/src/app
     volumes:
       - ./services/harvester-unpaywall:/usr/src/app
@@ -179,12 +184,13 @@ services:
       retries: 5
 
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.29
     container_name: ezunpaywall-elastic-dev
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - xpack.security.enabled=true
+      - xpack.security.authc.api_key.enabled=true
       - ES_JAVA_OPTS=-Xms4g -Xmx4g
       - ELASTIC_USERNAME={ELASTICSEARCH_USERNAME:-elastic}
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
@@ -204,7 +210,7 @@ services:
       retries: 5
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.10.2
+    image: docker.elastic.co/kibana/kibana:7.17.29
     container_name: ezunpaywall-kibana-dev
     environment:
       - ELASTICSEARCH_HOSTS="http://elastic:9200"

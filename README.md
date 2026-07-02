@@ -1,154 +1,178 @@
 # ezunpaywall
 
-ezunpaywall is a Unpaywall mirror hosted in France by Inist-CNRS of data from Unpaywall since 2020 and updated daily. Unpaywall is a metadata repository of free and open access electronic resources.
-This app is available at https://unpaywall.inist.fr/.
+ezunpaywall is an Unpaywall mirror hosted in France by Inist-CNRS, containing Unpaywall data since 2020 and updated daily. Unpaywall is a metadata repository of free and open access electronic resources.
 
-**Table of content**
-- [Description](#Description)
-- [Network-flow](#Network-flow)
-- [Installation](#Installation)
-    - [Development](#Development)
-        - [Prerequisites](#Prerequisites)
-        - [Start](#Start)
-        - [Tests](#Tests)
-    - [Deployment](#Deployment)
-        - [Prerequisites](#Prerequisites)
-- [Data update](#Data-update)
-- [API Graphql](#API-graphql)
+The application is available at: https://unpaywall.inist.fr/
+
+**Table of contents**
+- [Description](#description)
+- [Network-flow](#network-flow)
+- [Installation](#installation)
+  - [Steps to follow before starting](#steps-to-follow-before-starting)
+  - [1. Prerequisites](#1-prerequisites)
+  - [2. System configuration for Elasticsearch](#2-system-configuration-for-elasticsearch)
+  - [3. Create API keys](#3-create-api-keys)
+  - [4. Environment variables](#4-environment-variables)
+  - [5. Development-specific steps](#5-development-specific-steps)
+- [Start / Stop / Status](#start--stop--status)
+- [Tests](#tests)
+- [Data update](#data-update)
+- [GraphQL API](#graphql-api)
 
 ## Description
 
-ezunpaywall operates as a service. It is updated daily with its own update service. Data is stored in an elastic index. To access this data, ezunpaywall offers 2 types of access:
-- A graphql API for querying unpaywall data via one or more DOIs
-- A file enrichment service that allows you to enrich a csv or jsonl file containing a column or a doi key.
+ezunpaywall operates as a service, updated daily by its own update service. Data is stored in an Elasticsearch index. Two types of access are offered:
+- a **GraphQL API** to query Unpaywall data via one or more DOIs;
+- a **file enrichment service**, which lets you enrich a CSV or JSONL file containing a DOI column or key.
 
-These services are accessible via API keys, which can be managed by the API key service. The keys are stored in a redis database and can be accessed by the graphql service and enrich.
-A web interface is also available as a demonstrator. It allows you to :
-- Show data metrics
-- Examples of how to use the graphql API and enrichment service
-- openAPI documentation
-- A contact form
-- A server administration section
-- A history of data update reports.
-- A healthcare service makes sure that all its services work and communicate well together.
+These services are accessible via API keys, managed by the API key service. Keys are stored in a Redis database, accessible by the GraphQL and enrich services.
 
-On the front, a nginx acts as a reverse proxy, redirecting all these services to a single entry point.
+A web interface serves as a demonstrator and allows you to:
+- view data metrics;
+- see usage examples for the GraphQL API and the enrichment service;
+- consult the OpenAPI documentation;
+- access a contact form;
+- access a server administration section;
+- view the history of data update reports.
 
-Each service : 
-* [admin](./services/admin#ezunpaywall-admin)
-* [graphql](./services/graphql#ezunpaywall-graphql)
-* [enrich](./services/enrich#ezunpaywall-enrich)
-* [frontend](./services/frontend#ezunpaywall-frontend)
-* [nginx](./services/nginx#ezunpaywall-nginx)
-* [fakeUnpaywall](./services/fakeUnpaywall#ezunpaywall-fakeUnpaywall) (only for dev)
+A healthcheck service makes sure all services are running and communicating correctly with each other.
+
+On the front end, nginx acts as a reverse proxy, routing all these services to a single entry point.
+
+**Services:**
+- [admin](./services/admin#ezunpaywall-admin)
+- [harvester-unpaywall](./services/harvester-unpaywall#ezunpaywall-harvester-unpaywall)
+- [graphql](./services/graphql#ezunpaywall-graphql)
+- [enrich](./services/enrich#ezunpaywall-enrich)
+- [frontend](./services/frontend#ezunpaywall-frontend)
+- [nginx](./services/nginx#ezunpaywall-nginx)
+- [fakeUnpaywall](./services/fakeUnpaywall#ezunpaywall-fakeUnpaywall) (dev only)
 
 ## Network-flow
 
-ezunpaywall is made up of several services which are distributed in several docker containers.
+ezunpaywall is made up of several services distributed across multiple Docker containers.
+
 ![Network-flow](./docs/network-flow.png)
 
 ## Installation
 
-```bash
-git clone https://github.com/ezpaarse-project/ezunpaywall 
+### Steps to follow before starting
+
+Follow the steps below in order:
+
+1. [Prerequisites](#1-prerequisites)
+2. [System configuration for Elasticsearch](#2-system-configuration-for-elasticsearch)
+3. [Create API keys](#3-create-api-keys) — **mandatory**, otherwise the graphql and enrich services won't work
+4. [Environment variables](#4-environment-variables)
+5. [Development-specific steps](#5-development-specific-steps) (if applicable)
+6. [Start the stack](#start--stop--status)
+
+### 1. Prerequisites
+
+- docker
+- `npm` (development only)
+
+For deployment, also plan for the necessary disk space: Unpaywall data in Elasticsearch (single node, index with 3 shards) is about 130GB, not counting storage for the raw Unpaywall files if you want to keep them.
+
+### 2. System configuration for Elasticsearch
+
+Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
+
+To avoid memory exceptions, you may need to increase the mmap count. Edit `/etc/sysctl.conf` and add the following line:
+
+```ini
+# configuration needed for elasticsearch
+vm.max_map_count=262144
 ```
-### Development
 
-#### Prerequisites
+Then apply the changes:
 
-The tools you need to let ezunpaywall run are :
-* docker
-* npm
+```bash
+sysctl -p
+```
 
-Command : 
+### 3. Create API keys
+
+ezunpaywall relies on API keys to secure access to the graphql and admin services: **without these keys, the services won't start correctly.** Set the required environment variables, then run the key creation scripts.
+
+**In deployment:** Make sure you have a cluster elasticsearch up.
+
+**In development:**
+```bash
+docker compose -f docker-compose-dev.yml up -d elastic
+```
+
+```bash
+export ELASTIC_NODE="<your instance of elasticsearch>"
+export ELASTIC_ADMIN_USER="elastic"
+export ELASTIC_ADMIN_PASSWORD="changeme"
+
+bash services/graphql/tools/create-graphql-api-key.sh
+bash services/harvester-unpaywall/tools/create-update-api-key.sh
+```
+
+Each script outputs an encoded API key: keep it, you'll need it in the next step.
+
+### 4. Environment variables
+
+Create an environment file named `ezunpaywall.local.env.sh` and export the necessary environment variables in it, **including the API keys generated in the previous step**. Then source `ezunpaywall.env.sh`, which contains a set of predefined variables, overridden by `ezunpaywall.local.env.sh`.
+
+### 5. Development-specific steps
+
+The following commands ensure correct file ownership for shared Docker volumes in development.
 
 ```bash
 # install dependencies
 npm i
 
-# create volume for elastic
-docker compose -f docker-compose-dev.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/ 
-# create volume for admin service
+# Fix Elasticsearch volume permissions
+docker compose -f docker-compose-dev.yml run --rm elastic chown -R elasticsearch /usr/share/elasticsearch/
+
+# Fix Node.js app volumes (admin, enrich, graphql)
 docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/log
 docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root admin chown -R node /usr/src/app/data
-# create volume for enrich service
 docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/log
 docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
-# create volume for graphql service
 docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root graphql chown -R node /usr/src/app/log
-
 ```
-#### Start
+
+## Start / Stop / Status
+
+Before starting ezunpaywall, make sure all necessary environment variables are set.
+
+Use `docker-compose.yml` for deployment, or `docker-compose-dev.yml` for development:
 
 ```bash
-# Start ezunpaywall as daemon
-docker-compose -f docker-compose.debug.yml up -d
+# start ezunpaywall as a daemon
+docker-compose -f docker-compose.dev.yml up -d
 
-# Stop ezunpaywall
-docker-compose -f docker-compose.debug.yml stop
+# stop ezunpaywall
+docker-compose -f docker-compose.dev.yml stop
 
-# Get the status of ezunpaywall services
-docker-compose -f docker-compose.debug.yml ps
+# get the status of ezunpaywall services
+docker-compose -f docker-compose.dev.yml ps
 ```
-#### Tests
 
-To run tests, you need ezunpaywall to be launched in dev mode with fakeUnpaywall. With that, you can run test on.
+## Tests
+
+To run tests, ezunpaywall must be started in dev mode with fakeUnpaywall. You can then run the tests:
 
 ```bash
-# there are alias on root folder
+# aliases available at the project root
 npm run test
 npm run test:admin
+npm run test:harvester-unpaywall
 npm run test:enrich
 npm run test:graphql
 
-
-# you can run test for each service
-ezunpaywall/src/admin npm run test
-ezunpaywall/src/enrich npm run test
-ezunpaywall/src/graphql npm run test
+# or per service
+cd ezunpaywall/src/admin && npm run test
+cd ezunpaywall/src/harvester-unpaywall && npm run test
+cd ezunpaywall/src/enrich && npm run test
+cd ezunpaywall/src/graphql && npm run test
 ```
-### Deployment
 
-#### Prerequisites
+## Data update
 
-* docker
-* docker compose
-* Unpaywall data in elastic with single node in index with 3 shards measured about 130Gb, it is necessary to provide the necessary place on the hard drive (storage for index + unpaywall file if you want to keep them).
-
-#### Environment variables
-
-Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh`, which contains a set of predefined variables and is overridden by `ezunpaywall.local.env.sh`.
-
-
-### Adjust system configuration for Elasticsearch
-
-Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
-
-To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
-
-```ini
-# configuration needed for elastic search
-vm.max_map_count=262144
-```
-Then apply the changes : 
-```bash
-sysctl -p
-```
-### Start/Stop/Status
-
-Before you start ezunpaywall, make sure all necessary environment variables are set.
-
-```bash
-# Start ezunpaywall as daemon
-docker-compose up -d
-
-# Stop ezunpaywall
-docker-compose stop
-
-# Get the status of ezunpaywall services
-docker-compose ps
-```
-## Data update 
-
-You can update your data via update snapshots provided by unpaywall on a weekly or daily basis (if you have API key).
-in the admin service, there is a cron that allows to automatically update the data from unpaywall, weekly or daily.
+Data can be updated via snapshots provided by Unpaywall, on a weekly or daily basis (if you have an API key).
+In the harvester-unpaywall service, a cron job allows the Unpaywall data update to be automated, either weekly or daily.

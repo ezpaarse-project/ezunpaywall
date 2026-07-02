@@ -116,11 +116,11 @@ async function updateStartedMail(config) {
 async function sendDailyUpdateReportMail(state, attempts) {
   const status = state.error === true ? 'error' : 'success';
 
-  let insertedDocs = 0;
+  let addedDocs = 0;
   let updatedDocs = 0;
   state?.steps?.forEach((step) => {
     if (step.task === 'insert') {
-      insertedDocs += step.insertedDocs || 0;
+      addedDocs += step.addedDocs || 0;
       updatedDocs += step.updatedDocs || 0;
     }
   });
@@ -135,7 +135,7 @@ async function sendDailyUpdateReportMail(state, attempts) {
       ...generateMail('dailyUpdateReport', {
         state,
         status,
-        insertedDocs,
+        addedDocs,
         updatedDocs,
         attempts,
         stackTrace,
@@ -159,11 +159,11 @@ async function sendDailyUpdateReportMail(state, attempts) {
 async function sendUpdateReportMail(state) {
   const status = state.error === true ? 'error' : 'success';
 
-  let insertedDocs = 0;
+  let addedDocs = 0;
   let updatedDocs = 0;
   state?.steps?.forEach((step) => {
     if (step.task === 'insert') {
-      insertedDocs += step.insertedDocs || 0;
+      addedDocs += step.addedDocs || 0;
       updatedDocs += step.updatedDocs || 0;
     }
   });
@@ -178,7 +178,7 @@ async function sendUpdateReportMail(state) {
       ...generateMail('updateReport', {
         state,
         status,
-        insertedDocs,
+        addedDocs,
         updatedDocs,
         stackTrace,
         date: format(new Date(), 'dd-MM-yyyy'),
