@@ -28,6 +28,9 @@ const cronDataUpdate = require('./cron/dataUpdate');
 const cronDoiUpdate = require('./cron/doi');
 const cronDownloadSnapshot = require('./cron/downloadSnapshot');
 
+const { pingElastic } = require('./lib/elastic');
+const { pingUnpaywall } = require('./lib/unpaywall/api');
+
 // create data directory
 fsp.mkdir(path.resolve(paths.data.changefilesDir), { recursive: true });
 fsp.mkdir(path.resolve(paths.data.snapshotsDir), { recursive: true });
@@ -91,6 +94,20 @@ app.use((error, req, res, next) => res.status(500).json({ message: error.message
 const server = app.listen(port, async () => {
   appLogger.info(`[express]: ezunpaywall harvester unpaywall API listening on ${port} in [${process.uptime().toFixed(2)}]s`);
   logConfig();
+
+  const elasticStatus = await pingElastic();
+  if (elasticStatus) {
+    appLogger.info('[elastic]: ping ok');
+  } else {
+    appLogger.error('[elastic]: ping not ok');
+  }
+
+  const unpaywallStatus = await pingUnpaywall();
+  if (unpaywallStatus) {
+    appLogger.info('[unpaywall]: ping ok');
+  } else {
+    appLogger.error('[unpaywall]: ping not ok');
+  }
 
   if (cronFile?.cron?.active) {
     cronFile.cron.start();
