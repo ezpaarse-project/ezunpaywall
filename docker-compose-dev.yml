@@ -184,7 +184,7 @@ services:
       retries: 5
 
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.29
     container_name: ezunpaywall-elastic-dev
     environment:
       - discovery.type=single-node
@@ -210,7 +210,7 @@ services:
       retries: 5
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.10.2
+    image: docker.elastic.co/kibana/kibana:7.17.29
     container_name: ezunpaywall-kibana-dev
     environment:
       - ELASTICSEARCH_HOSTS="http://elastic:9200"
