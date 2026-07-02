@@ -5,6 +5,8 @@ services:
     container_name: ezunpaywall-graphql
     environment:
       - NODE_ENV=production
+      # elastic
+      - ELASTICSEARCH_APIKEY=$GRAPHQL_ELASTIC_APIKEY
     volumes:
       - ./services/graphql/log/application:/usr/src/app/log/application
       - ./services/graphql/log/access:/usr/src/app/log/access
@@ -39,6 +41,18 @@ services:
       - ./services/admin/log/access:/usr/src/app/log/access
       - ./services/admin/data:/usr/src/app/data
       - ./services/admin/certs/ca.crt:/usr/src/app/certs
+    command: "npm run start"
+    restart: unless-stopped
+
+  harvester-unpaywall:
+    build:
+      context: ./services/harvester-unpaywall
+    container_name: ezunpaywall-harvester
+    environment:
+      # elastic
+      - ELASTICSEARCH_APIKEY=$HARVESTER_UNPAYWALL_ELASTIC_APIKEY
+    volumes:
+      - ./services/harvester-unpaywall/data:/usr/src/app/data
     command: "npm run start"
     restart: unless-stopped
 

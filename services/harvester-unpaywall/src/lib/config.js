@@ -15,7 +15,7 @@ const appConfig = JSON.parse(JSON.stringify(config));
 function hideSecret(conf) {
   const copyConfig = { ...conf };
   copyConfig.unpaywall.apikey = '********';
-  copyConfig.elasticsearch.password = '********';
+  copyConfig.elasticsearch.apiKey = '********';
   copyConfig.apikey = '********';
   return copyConfig;
 }
@@ -25,15 +25,15 @@ function hideSecret(conf) {
  */
 function logConfig() {
   if (appConfig.unpaywall.apikey === defaultConfig.unpaywall.apikey) {
-    appLogger.warn('[config]: Unpaywall apikey has the default value');
+    appLogger.warn('[config]: Unpaywall API key has the default value');
   }
 
-  if (appConfig.elasticsearch.password === defaultConfig.elasticsearch.password) {
-    appLogger.warn('[config]: Elasticsearch password has the default value');
+  if (appConfig.elasticsearch.apikey === defaultConfig.elasticsearch.apikey) {
+    appLogger.warn('[config]: Elasticsearch API key has the default value');
   }
 
   if (appConfig.apikey === defaultConfig.apikey) {
-    appLogger.warn('[config]: Apikey has the default value');
+    appLogger.warn('[config]: API key has the default value');
   }
 
   const appConfigFiltered = hideSecret(appConfig);

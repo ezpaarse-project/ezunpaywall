@@ -47,11 +47,66 @@ Each service :
 ezunpaywall is made up of several services which are distributed in several docker containers.
 ![Network-flow](./docs/network-flow.png)
 
-## Installation
+### Deployment
+
+#### Prerequisites
+
+* docker
+* docker compose
+* Unpaywall data in elastic with single node in index with 3 shards measured about 130Gb, it is necessary to provide the necessary place on the hard drive (storage for index + unpaywall file if you want to keep them).
+
+#### Environment variables
+
+Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh`, which contains a set of predefined variables and is overridden by `ezunpaywall.local.env.sh`.
+
+### Elasticsearch
+
+#### Adjust system configuration
+
+Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
+
+To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
+
+```ini
+# configuration needed for elastic search
+vm.max_map_count=262144
+```
+Then apply the changes : 
+```bash
+sysctl -p
+```
+
+#### Create API key
+
+Set the required environment variables and run each script :
 
 ```bash
-git clone https://github.com/ezpaarse-project/ezunpaywall 
+export ELASTIC_NODE="http://localhost:9200"
+export ELASTIC_ADMIN_USER="elastic"
+export ELASTIC_ADMIN_PASSWORD=""
+
+bash scripts/create-graphql-api-key.sh
+bash scripts/create-update-api-key.sh
 ```
+
+Each script outputs an encoded API key that must be set as an environment variable before starting the services (see [Environment variables](#environment-variables)).
+
+
+### Start/Stop/Status
+
+Before you start ezunpaywall, make sure all necessary environment variables are set.
+
+```bash
+# Start ezunpaywall as daemon
+docker-compose up -d
+
+# Stop ezunpaywall
+docker-compose stop
+
+# Get the status of ezunpaywall services
+docker-compose ps
+```
+
 ### Development
 
 #### Prerequisites
@@ -76,8 +131,23 @@ docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root en
 docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root enrich chown -R node /usr/src/app/data
 # create volume for graphql service
 docker compose -f docker-compose-dev.yml run --rm --entrypoint "" --user root graphql chown -R node /usr/src/app/log
-
 ```
+
+#### Create elasticsearch API key
+
+In development, the Elasticsearch node is exposed on `http://localhost:9200` by default once the dev stack is started :
+
+```bash
+docker compose -f docker-compose-dev.yml up -d elastic
+
+export ELASTIC_NODE="http://localhost:9200"
+export ELASTIC_ADMIN_USER="elastic"
+export ELASTIC_ADMIN_PASSWORD="changeme"
+
+bash services/graphql/tools/create-graphql-api-key.sh
+bash services/harvester-unpaywall/tools/create-update-api-key.sh
+```
+
 #### Start
 
 ```bash
@@ -107,47 +177,7 @@ ezunpaywall/src/admin npm run test
 ezunpaywall/src/enrich npm run test
 ezunpaywall/src/graphql npm run test
 ```
-### Deployment
 
-#### Prerequisites
-
-* docker
-* docker compose
-* Unpaywall data in elastic with single node in index with 3 shards measured about 130Gb, it is necessary to provide the necessary place on the hard drive (storage for index + unpaywall file if you want to keep them).
-
-#### Environment variables
-
-Create an environment file named `ezunpaywall.local.env.sh` and export the following environment variables. You can then source `ezunpaywall.env.sh`, which contains a set of predefined variables and is overridden by `ezunpaywall.local.env.sh`.
-
-
-### Adjust system configuration for Elasticsearch
-
-Elasticsearch has some [system requirements](https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html) that you should check.
-
-To avoid memory exceptions, you may have to increase mmaps count. Edit `/etc/sysctl.conf` and add the following line :
-
-```ini
-# configuration needed for elastic search
-vm.max_map_count=262144
-```
-Then apply the changes : 
-```bash
-sysctl -p
-```
-### Start/Stop/Status
-
-Before you start ezunpaywall, make sure all necessary environment variables are set.
-
-```bash
-# Start ezunpaywall as daemon
-docker-compose up -d
-
-# Stop ezunpaywall
-docker-compose stop
-
-# Get the status of ezunpaywall services
-docker-compose ps
-```
 ## Data update 
 
 You can update your data via update snapshots provided by unpaywall on a weekly or daily basis (if you have API key).

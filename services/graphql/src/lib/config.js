@@ -14,7 +14,7 @@ const appConfig = JSON.parse(JSON.stringify(config));
  */
 function hideSecret(conf) {
   const copyConfig = { ...conf };
-  copyConfig.elasticsearch.password = '********';
+  copyConfig.elasticsearch.apiKey = '********';
   copyConfig.redis.password = '********';
   copyConfig.apikey = '********';
   return copyConfig;
@@ -29,8 +29,8 @@ function logConfig() {
   if (appConfig.redis.password === defaultConfig.redis.password) {
     appLogger.warn('[config]: Redis password has the default value');
   }
-  if (appConfig.elasticsearch.password === defaultConfig.elasticsearch.password) {
-    appLogger.warn('[config]: Elastic password has the default value');
+  if (appConfig.elasticsearch.apiKey === defaultConfig.elasticsearch.apiKey) {
+    appLogger.warn('[config]: Elastic API key has the default value');
   }
   if (appConfig.apikey === defaultConfig.apikey) {
     appLogger.warn('[config]: Admin API key has the default value');

@@ -40,8 +40,7 @@ if (process.env.NODE_ENV === 'test') {
   elasticClient = new Client({
     nodes: elasticsearch.nodes.split(','),
     auth: {
-      username: elasticsearch.username,
-      password: elasticsearch.password,
+      apiKey: elasticsearch.apiKey,
     },
     ssl,
     requestTimeout: elasticsearch.timeout,

@@ -11,10 +11,8 @@
   },
   "elasticsearch": {
     "nodes": "http://elastic:9200",
-    "username": "elastic",
-    "password": "changeme",
-    "indexBase": "unpaywall",
-    "indexHistory": "unpaywall_history_*"
+    "apiKey": "changeme",
+    "indexBase": "unpaywall"
   },
   "cron": {
     "cleanFile": {

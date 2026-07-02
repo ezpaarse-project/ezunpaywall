@@ -14,10 +14,8 @@ module.exports = {
   // Elasticsearch
   elasticsearch: {
     nodes: 'ELASTICSEARCH_NODES', // Elasticsearch host
-    username: 'ELASTICSEARCH_USERNAME', // Elasticsearch admin username
-    password: 'ELASTICSEARCH_PASSWORD', // Elasticsearch admin password
+    apiKey: 'ELASTICSEARCH_APIKEY', // Elasticsearch API key
     indexBase: 'ELASTICSEARCH_INDEX_BASE', // Graphql entry point
-    indexHistory: 'ELASTICSEARCH_INDEX_HISTORY',
   },
   // Cron
   cron: {
