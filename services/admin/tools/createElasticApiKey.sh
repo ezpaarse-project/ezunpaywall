@@ -5,7 +5,7 @@ set -uo pipefail
 ELASTIC_NODE="${ELASTIC_NODE:-http://localhost:9200}"
 ELASTIC_ADMIN_USER="${ELASTIC_ADMIN_USER:-elastic}"
 ELASTIC_ADMIN_PASSWORD="${ELASTIC_ADMIN_PASSWORD:-}"
-ELASTIC_API_KEY_NAME="${ELASTIC_API_KEY_NAME:-ezunpaywall-graphql-app-key}"
+ELASTIC_API_KEY_NAME="ezunpaywall-admin-app-key"
 
 if [[ -z "$ELASTIC_ADMIN_PASSWORD" ]]; then
   echo "ELASTIC_ADMIN_PASSWORD required." >&2
