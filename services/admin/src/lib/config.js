@@ -29,10 +29,6 @@ function logConfig() {
     appLogger.warn('[config]: Unpaywall apikey has the default value');
   }
 
-  if (appConfig.elasticsearch.password === defaultConfig.elasticsearch.password) {
-    appLogger.warn('[config]: Elasticsearch password has the default value');
-  }
-
   if (appConfig.apikey === defaultConfig.apikey) {
     appLogger.warn('[config]: Apikey has the default value');
   }
