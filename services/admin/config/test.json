@@ -18,12 +18,6 @@
     "apikey": "default",
     "email": "john.doe@example.com"
   },
-  "elasticsearch": {
-    "nodes": "http://elastic:9200",
-    "username": "elastic",
-    "password": "changeme",
-    "timeout": 20000
-  },
   "redis":  {
     "host": "localhost",
     "port": "6379",
