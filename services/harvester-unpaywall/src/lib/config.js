@@ -16,6 +16,7 @@ function hideSecret(conf) {
   const copyConfig = { ...conf };
   copyConfig.unpaywall.apikey = '********';
   copyConfig.elasticsearch.apiKey = '********';
+  copyConfig.elasticsearch.password = '********';
   copyConfig.apikey = '********';
   return copyConfig;
 }

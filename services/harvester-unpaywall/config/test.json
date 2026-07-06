@@ -21,6 +21,8 @@
   "elasticsearch": {
     "nodes": "http://elastic:9200",
     "apiKey": "changeme",
+    "username": "elastic",
+    "password": "changeme",
     "maxBulkSize": 4000,
     "timeout": 20000
   },

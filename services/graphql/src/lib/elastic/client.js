@@ -29,13 +29,22 @@ if (process.env.NODE_ENV === 'test') {
   const elasticMock = require('./mock');
   appLogger.info('[Elastic]: Using Mock Elasticsearch Client for tests.');
   elasticClient = elasticMock;
-} else {
+} else if (process.env.NODE_ENV === 'production') {
   elasticClient = new Client({
     nodes: elasticsearch.nodes.split(','),
     auth: {
       apiKey: elasticsearch.apiKey,
     },
     ssl,
+    requestTimeout: elasticsearch.timeout,
+  });
+} else {
+  elasticClient = new Client({
+    nodes: elasticsearch.nodes.split(','),
+    auth: {
+      username: elasticsearch.username,
+      password: elasticsearch.password,
+    },
     requestTimeout: elasticsearch.timeout,
   });
 }

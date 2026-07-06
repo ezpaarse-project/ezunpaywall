@@ -15,6 +15,7 @@ const appConfig = JSON.parse(JSON.stringify(config));
 function hideSecret(conf) {
   const copyConfig = { ...conf };
   copyConfig.elasticsearch.apiKey = '********';
+  copyConfig.elasticsearch.password = '********';
   copyConfig.redis.password = '********';
   copyConfig.apikey = '********';
   return copyConfig;
