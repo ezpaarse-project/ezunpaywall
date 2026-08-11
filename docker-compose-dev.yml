@@ -2,9 +2,6 @@ services:
   graphql:
     image: node:24.14.1
     container_name: ezunpaywall-graphql-dev
-    environment:
-      # elastic
-      - ELASTICSEARCH_APIKEY=$GRAPHQL_ELASTIC_APIKEY
     working_dir: /usr/src/app
     volumes:
       - ./services/graphql:/usr/src/app
@@ -73,8 +70,6 @@ services:
       - LOG_LEVEL=debug
       # smtp
       - SMTP_HOST=maildev
-      # elastic
-      - ELASTICSEARCH_APIKEY=$HARVESTER_UNPAYWALL_ELASTIC_APIKEY
     working_dir: /usr/src/app
     volumes:
       - ./services/harvester-unpaywall:/usr/src/app

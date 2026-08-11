@@ -12,6 +12,8 @@
   "elasticsearch": {
     "nodes": "http://elastic:9200",
     "apiKey": "changeme",
+    "username": "elastic",
+    "password": "changeme",
     "indexBase": "unpaywall"
   },
   "cron": {

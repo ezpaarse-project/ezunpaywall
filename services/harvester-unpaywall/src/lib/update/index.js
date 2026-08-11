@@ -201,7 +201,7 @@ async function downloadInsertChangefilesProcess(jobConfig) {
     await endJobAsSuccess();
     noChangefileMail(startDate, endDate);
     appLogger.info(`${baseLogMessage}: Download and insert changefile job is finish`);
-    return false;
+    return true;
   }
 
   for (let i = 0; i < changefilesInfo.length; i += 1) {

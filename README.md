@@ -91,16 +91,11 @@ Then apply the changes:
 sysctl -p
 ```
 
-### 3. Create API keys
+### 3. Create API keys (only in deployement)
 
 ezunpaywall relies on API keys to secure access to the graphql and admin services: **without these keys, the services won't start correctly.** Set the required environment variables, then run the key creation scripts.
 
-**In deployment:** Make sure you have a cluster elasticsearch up.
-
-**In development:**
-```bash
-docker compose -f docker-compose-dev.yml up -d elastic
-```
+Make sure you have a cluster elasticsearch up.
 
 ```bash
 export ELASTIC_NODE="<your instance of elasticsearch>"

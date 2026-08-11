@@ -24,14 +24,6 @@ module.exports = {
     email: 'UNPAYWALL_EMAIL', // Email to request Unpaywall API
   },
 
-  // Elasticsearch
-  elasticsearch: {
-    nodes: 'ELASTICSEARCH_NODES', // Elastic nodes URL separated by comma
-    username: 'ELASTICSEARCH_USERNAME', // Username of elastic super user
-    password: 'ELASTICSEARCH_PASSWORD', // Password of elastic super user
-    timeout: 'ELASTICSEARCH_TIMEOUT', // Timeout in milliseconds of elastic client
-  },
-
   // Redis
   redis: {
     host: 'REDIS_HOST', // Redis host

@@ -15,7 +15,6 @@ const appConfig = JSON.parse(JSON.stringify(config));
 function hideSecret(conf) {
   const copyConfig = { ...conf };
   copyConfig.unpaywall.apikey = '********';
-  copyConfig.elasticsearch.password = '********';
   copyConfig.redis.password = '********';
   copyConfig.apikey = '********';
   return copyConfig;
@@ -27,10 +26,6 @@ function hideSecret(conf) {
 function logConfig() {
   if (appConfig.unpaywall.apikey === defaultConfig.unpaywall.apikey) {
     appLogger.warn('[config]: Unpaywall apikey has the default value');
-  }
-
-  if (appConfig.elasticsearch.password === defaultConfig.elasticsearch.password) {
-    appLogger.warn('[config]: Elasticsearch password has the default value');
   }
 
   if (appConfig.apikey === defaultConfig.apikey) {
