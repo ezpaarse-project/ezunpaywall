@@ -149,18 +149,13 @@ async function fail(stackTrace) {
   state.error = true;
 
   if (stack) {
-    if (stack.name === 'TimeoutError') {
-      state.stackTrace = {
-        name: stack.name,
-        connection: stack?.meta?.meta?.connection,
-      };
-    } else {
-      state.stackTrace = {
-        name: stack.name,
-        message: stack.message,
-        connection: stack?.meta?.meta?.connection,
-        statusCode: stack?.meta?.statusCode,
-      };
+    state.stackTrace = {
+      name: stack.name,
+      connection: stack?.meta?.meta?.connection,
+    };
+    if (stack.name !== 'TimeoutError') {
+      state.stackTrace.connection = stack?.meta?.meta?.connection,
+      state.stackTrace.statusCode = stack?.meta?.statusCode;
     }
   }
 }
