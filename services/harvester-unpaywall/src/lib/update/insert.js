@@ -5,10 +5,11 @@
 const path = require('path');
 const fs = require('fs');
 const fsp = require('fs/promises');
-const readline = require('readline');
 const { elasticsearch } = require('config');
 const zlib = require('zlib');
 const { paths } = require('config');
+const { pipeline } = require('node:stream/promises');
+const split2 = require('split2');
 
 const appLogger = require('../logger/appLogger');
 const unpaywallMapping = require('../../../mapping/unpaywall.json');
@@ -77,6 +78,33 @@ async function insertUnpaywallDataInElastic(data) {
   updateLatestStep(step);
 }
 
+
+/**
+ * Split a stream into lines (separated by \n or \r\n).
+ * Works on raw bytes: only complete lines are decoded to string, so a multi-byte
+ * character can never be split between two chunks.
+ * Replacement for readline, which produces broken lines with Node 24 and 26.
+ *
+ * @param {Readable} stream Stream to read.
+ *
+ * @returns {AsyncGenerator<string>} Lines of the stream.
+ */
+async function* readLines(stream) {
+  let pending = Buffer.alloc(0);
+  for await (const chunk of stream) {
+    pending = pending.length > 0 ? Buffer.concat([pending, chunk]) : chunk;
+    let start = 0;
+    let idx;
+    while ((idx = pending.indexOf(0x0a, start)) !== -1) {
+      const end = idx - 1 >= start && pending[idx - 1] === 0x0d ? idx - 1 : idx;
+      yield pending.toString('utf8', start, end);
+      start = idx + 1;
+    }
+    pending = pending.subarray(start);
+  }
+  if (pending.length > 0) yield pending.toString('utf8');
+}
+
 /**
  * Inserts the contents of an unpaywall data update file.
  *
@@ -129,13 +157,7 @@ async function insertDataUnpaywall(insertConfig) {
   }
 
   // read file with stream
-  let readStream;
-  try {
-    readStream = fs.createReadStream(filePath);
-  } catch (err) {
-    appLogger.error(`[job][insert]: Cannot read [${filePath}]`, err);
-    throw err;
-  }
+  const readStream = fs.createReadStream(filePath);
 
   // get information "loaded" for state
   let loaded = 0;
@@ -143,29 +165,27 @@ async function insertDataUnpaywall(insertConfig) {
     loaded += chunk.length;
   });
 
-  let decompressedStream;
-  try {
-    decompressedStream = readStream.pipe(zlib.createGunzip());
-  } catch (err) {
-    appLogger.error(`[job][insert]: Cannot pipe [${readStream?.filename}]`, err);
-    throw err;
-  }
-
-  const rl = readline.createInterface({
-    input: decompressedStream,
-    crlfDelay: Infinity,
-  });
+  // file -> gunzip -> split2 (one string per line)
+  // pipeline propagates errors (truncated or corrupted gzip) to the last stream,
+  // so they are thrown by the loop below instead of being swallowed
+  const lineStream = split2();
+  const pipelinePromise = pipeline(readStream, zlib.createGunzip(), lineStream);
+  // avoids an unhandled rejection if the loop ends before the pipeline
+  // (error thrown in the loop, or limit reached)
+  pipelinePromise.catch(() => {});
 
   // array that will contain the packet of 1000 unpaywall data
   let bulkOps = [];
+  let stoppedOnLimit = false;
 
   appLogger.info(`[job][insert]: Start insert with [${filename}]`);
 
   // Reads line by line the output of the decompression stream to make packets of 1000
   // to insert them in bulk in an elastic
-  for await (const line of rl) {
+  for await (const line of lineStream) {
     // limit
     if (step.linesRead === limit) {
+      stoppedOnLimit = true;
       break;
     }
 
@@ -207,6 +227,20 @@ async function insertDataUnpaywall(insertConfig) {
       updateLatestStep(step);
     }
   }
+
+  if (stoppedOnLimit) {
+    // the limit was reached on purpose: stop reading the file
+    readStream.destroy();
+  } else {
+    // throws if the file was truncated or corrupted
+    try {
+      await pipelinePromise;
+    } catch (err) {
+      appLogger.error(`[job][insert]: Cannot decompress [${filePath}]`, err);
+      throw err;
+    }
+  }
+
   // last insertion if there is data left
   if (bulkOps.length > 0) {
     try {

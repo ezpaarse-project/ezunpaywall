@@ -54,11 +54,11 @@ async function updatePercentStepDownload(filepath, size, start) {
 }
 
 /**
- * Download file
+ * Download file.
  *
  * @param {Readable} readStream File.
  * @param {string} filepath Filepath of file.
- * @param {number} size Size of file.
+ * @param {number} size Expected size of file in bytes.
  *
  * @returns {Promise<void>}
  */
