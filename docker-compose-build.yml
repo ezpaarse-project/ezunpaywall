@@ -3,28 +3,34 @@ services:
     build:
       context: ./services/graphql
     container_name: ezunpaywall-graphql
+    image: ezunpaywall-graphql
 
   enrich:
     build:
       context: ./services/enrich
     container_name: ezunpaywall-enrich
+    image: ezunpaywall-enrich
 
   admin:
     build:
       context: ./services/admin
     container_name: ezunpaywall-admin
+    image: ezunpaywall-admin
 
   frontend:
     build:
       context: ./services/frontend
     container_name: ezunpaywall-frontend
+    image: ezunpaywall-fronted
 
   harvester-unpaywall:
     build:
       context: ./services/harvester-unpaywall
     container_name: ezunpaywall-harvester-unpaywall
+    image: ezunpaywall-harvester-unpaywall
 
   nginx:
     build:
       context: ./services/nginx
     container_name: ezunpaywall-nginx
+    image: ezunpaywall-nginx
