@@ -1,4 +1,4 @@
-FROM nginx:1.29.8-alpine-slim
+FROM nginx:1.31.8-alpine3.24
 
 COPY templates/http.conf.template /etc/nginx/templates/default.conf.template
 

@@ -1,4 +1,4 @@
-FROM node:24.14.1-alpine3.23 AS base
+FROM node:24.22.1-alpine3.24 AS base
 
 LABEL maintainer="ezTeam <ezteam@couperin.org>"
 
