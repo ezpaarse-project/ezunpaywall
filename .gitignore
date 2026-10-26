@@ -1,4 +1,4 @@
-ezunpaywall.local.env.sh
+env.local.sh
 config/kibana/certificates/
 config/elastic/certificates/
 certs/instances.yml
@@ -6,6 +6,5 @@ data/
 ssl/
 node_modules/
 log/
-env.sh
 .gitlab-ci-local-variables.yml
 .gitlab-ci-local

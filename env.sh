@@ -2,7 +2,7 @@
 
 # api ezunpaywall
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
-LOCAL_ENV_FILE="$SCRIPT_DIR/ezunpaywall.local.env.sh"
+LOCAL_ENV_FILE="$SCRIPT_DIR/env.local.sh"
 
 export REDIS_PASSWORD='changeme'
 export NODE_CONFIG='{ "smtp": { "secure": false, "ignoreTLS": true } }'

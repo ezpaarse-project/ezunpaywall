@@ -1,6 +1,6 @@
 services:
   graphql:
-    image: node:24.22.1
+    image: node:26.12.1
     container_name: ezunpaywall-graphql-dev
     working_dir: /usr/src/app
     volumes:
@@ -20,7 +20,7 @@ services:
       retries: 5
 
   enrich:
-    image: node:24.22.1
+    image: node:26.12.1
     container_name: ezunpaywall-enrich-dev
     working_dir: /usr/src/app
     volumes:
@@ -40,7 +40,7 @@ services:
       retries: 5
   
   admin:
-    image: node:24.22.1
+    image: node:26.12.1
     container_name: ezunpaywall-admin-dev
     environment:
       - LOG_LEVEL=debug
@@ -64,12 +64,15 @@ services:
       retries: 5
 
   harvester-unpaywall:
-    image: node:22.23.4
+    image: node:26.12.1
     container_name: ezunpaywall-harvester-unpaywall-dev
     environment:
       - LOG_LEVEL=debug
       # smtp
       - SMTP_HOST=maildev
+      # unpaywall
+      - UNPAYWALL_APIKEY
+      - UNPAYWALL_URL
     working_dir: /usr/src/app
     volumes:
       - ./services/harvester-unpaywall:/usr/src/app
@@ -89,7 +92,7 @@ services:
 
 
   frontend:
-    image: node:24.22.1
+    image: node:26.12.1
     container_name: ezunpaywall-frontend-dev
     working_dir: /usr/src/app
     volumes:
@@ -160,7 +163,7 @@ services:
 
   fakeunpaywall:
     container_name: ezunpaywall-fakeunpaywall-dev
-    image: node:24.22.1
+    image: node:26.12.1
     working_dir: /usr/src/app
     volumes:
       - ./services/fakeUnpaywall:/usr/src/app
