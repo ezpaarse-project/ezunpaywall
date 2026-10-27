@@ -21,7 +21,7 @@ services:
     build:
       context: ./services/frontend
     container_name: ezunpaywall-frontend
-    image: ezunpaywall-fronted
+    image: ezunpaywall-frontend
 
   harvester-unpaywall:
     build:
